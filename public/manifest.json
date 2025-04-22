@@ -1,0 +1,17 @@
+
+{
+  "name": "SecureBlock - Web3 Security Marketplace",
+  "short_name": "SecureBlock",
+  "description": "Decentralized Web3 security marketplace with gamification features",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1A1F2C",
+  "theme_color": "#5E35B1",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

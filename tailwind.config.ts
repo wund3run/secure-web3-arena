@@ -17,6 +17,10 @@ export default {
 				'2xl': '1400px'
 			}
 		},
+		fontFamily: {
+			sans: ['Inter', 'sans-serif'],
+			mono: ['"JetBrains Mono"', 'monospace'],
+		},
 		extend: {
 			colors: {
 				border: 'hsl(var(--border))',
@@ -51,6 +55,27 @@ export default {
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
+				},
+				web3: {
+					purple: {
+						DEFAULT: '#5E35B1',
+						light: '#7E57C2',
+						dark: '#4527A0'
+					},
+					teal: {
+						DEFAULT: '#00BCD4',
+						light: '#4DD0E1',
+						dark: '#0097A7'
+					},
+					orange: {
+						DEFAULT: '#FF5722',
+						light: '#FF8A65',
+						dark: '#E64A19'
+					},
+					background: {
+						DEFAULT: '#1A1F2C',
+						light: '#2D3748'
+					}
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
