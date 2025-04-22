@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Shield, Trophy, Search, User, Menu, X } from "lucide-react";
+import { ShieldCheck, Trophy, Search, User, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function Navbar() {
@@ -13,8 +12,11 @@ export function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2">
-              <Shield className="h-8 w-8 text-primary animate-pulse-glow" />
-              <span className="font-bold text-xl">SecureBlock</span>
+              <div className="relative">
+                <ShieldCheck className="h-8 w-8 text-primary" />
+                <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-primary rotate-45 rounded-sm opacity-70"></div>
+              </div>
+              <span className="font-bold text-xl">Hawkly</span>
             </Link>
             <div className="hidden md:ml-10 md:flex md:space-x-8">
               <Link to="/marketplace" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-foreground hover:text-primary">
@@ -58,7 +60,6 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {isMenuOpen && (
         <div className="md:hidden">
           <div className="pt-2 pb-4 space-y-1">

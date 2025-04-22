@@ -1,8 +1,8 @@
 
 {
-  "name": "SecureBlock - Web3 Security Marketplace",
-  "short_name": "SecureBlock",
-  "description": "Decentralized Web3 security marketplace with gamification features",
+  "name": "Hawkly - Security Marketplace for the Future",
+  "short_name": "Hawkly",
+  "description": "Decentralized Web3 security marketplace with integrated gamification features",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1A1F2C",
