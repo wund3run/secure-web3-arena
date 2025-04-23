@@ -310,15 +310,15 @@ export function ContinuousSecurity() {
                       <ul className="space-y-2 text-sm">
                         <li className="flex items-center justify-between">
                           <span>Critical vulnerabilities:</span>
-                          <span className="font-medium">< 30 minutes</span>
+                          <span className="font-medium">30 minutes</span>
                         </li>
                         <li className="flex items-center justify-between">
                           <span>High severity issues:</span>
-                          <span className="font-medium">< 2 hours</span>
+                          <span className="font-medium">2 hours</span>
                         </li>
                         <li className="flex items-center justify-between">
                           <span>Medium/Low severity:</span>
-                          <span className="font-medium">< 24 hours</span>
+                          <span className="font-medium">24 hours</span>
                         </li>
                       </ul>
                     </div>
