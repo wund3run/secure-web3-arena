@@ -1,4 +1,3 @@
-
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { HeroSection } from "@/components/home/hero-section";
@@ -8,10 +7,10 @@ import { ReputationSystem } from "@/components/reputation/reputation-system";
 import { ContinuousSecurity } from "@/components/security/continuous-security";
 import { GamificationSection } from "@/components/home/gamification-section";
 import { MarketplaceSection } from "@/components/home/marketplace-section";
+import { AuditStatsTable } from "@/components/home/audit-stats-table";
 import { Shield, Trophy, Users } from "lucide-react";
 import { BadgeAward } from "@/components/ui/badge-award";
 
-// Features section component
 function FeaturesSection() {
   const features = [
     {
@@ -68,7 +67,6 @@ function FeaturesSection() {
   );
 }
 
-// Stats section component
 function StatsSection() {
   const stats = [
     { id: 1, value: "500+", label: "Security Experts" },
@@ -95,7 +93,6 @@ function StatsSection() {
   );
 }
 
-// Main Index component
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-white via-primary/5 to-secondary/5">
@@ -104,6 +101,7 @@ const Index = () => {
         <HeroSection />
         <StatsSection />
         <FeaturesSection />
+        <AuditStatsTable />
         <MarketplaceSection />
         <GamificationSection />
         
