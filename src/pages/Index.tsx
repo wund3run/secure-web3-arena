@@ -77,12 +77,12 @@ function StatsSection() {
   ];
 
   return (
-    <section className="bg-gradient-to-r from-primary/10 via-background to-secondary/10 py-16 border-y border-primary/20">
+    <section className="bg-gradient-to-r from-primary/5 via-white to-secondary/5 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((stat) => (
-            <div key={stat.id} className="text-center">
-              <div className="text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-primary to-secondary mb-2">
+            <div key={stat.id} className="glass-card p-6 rounded-xl hover-lift">
+              <div className="text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary to-secondary mb-2">
                 {stat.value}
               </div>
               <div className="text-muted-foreground font-medium">{stat.label}</div>
@@ -97,7 +97,7 @@ function StatsSection() {
 // Main Index component
 const Index = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background/90 to-primary/20">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-white via-primary/5 to-secondary/5">
       <Navbar />
       <main className="flex-grow">
         <HeroSection />

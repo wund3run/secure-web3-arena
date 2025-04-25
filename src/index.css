@@ -5,20 +5,50 @@
 
 @layer base {
   :root {
-    --background: 240 5.9% 10%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 100%; /* Pure white background */
+    --foreground: 222 47% 11%; /* Dark text for contrast */
     
-    --primary: 262 57% 45%; /* Deep Purple */
-    --primary-foreground: 0 0% 98%;
+    --primary: 262 57% 45%; /* Keep the vibrant purple */
+    --primary-foreground: 0 0% 100%;
     
-    --secondary: 187 100% 42%; /* Vibrant Teal */
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 187 100% 42%; /* Vibrant teal */
+    --secondary-foreground: 0 0% 100%;
     
-    --accent: 14 100% 57%; /* Bright Orange */
-    --accent-foreground: 210 40% 98%;
+    --accent: 14 100% 57%; /* Bright orange */
+    --accent-foreground: 0 0% 100%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 262 57% 45%;
+    
+    --radius: 0.75rem;
     
     --web3-purple: 262 57% 45%;
     --web3-teal: 187 100% 42%;
     --web3-orange: 14 100% 57%;
+  }
+}
+
+/* Add glass effect utilities */
+@layer utilities {
+  .glass-effect {
+    @apply backdrop-blur-md bg-white/70 border border-white/20 shadow-lg;
+  }
+  
+  .glass-card {
+    @apply bg-gradient-to-br from-white/80 to-white/40 backdrop-blur-md border border-white/20 shadow-lg;
+  }
+  
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
   }
 }

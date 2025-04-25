@@ -5,12 +5,12 @@ import { BadgeAward } from "@/components/ui/badge-award";
 
 export function HeroSection() {
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-background via-primary/10 to-secondary/10">
-      {/* Decorative elements */}
-      <div className="absolute top-20 right-10 opacity-20">
+    <div className="relative overflow-hidden bg-gradient-to-br from-white via-primary/5 to-secondary/5">
+      {/* Decorative elements with reduced opacity */}
+      <div className="absolute top-20 right-10 opacity-10">
         <Shield className="w-40 h-40 text-web3-purple animate-float" />
       </div>
-      <div className="absolute bottom-10 left-10 opacity-10">
+      <div className="absolute bottom-10 left-10 opacity-5">
         <Trophy className="w-32 h-32 text-web3-teal animate-float" style={{ animationDelay: "2s" }} />
       </div>
       
@@ -86,6 +86,8 @@ export function HeroSection() {
           </div>
         </div>
       </div>
+      
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 to-white pointer-events-none" />
     </div>
   );
 }
