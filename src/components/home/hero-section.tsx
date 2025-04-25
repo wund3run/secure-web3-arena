@@ -1,3 +1,4 @@
+
 import { Trophy, Shield, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -52,27 +53,27 @@ export function HeroSection() {
           </div>
           
           <div className="mt-16 sm:mt-24 lg:mt-0 lg:col-span-5 flex justify-center items-center">
-            <div className="bg-card/30 backdrop-blur-sm rounded-2xl p-6 border border-primary/10 shadow-xl animate-float">
+            <div className="glass-card rounded-2xl p-6 shadow-xl animate-float">
               <div className="flex justify-center mb-4">
                 <Shield className="h-16 w-16 text-primary animate-pulse-glow" />
               </div>
               <h3 className="text-2xl font-bold text-center text-foreground mb-6">Security Stats</h3>
               <div className="space-y-4">
                 <div className="flex justify-between">
-                  <span className="text-gray-300">Active Auditors</span>
-                  <span className="font-semibold text-white">500+</span>
+                  <span className="text-muted-foreground">Active Auditors</span>
+                  <span className="font-semibold text-foreground">500+</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-300">Secured Projects</span>
-                  <span className="font-semibold text-white">2,500+</span>
+                  <span className="text-muted-foreground">Secured Projects</span>
+                  <span className="font-semibold text-foreground">2,500+</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-300">Vulnerabilities Found</span>
-                  <span className="font-semibold text-white">12,800+</span>
+                  <span className="text-muted-foreground">Vulnerabilities Found</span>
+                  <span className="font-semibold text-foreground">12,800+</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-300">Saved Assets Value</span>
-                  <span className="font-semibold text-white">$350M+</span>
+                  <span className="text-muted-foreground">Saved Assets Value</span>
+                  <span className="font-semibold text-foreground">$350M+</span>
                 </div>
               </div>
               <div className="mt-6">

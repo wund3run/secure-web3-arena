@@ -51,4 +51,28 @@
   .hover-lift {
     @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
   }
+  
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+  }
+  
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+  
+  @keyframes pulse-glow {
+    0% { filter: drop-shadow(0 0 2px rgba(94, 53, 177, 0.3)); }
+    50% { filter: drop-shadow(0 0 10px rgba(94, 53, 177, 0.6)); }
+    100% { filter: drop-shadow(0 0 2px rgba(94, 53, 177, 0.3)); }
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
 }

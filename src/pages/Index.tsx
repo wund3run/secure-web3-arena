@@ -1,3 +1,4 @@
+
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { HeroSection } from "@/components/home/hero-section";
@@ -49,7 +50,7 @@ function FeaturesSection() {
           {features.map((feature) => (
             <div 
               key={feature.id} 
-              className="group relative bg-card hover:bg-card/80 transition-colors rounded-xl p-8 border border-primary/20 shadow-sm hover:shadow-md"
+              className="group relative glass-card rounded-xl p-8 hover-lift"
             >
               <div className="relative z-10">
                 <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
