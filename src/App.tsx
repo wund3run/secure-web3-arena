@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Marketplace from "./pages/Marketplace";
+import Leaderboard from "./pages/Leaderboard";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          
           {/* Marketplace routes */}
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/auditors" element={<NotFound />} />
@@ -24,7 +26,7 @@ const App = () => (
           <Route path="/requests" element={<NotFound />} />
           
           {/* Community routes */}
-          <Route path="/leaderboard" element={<NotFound />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/achievements" element={<NotFound />} />
           <Route path="/events" element={<NotFound />} />
           <Route path="/forum" element={<NotFound />} />
