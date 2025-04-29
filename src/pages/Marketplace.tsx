@@ -1,10 +1,13 @@
+
 import { useState, useEffect } from "react";
 import { ServiceCard } from "@/components/marketplace/service-card";
 import { MarketplaceFilters } from "@/components/marketplace/marketplace-filters";
 import { MarketplaceHeader } from "@/components/marketplace/marketplace-header";
 import { MarketplaceEnhancedHeader } from "@/components/marketplace/marketplace-enhanced-header";
 import { MarketplaceEnhancedFooter } from "@/components/marketplace/marketplace-enhanced-footer";
-import { Shield, FileCode, Database, Lock, Network, Globe, Server, BadgeCheck, ArrowRight } from "lucide-react";
+import { EnhancedFilters } from "@/components/marketplace/enhanced-filters";
+import { OptimizedListingGrid } from "@/components/marketplace/optimized-listing-grid";
+import { Shield, ArrowRight, Filter, LayoutGrid, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
@@ -239,6 +242,14 @@ export default function Marketplace() {
     });
   };
 
+  const handleApplyFilters = (filters: any) => {
+    toast.success("Filters applied", {
+      description: "Security services updated based on your filters"
+    });
+    // In a real implementation, we would filter services based on these criteria
+    console.log("Applied filters:", filters);
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
@@ -260,24 +271,57 @@ export default function Marketplace() {
               </div>
             </div>
 
-            {/* Header Section */}
-            <MarketplaceHeader
-              viewMode={viewMode}
-              setViewMode={setViewMode}
-              showFilters={showFilters}
-              setShowFilters={setShowFilters}
-            />
+            {/* Header Section with View Toggle */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <h2 className="text-2xl font-bold flex items-center">
+                  Security Services
+                  <span className="ml-2 text-sm font-normal text-muted-foreground">({filteredServices.length} available)</span>
+                </h2>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <div className="bg-muted p-1 rounded-md flex">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`px-3 py-1 ${viewMode === "grid" ? "bg-background shadow-sm" : ""}`}
+                    onClick={() => setViewMode("grid")}
+                  >
+                    <LayoutGrid className="h-4 w-4 mr-1" />
+                    Grid
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`px-3 py-1 ${viewMode === "list" ? "bg-background shadow-sm" : ""}`}
+                    onClick={() => setViewMode("list")}
+                  >
+                    <List className="h-4 w-4 mr-1" />
+                    List
+                  </Button>
+                </div>
+                
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="lg:hidden"
+                  onClick={() => setShowFilters(!showFilters)}
+                >
+                  <Filter className="h-4 w-4 mr-1" />
+                  {showFilters ? "Hide Filters" : "Show Filters"}
+                </Button>
+              </div>
+            </div>
 
-            {/* Main Content */}
-            <div className="flex gap-6">
-              {/* Filters Panel */}
-              {showFilters && (
-                <aside className="w-64 shrink-0">
-                  <MarketplaceFilters />
-                </aside>
-              )}
+            {/* Main Content with Improved Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              {/* Enhanced Filters Panel */}
+              <aside className={`lg:block ${showFilters ? 'block' : 'hidden'}`}>
+                <EnhancedFilters onFilterChange={handleApplyFilters} />
+              </aside>
 
-              <div className="flex-grow">
+              <div className="lg:col-span-3">
                 {/* Service Categories Tabs */}
                 <Tabs 
                   defaultValue="all" 
@@ -285,27 +329,29 @@ export default function Marketplace() {
                   onValueChange={setActiveCategory}
                   value={activeCategory}
                 >
-                  <TabsList className="inline-flex h-auto p-1 gap-2 w-auto flex-wrap">
-                    <TabsTrigger value="all" className="px-4 py-2 rounded-md">All</TabsTrigger>
-                    <TabsTrigger value="smart contracts" className="px-4 py-2 rounded-md">Smart Contracts</TabsTrigger>
-                    <TabsTrigger value="dapps" className="px-4 py-2 rounded-md">DApps</TabsTrigger>
-                    <TabsTrigger value="protocols" className="px-4 py-2 rounded-md">Protocols</TabsTrigger>
-                    <TabsTrigger value="nfts" className="px-4 py-2 rounded-md">NFTs</TabsTrigger>
-                    <TabsTrigger value="bridges" className="px-4 py-2 rounded-md">Bridges</TabsTrigger>
-                    <TabsTrigger value="infrastructure" className="px-4 py-2 rounded-md">Infrastructure</TabsTrigger>
-                    <TabsTrigger value="daos" className="px-4 py-2 rounded-md">DAOs</TabsTrigger>
-                    <TabsTrigger value="zk proofs" className="px-4 py-2 rounded-md">ZK Proofs</TabsTrigger>
-                  </TabsList>
+                  <div className="overflow-x-auto pb-2">
+                    <TabsList className="inline-flex h-auto p-1 gap-2 w-auto flex-nowrap">
+                      <TabsTrigger value="all" className="px-4 py-2 rounded-md whitespace-nowrap">All</TabsTrigger>
+                      <TabsTrigger value="smart contracts" className="px-4 py-2 rounded-md whitespace-nowrap">Smart Contracts</TabsTrigger>
+                      <TabsTrigger value="dapps" className="px-4 py-2 rounded-md whitespace-nowrap">DApps</TabsTrigger>
+                      <TabsTrigger value="protocols" className="px-4 py-2 rounded-md whitespace-nowrap">Protocols</TabsTrigger>
+                      <TabsTrigger value="nfts" className="px-4 py-2 rounded-md whitespace-nowrap">NFTs</TabsTrigger>
+                      <TabsTrigger value="bridges" className="px-4 py-2 rounded-md whitespace-nowrap">Bridges</TabsTrigger>
+                      <TabsTrigger value="infrastructure" className="px-4 py-2 rounded-md whitespace-nowrap">Infrastructure</TabsTrigger>
+                      <TabsTrigger value="daos" className="px-4 py-2 rounded-md whitespace-nowrap">DAOs</TabsTrigger>
+                      <TabsTrigger value="zk proofs" className="px-4 py-2 rounded-md whitespace-nowrap">ZK Proofs</TabsTrigger>
+                    </TabsList>
+                  </div>
                 </Tabs>
 
                 {/* Blockchain Ecosystem Logos */}
                 <div className="mb-10">
-                  <h3 className="text-2xl font-bold mb-6">Blockchain Ecosystems</h3>
+                  <h3 className="text-xl font-bold mb-4">Blockchain Ecosystems</h3>
                   <div className="grid grid-cols-3 sm:grid-cols-6 gap-4">
                     {BLOCKCHAIN_ECOSYSTEMS.map((ecosystem) => (
                       <div 
                         key={ecosystem.name} 
-                        className="bg-card hover:bg-card/90 border border-border/40 rounded-lg p-4 flex flex-col items-center justify-center hover-lift transition-all duration-300 cursor-pointer"
+                        className="bg-card hover:bg-card/90 border border-border/40 rounded-lg p-4 flex flex-col items-center justify-center hover:shadow-md transition-all duration-300 cursor-pointer"
                         title={`${ecosystem.name} Security Audits`}
                         onClick={() => handleEcosystemClick(ecosystem.name)}
                       >
@@ -330,56 +376,20 @@ export default function Marketplace() {
                   </div>
                 </div>
 
-                {/* Services Grid */}
-                <h3 className="text-2xl font-bold mb-6 flex items-center">
+                {/* Services Grid with Optimized Listing Component */}
+                <h3 className="text-xl font-bold mb-4 flex items-center">
                   Available Security Services
-                  <span className="ml-2 text-sm font-normal text-muted-foreground">({filteredServices.length} services)</span>
                 </h3>
                 
-                {isLoading ? (
-                  <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-                    {[1, 2, 3, 4, 5, 6].map((i) => (
-                      <div key={i} className="h-96 bg-card animate-pulse rounded-lg"></div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className={`grid gap-6 ${
-                    viewMode === "grid" 
-                      ? "grid-cols-1 md:grid-cols-2 xl:grid-cols-3" 
-                      : "grid-cols-1"
-                  }`}>
-                    {filteredServices.length > 0 ? (
-                      filteredServices.map((service) => (
-                        <ServiceCard
-                          key={service.id}
-                          id={service.id}
-                          title={service.title}
-                          description={service.description}
-                          provider={service.provider}
-                          pricing={service.pricing}
-                          rating={service.rating}
-                          completedJobs={service.completedJobs}
-                          category={service.category}
-                          tags={service.tags}
-                          imageUrl={service.imageUrl}
-                        />
-                      ))
-                    ) : (
-                      <div className="col-span-full flex flex-col items-center justify-center py-16">
-                        <Shield className="h-16 w-16 text-muted-foreground/40 mb-4" />
-                        <h3 className="text-xl font-medium mb-2">No services found</h3>
-                        <p className="text-muted-foreground">Try adjusting your filters or search criteria</p>
-                        <Button variant="outline" className="mt-4" onClick={() => setActiveCategory("all")}>
-                          View all services
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                )}
+                <OptimizedListingGrid 
+                  services={filteredServices}
+                  isLoading={isLoading}
+                  layout={viewMode}
+                />
 
                 {/* Web2 + Web3 Security Services Section */}
                 <div className="mt-12 mb-10">
-                  <h3 className="text-2xl font-bold mb-6">Comprehensive Web2 + Web3 Security Services</h3>
+                  <h3 className="text-xl font-bold mb-6">Comprehensive Web2 + Web3 Security Services</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="bg-card border border-border/50 rounded-lg p-6 hover-lift transition-all hover:border-primary/50">
                       <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">

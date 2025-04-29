@@ -1,4 +1,5 @@
 
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { EnhancedFooter } from "@/components/home/enhanced-footer";
 import { EnhancedHeroHeader } from "@/components/home/enhanced-hero-header";
@@ -9,8 +10,25 @@ import { ContinuousSecurity } from "@/components/security/continuous-security";
 import { GamificationSection } from "@/components/home/gamification-section";
 import { AuditStatsTable } from "@/components/home/audit-stats-table";
 import { MarketplaceSection } from "@/components/home/marketplace-section";
+import { GuidedOnboarding } from "@/components/onboarding/guided-onboarding";
 
 const Index = () => {
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  
+  // Check if this is the first visit
+  useEffect(() => {
+    const hasVisited = localStorage.getItem("has_visited_hawkly");
+    if (!hasVisited) {
+      // Set a slight delay to show the onboarding after page loads
+      const timer = setTimeout(() => {
+        setShowOnboarding(true);
+        localStorage.setItem("has_visited_hawkly", "true");
+      }, 1500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-white via-primary/5 to-secondary/5">
       <Navbar />
@@ -80,6 +98,11 @@ const Index = () => {
         </section>
       </main>
       <EnhancedFooter />
+      
+      {/* Guided Onboarding Modal */}
+      {showOnboarding && (
+        <GuidedOnboarding onClose={() => setShowOnboarding(false)} />
+      )}
     </div>
   );
 };
