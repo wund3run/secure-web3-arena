@@ -49,20 +49,20 @@ export function MobileFriendlyCard({
     );
   };
 
-  // Generate fallback images for different categories
+  // Generate themed images for different categories
   const getFallbackImage = (category: string) => {
     const images: Record<string, string> = {
-      "Smart Contracts": "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1600&auto=format&fit=crop",
-      "DApps": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1600&auto=format&fit=crop",
-      "Protocols": "https://images.unsplash.com/photo-1526378800651-c32d170fe6f8?q=80&w=1600&auto=format&fit=crop",
-      "NFTs": "https://images.unsplash.com/photo-1618044733300-9472054094ee?q=80&w=1600&auto=format&fit=crop",
-      "Bridges": "https://images.unsplash.com/photo-1639762681057-408e52192e55?q=80&w=1600&auto=format&fit=crop",
-      "Infrastructure": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1600&auto=format&fit=crop",
-      "DAOs": "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?q=80&w=1600&auto=format&fit=crop",
-      "ZK Proofs": "https://images.unsplash.com/photo-1633265486064-086b219458ec?q=80&w=1600&auto=format&fit=crop",
+      "Smart Contracts": "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1600&auto=format&fit=crop&blend=9b87f5&blend-mode=multiply&sat=-50",
+      "DApps": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1600&auto=format&fit=crop&blend=9b87f5&blend-mode=multiply&sat=-30",
+      "Protocols": "https://images.unsplash.com/photo-1526378800651-c32d170fe6f8?q=80&w=1600&auto=format&fit=crop&blend=7E69AB&blend-mode=multiply&sat=-40",
+      "NFTs": "https://images.unsplash.com/photo-1618044733300-9472054094ee?q=80&w=1600&auto=format&fit=crop&blend=8B5CF6&blend-mode=multiply&sat=-30",
+      "Bridges": "https://images.unsplash.com/photo-1639762681057-408e52192e55?q=80&w=1600&auto=format&fit=crop&blend=6E59A5&blend-mode=multiply&sat=-40",
+      "Infrastructure": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1600&auto=format&fit=crop&blend=9b87f5&blend-mode=multiply&sat=-30",
+      "DAOs": "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?q=80&w=1600&auto=format&fit=crop&blend=7E69AB&blend-mode=multiply&sat=-30",
+      "ZK Proofs": "https://images.unsplash.com/photo-1633265486064-086b219458ec?q=80&w=1600&auto=format&fit=crop&blend=8B5CF6&blend-mode=multiply&sat=-30",
     };
 
-    return images[category] || "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=500&auto=format&fit=crop";
+    return images[category] || "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=1600&auto=format&fit=crop&blend=9b87f5&blend-mode=multiply&sat=-40";
   };
 
   return (
@@ -73,7 +73,7 @@ export function MobileFriendlyCard({
       <CardHeader className="p-0">
         <div className="relative h-40 rounded-t-lg overflow-hidden">
           {imageUrl ? (
-            <div className="w-full h-full bg-gradient-to-br from-primary/5 to-secondary/5">
+            <div className="w-full h-full bg-gradient-to-br from-primary/10 to-secondary/10">
               <img 
                 src={imageUrl} 
                 alt={title} 
@@ -84,7 +84,7 @@ export function MobileFriendlyCard({
                   target.src = getFallbackImage(category);
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
             </div>
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
@@ -106,7 +106,7 @@ export function MobileFriendlyCard({
           </div>
           
           <div className="absolute bottom-2 left-2">
-            <Badge className="bg-black/60 text-white hover:bg-black/70 backdrop-blur-sm px-3 py-1 text-sm font-medium">
+            <Badge className="bg-black/70 text-white hover:bg-black/80 backdrop-blur-sm px-3 py-1 text-sm font-medium">
               {category}
             </Badge>
           </div>
@@ -118,7 +118,7 @@ export function MobileFriendlyCard({
           <h3 className="font-bold text-base line-clamp-2 min-h-[2.5rem]">{title}</h3>
           
           <div className="flex items-center space-x-2">
-            <div className="text-lg font-bold text-primary">
+            <div className="text-lg font-bold text-gradient bg-gradient-to-r from-primary to-primary/80">
               {pricing.amount} {pricing.currency}
             </div>
           </div>
@@ -138,13 +138,13 @@ export function MobileFriendlyCard({
             {tags.slice(0, 3).map((tag) => (
               <span 
                 key={tag} 
-                className="inline-flex bg-secondary/20 border border-secondary/30 px-2 py-0.5 rounded text-xs font-medium text-secondary-foreground shadow-sm"
+                className="inline-flex bg-secondary/20 border border-secondary/40 px-2.5 py-0.5 rounded text-xs font-medium text-secondary-foreground shadow-md"
               >
                 {tag}
               </span>
             ))}
             {tags.length > 3 && (
-              <span className="inline-flex bg-muted/40 px-2 py-0.5 rounded text-xs font-medium text-muted-foreground">
+              <span className="inline-flex bg-muted/60 px-2.5 py-0.5 rounded text-xs font-medium text-muted-foreground shadow-sm">
                 +{tags.length - 3}
               </span>
             )}

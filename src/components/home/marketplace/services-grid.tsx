@@ -15,7 +15,7 @@ export function ServicesGrid({ services, isLoading = false }: ServicesGridProps)
         {Array.from({ length: 4 }).map((_, index) => (
           <Skeleton 
             key={`skeleton-${index}`}
-            className="h-[450px] rounded-lg"
+            className="h-[450px] rounded-lg bg-gradient-to-br from-primary/5 to-secondary/5"
           />
         ))}
       </div>
@@ -35,7 +35,7 @@ export function ServicesGrid({ services, isLoading = false }: ServicesGridProps)
       {services.length < 4 && Array.from({ length: 4 - services.length }).map((_, index) => (
         <div 
           key={`placeholder-${index}`} 
-          className="h-full border border-dashed border-border/50 rounded-lg flex items-center justify-center p-8 bg-muted/30"
+          className="h-full border border-dashed border-border/50 rounded-lg flex items-center justify-center p-8 bg-gradient-to-br from-muted/30 to-card"
         >
           <p className="text-muted-foreground text-center text-sm">More services available in the marketplace</p>
         </div>

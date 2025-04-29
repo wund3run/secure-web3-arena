@@ -45,18 +45,18 @@ export function ServiceCard({
     });
   };
 
-  // Define consistent high-quality images for different security categories
+  // Define consistent high-quality images with theme-aligned gradients for different security categories
   const getCategoryImage = (category: string) => {
     const images = {
-      "Smart Contracts": "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1600&auto=format&fit=crop",
-      "DApps": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1600&auto=format&fit=crop",
-      "Protocols": "https://images.unsplash.com/photo-1526378800651-c32d170fe6f8?q=80&w=1600&auto=format&fit=crop",
-      "NFTs": "https://images.unsplash.com/photo-1618044733300-9472054094ee?q=80&w=1600&auto=format&fit=crop",
-      "Bridges": "https://images.unsplash.com/photo-1639762681057-408e52192e55?q=80&w=1600&auto=format&fit=crop",
-      "Infrastructure": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1600&auto=format&fit=crop",
-      "DAOs": "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?q=80&w=1600&auto=format&fit=crop",
-      "ZK Proofs": "https://images.unsplash.com/photo-1633265486064-086b219458ec?q=80&w=1600&auto=format&fit=crop",
-      "default": "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=1600&auto=format&fit=crop"
+      "Smart Contracts": "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1600&auto=format&fit=crop&blend=9b87f5&blend-mode=multiply&sat=-50",
+      "DApps": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1600&auto=format&fit=crop&blend=9b87f5&blend-mode=multiply&sat=-30",
+      "Protocols": "https://images.unsplash.com/photo-1526378800651-c32d170fe6f8?q=80&w=1600&auto=format&fit=crop&blend=7E69AB&blend-mode=multiply&sat=-40",
+      "NFTs": "https://images.unsplash.com/photo-1618044733300-9472054094ee?q=80&w=1600&auto=format&fit=crop&blend=8B5CF6&blend-mode=multiply&sat=-30",
+      "Bridges": "https://images.unsplash.com/photo-1639762681057-408e52192e55?q=80&w=1600&auto=format&fit=crop&blend=6E59A5&blend-mode=multiply&sat=-40",
+      "Infrastructure": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1600&auto=format&fit=crop&blend=9b87f5&blend-mode=multiply&sat=-30",
+      "DAOs": "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?q=80&w=1600&auto=format&fit=crop&blend=7E69AB&blend-mode=multiply&sat=-30",
+      "ZK Proofs": "https://images.unsplash.com/photo-1633265486064-086b219458ec?q=80&w=1600&auto=format&fit=crop&blend=8B5CF6&blend-mode=multiply&sat=-30",
+      "default": "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=1600&auto=format&fit=crop&blend=9b87f5&blend-mode=multiply&sat=-40"
     };
     
     // @ts-ignore
@@ -69,7 +69,7 @@ export function ServiceCard({
     <Card className="overflow-hidden border border-border/50 hover:border-primary/50 transition-all duration-300 bg-card h-full flex flex-col group">
       <CardHeader className="p-0">
         <div className="h-48 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10">
             <img 
               src={displayImage} 
               alt={title} 
@@ -77,10 +77,10 @@ export function ServiceCard({
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.onerror = null;
-                target.src = "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=1600&auto=format&fit=crop";
+                target.src = "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=1600&auto=format&fit=crop&blend=9b87f5&blend-mode=multiply&sat=-40";
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-60"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-60"></div>
           </div>
           
           <div className="absolute top-3 right-3 flex space-x-2">
@@ -93,7 +93,7 @@ export function ServiceCard({
           </div>
           
           <div className="absolute bottom-3 left-3">
-            <div className="flex items-center bg-black/50 backdrop-blur-sm rounded-md px-2 py-1">
+            <div className="flex items-center bg-black/60 backdrop-blur-sm rounded-md px-2 py-1">
               <Star className="h-4 w-4 fill-web3-orange text-web3-orange mr-1" />
               <span className="text-sm font-semibold text-white">{rating.toFixed(1)}</span>
             </div>
@@ -120,13 +120,13 @@ export function ServiceCard({
           {tags.slice(0, 3).map((tag) => (
             <span 
               key={tag} 
-              className="inline-flex bg-secondary/20 border border-secondary/30 text-secondary-foreground px-2 py-0.5 rounded-md text-xs font-medium shadow-sm"
+              className="inline-flex bg-secondary/20 border border-secondary/40 text-secondary-foreground px-2.5 py-0.5 rounded-md text-xs font-medium shadow-md"
             >
               {tag}
             </span>
           ))}
           {tags.length > 3 && (
-            <span className="inline-flex bg-muted/50 text-muted-foreground px-2 py-0.5 rounded-md text-xs font-medium">
+            <span className="inline-flex bg-muted/60 text-muted-foreground px-2.5 py-0.5 rounded-md text-xs font-medium shadow-sm">
               +{tags.length - 3} more
             </span>
           )}
@@ -138,7 +138,7 @@ export function ServiceCard({
             <span>{completedJobs} completed</span>
           </div>
           <div>
-            <span className="text-xs uppercase bg-primary/15 text-primary px-2 py-1 rounded-full font-medium">
+            <span className="text-xs uppercase bg-primary/20 text-primary px-2.5 py-1 rounded-full font-medium">
               {category}
             </span>
           </div>
