@@ -141,8 +141,8 @@ export function EnhancedHeroHeader() {
           </div>
           
           <div className="mt-16 sm:mt-24 lg:mt-0 lg:col-span-5 flex justify-center items-center">
-            <div className="glass-card rounded-2xl p-6 shadow-xl animate-float">
-              <div className="flex justify-center mb-4">
+            <div className="glass-card rounded-2xl p-8 shadow-xl animate-float w-full max-w-md">
+              <div className="flex justify-center mb-6">
                 <div className="relative flex items-center justify-center">
                   <Shield className="h-16 w-16 text-primary" />
                   <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-primary rotate-45 rounded-sm opacity-70"></div>
@@ -152,20 +152,20 @@ export function EnhancedHeroHeader() {
                 </div>
               </div>
               <h3 className="text-2xl font-bold text-center text-foreground mb-6">Security Dashboard</h3>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center p-3 bg-background/60 rounded-lg hover-lift">
+              <div className="space-y-5">
+                <div className="flex justify-between items-center p-4 bg-background/60 rounded-lg hover-lift">
                   <span className="text-muted-foreground font-medium">Active Auditors</span>
                   <span className="font-semibold text-foreground text-lg">500+</span>
                 </div>
-                <div className="flex justify-between items-center p-3 bg-background/60 rounded-lg hover-lift">
+                <div className="flex justify-between items-center p-4 bg-background/60 rounded-lg hover-lift">
                   <span className="text-muted-foreground font-medium">Secured Projects</span>
                   <span className="font-semibold text-foreground text-lg">2,500+</span>
                 </div>
-                <div className="flex justify-between items-center p-3 bg-background/60 rounded-lg hover-lift">
+                <div className="flex justify-between items-center p-4 bg-background/60 rounded-lg hover-lift">
                   <span className="text-muted-foreground font-medium">Vulnerabilities Found</span>
                   <span className="font-semibold text-foreground text-lg">12,800+</span>
                 </div>
-                <div className="flex justify-between items-center p-3 bg-background/60 rounded-lg hover-lift">
+                <div className="flex justify-between items-center p-4 bg-background/60 rounded-lg hover-lift">
                   <span className="text-muted-foreground font-medium">Saved Assets Value</span>
                   <span className="font-semibold text-foreground text-lg">$350M+</span>
                 </div>
@@ -173,7 +173,7 @@ export function EnhancedHeroHeader() {
               <div className="mt-8">
                 <Link to="/stats">
                   <Button variant="default" className="text-secondary w-full bg-gradient-to-r from-primary/20 to-secondary/20 hover:from-primary/30 hover:to-secondary/30">
-                    View detailed statistics <ArrowRight className="ml-1 h-4 w-4" />
+                    View detailed statistics <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
               </div>

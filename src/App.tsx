@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Marketplace from "./pages/Marketplace";
@@ -23,13 +23,13 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           
-          {/* Marketplace routes */}
+          {/* Marketplace routes with fallbacks for development */}
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/auditors" element={<NotFound />} />
           <Route path="/listings" element={<NotFound />} />
           <Route path="/requests" element={<NotFound />} />
           
-          {/* Community routes */}
+          {/* Community routes with fallbacks */}
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/community" element={<Community />} />
           <Route path="/achievements" element={<NotFound />} />
@@ -48,6 +48,7 @@ const App = () => (
           <Route path="/terms" element={<NotFound />} />
           <Route path="/privacy" element={<NotFound />} />
           <Route path="/contact" element={<NotFound />} />
+          <Route path="/security-policy" element={<NotFound />} /> 
           
           {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
