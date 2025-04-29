@@ -11,6 +11,8 @@ import Leaderboard from "./pages/Leaderboard";
 import Audits from "./pages/Audits";
 import Community from "./pages/Community";
 import Stats from "./pages/Stats";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +45,14 @@ const App = () => (
           <Route path="/blog" element={<NotFound />} />
           <Route path="/vulnerabilities" element={<NotFound />} />
           <Route path="/faqs" element={<NotFound />} />
+          
+          {/* Admin routes */}
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/services" element={<AdminDashboard section="services" />} />
+          <Route path="/admin/users" element={<AdminDashboard section="users" />} />
+          <Route path="/admin/audits" element={<AdminDashboard section="audits" />} />
+          <Route path="/admin/reports" element={<AdminDashboard section="reports" />} />
           
           {/* Legal routes */}
           <Route path="/terms" element={<NotFound />} />
