@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ServiceCard, ServiceCardProps } from "@/components/marketplace/service-card";
 import { Button } from "@/components/ui/button";
@@ -170,31 +169,31 @@ const SERVICES: ServiceCardProps[] = [
   }
 ];
 
-// Blockchain ecosystems needing security audits
+// Blockchain ecosystems with their logos
 const BLOCKCHAIN_ECOSYSTEMS = [
   {
     name: "Solana",
-    icon: <FileCode className="w-5 h-5 text-primary" />
+    logoUrl: "https://cryptologos.cc/logos/solana-sol-logo.png?v=024"
   },
   {
     name: "Ethereum",
-    icon: <Database className="w-5 h-5 text-primary" />
+    logoUrl: "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=024"
   },
   {
     name: "Polkadot",
-    icon: <Network className="w-5 h-5 text-primary" />
+    logoUrl: "https://cryptologos.cc/logos/polkadot-new-dot-logo.png?v=024"
   },
   {
     name: "Avalanche",
-    icon: <Server className="w-5 h-5 text-primary" />
+    logoUrl: "https://cryptologos.cc/logos/avalanche-avax-logo.png?v=024"
   },
   {
     name: "Cosmos",
-    icon: <Globe className="w-5 h-5 text-primary" />
+    logoUrl: "https://cryptologos.cc/logos/cosmos-atom-logo.png?v=024"
   },
   {
     name: "zkSync",
-    icon: <Lock className="w-5 h-5 text-primary" />
+    logoUrl: "https://cryptologos.cc/logos/zksync-logo.png?v=024"
   }
 ];
 
@@ -243,16 +242,24 @@ export function MarketplaceSection() {
           ))}
         </div>
         
-        {/* Trending Blockchain Ecosystems Section */}
+        {/* Blockchain Ecosystems Logos Section */}
         <div className="mt-16 mb-10">
-          <h3 className="text-2xl font-bold text-center mb-6">Trending Blockchain Ecosystems Needing Security</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          <h3 className="text-2xl font-bold text-center mb-8">Blockchain Ecosystems Requiring Security Audits</h3>
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-6">
             {BLOCKCHAIN_ECOSYSTEMS.map((ecosystem) => (
-              <div key={ecosystem.name} className="bg-card hover:bg-card/80 border border-border/50 rounded-lg p-4 text-center hover-lift transition-all duration-300">
-                <div className="flex justify-center mb-2">
-                  {ecosystem.icon}
+              <div 
+                key={ecosystem.name} 
+                className="bg-card hover:bg-card/80 border border-border/50 rounded-lg p-4 flex flex-col items-center justify-center hover-lift transition-all duration-300"
+                title={`${ecosystem.name} Security Audits`}
+              >
+                <div className="h-16 w-16 mb-2 flex items-center justify-center">
+                  <img 
+                    src={ecosystem.logoUrl} 
+                    alt={`${ecosystem.name} logo`}
+                    className="max-h-full max-w-full object-contain"
+                  />
                 </div>
-                <h4 className="font-medium">{ecosystem.name}</h4>
+                <h4 className="font-medium text-sm text-center">{ecosystem.name}</h4>
               </div>
             ))}
           </div>
