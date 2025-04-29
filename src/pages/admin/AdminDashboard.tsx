@@ -15,15 +15,17 @@ import {
   FileText,
   Search,
   Plus,
-  RefreshCw
+  RefreshCw,
+  Settings
 } from "lucide-react";
 import { ServiceManagement } from "@/components/admin/ServiceManagement";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { AuditManagement } from "@/components/admin/AuditManagement";
 import { ReportManagement } from "@/components/admin/ReportManagement";
+import SettingsManagement from "@/components/admin/SettingsManagement";
 
 interface AdminDashboardProps {
-  section?: "dashboard" | "services" | "users" | "audits" | "reports";
+  section?: "dashboard" | "services" | "users" | "audits" | "reports" | "settings";
 }
 
 const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
@@ -89,6 +91,10 @@ const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
                 <TabsTrigger value="reports" className="flex gap-2">
                   <FileText className="h-4 w-4" />
                   <span className="hidden md:inline">Reports</span>
+                </TabsTrigger>
+                <TabsTrigger value="settings" className="flex gap-2">
+                  <Settings className="h-4 w-4" />
+                  <span className="hidden md:inline">Settings</span>
                 </TabsTrigger>
               </TabsList>
               
@@ -223,6 +229,10 @@ const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
 
             <TabsContent value="reports">
               <ReportManagement />
+            </TabsContent>
+            
+            <TabsContent value="settings">
+              <SettingsManagement />
             </TabsContent>
           </Tabs>
         </>
