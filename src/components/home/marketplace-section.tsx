@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ServiceCard, ServiceCardProps } from "@/components/marketplace/service-card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowRight, Shield, FileCode, Database, Lock, Network, Globe, Server } from "lucide-react";
+import { ArrowRight, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // Sample data for marketplace services
@@ -208,21 +208,21 @@ export function MarketplaceSection() {
       ).slice(0, 4);
 
   return (
-    <section className="py-16 bg-background">
+    <section className="py-12 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center mb-2">
             <Shield className="h-6 w-6 text-primary mr-2" />
             <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground">
-              Security Services Marketplace
+              Security Services
             </h2>
           </div>
-          <p className="mt-4 text-xl text-muted-foreground max-w-3xl mx-auto">
-            Browse top security services from verified providers or list your expertise
+          <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">
+            Browse top security services from verified providers
           </p>
         </div>
         
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <Tabs defaultValue="all" className="w-full" onValueChange={setActiveTab}>
             <TabsList className="inline-flex h-auto p-1 gap-2 w-auto flex-wrap">
               <TabsTrigger value="all" className="px-4 py-2 rounded-md">All</TabsTrigger>
@@ -230,73 +230,60 @@ export function MarketplaceSection() {
               <TabsTrigger value="dapps" className="px-4 py-2 rounded-md">DApps</TabsTrigger>
               <TabsTrigger value="protocols" className="px-4 py-2 rounded-md">Protocols</TabsTrigger>
               <TabsTrigger value="nfts" className="px-4 py-2 rounded-md">NFTs</TabsTrigger>
-              <TabsTrigger value="bridges" className="px-4 py-2 rounded-md">Bridges</TabsTrigger>
-              <TabsTrigger value="infrastructure" className="px-4 py-2 rounded-md">Infrastructure</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {filteredServices.map((service) => (
             <ServiceCard key={service.id} {...service} />
           ))}
         </div>
         
-        {/* Blockchain Ecosystems Logos Section */}
-        <div className="mt-16 mb-10">
-          <h3 className="text-2xl font-bold text-center mb-8">Blockchain Ecosystems Requiring Security Audits</h3>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-6">
+        {/* Blockchain Ecosystems Logos - More compact version */}
+        <div className="mt-8 mb-8 text-center">
+          <h3 className="text-xl font-bold mb-4">Blockchain Ecosystems Supported</h3>
+          <div className="flex flex-wrap justify-center gap-4">
             {BLOCKCHAIN_ECOSYSTEMS.map((ecosystem) => (
               <div 
                 key={ecosystem.name} 
-                className="bg-card hover:bg-card/80 border border-border/50 rounded-lg p-4 flex flex-col items-center justify-center hover-lift transition-all duration-300"
+                className="bg-card hover:bg-card/80 border border-border/50 rounded-lg p-2 flex items-center justify-center hover-lift transition-all duration-300 w-20 h-20"
                 title={`${ecosystem.name} Security Audits`}
               >
-                <div className="h-16 w-16 mb-2 flex items-center justify-center">
-                  <img 
-                    src={ecosystem.logoUrl} 
-                    alt={`${ecosystem.name} logo`}
-                    className="max-h-full max-w-full object-contain"
-                  />
-                </div>
-                <h4 className="font-medium text-sm text-center">{ecosystem.name}</h4>
+                <img 
+                  src={ecosystem.logoUrl} 
+                  alt={`${ecosystem.name} logo`}
+                  className="max-h-full max-w-full object-contain"
+                />
               </div>
             ))}
           </div>
         </div>
         
-        {/* Web2 + Web3 Security Services Section */}
-        <div className="mt-16 mb-10">
-          <h3 className="text-2xl font-bold text-center mb-6">Comprehensive Web2 + Web3 Security Services</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-card border border-border/50 rounded-lg p-6 hover-lift">
-              <Shield className="h-8 w-8 text-primary mb-4" />
-              <h4 className="text-xl font-bold mb-2">API Security</h4>
-              <p className="text-muted-foreground">Secure the bridge between your Web2 backends and Web3 smart contracts with comprehensive API security testing.</p>
+        {/* Web2 + Web3 Security Services - Made more compact */}
+        <div className="mt-8 mb-8">
+          <h3 className="text-xl font-bold text-center mb-4">Comprehensive Security Services</h3>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-card border border-border/50 rounded-lg p-4 hover-lift">
+              <h4 className="text-lg font-bold mb-1">API Security</h4>
+              <p className="text-sm text-muted-foreground">Secure connection between Web2 backends and Web3 contracts</p>
             </div>
-            <div className="bg-card border border-border/50 rounded-lg p-6 hover-lift">
-              <Lock className="h-8 w-8 text-primary mb-4" />
-              <h4 className="text-xl font-bold mb-2">Key Management</h4>
-              <p className="text-muted-foreground">Secure implementation of wallet key management, seed phrase storage, and private key handling in your applications.</p>
+            <div className="bg-card border border-border/50 rounded-lg p-4 hover-lift">
+              <h4 className="text-lg font-bold mb-1">Key Management</h4>
+              <p className="text-sm text-muted-foreground">Secure wallet key storage and private key handling</p>
             </div>
-            <div className="bg-card border border-border/50 rounded-lg p-6 hover-lift">
-              <Server className="h-8 w-8 text-primary mb-4" />
-              <h4 className="text-xl font-bold mb-2">Infrastructure Security</h4>
-              <p className="text-muted-foreground">Ensure your blockchain nodes, RPC endpoints, and indexers are secured against attacks and downtime.</p>
+            <div className="bg-card border border-border/50 rounded-lg p-4 hover-lift">
+              <h4 className="text-lg font-bold mb-1">Infrastructure</h4>
+              <p className="text-sm text-muted-foreground">Secure blockchain nodes, RPC endpoints, and indexers</p>
             </div>
           </div>
         </div>
         
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="mt-8 text-center">
           <Link to="/marketplace">
-            <Button size="lg" variant="default" className="flex items-center">
-              Browse All Services
+            <Button size="lg" variant="default" className="flex items-center mx-auto">
+              Explore Full Marketplace
               <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-          <Link to="/requests">
-            <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10">
-              Post Security Request
             </Button>
           </Link>
         </div>
