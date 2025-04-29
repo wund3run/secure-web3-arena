@@ -11,7 +11,6 @@ import { GamificationSection } from "@/components/home/gamification-section";
 import { AuditStatsTable } from "@/components/home/audit-stats-table";
 import { MarketplaceSection } from "@/components/home/marketplace-section";
 import { GuidedOnboarding } from "@/components/onboarding/guided-onboarding";
-import { FaqSection } from "@/components/home/faq-section";
 
 const Index = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -97,9 +96,6 @@ const Index = () => {
             <ContinuousSecurity />
           </div>
         </section>
-        
-        {/* FAQ Section added at the bottom of the page */}
-        <FaqSection />
       </main>
       <EnhancedFooter />
       
