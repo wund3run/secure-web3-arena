@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ServiceCard, ServiceCardProps } from "@/components/marketplace/service-card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowRight, Shield } from "lucide-react";
+import { ArrowRight, Shield, FileCode, Database, Lock, Network, Globe, Server } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // Sample data for marketplace services
@@ -25,7 +25,8 @@ const SERVICES: ServiceCardProps[] = [
     rating: 4.9,
     completedJobs: 124,
     category: "Smart Contracts",
-    tags: ["Solidity", "ERC20", "ERC721", "DeFi"]
+    tags: ["Solidity", "ERC20", "ERC721", "DeFi"],
+    imageUrl: "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "2",
@@ -44,7 +45,8 @@ const SERVICES: ServiceCardProps[] = [
     rating: 4.7,
     completedJobs: 87,
     category: "DApps",
-    tags: ["Web3", "React", "API Security"]
+    tags: ["Web3", "React", "API Security"],
+    imageUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "3",
@@ -63,7 +65,8 @@ const SERVICES: ServiceCardProps[] = [
     rating: 4.9,
     completedJobs: 53,
     category: "Protocols",
-    tags: ["DeFi", "Yield", "Lending", "Complex Logic"]
+    tags: ["DeFi", "Yield", "Lending", "Complex Logic"],
+    imageUrl: "https://images.unsplash.com/photo-1526378800651-c32d170fe6f8?q=80&w=500&auto=format&fit=crop"
   },
   {
     id: "4",
@@ -82,7 +85,116 @@ const SERVICES: ServiceCardProps[] = [
     rating: 4.3,
     completedJobs: 28,
     category: "NFTs",
-    tags: ["ERC721", "Metadata", "Royalties"]
+    tags: ["ERC721", "Metadata", "Royalties"],
+    imageUrl: "https://images.unsplash.com/photo-1618044733300-9472054094ee?q=80&w=500&auto=format&fit=crop"
+  },
+  {
+    id: "5",
+    title: "Layer-2 Bridge Security Audit",
+    description: "Specialized security audit for cross-chain bridges to ensure safe asset transfers between Layer-1 and Layer-2 networks.",
+    provider: {
+      name: "ChainSecurity",
+      reputation: 91,
+      isVerified: true,
+      level: "expert"
+    },
+    pricing: {
+      amount: 5.6,
+      currency: "ETH"
+    },
+    rating: 4.8,
+    completedJobs: 42,
+    category: "Bridges",
+    tags: ["Cross-chain", "Layer-2", "Optimistic Rollups", "ZK Rollups"],
+    imageUrl: "https://images.unsplash.com/photo-1639762681057-408e52192e55?q=80&w=500&auto=format&fit=crop"
+  },
+  {
+    id: "6",
+    title: "Web3 Infrastructure Penetration Testing",
+    description: "Comprehensive penetration testing for your Web3 infrastructure, including RPC endpoints, nodes, and API services.",
+    provider: {
+      name: "PenetrationDAO",
+      reputation: 88,
+      isVerified: true,
+      level: "expert"
+    },
+    pricing: {
+      amount: 6.2,
+      currency: "ETH"
+    },
+    rating: 4.7,
+    completedJobs: 65,
+    category: "Infrastructure",
+    tags: ["Nodes", "RPC", "APIs", "DevOps"],
+    imageUrl: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=500&auto=format&fit=crop"
+  },
+  {
+    id: "7",
+    title: "DAO Governance Security Analysis",
+    description: "Security analysis of DAO governance mechanisms to prevent takeover attacks, voting manipulation and ensure proper decentralization.",
+    provider: {
+      name: "GovernanceGuard",
+      reputation: 84,
+      isVerified: true,
+      level: "verified"
+    },
+    pricing: {
+      amount: 4.1,
+      currency: "ETH"
+    },
+    rating: 4.6,
+    completedJobs: 31,
+    category: "DAOs",
+    tags: ["Governance", "Voting", "TokenomicsTimelocks"],
+    imageUrl: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?q=80&w=500&auto=format&fit=crop"
+  },
+  {
+    id: "8",
+    title: "Zero Knowledge Proof Verification",
+    description: "Expert review and verification of zero-knowledge proof implementations to ensure cryptographic soundness and security.",
+    provider: {
+      name: "ZKPVerified",
+      reputation: 96,
+      isVerified: true,
+      level: "expert"
+    },
+    pricing: {
+      amount: 9.5,
+      currency: "ETH"
+    },
+    rating: 4.9,
+    completedJobs: 18,
+    category: "ZK Proofs",
+    tags: ["ZK-SNARKs", "ZK-STARKs", "Privacy", "Cryptography"],
+    imageUrl: "https://images.unsplash.com/photo-1633265486064-086b219458ec?q=80&w=500&auto=format&fit=crop"
+  }
+];
+
+// Blockchain ecosystems needing security audits
+const BLOCKCHAIN_ECOSYSTEMS = [
+  {
+    name: "Solana",
+    icon: <FileCode className="w-5 h-5 text-primary" />
+  },
+  {
+    name: "Ethereum",
+    icon: <Database className="w-5 h-5 text-primary" />
+  },
+  {
+    name: "Polkadot",
+    icon: <Network className="w-5 h-5 text-primary" />
+  },
+  {
+    name: "Avalanche",
+    icon: <Server className="w-5 h-5 text-primary" />
+  },
+  {
+    name: "Cosmos",
+    icon: <Globe className="w-5 h-5 text-primary" />
+  },
+  {
+    name: "zkSync",
+    icon: <Lock className="w-5 h-5 text-primary" />
   }
 ];
 
@@ -90,11 +202,11 @@ export function MarketplaceSection() {
   const [activeTab, setActiveTab] = useState("all");
   
   const filteredServices = activeTab === "all" 
-    ? SERVICES 
+    ? SERVICES.slice(0, 4) // Show only 4 services on the homepage
     : SERVICES.filter(service => 
-        service.category.toLowerCase() === activeTab || 
-        service.tags.some(tag => tag.toLowerCase() === activeTab)
-      );
+        service.category.toLowerCase() === activeTab.toLowerCase() || 
+        service.tags.some(tag => tag.toLowerCase() === activeTab.toLowerCase())
+      ).slice(0, 4);
 
   return (
     <section className="py-16 bg-background">
@@ -119,6 +231,8 @@ export function MarketplaceSection() {
               <TabsTrigger value="dapps" className="px-4 py-2 rounded-md">DApps</TabsTrigger>
               <TabsTrigger value="protocols" className="px-4 py-2 rounded-md">Protocols</TabsTrigger>
               <TabsTrigger value="nfts" className="px-4 py-2 rounded-md">NFTs</TabsTrigger>
+              <TabsTrigger value="bridges" className="px-4 py-2 rounded-md">Bridges</TabsTrigger>
+              <TabsTrigger value="infrastructure" className="px-4 py-2 rounded-md">Infrastructure</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -127,6 +241,43 @@ export function MarketplaceSection() {
           {filteredServices.map((service) => (
             <ServiceCard key={service.id} {...service} />
           ))}
+        </div>
+        
+        {/* Trending Blockchain Ecosystems Section */}
+        <div className="mt-16 mb-10">
+          <h3 className="text-2xl font-bold text-center mb-6">Trending Blockchain Ecosystems Needing Security</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {BLOCKCHAIN_ECOSYSTEMS.map((ecosystem) => (
+              <div key={ecosystem.name} className="bg-card hover:bg-card/80 border border-border/50 rounded-lg p-4 text-center hover-lift transition-all duration-300">
+                <div className="flex justify-center mb-2">
+                  {ecosystem.icon}
+                </div>
+                <h4 className="font-medium">{ecosystem.name}</h4>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        {/* Web2 + Web3 Security Services Section */}
+        <div className="mt-16 mb-10">
+          <h3 className="text-2xl font-bold text-center mb-6">Comprehensive Web2 + Web3 Security Services</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="bg-card border border-border/50 rounded-lg p-6 hover-lift">
+              <Shield className="h-8 w-8 text-primary mb-4" />
+              <h4 className="text-xl font-bold mb-2">API Security</h4>
+              <p className="text-muted-foreground">Secure the bridge between your Web2 backends and Web3 smart contracts with comprehensive API security testing.</p>
+            </div>
+            <div className="bg-card border border-border/50 rounded-lg p-6 hover-lift">
+              <Lock className="h-8 w-8 text-primary mb-4" />
+              <h4 className="text-xl font-bold mb-2">Key Management</h4>
+              <p className="text-muted-foreground">Secure implementation of wallet key management, seed phrase storage, and private key handling in your applications.</p>
+            </div>
+            <div className="bg-card border border-border/50 rounded-lg p-6 hover-lift">
+              <Server className="h-8 w-8 text-primary mb-4" />
+              <h4 className="text-xl font-bold mb-2">Infrastructure Security</h4>
+              <p className="text-muted-foreground">Ensure your blockchain nodes, RPC endpoints, and indexers are secured against attacks and downtime.</p>
+            </div>
+          </div>
         </div>
         
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
