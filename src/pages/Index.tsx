@@ -1,3 +1,4 @@
+
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { HeroSection } from "@/components/home/hero-section";
@@ -7,8 +8,8 @@ import { ReputationSystem } from "@/components/reputation/reputation-system";
 import { ContinuousSecurity } from "@/components/security/continuous-security";
 import { GamificationSection } from "@/components/home/gamification-section";
 import { AuditStatsTable } from "@/components/home/audit-stats-table";
+import { MarketplaceSection } from "@/components/home/marketplace-section";
 import { Shield, Trophy, Users, Check, ArrowRight } from "lucide-react";
-import { BadgeAward } from "@/components/ui/badge-award";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -162,6 +163,8 @@ const Index = () => {
         <HeroSection />
         <StatsSection />
         <FeaturesSection />
+        {/* Add MarketplaceSection before AuditStatsTable for better flow */}
+        <MarketplaceSection />
         <AuditStatsTable />
         <GamificationSection />
         
