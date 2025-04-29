@@ -1,5 +1,5 @@
 
-import { Shield, Award, ArrowRight, Star, Users } from "lucide-react";
+import { Shield, Award, ArrowRight, Star, Users, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 

@@ -1,5 +1,4 @@
-
-import { Shield, Twitter, Github, Discord, Globe } from "lucide-react";
+import { Shield, Twitter, Github, MessageSquare, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function Footer() {
@@ -26,7 +25,7 @@ export function Footer() {
                 <span className="sr-only">GitHub</span>
               </a>
               <a href="https://discord.com" className="text-muted-foreground hover:text-primary">
-                <Discord className="h-5 w-5" />
+                <MessageSquare className="h-5 w-5" />
                 <span className="sr-only">Discord</span>
               </a>
               <a href="https://hawkly.io" className="text-muted-foreground hover:text-primary">
