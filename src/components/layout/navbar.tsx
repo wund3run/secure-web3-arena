@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ShieldCheck, Trophy, Search, User, Menu, X } from "lucide-react";
@@ -12,11 +13,17 @@ export function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2">
-              <div className="relative">
-                <ShieldCheck className="h-8 w-8 text-primary" />
+              <div className="relative flex items-center justify-center">
+                <ShieldCheck className="h-9 w-9 text-primary" />
                 <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-primary rotate-45 rounded-sm opacity-70"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-3 h-3 bg-secondary rounded-full animate-pulse-glow"></div>
+                </div>
               </div>
-              <span className="font-bold text-xl">Hawkly</span>
+              <div className="flex flex-col">
+                <span className="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Hawkly</span>
+                <span className="text-xs text-muted-foreground leading-none">Security Marketplace</span>
+              </div>
             </Link>
             <div className="hidden md:ml-10 md:flex md:space-x-8">
               <Link to="/marketplace" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-foreground hover:text-primary">
