@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import Marketplace from "./pages/Marketplace";
 import Leaderboard from "./pages/Leaderboard";
 import Audits from "./pages/Audits";
+import Community from "./pages/Community";
 
 const queryClient = new QueryClient();
 
@@ -29,13 +30,13 @@ const App = () => (
           
           {/* Community routes */}
           <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/community" element={<Community />} />
           <Route path="/achievements" element={<NotFound />} />
           <Route path="/events" element={<NotFound />} />
           <Route path="/forum" element={<NotFound />} />
           
           {/* Content routes */}
           <Route path="/audits" element={<Audits />} />
-          <Route path="/community" element={<NotFound />} />
           <Route path="/docs" element={<NotFound />} />
           <Route path="/blog" element={<NotFound />} />
           <Route path="/vulnerabilities" element={<NotFound />} />
