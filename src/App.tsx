@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Marketplace from "./pages/Marketplace";
 import Leaderboard from "./pages/Leaderboard";
+import Audits from "./pages/Audits";
 
 const queryClient = new QueryClient();
 
@@ -32,7 +34,7 @@ const App = () => (
           <Route path="/forum" element={<NotFound />} />
           
           {/* Content routes */}
-          <Route path="/audits" element={<NotFound />} />
+          <Route path="/audits" element={<Audits />} />
           <Route path="/community" element={<NotFound />} />
           <Route path="/docs" element={<NotFound />} />
           <Route path="/blog" element={<NotFound />} />
