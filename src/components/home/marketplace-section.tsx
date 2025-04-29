@@ -3,7 +3,6 @@ import { useState } from "react";
 import { MarketplaceHeader } from "@/components/home/marketplace/marketplace-header";
 import { CategoryTabs } from "@/components/home/marketplace/category-tabs";
 import { ServicesGrid } from "@/components/home/marketplace/services-grid";
-import { BlockchainEcosystems } from "@/components/home/marketplace/blockchain-ecosystems";
 import { ComprehensiveSecurity } from "@/components/home/marketplace/comprehensive-security";
 import { MarketplaceFooter } from "@/components/home/marketplace/marketplace-footer";
 import { SERVICES } from "@/data/marketplace-data";
@@ -43,7 +42,6 @@ export function MarketplaceSection() {
         <MarketplaceHeader />
         <CategoryTabs activeTab={activeTab} onTabChange={handleTabChange} />
         <ServicesGrid services={filteredServices} />
-        <BlockchainEcosystems />
         <ComprehensiveSecurity />
         <MarketplaceFooter />
       </div>
