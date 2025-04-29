@@ -1,5 +1,5 @@
 
-import { Shield, Star, Users, BadgeCheck, ArrowRight, FileCode, LockKeyhole } from "lucide-react";
+import { Shield, Star, Users, BadgeCheck, ArrowRight, FileCode, LockKeyhole, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -9,13 +9,13 @@ export function MarketplaceHeader() {
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center bg-primary/10 px-4 py-2 rounded-full text-primary mb-4">
           <Shield className="h-5 w-5 mr-2" />
-          <span className="font-medium">Top-rated Security Services</span>
+          <span className="font-medium">Top-rated Web3 Security Services</span>
         </div>
         <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground mb-4">
           Web3 Security Marketplace
         </h2>
         <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">
-          Connect with verified security experts to protect your blockchain projects from vulnerabilities
+          Connect with verified security experts to protect your blockchain projects from vulnerabilities like reentrancy attacks, oracle manipulation, and access control exploits
         </p>
       </div>
       
@@ -31,21 +31,21 @@ export function MarketplaceHeader() {
           <ul className="space-y-3">
             <li className="flex items-start">
               <BadgeCheck className="h-5 w-5 text-primary mr-2 flex-shrink-0 mt-0.5" />
-              <span>Get comprehensive smart contract audits</span>
+              <span>Get comprehensive smart contract audits with in-depth security analysis</span>
             </li>
             <li className="flex items-start">
               <BadgeCheck className="h-5 w-5 text-primary mr-2 flex-shrink-0 mt-0.5" />
-              <span>Find vulnerabilities before they're exploited</span>
+              <span>Identify critical vulnerabilities before deployment to production</span>
             </li>
             <li className="flex items-start">
               <BadgeCheck className="h-5 w-5 text-primary mr-2 flex-shrink-0 mt-0.5" />
-              <span>Access top security talent with proven expertise</span>
+              <span>Access top security talent with proven expertise in Solidity, Rust and Move</span>
             </li>
           </ul>
           <div className="mt-6">
             <Link to="/marketplace">
               <Button className="w-full group bg-primary hover:bg-primary/90">
-                Find Security Services
+                Find Web3 Security Services
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
@@ -63,21 +63,21 @@ export function MarketplaceHeader() {
           <ul className="space-y-3">
             <li className="flex items-start">
               <BadgeCheck className="h-5 w-5 text-secondary mr-2 flex-shrink-0 mt-0.5" />
-              <span>Monetize your security expertise</span>
+              <span>Monetize your blockchain security expertise and technical skills</span>
             </li>
             <li className="flex items-start">
               <BadgeCheck className="h-5 w-5 text-secondary mr-2 flex-shrink-0 mt-0.5" />
-              <span>Build your reputation with transparent reviews</span>
+              <span>Build your reputation with transparent auditor reviews and verifications</span>
             </li>
             <li className="flex items-start">
               <BadgeCheck className="h-5 w-5 text-secondary mr-2 flex-shrink-0 mt-0.5" />
-              <span>Earn rewards through our gamified ecosystem</span>
+              <span>Earn rewards through our gamified ecosystem and security challenges</span>
             </li>
           </ul>
           <div className="mt-6">
             <Link to="/audits">
               <Button variant="outline" className="w-full group border-secondary text-secondary hover:bg-secondary/10">
-                Become an Auditor
+                Become a Web3 Auditor
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
@@ -85,7 +85,7 @@ export function MarketplaceHeader() {
         </div>
       </div>
       
-      {/* Key Benefits Section */}
+      {/* Key Benefits Section with improved descriptions */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="flex items-center p-3 bg-muted/60 rounded-lg">
           <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
@@ -93,7 +93,7 @@ export function MarketplaceHeader() {
           </div>
           <div>
             <h4 className="font-medium text-sm">Smart Contract Audits</h4>
-            <p className="text-xs text-muted-foreground">In-depth code analysis</p>
+            <p className="text-xs text-muted-foreground">Find vulnerabilities in Solidity, Rust & Move</p>
           </div>
         </div>
         <div className="flex items-center p-3 bg-muted/60 rounded-lg">
@@ -102,7 +102,7 @@ export function MarketplaceHeader() {
           </div>
           <div>
             <h4 className="font-medium text-sm">Security Assessments</h4>
-            <p className="text-xs text-muted-foreground">Comprehensive protection</p>
+            <p className="text-xs text-muted-foreground">Protect against reentrancy & flash loan attacks</p>
           </div>
         </div>
         <div className="flex items-center p-3 bg-muted/60 rounded-lg">
@@ -111,14 +111,57 @@ export function MarketplaceHeader() {
           </div>
           <div>
             <h4 className="font-medium text-sm">DApp Security</h4>
-            <p className="text-xs text-muted-foreground">End-to-end protection</p>
+            <p className="text-xs text-muted-foreground">Front-end to smart contract protection</p>
           </div>
         </div>
       </div>
       
       <div className="flex items-center justify-center mt-6 text-sm text-muted-foreground bg-muted/40 rounded-lg p-3">
         <Star className="h-4 w-4 fill-web3-orange text-web3-orange mr-2" />
-        <span><span className="font-medium">500+ verified auditors</span> and <span className="font-medium">2,500+ secured projects</span> in our marketplace</span>
+        <span><span className="font-medium">500+ verified blockchain auditors</span> and <span className="font-medium">2,500+ secured Web3 projects</span> in our marketplace</span>
+      </div>
+      
+      {/* New FAQ section for SEO and user education */}
+      <div className="mt-10 border-t border-border/40 pt-8">
+        <h3 className="text-xl font-bold mb-6 text-center">Frequently Asked Security Questions</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 className="font-semibold mb-2 flex items-center">
+              <Search className="h-4 w-4 mr-2 text-primary" />
+              What is a smart contract audit?
+            </h4>
+            <p className="text-sm text-muted-foreground">
+              A smart contract audit is a comprehensive security review of blockchain code to identify vulnerabilities, bugs, and security risks before deployment to mainnet.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-semibold mb-2 flex items-center">
+              <Search className="h-4 w-4 mr-2 text-primary" />
+              How long does an audit typically take?
+            </h4>
+            <p className="text-sm text-muted-foreground">
+              Audit timeframes vary based on code complexity, ranging from 3-7 days for smaller projects to 2-4 weeks for complex DeFi protocols with multiple contracts.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-semibold mb-2 flex items-center">
+              <Search className="h-4 w-4 mr-2 text-primary" />
+              What vulnerabilities do auditors look for?
+            </h4>
+            <p className="text-sm text-muted-foreground">
+              Auditors examine reentrancy attacks, front-running, integer overflow/underflow, oracle manipulation, access control issues, and other blockchain-specific threats.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-semibold mb-2 flex items-center">
+              <Search className="h-4 w-4 mr-2 text-primary" />
+              How are security issues categorized?
+            </h4>
+            <p className="text-sm text-muted-foreground">
+              Vulnerabilities are typically classified as Critical, High, Medium, or Low severity based on their potential impact and exploitation likelihood.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
