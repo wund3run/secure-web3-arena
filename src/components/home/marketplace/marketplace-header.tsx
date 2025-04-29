@@ -1,5 +1,5 @@
 
-import { Shield, Star, Users, BadgeCheck, ArrowRight } from "lucide-react";
+import { Shield, Star, Users, BadgeCheck, ArrowRight, FileCode, LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -12,16 +12,16 @@ export function MarketplaceHeader() {
           <span className="font-medium">Top-rated Security Services</span>
         </div>
         <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground mb-4">
-          Security Services Marketplace
+          Web3 Security Marketplace
         </h2>
         <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">
-          Connect with verified security experts who can help protect your Web3 projects
+          Connect with verified security experts to protect your blockchain projects from vulnerabilities
         </p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         {/* For Project Owners */}
-        <div className="glass-card p-6 rounded-lg hover-lift">
+        <div className="glass-card p-6 rounded-lg hover-lift border border-border/40 bg-gradient-to-br from-card to-card/80">
           <div className="flex items-center mb-4">
             <div className="p-3 bg-primary/10 rounded-full mr-4">
               <Shield className="h-6 w-6 text-primary" />
@@ -31,20 +31,20 @@ export function MarketplaceHeader() {
           <ul className="space-y-3">
             <li className="flex items-start">
               <BadgeCheck className="h-5 w-5 text-primary mr-2 flex-shrink-0 mt-0.5" />
-              <span>Find top security experts for your Web3 project</span>
-            </li>
-            <li className="flex items-start">
-              <BadgeCheck className="h-5 w-5 text-primary mr-2 flex-shrink-0 mt-0.5" />
               <span>Get comprehensive smart contract audits</span>
             </li>
             <li className="flex items-start">
               <BadgeCheck className="h-5 w-5 text-primary mr-2 flex-shrink-0 mt-0.5" />
-              <span>Protect your DApps from vulnerabilities</span>
+              <span>Find vulnerabilities before they're exploited</span>
+            </li>
+            <li className="flex items-start">
+              <BadgeCheck className="h-5 w-5 text-primary mr-2 flex-shrink-0 mt-0.5" />
+              <span>Access top security talent with proven expertise</span>
             </li>
           </ul>
           <div className="mt-6">
             <Link to="/marketplace">
-              <Button className="w-full group">
+              <Button className="w-full group bg-primary hover:bg-primary/90">
                 Find Security Services
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
@@ -53,7 +53,7 @@ export function MarketplaceHeader() {
         </div>
         
         {/* For Security Experts */}
-        <div className="glass-card p-6 rounded-lg hover-lift">
+        <div className="glass-card p-6 rounded-lg hover-lift border border-border/40 bg-gradient-to-br from-card to-card/80">
           <div className="flex items-center mb-4">
             <div className="p-3 bg-secondary/10 rounded-full mr-4">
               <Users className="h-6 w-6 text-secondary" />
@@ -63,7 +63,7 @@ export function MarketplaceHeader() {
           <ul className="space-y-3">
             <li className="flex items-start">
               <BadgeCheck className="h-5 w-5 text-secondary mr-2 flex-shrink-0 mt-0.5" />
-              <span>Offer your security services to Web3 projects</span>
+              <span>Monetize your security expertise</span>
             </li>
             <li className="flex items-start">
               <BadgeCheck className="h-5 w-5 text-secondary mr-2 flex-shrink-0 mt-0.5" />
@@ -76,11 +76,42 @@ export function MarketplaceHeader() {
           </ul>
           <div className="mt-6">
             <Link to="/audits">
-              <Button variant="outline" className="w-full group">
+              <Button variant="outline" className="w-full group border-secondary text-secondary hover:bg-secondary/10">
                 Become an Auditor
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
+          </div>
+        </div>
+      </div>
+      
+      {/* Key Benefits Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div className="flex items-center p-3 bg-muted/60 rounded-lg">
+          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+            <FileCode className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h4 className="font-medium text-sm">Smart Contract Audits</h4>
+            <p className="text-xs text-muted-foreground">In-depth code analysis</p>
+          </div>
+        </div>
+        <div className="flex items-center p-3 bg-muted/60 rounded-lg">
+          <div className="h-10 w-10 rounded-full bg-secondary/10 flex items-center justify-center mr-3">
+            <LockKeyhole className="h-5 w-5 text-secondary" />
+          </div>
+          <div>
+            <h4 className="font-medium text-sm">Security Assessments</h4>
+            <p className="text-xs text-muted-foreground">Comprehensive protection</p>
+          </div>
+        </div>
+        <div className="flex items-center p-3 bg-muted/60 rounded-lg">
+          <div className="h-10 w-10 rounded-full bg-web3-orange/10 flex items-center justify-center mr-3">
+            <Shield className="h-5 w-5 text-web3-orange" />
+          </div>
+          <div>
+            <h4 className="font-medium text-sm">DApp Security</h4>
+            <p className="text-xs text-muted-foreground">End-to-end protection</p>
           </div>
         </div>
       </div>
