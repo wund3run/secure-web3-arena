@@ -1,12 +1,27 @@
 
 import { ServiceCard } from "@/components/marketplace/service-card";
 import { ServiceCardProps } from "@/data/marketplace-data";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ServicesGridProps {
   services: ServiceCardProps[];
+  isLoading?: boolean;
 }
 
-export function ServicesGrid({ services }: ServicesGridProps) {
+export function ServicesGrid({ services, isLoading = false }: ServicesGridProps) {
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Skeleton 
+            key={`skeleton-${index}`}
+            className="h-[450px] rounded-lg"
+          />
+        ))}
+      </div>
+    );
+  }
+  
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {services.map((service) => (

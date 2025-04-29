@@ -4,7 +4,7 @@ import { MobileFriendlyCard } from "./mobile-friendly-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ServiceCardProps } from "@/data/marketplace-data";
 import { toast } from "sonner";
-import { Shield } from "lucide-react"; // Import the Shield icon
+import { Shield } from "lucide-react"; // Import the Shield icon explicitly
 
 interface OptimizedListingGridProps {
   services: ServiceCardProps[];
@@ -64,14 +64,21 @@ export function OptimizedListingGrid({
     }
   };
 
+  // Map the provider level to supported verificationLevel values
+  const mapProviderLevel = (level: "rookie" | "verified" | "expert"): "verified" | "expert" | "elite" => {
+    if (level === "rookie") return "verified";
+    if (level === "expert") return "expert";
+    return "verified"; // Default for "verified" or any other value
+  };
+
   return (
     <div>
       <div className={layout === "grid" 
-        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" 
+        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" 
         : "space-y-4"}>
         {isLoading
           ? Array.from({ length: 8 }).map((_, index) => (
-              <div key={`skeleton-${index}`} className={layout === "list" ? "h-32" : "h-80"}>
+              <div key={`skeleton-${index}`} className={layout === "list" ? "h-32" : "h-[450px]"}>
                 <Skeleton className="w-full h-full rounded-lg" />
               </div>
             ))
@@ -84,7 +91,7 @@ export function OptimizedListingGrid({
                 provider={{
                   name: service.provider.name,
                   securityScore: service.provider.reputation,
-                  verificationLevel: service.provider.level === "rookie" ? "verified" : service.provider.level as "verified" | "expert" | "elite",
+                  verificationLevel: mapProviderLevel(service.provider.level),
                   completedProjects: service.completedJobs
                 }}
                 pricing={service.pricing}
