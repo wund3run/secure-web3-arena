@@ -1,5 +1,5 @@
 
-import { Shield, Star, Users, BadgeCheck, ArrowRight, FileCode, LockKeyhole, Search } from "lucide-react";
+import { Shield, Star, Users, BadgeCheck, ArrowRight, FileCode, LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -119,49 +119,6 @@ export function MarketplaceHeader() {
       <div className="flex items-center justify-center mt-6 text-sm text-muted-foreground bg-muted/40 rounded-lg p-3">
         <Star className="h-4 w-4 fill-web3-orange text-web3-orange mr-2" />
         <span><span className="font-medium">500+ verified blockchain auditors</span> and <span className="font-medium">2,500+ secured Web3 projects</span> in our marketplace</span>
-      </div>
-      
-      {/* New FAQ section for SEO and user education */}
-      <div className="mt-10 border-t border-border/40 pt-8">
-        <h3 className="text-xl font-bold mb-6 text-center">Frequently Asked Security Questions</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 className="font-semibold mb-2 flex items-center">
-              <Search className="h-4 w-4 mr-2 text-primary" />
-              What is a smart contract audit?
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              A smart contract audit is a comprehensive security review of blockchain code to identify vulnerabilities, bugs, and security risks before deployment to mainnet.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-semibold mb-2 flex items-center">
-              <Search className="h-4 w-4 mr-2 text-primary" />
-              How long does an audit typically take?
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              Audit timeframes vary based on code complexity, ranging from 3-7 days for smaller projects to 2-4 weeks for complex DeFi protocols with multiple contracts.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-semibold mb-2 flex items-center">
-              <Search className="h-4 w-4 mr-2 text-primary" />
-              What vulnerabilities do auditors look for?
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              Auditors examine reentrancy attacks, front-running, integer overflow/underflow, oracle manipulation, access control issues, and other blockchain-specific threats.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-semibold mb-2 flex items-center">
-              <Search className="h-4 w-4 mr-2 text-primary" />
-              How are security issues categorized?
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              Vulnerabilities are typically classified as Critical, High, Medium, or Low severity based on their potential impact and exploitation likelihood.
-            </p>
-          </div>
-        </div>
       </div>
     </div>
   );
