@@ -1,8 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { ServiceCard } from "@/components/marketplace/service-card";
 import { MarketplaceFilters } from "@/components/marketplace/marketplace-filters";
 import { MarketplaceHeader } from "@/components/marketplace/marketplace-header";
+import { MarketplaceEnhancedHeader } from "@/components/marketplace/marketplace-enhanced-header";
+import { MarketplaceEnhancedFooter } from "@/components/marketplace/marketplace-enhanced-footer";
 import { Shield, FileCode, Database, Lock, Network, Globe, Server, BadgeCheck, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -242,6 +243,8 @@ export default function Marketplace() {
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
       <div className="flex-grow">
+        <MarketplaceEnhancedHeader />
+        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col gap-6">
             {/* Hero Banner */}
@@ -374,7 +377,7 @@ export default function Marketplace() {
                   </div>
                 )}
 
-                {/* Web2 + Web3 Security Services Section - MOVED AFTER services grid */}
+                {/* Web2 + Web3 Security Services Section */}
                 <div className="mt-12 mb-10">
                   <h3 className="text-2xl font-bold mb-6">Comprehensive Web2 + Web3 Security Services</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -422,6 +425,7 @@ export default function Marketplace() {
           </div>
         </div>
       </div>
+      <MarketplaceEnhancedFooter />
       <Footer />
     </div>
   );
