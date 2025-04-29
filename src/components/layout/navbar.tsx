@@ -1,11 +1,17 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ShieldCheck, Trophy, Search, User, Menu, X } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { ShieldCheck, Trophy, Search, User, Menu, X, Shield, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
 
   return (
     <nav className="bg-card border-b border-border/40 z-50 sticky top-0 w-full">
@@ -26,16 +32,48 @@ export function Navbar() {
               </div>
             </Link>
             <div className="hidden md:ml-10 md:flex md:space-x-8">
-              <Link to="/marketplace" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-foreground hover:text-primary">
+              <Link 
+                to="/marketplace" 
+                className={cn(
+                  "inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2",
+                  isActive("/marketplace") 
+                    ? "border-primary text-primary" 
+                    : "border-transparent text-foreground hover:text-primary hover:border-primary/30"
+                )}
+              >
                 Marketplace
               </Link>
-              <Link to="/leaderboard" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-foreground hover:text-primary">
+              <Link 
+                to="/leaderboard" 
+                className={cn(
+                  "inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2",
+                  isActive("/leaderboard") 
+                    ? "border-primary text-primary" 
+                    : "border-transparent text-foreground hover:text-primary hover:border-primary/30"
+                )}
+              >
                 Leaderboard
               </Link>
-              <Link to="/audits" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-foreground hover:text-primary">
+              <Link 
+                to="/audits" 
+                className={cn(
+                  "inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2",
+                  isActive("/audits") 
+                    ? "border-primary text-primary" 
+                    : "border-transparent text-foreground hover:text-primary hover:border-primary/30"
+                )}
+              >
                 Audits
               </Link>
-              <Link to="/community" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-foreground hover:text-primary">
+              <Link 
+                to="/community" 
+                className={cn(
+                  "inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2",
+                  isActive("/community") 
+                    ? "border-primary text-primary" 
+                    : "border-transparent text-foreground hover:text-primary hover:border-primary/30"
+                )}
+              >
                 Community
               </Link>
             </div>
@@ -70,16 +108,52 @@ export function Navbar() {
       {isMenuOpen && (
         <div className="md:hidden">
           <div className="pt-2 pb-4 space-y-1">
-            <Link to="/marketplace" className="block pl-3 pr-4 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-background">
+            <Link 
+              to="/marketplace" 
+              className={cn(
+                "block pl-3 pr-4 py-2 text-base font-medium border-l-4",
+                isActive("/marketplace") 
+                  ? "border-primary text-primary bg-primary/5" 
+                  : "border-transparent text-foreground hover:text-primary hover:border-primary/30 hover:bg-background"
+              )}
+              onClick={() => setIsMenuOpen(false)}
+            >
               Marketplace
             </Link>
-            <Link to="/leaderboard" className="block pl-3 pr-4 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-background">
+            <Link 
+              to="/leaderboard" 
+              className={cn(
+                "block pl-3 pr-4 py-2 text-base font-medium border-l-4",
+                isActive("/leaderboard") 
+                  ? "border-primary text-primary bg-primary/5" 
+                  : "border-transparent text-foreground hover:text-primary hover:border-primary/30 hover:bg-background"
+              )}
+              onClick={() => setIsMenuOpen(false)}
+            >
               Leaderboard
             </Link>
-            <Link to="/audits" className="block pl-3 pr-4 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-background">
+            <Link 
+              to="/audits" 
+              className={cn(
+                "block pl-3 pr-4 py-2 text-base font-medium border-l-4",
+                isActive("/audits") 
+                  ? "border-primary text-primary bg-primary/5" 
+                  : "border-transparent text-foreground hover:text-primary hover:border-primary/30 hover:bg-background"
+              )}
+              onClick={() => setIsMenuOpen(false)}
+            >
               Audits
             </Link>
-            <Link to="/community" className="block pl-3 pr-4 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-background">
+            <Link 
+              to="/community" 
+              className={cn(
+                "block pl-3 pr-4 py-2 text-base font-medium border-l-4",
+                isActive("/community") 
+                  ? "border-primary text-primary bg-primary/5" 
+                  : "border-transparent text-foreground hover:text-primary hover:border-primary/30 hover:bg-background"
+              )}
+              onClick={() => setIsMenuOpen(false)}
+            >
               Community
             </Link>
             <div className="flex flex-col space-y-2 pl-3 pr-4 py-2">

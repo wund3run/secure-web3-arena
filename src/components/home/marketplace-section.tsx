@@ -3,6 +3,8 @@ import { useState } from "react";
 import { ServiceCard, ServiceCardProps } from "@/components/marketplace/service-card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowRight, Shield } from "lucide-react";
+import { Link } from "react-router-dom";
 
 // Sample data for marketplace services
 const SERVICES: ServiceCardProps[] = [
@@ -97,39 +99,48 @@ export function MarketplaceSection() {
   return (
     <section className="py-16 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground">
-            Security Services Marketplace
-          </h2>
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center mb-2">
+            <Shield className="h-6 w-6 text-primary mr-2" />
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground">
+              Security Services Marketplace
+            </h2>
+          </div>
           <p className="mt-4 text-xl text-muted-foreground max-w-3xl mx-auto">
-            Browse the top security services from verified providers in our decentralized marketplace
+            Browse top security services from verified providers or list your expertise
           </p>
         </div>
         
-        <Tabs defaultValue="all" className="w-full mb-10" onValueChange={setActiveTab}>
-          <div className="flex justify-center">
-            <TabsList className="grid sm:grid-cols-5 grid-cols-2 gap-2">
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="smart contracts">Smart Contracts</TabsTrigger>
-              <TabsTrigger value="dapps">DApps</TabsTrigger>
-              <TabsTrigger value="protocols">Protocols</TabsTrigger>
-              <TabsTrigger value="nfts">NFTs</TabsTrigger>
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+          <Tabs defaultValue="all" className="w-full" onValueChange={setActiveTab}>
+            <TabsList className="inline-flex h-auto p-1 gap-2 w-auto flex-wrap">
+              <TabsTrigger value="all" className="px-4 py-2 rounded-md">All</TabsTrigger>
+              <TabsTrigger value="smart contracts" className="px-4 py-2 rounded-md">Smart Contracts</TabsTrigger>
+              <TabsTrigger value="dapps" className="px-4 py-2 rounded-md">DApps</TabsTrigger>
+              <TabsTrigger value="protocols" className="px-4 py-2 rounded-md">Protocols</TabsTrigger>
+              <TabsTrigger value="nfts" className="px-4 py-2 rounded-md">NFTs</TabsTrigger>
             </TabsList>
-          </div>
-          
-          <TabsContent value={activeTab} className="mt-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {filteredServices.map((service) => (
-                <ServiceCard key={service.id} {...service} />
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
+          </Tabs>
+        </div>
         
-        <div className="mt-10 text-center">
-          <Button size="lg" variant="outline" className="text-primary border-primary">
-            View All Services
-          </Button>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          {filteredServices.map((service) => (
+            <ServiceCard key={service.id} {...service} />
+          ))}
+        </div>
+        
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Link to="/marketplace">
+            <Button size="lg" variant="default" className="flex items-center">
+              Browse All Services
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
+          <Link to="/requests">
+            <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10">
+              Post Security Request
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

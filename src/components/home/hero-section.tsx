@@ -1,5 +1,5 @@
 
-import { Trophy, Shield, Award } from "lucide-react";
+import { Trophy, Shield, Award, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { BadgeAward } from "@/components/ui/badge-award";
@@ -15,7 +15,7 @@ export function HeroSection() {
         <Trophy className="w-32 h-32 text-web3-teal animate-float" style={{ animationDelay: "2s" }} />
       </div>
       
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-7">
             <div className="flex items-center mb-8">
@@ -36,21 +36,32 @@ export function HeroSection() {
               <span className="block text-foreground">Secure Your</span>
               <span className="block text-gradient bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Web3 Assets</span>
             </h1>
-            <p className="mt-6 text-xl text-muted-foreground max-w-3xl">
-              Connect with top security experts in the decentralized marketplace. 
-              Protect your smart contracts, DApps, and blockchain assets with 
-              verified auditors and earn rewards in our gamified ecosystem.
-            </p>
-            <div className="mt-10 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
-              <Button size="lg" className="text-lg bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-                Find Security Experts
-              </Button>
-              <Button size="lg" variant="outline" className="text-lg border-primary text-primary hover:bg-primary/10">
-                Become an Auditor
-              </Button>
+            
+            <div className="mt-6 grid grid-cols-1 gap-4">
+              <p className="text-xl text-muted-foreground">
+                <span className="font-semibold text-foreground">For Projects:</span> Connect with verified security experts to protect your smart contracts, DApps, and blockchain assets.
+              </p>
+              
+              <p className="text-xl text-muted-foreground">
+                <span className="font-semibold text-foreground">For Auditors:</span> Monetize your security expertise, build reputation, and earn rewards in our gamified ecosystem.
+              </p>
             </div>
             
-            <div className="mt-12 flex items-center gap-x-6">
+            <div className="mt-10 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+              <Link to="/marketplace">
+                <Button size="lg" className="text-lg bg-gradient-to-r from-primary to-secondary hover:opacity-90 w-full sm:w-auto">
+                  Find Security Experts
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <Link to="/audits">
+                <Button size="lg" variant="outline" className="text-lg border-primary text-primary hover:bg-primary/10 w-full sm:w-auto">
+                  Become an Auditor
+                </Button>
+              </Link>
+            </div>
+            
+            <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-4">
               <div className="flex items-center gap-x-2">
                 <Shield className="h-6 w-6 text-web3-teal" />
                 <BadgeAward variant="verified">Verified Auditors</BadgeAward>
@@ -70,14 +81,14 @@ export function HeroSection() {
             <div className="glass-card rounded-2xl p-6 shadow-xl animate-float">
               <div className="flex justify-center mb-4">
                 <div className="relative flex items-center justify-center">
-                  <Shield className="h-20 w-20 text-primary" />
+                  <Shield className="h-16 w-16 text-primary" />
                   <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-primary rotate-45 rounded-sm opacity-70"></div>
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-6 h-6 bg-secondary rounded-full animate-pulse-glow"></div>
                   </div>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-center text-foreground mb-6">Security Stats</h3>
+              <h3 className="text-2xl font-bold text-center text-foreground mb-6">Security Dashboard</h3>
               <div className="space-y-4">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Active Auditors</span>
@@ -99,7 +110,7 @@ export function HeroSection() {
               <div className="mt-6">
                 <Link to="/stats">
                   <Button variant="link" className="text-secondary w-full hover:underline">
-                    View detailed statistics →
+                    View detailed statistics <ArrowRight className="ml-1 h-4 w-4" />
                   </Button>
                 </Link>
               </div>
@@ -107,8 +118,6 @@ export function HeroSection() {
           </div>
         </div>
       </div>
-      
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 to-white pointer-events-none" />
     </div>
   );
 }
