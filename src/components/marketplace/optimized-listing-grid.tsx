@@ -84,7 +84,7 @@ export function OptimizedListingGrid({
                 provider={{
                   name: service.provider.name,
                   securityScore: service.provider.reputation,
-                  verificationLevel: service.provider.level === "rookie" ? "verified" : service.provider.level, // Convert "rookie" to "verified"
+                  verificationLevel: service.provider.level === "rookie" ? "verified" : service.provider.level as "verified" | "expert" | "elite",
                   completedProjects: service.completedJobs
                 }}
                 pricing={service.pricing}
