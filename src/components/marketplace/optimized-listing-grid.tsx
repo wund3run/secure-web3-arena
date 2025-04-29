@@ -4,6 +4,7 @@ import { MobileFriendlyCard } from "./mobile-friendly-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ServiceCardProps } from "@/data/marketplace-data";
 import { toast } from "sonner";
+import { Shield } from "lucide-react"; // Import the Shield icon
 
 interface OptimizedListingGridProps {
   services: ServiceCardProps[];
@@ -83,7 +84,7 @@ export function OptimizedListingGrid({
                 provider={{
                   name: service.provider.name,
                   securityScore: service.provider.reputation,
-                  verificationLevel: service.provider.level,
+                  verificationLevel: service.provider.level === "rookie" ? "verified" : service.provider.level, // Convert "rookie" to "verified"
                   completedProjects: service.completedJobs
                 }}
                 pricing={service.pricing}

@@ -7,7 +7,7 @@ import { MarketplaceEnhancedHeader } from "@/components/marketplace/marketplace-
 import { MarketplaceEnhancedFooter } from "@/components/marketplace/marketplace-enhanced-footer";
 import { EnhancedFilters } from "@/components/marketplace/enhanced-filters";
 import { OptimizedListingGrid } from "@/components/marketplace/optimized-listing-grid";
-import { Shield, ArrowRight, Filter, LayoutGrid, List } from "lucide-react";
+import { Shield, ArrowRight, Filter, LayoutGrid, List, Lock, Server } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
