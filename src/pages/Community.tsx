@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { MessageCircle, Users, Trophy, Calendar, Flag, Shield } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { CommunityHeader } from "@/components/community/community-header";
+import { CommunityFooter } from "@/components/community/community-footer";
 
 export default function Community() {
   const [activeTab, setActiveTab] = useState("discussions");
@@ -14,21 +16,7 @@ export default function Community() {
       <Navbar />
       
       <main className="flex-grow">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-r from-primary/20 to-primary/5 py-12 md:py-20">
-          <div className="container mx-auto px-4 max-w-7xl">
-            <div className="text-center">
-              <h1 className="text-3xl md:text-5xl font-bold mb-4">Web3 Security Community</h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-                Connect with security professionals, participate in discussions, attend events, and build your reputation in the blockchain security space.
-              </p>
-              <div className="flex flex-wrap gap-4 justify-center">
-                <Button size="lg">Join the Community</Button>
-                <Button size="lg" variant="outline">Explore Events</Button>
-              </div>
-            </div>
-          </div>
-        </section>
+        <CommunityHeader />
         
         {/* Community Stats */}
         <section className="py-12 bg-card">
@@ -234,21 +222,10 @@ export default function Community() {
           </div>
         </section>
         
-        {/* Join the Community */}
-        <section className="py-16 bg-primary/5">
-          <div className="container mx-auto px-4 max-w-7xl">
-            <div className="text-center max-w-3xl mx-auto">
-              <h2 className="text-3xl font-bold mb-4">Join Our Security Community</h2>
-              <p className="text-muted-foreground mb-8">
-                Connect with like-minded security professionals, expand your knowledge, and build your reputation in the blockchain security space.
-              </p>
-              <div className="flex flex-wrap gap-4 justify-center">
-                <Button size="lg">Sign Up Now</Button>
-                <Button size="lg" variant="outline">Learn More</Button>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Add community footer instead of the existing simple section */}
+        <div className="container mx-auto px-4 max-w-7xl">
+          <CommunityFooter />
+        </div>
       </main>
       
       <Footer />
