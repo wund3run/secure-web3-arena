@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Shield, Search, Filter, ArrowUpDown, Clock, BadgeCheck } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,69 +8,69 @@ import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { AuditCard } from "@/components/audits/audit-card";
 import { AuditFilters } from "@/components/audits/audit-filters";
+import { AuditsHeader } from "@/components/audits/audits-header";
+import { AuditsFooter } from "@/components/audits/audits-footer";
+import { Footer } from "@/components/layout/footer";
+import { Navbar } from "@/components/layout/navbar";
 
 export default function Audits() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showFilters, setShowFilters] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Section */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold tracking-tight">Security Audits</h1>
-          <p className="mt-2 text-lg text-muted-foreground">
-            Browse verified security audits or request a new one for your project
-          </p>
-        </div>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Navbar />
+      <div className="flex-grow">
+        {/* Header Section */}
+        <AuditsHeader />
+        
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Stats Overview - We'll keep this compact since we have stats in the header */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <Card className="hover-lift">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-primary/10 rounded-full">
+                    <Shield className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground">Total Audits</div>
+                    <div className="text-2xl font-bold">2,387</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="hover-lift">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-secondary/10 rounded-full">
+                    <Clock className="h-6 w-6 text-secondary" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground">Avg Completion</div>
+                    <div className="text-2xl font-bold">4.2 days</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="hover-lift">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-web3-orange/10 rounded-full">
+                    <BadgeCheck className="h-6 w-6 text-web3-orange" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground">Verified Fixes</div>
+                    <div className="text-2xl font-bold">7,129</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="hover-lift">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded-full">
-                  <Shield className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground">Total Audits</div>
-                  <div className="text-2xl font-bold">2,387</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="hover-lift">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-secondary/10 rounded-full">
-                  <Clock className="h-6 w-6 text-secondary" />
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground">Avg Completion</div>
-                  <div className="text-2xl font-bold">4.2 days</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="hover-lift">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-web3-orange/10 rounded-full">
-                  <BadgeCheck className="h-6 w-6 text-web3-orange" />
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground">Verified Fixes</div>
-                  <div className="text-2xl font-bold">7,129</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Content Area */}
-        <div className="space-y-6">
           {/* Controls Row */}
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
             <div className="flex flex-1 max-w-md">
@@ -125,7 +124,7 @@ export default function Audits() {
           </div>
 
           {/* Tabs + Content */}
-          <Tabs defaultValue="all" className="w-full">
+          <Tabs defaultValue="all" className="w-full mt-6">
             <TabsList className="w-full md:w-auto inline-flex mb-6">
               <TabsTrigger value="all">All Audits</TabsTrigger>
               <TabsTrigger value="completed">Completed</TabsTrigger>
@@ -239,20 +238,12 @@ export default function Audits() {
               </TabsContent>
             </div>
           </Tabs>
-        </div>
         
-        {/* Call-to-Action Section */}
-        <div className="mt-16 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">Need a Security Audit?</h2>
-          <p className="text-lg mb-6 max-w-2xl mx-auto">
-            Get your smart contracts or protocols audited by top security experts from our verified community
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Button size="lg">Request an Audit</Button>
-            <Button size="lg" variant="outline">Join as Auditor</Button>
-          </div>
+          {/* Footer CTA */}
+          <AuditsFooter />
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
