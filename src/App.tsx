@@ -53,6 +53,7 @@ const App = () => (
           <Route path="/admin/users" element={<AdminDashboard section="users" />} />
           <Route path="/admin/audits" element={<AdminDashboard section="audits" />} />
           <Route path="/admin/reports" element={<AdminDashboard section="reports" />} />
+          <Route path="/admin/settings" element={<AdminDashboard section="settings" />} />
           
           {/* Legal routes */}
           <Route path="/terms" element={<NotFound />} />
