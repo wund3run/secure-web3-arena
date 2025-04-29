@@ -84,6 +84,7 @@ export function MobileFriendlyCard({
                   target.src = getFallbackImage(category);
                 }}
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             </div>
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
@@ -105,7 +106,7 @@ export function MobileFriendlyCard({
           </div>
           
           <div className="absolute bottom-2 left-2">
-            <Badge className="bg-black/50 text-white hover:bg-black/60 backdrop-blur-sm px-3 py-1 text-sm">
+            <Badge className="bg-black/60 text-white hover:bg-black/70 backdrop-blur-sm px-3 py-1 text-sm font-medium">
               {category}
             </Badge>
           </div>
@@ -133,17 +134,17 @@ export function MobileFriendlyCard({
             {description}
           </div>
           
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1 mt-2">
             {tags.slice(0, 3).map((tag) => (
               <span 
                 key={tag} 
-                className="inline-flex bg-secondary/10 px-2 py-0.5 rounded text-xs"
+                className="inline-flex bg-secondary/20 border border-secondary/30 px-2 py-0.5 rounded text-xs font-medium text-secondary-foreground shadow-sm"
               >
                 {tag}
               </span>
             ))}
             {tags.length > 3 && (
-              <span className="inline-flex bg-secondary/5 px-2 py-0.5 rounded text-xs">
+              <span className="inline-flex bg-muted/40 px-2 py-0.5 rounded text-xs font-medium text-muted-foreground">
                 +{tags.length - 3}
               </span>
             )}

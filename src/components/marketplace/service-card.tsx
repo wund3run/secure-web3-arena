@@ -45,18 +45,6 @@ export function ServiceCard({
     });
   };
 
-  // Generate a unique gradient based on the service id
-  const generateGradient = (id: string) => {
-    // Convert string to number for consistent color generation
-    const numId = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    
-    // Use the number to generate HSL colors
-    const hue1 = (numId * 77) % 360;
-    const hue2 = (hue1 + 40) % 360;
-    
-    return `linear-gradient(135deg, hsl(${hue1}, 80%, 40%), hsl(${hue2}, 80%, 40%))`;
-  };
-
   // Define consistent high-quality images for different security categories
   const getCategoryImage = (category: string) => {
     const images = {
@@ -105,7 +93,7 @@ export function ServiceCard({
           </div>
           
           <div className="absolute bottom-3 left-3">
-            <div className="flex items-center bg-black/30 backdrop-blur-sm rounded-md px-2 py-1">
+            <div className="flex items-center bg-black/50 backdrop-blur-sm rounded-md px-2 py-1">
               <Star className="h-4 w-4 fill-web3-orange text-web3-orange mr-1" />
               <span className="text-sm font-semibold text-white">{rating.toFixed(1)}</span>
             </div>
@@ -132,13 +120,13 @@ export function ServiceCard({
           {tags.slice(0, 3).map((tag) => (
             <span 
               key={tag} 
-              className="inline-flex bg-secondary/10 border border-secondary/20 text-secondary-foreground px-2 py-1 rounded-md text-xs font-medium"
+              className="inline-flex bg-secondary/20 border border-secondary/30 text-secondary-foreground px-2 py-0.5 rounded-md text-xs font-medium shadow-sm"
             >
               {tag}
             </span>
           ))}
           {tags.length > 3 && (
-            <span className="inline-flex bg-secondary/5 text-secondary-foreground/70 px-2 py-1 rounded-md text-xs">
+            <span className="inline-flex bg-muted/50 text-muted-foreground px-2 py-0.5 rounded-md text-xs font-medium">
               +{tags.length - 3} more
             </span>
           )}
@@ -150,7 +138,7 @@ export function ServiceCard({
             <span>{completedJobs} completed</span>
           </div>
           <div>
-            <span className="text-xs uppercase bg-primary/10 text-primary px-2 py-1 rounded-full">
+            <span className="text-xs uppercase bg-primary/15 text-primary px-2 py-1 rounded-full font-medium">
               {category}
             </span>
           </div>
@@ -159,7 +147,7 @@ export function ServiceCard({
       
       <CardFooter className="p-5 pt-0 mt-auto border-t border-border/30">
         <div className="w-full flex justify-between items-center">
-          <div className="font-bold text-lg text-gradient">
+          <div className="font-bold text-lg text-gradient bg-gradient-to-r from-primary to-primary/80">
             {pricing.amount} {pricing.currency}
           </div>
           <Button 

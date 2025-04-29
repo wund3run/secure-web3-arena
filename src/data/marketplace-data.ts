@@ -40,7 +40,7 @@ export const SERVICES: ServiceCardProps[] = [
     completedJobs: 124,
     category: "Smart Contracts",
     tags: ["Solidity", "ERC20", "ERC721", "DeFi"],
-    imageUrl: "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=500&auto=format&fit=crop"
+    imageUrl: "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1600&auto=format&fit=crop"
   },
   {
     id: "2",
@@ -60,7 +60,7 @@ export const SERVICES: ServiceCardProps[] = [
     completedJobs: 87,
     category: "DApps",
     tags: ["Web3", "React", "API Security"],
-    imageUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=500&auto=format&fit=crop"
+    imageUrl: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1600&auto=format&fit=crop"
   },
   {
     id: "3",
@@ -80,7 +80,7 @@ export const SERVICES: ServiceCardProps[] = [
     completedJobs: 53,
     category: "Protocols",
     tags: ["DeFi", "Yield", "Lending", "Complex Logic"],
-    imageUrl: "https://images.unsplash.com/photo-1526378800651-c32d170fe6f8?q=80&w=500&auto=format&fit=crop"
+    imageUrl: "https://images.unsplash.com/photo-1526378800651-c32d170fe6f8?q=80&w=1600&auto=format&fit=crop"
   },
   {
     id: "4",
@@ -100,7 +100,7 @@ export const SERVICES: ServiceCardProps[] = [
     completedJobs: 28,
     category: "NFTs",
     tags: ["ERC721", "Metadata", "Royalties"],
-    imageUrl: "https://images.unsplash.com/photo-1618044733300-9472054094ee?q=80&w=500&auto=format&fit=crop"
+    imageUrl: "https://images.unsplash.com/photo-1618044733300-9472054094ee?q=80&w=1600&auto=format&fit=crop"
   },
   {
     id: "5",
@@ -120,7 +120,7 @@ export const SERVICES: ServiceCardProps[] = [
     completedJobs: 42,
     category: "Bridges",
     tags: ["Cross-chain", "Layer-2", "Optimistic Rollups", "ZK Rollups"],
-    imageUrl: "https://images.unsplash.com/photo-1639762681057-408e52192e55?q=80&w=500&auto=format&fit=crop"
+    imageUrl: "https://images.unsplash.com/photo-1639762681057-408e52192e55?q=80&w=1600&auto=format&fit=crop"
   },
   {
     id: "6",
@@ -140,7 +140,7 @@ export const SERVICES: ServiceCardProps[] = [
     completedJobs: 65,
     category: "Infrastructure",
     tags: ["Nodes", "RPC", "APIs", "DevOps"],
-    imageUrl: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=500&auto=format&fit=crop"
+    imageUrl: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1600&auto=format&fit=crop"
   },
   {
     id: "7",
@@ -159,8 +159,8 @@ export const SERVICES: ServiceCardProps[] = [
     rating: 4.6,
     completedJobs: 31,
     category: "DAOs",
-    tags: ["Governance", "Voting", "TokenomicsTimelocks"],
-    imageUrl: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?q=80&w=500&auto=format&fit=crop"
+    tags: ["Governance", "Voting", "Tokenomics", "Timelocks"],
+    imageUrl: "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?q=80&w=1600&auto=format&fit=crop"
   },
   {
     id: "8",
@@ -180,7 +180,7 @@ export const SERVICES: ServiceCardProps[] = [
     completedJobs: 18,
     category: "ZK Proofs",
     tags: ["ZK-SNARKs", "ZK-STARKs", "Privacy", "Cryptography"],
-    imageUrl: "https://images.unsplash.com/photo-1633265486064-086b219458ec?q=80&w=500&auto=format&fit=crop"
+    imageUrl: "https://images.unsplash.com/photo-1633265486064-086b219458ec?q=80&w=1600&auto=format&fit=crop"
   }
 ];
 
@@ -188,26 +188,32 @@ export const SERVICES: ServiceCardProps[] = [
 export const BLOCKCHAIN_ECOSYSTEMS = [
   {
     name: "Solana",
-    logoUrl: "https://cryptologos.cc/logos/solana-sol-logo.png?v=024"
+    logoUrl: "https://cryptologos.cc/logos/solana-sol-logo.png",
+    color: "#9945FF"
   },
   {
     name: "Ethereum",
-    logoUrl: "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=024"
+    logoUrl: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
+    color: "#627EEA"
   },
   {
     name: "Polkadot",
-    logoUrl: "https://cryptologos.cc/logos/polkadot-new-dot-logo.png?v=024"
+    logoUrl: "https://cryptologos.cc/logos/polkadot-new-dot-logo.png",
+    color: "#E6007A"
   },
   {
     name: "Avalanche",
-    logoUrl: "https://cryptologos.cc/logos/avalanche-avax-logo.png?v=024"
+    logoUrl: "https://cryptologos.cc/logos/avalanche-avax-logo.png",
+    color: "#E84142"
   },
   {
     name: "Cosmos",
-    logoUrl: "https://cryptologos.cc/logos/cosmos-atom-logo.png?v=024"
+    logoUrl: "https://cryptologos.cc/logos/cosmos-atom-logo.png",
+    color: "#2E3148"
   },
   {
     name: "zkSync",
-    logoUrl: "https://cryptologos.cc/logos/zksync-logo.png?v=024"
+    logoUrl: "https://cryptologos.cc/logos/generic/token.png",
+    color: "#4E529A"
   }
 ];
