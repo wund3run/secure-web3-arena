@@ -4,7 +4,7 @@ import { MobileFriendlyCard } from "./mobile-friendly-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ServiceCardProps } from "@/data/marketplace-data";
 import { toast } from "sonner";
-import { Shield } from "lucide-react"; // Import the Shield icon explicitly
+import { Shield } from "lucide-react"; 
 
 interface OptimizedListingGridProps {
   services: ServiceCardProps[];

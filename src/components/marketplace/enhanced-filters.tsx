@@ -105,7 +105,7 @@ export function EnhancedFilters({ onFilterChange }: { onFilterChange?: (filters:
         </Button>
       </div>
       
-      <Card className={`w-full lg:block ${isExpanded ? 'block' : 'hidden'}`}>
+      <Card className={`w-full lg:block ${isExpanded ? 'block' : 'hidden'} z-10 bg-card shadow-md`}>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg font-semibold">Filters</CardTitle>

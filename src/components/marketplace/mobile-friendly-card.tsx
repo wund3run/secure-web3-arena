@@ -138,13 +138,13 @@ export function MobileFriendlyCard({
             {tags.slice(0, 3).map((tag) => (
               <span 
                 key={tag} 
-                className="inline-flex bg-secondary/20 border border-secondary/40 px-2.5 py-0.5 rounded text-xs font-medium text-secondary-foreground shadow-md"
+                className="inline-flex bg-secondary/30 border border-secondary/40 px-2.5 py-0.5 rounded text-xs font-medium text-secondary-foreground shadow-sm"
               >
                 {tag}
               </span>
             ))}
             {tags.length > 3 && (
-              <span className="inline-flex bg-muted/60 px-2.5 py-0.5 rounded text-xs font-medium text-muted-foreground shadow-sm">
+              <span className="inline-flex bg-muted/80 px-2.5 py-0.5 rounded text-xs font-medium text-muted-foreground shadow-sm">
                 +{tags.length - 3}
               </span>
             )}

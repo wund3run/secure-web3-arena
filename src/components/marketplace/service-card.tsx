@@ -59,7 +59,6 @@ export function ServiceCard({
       "default": "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=1600&auto=format&fit=crop&blend=9b87f5&blend-mode=multiply&sat=-40"
     };
     
-    // @ts-ignore
     return images[category] || images["default"];
   };
 
@@ -77,7 +76,7 @@ export function ServiceCard({
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.onerror = null;
-                target.src = "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=1600&auto=format&fit=crop&blend=9b87f5&blend-mode=multiply&sat=-40";
+                target.src = getCategoryImage("default");
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-60"></div>
@@ -102,9 +101,9 @@ export function ServiceCard({
       </CardHeader>
       
       <CardContent className="p-5 flex-grow">
-        <h3 className="font-bold text-lg mb-3 line-clamp-2 h-14">{title}</h3>
+        <h3 className="font-bold text-lg mb-3 line-clamp-2 min-h-[3.5rem]">{title}</h3>
         
-        <div className="mb-4 text-sm text-muted-foreground line-clamp-3 h-14 overflow-hidden">
+        <div className="mb-4 text-sm text-muted-foreground line-clamp-3 min-h-[4.5rem]">
           {description}
         </div>
         
@@ -120,13 +119,13 @@ export function ServiceCard({
           {tags.slice(0, 3).map((tag) => (
             <span 
               key={tag} 
-              className="inline-flex bg-secondary/20 border border-secondary/40 text-secondary-foreground px-2.5 py-0.5 rounded-md text-xs font-medium shadow-md"
+              className="inline-flex bg-secondary/30 border border-secondary/40 text-secondary-foreground px-2.5 py-0.5 rounded-md text-xs font-medium shadow-sm"
             >
               {tag}
             </span>
           ))}
           {tags.length > 3 && (
-            <span className="inline-flex bg-muted/60 text-muted-foreground px-2.5 py-0.5 rounded-md text-xs font-medium shadow-sm">
+            <span className="inline-flex bg-muted/80 text-muted-foreground px-2.5 py-0.5 rounded-md text-xs font-medium shadow-sm">
               +{tags.length - 3} more
             </span>
           )}
