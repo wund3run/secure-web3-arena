@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Heart, Star, Shield } from "lucide-react";
+import { ArrowRight, Heart, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { TrustIndicators } from "./trust-indicators";
 
@@ -57,11 +57,18 @@ export function MobileFriendlyCard({
       <CardHeader className="p-0">
         <div className="relative h-40 rounded-t-lg overflow-hidden">
           {imageUrl ? (
-            <img 
-              src={imageUrl} 
-              alt={title} 
-              className="w-full h-full object-cover" 
-            />
+            <div className="w-full h-full bg-gradient-to-br from-primary/5 to-secondary/5">
+              <img 
+                src={imageUrl} 
+                alt={title} 
+                className="w-full h-full object-cover" 
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.onerror = null;
+                  target.src = "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=500&auto=format&fit=crop";
+                }}
+              />
+            </div>
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
               <Shield className="h-16 w-16 text-primary/50" />
@@ -91,7 +98,7 @@ export function MobileFriendlyCard({
       
       <CardContent className="flex-grow p-4">
         <div className="space-y-3">
-          <h3 className="font-bold line-clamp-2">{title}</h3>
+          <h3 className="font-bold text-base line-clamp-2 h-12">{title}</h3>
           
           <div className="flex items-center space-x-2">
             <div className="text-lg font-bold text-primary">
@@ -106,11 +113,11 @@ export function MobileFriendlyCard({
             size="sm"
           />
           
-          <div className="text-sm text-muted-foreground line-clamp-2">
+          <div className="text-sm text-muted-foreground line-clamp-2 h-10">
             {description}
           </div>
           
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1 h-6 overflow-hidden">
             {tags.slice(0, 3).map((tag) => (
               <span 
                 key={tag} 

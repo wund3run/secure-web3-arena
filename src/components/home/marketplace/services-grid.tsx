@@ -22,7 +22,7 @@ export function ServicesGrid({ services }: ServicesGridProps) {
           key={`placeholder-${index}`} 
           className="h-full border border-dashed border-border rounded-lg flex items-center justify-center p-8 bg-muted/30"
         >
-          <p className="text-muted-foreground text-center">More services available in the marketplace</p>
+          <p className="text-muted-foreground text-center text-sm">More services available in the marketplace</p>
         </div>
       ))}
     </div>

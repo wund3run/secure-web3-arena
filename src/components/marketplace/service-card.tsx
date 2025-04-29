@@ -57,34 +57,50 @@ export function ServiceCard({
     return `linear-gradient(135deg, hsl(${hue1}, 80%, 40%), hsl(${hue2}, 80%, 40%))`;
   };
 
+  // Define consistent high-quality images for different security categories
+  const getCategoryImage = (category: string) => {
+    const images = {
+      "Smart Contracts": "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1600&auto=format&fit=crop",
+      "DApps": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1600&auto=format&fit=crop",
+      "Protocols": "https://images.unsplash.com/photo-1526378800651-c32d170fe6f8?q=80&w=1600&auto=format&fit=crop",
+      "NFTs": "https://images.unsplash.com/photo-1618044733300-9472054094ee?q=80&w=1600&auto=format&fit=crop",
+      "Bridges": "https://images.unsplash.com/photo-1639762681057-408e52192e55?q=80&w=1600&auto=format&fit=crop",
+      "Infrastructure": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1600&auto=format&fit=crop",
+      "DAOs": "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?q=80&w=1600&auto=format&fit=crop",
+      "ZK Proofs": "https://images.unsplash.com/photo-1633265486064-086b219458ec?q=80&w=1600&auto=format&fit=crop",
+      "default": "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=1600&auto=format&fit=crop"
+    };
+    
+    // @ts-ignore
+    return images[category] || images["default"];
+  };
+
+  const displayImage = imageUrl || getCategoryImage(category);
+
   return (
     <Card className="overflow-hidden border border-border/50 hover:border-primary/50 transition-all duration-300 bg-card h-full flex flex-col group">
       <CardHeader className="p-0">
         <div className="h-48 relative overflow-hidden">
-          {imageUrl ? (
-            <>
-              <img 
-                src={imageUrl} 
-                alt={title} 
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-60"></div>
-            </>
-          ) : (
-            <div 
-              className="absolute inset-0 flex items-center justify-center"
-              style={{ background: generateGradient(id) }}
-            >
-              <Shield className="w-16 h-16 text-white/50" />
-            </div>
-          )}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5">
+            <img 
+              src={displayImage} 
+              alt={title} 
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.onerror = null;
+                target.src = "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=1600&auto=format&fit=crop";
+              }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-60"></div>
+          </div>
           
           <div className="absolute top-3 right-3 flex space-x-2">
             <BadgeAward 
-              variant={provider.level} 
+              variant={provider.level === "rookie" ? "verified" : provider.level} 
               className="font-medium backdrop-blur-sm shadow-lg"
             >
-              {provider.level === "rookie" ? "Rookie" : provider.level === "expert" ? "Expert" : "Verified"}
+              {provider.level === "rookie" ? "Verified" : provider.level === "expert" ? "Expert" : "Verified"}
             </BadgeAward>
           </div>
           
@@ -98,9 +114,9 @@ export function ServiceCard({
       </CardHeader>
       
       <CardContent className="p-5 flex-grow">
-        <h3 className="font-bold text-lg mb-3 line-clamp-2">{title}</h3>
+        <h3 className="font-bold text-lg mb-3 line-clamp-2 h-14">{title}</h3>
         
-        <div className="mb-4 text-sm text-muted-foreground line-clamp-3 h-[4.5rem]">
+        <div className="mb-4 text-sm text-muted-foreground line-clamp-3 h-14 overflow-hidden">
           {description}
         </div>
         
