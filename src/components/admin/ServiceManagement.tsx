@@ -44,10 +44,10 @@ import {
   Eye,
 } from "lucide-react";
 import { toast } from "sonner";
-import mockServiceData from "@/data/marketplace-data";
+import { SERVICES } from "@/data/marketplace-data";
 
 export function ServiceManagement() {
-  const [services, setServices] = useState(mockServiceData.slice(0, 10));
+  const [services, setServices] = useState(SERVICES.slice(0, 10));
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<typeof services[0] | null>(null);
 
@@ -174,7 +174,7 @@ export function ServiceManagement() {
               <div className="text-sm text-muted-foreground">
                 Showing <span className="font-medium">1</span> to{" "}
                 <span className="font-medium">{services.length}</span> of{" "}
-                <span className="font-medium">{mockServiceData.length}</span> services
+                <span className="font-medium">{SERVICES.length}</span> services
               </div>
               <Button variant="outline" size="sm" disabled>
                 Previous
