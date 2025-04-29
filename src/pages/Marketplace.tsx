@@ -51,7 +51,7 @@ export default function Marketplace() {
         name: "CryptoShield",
         reputation: 98,
         isVerified: true,
-        level: "expert"
+        level: "expert" as const
       },
       pricing: {
         amount: 4.5,
@@ -71,7 +71,7 @@ export default function Marketplace() {
         name: "BlockSafe",
         reputation: 82,
         isVerified: true,
-        level: "verified"
+        level: "verified" as const
       },
       pricing: {
         amount: 3.2,
@@ -91,7 +91,7 @@ export default function Marketplace() {
         name: "SecureLabs",
         reputation: 95,
         isVerified: true,
-        level: "expert"
+        level: "expert" as const
       },
       pricing: {
         amount: 7.8,
@@ -111,7 +111,7 @@ export default function Marketplace() {
         name: "Web3Guard",
         reputation: 76,
         isVerified: false,
-        level: "rookie"
+        level: "rookie" as const
       },
       pricing: {
         amount: 2.5,
@@ -131,7 +131,7 @@ export default function Marketplace() {
         name: "ChainSecurity",
         reputation: 91,
         isVerified: true,
-        level: "expert"
+        level: "expert" as const
       },
       pricing: {
         amount: 5.6,
@@ -151,7 +151,7 @@ export default function Marketplace() {
         name: "PenetrationDAO",
         reputation: 88,
         isVerified: true,
-        level: "expert"
+        level: "expert" as const
       },
       pricing: {
         amount: 6.2,
@@ -171,7 +171,7 @@ export default function Marketplace() {
         name: "GovernanceGuard",
         reputation: 84,
         isVerified: true,
-        level: "verified"
+        level: "verified" as const
       },
       pricing: {
         amount: 4.1,
@@ -191,7 +191,7 @@ export default function Marketplace() {
         name: "ZKPVerified",
         reputation: 96,
         isVerified: true,
-        level: "expert"
+        level: "expert" as const
       },
       pricing: {
         amount: 9.5,
