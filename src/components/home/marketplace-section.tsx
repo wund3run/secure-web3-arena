@@ -11,19 +11,34 @@ import { SERVICES } from "@/data/marketplace-data";
 export function MarketplaceSection() {
   const [activeTab, setActiveTab] = useState("all");
   
-  const filteredServices = activeTab === "all" 
-    ? SERVICES.slice(0, 4) // Show only 4 services on the homepage
-    : SERVICES.filter(service => 
-        service.category.toLowerCase() === activeTab.toLowerCase() || 
-        service.tags.some(tag => tag.toLowerCase() === activeTab.toLowerCase())
-      ).slice(0, 4);
+  // Show only 4 services on the homepage, prioritizing verified providers
+  const getFilteredServices = () => {
+    let filtered = activeTab === "all" 
+      ? [...SERVICES] 
+      : SERVICES.filter(service => 
+          service.category.toLowerCase() === activeTab.toLowerCase() || 
+          service.tags.some(tag => tag.toLowerCase() === activeTab.toLowerCase())
+        );
+    
+    // Sort by verification status and then by rating to show best services first
+    filtered = filtered.sort((a, b) => {
+      if (a.provider.isVerified !== b.provider.isVerified) {
+        return a.provider.isVerified ? -1 : 1;
+      }
+      return b.rating - a.rating;
+    });
+    
+    return filtered.slice(0, 4);
+  };
+
+  const filteredServices = getFilteredServices();
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
 
   return (
-    <section className="py-12 bg-background">
+    <section className="py-16 bg-gradient-to-b from-background to-muted/30 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <MarketplaceHeader />
         <CategoryTabs activeTab={activeTab} onTabChange={handleTabChange} />
