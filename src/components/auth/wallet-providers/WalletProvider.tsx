@@ -19,7 +19,7 @@ export function WalletProvider({ name, icon, chainType, onClick, isDetected }: W
       }`}
       onClick={onClick}
     >
-      <div className="mr-3">{icon}</div>
+      <div className="flex-shrink-0 mr-3">{icon}</div>
       <div className="text-left flex-1">
         <p className="font-medium">{name}</p>
         <p className="text-xs text-muted-foreground">{chainType}</p>

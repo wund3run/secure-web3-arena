@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ShieldCheck, Trophy, Search, User, Menu, X, Shield, ArrowRight, Wallet, Key } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { WalletConnect } from "@/components/auth/wallet-connect";
 
@@ -233,6 +233,8 @@ export function Navbar() {
       
       <Dialog open={showWalletConnect} onOpenChange={setShowWalletConnect}>
         <DialogContent className="sm:max-w-md">
+          <DialogTitle>Connect to Hawkly</DialogTitle>
+          <DialogDescription>Choose your preferred authentication method</DialogDescription>
           <WalletConnect onConnect={handleWalletConnect} onClose={() => setShowWalletConnect(false)} />
         </DialogContent>
       </Dialog>
