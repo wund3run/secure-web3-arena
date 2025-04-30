@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -493,8 +492,9 @@ export const EscrowProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       const transactionData = {
         ...transaction,
         sender_id: transaction.sender_id || profile.id,
-        amount: transaction.amount || 0, // Ensure required field
-        type: transaction.type || 'deposit' as TransactionType // Ensure required field
+        escrow_contract_id: transaction.escrow_contract_id,  // Explicitly add this as a required field
+        amount: transaction.amount || 0,  // Ensure required field
+        type: transaction.type || 'deposit' as TransactionType  // Ensure required field
       };
       
       const { data, error } = await supabase
@@ -578,7 +578,7 @@ export const EscrowProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         ...dispute,
         raised_by: dispute.raised_by || profile.id,
         reason: dispute.reason,
-        escrow_contract_id: dispute.escrow_contract_id,
+        escrow_contract_id: dispute.escrow_contract_id,  // Explicitly add this as a required field
         status: dispute.status || 'opened' as DisputeStatus
       };
       
@@ -752,3 +752,5 @@ export const EscrowProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     </EscrowContext.Provider>
   );
 };
+
+export default EscrowProvider;
