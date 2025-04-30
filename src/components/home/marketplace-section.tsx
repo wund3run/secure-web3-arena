@@ -72,7 +72,8 @@ export function MarketplaceSection() {
   };
 
   const filteredServices = getFilteredServices();
-  const { ComparisonProvider, SelectionIndicator, SelectionToggle, ComparisonDialog } = ComparisonManager();
+  // Fix: Pass an object with maxCompare property to ComparisonManager
+  const { ComparisonProvider, SelectionIndicator, SelectionToggle, ComparisonDialog } = ComparisonManager({ maxCompare: 3 });
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
