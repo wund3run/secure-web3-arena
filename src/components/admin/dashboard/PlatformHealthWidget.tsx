@@ -154,9 +154,10 @@ export function PlatformHealthWidget({
                       if (active && payload && payload.length) {
                         return (
                           <ChartTooltipContent
-                            value={`${payload[0].value} transactions`}
                             label={payload[0].payload.name}
-                          />
+                          >
+                            {`${payload[0].value} transactions`}
+                          </ChartTooltipContent>
                         )
                       }
                       return null
@@ -217,9 +218,10 @@ export function PlatformHealthWidget({
                       if (active && payload && payload.length) {
                         return (
                           <ChartTooltipContent
-                            value={`${payload[0].value} disputes`}
                             label={payload[0].payload.name}
-                          />
+                          >
+                            {`${payload[0].value} disputes`}
+                          </ChartTooltipContent>
                         )
                       }
                       return null
@@ -284,9 +286,10 @@ export function PlatformHealthWidget({
                       if (active && payload && payload.length) {
                         return (
                           <ChartTooltipContent
-                            value={`${payload[0].value} new users`}
                             label={payload[0].payload.name}
-                          />
+                          >
+                            {`${payload[0].value} new users`}
+                          </ChartTooltipContent>
                         )
                       }
                       return null

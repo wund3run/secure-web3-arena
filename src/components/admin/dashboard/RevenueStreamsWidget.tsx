@@ -201,9 +201,10 @@ export function RevenueStreamsWidget({
                       if (active && payload && payload.length) {
                         return (
                           <ChartTooltipContent
-                            value={formatCurrency(payload[0].value as number)}
                             label={payload[0].payload.name}
-                          />
+                          >
+                            {formatCurrency(payload[0].value as number)}
+                          </ChartTooltipContent>
                         )
                       }
                       return null
