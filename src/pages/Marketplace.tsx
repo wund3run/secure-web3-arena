@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { ServiceCard } from "@/components/marketplace/service-card";
 import { MarketplaceFilters } from "@/components/marketplace/marketplace-filters";
@@ -9,7 +10,7 @@ import { OptimizedListingGrid } from "@/components/marketplace/optimized-listing
 import { MarketplaceOnboarding } from "@/components/marketplace/marketplace-onboarding";
 import { ServiceReviews } from "@/components/marketplace/service-reviews";
 import { EnhancedOnboarding } from "@/components/onboarding/enhanced-onboarding";
-import { Shield, ArrowRight, Filter, LayoutGrid, List, Lock, Server } from "lucide-react";
+import { Shield, ArrowRight, Filter, LayoutGrid, List, Lock, Server, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
@@ -20,6 +21,26 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { ServiceComparison } from "@/components/marketplace/service-comparison";
 import { AIRecommendations } from "@/components/marketplace/ai-recommendations";
+
+// Custom Compare icon since it's not available in lucide-react
+const Compare = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    width="24" 
+    height="24" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    {...props}
+  >
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+    <path d="M3 9h18" />
+    <path d="M9 21V9" />
+  </svg>
+);
 
 export default function Marketplace() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -295,13 +316,6 @@ export default function Marketplace() {
     window.SERVICES = SERVICES;
   }, []);
 
-  const filteredServices = activeCategory === "all" 
-    ? SERVICES 
-    : SERVICES.filter(service => 
-        service.category.toLowerCase() === activeCategory.toLowerCase() || 
-        service.tags.some(tag => tag.toLowerCase() === activeCategory.toLowerCase())
-      );
-
   const handleEcosystemClick = (ecosystem: string) => {
     toast.info(`${ecosystem} security audits are available`, {
       description: "Contact us for specialized security solutions",
@@ -416,6 +430,7 @@ export default function Marketplace() {
     return filtered;
   };
 
+  // Only define filteredServices once using the getFilteredServices function
   const filteredServices = getFilteredServices();
   
   const handleServiceSelect = (service: any) => {
