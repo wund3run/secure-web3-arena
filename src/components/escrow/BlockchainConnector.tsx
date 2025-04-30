@@ -174,7 +174,7 @@ export function BlockchainConnector({ onConnect, connected = false, address, cha
   );
 }
 
-// Define ethereum interface properly at line 181
+// Define ethereum interface properly to fix type errors
 declare global {
   interface Window {
     ethereum: {
