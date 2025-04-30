@@ -30,7 +30,7 @@ export function OptimizedListingGrid({
   })[]>([]);
   const [page, setPage] = useState(1);
   const loaderRef = useRef<HTMLDivElement>(null);
-  const itemsPerPage = 8;
+  const itemsPerPage = layout === "grid" ? 12 : 8;
 
   // Handle intersection for infinite scrolling
   useEffect(() => {
@@ -60,7 +60,7 @@ export function OptimizedListingGrid({
   useEffect(() => {
     const endIndex = page * itemsPerPage;
     setVisibleServices(services.slice(0, endIndex));
-  }, [page, services]);
+  }, [page, services, itemsPerPage]);
 
   const handleServiceSelect = (service: ServiceCardProps) => {
     if (onServiceSelect) {
@@ -82,11 +82,11 @@ export function OptimizedListingGrid({
   return (
     <div>
       <div className={layout === "grid" 
-        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" 
-        : "space-y-4"}>
+        ? "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3" 
+        : "space-y-3"}>
         {isLoading
           ? Array.from({ length: 8 }).map((_, index) => (
-              <div key={`skeleton-${index}`} className={layout === "list" ? "h-32" : "h-[450px]"}>
+              <div key={`skeleton-${index}`} className={layout === "list" ? "h-24" : "h-[300px]"}>
                 <Skeleton className="w-full h-full rounded-lg" />
               </div>
             ))
@@ -98,7 +98,7 @@ export function OptimizedListingGrid({
                     <Button
                       variant={service.isSelected ? "default" : "outline"}
                       size="sm"
-                      className="h-7"
+                      className="h-6 text-xs px-2"
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -115,7 +115,7 @@ export function OptimizedListingGrid({
                         strokeWidth="2" 
                         strokeLinecap="round" 
                         strokeLinejoin="round" 
-                        className="h-4 w-4 mr-1"
+                        className="h-3.5 w-3.5 mr-1"
                       >
                         <rect x="3" y="3" width="18" height="18" rx="2" />
                         <path d="M3 9h18" />
@@ -129,9 +129,9 @@ export function OptimizedListingGrid({
                 {/* Selected badge */}
                 {service.isSelected && (
                   <Badge 
-                    className="absolute top-2 left-2 z-10 bg-primary text-primary-foreground"
+                    className="absolute top-2 left-2 z-10 bg-primary text-primary-foreground text-xs px-1.5 py-0.5"
                   >
-                    Selected for comparison
+                    Selected
                   </Badge>
                 )}
                 
@@ -157,17 +157,17 @@ export function OptimizedListingGrid({
 
       {/* Loader element for infinite scrolling */}
       {!isLoading && visibleServices.length < services.length && (
-        <div ref={loaderRef} className="py-8 flex justify-center">
-          <Skeleton className="h-8 w-8 rounded-full" />
+        <div ref={loaderRef} className="py-4 flex justify-center">
+          <Skeleton className="h-6 w-6 rounded-full" />
         </div>
       )}
 
       {/* No results state */}
       {!isLoading && services.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <Shield className="h-16 w-16 text-muted-foreground/30 mb-4" />
-          <h3 className="text-xl font-medium mb-2">No services found</h3>
-          <p className="text-muted-foreground max-w-md">
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <Shield className="h-12 w-12 text-muted-foreground/30 mb-3" />
+          <h3 className="text-lg font-medium mb-1">No services found</h3>
+          <p className="text-muted-foreground max-w-md text-sm">
             Try adjusting your filters or search criteria to find more security services
           </p>
         </div>

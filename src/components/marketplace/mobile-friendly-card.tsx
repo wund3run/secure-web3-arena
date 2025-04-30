@@ -67,11 +67,11 @@ export function MobileFriendlyCard({
 
   return (
     <Card 
-      className="h-full flex flex-col transform transition-all duration-300 hover:shadow-lg border border-border/50 hover:border-primary/50 active:scale-[0.98] touch-manipulation"
+      className="h-full flex flex-col transform transition-all duration-300 hover:shadow-md border border-border/50 hover:border-primary/50 active:scale-[0.99] touch-manipulation"
       onClick={onSelect}
     >
       <CardHeader className="p-0">
-        <div className="relative h-40 rounded-t-lg overflow-hidden">
+        <div className="relative h-32 rounded-t-lg overflow-hidden">
           {imageUrl ? (
             <div className="w-full h-full bg-gradient-to-br from-primary/10 to-secondary/10">
               <img 
@@ -88,7 +88,7 @@ export function MobileFriendlyCard({
             </div>
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-              <Shield className="h-16 w-16 text-primary/50" />
+              <Shield className="h-12 w-12 text-primary/50" />
             </div>
           )}
           
@@ -96,29 +96,29 @@ export function MobileFriendlyCard({
             <Button
               variant="secondary"
               size="icon"
-              className="h-10 w-10 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white touch-manipulation"
+              className="h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white touch-manipulation"
               onClick={toggleFavorite}
             >
               <Heart
-                className={`h-5 w-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+                className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
               />
             </Button>
           </div>
           
           <div className="absolute bottom-2 left-2">
-            <Badge className="bg-black/70 text-white hover:bg-black/80 backdrop-blur-sm px-3 py-1 text-sm font-medium">
+            <Badge className="bg-black/70 text-white hover:bg-black/80 backdrop-blur-sm px-2 py-0.5 text-xs font-medium">
               {category}
             </Badge>
           </div>
         </div>
       </CardHeader>
       
-      <CardContent className="flex-grow p-4">
-        <div className="space-y-3">
-          <h3 className="font-bold text-base line-clamp-2 min-h-[2.5rem]">{title}</h3>
+      <CardContent className="flex-grow p-3">
+        <div className="space-y-2">
+          <h3 className="font-bold text-sm line-clamp-2 min-h-[2.5rem]">{title}</h3>
           
           <div className="flex items-center space-x-2">
-            <div className="text-lg font-bold text-gradient bg-gradient-to-r from-primary to-primary/80">
+            <div className="text-base font-bold text-gradient bg-gradient-to-r from-primary to-primary/80">
               {pricing.amount} {pricing.currency}
             </div>
           </div>
@@ -127,39 +127,39 @@ export function MobileFriendlyCard({
             securityScore={provider.securityScore}
             verificationLevel={provider.verificationLevel}
             completedProjects={provider.completedProjects}
-            size="sm"
+            size="xs"
           />
           
-          <div className="text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">
+          <div className="text-xs text-muted-foreground line-clamp-2 min-h-[2rem]">
             {description}
           </div>
           
-          <div className="flex flex-wrap gap-1 mt-2">
-            {tags.slice(0, 3).map((tag) => (
+          <div className="flex flex-wrap gap-1 mt-1">
+            {tags.slice(0, 2).map((tag) => (
               <span 
                 key={tag} 
-                className="inline-flex bg-secondary/30 border border-secondary/40 px-2.5 py-0.5 rounded text-xs font-medium text-secondary-foreground shadow-sm"
+                className="inline-flex bg-secondary/30 border border-secondary/40 px-1.5 py-0.5 rounded text-xs font-medium text-secondary-foreground shadow-sm"
               >
                 {tag}
               </span>
             ))}
-            {tags.length > 3 && (
-              <span className="inline-flex bg-muted/80 px-2.5 py-0.5 rounded text-xs font-medium text-muted-foreground shadow-sm">
-                +{tags.length - 3}
+            {tags.length > 2 && (
+              <span className="inline-flex bg-muted/80 px-1.5 py-0.5 rounded text-xs font-medium text-muted-foreground shadow-sm">
+                +{tags.length - 2}
               </span>
             )}
           </div>
         </div>
       </CardContent>
       
-      <CardFooter className="p-4 pt-0">
+      <CardFooter className="p-3 pt-0">
         <Button 
-          className="w-full touch-manipulation h-10 text-base"
+          className="w-full touch-manipulation h-8 text-sm"
           variant="default"
           onClick={onSelect}
         >
           View Details
-          <ArrowRight className="ml-2 h-4 w-4" />
+          <ArrowRight className="ml-1 h-3.5 w-3.5" />
         </Button>
       </CardFooter>
     </Card>
