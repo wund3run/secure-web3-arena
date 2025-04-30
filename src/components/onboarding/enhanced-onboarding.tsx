@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -250,6 +249,11 @@ export function EnhancedOnboarding({ open, onOpenChange }: EnhancedOnboardingPro
     setIsConnected(true);
     setShowConnectWallet(false);
     setShowUserTypeSelection(true);
+    
+    // Show success message
+    toast.success(`Connected successfully with ${provider}`, {
+      description: provider === "Email" ? address : `Address: ${address.substring(0, 10)}...`
+    });
   };
   
   const handleUserTypeSelect = (type: "provider" | "buyer") => {
@@ -309,12 +313,12 @@ export function EnhancedOnboarding({ open, onOpenChange }: EnhancedOnboardingPro
 
   return (
     <Component open={open} onOpenChange={onOpenChange}>
-      <ComponentContent className={isMobile ? "" : "max-w-lg sm:max-w-2xl p-6"}>
+      <ComponentContent className={isMobile ? "" : "max-w-lg sm:max-w-xl p-6"}>
         {!isMobile && (
           <Button 
             variant="ghost" 
             size="icon" 
-            className="absolute right-4 top-4" 
+            className="absolute right-4 top-4 z-10" 
             onClick={() => onOpenChange(false)}
           >
             <X className="h-4 w-4" />
