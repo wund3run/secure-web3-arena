@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,11 +20,14 @@ const formSchema = z.object({
   certifications: z.string().optional(),
 });
 
+// Define the possible step statuses as a type
+type StepStatus = 'pending' | 'in-progress' | 'completed' | 'failed';
+
 interface VerificationStepProps {
   title: string;
   description: string;
   icon: React.ReactNode;
-  status: "pending" | "in-progress" | "completed" | "failed";
+  status: StepStatus;
   children?: React.ReactNode;
 }
 
@@ -63,11 +65,12 @@ interface ProviderVerificationProps {
 
 export function ProviderVerification({ onComplete, onCancel }: ProviderVerificationProps) {
   const [currentStep, setCurrentStep] = useState(0);
-  const [verificationSteps, setVerificationSteps] = useState([
-    { id: 'identity', status: 'in-progress' as const },
-    { id: 'credentials', status: 'pending' as const },
-    { id: 'experience', status: 'pending' as const },
-    { id: 'review', status: 'pending' as const }
+  // Update the type for verificationSteps state to include all possible statuses
+  const [verificationSteps, setVerificationSteps] = useState<Array<{ id: string; status: StepStatus }>>([
+    { id: 'identity', status: 'in-progress' },
+    { id: 'credentials', status: 'pending' },
+    { id: 'experience', status: 'pending' },
+    { id: 'review', status: 'pending' }
   ]);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -81,7 +84,7 @@ export function ProviderVerification({ onComplete, onCancel }: ProviderVerificat
     },
   });
 
-  const updateStepStatus = (stepId: string, status: 'pending' | 'in-progress' | 'completed' | 'failed') => {
+  const updateStepStatus = (stepId: string, status: StepStatus) => {
     setVerificationSteps(steps => 
       steps.map(step => 
         step.id === stepId ? { ...step, status } : step
