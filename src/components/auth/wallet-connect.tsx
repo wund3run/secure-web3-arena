@@ -295,7 +295,7 @@ export function WalletConnect({ onConnect, onClose }: WalletConnectProps) {
   );
 }
 
-// Add TypeScript declarations for wallet providers
+// Update the TypeScript declarations for wallet providers to match BlockchainConnector.tsx
 declare global {
   interface Window {
     ethereum?: {
