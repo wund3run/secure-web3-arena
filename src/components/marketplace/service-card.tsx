@@ -1,8 +1,9 @@
 
-import { Star, BadgeCheck, Users, Shield, ArrowRight } from "lucide-react";
+import { Star, BadgeCheck, Users, Shield, ArrowRight, Clock } from "lucide-react";
 import { BadgeAward } from "@/components/ui/badge-award";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { SecurityScore } from "@/components/trust/security-metrics";
 import { toast } from "sonner";
 
 export interface ServiceCardProps {
@@ -24,6 +25,8 @@ export interface ServiceCardProps {
   category: string;
   tags: string[];
   imageUrl?: string;
+  securityScore?: number;
+  responseTime?: string;
 }
 
 export function ServiceCard({
@@ -37,6 +40,8 @@ export function ServiceCard({
   category,
   tags,
   imageUrl,
+  securityScore = 85,
+  responseTime = "24h",
 }: ServiceCardProps) {
   
   const handleViewDetails = () => {
@@ -97,6 +102,13 @@ export function ServiceCard({
               <span className="text-sm font-semibold text-white">{rating.toFixed(1)}</span>
             </div>
           </div>
+          
+          {/* Security score */}
+          <div className="absolute bottom-3 right-3">
+            <div className="bg-black/60 backdrop-blur-sm rounded-md px-2 py-1">
+              <SecurityScore score={securityScore} size="sm" showLabel={false} />
+            </div>
+          </div>
         </div>
       </CardHeader>
       
@@ -107,12 +119,19 @@ export function ServiceCard({
           {description}
         </div>
         
-        <div className="flex items-center space-x-1 mb-4">
-          <span className="text-sm font-medium">Provider:</span>
-          <span className="text-sm">{provider.name}</span>
-          {provider.isVerified && (
-            <BadgeCheck className="h-4 w-4 text-web3-teal ml-1" />
-          )}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-1">
+            <span className="text-sm font-medium">Provider:</span>
+            <span className="text-sm">{provider.name}</span>
+            {provider.isVerified && (
+              <BadgeCheck className="h-4 w-4 text-web3-teal ml-1" />
+            )}
+          </div>
+          
+          <div className="flex items-center text-xs bg-secondary/20 text-secondary-foreground px-2 py-1 rounded-full">
+            <Clock className="h-3 w-3 mr-1" />
+            <span>{responseTime} response</span>
+          </div>
         </div>
         
         <div className="flex flex-wrap gap-2 mb-4 min-h-[28px]">
