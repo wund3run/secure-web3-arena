@@ -185,5 +185,10 @@ declare global {
       on: (event: string, callback: any) => void;
       removeListener: (event: string, callback: any) => void;
     };
+    phantom?: {
+      solana?: {
+        connect: () => Promise<{ publicKey: { toString: () => string } }>;
+      };
+    };
   }
 }
