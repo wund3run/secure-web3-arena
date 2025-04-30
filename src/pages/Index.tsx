@@ -12,17 +12,23 @@ import { AuditStatsTable } from "@/components/home/audit-stats-table";
 import { MarketplaceSection } from "@/components/home/marketplace-section";
 import { GuidedOnboarding } from "@/components/onboarding/guided-onboarding";
 import { FaqSection } from "@/components/home/faq-section";
+import { EnhancedOnboarding } from "@/components/onboarding/enhanced-onboarding";
+import { Button } from "@/components/ui/button";
+import { Shield, ArrowRight } from "lucide-react";
 
 const Index = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showEnhancedOnboarding, setShowEnhancedOnboarding] = useState(false);
   
   // Check if this is the first visit
   useEffect(() => {
     const hasVisited = localStorage.getItem("has_visited_hawkly");
-    if (!hasVisited) {
+    const hasCompletedOnboarding = localStorage.getItem("hawkly_onboarding_completed");
+    
+    if (!hasVisited && !hasCompletedOnboarding) {
       // Set a slight delay to show the onboarding after page loads
       const timer = setTimeout(() => {
-        setShowOnboarding(true);
+        setShowEnhancedOnboarding(true);
         localStorage.setItem("has_visited_hawkly", "true");
       }, 1500);
       
@@ -69,6 +75,27 @@ const Index = () => {
           </div>
         </section>
         
+        {/* New CTA for onboarding */}
+        <section className="py-12 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-3xl font-extrabold mb-6">Join Our Web3 Security Community</h2>
+              <p className="text-lg text-muted-foreground mb-8">
+                Whether you're a security provider or project owner, our guided onboarding will help you get started with our platform.
+              </p>
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 px-8"
+                onClick={() => setShowEnhancedOnboarding(true)}
+              >
+                <Shield className="mr-2 h-5 w-5" />
+                Start Guided Onboarding
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+        </section>
+        
         {/* Main content sections */}
         <MarketplaceSection />
         <AuditStatsTable />
@@ -107,6 +134,12 @@ const Index = () => {
       {showOnboarding && (
         <GuidedOnboarding onClose={() => setShowOnboarding(false)} />
       )}
+      
+      {/* New Enhanced Onboarding */}
+      <EnhancedOnboarding 
+        open={showEnhancedOnboarding} 
+        onOpenChange={setShowEnhancedOnboarding} 
+      />
     </div>
   );
 };

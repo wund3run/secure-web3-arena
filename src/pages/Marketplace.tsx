@@ -8,6 +8,7 @@ import { EnhancedFilters } from "@/components/marketplace/enhanced-filters";
 import { OptimizedListingGrid } from "@/components/marketplace/optimized-listing-grid";
 import { MarketplaceOnboarding } from "@/components/marketplace/marketplace-onboarding";
 import { ServiceReviews } from "@/components/marketplace/service-reviews";
+import { EnhancedOnboarding } from "@/components/onboarding/enhanced-onboarding";
 import { Shield, ArrowRight, Filter, LayoutGrid, List, Lock, Server } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -24,14 +25,17 @@ export default function Marketplace() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showEnhancedOnboarding, setShowEnhancedOnboarding] = useState(false);
   const [selectedService, setSelectedService] = useState<any>(null);
   
   // Check if user has completed onboarding
   useEffect(() => {
-    const hasCompletedOnboarding = localStorage.getItem('marketplace-onboarding-completed');
-    if (!hasCompletedOnboarding) {
+    const hasCompletedMarketplaceOnboarding = localStorage.getItem('marketplace-onboarding-completed');
+    const hasCompletedEnhancedOnboarding = localStorage.getItem('hawkly_onboarding_completed');
+    
+    if (!hasCompletedMarketplaceOnboarding && !hasCompletedEnhancedOnboarding) {
       // Delay showing onboarding slightly for better UX
-      const timer = setTimeout(() => setShowOnboarding(true), 1000);
+      const timer = setTimeout(() => setShowEnhancedOnboarding(true), 1000);
       return () => clearTimeout(timer);
     }
   }, []);
@@ -312,6 +316,14 @@ export default function Marketplace() {
   const closeServiceDetails = () => {
     setSelectedService(null);
   };
+  
+  const handleOnboardingComplete = () => {
+    // Mark both onboardings as completed
+    localStorage.setItem('marketplace-onboarding-completed', 'true');
+    localStorage.setItem('hawkly_onboarding_completed', 'true');
+    setShowEnhancedOnboarding(false);
+    setShowOnboarding(false);
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -321,15 +333,23 @@ export default function Marketplace() {
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col gap-6">
-            {/* Hero Banner */}
+            {/* Hero Banner with onboarding CTA */}
             <div className="w-full rounded-xl overflow-hidden relative mb-6">
               <div className="bg-gradient-to-r from-primary/80 to-secondary/80 h-64 w-full relative">
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=1600&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
                 <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-16">
                   <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4">Web3 Security Marketplace</h1>
-                  <p className="text-lg md:text-xl text-white/90 max-w-2xl">
+                  <p className="text-lg md:text-xl text-white/90 max-w-2xl mb-6">
                     Connect with expert security providers to protect your blockchain projects from vulnerabilities and attacks
                   </p>
+                  <Button 
+                    variant="default" 
+                    className="bg-white text-primary hover:bg-white/90 w-fit"
+                    onClick={() => setShowEnhancedOnboarding(true)}
+                  >
+                    <Shield className="mr-2 h-4 w-4" />
+                    Start Guided Onboarding
+                  </Button>
                 </div>
               </div>
             </div>
@@ -584,6 +604,17 @@ export default function Marketplace() {
       {showOnboarding && (
         <MarketplaceOnboarding onClose={() => setShowOnboarding(false)} />
       )}
+      
+      {/* Enhanced onboarding flow */}
+      <EnhancedOnboarding 
+        open={showEnhancedOnboarding} 
+        onOpenChange={(open) => {
+          setShowEnhancedOnboarding(open);
+          if (!open) {
+            handleOnboardingComplete();
+          }
+        }} 
+      />
     </div>
   );
 }
