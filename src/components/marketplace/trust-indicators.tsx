@@ -1,104 +1,66 @@
 
-import { Shield, BadgeCheck, Star, Users, Clock } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Shield, BadgeCheck, Users } from "lucide-react";
 
-interface TrustIndicatorProps {
-  securityScore?: number;
-  verificationLevel?: "verified" | "expert" | "elite";
-  completedProjects?: number;
-  responseTime?: string;
-  size?: "sm" | "md" | "lg";
+interface TrustIndicatorsProps {
+  securityScore: number;
+  verificationLevel: "verified" | "expert" | "elite";
+  completedProjects: number;
+  size: "sm" | "md" | "lg";
 }
 
-export function TrustIndicators({ 
-  securityScore = 85, 
-  verificationLevel = "verified",
-  completedProjects = 0,
-  responseTime = "< 24 hrs",
-  size = "md" 
-}: TrustIndicatorProps) {
-  
-  const iconClassName = size === "sm" ? "h-3 w-3" : size === "md" ? "h-4 w-4" : "h-5 w-5";
-  const textClassName = size === "sm" ? "text-xs" : size === "md" ? "text-sm" : "text-base";
-  
+export function TrustIndicators({
+  securityScore,
+  verificationLevel,
+  completedProjects,
+  size = "md"
+}: TrustIndicatorsProps) {
   const getVerificationColor = () => {
-    switch (verificationLevel) {
-      case "verified": return "text-web3-teal";
-      case "expert": return "text-primary";
-      case "elite": return "text-web3-orange";
-      default: return "text-muted-foreground";
+    if (verificationLevel === "elite") return "text-blue-500";
+    if (verificationLevel === "expert") return "text-violet-500"; 
+    return "text-green-500";
+  };
+  
+  const getSizeClasses = () => {
+    switch (size) {
+      case "sm":
+        return {
+          container: "gap-1.5",
+          icon: "h-3 w-3",
+          text: "text-xs"
+        };
+      case "lg":
+        return {
+          container: "gap-2.5",
+          icon: "h-5 w-5",
+          text: "text-base"
+        };
+      default: // medium
+        return {
+          container: "gap-2",
+          icon: "h-4 w-4",
+          text: "text-sm"
+        };
     }
   };
   
-  const getScoreColor = () => {
-    if (securityScore >= 90) return "text-green-500";
-    if (securityScore >= 70) return "text-web3-orange";
-    return "text-red-500";
-  };
-
+  const sizeClasses = getSizeClasses();
+  
   return (
-    <TooltipProvider>
-      <div className="flex items-center gap-3">
-        {/* Security Score */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="flex items-center gap-1">
-              <div className={`p-1 rounded-full bg-primary/10 flex items-center justify-center`}>
-                <Shield className={`${iconClassName} text-primary`} />
-              </div>
-              <span className={`font-medium ${textClassName} ${getScoreColor()}`}>{securityScore}%</span>
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Security Score: Measures overall security trustworthiness</p>
-          </TooltipContent>
-        </Tooltip>
-        
-        {/* Verification Level */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="flex items-center gap-1">
-              <div className={`p-1 rounded-full bg-secondary/10 flex items-center justify-center`}>
-                <BadgeCheck className={`${iconClassName} ${getVerificationColor()}`} />
-              </div>
-              <span className={`font-medium ${textClassName} capitalize`}>{verificationLevel}</span>
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Verification Level: Based on expertise and track record</p>
-          </TooltipContent>
-        </Tooltip>
-        
-        {completedProjects > 0 && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex items-center gap-1">
-                <div className={`p-1 rounded-full bg-accent/10 flex items-center justify-center`}>
-                  <Users className={`${iconClassName} text-accent`} />
-                </div>
-                <span className={`${textClassName}`}>{completedProjects}+ projects</span>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Successfully completed audit projects</p>
-            </TooltipContent>
-          </Tooltip>
-        )}
-        
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="flex items-center gap-1">
-              <div className={`p-1 rounded-full bg-web3-orange/10 flex items-center justify-center`}>
-                <Clock className={`${iconClassName} text-web3-orange`} />
-              </div>
-              <span className={`${textClassName}`}>{responseTime}</span>
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Average response time to inquiries</p>
-          </TooltipContent>
-        </Tooltip>
+    <div className={`flex items-center ${sizeClasses.container}`}>
+      <div className="flex items-center">
+        <Shield className={`${sizeClasses.icon} text-primary mr-0.5`} />
+        <span className={`${sizeClasses.text} font-medium`}>{securityScore}%</span>
       </div>
-    </TooltipProvider>
+      
+      <div className="flex items-center">
+        <BadgeCheck className={`${sizeClasses.icon} ${getVerificationColor()} mr-0.5`} />
+        <span className={`${sizeClasses.text} font-medium capitalize`}>{verificationLevel}</span>
+      </div>
+      
+      <div className="flex items-center">
+        <Users className={`${sizeClasses.icon} text-muted-foreground mr-0.5`} />
+        <span className={`${sizeClasses.text}`}>{completedProjects}</span>
+      </div>
+    </div>
   );
 }
