@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ServiceCardProps } from "@/data/marketplace-data";
-import { X, Star, Compare, Shield, Clock, Check, Minus } from "lucide-react";
+import { Star, Shield, Clock, Check, Minus, X } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
@@ -90,7 +90,22 @@ export function ServiceComparison({ services, open, onOpenChange }: ServiceCompa
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center">
-            <Compare className="mr-2 h-5 w-5" />
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="24" 
+              height="24" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              className="mr-2 h-5 w-5"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <path d="M3 9h18" />
+              <path d="M9 21V9" />
+            </svg>
             Service Comparison
           </DialogTitle>
           <DialogDescription>
@@ -279,7 +294,22 @@ export function CompareButton({ onCompare, count, className }: CompareButtonProp
       onClick={onCompare}
       className={className}
     >
-      <Compare className="h-4 w-4 mr-2" />
+      <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width="24" 
+        height="24" 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        className="h-4 w-4 mr-2"
+      >
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <path d="M3 9h18" />
+        <path d="M9 21V9" />
+      </svg>
       Compare {count > 0 && `(${count})`}
     </Button>
   );

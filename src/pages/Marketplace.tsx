@@ -9,7 +9,7 @@ import { OptimizedListingGrid } from "@/components/marketplace/optimized-listing
 import { MarketplaceOnboarding } from "@/components/marketplace/marketplace-onboarding";
 import { ServiceReviews } from "@/components/marketplace/service-reviews";
 import { EnhancedOnboarding } from "@/components/onboarding/enhanced-onboarding";
-import { Shield, ArrowRight, Filter, LayoutGrid, List, Lock, Server, Compare, X } from "lucide-react";
+import { Shield, ArrowRight, Filter, LayoutGrid, List, Lock, Server } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
@@ -18,6 +18,8 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { ServiceComparison } from "@/components/marketplace/service-comparison";
+import { AIRecommendations } from "@/components/marketplace/ai-recommendations";
 
 export default function Marketplace() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");

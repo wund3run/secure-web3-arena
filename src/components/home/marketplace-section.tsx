@@ -98,32 +98,14 @@ export function MarketplaceSection() {
                   services={SERVICES}
                   projectSize={activeFilters.projectSize || "medium"}
                   blockchains={activeFilters.blockchains || []}
+                  onRecommendationSelect={() => {}}
                 />
               </div>
             )}
             
             {/* Services Grid - Now with comparison toggle buttons */}
             <div className="lg:col-span-3">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                {filteredServices.map((service) => (
-                  <div key={service.id} className="relative group">
-                    <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <SelectionToggle serviceId={service.id} />
-                    </div>
-                    <ServicesGrid.ServiceCard {...service} />
-                  </div>
-                ))}
-                
-                {/* Add empty placeholder cards if less than 4 services */}
-                {filteredServices.length < 4 && Array.from({ length: 4 - filteredServices.length }).map((_, index) => (
-                  <div 
-                    key={`placeholder-${index}`} 
-                    className="h-full border border-dashed border-border/50 rounded-lg flex items-center justify-center p-8 bg-gradient-to-br from-muted/30 to-card"
-                  >
-                    <p className="text-muted-foreground text-center text-sm">More services available in the marketplace</p>
-                  </div>
-                ))}
-              </div>
+              <ServicesGrid services={filteredServices} isLoading={false} />
               
               <div className="flex justify-center mt-4 mb-10">
                 <Link to="/marketplace">
