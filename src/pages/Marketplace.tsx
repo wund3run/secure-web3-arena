@@ -1,6 +1,7 @@
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button"; // Added missing Button import
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { MarketplaceEnhancedHeader } from "@/components/marketplace/marketplace-enhanced-header";
@@ -21,11 +22,12 @@ import { ComparisonFloatingIndicator } from "@/components/marketplace/sections/C
 import { useMarketplaceServices } from "@/components/marketplace/hooks/useMarketplaceServices";
 import { useMarketplaceComparison } from "@/components/marketplace/hooks/useMarketplaceComparison";
 import { useMarketplaceState } from "@/components/marketplace/hooks/useMarketplaceState";
+import { ServiceCardProps } from "@/data/marketplace-data"; // Import ServiceCardProps type
 
-// Define global interface for window to include SERVICES
+// Define global interface for window to include SERVICES with correct type
 declare global {
   interface Window {
-    SERVICES?: any[];
+    SERVICES?: ServiceCardProps[]; // Fix: Use consistent type ServiceCardProps[]
   }
 }
 

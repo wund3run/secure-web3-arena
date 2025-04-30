@@ -127,7 +127,7 @@ export function MobileFriendlyCard({
             securityScore={provider.securityScore}
             verificationLevel={provider.verificationLevel}
             completedProjects={provider.completedProjects}
-            size="xs"
+            size="sm" // Fix: Changed from "xs" to "sm" to match the allowed types
           />
           
           <div className="text-xs text-muted-foreground line-clamp-2 min-h-[2rem]">
