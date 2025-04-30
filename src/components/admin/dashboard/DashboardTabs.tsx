@@ -19,9 +19,12 @@ import { DashboardOverview } from "./DashboardOverview";
 import { AdminDashboardWidgets } from "@/components/admin/dashboard/AdminDashboardWidgets";
 import { useNavigate } from "react-router-dom";
 
+// Define the valid tab values as a type
+export type DashboardTabValue = "dashboard" | "services" | "users" | "audits" | "reports" | "settings";
+
 interface DashboardTabsProps {
-  activeTab: string;
-  onTabChange: (value: string) => void;
+  activeTab: DashboardTabValue;
+  onTabChange: (value: DashboardTabValue) => void;
 }
 
 export function DashboardTabs({ activeTab, onTabChange }: DashboardTabsProps) {
@@ -29,7 +32,8 @@ export function DashboardTabs({ activeTab, onTabChange }: DashboardTabsProps) {
 
   // Handle tab change and update URL
   const handleTabChange = (value: string) => {
-    onTabChange(value);
+    // Cast the string value to our specific type
+    onTabChange(value as DashboardTabValue);
     navigate(`/admin/${value}`);
   };
 

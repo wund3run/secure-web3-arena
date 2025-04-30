@@ -2,16 +2,16 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { DashboardTabs } from "@/components/admin/dashboard/DashboardTabs";
+import { DashboardTabs, DashboardTabValue } from "@/components/admin/dashboard/DashboardTabs";
 import { DashboardLoader } from "@/components/admin/dashboard/DashboardLoader";
 
 interface AdminDashboardProps {
-  section?: "dashboard" | "services" | "users" | "audits" | "reports" | "settings";
+  section?: DashboardTabValue;
 }
 
 const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState(section);
+  const [activeTab, setActiveTab] = useState<DashboardTabValue>(section);
 
   // Check if admin is authenticated
   const isAuthenticated = localStorage.getItem("adminAuthenticated") === "true";
