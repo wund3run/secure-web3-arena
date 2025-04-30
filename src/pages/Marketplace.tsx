@@ -9,7 +9,7 @@ import { OptimizedListingGrid } from "@/components/marketplace/optimized-listing
 import { MarketplaceOnboarding } from "@/components/marketplace/marketplace-onboarding";
 import { ServiceReviews } from "@/components/marketplace/service-reviews";
 import { EnhancedOnboarding } from "@/components/onboarding/enhanced-onboarding";
-import { Shield, ArrowRight, Filter, LayoutGrid, List, Lock, Server } from "lucide-react";
+import { Shield, ArrowRight, Filter, LayoutGrid, List, Lock, Server, Compare, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
@@ -27,6 +27,10 @@ export default function Marketplace() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showEnhancedOnboarding, setShowEnhancedOnboarding] = useState(false);
   const [selectedService, setSelectedService] = useState<any>(null);
+  const [activeFilters, setActiveFilters] = useState<any>({});
+  const [showComparison, setShowComparison] = useState(false);
+  const [showAIRecommendations, setShowAIRecommendations] = useState(false);
+  const [servicesForComparison, setServicesForComparison] = useState<any[]>([]);
   
   // Check if user has completed onboarding
   useEffect(() => {
@@ -284,6 +288,11 @@ export default function Marketplace() {
     }
   ];
 
+  // Make SERVICES globally available for the comparison functionality
+  useEffect(() => {
+    window.SERVICES = SERVICES;
+  }, []);
+
   const filteredServices = activeCategory === "all" 
     ? SERVICES 
     : SERVICES.filter(service => 
@@ -301,14 +310,112 @@ export default function Marketplace() {
     });
   };
 
+  // Apply filters function
   const handleApplyFilters = (filters: any) => {
-    toast.success("Filters applied", {
-      description: "Security services updated based on your filters"
-    });
+    setActiveFilters(filters);
+    setShowAIRecommendations(filters.aiRecommendations || false);
+    
     // In a real implementation, we would filter services based on these criteria
     console.log("Applied filters:", filters);
   };
 
+  // Add or remove a service to/from comparison
+  const toggleCompareService = (service: any) => {
+    setServicesForComparison(prev => {
+      const isAlreadyAdded = prev.some(s => s.id === service.id);
+      
+      if (isAlreadyAdded) {
+        return prev.filter(s => s.id !== service.id);
+      } else {
+        if (prev.length >= 3) {
+          toast.warning("You can compare up to 3 services at a time", {
+            description: "Remove a service before adding another"
+          });
+          return prev;
+        }
+        return [...prev, service];
+      }
+    });
+  };
+
+  // Check if a service is selected for comparison
+  const isServiceInComparison = (serviceId: string) => {
+    return servicesForComparison.some(service => service.id === serviceId);
+  };
+
+  // Open comparison dialog
+  const handleOpenComparison = () => {
+    if (servicesForComparison.length >= 2) {
+      setShowComparison(true);
+    } else {
+      toast.info("Select at least 2 services to compare", {
+        description: "You can select up to 3 services"
+      });
+    }
+  };
+  
+  // Filter services based on active filters
+  const getFilteredServices = () => {
+    let filtered = activeCategory === "all" 
+      ? SERVICES 
+      : SERVICES.filter(service => 
+          service.category.toLowerCase() === activeCategory.toLowerCase() || 
+          service.tags.some(tag => tag.toLowerCase() === activeCategory.toLowerCase())
+        );
+    
+    // Apply additional filters if any
+    if (activeFilters.auditTypes && activeFilters.auditTypes.length > 0) {
+      filtered = filtered.filter(service => 
+        service.tags.some(tag => 
+          activeFilters.auditTypes.includes(tag)
+        )
+      );
+    }
+    
+    if (activeFilters.blockchains && activeFilters.blockchains.length > 0) {
+      filtered = filtered.filter(service => 
+        service.tags.some(tag => 
+          activeFilters.blockchains.includes(tag.toLowerCase())
+        )
+      );
+    }
+    
+    if (activeFilters.priceRange) {
+      filtered = filtered.filter(service => 
+        service.pricing.amount >= activeFilters.priceRange[0] && 
+        service.pricing.amount <= activeFilters.priceRange[1]
+      );
+    }
+    
+    if (activeFilters.minReputation) {
+      filtered = filtered.filter(service => 
+        service.provider.reputation >= activeFilters.minReputation
+      );
+    }
+    
+    if (activeFilters.deliveryTime && activeFilters.deliveryTime !== 'any') {
+      // Simulated delivery time filtering - in a real app, this would be a property of each service
+      const deliveryTimes = {
+        '1-3': [1, 3],
+        '4-7': [4, 7],
+        '8-14': [8, 14],
+        '15+': [15, 30]
+      };
+      
+      const [min, max] = deliveryTimes[activeFilters.deliveryTime as keyof typeof deliveryTimes] || [0, 100];
+      
+      // For demo purposes, we'll use a formula based on service size and provider level
+      filtered = filtered.filter(service => {
+        const estimatedDays = service.provider.level === 'expert' ? 3 : (service.provider.level === 'verified' ? 7 : 14);
+        return estimatedDays >= min && estimatedDays <= max;
+      });
+    }
+    
+    return filtered;
+  };
+
+  const filteredServices = getFilteredServices();
+  
   const handleServiceSelect = (service: any) => {
     setSelectedService(service);
   };
@@ -354,7 +461,7 @@ export default function Marketplace() {
               </div>
             </div>
 
-            {/* Header Section with View Toggle */}
+            {/* Header Section with View Toggle and Comparison Button */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
                 <h2 className="text-2xl font-bold flex items-center">
@@ -385,6 +492,19 @@ export default function Marketplace() {
                   </Button>
                 </div>
                 
+                {/* Compare Button */}
+                {servicesForComparison.length > 0 && (
+                  <Button 
+                    variant={servicesForComparison.length >= 2 ? "default" : "outline"} 
+                    size="sm"
+                    onClick={handleOpenComparison}
+                    disabled={servicesForComparison.length < 2}
+                  >
+                    <Compare className="h-4 w-4 mr-1" />
+                    Compare ({servicesForComparison.length})
+                  </Button>
+                )}
+                
                 <Button 
                   variant="outline" 
                   size="sm" 
@@ -405,6 +525,18 @@ export default function Marketplace() {
               </aside>
 
               <div className="lg:col-span-3">
+                {/* AI Recommendations Section */}
+                {showAIRecommendations && (
+                  <div className="mb-8">
+                    <AIRecommendations 
+                      services={SERVICES}
+                      projectSize={activeFilters.projectSize || "medium"}
+                      blockchains={activeFilters.blockchains || []}
+                      onRecommendationSelect={handleServiceSelect}
+                    />
+                  </div>
+                )}
+                
                 {/* Service Categories Tabs */}
                 <Tabs 
                   defaultValue="all" 
@@ -459,16 +591,20 @@ export default function Marketplace() {
                   </div>
                 </div>
 
-                {/* Services Grid with Optimized Listing Component */}
+                {/* Services Grid with Optimized Listing Component - now with comparison functionality */}
                 <h3 className="text-xl font-bold mb-4 flex items-center">
                   Available Security Services
                 </h3>
                 
                 <OptimizedListingGrid 
-                  services={filteredServices}
+                  services={filteredServices.map(service => ({
+                    ...service,
+                    onSelect: () => handleServiceSelect(service),
+                    isSelected: isServiceInComparison(service.id),
+                    onToggleCompare: () => toggleCompareService(service)
+                  }))}
                   isLoading={isLoading}
                   layout={viewMode}
-                  onServiceSelect={handleServiceSelect}
                 />
 
                 {/* Web2 + Web3 Security Services Section */}
@@ -615,6 +751,69 @@ export default function Marketplace() {
           }
         }} 
       />
+      
+      {/* Comparison Dialog */}
+      <ServiceComparison 
+        services={servicesForComparison}
+        open={showComparison}
+        onOpenChange={setShowComparison}
+      />
+      
+      {/* Floating comparison indicator if items are selected */}
+      {servicesForComparison.length > 0 && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <div className="bg-card border border-border shadow-lg rounded-lg p-3 w-[280px]">
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="font-medium text-sm flex items-center">
+                <Compare className="h-4 w-4 mr-2" />
+                Selected for comparison
+              </h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 w-7 p-0"
+                onClick={() => setServicesForComparison([])}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="space-y-2 max-h-[150px] overflow-y-auto mb-3">
+              {servicesForComparison.map(service => (
+                <div 
+                  key={service.id} 
+                  className="flex justify-between items-center bg-muted/50 p-2 rounded text-sm"
+                >
+                  <div className="truncate max-w-[180px]">{service.title}</div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0"
+                    onClick={() => toggleCompareService(service)}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-muted-foreground">
+                {servicesForComparison.length} of 3 selected
+              </span>
+              <Button
+                variant={servicesForComparison.length >= 2 ? "default" : "outline"}
+                size="sm"
+                disabled={servicesForComparison.length < 2}
+                onClick={handleOpenComparison}
+              >
+                <Compare className="h-4 w-4 mr-1" />
+                Compare
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

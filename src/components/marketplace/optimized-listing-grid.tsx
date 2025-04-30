@@ -4,10 +4,15 @@ import { MobileFriendlyCard } from "./mobile-friendly-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ServiceCardProps } from "@/data/marketplace-data";
 import { toast } from "sonner";
-import { Shield } from "lucide-react"; 
+import { Shield, Compare } from "lucide-react"; 
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface OptimizedListingGridProps {
-  services: ServiceCardProps[];
+  services: (ServiceCardProps & { 
+    isSelected?: boolean; 
+    onToggleCompare?: () => void;
+  })[];
   isLoading?: boolean;
   layout?: "grid" | "list";
   onServiceSelect?: (service: ServiceCardProps) => void;
@@ -19,7 +24,10 @@ export function OptimizedListingGrid({
   layout = "grid",
   onServiceSelect
 }: OptimizedListingGridProps) {
-  const [visibleServices, setVisibleServices] = useState<ServiceCardProps[]>([]);
+  const [visibleServices, setVisibleServices] = useState<(ServiceCardProps & { 
+    isSelected?: boolean;
+    onToggleCompare?: () => void;
+  })[]>([]);
   const [page, setPage] = useState(1);
   const loaderRef = useRef<HTMLDivElement>(null);
   const itemsPerPage = 8;
@@ -83,23 +91,52 @@ export function OptimizedListingGrid({
               </div>
             ))
           : visibleServices.map((service) => (
-              <MobileFriendlyCard
-                key={service.id}
-                id={service.id}
-                title={service.title}
-                description={service.description}
-                provider={{
-                  name: service.provider.name,
-                  securityScore: service.provider.reputation,
-                  verificationLevel: mapProviderLevel(service.provider.level),
-                  completedProjects: service.completedJobs
-                }}
-                pricing={service.pricing}
-                category={service.category}
-                tags={service.tags}
-                imageUrl={service.imageUrl}
-                onSelect={() => handleServiceSelect(service)}
-              />
+              <div key={service.id} className="relative group">
+                {/* Comparison toggle button */}
+                {service.onToggleCompare && (
+                  <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                      variant={service.isSelected ? "default" : "outline"}
+                      size="sm"
+                      className="h-7"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        service.onToggleCompare?.();
+                      }}
+                    >
+                      <Compare className="h-4 w-4 mr-1" />
+                      {service.isSelected ? "Selected" : "Compare"}
+                    </Button>
+                  </div>
+                )}
+                
+                {/* Selected badge */}
+                {service.isSelected && (
+                  <Badge 
+                    className="absolute top-2 left-2 z-10 bg-primary text-primary-foreground"
+                  >
+                    Selected for comparison
+                  </Badge>
+                )}
+                
+                <MobileFriendlyCard
+                  id={service.id}
+                  title={service.title}
+                  description={service.description}
+                  provider={{
+                    name: service.provider.name,
+                    securityScore: service.provider.reputation,
+                    verificationLevel: mapProviderLevel(service.provider.level),
+                    completedProjects: service.completedJobs
+                  }}
+                  pricing={service.pricing}
+                  category={service.category}
+                  tags={service.tags}
+                  imageUrl={service.imageUrl}
+                  onSelect={() => handleServiceSelect(service)}
+                />
+              </div>
             ))}
       </div>
 

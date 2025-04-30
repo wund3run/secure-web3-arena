@@ -1,16 +1,27 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MarketplaceHeader } from "@/components/home/marketplace/marketplace-header";
 import { CategoryTabs } from "@/components/home/marketplace/category-tabs";
 import { ServicesGrid } from "@/components/home/marketplace/services-grid";
 import { ComprehensiveSecurity } from "@/components/home/marketplace/comprehensive-security";
 import { MarketplaceFooter } from "@/components/home/marketplace/marketplace-footer";
+import { AIRecommendations } from "@/components/marketplace/ai-recommendations";
+import { ComparisonManager } from "@/components/marketplace/comparison-manager";
 import { SERVICES } from "@/data/marketplace-data";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export function MarketplaceSection() {
   const [activeTab, setActiveTab] = useState("all");
+  const [activeFilters, setActiveFilters] = useState<any>({});
+  const [showAIRecommendations, setShowAIRecommendations] = useState(false);
   
-  // Show only 4 services on the homepage, prioritizing verified providers
+  // Expose services globally for the comparison functionality
+  useEffect(() => {
+    window.SERVICES = SERVICES;
+  }, []);
+  
+  // Get filtered services based on active tab and any other filters
   const getFilteredServices = () => {
     let filtered = activeTab === "all" 
       ? [...SERVICES] 
@@ -18,6 +29,36 @@ export function MarketplaceSection() {
           service.category.toLowerCase() === activeTab.toLowerCase() || 
           service.tags.some(tag => tag.toLowerCase() === activeTab.toLowerCase())
         );
+    
+    // Apply additional filters if any
+    if (activeFilters.auditTypes && activeFilters.auditTypes.length > 0) {
+      filtered = filtered.filter(service => 
+        service.tags.some(tag => 
+          activeFilters.auditTypes.includes(tag.toLowerCase())
+        )
+      );
+    }
+    
+    if (activeFilters.priceRange) {
+      filtered = filtered.filter(service => 
+        service.pricing.amount >= activeFilters.priceRange[0] && 
+        service.pricing.amount <= activeFilters.priceRange[1]
+      );
+    }
+    
+    if (activeFilters.blockchains && activeFilters.blockchains.length > 0) {
+      filtered = filtered.filter(service => 
+        service.tags.some(tag => 
+          activeFilters.blockchains.includes(tag.toLowerCase())
+        )
+      );
+    }
+    
+    if (activeFilters.minReputation) {
+      filtered = filtered.filter(service => 
+        service.provider.reputation >= activeFilters.minReputation
+      );
+    }
     
     // Sort by verification status and then by rating to show best services first
     filtered = filtered.sort((a, b) => {
@@ -31,20 +72,99 @@ export function MarketplaceSection() {
   };
 
   const filteredServices = getFilteredServices();
+  const { ComparisonProvider, SelectionIndicator, SelectionToggle, ComparisonDialog } = ComparisonManager();
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
 
+  const handleFilterChange = (filters: any) => {
+    setActiveFilters(filters);
+    setShowAIRecommendations(filters.aiRecommendations || false);
+  };
+
   return (
-    <section className="py-16 bg-gradient-to-b from-background to-muted/30 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <MarketplaceHeader />
-        <CategoryTabs activeTab={activeTab} onTabChange={handleTabChange} />
-        <ServicesGrid services={filteredServices} />
-        <ComprehensiveSecurity />
-        <MarketplaceFooter />
-      </div>
-    </section>
+    <ComparisonProvider>
+      <section className="py-16 bg-gradient-to-b from-background to-muted/30 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <MarketplaceHeader />
+          <CategoryTabs activeTab={activeTab} onTabChange={handleTabChange} />
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            {/* AI Recommendations Section (conditional) */}
+            {showAIRecommendations && (
+              <div className="lg:col-span-3 mb-2">
+                <AIRecommendations 
+                  services={SERVICES}
+                  projectSize={activeFilters.projectSize || "medium"}
+                  blockchains={activeFilters.blockchains || []}
+                />
+              </div>
+            )}
+            
+            {/* Services Grid - Now with comparison toggle buttons */}
+            <div className="lg:col-span-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                {filteredServices.map((service) => (
+                  <div key={service.id} className="relative group">
+                    <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <SelectionToggle serviceId={service.id} />
+                    </div>
+                    <ServicesGrid.ServiceCard {...service} />
+                  </div>
+                ))}
+                
+                {/* Add empty placeholder cards if less than 4 services */}
+                {filteredServices.length < 4 && Array.from({ length: 4 - filteredServices.length }).map((_, index) => (
+                  <div 
+                    key={`placeholder-${index}`} 
+                    className="h-full border border-dashed border-border/50 rounded-lg flex items-center justify-center p-8 bg-gradient-to-br from-muted/30 to-card"
+                  >
+                    <p className="text-muted-foreground text-center text-sm">More services available in the marketplace</p>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="flex justify-center mt-4 mb-10">
+                <Link to="/marketplace">
+                  <Button variant="outline" className="group">
+                    View all security services
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1"
+                    >
+                      <path d="M5 12h14" />
+                      <path d="m12 5 7 7-7 7" />
+                    </svg>
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+          
+          <ComprehensiveSecurity />
+          <MarketplaceFooter />
+        </div>
+        
+        {/* Floating comparison selector */}
+        <SelectionIndicator />
+        {ComparisonDialog}
+      </section>
+    </ComparisonProvider>
   );
+}
+
+// Add SERVICES to the Window interface
+declare global {
+  interface Window {
+    SERVICES?: typeof SERVICES;
+  }
 }
