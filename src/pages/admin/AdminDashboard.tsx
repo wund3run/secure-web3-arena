@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import AdminLayout from "@/components/admin/AdminLayout";
@@ -23,6 +22,7 @@ import { UserManagement } from "@/components/admin/UserManagement";
 import { AuditManagement } from "@/components/admin/AuditManagement";
 import { ReportManagement } from "@/components/admin/ReportManagement";
 import SettingsManagement from "@/components/admin/SettingsManagement";
+import { AdminDashboardWidgets } from "@/components/admin/dashboard/AdminDashboardWidgets";
 
 interface AdminDashboardProps {
   section?: "dashboard" | "services" | "users" | "audits" | "reports" | "settings";
@@ -115,6 +115,10 @@ const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
             </div>
 
             <TabsContent value="dashboard" className="space-y-4">
+              {/* New real-time dashboard widgets */}
+              <AdminDashboardWidgets />
+              
+              {/* Keep existing dashboard cards (for backward compatibility) */}
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <DashboardCard 
                   title="Total Users" 
