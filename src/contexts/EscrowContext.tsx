@@ -207,7 +207,26 @@ export const EscrowProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         throw error;
       }
       
-      setContracts(data || []);
+      // Type assertion to make TypeScript happy
+      const typedData = data?.map(contract => {
+        // Handle null or invalid client/auditor
+        const client = typeof contract.client === 'object' && contract.client !== null ? 
+          contract.client as Profile : 
+          undefined;
+        
+        const auditor = typeof contract.auditor === 'object' && contract.auditor !== null ? 
+          contract.auditor as Profile : 
+          undefined;
+        
+        return {
+          ...contract,
+          client,
+          auditor,
+          status: contract.status as EscrowStatus
+        };
+      }) as EscrowContract[];
+      
+      setContracts(typedData || []);
     } catch (error) {
       console.error('Error fetching contracts:', error);
       toast.error('Failed to load escrow contracts');
@@ -260,12 +279,46 @@ export const EscrowProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         throw error;
       }
       
+      // Type assertion and transformation
+      const typedTransactions = (data || []).map(tx => {
+        // Handle null or invalid sender/recipient
+        const sender = typeof tx.sender === 'object' && tx.sender !== null ? 
+          tx.sender as Profile : 
+          undefined;
+        
+        const recipient = typeof tx.recipient === 'object' && tx.recipient !== null ? 
+          tx.recipient as Profile : 
+          undefined;
+          
+        // Handle approvals
+        const approvals = Array.isArray(tx.approvals) ? 
+          tx.approvals.map(approval => {
+            const approver = typeof approval.approver === 'object' && approval.approver !== null ?
+              approval.approver as Profile :
+              undefined;
+            
+            return {
+              ...approval,
+              approver
+            } as MultisigApproval;
+          }) : 
+          undefined;
+          
+        return {
+          ...tx,
+          sender,
+          recipient,
+          approvals,
+          type: tx.type as TransactionType
+        } as Transaction;
+      });
+      
       setTransactions(prev => ({
         ...prev,
-        [contractId]: data || []
+        [contractId]: typedTransactions
       }));
       
-      return data || [];
+      return typedTransactions;
     } catch (error) {
       console.error('Error fetching transactions:', error);
       toast.error('Failed to load transactions');
@@ -291,12 +344,47 @@ export const EscrowProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         throw error;
       }
       
+      // Type assertion and transformation
+      const typedDisputes = (data || []).map(dispute => {
+        // Handle raiser
+        const raiser = typeof dispute.raiser === 'object' && dispute.raiser !== null ? 
+          dispute.raiser as Profile : 
+          undefined;
+        
+        // Handle arbitrator
+        const arbitrator = typeof dispute.arbitrator === 'object' && dispute.arbitrator !== null ? 
+          dispute.arbitrator as Profile : 
+          undefined;
+        
+        // Handle comments
+        const comments = Array.isArray(dispute.comments) ?
+          dispute.comments.map(comment => {
+            const user = typeof comment.user === 'object' && comment.user !== null ?
+              comment.user as Profile :
+              undefined;
+            
+            return {
+              ...comment,
+              user
+            } as DisputeComment;
+          }) :
+          undefined;
+          
+        return {
+          ...dispute,
+          raiser,
+          arbitrator,
+          comments,
+          status: dispute.status as DisputeStatus
+        } as Dispute;
+      });
+      
       setDisputes(prev => ({
         ...prev,
-        [contractId]: data || []
+        [contractId]: typedDisputes
       }));
       
-      return data || [];
+      return typedDisputes;
     } catch (error) {
       console.error('Error fetching disputes:', error);
       toast.error('Failed to load disputes');
@@ -315,13 +403,19 @@ export const EscrowProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     }
     
     try {
+      // Make sure auditor_id is provided (it's required by the database)
+      const contractData = {
+        ...contract,
+        auditor_id: contract.auditor_id || '', // Empty string as fallback
+        client_id: contract.client_id || profile.id,
+        title: contract.title || '', // Ensure required fields have values
+        total_amount: contract.total_amount || 0
+      };
+      
       // Insert the contract
-      const { data: contractData, error: contractError } = await supabase
+      const { data: insertedContract, error: contractError } = await supabase
         .from('escrow_contracts')
-        .insert({
-          ...contract,
-          client_id: contract.client_id || profile.id
-        })
+        .insert(contractData)
         .select()
         .single();
         
@@ -331,7 +425,7 @@ export const EscrowProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       if (initialMilestones.length > 0) {
         const milestonesWithContractId = initialMilestones.map(milestone => ({
           ...milestone,
-          escrow_contract_id: contractData.id
+          escrow_contract_id: insertedContract.id
         }));
         
         const { error: milestonesError } = await supabase
@@ -345,7 +439,7 @@ export const EscrowProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       await fetchContracts();
       
       toast.success('Escrow contract created successfully');
-      return contractData.id;
+      return insertedContract.id;
     } catch (error) {
       console.error('Error creating contract:', error);
       toast.error('Failed to create escrow contract');
