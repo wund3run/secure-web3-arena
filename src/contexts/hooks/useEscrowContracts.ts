@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -44,11 +43,9 @@ export const useEscrowContracts = (profile: Profile | null) => {
       }) as EscrowContract[];
       
       setContracts(typedData || []);
-      return typedData || [];
     } catch (error) {
       console.error('Error fetching contracts:', error);
       toast.error('Failed to load escrow contracts');
-      return [];
     }
   };
 

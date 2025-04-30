@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -175,10 +174,10 @@ export function BlockchainConnector({ onConnect, connected = false, address, cha
   );
 }
 
-// Add TypeScript declarations for wallet providers
+// Define ethereum interface properly at line 181
 declare global {
   interface Window {
-    ethereum?: {
+    ethereum: {
       isMetaMask?: boolean;
       isCoinbaseWallet?: boolean;
       request: (args: { method: string; params?: any[] }) => Promise<any>;
