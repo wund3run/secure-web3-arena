@@ -83,6 +83,12 @@ export function MarketplaceSection() {
     setShowAIRecommendations(filters.aiRecommendations || false);
   };
 
+  // Add a handler for recommendation selection
+  const handleRecommendationSelect = (service: any) => {
+    console.log("Recommendation selected:", service);
+    // Add any logic you need for handling the selection
+  };
+
   return (
     <ComparisonProvider>
       <section className="py-16 bg-gradient-to-b from-background to-muted/30 relative">
@@ -98,7 +104,7 @@ export function MarketplaceSection() {
                   services={SERVICES}
                   projectSize={activeFilters.projectSize || "medium"}
                   blockchains={activeFilters.blockchains || []}
-                  onRecommendationSelect={() => {}}
+                  onRecommendationSelect={handleRecommendationSelect}
                 />
               </div>
             )}
