@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, Check, ExternalLink, Wallet } from "lucide-react";
 import { toast } from "sonner";
 import { useEscrow } from "@/contexts/EscrowContext";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BlockchainConnectorProps {
   onConnect: (address: string) => void;
@@ -178,6 +179,8 @@ export function BlockchainConnector({ onConnect, connected = false, address, cha
 declare global {
   interface Window {
     ethereum?: {
+      isMetaMask?: boolean;
+      isCoinbaseWallet?: boolean;
       request: (args: { method: string; params?: any[] }) => Promise<any>;
       on: (event: string, callback: any) => void;
       removeListener: (event: string, callback: any) => void;

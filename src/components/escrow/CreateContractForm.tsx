@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -25,7 +24,6 @@ import { Separator } from "@/components/ui/separator";
 import {
   AlertCircle,
   Calendar as CalendarIcon,
-  Info,
   Plus,
   Trash2,
   Users,
@@ -70,6 +68,13 @@ const formSchema = z.object({
     message: "At least one milestone is required.",
   }),
 });
+
+type MilestoneFormData = {
+  title: string;
+  description?: string;
+  amount: number;
+  deadline?: Date;
+};
 
 export function CreateContractForm({ onSuccess }: CreateContractFormProps) {
   const { createContract } = useEscrow();
@@ -137,6 +142,14 @@ export function CreateContractForm({ onSuccess }: CreateContractFormProps) {
         return;
       }
       
+      // Convert Date objects to ISO strings for the API
+      const formattedMilestones = values.milestones.map(milestone => ({
+        title: milestone.title,
+        description: milestone.description,
+        amount: milestone.amount,
+        deadline: milestone.deadline ? milestone.deadline.toISOString() : undefined,
+      }));
+      
       const contractId = await createContract(
         {
           title: values.title,
@@ -147,7 +160,7 @@ export function CreateContractForm({ onSuccess }: CreateContractFormProps) {
           requires_multisig: values.requires_multisig,
           status: "pending",
         },
-        values.milestones
+        formattedMilestones
       );
       
       if (contractId) {
