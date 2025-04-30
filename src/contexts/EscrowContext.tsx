@@ -425,7 +425,9 @@ export const EscrowProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       if (initialMilestones.length > 0) {
         const milestonesWithContractId = initialMilestones.map(milestone => ({
           ...milestone,
-          escrow_contract_id: insertedContract.id
+          escrow_contract_id: insertedContract.id,
+          title: milestone.title || 'Untitled Milestone', // Ensure required field
+          amount: milestone.amount || 0 // Ensure required field
         }));
         
         const { error: milestonesError } = await supabase
@@ -482,13 +484,22 @@ export const EscrowProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       return null;
     }
     
+    if (!transaction.escrow_contract_id) {
+      toast.error('Contract ID is required');
+      return null;
+    }
+    
     try {
+      const transactionData = {
+        ...transaction,
+        sender_id: transaction.sender_id || profile.id,
+        amount: transaction.amount || 0, // Ensure required field
+        type: transaction.type || 'deposit' as TransactionType // Ensure required field
+      };
+      
       const { data, error } = await supabase
         .from('transactions')
-        .insert({
-          ...transaction,
-          sender_id: transaction.sender_id || profile.id
-        })
+        .insert(transactionData)
         .select()
         .single();
         
@@ -552,13 +563,28 @@ export const EscrowProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       return null;
     }
     
+    if (!dispute.escrow_contract_id) {
+      toast.error('Contract ID is required');
+      return null;
+    }
+    
+    if (!dispute.reason) {
+      toast.error('Reason is required for disputes');
+      return null;
+    }
+    
     try {
+      const disputeData = {
+        ...dispute,
+        raised_by: dispute.raised_by || profile.id,
+        reason: dispute.reason,
+        escrow_contract_id: dispute.escrow_contract_id,
+        status: dispute.status || 'opened' as DisputeStatus
+      };
+      
       const { data, error } = await supabase
         .from('disputes')
-        .insert({
-          ...dispute,
-          raised_by: dispute.raised_by || profile.id
-        })
+        .insert(disputeData)
         .select()
         .single();
         
