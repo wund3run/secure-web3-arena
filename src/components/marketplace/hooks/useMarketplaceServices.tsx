@@ -33,22 +33,22 @@ export function useMarketplaceServices() {
   const [services, setServices] = useState<MarketplaceService[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Mock service data - this matches the original implementation
+  // Updated blockchain ecosystems with the full set requested
   const BLOCKCHAIN_ECOSYSTEMS = [
-    {
-      name: "Solana",
-      logoUrl: "https://cryptologos.cc/logos/solana-sol-logo.png",
-      color: "#9945FF"
-    },
     {
       name: "Ethereum",
       logoUrl: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
       color: "#627EEA"
     },
     {
-      name: "Polkadot",
-      logoUrl: "https://cryptologos.cc/logos/polkadot-new-dot-logo.png",
-      color: "#E6007A"
+      name: "Solana",
+      logoUrl: "https://cryptologos.cc/logos/solana-sol-logo.png",
+      color: "#9945FF"
+    },
+    {
+      name: "Polygon",
+      logoUrl: "https://cryptologos.cc/logos/polygon-matic-logo.png",
+      color: "#8247E5"
     },
     {
       name: "Avalanche",
@@ -56,14 +56,29 @@ export function useMarketplaceServices() {
       color: "#E84142"
     },
     {
-      name: "Cosmos",
-      logoUrl: "https://cryptologos.cc/logos/cosmos-atom-logo.png",
-      color: "#2E3148"
+      name: "BNB Chain",
+      logoUrl: "https://cryptologos.cc/logos/bnb-bnb-logo.png",
+      color: "#F3BA2F"
     },
     {
-      name: "zkSync",
-      logoUrl: "https://cryptologos.cc/logos/generic/token.png",
-      color: "#4E529A"
+      name: "Arbitrum",
+      logoUrl: "https://cryptologos.cc/logos/arbitrum-arb-logo.png", 
+      color: "#28A0F0"
+    },
+    {
+      name: "Optimism",
+      logoUrl: "https://cryptologos.cc/logos/optimism-ethereum-op-logo.png",
+      color: "#FF0420"
+    },
+    {
+      name: "Aptos",
+      logoUrl: "https://cryptologos.cc/logos/aptos-apt-logo.png",
+      color: "#277DA1"
+    },
+    {
+      name: "Sui",
+      logoUrl: "https://cryptologos.cc/logos/sui-sui-logo.png",
+      color: "#6FBCF0"
     }
   ];
 
@@ -107,7 +122,7 @@ export function useMarketplaceServices() {
     }
   ];
 
-  // Sample data for marketplace services with improved images (matching original implementation)
+  // Sample data for marketplace services
   const SERVICES: MarketplaceService[] = [
     {
       id: "1",

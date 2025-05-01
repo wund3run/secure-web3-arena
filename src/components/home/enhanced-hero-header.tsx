@@ -139,19 +139,19 @@ export function EnhancedHeroHeader() {
               </div>
             </div>
             
-            {/* New blockchain ecosystems supported section */}
+            {/* Updated blockchain ecosystems supported section */}
             <div className="mt-8 pt-6 border-t border-border/30">
               <p className="text-sm text-muted-foreground mb-3">Blockchain ecosystems supported:</p>
               <div className="flex flex-wrap gap-2">
-                <span className="px-3 py-1 bg-muted/40 rounded-full text-xs font-medium">Ethereum</span>
-                <span className="px-3 py-1 bg-muted/40 rounded-full text-xs font-medium">Solana</span>
-                <span className="px-3 py-1 bg-muted/40 rounded-full text-xs font-medium">Polygon</span>
-                <span className="px-3 py-1 bg-muted/40 rounded-full text-xs font-medium">Avalanche</span>
-                <span className="px-3 py-1 bg-muted/40 rounded-full text-xs font-medium">BNB Chain</span>
-                <span className="px-3 py-1 bg-muted/40 rounded-full text-xs font-medium">Arbitrum</span>
-                <span className="px-3 py-1 bg-muted/40 rounded-full text-xs font-medium">Optimism</span>
-                <span className="px-3 py-1 bg-muted/40 rounded-full text-xs font-medium">Aptos</span>
-                <span className="px-3 py-1 bg-muted/40 rounded-full text-xs font-medium">Sui</span>
+                <span className="px-3 py-1 bg-[#627EEA]/10 text-[#627EEA] rounded-full text-xs font-medium">Ethereum</span>
+                <span className="px-3 py-1 bg-[#9945FF]/10 text-[#9945FF] rounded-full text-xs font-medium">Solana</span>
+                <span className="px-3 py-1 bg-[#8247E5]/10 text-[#8247E5] rounded-full text-xs font-medium">Polygon</span>
+                <span className="px-3 py-1 bg-[#E84142]/10 text-[#E84142] rounded-full text-xs font-medium">Avalanche</span>
+                <span className="px-3 py-1 bg-[#F3BA2F]/10 text-[#F3BA2F] rounded-full text-xs font-medium">BNB Chain</span>
+                <span className="px-3 py-1 bg-[#28A0F0]/10 text-[#28A0F0] rounded-full text-xs font-medium">Arbitrum</span>
+                <span className="px-3 py-1 bg-[#FF0420]/10 text-[#FF0420] rounded-full text-xs font-medium">Optimism</span>
+                <span className="px-3 py-1 bg-[#277DA1]/10 text-[#277DA1] rounded-full text-xs font-medium">Aptos</span>
+                <span className="px-3 py-1 bg-[#6FBCF0]/10 text-[#6FBCF0] rounded-full text-xs font-medium">Sui</span>
               </div>
             </div>
           </div>
