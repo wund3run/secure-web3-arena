@@ -1,5 +1,5 @@
 
-import { ArrowRight, Shield, Check, FileText } from "lucide-react";
+import { ArrowRight, Shield, Check, FileText, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -29,6 +29,12 @@ export function MarketplaceFooter() {
                 <FileText className="ml-2 h-4 w-4" />
               </Button>
             </Link>
+          </div>
+          
+          {/* Contact Email */}
+          <div className="mt-6 flex items-center justify-center text-sm text-muted-foreground">
+            <Mail className="h-4 w-4 mr-2" />
+            <span>Contact us: <a href="mailto:join@hawkly.com" className="hover:text-primary">join@hawkly.com</a></span>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 
-import { Shield, Twitter, Github, MessageSquare, Globe, AlertCircle, Info } from "lucide-react";
+import { Shield, Twitter, Github, MessageSquare, Globe, AlertCircle, Info, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function Footer() {
@@ -52,6 +52,12 @@ export function Footer() {
                 <Globe className="h-5 w-5" />
                 <span className="sr-only">Website</span>
               </a>
+            </div>
+            
+            {/* Added contact email */}
+            <div className="mt-4 flex items-center">
+              <Mail className="h-5 w-5 text-muted-foreground mr-2" />
+              <a href="mailto:join@hawkly.com" className="text-sm text-muted-foreground hover:text-primary">join@hawkly.com</a>
             </div>
           </div>
           

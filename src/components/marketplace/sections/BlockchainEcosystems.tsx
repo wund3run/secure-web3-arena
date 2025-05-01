@@ -14,47 +14,47 @@ interface BlockchainEcosystemsProps {
 const DEFAULT_ECOSYSTEMS: BlockchainEcosystem[] = [
   {
     name: "Ethereum",
-    logoUrl: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
+    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     color: "#627EEA"
   },
   {
     name: "Solana",
-    logoUrl: "https://cryptologos.cc/logos/solana-sol-logo.png",
+    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     color: "#9945FF"
   },
   {
     name: "Polygon",
-    logoUrl: "https://cryptologos.cc/logos/polygon-matic-logo.png",
+    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     color: "#8247E5"
   },
   {
     name: "Avalanche",
-    logoUrl: "https://cryptologos.cc/logos/avalanche-avax-logo.png",
+    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     color: "#E84142"
   },
   {
     name: "BNB Chain",
-    logoUrl: "https://cryptologos.cc/logos/bnb-bnb-logo.png",
+    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     color: "#F3BA2F"
   },
   {
     name: "Arbitrum",
-    logoUrl: "https://cryptologos.cc/logos/arbitrum-arb-logo.png", 
+    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png", 
     color: "#28A0F0"
   },
   {
     name: "Optimism",
-    logoUrl: "https://cryptologos.cc/logos/optimism-ethereum-op-logo.png",
+    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     color: "#FF0420"
   },
   {
     name: "Aptos",
-    logoUrl: "https://cryptologos.cc/logos/aptos-apt-logo.png",
+    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     color: "#277DA1"
   },
   {
     name: "Sui",
-    logoUrl: "https://cryptologos.cc/logos/sui-sui-logo.png",
+    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     color: "#6FBCF0"
   }
 ];
@@ -87,16 +87,12 @@ export function BlockchainEcosystems({ ecosystems = DEFAULT_ECOSYSTEMS }: Blockc
               className="h-14 w-14 mb-2 flex items-center justify-center rounded-full bg-gradient-to-br from-white/80 to-white/20" 
               style={{ boxShadow: `0 0 10px ${ecosystem.color}40` }}
             >
-              <img 
-                src={ecosystem.logoUrl} 
-                alt={`${ecosystem.name} logo`}
-                className="h-8 w-8 object-contain"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = "/lovable-uploads/65e03f83-0c8d-4b03-949b-60b5e384317d.png";
-                  target.onerror = null;
-                }}
-              />
+              <div 
+                className="h-8 w-8 flex items-center justify-center"
+                style={{ backgroundColor: ecosystem.color, borderRadius: '50%' }}
+              >
+                <span className="text-white font-bold text-xs">{ecosystem.name.substring(0, 1)}</span>
+              </div>
             </div>
             <h4 className="font-medium text-xs text-center">{ecosystem.name}</h4>
           </div>

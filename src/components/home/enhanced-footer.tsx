@@ -83,7 +83,7 @@ export function EnhancedFooter() {
             <div className="mt-6 space-y-2">
               <div className="flex items-start">
                 <Mail className="h-5 w-5 text-muted-foreground mr-2 mt-0.5" />
-                <span className="text-sm text-muted-foreground">contact@example.com</span>
+                <a href="mailto:join@hawkly.com" className="text-sm text-muted-foreground hover:text-primary">join@hawkly.com</a>
               </div>
               <div className="flex items-start">
                 <Map className="h-5 w-5 text-muted-foreground mr-2 mt-0.5" />

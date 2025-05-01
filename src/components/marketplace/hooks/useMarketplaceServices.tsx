@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
@@ -33,51 +34,51 @@ export function useMarketplaceServices() {
   const [services, setServices] = useState<MarketplaceService[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Updated blockchain ecosystems with the full set requested
+  // Updated blockchain ecosystems with local fallback logo
   const BLOCKCHAIN_ECOSYSTEMS = [
     {
       name: "Ethereum",
-      logoUrl: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
+      logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
       color: "#627EEA"
     },
     {
       name: "Solana",
-      logoUrl: "https://cryptologos.cc/logos/solana-sol-logo.png",
+      logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
       color: "#9945FF"
     },
     {
       name: "Polygon",
-      logoUrl: "https://cryptologos.cc/logos/polygon-matic-logo.png",
+      logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
       color: "#8247E5"
     },
     {
       name: "Avalanche",
-      logoUrl: "https://cryptologos.cc/logos/avalanche-avax-logo.png",
+      logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
       color: "#E84142"
     },
     {
       name: "BNB Chain",
-      logoUrl: "https://cryptologos.cc/logos/bnb-bnb-logo.png",
+      logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
       color: "#F3BA2F"
     },
     {
       name: "Arbitrum",
-      logoUrl: "https://cryptologos.cc/logos/arbitrum-arb-logo.png", 
+      logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png", 
       color: "#28A0F0"
     },
     {
       name: "Optimism",
-      logoUrl: "https://cryptologos.cc/logos/optimism-ethereum-op-logo.png",
+      logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
       color: "#FF0420"
     },
     {
       name: "Aptos",
-      logoUrl: "https://cryptologos.cc/logos/aptos-apt-logo.png",
+      logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
       color: "#277DA1"
     },
     {
       name: "Sui",
-      logoUrl: "https://cryptologos.cc/logos/sui-sui-logo.png",
+      logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
       color: "#6FBCF0"
     }
   ];
