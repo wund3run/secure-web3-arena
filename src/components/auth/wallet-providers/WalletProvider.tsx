@@ -1,6 +1,9 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { AlertCircle } from "lucide-react";
 
 interface WalletProviderProps {
   name: string;
@@ -21,7 +24,21 @@ export function WalletProvider({ name, icon, chainType, onClick, isDetected }: W
     >
       <div className="flex-shrink-0 mr-3">{icon}</div>
       <div className="text-left flex-1">
-        <p className="font-medium">{name}</p>
+        <div className="flex items-center">
+          <p className="font-medium">{name}</p>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Badge variant="outline" className="ml-2 text-[0.6rem] px-1 py-0 h-4 border-amber-300 text-amber-700 bg-amber-50">
+                  BETA
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent side="top">
+                <p className="text-xs max-w-[200px]">This integration is in beta. Some features may not work as expected.</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
         <p className="text-xs text-muted-foreground">{chainType}</p>
       </div>
       {isDetected && (

@@ -1,7 +1,9 @@
 
-import { Shield, Star, Users, BadgeCheck, ArrowRight, FileCode, LockKeyhole } from "lucide-react";
+import { Shield, Star, Users, BadgeCheck, ArrowRight, FileCode, LockKeyhole, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function MarketplaceHeader() {
   return (
@@ -11,11 +13,32 @@ export function MarketplaceHeader() {
           <Shield className="h-5 w-5 mr-2" />
           <span className="font-medium">Top-rated Web3 Security Services</span>
         </div>
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground mb-4">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground mb-4 flex items-center justify-center gap-2">
           Web3 Security Marketplace
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 bg-amber-50">
+                  BETA
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent side="top">
+                <p className="text-xs max-w-[250px]">
+                  Our platform is in beta. We're continuously improving, but some features may not work as expected.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </h2>
         <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">
           Connect with verified security experts to protect your blockchain projects from vulnerabilities like reentrancy attacks, oracle manipulation, and access control exploits
+        </p>
+      </div>
+      
+      <div className="text-sm bg-amber-50 border border-amber-100 rounded-lg p-3 mb-8 flex items-start">
+        <AlertCircle className="h-4 w-4 text-amber-500 mr-2 flex-shrink-0 mt-0.5" />
+        <p className="text-amber-800">
+          <span className="font-medium">Beta Platform Notice:</span> Hawkly is currently in beta testing. While we work to improve our platform, some features may be limited or contain bugs. We appreciate your feedback and patience.
         </p>
       </div>
       

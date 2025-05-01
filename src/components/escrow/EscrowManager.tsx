@@ -6,6 +6,8 @@ import { EscrowSidebar } from "./sidebar/EscrowSidebar";
 import { WelcomeScreen } from "./auth/WelcomeScreen";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { AlertCircle } from "lucide-react";
+import { BetaWarning } from "@/components/ui/beta-warning";
 
 export function EscrowManager() {
   const {
@@ -54,6 +56,14 @@ export function EscrowManager() {
           <Button onClick={() => setShowCreateForm(true)}>Create New Escrow</Button>
         </div>
         
+        <BetaWarning variant="subtle" size="sm">
+          <div className="text-xs">
+            <span className="font-semibold">Beta Feature:</span> The escrow system is currently in testing. 
+            Please use with caution and verify all transactions before proceeding. 
+            For feedback or issues, please contact our support team.
+          </div>
+        </BetaWarning>
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2">
             <EscrowOverview 
@@ -79,8 +89,13 @@ export function EscrowManager() {
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>Create New Escrow Contract</DialogTitle>
-            <DialogDescription>
-              Set up a secure escrow for audit services with milestone payments
+            <DialogDescription className="flex items-start">
+              <div className="flex-1">
+                Set up a secure escrow for audit services with milestone payments
+              </div>
+              <div className="ml-2 inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800">
+                <AlertCircle className="h-3 w-3 mr-1" /> Beta
+              </div>
             </DialogDescription>
           </DialogHeader>
           <CreateContractForm onSuccess={() => setShowCreateForm(false)} />

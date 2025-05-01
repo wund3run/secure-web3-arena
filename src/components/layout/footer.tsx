@@ -1,15 +1,35 @@
-import { Shield, Twitter, Github, MessageSquare, Globe } from "lucide-react";
+
+import { Shield, Twitter, Github, MessageSquare, Globe, AlertCircle, Info } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function Footer() {
   return (
     <footer className="bg-card border-t border-border/40">
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        {/* Beta disclaimer banner */}
+        <div className="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <div className="flex items-start">
+            <AlertCircle className="h-5 w-5 text-amber-500 mt-0.5 mr-2 flex-shrink-0" />
+            <div>
+              <h4 className="font-semibold text-sm text-amber-800">Beta Platform Notice</h4>
+              <p className="text-xs text-amber-700 mt-1">
+                Hawkly is currently in beta. While we continuously improve the platform, some features may not be fully operational or may contain bugs. 
+                We appreciate your feedback during this phase. Please review our 
+                <Link to="/terms" className="text-primary underline hover:text-primary/80 mx-1">Terms of Service</Link>
+                and
+                <Link to="/security-policy" className="text-primary underline hover:text-primary/80 mx-1">Security Policy</Link>
+                for limitations and capabilities.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1">
             <div className="flex items-center space-x-2">
               <Shield className="h-8 w-8 text-primary" />
               <span className="font-bold text-xl">Hawkly</span>
+              <span className="text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full">BETA</span>
             </div>
             <p className="mt-4 text-sm text-muted-foreground">
               The leading Web3 security marketplace connecting projects with top security experts.
@@ -79,6 +99,13 @@ export function Footer() {
               <Link to="/security-policy" className="text-xs text-muted-foreground hover:text-primary">Security Policy</Link>
               <Link to="/contact" className="text-xs text-muted-foreground hover:text-primary">Contact Us</Link>
             </div>
+          </div>
+          <div className="mt-4 text-xs text-muted-foreground/70 text-center">
+            <div className="flex items-center justify-center">
+              <Info className="h-3 w-3 mr-1" />
+              <span>Disclaimer: Hawkly provides a platform for security services but does not guarantee complete protection.</span>
+            </div>
+            <div>Use of our services is subject to our terms and applicable blockchain security limitations.</div>
           </div>
         </div>
       </div>

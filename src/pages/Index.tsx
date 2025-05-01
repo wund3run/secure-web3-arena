@@ -14,16 +14,19 @@ import { GuidedOnboarding } from "@/components/onboarding/guided-onboarding";
 import { FaqSection } from "@/components/home/faq-section";
 import { EnhancedOnboarding } from "@/components/onboarding/enhanced-onboarding";
 import { Button } from "@/components/ui/button";
-import { Shield, ArrowRight } from "lucide-react";
+import { Shield, ArrowRight, AlertCircle } from "lucide-react";
+import { BetaWarning } from "@/components/ui/beta-warning";
 
 const Index = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showEnhancedOnboarding, setShowEnhancedOnboarding] = useState(false);
+  const [showBetaMessage, setShowBetaMessage] = useState(true);
   
   // Check if this is the first visit
   useEffect(() => {
     const hasVisited = localStorage.getItem("has_visited_hawkly");
     const hasCompletedOnboarding = localStorage.getItem("hawkly_onboarding_completed");
+    const hasClosedBetaMessage = localStorage.getItem("hawkly_beta_notice_closed");
     
     if (!hasVisited && !hasCompletedOnboarding) {
       // Set a slight delay to show the onboarding after page loads
@@ -34,12 +37,44 @@ const Index = () => {
       
       return () => clearTimeout(timer);
     }
+    
+    if (hasClosedBetaMessage) {
+      setShowBetaMessage(false);
+    }
   }, []);
+  
+  const handleCloseBetaMessage = () => {
+    setShowBetaMessage(false);
+    localStorage.setItem("hawkly_beta_notice_closed", "true");
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-white via-primary/5 to-secondary/5">
       <Navbar />
       <main className="flex-grow">
+        {showBetaMessage && (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-4">
+            <div className="relative">
+              <BetaWarning
+                title="Hawkly Beta Platform"
+                size="sm"
+              >
+                <p>
+                  Welcome to Hawkly Beta! We're continuously improving our Web3 security marketplace.
+                  Some features may be limited or contain bugs. Your feedback helps us improve.
+                </p>
+              </BetaWarning>
+              <button 
+                className="absolute top-2 right-2 text-amber-700 hover:text-amber-900"
+                onClick={handleCloseBetaMessage}
+                aria-label="Close beta message"
+              >
+                <AlertCircle className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        )}
+      
         <EnhancedHeroHeader />
         
         {/* Stats and features sections */}
