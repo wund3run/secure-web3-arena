@@ -3,6 +3,7 @@ import { ArrowRight, FileText, ShieldCheck, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import { BetaWarning } from "@/components/ui/beta-warning";
 
 export function AuditsFooter() {
   return (
@@ -24,15 +25,18 @@ export function AuditsFooter() {
           before they can be exploited in production.
         </p>
         
-        <div className="bg-amber-50 border border-amber-100 rounded-lg p-3 mb-6 text-left">
-          <div className="flex items-center">
-            <AlertCircle className="h-5 w-5 text-amber-500 mr-2 flex-shrink-0" />
-            <p className="text-sm text-amber-800">
-              <span className="font-semibold">Beta Notice:</span> Our audit service is currently in beta. 
-              While we strive for accuracy and thoroughness in all security assessments, 
+        <div className="mb-6">
+          <BetaWarning
+            title="Beta Service Notice"
+            size="default"
+            showIcon={true}
+            variant="subtle"
+          >
+            <p>
+              Our audit service is currently in beta. While we strive for accuracy and thoroughness in all security assessments, 
               we recommend complementary security measures for critical applications.
             </p>
-          </div>
+          </BetaWarning>
         </div>
         
         <div className="flex flex-wrap justify-center gap-4">

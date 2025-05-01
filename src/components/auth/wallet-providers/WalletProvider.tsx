@@ -11,9 +11,17 @@ interface WalletProviderProps {
   chainType: string;
   onClick: () => void;
   isDetected?: boolean;
+  isBeta?: boolean;
 }
 
-export function WalletProvider({ name, icon, chainType, onClick, isDetected }: WalletProviderProps) {
+export function WalletProvider({ 
+  name, 
+  icon, 
+  chainType, 
+  onClick, 
+  isDetected,
+  isBeta = true 
+}: WalletProviderProps) {
   return (
     <Button 
       variant="outline" 
@@ -26,18 +34,20 @@ export function WalletProvider({ name, icon, chainType, onClick, isDetected }: W
       <div className="text-left flex-1">
         <div className="flex items-center">
           <p className="font-medium">{name}</p>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Badge variant="outline" className="ml-2 text-[0.6rem] px-1 py-0 h-4 border-amber-300 text-amber-700 bg-amber-50">
-                  BETA
-                </Badge>
-              </TooltipTrigger>
-              <TooltipContent side="top">
-                <p className="text-xs max-w-[200px]">This integration is in beta. Some features may not work as expected.</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          {isBeta && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Badge variant="outline" className="ml-2 text-[0.6rem] px-1 py-0 h-4 border-amber-300 text-amber-700 bg-amber-50">
+                    BETA
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  <p className="text-xs max-w-[200px]">This integration is in beta. Some features may not work as expected.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         </div>
         <p className="text-xs text-muted-foreground">{chainType}</p>
       </div>
