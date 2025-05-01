@@ -10,7 +10,6 @@ import { ContinuousSecurity } from "@/components/security/continuous-security";
 import { GamificationSection } from "@/components/home/gamification-section";
 import { AuditStatsTable } from "@/components/home/audit-stats-table";
 import { MarketplaceSection } from "@/components/home/marketplace-section";
-import { GuidedOnboarding } from "@/components/onboarding/guided-onboarding";
 import { FaqSection } from "@/components/home/faq-section";
 import { EnhancedOnboarding } from "@/components/onboarding/enhanced-onboarding";
 import { Button } from "@/components/ui/button";
@@ -18,7 +17,6 @@ import { Shield, ArrowRight } from "lucide-react";
 import { BetaWarning } from "@/components/ui/beta-warning";
 
 const Index = () => {
-  const [showOnboarding, setShowOnboarding] = useState(false);
   const [showEnhancedOnboarding, setShowEnhancedOnboarding] = useState(false);
   const [showBetaMessage, setShowBetaMessage] = useState(true);
   
@@ -63,7 +61,7 @@ const Index = () => {
             >
               <p>
                 Welcome to Hawkly Beta! We're continuously improving our Web3 security marketplace.
-                Some features may be limited or contain bugs. Your feedback helps us improve.
+                Your feedback helps us improve.
               </p>
             </BetaWarning>
           </div>
@@ -104,13 +102,13 @@ const Index = () => {
           </div>
         </section>
         
-        {/* New CTA for onboarding */}
+        {/* Get started CTA */}
         <section className="py-12 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="max-w-3xl mx-auto">
               <h2 className="text-3xl font-extrabold mb-6">Join Our Web3 Security Community</h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Whether you're a security provider or project owner, our guided onboarding will help you get started with our platform.
+                Whether you're a security provider or project owner, our guided onboarding will help you get started.
               </p>
               <Button 
                 size="lg" 
@@ -154,17 +152,12 @@ const Index = () => {
           </div>
         </section>
         
-        {/* FAQ Section added at the bottom of the page */}
+        {/* FAQ Section */}
         <FaqSection />
       </main>
       <EnhancedFooter />
       
-      {/* Guided Onboarding Modal */}
-      {showOnboarding && (
-        <GuidedOnboarding onClose={() => setShowOnboarding(false)} />
-      )}
-      
-      {/* New Enhanced Onboarding */}
+      {/* Enhanced Onboarding */}
       <EnhancedOnboarding 
         open={showEnhancedOnboarding} 
         onOpenChange={setShowEnhancedOnboarding} 

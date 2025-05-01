@@ -12,7 +12,7 @@ export function MarketplaceHeader() {
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center bg-primary/10 px-4 py-2 rounded-full text-primary mb-4">
           <Shield className="h-5 w-5 mr-2" />
-          <span className="font-medium">Top-rated Web3 Security Services</span>
+          <span className="font-medium">Web3 Security Services</span>
         </div>
         <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground mb-4 flex items-center justify-center gap-2">
           Web3 Security Marketplace
@@ -25,14 +25,14 @@ export function MarketplaceHeader() {
               </TooltipTrigger>
               <TooltipContent side="top" className="max-w-[250px]">
                 <p className="text-xs">
-                  Our platform is in beta. We're continuously improving, but some features may not work as expected.
+                  Our platform is in beta. We're continuously improving and welcome your feedback.
                 </p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </h2>
         <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">
-          Connect with verified security experts to protect your blockchain projects from vulnerabilities like reentrancy attacks, front running, and access control exploits
+          Connect with security experts to protect your blockchain projects from vulnerabilities and exploits
         </p>
       </div>
       
@@ -44,8 +44,7 @@ export function MarketplaceHeader() {
         className="mb-8"
       >
         <p className="text-sm">
-          Hawkly is currently in beta testing. While we work to improve our platform, some features may be limited or contain bugs. 
-          We appreciate your feedback and patience.
+          Hawkly is currently in beta testing. Your feedback helps us improve our platform.
         </p>
       </BetaWarning>
       
@@ -61,15 +60,15 @@ export function MarketplaceHeader() {
           <ul className="space-y-3">
             <li className="flex items-start">
               <BadgeCheck className="h-5 w-5 text-primary mr-2 flex-shrink-0 mt-0.5" />
-              <span>Get comprehensive smart contract audits with in-depth security analysis</span>
+              <span>Get comprehensive smart contract audits with in-depth analysis</span>
             </li>
             <li className="flex items-start">
               <BadgeCheck className="h-5 w-5 text-primary mr-2 flex-shrink-0 mt-0.5" />
-              <span>Identify critical vulnerabilities before deployment to production</span>
+              <span>Identify critical vulnerabilities before deployment</span>
             </li>
             <li className="flex items-start">
               <BadgeCheck className="h-5 w-5 text-primary mr-2 flex-shrink-0 mt-0.5" />
-              <span>Access top security talent with proven expertise in Solidity, Rust and Move</span>
+              <span>Access top security talent with proven expertise</span>
             </li>
           </ul>
           <div className="mt-6">
@@ -93,15 +92,15 @@ export function MarketplaceHeader() {
           <ul className="space-y-3">
             <li className="flex items-start">
               <BadgeCheck className="h-5 w-5 text-secondary mr-2 flex-shrink-0 mt-0.5" />
-              <span>Monetize your blockchain security expertise and technical skills</span>
+              <span>Monetize your blockchain security expertise</span>
             </li>
             <li className="flex items-start">
               <BadgeCheck className="h-5 w-5 text-secondary mr-2 flex-shrink-0 mt-0.5" />
-              <span>Build your reputation with transparent auditor reviews and verifications</span>
+              <span>Build your reputation with transparent reviews</span>
             </li>
             <li className="flex items-start">
               <BadgeCheck className="h-5 w-5 text-secondary mr-2 flex-shrink-0 mt-0.5" />
-              <span>Earn rewards through our gamified ecosystem and security challenges</span>
+              <span>Earn rewards through our security ecosystem</span>
             </li>
           </ul>
           <div className="mt-6">
@@ -115,7 +114,7 @@ export function MarketplaceHeader() {
         </div>
       </div>
       
-      {/* Key Benefits Section with improved descriptions */}
+      {/* Key Benefits Section */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="flex items-center p-3 bg-muted/60 rounded-lg hover:bg-muted/80 transition-all">
           <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
@@ -123,7 +122,7 @@ export function MarketplaceHeader() {
           </div>
           <div>
             <h4 className="font-medium text-sm">Smart Contract Audits</h4>
-            <p className="text-xs text-muted-foreground">Find vulnerabilities in Solidity, Rust & Move</p>
+            <p className="text-xs text-muted-foreground">Find vulnerabilities in blockchain code</p>
           </div>
         </div>
         <div className="flex items-center p-3 bg-muted/60 rounded-lg hover:bg-muted/80 transition-all">
@@ -132,7 +131,7 @@ export function MarketplaceHeader() {
           </div>
           <div>
             <h4 className="font-medium text-sm">Security Assessments</h4>
-            <p className="text-xs text-muted-foreground">Protect against reentrancy & flash loan attacks</p>
+            <p className="text-xs text-muted-foreground">Protect against common attack vectors</p>
           </div>
         </div>
         <div className="flex items-center p-3 bg-muted/60 rounded-lg hover:bg-muted/80 transition-all">
@@ -141,14 +140,14 @@ export function MarketplaceHeader() {
           </div>
           <div>
             <h4 className="font-medium text-sm">DApp Security</h4>
-            <p className="text-xs text-muted-foreground">Front-end to smart contract protection</p>
+            <p className="text-xs text-muted-foreground">Complete application protection</p>
           </div>
         </div>
       </div>
       
       <div className="flex items-center justify-center mt-6 text-sm text-muted-foreground bg-muted/40 rounded-lg p-3 hover:bg-muted/60 transition-all">
         <Star className="h-4 w-4 fill-web3-orange text-web3-orange mr-2" />
-        <span><span className="font-medium">500+ verified blockchain auditors</span> and <span className="font-medium">2,500+ secured Web3 projects</span> in our marketplace</span>
+        <span><span className="font-medium">Join</span> our growing community of security experts and projects</span>
       </div>
     </div>
   );

@@ -17,8 +17,7 @@ export function AuditsFooter() {
           Secure Your Web3 Project Today
         </h2>
         <p className="text-lg mb-6 max-w-2xl mx-auto">
-          Don't leave your smart contract security to chance. Our expert auditors will identify vulnerabilities
-          before they can be exploited in production.
+          Connect with expert auditors who will identify vulnerabilities before they can be exploited.
         </p>
         
         <div className="mb-6">
@@ -29,8 +28,7 @@ export function AuditsFooter() {
             variant="subtle"
           >
             <p>
-              Our audit service is currently in beta. While we strive for accuracy and thoroughness in all security assessments, 
-              we recommend complementary security measures for critical applications.
+              Our audit service is currently in beta. We recommend complementary security measures for critical applications.
             </p>
           </BetaWarning>
         </div>
@@ -42,7 +40,7 @@ export function AuditsFooter() {
           </Button>
           <Link to="/leaderboard">
             <Button size="lg" variant="outline" className="group border-secondary transition-all">
-              Find Top Security Experts
+              Find Security Experts
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>

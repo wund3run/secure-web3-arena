@@ -1,7 +1,8 @@
 
-import { Shield, Twitter, Github, MessageSquare, Globe, ArrowRight, Mail, Map, Phone } from "lucide-react";
+import { Shield, Twitter, Github, MessageSquare, Globe, ArrowRight, Mail, Map, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { BetaWarning } from "@/components/ui/beta-warning";
 
 export function EnhancedFooter() {
   const currentYear = new Date().getFullYear();
@@ -17,26 +18,26 @@ export function EnhancedFooter() {
               <p className="text-lg text-muted-foreground mb-2">
                 Join Hawkly today and connect with top security experts who can help protect your blockchain assets.
               </p>
-              <ul className="mt-4 space-y-2">
-                <li className="flex items-center">
-                  <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center mr-2">
-                    <Shield className="h-3 w-3 text-primary" />
-                  </div>
-                  <span className="text-sm">Protected over $350M in Web3 assets</span>
-                </li>
-                <li className="flex items-center">
-                  <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center mr-2">
-                    <Shield className="h-3 w-3 text-primary" />
-                  </div>
-                  <span className="text-sm">5-star rated security marketplace</span>
-                </li>
-                <li className="flex items-center">
-                  <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center mr-2">
-                    <Shield className="h-3 w-3 text-primary" />
-                  </div>
-                  <span className="text-sm">Trusted by leading Web3 projects</span>
-                </li>
-              </ul>
+              
+              {/* Security stats moved from dashboard to footer */}
+              <div className="mt-6 grid grid-cols-2 gap-3">
+                <div className="flex justify-between items-center p-2 bg-background/60 rounded-lg">
+                  <span className="text-muted-foreground text-sm">Verified Auditors</span>
+                  <span className="font-semibold text-foreground">500+</span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-background/60 rounded-lg">
+                  <span className="text-muted-foreground text-sm">Secured Projects</span>
+                  <span className="font-semibold text-foreground">2,500+</span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-background/60 rounded-lg">
+                  <span className="text-muted-foreground text-sm">Issues Found</span>
+                  <span className="font-semibold text-foreground">12,800+</span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-background/60 rounded-lg">
+                  <span className="text-muted-foreground text-sm">Assets Protected</span>
+                  <span className="font-semibold text-foreground">$350M+</span>
+                </div>
+              </div>
             </div>
             <div className="flex flex-col space-y-4 items-center lg:items-end justify-center">
               <Link to="/marketplace" className="w-full sm:w-auto">
@@ -65,33 +66,42 @@ export function EnhancedFooter() {
               Protecting blockchain assets through expert audits and continuous security monitoring.
             </p>
             <div className="flex mt-4 space-x-4">
-              <a href="https://twitter.com" className="text-muted-foreground hover:text-primary transition-colors">
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Twitter">
                 <Twitter className="h-5 w-5" />
-                <span className="sr-only">Twitter</span>
               </a>
-              <a href="https://github.com" className="text-muted-foreground hover:text-primary transition-colors">
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Github">
                 <Github className="h-5 w-5" />
-                <span className="sr-only">GitHub</span>
               </a>
-              <a href="https://discord.com" className="text-muted-foreground hover:text-primary transition-colors">
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Discord">
                 <MessageSquare className="h-5 w-5" />
-                <span className="sr-only">Discord</span>
               </a>
-              <a href="https://hawkly.io" className="text-muted-foreground hover:text-primary transition-colors">
+              <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Website">
                 <Globe className="h-5 w-5" />
-                <span className="sr-only">Website</span>
               </a>
             </div>
             
             <div className="mt-6 space-y-2">
               <div className="flex items-start">
                 <Mail className="h-5 w-5 text-muted-foreground mr-2 mt-0.5" />
-                <span className="text-sm text-muted-foreground">contact@hawkly.io</span>
+                <span className="text-sm text-muted-foreground">contact@example.com</span>
               </div>
               <div className="flex items-start">
                 <Map className="h-5 w-5 text-muted-foreground mr-2 mt-0.5" />
-                <span className="text-sm text-muted-foreground">Singapore | San Francisco | Berlin</span>
+                <span className="text-sm text-muted-foreground">Global</span>
               </div>
+            </div>
+            
+            <div className="mt-6">
+              <BetaWarning 
+                variant="subtle"
+                size="sm"
+                showIcon={true}
+                title="Platform Status"
+              >
+                <p className="text-xs">
+                  Hawkly is currently in beta. We welcome your feedback to improve the platform.
+                </p>
+              </BetaWarning>
             </div>
           </div>
           
@@ -103,7 +113,6 @@ export function EnhancedFooter() {
               <li><Link to="/listings" className="text-sm text-muted-foreground hover:text-primary transition-colors">Create Listing</Link></li>
               <li><Link to="/requests" className="text-sm text-muted-foreground hover:text-primary transition-colors">Security Requests</Link></li>
               <li><Link to="/stats" className="text-sm text-muted-foreground hover:text-primary transition-colors">Platform Statistics</Link></li>
-              <li><Link to="/vulnerabilities" className="text-sm text-muted-foreground hover:text-primary transition-colors">Vulnerability Database</Link></li>
             </ul>
           </div>
           
@@ -115,7 +124,6 @@ export function EnhancedFooter() {
               <li><Link to="/events" className="text-sm text-muted-foreground hover:text-primary transition-colors">Security Events</Link></li>
               <li><Link to="/forum" className="text-sm text-muted-foreground hover:text-primary transition-colors">Community Forum</Link></li>
               <li><Link to="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors">Security Blog</Link></li>
-              <li><Link to="/faqs" className="text-sm text-muted-foreground hover:text-primary transition-colors">FAQs</Link></li>
             </ul>
           </div>
           
@@ -124,7 +132,6 @@ export function EnhancedFooter() {
             <ul className="mt-4 space-y-3">
               <li><Link to="/docs" className="text-sm text-muted-foreground hover:text-primary transition-colors">Documentation</Link></li>
               <li><Link to="/audits" className="text-sm text-muted-foreground hover:text-primary transition-colors">Audit Methodology</Link></li>
-              <li><Link to="/community" className="text-sm text-muted-foreground hover:text-primary transition-colors">Community Guidelines</Link></li>
               <li><Link to="/security-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Security Policy</Link></li>
               <li><Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link></li>
               <li><Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link></li>
@@ -138,10 +145,10 @@ export function EnhancedFooter() {
               &copy; {currentYear} Hawkly Security Marketplace. All rights reserved.
             </div>
             <div className="mt-4 md:mt-0 flex flex-wrap gap-4 md:gap-6">
-              <Link to="/terms" className="text-xs text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link>
-              <Link to="/privacy" className="text-xs text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link>
-              <Link to="/security-policy" className="text-xs text-muted-foreground hover:text-primary transition-colors">Security Policy</Link>
-              <Link to="/contact" className="text-xs text-muted-foreground hover:text-primary transition-colors">Contact Us</Link>
+              <Link to="/terms" className="text-xs text-muted-foreground hover:text-primary transition-colors">Terms</Link>
+              <Link to="/privacy" className="text-xs text-muted-foreground hover:text-primary transition-colors">Privacy</Link>
+              <Link to="/security-policy" className="text-xs text-muted-foreground hover:text-primary transition-colors">Security</Link>
+              <Link to="/contact" className="text-xs text-muted-foreground hover:text-primary transition-colors">Contact</Link>
             </div>
           </div>
         </div>

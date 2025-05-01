@@ -2,6 +2,7 @@
 import { ArrowRight, MessageSquare, ShieldCheck, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { BetaWarning } from "@/components/ui/beta-warning";
 
 export function CommunityHeader() {
   return (
@@ -16,9 +17,22 @@ export function CommunityHeader() {
             Web3 Security Community
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Join a thriving community of blockchain security experts and project owners. Share insights, 
+            Join a community of blockchain security experts and project owners. Share insights, 
             participate in discussions, and build your reputation in the Web3 security space.
           </p>
+        </div>
+
+        <div className="mb-8">
+          <BetaWarning 
+            variant="subtle" 
+            showIcon={true} 
+            title="Community Features in Development" 
+            size="sm"
+          >
+            <p className="text-sm">
+              Our community features are still being developed. We're working to create a rich environment for collaboration.
+            </p>
+          </BetaWarning>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
@@ -36,7 +50,7 @@ export function CommunityHeader() {
                 <div className="rounded-full bg-green-500/10 p-1 mr-2 mt-1">
                   <div className="rounded-full bg-green-500 w-2 h-2"></div>
                 </div>
-                <span>Connect with top security experts in the blockchain space</span>
+                <span>Connect with security experts in the blockchain space</span>
               </li>
               <li className="flex items-start">
                 <div className="rounded-full bg-green-500/10 p-1 mr-2 mt-1">
@@ -103,16 +117,7 @@ export function CommunityHeader() {
         
         <div className="flex flex-wrap gap-3 justify-center mt-8">
           <div className="flex items-center bg-muted/50 rounded-full px-4 py-1.5">
-            <span className="text-primary font-medium mr-2">12.5k+</span>
-            <span className="text-muted-foreground">Active Members</span>
-          </div>
-          <div className="flex items-center bg-muted/50 rounded-full px-4 py-1.5">
-            <span className="text-primary font-medium mr-2">4.2k+</span>
-            <span className="text-muted-foreground">Forum Topics</span>
-          </div>
-          <div className="flex items-center bg-muted/50 rounded-full px-4 py-1.5">
-            <span className="text-primary font-medium mr-2">120+</span>
-            <span className="text-muted-foreground">Monthly Events</span>
+            <span className="text-muted-foreground">Join our growing community</span>
           </div>
         </div>
       </div>
