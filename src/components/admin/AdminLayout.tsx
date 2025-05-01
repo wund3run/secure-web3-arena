@@ -10,10 +10,13 @@ import {
   Package,
   Settings,
   Home,
-  LogOut
+  LogOut,
+  PanelLeft,
+  AlertCircle
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { BetaWarning } from "@/components/ui/beta-warning";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -22,6 +25,7 @@ interface AdminLayoutProps {
 
 const AdminLayout = ({ children, title }: AdminLayoutProps) => {
   const [collapsed, setCollapsed] = useState(false);
+  const [showBetaNotice, setShowBetaNotice] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
@@ -72,11 +76,11 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
       <div
         className={`bg-muted h-screen ${
           collapsed ? "w-16" : "w-64"
-        } transition-width duration-300 ease-in-out overflow-x-hidden fixed left-0 top-0 border-r z-30`}
+        } transition-all duration-300 ease-in-out overflow-hidden fixed left-0 top-0 border-r z-30`}
       >
         <div className="flex h-14 items-center px-4 border-b">
           {!collapsed && (
-            <Link to="/admin/dashboard">
+            <Link to="/admin/dashboard" className="flex items-center">
               <span className="font-semibold text-lg flex items-center">
                 <Shield className="h-5 w-5 text-primary mr-2" />
                 Hawkly Admin
@@ -98,7 +102,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
                   className={`flex items-center px-2 py-2 text-sm rounded-md transition-colors ${
                     currentPath === item.href
                       ? "bg-primary text-primary-foreground"
-                      : "hover:bg-accent"
+                      : "hover:bg-accent hover:text-accent-foreground"
                   }`}
                 >
                   <span className="mr-3">{item.icon}</span>
@@ -134,12 +138,9 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
           size="icon"
           className="absolute bottom-4 left-1/2 transform -translate-x-1/2"
           onClick={() => setCollapsed(!collapsed)}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {collapsed ? (
-            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8.5 4L12.5 7.5L8.5 11M2.5 4L6.5 7.5L2.5 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          ) : (
+          {collapsed ? <PanelLeft className="h-4 w-4" /> : (
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6.5 4L2.5 7.5L6.5 11M12.5 4L8.5 7.5L12.5 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -156,10 +157,28 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
               <span className="text-sm text-muted-foreground">
                 Admin: {localStorage.getItem("adminUser")}
               </span>
+              <AlertCircle className="h-4 w-4 text-amber-500" />
             </div>
           </div>
         </header>
-        <main className="p-6">{children}</main>
+        <main className="p-6">
+          {showBetaNotice && (
+            <BetaWarning
+              variant="subtle"
+              size="sm"
+              dismissable={true}
+              onDismiss={() => setShowBetaNotice(false)}
+              className="mb-6"
+              title="Admin Panel (Beta)"
+            >
+              <p className="text-sm">
+                The admin panel is currently in beta. Some features may be limited or contain bugs.
+                Use with caution and report any issues to the development team.
+              </p>
+            </BetaWarning>
+          )}
+          {children}
+        </main>
       </div>
     </div>
   );

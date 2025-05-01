@@ -14,7 +14,7 @@ import { GuidedOnboarding } from "@/components/onboarding/guided-onboarding";
 import { FaqSection } from "@/components/home/faq-section";
 import { EnhancedOnboarding } from "@/components/onboarding/enhanced-onboarding";
 import { Button } from "@/components/ui/button";
-import { Shield, ArrowRight, AlertCircle } from "lucide-react";
+import { Shield, ArrowRight } from "lucide-react";
 import { BetaWarning } from "@/components/ui/beta-warning";
 
 const Index = () => {
@@ -54,24 +54,18 @@ const Index = () => {
       <main className="flex-grow">
         {showBetaMessage && (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-4">
-            <div className="relative">
-              <BetaWarning
-                title="Hawkly Beta Platform"
-                size="sm"
-              >
-                <p>
-                  Welcome to Hawkly Beta! We're continuously improving our Web3 security marketplace.
-                  Some features may be limited or contain bugs. Your feedback helps us improve.
-                </p>
-              </BetaWarning>
-              <button 
-                className="absolute top-2 right-2 text-amber-700 hover:text-amber-900"
-                onClick={handleCloseBetaMessage}
-                aria-label="Close beta message"
-              >
-                <AlertCircle className="h-4 w-4" />
-              </button>
-            </div>
+            <BetaWarning
+              title="Hawkly Beta Platform"
+              size="sm"
+              dismissable={true}
+              onDismiss={handleCloseBetaMessage}
+              storageKey="hawkly_beta_notice_closed"
+            >
+              <p>
+                Welcome to Hawkly Beta! We're continuously improving our Web3 security marketplace.
+                Some features may be limited or contain bugs. Your feedback helps us improve.
+              </p>
+            </BetaWarning>
           </div>
         )}
       
@@ -80,7 +74,7 @@ const Index = () => {
         {/* Stats and features sections */}
         <section className="bg-gradient-to-r from-primary/5 via-white to-secondary/5 py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
               {/* Stats cards */}
               <div className="glass-card p-6 rounded-xl hover-lift transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary to-secondary mb-2">
@@ -120,7 +114,7 @@ const Index = () => {
               </p>
               <Button 
                 size="lg" 
-                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 px-8"
+                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 px-8 transition-all"
                 onClick={() => setShowEnhancedOnboarding(true)}
               >
                 <Shield className="mr-2 h-5 w-5" />

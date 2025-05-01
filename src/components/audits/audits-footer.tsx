@@ -1,8 +1,7 @@
 
-import { ArrowRight, FileText, ShieldCheck, AlertCircle } from "lucide-react";
+import { ArrowRight, FileText, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
 import { BetaWarning } from "@/components/ui/beta-warning";
 
 export function AuditsFooter() {
@@ -14,11 +13,8 @@ export function AuditsFooter() {
             <ShieldCheck className="h-8 w-8 text-primary" />
           </div>
         </div>
-        <h2 className="text-2xl font-bold mb-1 flex items-center justify-center gap-2">
+        <h2 className="text-2xl font-bold mb-1">
           Secure Your Web3 Project Today
-          <Badge variant="outline" className="text-xs bg-amber-50 border-amber-300 text-amber-700">
-            BETA
-          </Badge>
         </h2>
         <p className="text-lg mb-6 max-w-2xl mx-auto">
           Don't leave your smart contract security to chance. Our expert auditors will identify vulnerabilities
@@ -40,12 +36,12 @@ export function AuditsFooter() {
         </div>
         
         <div className="flex flex-wrap justify-center gap-4">
-          <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90">
+          <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-all">
             <FileText className="mr-2 h-5 w-5" />
             Request an Audit
           </Button>
           <Link to="/leaderboard">
-            <Button size="lg" variant="outline" className="group border-secondary">
+            <Button size="lg" variant="outline" className="group border-secondary transition-all">
               Find Top Security Experts
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>

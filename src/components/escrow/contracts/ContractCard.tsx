@@ -1,24 +1,10 @@
 
 import React from "react";
-import { EscrowContract, Profile } from "@/contexts/types/escrow-types";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { format } from "date-fns";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Clock,
-  ExternalLink,
-  MoreHorizontal,
-  PanelRight,
-  Users,
-  Wallet,
-} from "lucide-react";
+import { Clock, ExternalLink, MoreHorizontal, PanelRight, Users, Wallet } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,6 +13,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { EscrowContract, Profile } from "@/contexts/types/escrow-types";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface ContractCardProps {
   contract: EscrowContract;
@@ -54,29 +42,37 @@ export function ContractCard({ contract, currentUser, onViewDetails }: ContractC
     }
   };
 
+  const formatDate = (dateString: string) => {
+    try {
+      return format(new Date(dateString), "MMM d, yyyy");
+    } catch (e) {
+      return "Invalid date";
+    }
+  };
+
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden transition-all duration-200 hover:shadow-md">
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start">
           <div>
-            <CardTitle className="line-clamp-1">{contract.title}</CardTitle>
-            <CardDescription className="flex items-center gap-2 mt-1">
+            <h3 className="font-medium text-base line-clamp-1">{contract.title}</h3>
+            <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
               <Users className="h-3 w-3" />
               {currentUser?.id === contract.client_id ? 
                 <span>You (Client) ↔ {contract.auditor?.full_name || "Unknown Auditor"}</span> :
                 <span>{contract.client?.full_name || "Unknown Client"} ↔ You (Auditor)</span>
               }
-            </CardDescription>
+            </p>
           </div>
           <div className="flex items-center gap-2">
             {getStatusBadge(contract.status)}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="h-8 w-8">
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => onViewDetails(contract)}>
@@ -102,17 +98,28 @@ export function ContractCard({ contract, currentUser, onViewDetails }: ContractC
         </div>
       </CardHeader>
       <CardContent className="pb-3">
-        <div className="flex justify-between text-sm">
+        <div className="flex flex-col sm:flex-row justify-between text-sm gap-2">
           <div className="space-y-1">
             <div className="flex items-center gap-1 text-muted-foreground">
               <Clock className="h-3.5 w-3.5" />
-              <span>Created: {new Date(contract.created_at).toLocaleDateString()}</span>
+              <span>Created: {formatDate(contract.created_at)}</span>
             </div>
             {contract.requires_multisig && (
-              <div className="flex items-center gap-1 text-amber-600">
-                <Users className="h-3.5 w-3.5" />
-                <span>Requires multi-signature</span>
-              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1 text-amber-600">
+                      <Users className="h-3.5 w-3.5" />
+                      <span>Requires multi-signature</span>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p className="text-xs max-w-[200px]">
+                      This contract requires multiple signatures to execute transactions
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
           <div className="flex items-center gap-1 font-medium">
@@ -123,7 +130,7 @@ export function ContractCard({ contract, currentUser, onViewDetails }: ContractC
           </div>
         </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="pt-2">
         <div className="w-full flex justify-between items-center">
           <div className="text-xs text-muted-foreground">
             ID: {contract.id.substring(0, 8)}...
@@ -132,6 +139,7 @@ export function ContractCard({ contract, currentUser, onViewDetails }: ContractC
             variant="outline" 
             size="sm" 
             onClick={() => onViewDetails(contract)}
+            className="transition-all hover:bg-primary/10"
           >
             View Details
           </Button>

@@ -25,7 +25,7 @@ export function WalletProvider({
   return (
     <Button 
       variant="outline" 
-      className={`w-full flex items-center justify-start h-auto py-4 px-4 mb-3 ${
+      className={`w-full flex items-center justify-start h-auto py-4 px-4 mb-3 transition-all duration-200 ${
         isDetected ? "border-primary/30 bg-primary/5" : "hover:border-primary/50 hover:bg-primary/5"
       }`}
       onClick={onClick}
@@ -36,14 +36,14 @@ export function WalletProvider({
           <p className="font-medium">{name}</p>
           {isBeta && (
             <TooltipProvider>
-              <Tooltip>
+              <Tooltip delayDuration={300}>
                 <TooltipTrigger asChild>
-                  <Badge variant="outline" className="ml-2 text-[0.6rem] px-1 py-0 h-4 border-amber-300 text-amber-700 bg-amber-50">
+                  <Badge variant="outline" className="ml-2 text-[0.6rem] px-1 py-0 h-4 border-amber-300 text-amber-700 bg-amber-50 hover:bg-amber-100">
                     BETA
                   </Badge>
                 </TooltipTrigger>
-                <TooltipContent side="top">
-                  <p className="text-xs max-w-[200px]">This integration is in beta. Some features may not work as expected.</p>
+                <TooltipContent side="top" className="z-50 max-w-[250px] bg-white shadow-lg">
+                  <p className="text-xs">This integration is in beta. Some features may not work as expected.</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

@@ -1,9 +1,10 @@
 
-import { Shield, Star, Users, BadgeCheck, ArrowRight, FileCode, LockKeyhole, AlertCircle } from "lucide-react";
+import { Shield, Star, Users, BadgeCheck, ArrowRight, FileCode, LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { BetaWarning } from "@/components/ui/beta-warning";
 
 export function MarketplaceHeader() {
   return (
@@ -22,8 +23,8 @@ export function MarketplaceHeader() {
                   BETA
                 </Badge>
               </TooltipTrigger>
-              <TooltipContent side="top">
-                <p className="text-xs max-w-[250px]">
+              <TooltipContent side="top" className="max-w-[250px]">
+                <p className="text-xs">
                   Our platform is in beta. We're continuously improving, but some features may not work as expected.
                 </p>
               </TooltipContent>
@@ -31,20 +32,26 @@ export function MarketplaceHeader() {
           </TooltipProvider>
         </h2>
         <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">
-          Connect with verified security experts to protect your blockchain projects from vulnerabilities like reentrancy attacks, oracle manipulation, and access control exploits
+          Connect with verified security experts to protect your blockchain projects from vulnerabilities like reentrancy attacks, front running, and access control exploits
         </p>
       </div>
       
-      <div className="text-sm bg-amber-50 border border-amber-100 rounded-lg p-3 mb-8 flex items-start">
-        <AlertCircle className="h-4 w-4 text-amber-500 mr-2 flex-shrink-0 mt-0.5" />
-        <p className="text-amber-800">
-          <span className="font-medium">Beta Platform Notice:</span> Hawkly is currently in beta testing. While we work to improve our platform, some features may be limited or contain bugs. We appreciate your feedback and patience.
+      <BetaWarning 
+        variant="subtle" 
+        showIcon={true} 
+        title="Beta Platform Notice" 
+        size="sm"
+        className="mb-8"
+      >
+        <p className="text-sm">
+          Hawkly is currently in beta testing. While we work to improve our platform, some features may be limited or contain bugs. 
+          We appreciate your feedback and patience.
         </p>
-      </div>
+      </BetaWarning>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         {/* For Project Owners */}
-        <div className="glass-card p-6 rounded-lg hover-lift border border-border/40 bg-gradient-to-br from-card to-card/80">
+        <div className="glass-card p-6 rounded-lg hover-lift border border-border/40 bg-gradient-to-br from-card to-card/80 transition-all duration-300">
           <div className="flex items-center mb-4">
             <div className="p-3 bg-primary/10 rounded-full mr-4">
               <Shield className="h-6 w-6 text-primary" />
@@ -67,7 +74,7 @@ export function MarketplaceHeader() {
           </ul>
           <div className="mt-6">
             <Link to="/marketplace">
-              <Button className="w-full group bg-primary hover:bg-primary/90">
+              <Button className="w-full group bg-primary hover:bg-primary/90 transition-all">
                 Find Web3 Security Services
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
@@ -76,7 +83,7 @@ export function MarketplaceHeader() {
         </div>
         
         {/* For Security Experts */}
-        <div className="glass-card p-6 rounded-lg hover-lift border border-border/40 bg-gradient-to-br from-card to-card/80">
+        <div className="glass-card p-6 rounded-lg hover-lift border border-border/40 bg-gradient-to-br from-card to-card/80 transition-all duration-300">
           <div className="flex items-center mb-4">
             <div className="p-3 bg-secondary/10 rounded-full mr-4">
               <Users className="h-6 w-6 text-secondary" />
@@ -99,7 +106,7 @@ export function MarketplaceHeader() {
           </ul>
           <div className="mt-6">
             <Link to="/audits">
-              <Button variant="outline" className="w-full group border-secondary text-secondary hover:bg-secondary/10">
+              <Button variant="outline" className="w-full group border-secondary text-secondary hover:bg-secondary/10 transition-all">
                 Become a Web3 Auditor
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
@@ -110,7 +117,7 @@ export function MarketplaceHeader() {
       
       {/* Key Benefits Section with improved descriptions */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div className="flex items-center p-3 bg-muted/60 rounded-lg">
+        <div className="flex items-center p-3 bg-muted/60 rounded-lg hover:bg-muted/80 transition-all">
           <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
             <FileCode className="h-5 w-5 text-primary" />
           </div>
@@ -119,7 +126,7 @@ export function MarketplaceHeader() {
             <p className="text-xs text-muted-foreground">Find vulnerabilities in Solidity, Rust & Move</p>
           </div>
         </div>
-        <div className="flex items-center p-3 bg-muted/60 rounded-lg">
+        <div className="flex items-center p-3 bg-muted/60 rounded-lg hover:bg-muted/80 transition-all">
           <div className="h-10 w-10 rounded-full bg-secondary/10 flex items-center justify-center mr-3">
             <LockKeyhole className="h-5 w-5 text-secondary" />
           </div>
@@ -128,7 +135,7 @@ export function MarketplaceHeader() {
             <p className="text-xs text-muted-foreground">Protect against reentrancy & flash loan attacks</p>
           </div>
         </div>
-        <div className="flex items-center p-3 bg-muted/60 rounded-lg">
+        <div className="flex items-center p-3 bg-muted/60 rounded-lg hover:bg-muted/80 transition-all">
           <div className="h-10 w-10 rounded-full bg-web3-orange/10 flex items-center justify-center mr-3">
             <Shield className="h-5 w-5 text-web3-orange" />
           </div>
@@ -139,7 +146,7 @@ export function MarketplaceHeader() {
         </div>
       </div>
       
-      <div className="flex items-center justify-center mt-6 text-sm text-muted-foreground bg-muted/40 rounded-lg p-3">
+      <div className="flex items-center justify-center mt-6 text-sm text-muted-foreground bg-muted/40 rounded-lg p-3 hover:bg-muted/60 transition-all">
         <Star className="h-4 w-4 fill-web3-orange text-web3-orange mr-2" />
         <span><span className="font-medium">500+ verified blockchain auditors</span> and <span className="font-medium">2,500+ secured Web3 projects</span> in our marketplace</span>
       </div>

@@ -9,6 +9,7 @@ body {
 /* Better link transitions */
 a {
   transition: all 0.2s ease;
+  text-decoration: none;
 }
 
 /* Improved hover transitions */
@@ -57,4 +58,63 @@ a {
   -webkit-background-clip: text;
   color: transparent;
   background-image: linear-gradient(to right, hsl(var(--primary)), hsl(var(--secondary)));
+}
+
+/* Focus styles for better accessibility */
+:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Smoother transitions for interactive elements */
+button, 
+.btn, 
+input, 
+select, 
+textarea {
+  transition: all 0.2s ease;
+}
+
+/* Improve spacing and layout on mobile */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  h1, h2, h3 {
+    word-wrap: break-word;
+  }
+  
+  .py-16 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+}
+
+/* Custom scrollbar for better UX */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Fix z-index for tooltips and dropdowns */
+.tooltip, 
+[role="tooltip"],
+.dropdown-content {
+  z-index: 50 !important;
 }

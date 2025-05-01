@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { AlertCircle, Info, X } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
@@ -35,6 +35,8 @@ export interface BetaWarningProps
   iconType?: "alert" | "info";
   dismissable?: boolean;
   onDismiss?: () => void;
+  persistent?: boolean;
+  storageKey?: string;
 }
 
 export function BetaWarning({
@@ -47,9 +49,31 @@ export function BetaWarning({
   iconType = "alert",
   dismissable = false,
   onDismiss,
+  persistent = false,
+  storageKey,
   ...props
 }: BetaWarningProps) {
+  const [isDismissed, setIsDismissed] = useState(() => {
+    if (!dismissable || persistent) return false;
+    if (storageKey) {
+      return localStorage.getItem(storageKey) === "dismissed";
+    }
+    return false;
+  });
+  
   const Icon = iconType === "alert" ? AlertCircle : Info;
+  
+  const handleDismiss = () => {
+    setIsDismissed(true);
+    if (storageKey) {
+      localStorage.setItem(storageKey, "dismissed");
+    }
+    if (onDismiss) {
+      onDismiss();
+    }
+  };
+  
+  if (isDismissed) return null;
   
   return (
     <div
@@ -67,9 +91,9 @@ export function BetaWarning({
         <div className={cn(title ? variant === "info" ? "text-blue-700" : "text-amber-700" : "")}>{children}</div>
       </div>
       
-      {dismissable && onDismiss && (
+      {dismissable && (
         <button 
-          onClick={onDismiss}
+          onClick={handleDismiss}
           className={cn(
             "absolute top-2 right-2 p-1 rounded-full hover:bg-black/5",
             variant === "info" ? "text-blue-700" : "text-amber-700"
