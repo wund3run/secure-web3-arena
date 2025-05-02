@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -400,7 +401,8 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
               )}
             />
           </div>
-        
+        );
+      
       case 2:
         return (
           <div className="space-y-4">
