@@ -20,6 +20,14 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
     return value;
   };
 
+  // Format blockchain value to show custom blockchain if "Other" is selected
+  const formatBlockchain = () => {
+    if (formData.blockchain === "Other" && formData.customBlockchain) {
+      return formData.customBlockchain;
+    }
+    return formData.blockchain;
+  };
+
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold mb-4 flex items-center">
@@ -45,7 +53,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
               </TableRow>
               <TableRow>
                 <TableCell className="font-medium">Blockchain</TableCell>
-                <TableCell>{formatValue('blockchain', formData.blockchain)}</TableCell>
+                <TableCell>{formatBlockchain()}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell className="font-medium">Project Description</TableCell>

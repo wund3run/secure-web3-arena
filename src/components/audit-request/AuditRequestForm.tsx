@@ -13,6 +13,7 @@ export interface AuditFormData {
   contactEmail: string;
   contactName: string;
   blockchain: string;
+  customBlockchain?: string;
   repositoryUrl: string;
   contractCount: string;
   linesOfCode: string;
@@ -36,6 +37,7 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
     contactEmail: "",
     contactName: "",
     blockchain: "Ethereum",
+    customBlockchain: "",
     repositoryUrl: "",
     contractCount: "",
     linesOfCode: "",
@@ -61,11 +63,24 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
 
   const handleEcosystemClick = (ecosystem: string) => {
     setFormData({ ...formData, blockchain: ecosystem });
-    toast.success(`Selected ${ecosystem} as your blockchain ecosystem`);
+    if (ecosystem !== "Other") {
+      toast.success(`Selected ${ecosystem} as your blockchain ecosystem`);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // If "Other" is selected, use the custom blockchain name instead
+    const finalData = {
+      ...formData,
+      blockchain: formData.blockchain === "Other" && formData.customBlockchain 
+        ? formData.customBlockchain 
+        : formData.blockchain
+    };
+    
+    console.log("Submitting data:", finalData);
+    
     toast.success("Audit request submitted successfully!", {
       description: "Our AI will match you with the perfect auditors for your project.",
     });
