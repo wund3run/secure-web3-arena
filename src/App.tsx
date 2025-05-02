@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -18,6 +19,8 @@ import RequestAudit from "./pages/RequestAudit";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AuditorOnboarding from "@/pages/AuditorOnboarding";
+import ServiceProviderOnboarding from "@/pages/ServiceProviderOnboarding";
+import ApplicationSubmitted from "@/pages/ApplicationSubmitted";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -71,9 +74,15 @@ const App = () => (
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/services" element={<AdminDashboard section="services" />} />
               <Route path="/admin/users" element={<AdminDashboard section="users" />} />
+              <Route path="/admin/applications" element={<AdminDashboard section="applications" />} />
               <Route path="/admin/audits" element={<AdminDashboard section="audits" />} />
               <Route path="/admin/reports" element={<AdminDashboard section="reports" />} />
               <Route path="/admin/settings" element={<AdminDashboard section="settings" />} />
+              
+              {/* Onboarding routes */}
+              <Route path="/auditor-onboarding" element={<AuditorOnboarding />} />
+              <Route path="/join" element={<ServiceProviderOnboarding />} />
+              <Route path="/application-submitted" element={<ApplicationSubmitted />} />
               
               {/* Legal routes */}
               <Route path="/terms" element={<NotFound />} />
@@ -82,9 +91,6 @@ const App = () => (
               
               {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />
-              
-              {/* Add the route to the auditor onboarding page in the Routes component */}
-              <Route path="/auditor-onboarding" element={<AuditorOnboarding />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>

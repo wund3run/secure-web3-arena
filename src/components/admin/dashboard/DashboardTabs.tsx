@@ -1,3 +1,4 @@
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   BarChart4, 
@@ -6,7 +7,8 @@ import {
   FileText,
   Search,
   Plus,
-  Settings
+  Settings,
+  UserPlus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,10 +19,11 @@ import { ReportManagement } from "@/components/admin/ReportManagement";
 import SettingsManagement from "@/components/admin/SettingsManagement";
 import { DashboardOverview } from "./DashboardOverview";
 import { AdminDashboardWidgets } from "@/components/admin/dashboard/AdminDashboardWidgets";
+import { ProviderApplications } from "@/components/admin/ProviderApplications";
 import { useNavigate } from "react-router-dom";
 
 // Define the valid tab values as a type
-export type DashboardTabValue = "dashboard" | "services" | "users" | "audits" | "reports" | "settings";
+export type DashboardTabValue = "dashboard" | "services" | "users" | "audits" | "reports" | "settings" | "applications";
 
 interface DashboardTabsProps {
   activeTab: DashboardTabValue;
@@ -52,6 +55,10 @@ export function DashboardTabs({ activeTab, onTabChange }: DashboardTabsProps) {
           <TabsTrigger value="users" className="flex gap-2">
             <Users className="h-4 w-4" />
             <span className="hidden md:inline">Users</span>
+          </TabsTrigger>
+          <TabsTrigger value="applications" className="flex gap-2">
+            <UserPlus className="h-4 w-4" />
+            <span className="hidden md:inline">Applications</span>
           </TabsTrigger>
           <TabsTrigger value="audits" className="flex gap-2">
             <Shield className="h-4 w-4" />
@@ -97,6 +104,10 @@ export function DashboardTabs({ activeTab, onTabChange }: DashboardTabsProps) {
 
       <TabsContent value="users">
         <UserManagement />
+      </TabsContent>
+      
+      <TabsContent value="applications">
+        <ProviderApplications />
       </TabsContent>
 
       <TabsContent value="audits">
