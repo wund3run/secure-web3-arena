@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowRight, Briefcase, AlertCircle } from "lucide-react";
+import { ArrowRight, Briefcase, AlertCircle, Brain, Sparkles } from "lucide-react";
 import { AuditFormData } from '../AuditRequestForm';
 
 interface RequirementsStepProps {
@@ -81,14 +81,23 @@ const RequirementsStep: React.FC<RequirementsStepProps> = ({
         />
       </div>
 
-      <div className="bg-muted/50 rounded-lg p-4 mt-6">
-        <h3 className="text-sm font-medium flex items-center mb-2">
-          <AlertCircle className="h-4 w-4 mr-2 text-amber-500" />
-          How Our AI Matching Works
-        </h3>
-        <p className="text-sm text-muted-foreground">
-          Our advanced AI system analyzes your project details and matches you with the most suitable security experts based on their expertise, reputation, and past performance with similar projects. For optimal matching results, please provide as much detail as possible.
-        </p>
+      <div className="bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/10 rounded-lg p-5 mt-6">
+        <div className="flex items-start space-x-4">
+          <div className="bg-primary/10 rounded-full p-3">
+            <Brain className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h3 className="text-base font-medium flex items-center">
+              AI Auditor Matching
+              <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary/10 text-secondary">
+                Coming Next
+              </span>
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              Our advanced AI system analyzes your project details and matches you with the most suitable security experts based on their expertise, reputation, and past performance with similar projects.
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="flex items-start space-x-2 mt-6">
@@ -119,8 +128,8 @@ const RequirementsStep: React.FC<RequirementsStepProps> = ({
           onClick={nextStep}
           className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
         >
-          Next Step: Review
-          <ArrowRight className="ml-2 h-4 w-4" />
+          Find Your Perfect Match
+          <Sparkles className="ml-2 h-4 w-4" />
         </Button>
       </div>
     </div>

@@ -6,6 +6,7 @@ import TechnicalInfoStep from './steps/TechnicalInfoStep';
 import RequirementsStep from './steps/RequirementsStep';
 import ReviewStep from './steps/ReviewStep';
 import FormProgress from './FormProgress';
+import AIMatchingJourney from './AIMatchingJourney';
 
 export interface AuditFormData {
   projectName: string;
@@ -31,6 +32,7 @@ interface AuditRequestFormProps {
 const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
   const [formStep, setFormStep] = useState(1);
   const [projectType, setProjectType] = useState("");
+  const [showAIMatching, setShowAIMatching] = useState(false);
   const [formData, setFormData] = useState<AuditFormData>({
     projectName: "",
     projectDescription: "",
@@ -89,63 +91,91 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
 
   const nextStep = () => {
     window.scrollTo(0, 0);
-    setFormStep(formStep + 1);
+    
+    // After requirements step, show AI matching
+    if (formStep === 3) {
+      setShowAIMatching(true);
+    } else {
+      setFormStep(formStep + 1);
+    }
   };
 
   const prevStep = () => {
     window.scrollTo(0, 0);
-    setFormStep(formStep - 1);
+    
+    // If coming back from AI matching, return to step 3
+    if (showAIMatching) {
+      setShowAIMatching(false);
+    } else {
+      setFormStep(formStep - 1);
+    }
+  };
+
+  const completeAIMatching = () => {
+    setShowAIMatching(false);
+    setFormStep(4); // Go to review step after AI matching
+    window.scrollTo(0, 0);
   };
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Progress indicator */}
-      <FormProgress formStep={formStep} />
+      {!showAIMatching && <FormProgress formStep={formStep} />}
 
       {/* Form */}
       <div className="bg-card border border-border/40 rounded-xl p-6 md:p-8 shadow-sm">
         <form onSubmit={handleSubmit}>
-          {/* Step 1: Project Details */}
-          {formStep === 1 && (
-            <ProjectDetailsStep
-              formData={formData}
-              handleChange={handleChange}
-              projectType={projectType}
-              setProjectType={setProjectType}
-              handleEcosystemClick={handleEcosystemClick}
-              nextStep={nextStep}
+          {/* AI Matching Journey */}
+          {showAIMatching ? (
+            <AIMatchingJourney 
+              formData={formData} 
+              onProceed={completeAIMatching}
             />
-          )}
+          ) : (
+            <>
+              {/* Step 1: Project Details */}
+              {formStep === 1 && (
+                <ProjectDetailsStep
+                  formData={formData}
+                  handleChange={handleChange}
+                  projectType={projectType}
+                  setProjectType={setProjectType}
+                  handleEcosystemClick={handleEcosystemClick}
+                  nextStep={nextStep}
+                />
+              )}
 
-          {/* Step 2: Technical Information */}
-          {formStep === 2 && (
-            <TechnicalInfoStep
-              formData={formData}
-              handleChange={handleChange}
-              handleSelectChange={handleSelectChange}
-              handleCheckboxChange={handleCheckboxChange}
-              prevStep={prevStep}
-              nextStep={nextStep}
-            />
-          )}
+              {/* Step 2: Technical Information */}
+              {formStep === 2 && (
+                <TechnicalInfoStep
+                  formData={formData}
+                  handleChange={handleChange}
+                  handleSelectChange={handleSelectChange}
+                  handleCheckboxChange={handleCheckboxChange}
+                  prevStep={prevStep}
+                  nextStep={nextStep}
+                />
+              )}
 
-          {/* Step 3: Requirements & Preferences */}
-          {formStep === 3 && (
-            <RequirementsStep
-              formData={formData}
-              handleChange={handleChange}
-              handleSelectChange={handleSelectChange}
-              prevStep={prevStep}
-              nextStep={nextStep}
-            />
-          )}
+              {/* Step 3: Requirements & Preferences */}
+              {formStep === 3 && (
+                <RequirementsStep
+                  formData={formData}
+                  handleChange={handleChange}
+                  handleSelectChange={handleSelectChange}
+                  prevStep={prevStep}
+                  nextStep={nextStep}
+                />
+              )}
 
-          {/* Step 4: Review & Submit */}
-          {formStep === 4 && (
-            <ReviewStep
-              formData={formData}
-              prevStep={prevStep}
-            />
+              {/* Step 4: Review & Submit */}
+              {formStep === 4 && (
+                <ReviewStep
+                  formData={formData}
+                  prevStep={prevStep}
+                />
+              )}
+            </>
           )}
         </form>
       </div>

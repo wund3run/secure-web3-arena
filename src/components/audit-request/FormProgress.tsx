@@ -16,6 +16,8 @@ const FormProgress: React.FC<FormProgressProps> = ({ formStep }) => {
     }
   };
 
+  const totalSteps = 5; // Including AI Matching
+
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-2">
