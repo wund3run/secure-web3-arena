@@ -47,13 +47,6 @@ export function OnboardingBenefits() {
     }
   ];
 
-  const stats = [
-    { value: "$24M+", label: "Funds Protected" },
-    { value: "560+", label: "Critical Vulns Found" },
-    { value: "90+", label: "Active Clients" },
-    { value: "$165K", label: "Avg. Monthly Earnings" }
-  ];
-
   return (
     <div className="space-y-6">
       <div className="bg-white/80 backdrop-blur-md rounded-xl shadow-xl border border-border/40 p-6">
@@ -82,12 +75,22 @@ export function OnboardingBenefits() {
               <h3 className="font-semibold">Hawkly by the Numbers</h3>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              {stats.map((stat, index) => (
-                <div key={index} className="text-center p-3 bg-white/80 backdrop-blur-sm rounded-lg">
-                  <div className="text-2xl font-bold text-primary">{stat.value}</div>
-                  <div className="text-xs text-muted-foreground">{stat.label}</div>
-                </div>
-              ))}
+              <div className="text-center p-3 bg-white/80 backdrop-blur-sm rounded-lg">
+                <div className="text-2xl font-bold text-primary">$24M+</div>
+                <div className="text-xs text-muted-foreground">Funds Protected</div>
+              </div>
+              <div className="text-center p-3 bg-white/80 backdrop-blur-sm rounded-lg">
+                <div className="text-2xl font-bold text-primary">560+</div>
+                <div className="text-xs text-muted-foreground">Critical Vulns Found</div>
+              </div>
+              <div className="text-center p-3 bg-white/80 backdrop-blur-sm rounded-lg">
+                <div className="text-2xl font-bold text-primary">90+</div>
+                <div className="text-xs text-muted-foreground">Active Clients</div>
+              </div>
+              <div className="text-center p-3 bg-white/80 backdrop-blur-sm rounded-lg">
+                <div className="text-2xl font-bold text-primary">$165K</div>
+                <div className="text-xs text-muted-foreground">Avg. Monthly Earnings</div>
+              </div>
             </div>
           </div>
           

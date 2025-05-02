@@ -1,7 +1,6 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useLocation, useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { ServiceProviderOnboardingForm } from "@/components/service-provider/ServiceProviderOnboardingForm";
@@ -9,28 +8,12 @@ import { OnboardingBenefits } from "@/components/service-provider/OnboardingBene
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ServiceProviderOnboarding = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>("auditor");
-
-  useEffect(() => {
-    // Check if URL has a tab parameter
-    const params = new URLSearchParams(location.search);
-    const tabParam = params.get("tab");
-    if (tabParam === "auditor" || tabParam === "service") {
-      setActiveTab(tabParam);
-    }
-  }, [location]);
-
-  const handleTabChange = (value: string) => {
-    setActiveTab(value);
-    navigate(`/service-provider-onboarding?tab=${value}`, { replace: true });
-  };
 
   return (
     <>
       <Helmet>
-        <title>Join the Hawkly Network | Hawkly</title>
+        <title>Security Provider Onboarding | Hawkly</title>
         <meta
           name="description"
           content="Join Hawkly's elite network of security service providers and auditors. Get matched with ideal projects and grow your Web3 security business."
@@ -56,7 +39,7 @@ const ServiceProviderOnboarding = () => {
             
             <div className="lg:col-span-7">
               <div className="bg-white/80 backdrop-blur-md rounded-xl shadow-xl border border-border/40 p-6">
-                <Tabs value={activeTab} onValueChange={handleTabChange} className="mb-8">
+                <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="mb-8">
                   <TabsList className="grid grid-cols-2 w-full">
                     <TabsTrigger value="auditor">Independent Auditor</TabsTrigger>
                     <TabsTrigger value="service">Security Service Provider</TabsTrigger>

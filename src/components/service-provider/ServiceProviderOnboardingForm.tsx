@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -12,6 +13,7 @@ import {
   FormMessage,
   FormDescription
 } from "@/components/ui/form";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,8 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { providerFormSchema, ProviderFormValues, verificationMethodOptions } from "./providerTypes";
+import { providerFormSchema, ProviderFormValues } from "./providerTypes";
 import { 
   expertiseAreas, 
   blockchainOptions, 
@@ -86,7 +87,6 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
       
       // Verification
       certifications: "",
-      verificationMethod: "ethereum-wallet",
       agreesToTerms: false,
       agreesToCodeOfConduct: false,
     },
@@ -150,8 +150,8 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
     switch (currentStep) {
       case 0: // Basic Info
         return providerType === 'service' 
-          ? ['name', 'email', 'organization', 'teamSize'] 
-          : ['name', 'email'];
+          ? ['name', 'email', 'walletAddress', 'organization', 'teamSize'] 
+          : ['name', 'email', 'walletAddress'];
       case 1: // Expertise
         return ['primaryExpertise', 'blockchainExpertise', 'yearsSince'];
       case 2: // Experience
@@ -159,7 +159,7 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
       case 3: // Services / Methodology
         return providerType === 'service' ? ['servicesOffered'] : ['methodologies'];
       case 4: // Verification
-        return ['verificationMethod', 'agreesToTerms', 'agreesToCodeOfConduct'];
+        return ['agreesToTerms', 'agreesToCodeOfConduct'];
       default:
         return [];
     }
@@ -194,6 +194,23 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
                   <FormControl>
                     <Input type="email" placeholder="Your email address" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="walletAddress"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ethereum Wallet Address</FormLabel>
+                  <FormControl>
+                    <Input placeholder="0x..." {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    This will be used for secure payments and identity verification
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -588,57 +605,6 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
           <div className="space-y-6">
             <FormField
               control={form.control}
-              name="verificationMethod"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Verification Method</FormLabel>
-                  <FormDescription>
-                    Choose how you'd like to verify your identity and expertise
-                  </FormDescription>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="space-y-2"
-                    >
-                      {verificationMethodOptions.map((option) => (
-                        <FormItem key={option.value} className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value={option.value} />
-                          </FormControl>
-                          <FormLabel className="font-normal cursor-pointer">
-                            {option.label}
-                          </FormLabel>
-                        </FormItem>
-                      ))}
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            {form.watch("verificationMethod") === "ethereum-wallet" && (
-              <FormField
-                control={form.control}
-                name="walletAddress"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ethereum Wallet Address</FormLabel>
-                    <FormControl>
-                      <Input placeholder="0x..." {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      This will be used for secure payments and identity verification
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-            
-            <FormField
-              control={form.control}
               name="certifications"
               render={({ field }) => (
                 <FormItem>
@@ -700,15 +666,17 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
               />
             </div>
             
-            <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
-              <h3 className="font-medium mb-2">What happens next?</h3>
-              <ol className="list-decimal pl-5 space-y-1 text-sm text-muted-foreground">
-                <li>Our team will review your application within 3-5 business days</li>
-                <li>You may be contacted for additional verification or a brief interview</li>
-                <li>Once approved, your profile will be activated on the marketplace</li>
-                <li>You'll start receiving project matches based on your expertise</li>
-              </ol>
-            </div>
+            <Card className="bg-primary/5 border-primary/20">
+              <CardContent className="p-4">
+                <h3 className="font-medium mb-2">What happens next?</h3>
+                <ol className="list-decimal pl-5 space-y-1 text-sm text-muted-foreground">
+                  <li>Our team will review your application within 3-5 business days</li>
+                  <li>You may be contacted for additional verification or a brief interview</li>
+                  <li>Once approved, your profile will be activated on the marketplace</li>
+                  <li>You'll start receiving project matches based on your expertise</li>
+                </ol>
+              </CardContent>
+            </Card>
           </div>
         );
         

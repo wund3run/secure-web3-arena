@@ -6,7 +6,7 @@ export const providerFormSchema = z.object({
   // Basic Info - Common fields
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
   email: z.string().email({ message: "Please enter a valid email address" }),
-  walletAddress: z.string().optional().or(z.literal("")),
+  walletAddress: z.string().regex(/^0x[a-fA-F0-9]{40}$/, { message: "Invalid Ethereum address" }),
   website: z.string().url({ message: "Please enter a valid URL" }).optional().or(z.literal("")),
   githubProfile: z.string().url({ message: "Please enter a valid GitHub URL" }).optional().or(z.literal("")),
 
@@ -31,7 +31,6 @@ export const providerFormSchema = z.object({
   
   // Verification
   certifications: z.string().optional(),
-  verificationMethod: z.string().min(1, { message: "Please select a verification method" }),
   agreesToTerms: z.boolean().refine(val => val === true, { message: "You must agree to the terms and conditions" }),
   agreesToCodeOfConduct: z.boolean().refine(val => val === true, { message: "You must agree to the code of conduct" }),
 });
@@ -49,12 +48,4 @@ export const serviceTypeOptions = [
   { value: "incident-response", label: "Incident Response" },
   { value: "security-training", label: "Security Training" },
   { value: "continuous-monitoring", label: "Continuous Monitoring" },
-];
-
-export const verificationMethodOptions = [
-  { value: "ethereum-wallet", label: "Ethereum Wallet Verification" },
-  { value: "github", label: "GitHub Profile Verification" },
-  { value: "linkedin", label: "LinkedIn Profile Verification" },
-  { value: "document", label: "Document Verification" },
-  { value: "interview", label: "Technical Interview" },
 ];
