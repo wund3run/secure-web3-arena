@@ -9,6 +9,12 @@ type ThemeProviderProps = {
   children: React.ReactNode
   defaultTheme?: Theme
   storageKey?: string
+  // Adding attribute property that was missing
+  attribute?: string
+  // Adding enableSystem property
+  enableSystem?: boolean
+  // Adding disableTransitionOnChange property
+  disableTransitionOnChange?: boolean
 }
 
 type ThemeProviderState = {
@@ -27,6 +33,9 @@ export function ThemeProvider({
   children,
   defaultTheme = "system",
   storageKey = "vite-ui-theme",
+  attribute = "class", // Default to "class" if not provided
+  enableSystem = true,
+  disableTransitionOnChange = false,
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(
@@ -38,7 +47,7 @@ export function ThemeProvider({
 
     root.classList.remove("light", "dark")
 
-    if (theme === "system") {
+    if (theme === "system" && enableSystem) {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
         .matches
         ? "dark"
@@ -49,7 +58,7 @@ export function ThemeProvider({
     }
 
     root.classList.add(theme)
-  }, [theme])
+  }, [theme, enableSystem])
 
   const value = {
     theme,
