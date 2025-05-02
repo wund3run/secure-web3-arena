@@ -1,7 +1,7 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ShieldCheck, Trophy, Search, User, Menu, X, Shield, ArrowRight, Wallet, Key } from "lucide-react";
+import { ShieldCheck, Trophy, Search, User, Menu, X, Shield, ArrowRight, Wallet, Key, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
@@ -33,14 +33,14 @@ export function Navbar() {
   };
 
   // Check for existing connection on component mount
-  useState(() => {
+  useEffect(() => {
     const provider = localStorage.getItem("hawkly_wallet_provider");
     const address = localStorage.getItem("hawkly_wallet_address");
     
     if (provider && address) {
       setConnectedWallet({ provider, address });
     }
-  });
+  }, []);
 
   return (
     <>
@@ -109,6 +109,17 @@ export function Navbar() {
               </div>
             </div>
             <div className="hidden md:flex items-center space-x-4">
+              <Link to="/service-provider-onboarding">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-foreground border-primary/50 hover:border-primary hover:bg-primary/5"
+                >
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Join Us
+                </Button>
+              </Link>
+              
               <Button variant="outline" size="sm" className="text-foreground">
                 <Search className="h-4 w-4 mr-2" />
                 Search
@@ -200,6 +211,18 @@ export function Navbar() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Community
+              </Link>
+              <Link 
+                to="/service-provider-onboarding" 
+                className={cn(
+                  "block pl-3 pr-4 py-2 text-base font-medium border-l-4 border-primary/50 text-primary bg-primary/5"
+                )}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <div className="flex items-center">
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Join Us
+                </div>
               </Link>
               <div className="flex flex-col space-y-2 pl-3 pr-4 py-2">
                 <Button variant="outline" size="sm" className="text-foreground justify-start">
