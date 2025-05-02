@@ -50,6 +50,7 @@ function App() {
   return (
     <HelmetProvider>
       <ThemeProvider
+        attribute="class"
         defaultTheme="system"
         enableSystem
         disableTransitionOnChange
