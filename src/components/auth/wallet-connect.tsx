@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Wallet, Mail } from "lucide-react";
+import { Wallet, Mail, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useWalletDetection } from "./hooks/useWalletDetection";
@@ -123,9 +123,9 @@ export function WalletConnect({ onConnect, onClose }: WalletConnectProps) {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle className="text-xl font-bold text-center">Connect to Hawkly</CardTitle>
+        <CardTitle className="text-xl font-bold text-center">Join the Hawkly Circle</CardTitle>
         <CardDescription className="text-center">
-          Connect your wallet or use a social login to access the platform
+          Connect your wallet or use a social login to join our security community
         </CardDescription>
       </CardHeader>
       
@@ -170,7 +170,7 @@ export function WalletConnect({ onConnect, onClose }: WalletConnectProps) {
         
         {onClose && (
           <Button variant="ghost" size="sm" onClick={onClose} disabled={isConnecting}>
-            I'll connect later
+            I'll join later
           </Button>
         )}
       </CardFooter>

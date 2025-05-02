@@ -89,7 +89,7 @@ export function SocialLoginList({
           onClick={handleEmailSubmit}
           disabled={isConnecting || !emailInput.trim() || !emailInput.includes('@')}
         >
-          Continue with Email
+          Join with Email
         </Button>
       </div>
     </div>

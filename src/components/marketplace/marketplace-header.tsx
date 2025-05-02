@@ -1,10 +1,11 @@
 
 import { useState } from "react";
-import { Search, Filter, GridIcon, LayoutList, X } from "lucide-react";
+import { Search, Filter, GridIcon, LayoutList, X, Shield, FileText } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 interface MarketplaceHeaderProps {
   viewMode: "grid" | "list";
@@ -105,6 +106,27 @@ export function MarketplaceHeader({
             )}
           </Button>
         </div>
+      </div>
+
+      {/* Call to Action Buttons */}
+      <div className="flex flex-col sm:flex-row gap-3 mt-2">
+        <Link to="/request-audit" className="w-full sm:w-auto">
+          <Button 
+            variant="outline" 
+            className="w-full border-primary text-primary hover:bg-primary/10 flex items-center justify-center"
+          >
+            <FileText className="mr-2 h-4 w-4" />
+            Request for Audit
+          </Button>
+        </Link>
+        <Link to="/join" className="w-full sm:w-auto">
+          <Button 
+            className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 flex items-center justify-center"
+          >
+            <Shield className="mr-2 h-4 w-4" />
+            Join the Circle
+          </Button>
+        </Link>
       </div>
     </div>
   );
