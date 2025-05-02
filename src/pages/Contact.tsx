@@ -3,11 +3,12 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
-import { Mail, MessageSquare, MapPin, Clock, Globe, ArrowRight, Shield } from "lucide-react";
+import { Mail, MessageSquare, MapPin, Clock, Globe, ArrowRight, Shield, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 const Contact = () => {
   // Form submission handler
@@ -132,6 +133,20 @@ const Contact = () => {
                 </div>
               </div>
 
+              {/* Request an Audit CTA */}
+              <div className="mt-8 pt-6 border-t border-border/30">
+                <h3 className="font-bold mb-3">Need a Security Audit?</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Our AI-powered system will match you with the perfect security experts for your project.
+                </p>
+                <Link to="/request-audit">
+                  <Button className="w-full bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] hover:opacity-90">
+                    <FileText className="mr-2 h-4 w-4" />
+                    Request an Audit
+                  </Button>
+                </Link>
+              </div>
+
               <div className="mt-8 pt-6 border-t border-border/30">
                 <div className="flex items-center mb-4">
                   <Shield className="h-5 w-5 text-primary mr-2" />
@@ -182,10 +197,12 @@ const Contact = () => {
               Don't wait for vulnerabilities to be exploited. Connect with top security experts today.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-                Request an Audit
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              <Link to="/request-audit">
+                <Button size="lg" className="bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] hover:opacity-90">
+                  Request an Audit
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
               <Button variant="outline" size="lg" className="border-primary text-primary hover:bg-primary/10">
                 View Security Services
               </Button>

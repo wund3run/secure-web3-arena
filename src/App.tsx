@@ -15,6 +15,7 @@ import Community from "./pages/Community";
 import Stats from "./pages/Stats";
 import Escrow from "./pages/Escrow";
 import Contact from "./pages/Contact";
+import RequestAudit from "./pages/RequestAudit";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 
@@ -60,6 +61,7 @@ const App = () => (
               <Route path="/vulnerabilities" element={<NotFound />} />
               <Route path="/faqs" element={<NotFound />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/request-audit" element={<RequestAudit />} />
               
               {/* Escrow system */}
               <Route path="/escrow" element={<Escrow />} />

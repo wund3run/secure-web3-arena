@@ -9,6 +9,7 @@ interface BlockchainEcosystem {
 
 interface BlockchainEcosystemsProps {
   ecosystems?: BlockchainEcosystem[];
+  onEcosystemClick?: (ecosystem: string) => void; // Add this prop for custom handling
 }
 
 const DEFAULT_ECOSYSTEMS: BlockchainEcosystem[] = [
@@ -59,17 +60,22 @@ const DEFAULT_ECOSYSTEMS: BlockchainEcosystem[] = [
   }
 ];
 
-export function BlockchainEcosystems({ ecosystems = DEFAULT_ECOSYSTEMS }: BlockchainEcosystemsProps) {
+export function BlockchainEcosystems({ ecosystems = DEFAULT_ECOSYSTEMS, onEcosystemClick }: BlockchainEcosystemsProps) {
   const handleEcosystemClick = (ecosystem: string) => {
-    toast.info(`${ecosystem} security audits are available`, {
-      description: "Contact us for specialized security solutions",
-      action: {
-        label: "Contact Us",
-        onClick: () => {
-          window.location.href = '/contact';
+    // Use custom handler if provided, otherwise use default behavior
+    if (onEcosystemClick) {
+      onEcosystemClick(ecosystem);
+    } else {
+      toast.info(`${ecosystem} security audits are available`, {
+        description: "Contact us for specialized security solutions",
+        action: {
+          label: "Contact Us",
+          onClick: () => {
+            window.location.href = '/contact';
+          }
         }
-      }
-    });
+      });
+    }
   };
 
   return (

@@ -56,8 +56,8 @@ export function AuditsFooter() {
         </div>
         
         <div className="flex flex-wrap justify-center gap-4">
-          <Link to="/contact">
-            <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-all">
+          <Link to="/request-audit">
+            <Button size="lg" className="bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] hover:opacity-90 transition-all">
               <FileText className="mr-2 h-5 w-5" />
               Request an Audit
             </Button>
