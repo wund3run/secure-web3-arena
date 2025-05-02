@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import {
   createBrowserRouter,
@@ -9,7 +10,7 @@ import {
   Link
 } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
-import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeProvider } from "./components/theme-provider";
 import { siteConfig } from './config/site';
 import { Shell } from './components/layout/shell';
 import { Home } from './pages/Home';
