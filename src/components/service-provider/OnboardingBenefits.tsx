@@ -8,8 +8,7 @@ import {
   Star,
   Zap,
   TrendingUp,
-  BadgeCheck,
-  Globe
+  BadgeCheck
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -66,40 +65,6 @@ export function OnboardingBenefits() {
           ))}
         </div>
       </div>
-
-      <Card className="overflow-hidden border-primary/20">
-        <CardContent className="p-0">
-          <div className="bg-gradient-to-br from-primary/10 to-secondary/10 p-6">
-            <div className="flex items-center mb-3">
-              <Zap className="h-5 w-5 text-primary mr-2" />
-              <h3 className="font-semibold">Hawkly by the Numbers</h3>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center p-3 bg-white/80 backdrop-blur-sm rounded-lg">
-                <div className="text-2xl font-bold text-primary">$24M+</div>
-                <div className="text-xs text-muted-foreground">Funds Protected</div>
-              </div>
-              <div className="text-center p-3 bg-white/80 backdrop-blur-sm rounded-lg">
-                <div className="text-2xl font-bold text-primary">560+</div>
-                <div className="text-xs text-muted-foreground">Critical Vulns Found</div>
-              </div>
-              <div className="text-center p-3 bg-white/80 backdrop-blur-sm rounded-lg">
-                <div className="text-2xl font-bold text-primary">90+</div>
-                <div className="text-xs text-muted-foreground">Active Clients</div>
-              </div>
-              <div className="text-center p-3 bg-white/80 backdrop-blur-sm rounded-lg">
-                <div className="text-2xl font-bold text-primary">$165K</div>
-                <div className="text-xs text-muted-foreground">Avg. Monthly Earnings</div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="p-4 flex items-center justify-center bg-white">
-            <Globe className="h-5 w-5 text-muted-foreground mr-2" />
-            <span className="text-sm text-muted-foreground">Global coverage with auditors in 32+ countries</span>
-          </div>
-        </CardContent>
-      </Card>
 
       <div className="bg-white/80 backdrop-blur-md rounded-xl shadow-xl border border-border/40 p-6">
         <h2 className="text-xl font-semibold mb-4">Approval Process</h2>

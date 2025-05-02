@@ -1,243 +1,166 @@
-
+import React from "react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { ShieldCheck, Trophy, Search, User, Menu, X, Shield, ArrowRight, Wallet, Key } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { WalletConnect } from "@/components/auth/wallet-connect";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
 
 export function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showWalletConnect, setShowWalletConnect] = useState(false);
-  const [connectedWallet, setConnectedWallet] = useState<{ provider: string; address: string } | null>(null);
-  const location = useLocation();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const isActive = (path: string) => {
-    return location.pathname === path;
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
-
-  const handleWalletConnect = (provider: string, address: string) => {
-    setConnectedWallet({ provider, address });
-    setShowWalletConnect(false);
-    
-    // In a real app, you would store this in localStorage or in your auth context
-    localStorage.setItem("hawkly_wallet_provider", provider);
-    localStorage.setItem("hawkly_wallet_address", address);
-  };
-
-  const handleSignOut = () => {
-    setConnectedWallet(null);
-    localStorage.removeItem("hawkly_wallet_provider");
-    localStorage.removeItem("hawkly_wallet_address");
-  };
-
-  // Check for existing connection on component mount
-  useState(() => {
-    const provider = localStorage.getItem("hawkly_wallet_provider");
-    const address = localStorage.getItem("hawkly_wallet_address");
-    
-    if (provider && address) {
-      setConnectedWallet({ provider, address });
-    }
-  });
 
   return (
-    <>
-      <nav className="bg-card border-b border-border/40 z-50 sticky top-0 w-full">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link to="/" className="flex items-center space-x-2">
-                <div className="relative flex items-center justify-center">
-                  <ShieldCheck className="h-9 w-9 text-primary" />
-                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-primary rotate-45 rounded-sm opacity-70"></div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-3 h-3 bg-secondary rounded-full animate-pulse-glow"></div>
-                  </div>
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Hawkly</span>
-                  <span className="text-xs text-muted-foreground leading-none">Security Marketplace</span>
-                </div>
-              </Link>
-              <div className="hidden md:ml-10 md:flex md:space-x-8">
-                <Link 
-                  to="/marketplace" 
-                  className={cn(
-                    "inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2",
-                    isActive("/marketplace") 
-                      ? "border-primary text-primary" 
-                      : "border-transparent text-foreground hover:text-primary hover:border-primary/30"
-                  )}
-                >
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 items-center">
+        <Link to="/" className="mr-6 flex items-center space-x-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-6 w-6"
+          >
+            <path d="M3 12a9 9 0 1 1 18 0a9 9 0 0 1-18 0Z" />
+            <path d="M12 8v8" />
+            <path d="M8 12h8" />
+          </svg>
+          <span className="font-bold">Hawkly</span>
+        </Link>
+        <div className="hidden md:flex">
+          <nav className="flex items-center space-x-6 text-sm font-medium">
+            <Link
+              to="/marketplace"
+              className={cn(
+                "transition-colors hover:text-foreground/80",
+                pathname === "/marketplace" ? "text-foreground" : "text-foreground/60"
+              )}
+            >
+              Marketplace
+            </Link>
+            <Link
+              to="/audits"
+              className={cn(
+                "transition-colors hover:text-foreground/80",
+                pathname === "/audits" ? "text-foreground" : "text-foreground/60"
+              )}
+            >
+              Audits
+            </Link>
+            <Link
+              to="/leaderboard"
+              className={cn(
+                "transition-colors hover:text-foreground/80",
+                pathname.startsWith("/leaderboard") ? "text-foreground" : "text-foreground/60"
+              )}
+            >
+              Leaderboard
+            </Link>
+            <Link
+              to="/community"
+              className={cn(
+                "transition-colors hover:text-foreground/80",
+                pathname === "/community" ? "text-foreground" : "text-foreground/60"
+              )}
+            >
+              Community
+            </Link>
+            <Link
+              to="/join"
+              className={cn(
+                "transition-colors hover:text-primary font-medium",
+                pathname === "/join" ? "text-primary" : "text-primary/80"
+              )}
+            >
+              Join as Provider
+            </Link>
+          </nav>
+        </div>
+        <div className="flex flex-1 items-center justify-end space-x-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="relative hidden h-8 w-8 rounded-full md:flex">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="/avatars/01.png" alt="Avatar" />
+                  <AvatarFallback>SC</AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate("/admin/dashboard")}>Dashboard</DropdownMenuItem>
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="sm" className="flex h-8 w-8 rounded-full md:hidden">
+                <Menu className="h-4 w-4" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="sm:max-w-sm">
+              <SheetHeader>
+                <SheetTitle>Menu</SheetTitle>
+                <SheetDescription>
+                  Explore the Hawkly platform.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="grid gap-4 py-4">
+                <Link to="/marketplace" className="px-4 py-2 rounded-md hover:bg-secondary">
                   Marketplace
                 </Link>
-                <Link 
-                  to="/leaderboard" 
-                  className={cn(
-                    "inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2",
-                    isActive("/leaderboard") 
-                      ? "border-primary text-primary" 
-                      : "border-transparent text-foreground hover:text-primary hover:border-primary/30"
-                  )}
-                >
-                  Leaderboard
-                </Link>
-                <Link 
-                  to="/audits" 
-                  className={cn(
-                    "inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2",
-                    isActive("/audits") 
-                      ? "border-primary text-primary" 
-                      : "border-transparent text-foreground hover:text-primary hover:border-primary/30"
-                  )}
-                >
+                <Link to="/audits" className="px-4 py-2 rounded-md hover:bg-secondary">
                   Audits
                 </Link>
-                <Link 
-                  to="/community" 
-                  className={cn(
-                    "inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2",
-                    isActive("/community") 
-                      ? "border-primary text-primary" 
-                      : "border-transparent text-foreground hover:text-primary hover:border-primary/30"
-                  )}
-                >
+                <Link to="/leaderboard" className="px-4 py-2 rounded-md hover:bg-secondary">
+                  Leaderboard
+                </Link>
+                <Link to="/community" className="px-4 py-2 rounded-md hover:bg-secondary">
                   Community
                 </Link>
+                <Link to="/join" className="px-4 py-2 rounded-md hover:bg-secondary">
+                  Join as Provider
+                </Link>
               </div>
-            </div>
-            <div className="hidden md:flex items-center space-x-4">
-              <Button variant="outline" size="sm" className="text-foreground">
-                <Search className="h-4 w-4 mr-2" />
-                Search
+            </SheetContent>
+          </Sheet>
+          <div className="hidden sm:block">
+            <Link to="/join">
+              <Button variant="default" size="sm" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90">
+                Join Security Circle
               </Button>
-              
-              {connectedWallet ? (
-                <div className="flex items-center space-x-2">
-                  <div className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium">
-                    {connectedWallet.address.length > 12 
-                      ? `${connectedWallet.address.slice(0, 6)}...${connectedWallet.address.slice(-4)}`
-                      : connectedWallet.address}
-                  </div>
-                  <Button variant="secondary" size="sm" onClick={handleSignOut}>
-                    <Key className="h-4 w-4 mr-2" />
-                    Sign Out
-                  </Button>
-                </div>
-              ) : (
-                <Button variant="default" size="sm" onClick={() => setShowWalletConnect(true)}>
-                  <Wallet className="h-4 w-4 mr-2" />
-                  Connect
-                </Button>
-              )}
-            </div>
-            <div className="flex items-center md:hidden">
-              <button
-                type="button"
-                className="inline-flex items-center justify-center p-2 rounded-md text-foreground hover:text-primary hover:bg-background focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                <span className="sr-only">Open main menu</span>
-                {isMenuOpen ? (
-                  <X className="block h-6 w-6" aria-hidden="true" />
-                ) : (
-                  <Menu className="block h-6 w-6" aria-hidden="true" />
-                )}
-              </button>
-            </div>
+            </Link>
           </div>
         </div>
-
-        {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="pt-2 pb-4 space-y-1">
-              <Link 
-                to="/marketplace" 
-                className={cn(
-                  "block pl-3 pr-4 py-2 text-base font-medium border-l-4",
-                  isActive("/marketplace") 
-                    ? "border-primary text-primary bg-primary/5" 
-                    : "border-transparent text-foreground hover:text-primary hover:border-primary/30 hover:bg-background"
-                )}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Marketplace
-              </Link>
-              <Link 
-                to="/leaderboard" 
-                className={cn(
-                  "block pl-3 pr-4 py-2 text-base font-medium border-l-4",
-                  isActive("/leaderboard") 
-                    ? "border-primary text-primary bg-primary/5" 
-                    : "border-transparent text-foreground hover:text-primary hover:border-primary/30 hover:bg-background"
-                )}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Leaderboard
-              </Link>
-              <Link 
-                to="/audits" 
-                className={cn(
-                  "block pl-3 pr-4 py-2 text-base font-medium border-l-4",
-                  isActive("/audits") 
-                    ? "border-primary text-primary bg-primary/5" 
-                    : "border-transparent text-foreground hover:text-primary hover:border-primary/30 hover:bg-background"
-                )}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Audits
-              </Link>
-              <Link 
-                to="/community" 
-                className={cn(
-                  "block pl-3 pr-4 py-2 text-base font-medium border-l-4",
-                  isActive("/community") 
-                    ? "border-primary text-primary bg-primary/5" 
-                    : "border-transparent text-foreground hover:text-primary hover:border-primary/30 hover:bg-background"
-                )}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Community
-              </Link>
-              <div className="flex flex-col space-y-2 pl-3 pr-4 py-2">
-                <Button variant="outline" size="sm" className="text-foreground justify-start">
-                  <Search className="h-4 w-4 mr-2" />
-                  Search
-                </Button>
-                
-                {connectedWallet ? (
-                  <div className="space-y-2">
-                    <div className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium">
-                      {connectedWallet.address.length > 12 
-                        ? `${connectedWallet.address.slice(0, 6)}...${connectedWallet.address.slice(-4)}`
-                        : connectedWallet.address}
-                    </div>
-                    <Button variant="secondary" size="sm" className="justify-start" onClick={handleSignOut}>
-                      <Key className="h-4 w-4 mr-2" />
-                      Sign Out
-                    </Button>
-                  </div>
-                ) : (
-                  <Button variant="default" size="sm" className="justify-start" onClick={() => setShowWalletConnect(true)}>
-                    <Wallet className="h-4 w-4 mr-2" />
-                    Connect
-                  </Button>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-      </nav>
-      
-      <Dialog open={showWalletConnect} onOpenChange={setShowWalletConnect}>
-        <DialogContent className="sm:max-w-md">
-          <DialogTitle>Connect to Hawkly</DialogTitle>
-          <DialogDescription>Choose your preferred authentication method</DialogDescription>
-          <WalletConnect onConnect={handleWalletConnect} onClose={() => setShowWalletConnect(false)} />
-        </DialogContent>
-      </Dialog>
-    </>
+      </div>
+    </header>
   );
 }

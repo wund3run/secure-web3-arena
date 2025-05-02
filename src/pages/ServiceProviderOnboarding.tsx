@@ -13,7 +13,7 @@ const ServiceProviderOnboarding = () => {
   return (
     <>
       <Helmet>
-        <title>Security Provider Onboarding | Hawkly</title>
+        <title>Join the Security Provider Network | Hawkly</title>
         <meta
           name="description"
           content="Join Hawkly's elite network of security service providers and auditors. Get matched with ideal projects and grow your Web3 security business."

@@ -1,5 +1,5 @@
 
-import { ArrowRight, Shield, Check, FileText, Mail } from "lucide-react";
+import { ArrowRight, Shield, Check, FileText, Mail, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -23,10 +23,10 @@ export function MarketplaceFooter() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
-            <Link to="/contact">
+            <Link to="/join">
               <Button size="lg" variant="outline" className="flex items-center border-primary text-primary hover:bg-primary/10">
-                Request Custom Audit
-                <FileText className="ml-2 h-4 w-4" />
+                Join as Security Provider
+                <UserPlus className="ml-2 h-4 w-4" />
               </Button>
             </Link>
           </div>
@@ -108,9 +108,9 @@ export function MarketplaceFooter() {
             <Check className="h-4 w-4 text-primary mr-2" />
             <span>DeFi Security Reviews</span>
           </Link>
-          <Link to="/marketplace" className="flex items-center p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
-            <Check className="h-4 w-4 text-primary mr-2" />
-            <span>NFT Contract Security</span>
+          <Link to="/join" className="flex items-center p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
+            <UserPlus className="h-4 w-4 text-primary mr-2" />
+            <span>Join as Provider</span>
           </Link>
           <Link to="/contact" className="flex items-center p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
             <Check className="h-4 w-4 text-primary mr-2" />

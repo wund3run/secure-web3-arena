@@ -6,7 +6,7 @@ export const providerFormSchema = z.object({
   // Basic Info - Common fields
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
   email: z.string().email({ message: "Please enter a valid email address" }),
-  walletAddress: z.string().regex(/^0x[a-fA-F0-9]{40}$/, { message: "Invalid Ethereum address" }),
+  walletAddress: z.string().min(5, { message: "Please enter a valid wallet address" }),
   website: z.string().url({ message: "Please enter a valid URL" }).optional().or(z.literal("")),
   githubProfile: z.string().url({ message: "Please enter a valid GitHub URL" }).optional().or(z.literal("")),
 

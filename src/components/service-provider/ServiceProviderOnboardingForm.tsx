@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -204,12 +203,12 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
               name="walletAddress"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Ethereum Wallet Address</FormLabel>
+                  <FormLabel>Wallet Address</FormLabel>
                   <FormControl>
-                    <Input placeholder="0x..." {...field} />
+                    <Input placeholder="Your blockchain wallet address" {...field} />
                   </FormControl>
                   <FormDescription>
-                    This will be used for secure payments and identity verification
+                    Enter any blockchain wallet address you use (Ethereum, Solana, etc.)
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -401,7 +400,6 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
               )}
             />
           </div>
-        );
         
       case 2:
         return (
