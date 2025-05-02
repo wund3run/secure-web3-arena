@@ -54,7 +54,7 @@ export function Footer() {
               </a>
             </div>
             
-            {/* Added contact email */}
+            {/* Contact email */}
             <div className="mt-4 flex items-center">
               <Mail className="h-5 w-5 text-muted-foreground mr-2" />
               <a href="mailto:join@hawkly.com" className="text-sm text-muted-foreground hover:text-primary">join@hawkly.com</a>

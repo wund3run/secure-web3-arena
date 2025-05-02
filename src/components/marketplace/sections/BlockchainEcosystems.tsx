@@ -64,9 +64,9 @@ export function BlockchainEcosystems({ ecosystems = DEFAULT_ECOSYSTEMS }: Blockc
     toast.info(`${ecosystem} security audits are available`, {
       description: "Contact us for specialized security solutions",
       action: {
-        label: "Browse Services",
+        label: "Contact Us",
         onClick: () => {
-          // This would update category in the parent component
+          window.location.href = '/contact';
         }
       }
     });
@@ -84,14 +84,18 @@ export function BlockchainEcosystems({ ecosystems = DEFAULT_ECOSYSTEMS }: Blockc
             onClick={() => handleEcosystemClick(ecosystem.name)}
           >
             <div 
-              className="h-14 w-14 mb-2 flex items-center justify-center rounded-full bg-gradient-to-br from-white/80 to-white/20" 
-              style={{ boxShadow: `0 0 10px ${ecosystem.color}40` }}
+              className="h-14 w-14 mb-2 flex items-center justify-center rounded-full"
+              style={{ 
+                background: `linear-gradient(135deg, ${ecosystem.color}30, ${ecosystem.color}10)`,
+                boxShadow: `0 0 10px ${ecosystem.color}40` 
+              }}
             >
+              {/* Use a colored circle with the first letter as the fallback */}
               <div 
-                className="h-8 w-8 flex items-center justify-center"
-                style={{ backgroundColor: ecosystem.color, borderRadius: '50%' }}
+                className="h-10 w-10 rounded-full flex items-center justify-center text-white font-bold"
+                style={{ backgroundColor: ecosystem.color }}
               >
-                <span className="text-white font-bold text-xs">{ecosystem.name.substring(0, 1)}</span>
+                {ecosystem.name.charAt(0)}
               </div>
             </div>
             <h4 className="font-medium text-xs text-center">{ecosystem.name}</h4>

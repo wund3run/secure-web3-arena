@@ -14,6 +14,7 @@ import Audits from "./pages/Audits";
 import Community from "./pages/Community";
 import Stats from "./pages/Stats";
 import Escrow from "./pages/Escrow";
+import Contact from "./pages/Contact";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 
@@ -58,6 +59,7 @@ const App = () => (
               <Route path="/blog" element={<NotFound />} />
               <Route path="/vulnerabilities" element={<NotFound />} />
               <Route path="/faqs" element={<NotFound />} />
+              <Route path="/contact" element={<Contact />} />
               
               {/* Escrow system */}
               <Route path="/escrow" element={<Escrow />} />
@@ -74,7 +76,6 @@ const App = () => (
               {/* Legal routes */}
               <Route path="/terms" element={<NotFound />} />
               <Route path="/privacy" element={<NotFound />} />
-              <Route path="/contact" element={<NotFound />} />
               <Route path="/security-policy" element={<NotFound />} /> 
               
               {/* Catch-all route */}

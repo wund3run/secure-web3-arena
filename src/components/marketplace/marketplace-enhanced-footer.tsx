@@ -17,10 +17,12 @@ export function MarketplaceEnhancedFooter() {
                 Connect with top security professionals who understand the complexities of blockchain technology and can help protect your assets.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 group">
-                  Post Security Request
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Button>
+                <Link to="/contact">
+                  <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 group">
+                    Post Security Request
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </Link>
                 <Link to="/auditors">
                   <Button variant="outline" size="lg" className="group">
                     Browse Auditors
@@ -51,7 +53,7 @@ export function MarketplaceEnhancedFooter() {
                 <p className="text-sm text-muted-foreground">
                   Offer your security services, find clients, and build your reputation.
                 </p>
-                <Link to="/auditors/register" className="text-secondary text-sm flex items-center mt-3 group">
+                <Link to="/contact" className="text-secondary text-sm flex items-center mt-3 group">
                   Join as auditor
                   <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
                 </Link>
@@ -114,10 +116,12 @@ export function MarketplaceEnhancedFooter() {
             <p className="text-muted-foreground mb-4">
               Our security experts are ready to assist you with any questions about audits or security services.
             </p>
-            <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 group">
-              Contact Support
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Button>
+            <Link to="/contact">
+              <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 group">
+                Contact Support
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </Link>
           </div>
         </div>
         

@@ -23,9 +23,9 @@ export function MarketplaceFooter() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
-            <Link to="/audits">
+            <Link to="/contact">
               <Button size="lg" variant="outline" className="flex items-center border-primary text-primary hover:bg-primary/10">
-                View Recent Audit Reports
+                Request Custom Audit
                 <FileText className="ml-2 h-4 w-4" />
               </Button>
             </Link>
@@ -112,9 +112,9 @@ export function MarketplaceFooter() {
             <Check className="h-4 w-4 text-primary mr-2" />
             <span>NFT Contract Security</span>
           </Link>
-          <Link to="/marketplace" className="flex items-center p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
+          <Link to="/contact" className="flex items-center p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
             <Check className="h-4 w-4 text-primary mr-2" />
-            <span>Wallet Security Checks</span>
+            <span>Contact Us</span>
           </Link>
         </div>
       </div>

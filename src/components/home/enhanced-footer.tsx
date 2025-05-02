@@ -46,9 +46,9 @@ export function EnhancedFooter() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Link to="/audits" className="w-full sm:w-auto">
+              <Link to="/contact" className="w-full sm:w-auto">
                 <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10 w-full">
-                  Become an Auditor
+                  Contact Us
                 </Button>
               </Link>
             </div>
@@ -134,7 +134,7 @@ export function EnhancedFooter() {
               <li><Link to="/audits" className="text-sm text-muted-foreground hover:text-primary transition-colors">Audit Methodology</Link></li>
               <li><Link to="/security-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Security Policy</Link></li>
               <li><Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link></li>
-              <li><Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact Us</Link></li>
             </ul>
           </div>
         </div>
