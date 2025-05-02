@@ -120,7 +120,7 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Progress indicator */}
-      {!showAIMatching && <FormProgress formStep={formStep} />}
+      <FormProgress formStep={formStep} showAIMatching={showAIMatching} />
 
       {/* Form */}
       <div className="bg-card border border-border/40 rounded-xl p-6 md:p-8 shadow-sm">

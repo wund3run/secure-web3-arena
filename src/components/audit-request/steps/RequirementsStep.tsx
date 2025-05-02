@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowRight, Briefcase, AlertCircle, Brain, Sparkles } from "lucide-react";
+import { ArrowRight, Briefcase, Brain, Sparkles } from "lucide-react";
 import { AuditFormData } from '../AuditRequestForm';
 
 interface RequirementsStepProps {
@@ -34,8 +34,9 @@ const RequirementsStep: React.FC<RequirementsStepProps> = ({
           <Select 
             value={formData.budget} 
             onValueChange={(value) => handleSelectChange("budget", value)}
+            required
           >
-            <SelectTrigger>
+            <SelectTrigger className="bg-background">
               <SelectValue placeholder="Select budget range" />
             </SelectTrigger>
             <SelectContent>
@@ -54,8 +55,9 @@ const RequirementsStep: React.FC<RequirementsStepProps> = ({
           <Select 
             value={formData.deadline} 
             onValueChange={(value) => handleSelectChange("deadline", value)}
+            required
           >
-            <SelectTrigger>
+            <SelectTrigger className="bg-background">
               <SelectValue placeholder="Select timeline" />
             </SelectTrigger>
             <SelectContent>
@@ -75,7 +77,7 @@ const RequirementsStep: React.FC<RequirementsStepProps> = ({
           id="specificConcerns" 
           name="specificConcerns" 
           placeholder="Are there any specific security concerns or areas you want the auditors to focus on?" 
-          className="min-h-[100px]"
+          className="min-h-[100px] bg-background"
           value={formData.specificConcerns}
           onChange={handleChange}
         />

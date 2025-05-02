@@ -62,9 +62,11 @@ export function MarketplaceEnhancedHeader() {
             </div>
             
             <div className="hidden sm:block">
-              <Button variant="outline" onClick={() => window.open('/requests', '_self')}>
-                Post Request
-              </Button>
+              <Link to="/request-audit">
+                <Button variant="outline">
+                  Post Request
+                </Button>
+              </Link>
             </div>
             
             <Button 
