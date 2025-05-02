@@ -12,13 +12,15 @@ interface RequirementsStepProps {
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleSelectChange: (name: string, value: string) => void;
   prevStep: () => void;
+  nextStep: () => void;
 }
 
 const RequirementsStep: React.FC<RequirementsStepProps> = ({
   formData,
   handleChange,
   handleSelectChange,
-  prevStep
+  prevStep,
+  nextStep
 }) => {
   return (
     <div className="space-y-6">
@@ -113,10 +115,11 @@ const RequirementsStep: React.FC<RequirementsStepProps> = ({
           Back
         </Button>
         <Button 
-          type="submit"
+          type="button"
+          onClick={nextStep}
           className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
         >
-          Submit Audit Request
+          Next Step: Review
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>

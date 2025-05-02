@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import ProjectDetailsStep from './steps/ProjectDetailsStep';
 import TechnicalInfoStep from './steps/TechnicalInfoStep';
 import RequirementsStep from './steps/RequirementsStep';
+import ReviewStep from './steps/ReviewStep';
 import FormProgress from './FormProgress';
 
 export interface AuditFormData {
@@ -113,12 +114,21 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
             />
           )}
 
-          {/* Step 3: Requirements & Submission */}
+          {/* Step 3: Requirements & Preferences */}
           {formStep === 3 && (
             <RequirementsStep
               formData={formData}
               handleChange={handleChange}
               handleSelectChange={handleSelectChange}
+              prevStep={prevStep}
+              nextStep={nextStep}
+            />
+          )}
+
+          {/* Step 4: Review & Submit */}
+          {formStep === 4 && (
+            <ReviewStep
+              formData={formData}
               prevStep={prevStep}
             />
           )}
