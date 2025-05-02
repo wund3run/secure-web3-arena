@@ -44,3 +44,16 @@ export const experienceOptions: SelectOption[] = [
   { value: "incident-response", label: "Incident Response" },
   { value: "red-team", label: "Red Team Exercises" },
 ];
+
+export const serviceTypeOptions: SelectOption[] = [
+  { value: "smart-contract-audit", label: "Smart Contract Audit" },
+  { value: "protocol-audit", label: "Protocol Audit" },
+  { value: "penetration-testing", label: "Penetration Testing" },
+  { value: "code-review", label: "Code Review" },
+  { value: "architecture-review", label: "Architecture Review" },
+  { value: "security-consulting", label: "Security Consulting" },
+  { value: "threat-modeling", label: "Threat Modeling" },
+  { value: "incident-response", label: "Incident Response" },
+  { value: "security-training", label: "Security Training" },
+  { value: "continuous-monitoring", label: "Continuous Monitoring" },
+];
