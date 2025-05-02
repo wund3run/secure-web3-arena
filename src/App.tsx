@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -18,6 +17,7 @@ import Contact from "./pages/Contact";
 import RequestAudit from "./pages/RequestAudit";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AuditorOnboarding from "@/pages/AuditorOnboarding";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -82,6 +82,9 @@ const App = () => (
               
               {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />
+              
+              {/* Add the route to the auditor onboarding page in the Routes component */}
+              <Route path="/auditor-onboarding" element={<AuditorOnboarding />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
