@@ -42,6 +42,7 @@ export function StepNavigation({
       ) : (
         <Button 
           type="submit" 
+          onClick={onSubmit}
           className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
         >
           Complete Profile

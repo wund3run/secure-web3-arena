@@ -11,8 +11,8 @@ import { AuditorProfileProgress } from "./AuditorProfileProgress";
 import { formSchema, FormValues } from "./types";
 import { BasicInformationStep } from "./steps/BasicInformationStep";
 import { ExpertiseSkillsStep } from "./steps/ExpertiseSkillsStep";
-import { ToolsMethodsStep } from "./steps/ToolsMethodsStep";
 import { ExperienceStep } from "./steps/ExperienceStep";
+import { ToolsMethodsStep } from "./steps/ToolsMethodsStep";
 import { PreferencesStep } from "./steps/PreferencesStep";
 import { StepNavigation } from "./StepNavigation";
 import { 
@@ -30,8 +30,8 @@ export function AuditorParametersForm() {
   const steps = [
     { title: "Basic Information", icon: <User className="h-5 w-5" /> },
     { title: "Expertise & Skills", icon: <Code className="h-5 w-5" /> },
-    { title: "Tools & Methods", icon: <Shield className="h-5 w-5" /> },
     { title: "Experience", icon: <Briefcase className="h-5 w-5" /> },
+    { title: "Tools & Methods", icon: <Shield className="h-5 w-5" /> },
     { title: "Preferences", icon: <Star className="h-5 w-5" /> },
   ];
   
