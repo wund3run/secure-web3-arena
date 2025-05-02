@@ -17,16 +17,17 @@ export function MarketplaceFooter() {
             Get detailed vulnerability assessments and comprehensive remediation guidance.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/marketplace">
+            <Link to="/request-audit">
               <Button size="lg" variant="default" className="flex items-center bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-                Find Web3 Security Experts
+                <FileText className="mr-2 h-5 w-5" />
+                Request for Audit
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
             <Link to="/join">
               <Button size="lg" variant="outline" className="flex items-center border-primary text-primary hover:bg-primary/10">
-                Join as Security Provider
-                <UserPlus className="ml-2 h-4 w-4" />
+                <Shield className="mr-2 h-5 w-5" />
+                Join the Circle
               </Button>
             </Link>
           </div>
@@ -109,12 +110,12 @@ export function MarketplaceFooter() {
             <span>DeFi Security Reviews</span>
           </Link>
           <Link to="/join" className="flex items-center p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
-            <UserPlus className="h-4 w-4 text-primary mr-2" />
-            <span>Join as Provider</span>
+            <Shield className="h-4 w-4 text-primary mr-2" />
+            <span>Join the Circle</span>
           </Link>
-          <Link to="/contact" className="flex items-center p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
-            <Check className="h-4 w-4 text-primary mr-2" />
-            <span>Contact Us</span>
+          <Link to="/request-audit" className="flex items-center p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
+            <FileText className="h-4 w-4 text-primary mr-2" />
+            <span>Request for Audit</span>
           </Link>
         </div>
       </div>

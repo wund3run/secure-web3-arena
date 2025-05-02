@@ -1,5 +1,5 @@
 
-import { ArrowRight, MessageSquare, ShieldCheck, Users } from "lucide-react";
+import { ArrowRight, MessageSquare, ShieldCheck, Users, Shield, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { BetaWarning } from "@/components/ui/beta-warning";
@@ -20,6 +20,22 @@ export function CommunityHeader() {
             Join a community of blockchain security experts and project owners. Share insights, 
             participate in discussions, and build your reputation in the Web3 security space.
           </p>
+        </div>
+
+        <div className="flex flex-col md:flex-row gap-4 justify-center mb-8">
+          <Link to="/join">
+            <Button className="w-full md:w-auto bg-gradient-to-r from-primary to-secondary hover:opacity-90 group">
+              <Shield className="mr-2 h-5 w-5" />
+              Join the Circle
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </Link>
+          <Link to="/request-audit">
+            <Button variant="outline" className="w-full md:w-auto border-primary text-primary hover:bg-primary/10">
+              <FileText className="mr-2 h-5 w-5" />
+              Request for Audit
+            </Button>
+          </Link>
         </div>
 
         <div className="mb-8">
@@ -105,9 +121,9 @@ export function CommunityHeader() {
               </li>
             </ul>
             <div className="mt-6">
-              <Link to="/leaderboard">
+              <Link to="/join">
                 <Button variant="outline" className="group border-secondary text-secondary hover:bg-secondary/10">
-                  Join Expert Network
+                  Join the Circle
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TrustBadge } from "@/components/trust/trust-badges";
-import { Search, Shield, ArrowRight, AlertCircle } from "lucide-react";
+import { Search, Shield, ArrowRight, AlertCircle, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -12,13 +12,13 @@ export function MarketplaceEnhancedHeader() {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="w-full bg-transparent z-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div className="flex flex-wrap items-center justify-between">
+    <div className="w-full bg-gradient-to-r from-background via-primary/5 to-secondary/5 z-10 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center mr-8">
-              <div className="p-2 mr-1">
-                <div className="h-8 w-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
+            <Link to="/" className="flex items-center mr-8 group">
+              <div className="p-2 mr-1 transition-all duration-300 group-hover:scale-105">
+                <div className="h-9 w-9 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center shadow-md">
                   <Shield className="h-5 w-5 text-white" />
                 </div>
               </div>
@@ -49,8 +49,8 @@ export function MarketplaceEnhancedHeader() {
             </div>
           </div>
           
-          <div className="flex items-center space-x-3">
-            <div className="relative w-full max-w-sm">
+          <div className="flex flex-wrap md:flex-nowrap items-center gap-3 w-full md:w-auto">
+            <div className="relative w-full max-w-sm flex-grow">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 type="text"
@@ -61,21 +61,27 @@ export function MarketplaceEnhancedHeader() {
               />
             </div>
             
-            <div className="hidden sm:block">
-              <Link to="/request-audit">
-                <Button variant="outline">
-                  Post Request
+            <div className="flex items-center space-x-3">
+              <Link to="/request-audit" className="w-full sm:w-auto">
+                <Button 
+                  variant="outline" 
+                  className="border-primary text-primary hover:bg-primary/10 w-full sm:w-auto"
+                >
+                  <FileText className="mr-2 h-4 w-4" />
+                  Request for Audit
+                </Button>
+              </Link>
+              
+              <Link to="/join" className="w-full sm:w-auto">
+                <Button 
+                  className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 w-full sm:w-auto flex items-center"
+                >
+                  <Shield className="mr-2 h-4 w-4" />
+                  Join the Circle
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
             </div>
-            
-            <Button 
-              className="hidden md:flex items-center bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-              onClick={() => window.open('/marketplace?onboarding=true', '_self')}
-            >
-              Find Security Expert
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
           </div>
         </div>
       </div>

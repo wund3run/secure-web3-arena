@@ -1,5 +1,6 @@
+
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -20,87 +21,100 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import { Menu, Shield, FileText } from "lucide-react";
 
 export function Navbar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+  // Track scroll position to add background on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        <Link to="/" className="mr-6 flex items-center space-x-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-6 w-6"
-          >
-            <path d="M3 12a9 9 0 1 1 18 0a9 9 0 0 1-18 0Z" />
-            <path d="M12 8v8" />
-            <path d="M8 12h8" />
-          </svg>
-          <span className="font-bold">Hawkly</span>
+    <header className={cn(
+      "sticky top-0 z-50 w-full border-b backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-all duration-200",
+      scrolled ? "bg-background/95 shadow-sm" : "bg-transparent border-transparent"
+    )}>
+      <div className="container flex h-16 items-center justify-between">
+        {/* Logo */}
+        <Link to="/" className="flex items-center space-x-2">
+          <div className="p-1">
+            <div className="h-8 w-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
+              <Shield className="h-5 w-5 text-white" />
+            </div>
+          </div>
+          <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Hawkly</span>
         </Link>
+
+        {/* Desktop navigation */}
         <div className="hidden md:flex">
-          <nav className="flex items-center space-x-6 text-sm font-medium">
-            <Link
-              to="/marketplace"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                pathname === "/marketplace" ? "text-foreground" : "text-foreground/60"
-              )}
-            >
-              Marketplace
-            </Link>
-            <Link
-              to="/audits"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                pathname === "/audits" ? "text-foreground" : "text-foreground/60"
-              )}
-            >
-              Audits
-            </Link>
-            <Link
-              to="/leaderboard"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                pathname.startsWith("/leaderboard") ? "text-foreground" : "text-foreground/60"
-              )}
-            >
-              Leaderboard
-            </Link>
-            <Link
-              to="/community"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                pathname === "/community" ? "text-foreground" : "text-foreground/60"
-              )}
-            >
-              Community
-            </Link>
-            <Link
-              to="/join"
-              className={cn(
-                "transition-colors hover:text-primary font-medium",
-                pathname === "/join" ? "text-primary" : "text-primary/80"
-              )}
-            >
-              Join as Provider
-            </Link>
-          </nav>
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <Link to="/marketplace" className={cn(
+                  navigationMenuTriggerStyle(),
+                  pathname === "/marketplace" ? "text-primary" : "text-foreground/60"
+                )}>
+                  Marketplace
+                </Link>
+              </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <Link to="/audits" className={cn(
+                  navigationMenuTriggerStyle(),
+                  pathname === "/audits" ? "text-primary" : "text-foreground/60"
+                )}>
+                  Audits
+                </Link>
+              </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <Link to="/leaderboard" className={cn(
+                  navigationMenuTriggerStyle(),
+                  pathname.startsWith("/leaderboard") ? "text-primary" : "text-foreground/60"
+                )}>
+                  Leaderboard
+                </Link>
+              </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <Link to="/community" className={cn(
+                  navigationMenuTriggerStyle(),
+                  pathname === "/community" ? "text-primary" : "text-foreground/60"
+                )}>
+                  Community
+                </Link>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
         </div>
-        <div className="flex flex-1 items-center justify-end space-x-2">
+
+        {/* Action buttons */}
+        <div className="flex items-center space-x-2">
+          {/* Account dropdown - desktop */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="relative hidden h-8 w-8 rounded-full md:flex">
@@ -119,6 +133,8 @@ export function Navbar() {
               <DropdownMenuItem>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* Mobile menu */}
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="sm" className="flex h-8 w-8 rounded-full md:hidden">
@@ -146,16 +162,30 @@ export function Navbar() {
                 <Link to="/community" className="px-4 py-2 rounded-md hover:bg-secondary">
                   Community
                 </Link>
-                <Link to="/join" className="px-4 py-2 rounded-md hover:bg-secondary">
-                  Join as Provider
+                <Link to="/join" className="px-4 py-2 rounded-md hover:bg-secondary flex items-center">
+                  <Shield className="h-4 w-4 mr-2" />
+                  Join the Circle
+                </Link>
+                <Link to="/request-audit" className="px-4 py-2 rounded-md hover:bg-secondary flex items-center">
+                  <FileText className="h-4 w-4 mr-2" />
+                  Request for Audit
                 </Link>
               </div>
             </SheetContent>
           </Sheet>
-          <div className="hidden sm:block">
+
+          {/* Action buttons - desktop */}
+          <div className="hidden sm:flex items-center space-x-2">
+            <Link to="/request-audit">
+              <Button variant="outline" size="sm" className="border-primary text-primary hover:bg-primary/10">
+                <FileText className="h-4 w-4 mr-2" />
+                Request for Audit
+              </Button>
+            </Link>
             <Link to="/join">
               <Button variant="default" size="sm" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-                Join Security Circle
+                <Shield className="h-4 w-4 mr-2" />
+                Join the Circle
               </Button>
             </Link>
           </div>
