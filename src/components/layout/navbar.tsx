@@ -31,6 +31,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Menu, Shield, FileText } from "lucide-react";
+import { HawklyLogo } from "./hawkly-logo";
 
 export function Navbar() {
   const { pathname } = useLocation();
@@ -60,14 +61,7 @@ export function Navbar() {
     )}>
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center space-x-2">
-          <div className="p-1">
-            <div className="h-8 w-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
-              <Shield className="h-5 w-5 text-white" />
-            </div>
-          </div>
-          <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Hawkly</span>
-        </Link>
+        <HawklyLogo />
 
         {/* Desktop navigation */}
         <div className="hidden md:flex">
@@ -144,7 +138,9 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent side="left" className="sm:max-w-sm">
               <SheetHeader>
-                <SheetTitle>Menu</SheetTitle>
+                <SheetTitle className="flex items-center">
+                  <HawklyLogo variant="compact" className="mb-2" />
+                </SheetTitle>
                 <SheetDescription>
                   Explore the Hawkly platform.
                 </SheetDescription>
@@ -183,7 +179,7 @@ export function Navbar() {
               </Button>
             </Link>
             <Link to="/join">
-              <Button variant="default" size="sm" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90">
+              <Button variant="default" size="sm" className="bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] hover:opacity-90">
                 <Shield className="h-4 w-4 mr-2" />
                 Join the Circle
               </Button>

@@ -7,6 +7,7 @@ import { TrustBadge } from "@/components/trust/trust-badges";
 import { Search, Shield, ArrowRight, AlertCircle, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { HawklyLogo } from "@/components/layout/hawkly-logo";
 
 export function MarketplaceEnhancedHeader() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,32 +17,7 @@ export function MarketplaceEnhancedHeader() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center mr-8 group">
-              <div className="p-2 mr-1 transition-all duration-300 group-hover:scale-105">
-                <div className="h-9 w-9 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center shadow-md">
-                  <Shield className="h-5 w-5 text-white" />
-                </div>
-              </div>
-              <div className="flex items-center">
-                <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary to-secondary">
-                  Hawkly
-                </span>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Badge variant="outline" className="ml-2 text-xs px-1.5 border-amber-300 text-amber-700 bg-amber-50">
-                        BETA
-                      </Badge>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">
-                      <p className="text-xs max-w-[220px]">
-                        Hawkly is currently in beta. We appreciate your feedback as we continue to improve the platform.
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-            </Link>
+            <HawklyLogo variant="default" className="mr-8" />
             <div className="hidden lg:flex items-center space-x-2">
               <TrustBadge type="verified" />
               <TrustBadge type="expert" />
@@ -74,7 +50,7 @@ export function MarketplaceEnhancedHeader() {
               
               <Link to="/join" className="w-full sm:w-auto">
                 <Button 
-                  className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 w-full sm:w-auto flex items-center"
+                  className="bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] hover:opacity-90 w-full sm:w-auto flex items-center"
                 >
                   <Shield className="mr-2 h-4 w-4" />
                   Join the Circle

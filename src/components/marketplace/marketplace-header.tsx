@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Search, Filter, GridIcon, LayoutList, X, Shield, FileText } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 
@@ -108,7 +107,7 @@ export function MarketplaceHeader({
         </div>
       </div>
 
-      {/* Call to Action Buttons */}
+      {/* Call to Action Buttons - but more subtle here since we have them in the navbar */}
       <div className="flex flex-col sm:flex-row gap-3 mt-2">
         <Link to="/request-audit" className="w-full sm:w-auto">
           <Button 
@@ -121,7 +120,7 @@ export function MarketplaceHeader({
         </Link>
         <Link to="/join" className="w-full sm:w-auto">
           <Button 
-            className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 flex items-center justify-center"
+            className="w-full bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] hover:opacity-90 flex items-center justify-center"
           >
             <Shield className="mr-2 h-4 w-4" />
             Join the Circle
