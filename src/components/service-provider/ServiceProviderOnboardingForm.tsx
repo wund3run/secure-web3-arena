@@ -1,734 +1,419 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { 
-  Form, 
-  FormControl, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
-  FormMessage,
-  FormDescription
-} from "@/components/ui/form";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { 
+import { Label } from "@/components/ui/label";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { providerFormSchema, ProviderFormValues } from "./providerTypes";
-import { 
-  expertiseAreas, 
-  blockchainOptions, 
-  securityToolOptions, 
-  experienceOptions,
-  serviceTypeOptions
-} from "@/components/auditor-parameters/formOptions";
-import { OnboardingProgress } from "./OnboardingProgress";
-import { ServiceProviderSteps } from "./ServiceProviderSteps";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { toast } from "sonner";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Loader2 } from "lucide-react";
+
+// Define form schema with Zod
+const formSchema = z.object({
+  fullName: z.string().min(2, "Full name must be at least 2 characters."),
+  email: z.string().email("Please enter a valid email address."),
+  companyName: z.string().optional(),
+  website: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
+  experienceYears: z.string().min(1, "Please select your experience level."),
+  blockchainExpertise: z.string().array().min(1, "Please select at least one blockchain."),
+  specializations: z.string().min(10, "Please describe your specializations."),
+  linkedinProfile: z.string().url("Please enter a valid LinkedIn URL").optional().or(z.literal("")),
+  githubProfile: z.string().url("Please enter a valid GitHub URL").optional().or(z.literal("")),
+  bio: z.string().min(20, "Bio must be at least 20 characters."),
+  referral: z.string().optional(),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 interface ServiceProviderOnboardingFormProps {
   providerType: "auditor" | "service";
 }
 
 export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderOnboardingFormProps) {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [selectedExpertise, setSelectedExpertise] = useState<string[]>([]);
-  const [selectedBlockchains, setSelectedBlockchains] = useState<string[]>([]);
-  const [selectedTools, setSelectedTools] = useState<string[]>([]);
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [progress, setProgress] = useState(20);
+  const { user, signUp } = useAuth();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const steps = [
-    "Basic Info",
-    "Expertise",
-    "Experience",
-    providerType === "service" ? "Services" : "Methodology",
-    "Verification"
-  ];
-  
-  const form = useForm<ProviderFormValues>({
-    resolver: zodResolver(providerFormSchema),
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      // Basic Info
-      name: "",
+      fullName: "",
       email: "",
-      walletAddress: "",
+      companyName: "",
       website: "",
-      githubProfile: "",
-      organization: providerType === "service" ? "" : undefined,
-      teamSize: providerType === "service" ? undefined : undefined,
-      
-      // Expertise
-      primaryExpertise: [],
+      experienceYears: "",
       blockchainExpertise: [],
-      yearsSince: "",
-      
-      // Experience
-      completedProjects: 0,
-      notableClients: "",
-      publicFindings: "",
-      
-      // Services / Methodology
-      servicesOffered: providerType === "service" ? [] : undefined,
-      methodologies: providerType === "auditor" ? [] : undefined,
-      customTools: "",
-      
-      // Verification
-      certifications: "",
-      agreesToTerms: false,
-      agreesToCodeOfConduct: false,
+      specializations: "",
+      linkedinProfile: "",
+      githubProfile: "",
+      bio: "",
+      referral: "",
     },
   });
-  
-  const onSubmit = (values: ProviderFormValues) => {
-    console.log(values);
-    // In a real app, this would send data to an API
-    toast.success("Application submitted successfully!", {
-      description: "We'll review your application and get back to you soon.",
-    });
-    navigate("/application-submitted");
-  };
 
-  const handleArrayToggle = (field: keyof ProviderFormValues, value: string) => {
-    // Get the current values array
-    const currentValues = form.getValues(field) as string[] || [];
-    
-    // Toggle the value
-    const updatedValues = currentValues.includes(value)
-      ? currentValues.filter(v => v !== value)
-      : [...currentValues, value];
-    
-    // Set the updated values in the form
-    form.setValue(field as any, updatedValues as any);
-    
-    // Update the local state for the badges display
-    if (field === 'primaryExpertise') setSelectedExpertise(updatedValues);
-    if (field === 'blockchainExpertise') setSelectedBlockchains(updatedValues);
-    if (field === 'methodologies') setSelectedTools(updatedValues);
-    if (field === 'servicesOffered') setSelectedServices(updatedValues);
-  };
-
-  const nextStep = () => {
-    // Validate the current step fields before proceeding
-    const fieldsToValidate = getFieldsForCurrentStep();
-    
-    form.trigger(fieldsToValidate as any[]).then(isValid => {
-      if (isValid) {
-        setCurrentStep(prev => {
-          const newStep = prev + 1;
-          setProgress((newStep + 1) * 20);
-          return newStep;
+  useEffect(() => {
+    // Pre-fill form with user data if available
+    if (user) {
+      supabase
+        .from('extended_profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single()
+        .then(({ data }) => {
+          if (data) {
+            form.setValue("fullName", data.full_name || "");
+            if (user.email) {
+              form.setValue("email", user.email);
+            }
+          }
         });
-        window.scrollTo(0, 0);
-      }
-    });
-  };
+    }
+  }, [user, form]);
 
-  const prevStep = () => {
-    setCurrentStep(prev => {
-      const newStep = Math.max(0, prev - 1);
-      setProgress((newStep + 1) * 20);
-      return newStep;
-    });
-    window.scrollTo(0, 0);
-  };
-  
-  // Helper to determine which fields should be validated for the current step
-  const getFieldsForCurrentStep = () => {
-    switch (currentStep) {
-      case 0: // Basic Info
-        return providerType === 'service' 
-          ? ['name', 'email', 'walletAddress', 'organization', 'teamSize'] 
-          : ['name', 'email', 'walletAddress'];
-      case 1: // Expertise
-        return ['primaryExpertise', 'blockchainExpertise', 'yearsSince'];
-      case 2: // Experience
-        return ['completedProjects', 'notableClients'];
-      case 3: // Services / Methodology
-        return providerType === 'service' ? ['servicesOffered'] : ['methodologies'];
-      case 4: // Verification
-        return ['agreesToTerms', 'agreesToCodeOfConduct'];
-      default:
-        return [];
+  const onSubmit = async (values: FormValues) => {
+    setIsSubmitting(true);
+    
+    try {
+      if (!user) {
+        // If not logged in, create a new user
+        await signUp(values.email, "tempPassword123", {
+          full_name: values.fullName,
+        });
+        
+        toast.info("Account created", {
+          description: "Please check your email to confirm your account before proceeding.",
+        });
+      } else {
+        // User is already logged in, update profile
+        const userType = providerType === "auditor" ? "auditor" : "service_provider";
+        
+        const { error } = await supabase
+          .from('extended_profiles')
+          .update({
+            full_name: values.fullName,
+            display_name: values.fullName,
+            bio: values.bio,
+            website: values.website,
+            user_type: userType,
+            skills: values.blockchainExpertise,
+            specializations: [values.specializations],
+            years_of_experience: parseInt(values.experienceYears),
+            social_links: {
+              linkedin: values.linkedinProfile,
+              github: values.githubProfile
+            }
+          })
+          .eq('id', user.id);
+        
+        if (error) throw error;
+        
+        navigate('/application-submitted');
+      }
+    } catch (error: any) {
+      console.error("Error submitting form:", error);
+      toast.error("Error submitting application", {
+        description: error.message || "Please try again later",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
-  
-  // Render each step of the form
-  const renderStepContent = () => {
-    switch (currentStep) {
-      case 0:
-        return (
-          <div className="space-y-4">
+
+  // Blockchain options
+  const blockchains = [
+    "Ethereum",
+    "Solana",
+    "Polygon",
+    "Avalanche",
+    "BNB Chain",
+    "Arbitrum",
+    "Optimism",
+    "Aptos",
+    "Sui",
+    "Other",
+  ];
+
+  // Experience levels
+  const experienceLevels = [
+    { value: "1-2", label: "1-2 years" },
+    { value: "3-5", label: "3-5 years" },
+    { value: "6-10", label: "6-10 years" },
+    { value: "10+", label: "More than 10 years" },
+  ];
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {/* Personal Information */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium">Personal Information</h3>
+
+          <div className="grid gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
-              name="name"
+              name="fullName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Full Name</FormLabel>
+                  <FormLabel>Full Name *</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your full name" {...field} />
+                    <Input placeholder="John Doe" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email Address</FormLabel>
+                  <FormLabel>Email *</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="Your email address" {...field} />
+                    <Input 
+                      type="email" 
+                      placeholder="you@example.com" 
+                      {...field} 
+                      disabled={!!user}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+          </div>
+
+          {providerType === "service" && (
             <FormField
               control={form.control}
-              name="walletAddress"
+              name="companyName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Wallet Address</FormLabel>
+                  <FormLabel>Company/Organization Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your blockchain wallet address" {...field} />
+                    <Input placeholder="Your company name" {...field} />
                   </FormControl>
                   <FormDescription>
-                    Enter any blockchain wallet address you use (Ethereum, Solana, etc.)
+                    Leave blank if you're applying as an individual
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
-            {providerType === "service" && (
-              <>
-                <FormField
-                  control={form.control}
-                  name="organization"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Organization Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Your company or organization name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="teamSize"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Team Size</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value?.toString()}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select team size" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="1-5">1-5 people</SelectItem>
-                          <SelectItem value="6-20">6-20 people</SelectItem>
-                          <SelectItem value="21-50">21-50 people</SelectItem>
-                          <SelectItem value="50+">50+ people</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </>
+          )}
+
+          <FormField
+            control={form.control}
+            name="website"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Website</FormLabel>
+                <FormControl>
+                  <Input placeholder="https://yourwebsite.com" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-            
+          />
+        </div>
+
+        {/* Professional Information */}
+        <div className="space-y-4 pt-4">
+          <h3 className="text-lg font-medium">Professional Background</h3>
+
+          <FormField
+            control={form.control}
+            name="experienceYears"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Years of Experience in Web3 Security *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your experience level" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {experienceLevels.map((level) => (
+                      <SelectItem key={level.value} value={level.value}>
+                        {level.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Blockchain Expertise */}
+          <div>
+            <Label>Blockchain Expertise *</Label>
+            <div className="mt-2 grid grid-cols-2 md:grid-cols-3 gap-2">
+              {blockchains.map((blockchain) => (
+                <div key={blockchain} className="flex items-start">
+                  <input
+                    id={`blockchain-${blockchain}`}
+                    type="checkbox"
+                    className="h-4 w-4 mt-1 rounded border-gray-300 text-primary focus:ring-primary"
+                    value={blockchain}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const current = form.getValues("blockchainExpertise") || [];
+                      
+                      if (e.target.checked) {
+                        form.setValue("blockchainExpertise", [...current, value]);
+                      } else {
+                        form.setValue(
+                          "blockchainExpertise",
+                          current.filter((item) => item !== value)
+                        );
+                      }
+                    }}
+                  />
+                  <label
+                    htmlFor={`blockchain-${blockchain}`}
+                    className="ml-2 block text-sm"
+                  >
+                    {blockchain}
+                  </label>
+                </div>
+              ))}
+            </div>
+            {form.formState.errors.blockchainExpertise && (
+              <p className="text-sm font-medium text-destructive mt-1">
+                {form.formState.errors.blockchainExpertise.message}
+              </p>
+            )}
+          </div>
+
+          <FormField
+            control={form.control}
+            name="specializations"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Specializations & Areas of Expertise *</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Describe your specializations in Web3 security (e.g., Smart contract auditing, DeFi protocols, ZK proofs, formal verification, etc.)"
+                    className="h-24"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Online Profiles */}
+        <div className="space-y-4 pt-4">
+          <h3 className="text-lg font-medium">Online Profiles</h3>
+
+          <div className="grid gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
-              name="website"
+              name="linkedinProfile"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Website (Optional)</FormLabel>
+                  <FormLabel>LinkedIn Profile</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://your-website.com" {...field} />
+                    <Input placeholder="https://linkedin.com/in/username" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="githubProfile"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>GitHub Profile (Optional)</FormLabel>
+                  <FormLabel>GitHub Profile</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://github.com/yourusername" {...field} />
+                    <Input placeholder="https://github.com/username" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-        );
-        
-      case 1:
-        return (
-          <div className="space-y-6">
-            <div>
-              <FormLabel>Primary Areas of Expertise</FormLabel>
-              <div className="grid grid-cols-2 gap-2 mt-2">
-                {expertiseAreas.map(area => (
-                  <div key={area.value} className="flex items-start space-x-2">
-                    <Checkbox 
-                      id={`expertise-${area.value}`}
-                      checked={selectedExpertise.includes(area.value)}
-                      onCheckedChange={() => handleArrayToggle('primaryExpertise', area.value)}
-                    />
-                    <label 
-                      htmlFor={`expertise-${area.value}`} 
-                      className="text-sm cursor-pointer leading-tight"
-                    >
-                      {area.label}
-                    </label>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-2">
-                <div className="flex flex-wrap gap-1 my-2">
-                  {selectedExpertise.map(exp => (
-                    <Badge 
-                      key={exp} 
-                      variant="outline"
-                      className="cursor-pointer bg-primary/10"
-                      onClick={() => handleArrayToggle('primaryExpertise', exp)}
-                    >
-                      {expertiseAreas.find(a => a.value === exp)?.label}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-              {form.formState.errors.primaryExpertise && (
-                <p className="text-sm font-medium text-destructive mt-2">
-                  {form.formState.errors.primaryExpertise.message}
-                </p>
-              )}
-            </div>
-            
-            <div>
-              <FormLabel>Blockchain Expertise</FormLabel>
-              <div className="grid grid-cols-3 gap-2 mt-2">
-                {blockchainOptions.map(bc => (
-                  <div key={bc.value} className="flex items-start space-x-2">
-                    <Checkbox 
-                      id={`bc-${bc.value}`}
-                      checked={selectedBlockchains.includes(bc.value)}
-                      onCheckedChange={() => handleArrayToggle('blockchainExpertise', bc.value)}
-                    />
-                    <label 
-                      htmlFor={`bc-${bc.value}`} 
-                      className="text-sm cursor-pointer leading-tight"
-                    >
-                      {bc.label}
-                    </label>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-2">
-                <div className="flex flex-wrap gap-1 my-2">
-                  {selectedBlockchains.map(bc => (
-                    <Badge 
-                      key={bc} 
-                      variant="outline"
-                      className="cursor-pointer bg-secondary/10"
-                      onClick={() => handleArrayToggle('blockchainExpertise', bc)}
-                    >
-                      {blockchainOptions.find(a => a.value === bc)?.label}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-              {form.formState.errors.blockchainExpertise && (
-                <p className="text-sm font-medium text-destructive mt-2">
-                  {form.formState.errors.blockchainExpertise.message}
-                </p>
-              )}
-            </div>
-            
-            <FormField
-              control={form.control}
-              name="yearsSince"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Experience in Security</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select years of experience" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="0-1">Less than 1 year</SelectItem>
-                      <SelectItem value="1-3">1-3 years</SelectItem>
-                      <SelectItem value="3-5">3-5 years</SelectItem>
-                      <SelectItem value="5+">5+ years</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        );
-      
-      case 2:
-        return (
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="completedProjects"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Completed Security Projects</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="number" 
-                      min="0" 
-                      placeholder="Number of completed audits/projects"
-                      {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} 
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    How many blockchain security projects have you worked on?
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="notableClients"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Notable Clients (Optional)</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="List some of your notable clients or projects"
-                      className="resize-y min-h-[100px]" 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Separate each client or project with a new line
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="publicFindings"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Public Findings (Optional)</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Links to public security findings, bug reports, etc."
-                      className="resize-y min-h-[100px]" 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Share links to your public findings, vulnerability disclosures, or research
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        );
-        
-      case 3:
-        if (providerType === "service") {
-          return (
-            <div className="space-y-6">
-              <div>
-                <FormLabel>Services Offered</FormLabel>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                  {serviceTypeOptions.map(service => (
-                    <div key={service.value} className="flex items-start space-x-2">
-                      <Checkbox 
-                        id={`service-${service.value}`}
-                        checked={selectedServices.includes(service.value)}
-                        onCheckedChange={() => handleArrayToggle('servicesOffered', service.value)}
-                      />
-                      <label 
-                        htmlFor={`service-${service.value}`} 
-                        className="text-sm cursor-pointer leading-tight"
-                      >
-                        {service.label}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-2">
-                  <div className="flex flex-wrap gap-1 my-2">
-                    {selectedServices.map(service => (
-                      <Badge 
-                        key={service} 
-                        variant="outline"
-                        className="cursor-pointer bg-primary/10"
-                        onClick={() => handleArrayToggle('servicesOffered', service)}
-                      >
-                        {serviceTypeOptions.find(a => a.value === service)?.label}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-                {form.formState.errors.servicesOffered && (
-                  <p className="text-sm font-medium text-destructive mt-2">
-                    {form.formState.errors.servicesOffered?.message}
-                  </p>
-                )}
-              </div>
-              
-              <FormField
-                control={form.control}
-                name="customTools"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Custom Tools & Methodologies (Optional)</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Describe any proprietary tools or methodologies your team uses"
-                        className="resize-y min-h-[100px]" 
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          );
-        } else {
-          return (
-            <div className="space-y-6">
-              <div>
-                <FormLabel>Security Tools & Methods Used</FormLabel>
-                <div className="grid grid-cols-2 gap-2 mt-2">
-                  {securityToolOptions.map(tool => (
-                    <div key={tool.value} className="flex items-start space-x-2">
-                      <Checkbox 
-                        id={`tool-${tool.value}`}
-                        checked={selectedTools.includes(tool.value)}
-                        onCheckedChange={() => handleArrayToggle('methodologies', tool.value)}
-                      />
-                      <label 
-                        htmlFor={`tool-${tool.value}`} 
-                        className="text-sm cursor-pointer leading-tight"
-                      >
-                        {tool.label}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-2">
-                  <div className="flex flex-wrap gap-1 my-2">
-                    {selectedTools.map(tool => (
-                      <Badge 
-                        key={tool} 
-                        variant="outline"
-                        className="cursor-pointer bg-secondary/10"
-                        onClick={() => handleArrayToggle('methodologies', tool)}
-                      >
-                        {securityToolOptions.find(a => a.value === tool)?.label}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-                {form.formState.errors.methodologies && (
-                  <p className="text-sm font-medium text-destructive mt-2">
-                    {form.formState.errors.methodologies.message}
-                  </p>
-                )}
-              </div>
-              
-              <FormField
-                control={form.control}
-                name="customTools"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Additional Tools & Techniques (Optional)</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Describe any other tools or techniques you use"
-                        className="resize-y min-h-[100px]" 
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          );
-        }
-        
-      case 4:
-        return (
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="certifications"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Certifications & Credentials (Optional)</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="List relevant security certifications or credentials"
-                      className="resize-y min-h-[100px]" 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Include security certifications, relevant educational background, or other credentials
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <div className="space-y-4 pt-4 border-t">
-              <FormField
-                control={form.control}
-                name="agreesToTerms"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>
-                        I agree to the Hawkly Terms of Service and Privacy Policy
-                      </FormLabel>
-                    </div>
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="agreesToCodeOfConduct"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>
-                        I agree to follow the Hawkly Ethical Security Provider Code of Conduct
-                      </FormLabel>
-                    </div>
-                  </FormItem>
-                )}
-              />
-            </div>
-            
-            <Card className="bg-primary/5 border-primary/20">
-              <CardContent className="p-4">
-                <h3 className="font-medium mb-2">What happens next?</h3>
-                <ol className="list-decimal pl-5 space-y-1 text-sm text-muted-foreground">
-                  <li>Our team will review your application within 3-5 business days</li>
-                  <li>You may be contacted for additional verification or a brief interview</li>
-                  <li>Once approved, your profile will be activated on the marketplace</li>
-                  <li>You'll start receiving project matches based on your expertise</li>
-                </ol>
-              </CardContent>
-            </Card>
-          </div>
-        );
-        
-      default:
-        return null;
-    }
-  };
+        </div>
 
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <OnboardingProgress 
-          currentStep={currentStep} 
-          progress={progress} 
-          steps={steps} 
-        />
-        
-        <ServiceProviderSteps 
-          providerType={providerType}
-          currentStep={currentStep}
-          totalSteps={steps.length}
-        />
-        
-        <div className="mt-6 space-y-6">
-          {renderStepContent()}
-                
-          <div className="flex justify-between pt-6 border-t">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={currentStep === 0 ? () => navigate("/") : prevStep}
-            >
-              {currentStep === 0 ? "Cancel" : "Back"}
-            </Button>
-            
-            {currentStep < steps.length - 1 ? (
-              <Button 
-                type="button" 
-                onClick={nextStep} 
-                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-              >
-                Continue
-              </Button>
-            ) : (
-              <Button 
-                type="submit" 
-                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-              >
-                Submit Application
-              </Button>
+        {/* Bio & Additional Info */}
+        <div className="space-y-4 pt-4">
+          <FormField
+            control={form.control}
+            name="bio"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Professional Bio *</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Tell us about yourself, your background, and why you're interested in joining the Hawkly security network..."
+                    className="h-32"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-          </div>
+          />
+
+          <FormField
+            control={form.control}
+            name="referral"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Referral Code</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter referral code if you have one" {...field} />
+                </FormControl>
+                <FormDescription>
+                  Optional: Enter a referral code if you were invited by another member
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="flex justify-between pt-4">
+          <Button type="button" variant="outline" onClick={() => navigate("/")}>
+            Cancel
+          </Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Submitting...
+              </>
+            ) : (
+              "Submit Application"
+            )}
+          </Button>
         </div>
       </form>
     </Form>

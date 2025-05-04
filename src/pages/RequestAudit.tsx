@@ -1,14 +1,21 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useNavigate } from 'react-router-dom';
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { useAuth } from '@/contexts/AuthContext';
 import AuditRequestHeader from '@/components/audit-request/AuditRequestHeader';
 import AuditRequestForm from '@/components/audit-request/AuditRequestForm';
 import RequestSuccessMessage from '@/components/audit-request/RequestSuccessMessage';
 
 const RequestAudit = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  // This handle redirection is now being done in the AuditRequestForm component
+  // to provide a better user experience with toasts and pre-filled data
 
   return (
     <>

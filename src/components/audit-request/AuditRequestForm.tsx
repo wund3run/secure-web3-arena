@@ -1,6 +1,9 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import ProjectDetailsStep from './steps/ProjectDetailsStep';
 import TechnicalInfoStep from './steps/TechnicalInfoStep';
 import RequirementsStep from './steps/RequirementsStep';
@@ -30,6 +33,8 @@ interface AuditRequestFormProps {
 }
 
 const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [formStep, setFormStep] = useState(1);
   const [projectType, setProjectType] = useState("");
   const [showAIMatching, setShowAIMatching] = useState(false);
@@ -49,6 +54,32 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
     previousAudits: false,
     specificConcerns: ""
   });
+
+  useEffect(() => {
+    // Check if user is authenticated
+    if (!user) {
+      toast.error("Authentication required", {
+        description: "You need to sign in to request an audit.",
+      });
+      navigate('/auth');
+    } else {
+      // Pre-fill user information if available
+      supabase
+        .from('extended_profiles')
+        .select('full_name, email')
+        .eq('id', user.id)
+        .single()
+        .then(({ data, error }) => {
+          if (!error && data) {
+            setFormData(prev => ({
+              ...prev,
+              contactName: data.full_name || '',
+              contactEmail: user.email || ''
+            }));
+          }
+        });
+    }
+  }, [user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -70,23 +101,61 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // If "Other" is selected, use the custom blockchain name instead
-    const finalData = {
-      ...formData,
-      blockchain: formData.blockchain === "Other" && formData.customBlockchain 
+    if (!user) {
+      toast.error("Authentication required", {
+        description: "You need to sign in to submit an audit request.",
+      });
+      navigate('/auth');
+      return;
+    }
+    
+    try {
+      // If "Other" is selected, use the custom blockchain name instead
+      const blockchain = formData.blockchain === "Other" && formData.customBlockchain 
         ? formData.customBlockchain 
-        : formData.blockchain
-    };
-    
-    console.log("Submitting data:", finalData);
-    
-    toast.success("Audit request submitted successfully!", {
-      description: "Our AI will match you with the perfect auditors for your project.",
-    });
-    onSubmitSuccess();
+        : formData.blockchain;
+      
+      // Prepare data for database
+      const auditRequestData = {
+        client_id: user.id,
+        project_name: formData.projectName,
+        project_description: formData.projectDescription,
+        blockchain,
+        repository_url: formData.repositoryUrl,
+        contract_count: parseInt(formData.contractCount.split('-')[0]) || 0,
+        lines_of_code: parseInt(formData.linesOfCode.split('-')[0]) || 0,
+        deadline: formData.deadline,
+        budget: formData.budget,
+        audit_scope: formData.auditScope,
+        previous_audits: formData.previousAudits,
+        specific_concerns: formData.specificConcerns,
+        status: 'pending'
+      };
+      
+      console.log("Submitting data:", auditRequestData);
+      
+      const { error } = await supabase
+        .from('audit_requests')
+        .insert(auditRequestData);
+      
+      if (error) {
+        throw error;
+      }
+      
+      toast.success("Audit request submitted successfully!", {
+        description: "Our AI will match you with the perfect auditors for your project.",
+      });
+      
+      onSubmitSuccess();
+    } catch (error: any) {
+      toast.error("Error submitting audit request", {
+        description: error.message || "Please try again later",
+      });
+      console.error("Error submitting audit request:", error);
+    }
   };
 
   const nextStep = () => {

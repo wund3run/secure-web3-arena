@@ -9,6 +9,63 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      audit_requests: {
+        Row: {
+          audit_scope: string | null
+          blockchain: string
+          budget: number | null
+          client_id: string
+          contract_count: number | null
+          created_at: string
+          deadline: string | null
+          id: string
+          lines_of_code: number | null
+          previous_audits: boolean | null
+          project_description: string | null
+          project_name: string
+          repository_url: string | null
+          specific_concerns: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          audit_scope?: string | null
+          blockchain: string
+          budget?: number | null
+          client_id: string
+          contract_count?: number | null
+          created_at?: string
+          deadline?: string | null
+          id?: string
+          lines_of_code?: number | null
+          previous_audits?: boolean | null
+          project_description?: string | null
+          project_name: string
+          repository_url?: string | null
+          specific_concerns?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          audit_scope?: string | null
+          blockchain?: string
+          budget?: number | null
+          client_id?: string
+          contract_count?: number | null
+          created_at?: string
+          deadline?: string | null
+          id?: string
+          lines_of_code?: number | null
+          previous_audits?: boolean | null
+          project_description?: string | null
+          project_name?: string
+          repository_url?: string | null
+          specific_concerns?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       dispute_comments: {
         Row: {
           comment: string
@@ -179,6 +236,63 @@ export type Database = {
           },
         ]
       }
+      extended_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string | null
+          full_name: string | null
+          id: string
+          projects_completed: number | null
+          skills: string[] | null
+          social_links: Json | null
+          specializations: string[] | null
+          updated_at: string
+          user_type: string | null
+          verification_status: string | null
+          wallet_address: string | null
+          website: string | null
+          years_of_experience: number | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          full_name?: string | null
+          id: string
+          projects_completed?: number | null
+          skills?: string[] | null
+          social_links?: Json | null
+          specializations?: string[] | null
+          updated_at?: string
+          user_type?: string | null
+          verification_status?: string | null
+          wallet_address?: string | null
+          website?: string | null
+          years_of_experience?: number | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          full_name?: string | null
+          id?: string
+          projects_completed?: number | null
+          skills?: string[] | null
+          social_links?: Json | null
+          specializations?: string[] | null
+          updated_at?: string
+          user_type?: string | null
+          verification_status?: string | null
+          wallet_address?: string | null
+          website?: string | null
+          years_of_experience?: number | null
+        }
+        Relationships: []
+      }
       milestones: {
         Row: {
           amount: number
@@ -292,6 +406,95 @@ export type Database = {
           is_arbitrator?: boolean
           updated_at?: string
           wallet_address?: string | null
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          rating: number
+          reviewer_id: string
+          service_id: string
+          updated_at: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating: number
+          reviewer_id: string
+          service_id: string
+          updated_at?: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating?: number
+          reviewer_id?: string
+          service_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      services: {
+        Row: {
+          average_rating: number | null
+          blockchain_ecosystems: string[] | null
+          category: string
+          created_at: string
+          delivery_time: number | null
+          description: string
+          featured: boolean | null
+          id: string
+          price_range: Json | null
+          provider_id: string
+          review_count: number | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          average_rating?: number | null
+          blockchain_ecosystems?: string[] | null
+          category: string
+          created_at?: string
+          delivery_time?: number | null
+          description: string
+          featured?: boolean | null
+          id?: string
+          price_range?: Json | null
+          provider_id: string
+          review_count?: number | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          average_rating?: number | null
+          blockchain_ecosystems?: string[] | null
+          category?: string
+          created_at?: string
+          delivery_time?: number | null
+          description?: string
+          featured?: boolean | null
+          id?: string
+          price_range?: Json | null
+          provider_id?: string
+          review_count?: number | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
