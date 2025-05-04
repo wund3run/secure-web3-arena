@@ -34,6 +34,7 @@ export function Navbar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
+  // Set isAuthenticated to false by default to ensure the platform shows a logged-out state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Track scroll position to add background on scroll
@@ -54,7 +55,7 @@ export function Navbar() {
 
   // Check authentication status - in reality, you'd use your auth context here
   useEffect(() => {
-    // For demo purposes, assume not logged in
+    // For demo purposes, we're explicitly showing logged-out state
     setIsAuthenticated(false);
   }, []);
 

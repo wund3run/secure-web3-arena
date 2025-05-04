@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
-import { MarketplaceEnhancedHeader } from "@/components/marketplace/marketplace-enhanced-header";
 import { MarketplaceEnhancedFooter } from "@/components/marketplace/marketplace-enhanced-footer";
 import { EnhancedFilters } from "@/components/marketplace/enhanced-filters";
 import { OptimizedListingGrid } from "@/components/marketplace/optimized-listing-grid";
@@ -67,10 +66,9 @@ export default function Marketplace() {
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
       <div className="flex-grow">
-        {/* Use the updated header with search and CTAs */}
-        <MarketplaceEnhancedHeader />
+        {/* Enhanced header section removed as requested */}
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
           <div className="flex flex-col gap-6">
             {/* Header Section with View Toggle and Filter Button */}
             <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
