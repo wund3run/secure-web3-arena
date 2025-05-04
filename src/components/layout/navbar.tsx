@@ -3,7 +3,6 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -35,6 +34,7 @@ export function Navbar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Track scroll position to add background on scroll
   useEffect(() => {
@@ -50,6 +50,12 @@ export function Navbar() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
+  }, []);
+
+  // Check authentication status - in reality, you'd use your auth context here
+  useEffect(() => {
+    // For demo purposes, assume not logged in
+    setIsAuthenticated(false);
   }, []);
 
   // Determine if on home page to avoid duplicate CTAs
@@ -109,25 +115,26 @@ export function Navbar() {
 
         {/* Action buttons */}
         <div className="flex items-center space-x-2">
-          {/* Account dropdown - desktop */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="relative hidden h-8 w-8 rounded-full md:flex">
-                <Avatar className="h-8 w-8 border border-border">
-                  <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                  <AvatarFallback>SC</AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate("/admin/dashboard")}>Dashboard</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* Only show account dropdown if authenticated */}
+          {isAuthenticated && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="relative hidden h-8 w-8 rounded-full md:flex">
+                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span className="text-xs font-medium text-primary">SC</span>
+                  </div>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate("/admin/dashboard")}>Dashboard</DropdownMenuItem>
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Logout</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
           {/* Mobile menu */}
           <Sheet>
@@ -174,7 +181,7 @@ export function Navbar() {
           </Sheet>
 
           {/* Action buttons - desktop */}
-          {!isHomePage && (
+          {!isHomePage && !isAuthenticated && (
             <div className="hidden md:flex items-center space-x-3">
               <Link to="/request-audit">
                 <Button variant="outline" size="sm" className="border-primary text-primary hover:bg-primary/10">

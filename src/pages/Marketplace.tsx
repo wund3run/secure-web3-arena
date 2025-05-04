@@ -1,7 +1,7 @@
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button"; // Added missing Button import
+import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { MarketplaceEnhancedHeader } from "@/components/marketplace/marketplace-enhanced-header";
@@ -12,8 +12,6 @@ import { ServiceReviews } from "@/components/marketplace/service-reviews";
 import { ServiceComparison } from "@/components/marketplace/service-comparison";
 import { AIRecommendations } from "@/components/marketplace/ai-recommendations";
 import { EnhancedOnboarding } from "@/components/onboarding/enhanced-onboarding";
-import { MarketplaceHero } from "@/components/marketplace/sections/MarketplaceHero";
-import { HeaderControls } from "@/components/marketplace/sections/HeaderControls";
 import { ServiceCategories } from "@/components/marketplace/sections/ServiceCategories";
 import { BlockchainEcosystems } from "@/components/marketplace/sections/BlockchainEcosystems";
 import { ComprehensiveServices } from "@/components/marketplace/sections/ComprehensiveServices";
@@ -22,12 +20,12 @@ import { ComparisonFloatingIndicator } from "@/components/marketplace/sections/C
 import { useMarketplaceServices } from "@/components/marketplace/hooks/useMarketplaceServices";
 import { useMarketplaceComparison } from "@/components/marketplace/hooks/useMarketplaceComparison";
 import { useMarketplaceState } from "@/components/marketplace/hooks/useMarketplaceState";
-import { ServiceCardProps } from "@/data/marketplace-data"; // Import ServiceCardProps type
+import { ServiceCardProps } from "@/data/marketplace-data";
 
 // Define global interface for window to include SERVICES with correct type
 declare global {
   interface Window {
-    SERVICES?: ServiceCardProps[]; // Fix: Use consistent type ServiceCardProps[]
+    SERVICES?: ServiceCardProps[];
   }
 }
 
@@ -38,7 +36,6 @@ export default function Marketplace() {
     showFilters, setShowFilters,
     activeCategory, setActiveCategory,
     isLoading,
-    showOnboarding,
     showEnhancedOnboarding, setShowEnhancedOnboarding,
     selectedService, setSelectedService,
     activeFilters,
@@ -70,23 +67,31 @@ export default function Marketplace() {
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
       <div className="flex-grow">
+        {/* Use the updated header with search and CTAs */}
         <MarketplaceEnhancedHeader />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col gap-6">
-            {/* Hero Banner with onboarding CTA */}
-            <MarketplaceHero onShowOnboarding={() => setShowEnhancedOnboarding(true)} />
-
-            {/* Header Section with View Toggle and Comparison Button */}
-            <HeaderControls
-              viewMode={viewMode}
-              setViewMode={setViewMode}
-              showFilters={showFilters}
-              setShowFilters={setShowFilters}
-              servicesCount={filteredServices.length}
-              servicesForComparison={servicesForComparison}
-              handleOpenComparison={handleOpenComparison}
-            />
+            {/* Header Section with View Toggle and Filter Button */}
+            <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-foreground">Security Services</h1>
+                <p className="text-base text-muted-foreground">
+                  Find and connect with top security experts for your Web3 project
+                </p>
+              </div>
+              
+              <div className="flex gap-2 sm:justify-end">
+                <Button
+                  variant={showFilters ? "default" : "outline"}
+                  size="sm"
+                  className="flex items-center gap-1.5 h-10"
+                  onClick={() => setShowFilters(!showFilters)}
+                >
+                  {showFilters ? "Hide Filters" : "Show Filters"}
+                </Button>
+              </div>
+            </div>
 
             {/* Main Content with Improved Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
