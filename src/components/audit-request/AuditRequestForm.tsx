@@ -66,7 +66,7 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
       // Pre-fill user information if available
       supabase
         .from('extended_profiles')
-        .select('full_name, email')
+        .select('full_name')
         .eq('id', user.id)
         .single()
         .then(({ data, error }) => {
@@ -118,6 +118,12 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
         ? formData.customBlockchain 
         : formData.blockchain;
       
+      // Parse string values to the appropriate types for database
+      const contractCount = parseInt(formData.contractCount.split('-')[0]) || 0;
+      const linesOfCode = parseInt(formData.linesOfCode.split('-')[0]) || 0;
+      // Convert budget string to number or null if empty
+      const budget = formData.budget ? parseFloat(formData.budget) : null;
+      
       // Prepare data for database
       const auditRequestData = {
         client_id: user.id,
@@ -125,10 +131,10 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
         project_description: formData.projectDescription,
         blockchain,
         repository_url: formData.repositoryUrl,
-        contract_count: parseInt(formData.contractCount.split('-')[0]) || 0,
-        lines_of_code: parseInt(formData.linesOfCode.split('-')[0]) || 0,
-        deadline: formData.deadline,
-        budget: formData.budget,
+        contract_count: contractCount,
+        lines_of_code: linesOfCode,
+        deadline: formData.deadline || null,
+        budget,
         audit_scope: formData.auditScope,
         previous_audits: formData.previousAudits,
         specific_concerns: formData.specificConcerns,
