@@ -4,7 +4,8 @@ import { Search, Filter, GridIcon, LayoutList, X, Shield, FileText } from "lucid
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
 
 interface MarketplaceHeaderProps {
   viewMode: "grid" | "list";
@@ -20,6 +21,7 @@ export function MarketplaceHeader({
   setShowFilters,
 }: MarketplaceHeaderProps) {
   const [searchTerm, setSearchTerm] = useState("");
+  const location = useLocation();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +41,12 @@ export function MarketplaceHeader({
   return (
     <div className="flex flex-col gap-4 mb-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold text-foreground">Security Services</h1>
+        <div className="flex items-center">
+          <h1 className="text-3xl font-bold text-foreground">Security Services</h1>
+          <Badge variant="outline" className="ml-3 bg-primary/5 text-primary border-primary/20">
+            Web3 Security
+          </Badge>
+        </div>
         <p className="text-base text-muted-foreground">
           Find and connect with top security experts for your Web3 project
         </p>
@@ -50,7 +57,7 @@ export function MarketplaceHeader({
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search services, providers, or keywords..."
-            className="pl-9 pr-16 h-9"
+            className="pl-9 pr-16 h-10 border-primary/20 focus-visible:ring-primary/30"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -68,7 +75,7 @@ export function MarketplaceHeader({
             type="submit"
             variant="ghost"
             size="sm"
-            className="absolute right-1 top-0.5 h-8"
+            className="absolute right-1 top-0.5 h-9"
           >
             Search
           </Button>
@@ -78,7 +85,7 @@ export function MarketplaceHeader({
           <Button
             variant={showFilters ? "default" : "outline"}
             size="sm"
-            className="flex items-center gap-1.5 h-9"
+            className="flex items-center gap-1.5 h-10"
             onClick={() => setShowFilters(!showFilters)}
           >
             <Filter className="h-4 w-4" />
@@ -88,7 +95,7 @@ export function MarketplaceHeader({
           <Button
             variant="outline"
             size="sm"
-            className="flex items-center gap-1.5 h-9"
+            className="flex items-center gap-1.5 h-10"
             onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}
             title={viewMode === "grid" ? "Switch to list view" : "Switch to grid view"}
           >
@@ -107,26 +114,28 @@ export function MarketplaceHeader({
         </div>
       </div>
 
-      {/* Call to Action Buttons - but more subtle here since we have them in the navbar */}
-      <div className="flex flex-col sm:flex-row gap-3 mt-2">
-        <Link to="/request-audit" className="w-full sm:w-auto">
-          <Button 
-            variant="outline" 
-            className="w-full border-primary text-primary hover:bg-primary/10 flex items-center justify-center"
-          >
-            <FileText className="mr-2 h-4 w-4" />
-            Request for Audit
-          </Button>
-        </Link>
-        <Link to="/join" className="w-full sm:w-auto">
-          <Button 
-            className="w-full bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] hover:opacity-90 flex items-center justify-center"
-          >
-            <Shield className="mr-2 h-4 w-4" />
-            Join the Circle
-          </Button>
-        </Link>
-      </div>
+      {/* Only show CTA buttons if not already in the nav */}
+      {location.pathname !== "/" && location.pathname !== "/marketplace" && (
+        <div className="flex flex-col sm:flex-row gap-3 mt-2">
+          <Link to="/request-audit" className="w-full sm:w-auto">
+            <Button 
+              variant="outline" 
+              className="w-full border-primary text-primary hover:bg-primary/10 flex items-center justify-center"
+            >
+              <FileText className="mr-2 h-4 w-4" />
+              Request for Audit
+            </Button>
+          </Link>
+          <Link to="/join" className="w-full sm:w-auto">
+            <Button 
+              className="w-full bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] hover:opacity-90 flex items-center justify-center shadow-sm"
+            >
+              <Shield className="mr-2 h-4 w-4" />
+              Join the Circle
+            </Button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

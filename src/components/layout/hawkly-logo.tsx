@@ -23,19 +23,21 @@ export function HawklyLogo({ variant = "default", className }: HawklyLogoProps) 
     large: {
       container: "h-12 w-12",
       icon: "h-6 w-6",
-      text: "text-2xl",
+      text: "text-2xl md:text-3xl",
     },
   };
   
   return (
     <Link to="/" className={cn("flex items-center space-x-2 group", className)}>
-      <div className="p-1 transition-all duration-300 group-hover:scale-105">
-        <div className={cn("bg-gradient-to-br from-[#9b87f5] to-[#33C3F0] rounded-lg flex items-center justify-center shadow-md", sizes[variant].container)}>
+      <div className="relative p-1 transition-all duration-300 group-hover:scale-105">
+        <div className={cn("bg-gradient-to-br from-[#9b87f5] to-[#33C3F0] rounded-xl flex items-center justify-center shadow-lg", sizes[variant].container)}>
           <Shield className={cn("text-white", sizes[variant].icon)} />
+          {/* Add subtle glow effect */}
+          <div className="absolute inset-0 bg-white/20 rounded-xl blur-sm opacity-50"></div>
         </div>
       </div>
       <div className="flex flex-col">
-        <span className={cn("font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#9b87f5] to-[#33C3F0]", sizes[variant].text)}>
+        <span className={cn("font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] tracking-tight", sizes[variant].text)}>
           Hawkly
         </span>
         {variant === "large" && (

@@ -13,12 +13,12 @@ export function MarketplaceEnhancedHeader() {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="w-full bg-gradient-to-r from-background via-primary/5 to-secondary/5 z-10 shadow-sm">
+    <div className="w-full bg-gradient-to-r from-background via-primary/5 to-secondary/5 z-10 shadow-sm border-b border-border/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center">
-            <HawklyLogo variant="default" className="mr-8" />
-            <div className="hidden lg:flex items-center space-x-2">
+            <HawklyLogo variant="default" className="mr-6" />
+            <div className="hidden lg:flex items-center space-x-3">
               <TrustBadge type="verified" />
               <TrustBadge type="expert" />
               <TrustBadge type="top-rated" />
@@ -31,7 +31,7 @@ export function MarketplaceEnhancedHeader() {
               <Input
                 type="text"
                 placeholder="Search security services..."
-                className="pl-10 bg-card"
+                className="pl-10 bg-card/80 border-primary/20 focus:border-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -41,7 +41,7 @@ export function MarketplaceEnhancedHeader() {
               <Link to="/request-audit" className="w-full sm:w-auto">
                 <Button 
                   variant="outline" 
-                  className="border-primary text-primary hover:bg-primary/10 w-full sm:w-auto"
+                  className="border-primary/80 text-primary hover:bg-primary/10 w-full sm:w-auto"
                 >
                   <FileText className="mr-2 h-4 w-4" />
                   Request for Audit
@@ -50,7 +50,7 @@ export function MarketplaceEnhancedHeader() {
               
               <Link to="/join" className="w-full sm:w-auto">
                 <Button 
-                  className="bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] hover:opacity-90 w-full sm:w-auto flex items-center"
+                  className="bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] hover:opacity-90 w-full sm:w-auto flex items-center shadow-md"
                 >
                   <Shield className="mr-2 h-4 w-4" />
                   Join the Circle
