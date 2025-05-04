@@ -8,7 +8,7 @@ const AuditRequestHeader: React.FC = () => {
       <div className="flex justify-center mb-6">
         <HawklyLogo variant="large" />
       </div>
-      <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#9b87f5] to-[#33C3F0]">
+      <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#8A73E2] to-[#33C3F0]">
         Request a Security Audit
       </h1>
       <p className="text-lg text-muted-foreground max-w-2xl mx-auto">

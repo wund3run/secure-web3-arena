@@ -8,10 +8,10 @@
     --background: 0 0% 100%; /* Pure white background */
     --foreground: 222 47% 11%; /* Dark text for contrast */
     
-    --primary: 262 57% 45%; /* Keep the vibrant purple */
+    --primary: 262 57% 45%; /* Main purple #8A73E2 */
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 187 100% 42%; /* Vibrant teal */
+    --secondary: 187 100% 42%; /* Teal #33C3F0 */
     --secondary-foreground: 0 0% 100%;
     
     --accent: 14 100% 57%; /* Bright orange */
@@ -32,9 +32,11 @@
     
     --radius: 0.75rem;
     
-    --web3-purple: 262 57% 45%;
-    --web3-teal: 187 100% 42%;
+    --web3-purple: 262 57% 45%; /* Main purple #8A73E2 */
+    --web3-purple-dark: 252 28% 55%; /* Darker purple #6E59A5 */
+    --web3-teal: 187 100% 42%; /* Teal #33C3F0 */
     --web3-orange: 14 100% 57%;
+    --web3-gray: 220 14% 54%; /* Gray for tagline */
   }
 }
 
@@ -53,7 +55,11 @@
   }
   
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#8A73E2] to-[#33C3F0];
+  }
+  
+  .hawkly-gradient-button {
+    @apply bg-gradient-to-r from-[#8A73E2] to-[#33C3F0] text-white hover:opacity-90 transition-all shadow-md;
   }
   
   @keyframes float {
@@ -63,9 +69,9 @@
   }
   
   @keyframes pulse-glow {
-    0% { filter: drop-shadow(0 0 2px rgba(94, 53, 177, 0.3)); }
-    50% { filter: drop-shadow(0 0 10px rgba(94, 53, 177, 0.6)); }
-    100% { filter: drop-shadow(0 0 2px rgba(94, 53, 177, 0.3)); }
+    0% { filter: drop-shadow(0 0 2px rgba(138, 115, 226, 0.3)); }
+    50% { filter: drop-shadow(0 0 10px rgba(138, 115, 226, 0.6)); }
+    100% { filter: drop-shadow(0 0 2px rgba(138, 115, 226, 0.3)); }
   }
   
   .animate-float {

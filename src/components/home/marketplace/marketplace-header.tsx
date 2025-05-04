@@ -1,16 +1,19 @@
-
 import { Shield, Star, Users, BadgeCheck, ArrowRight, FileCode, LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { BetaWarning } from "@/components/ui/beta-warning";
+import { HawklyLogo } from "@/components/layout/hawkly-logo";
 
 export function MarketplaceHeader() {
   return (
     <div className="mb-10">
       <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center bg-primary/10 px-4 py-2 rounded-full text-primary mb-4">
+        <div className="flex justify-center mb-4">
+          <HawklyLogo variant="full" />
+        </div>
+        <div className="inline-flex items-center justify-center bg-[#8A73E2]/10 px-4 py-2 rounded-full text-[#8A73E2] mb-4">
           <Shield className="h-5 w-5 mr-2" />
           <span className="font-medium">Web3 Security Services</span>
         </div>

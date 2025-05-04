@@ -2,17 +2,21 @@
 import { Shield, Award, ArrowRight, Star, Users, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { HawklyLogo } from "@/components/layout/hawkly-logo";
 
 export function LeaderboardHeader() {
   return (
     <div className="bg-gradient-to-r from-primary/5 to-secondary/5 py-12 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center bg-primary/10 px-4 py-2 rounded-full text-primary mb-4">
+          <div className="flex justify-center mb-4">
+            <HawklyLogo variant="large" />
+          </div>
+          <div className="inline-flex items-center justify-center bg-[#8A73E2]/10 px-4 py-2 rounded-full text-[#8A73E2] mb-4">
             <Award className="h-5 w-5 mr-2" />
             <span className="font-medium">Security Excellence</span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold mb-4">
+          <h1 className="text-3xl md:text-4xl font-extrabold mb-4 text-gradient">
             Security Expert Leaderboard
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
