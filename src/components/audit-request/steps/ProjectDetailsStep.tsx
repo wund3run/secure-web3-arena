@@ -33,7 +33,7 @@ const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
       </h2>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <FormItem className={formErrors.projectName ? "error" : ""}>
+        <FormItem>
           <FormLabel htmlFor="projectName" className="text-sm font-medium">Project Name *</FormLabel>
           <FormControl>
             <Input 
@@ -43,6 +43,8 @@ const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
               value={formData.projectName}
               onChange={handleChange}
               className={formErrors.projectName ? "border-destructive" : ""}
+              aria-invalid={!!formErrors.projectName}
+              aria-describedby={formErrors.projectName ? "projectName-error" : undefined}
             />
           </FormControl>
           {formErrors.projectName && (
@@ -50,7 +52,7 @@ const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
           )}
         </FormItem>
         
-        <FormItem className={formErrors.contactName ? "error" : ""}>
+        <FormItem>
           <FormLabel htmlFor="contactName" className="text-sm font-medium">Contact Name *</FormLabel>
           <FormControl>
             <Input 
@@ -60,6 +62,8 @@ const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
               value={formData.contactName}
               onChange={handleChange}
               className={formErrors.contactName ? "border-destructive" : ""}
+              aria-invalid={!!formErrors.contactName}
+              aria-describedby={formErrors.contactName ? "contactName-error" : undefined}
             />
           </FormControl>
           {formErrors.contactName && (
@@ -68,7 +72,7 @@ const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
         </FormItem>
       </div>
       
-      <FormItem className={formErrors.contactEmail ? "error" : ""}>
+      <FormItem>
         <FormLabel htmlFor="contactEmail" className="text-sm font-medium">Contact Email *</FormLabel>
         <FormControl>
           <Input 
@@ -79,6 +83,8 @@ const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
             value={formData.contactEmail}
             onChange={handleChange}
             className={formErrors.contactEmail ? "border-destructive" : ""}
+            aria-invalid={!!formErrors.contactEmail}
+            aria-describedby={formErrors.contactEmail ? "contactEmail-error" : undefined}
           />
         </FormControl>
         {formErrors.contactEmail && (
@@ -106,9 +112,12 @@ const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
             ))}
           </div>
         </FormControl>
+        {formErrors.blockchain && (
+          <FormMessage>{formErrors.blockchain}</FormMessage>
+        )}
         
         {formData.blockchain === "Other" && (
-          <FormItem className={formErrors.customBlockchain ? "error mt-3" : "mt-3"}>
+          <FormItem>
             <FormLabel htmlFor="customBlockchain" className="text-sm font-medium">Blockchain Name *</FormLabel>
             <FormControl>
               <Input 
@@ -118,6 +127,8 @@ const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
                 value={formData.customBlockchain}
                 onChange={handleChange}
                 className={formErrors.customBlockchain ? "border-destructive" : ""}
+                aria-invalid={!!formErrors.customBlockchain}
+                aria-describedby={formErrors.customBlockchain ? "customBlockchain-error" : undefined}
               />
             </FormControl>
             {formErrors.customBlockchain && (
@@ -127,7 +138,7 @@ const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
         )}
       </div>
       
-      <FormItem className={formErrors.projectDescription ? "error" : ""}>
+      <FormItem>
         <FormLabel htmlFor="projectDescription" className="text-sm font-medium">Project Description *</FormLabel>
         <FormControl>
           <Textarea 
@@ -137,6 +148,8 @@ const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
             className={`min-h-[120px] ${formErrors.projectDescription ? "border-destructive" : ""}`}
             value={formData.projectDescription}
             onChange={handleChange}
+            aria-invalid={!!formErrors.projectDescription}
+            aria-describedby={formErrors.projectDescription ? "projectDescription-error" : undefined}
             required
           />
         </FormControl>

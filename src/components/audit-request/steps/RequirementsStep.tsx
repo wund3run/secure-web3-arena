@@ -31,14 +31,17 @@ const RequirementsStep: React.FC<RequirementsStepProps> = ({
       </h2>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <FormItem className={formErrors.deadline ? "error" : ""}>
+        <FormItem>
           <FormLabel htmlFor="deadline" className="text-sm font-medium">Expected Timeline *</FormLabel>
           <FormControl>
             <Select 
               value={formData.deadline} 
               onValueChange={(value) => handleSelectChange("deadline", value)}
             >
-              <SelectTrigger className={formErrors.deadline ? "border-destructive" : ""}>
+              <SelectTrigger 
+                className={formErrors.deadline ? "border-destructive" : ""}
+                aria-invalid={!!formErrors.deadline}
+              >
                 <SelectValue placeholder="Select your deadline" />
               </SelectTrigger>
               <SelectContent>
@@ -56,14 +59,17 @@ const RequirementsStep: React.FC<RequirementsStepProps> = ({
           </FormDescription>
         </FormItem>
         
-        <FormItem className={formErrors.budget ? "error" : ""}>
+        <FormItem>
           <FormLabel htmlFor="budget" className="text-sm font-medium">Budget Range *</FormLabel>
           <FormControl>
             <Select 
               value={formData.budget} 
               onValueChange={(value) => handleSelectChange("budget", value)}
             >
-              <SelectTrigger className={formErrors.budget ? "border-destructive" : ""}>
+              <SelectTrigger 
+                className={formErrors.budget ? "border-destructive" : ""}
+                aria-invalid={!!formErrors.budget}
+              >
                 <SelectValue placeholder="Select your budget range" />
               </SelectTrigger>
               <SelectContent>

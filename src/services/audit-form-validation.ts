@@ -1,6 +1,6 @@
 
 import { AuditFormData, AuditFormErrors, FormStepValidators } from "@/types/audit-request.types";
-import { isValidEmail, isNotEmpty, meetsMinLength } from "@/utils/formValidation";
+import { isValidEmail, isNotEmpty, meetsMinLength, isValidUrl } from "@/utils/formValidation";
 
 export const validateFormStep = (
   step: number, 
@@ -23,16 +23,20 @@ const validateProjectDetails = (formData: AuditFormData): { isValid: boolean; er
 
   if (!isNotEmpty(formData.projectName)) {
     errors.projectName = "Project name is required";
+  } else if (formData.projectName.length < 3) {
+    errors.projectName = "Project name must be at least 3 characters";
   }
 
   if (!isNotEmpty(formData.contactName)) {
     errors.contactName = "Contact name is required";
+  } else if (formData.contactName.length < 2) {
+    errors.contactName = "Contact name must be at least 2 characters";
   }
 
   if (!isNotEmpty(formData.contactEmail)) {
     errors.contactEmail = "Email address is required";
   } else if (!isValidEmail(formData.contactEmail)) {
-    errors.contactEmail = "Please enter a valid email address";
+    errors.contactEmail = "Please enter a valid email address (e.g., example@domain.com)";
   }
 
   if (!isNotEmpty(formData.projectDescription)) {
@@ -41,9 +45,15 @@ const validateProjectDetails = (formData: AuditFormData): { isValid: boolean; er
     errors.projectDescription = "Please provide a more detailed project description (minimum 20 characters)";
   }
 
+  if (!isNotEmpty(formData.blockchain)) {
+    errors.blockchain = "Please select a blockchain ecosystem";
+  }
+
   // For "Other" blockchain, validate the custom blockchain name
   if (formData.blockchain === "Other" && !isNotEmpty(formData.customBlockchain)) {
     errors.customBlockchain = "Please specify the blockchain name";
+  } else if (formData.blockchain === "Other" && formData.customBlockchain.length < 2) {
+    errors.customBlockchain = "Blockchain name must be at least 2 characters";
   }
 
   return {
@@ -56,8 +66,12 @@ const validateTechnicalInfo = (formData: AuditFormData): { isValid: boolean; err
   const errors: AuditFormErrors = {};
 
   // Repository URL is optional but if provided, should be a valid URL format
-  if (formData.repositoryUrl && !formData.repositoryUrl.startsWith('http')) {
-    errors.repositoryUrl = "Please enter a valid URL starting with http:// or https://";
+  if (formData.repositoryUrl) {
+    if (!formData.repositoryUrl.startsWith('http')) {
+      errors.repositoryUrl = "Please enter a valid URL starting with http:// or https://";
+    } else if (!isValidUrl(formData.repositoryUrl)) {
+      errors.repositoryUrl = "Please enter a valid repository URL";
+    }
   }
 
   if (!isNotEmpty(formData.contractCount)) {
@@ -90,6 +104,8 @@ const validateRequirements = (formData: AuditFormData): { isValid: boolean; erro
   if (!isNotEmpty(formData.budget)) {
     errors.budget = "Budget range is required";
   }
+
+  // Specific concerns field is optional, no validation needed
 
   return {
     isValid: Object.keys(errors).length === 0,

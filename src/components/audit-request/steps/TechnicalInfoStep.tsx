@@ -35,7 +35,7 @@ const TechnicalInfoStep: React.FC<TechnicalInfoStepProps> = ({
       </h2>
       
       <div className="space-y-2">
-        <FormItem className={formErrors.repositoryUrl ? "error" : ""}>
+        <FormItem>
           <FormLabel htmlFor="repositoryUrl" className="text-sm font-medium">
             Repository URL <span className="text-muted-foreground text-xs">(Private repos will require access arrangements)</span>
           </FormLabel>
@@ -47,6 +47,8 @@ const TechnicalInfoStep: React.FC<TechnicalInfoStepProps> = ({
               value={formData.repositoryUrl}
               onChange={handleChange}
               className={formErrors.repositoryUrl ? "border-destructive" : ""}
+              aria-invalid={!!formErrors.repositoryUrl}
+              aria-describedby={formErrors.repositoryUrl ? "repositoryUrl-error" : undefined}
             />
           </FormControl>
           {formErrors.repositoryUrl && (
@@ -59,14 +61,17 @@ const TechnicalInfoStep: React.FC<TechnicalInfoStepProps> = ({
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <FormItem className={formErrors.contractCount ? "error" : ""}>
+        <FormItem>
           <FormLabel htmlFor="contractCount" className="text-sm font-medium">Number of Smart Contracts *</FormLabel>
           <FormControl>
             <Select 
               value={formData.contractCount} 
               onValueChange={(value) => handleSelectChange("contractCount", value)}
             >
-              <SelectTrigger className={formErrors.contractCount ? "border-destructive" : ""}>
+              <SelectTrigger 
+                className={formErrors.contractCount ? "border-destructive" : ""} 
+                aria-invalid={!!formErrors.contractCount}
+              >
                 <SelectValue placeholder="Select number of contracts" />
               </SelectTrigger>
               <SelectContent>
@@ -82,14 +87,17 @@ const TechnicalInfoStep: React.FC<TechnicalInfoStepProps> = ({
           )}
         </FormItem>
         
-        <FormItem className={formErrors.linesOfCode ? "error" : ""}>
+        <FormItem>
           <FormLabel htmlFor="linesOfCode" className="text-sm font-medium">Approximate Lines of Code *</FormLabel>
           <FormControl>
             <Select 
               value={formData.linesOfCode} 
               onValueChange={(value) => handleSelectChange("linesOfCode", value)}
             >
-              <SelectTrigger className={formErrors.linesOfCode ? "border-destructive" : ""}>
+              <SelectTrigger 
+                className={formErrors.linesOfCode ? "border-destructive" : ""}
+                aria-invalid={!!formErrors.linesOfCode}
+              >
                 <SelectValue placeholder="Select code size" />
               </SelectTrigger>
               <SelectContent>
@@ -106,7 +114,7 @@ const TechnicalInfoStep: React.FC<TechnicalInfoStepProps> = ({
         </FormItem>
       </div>
 
-      <FormItem className={formErrors.auditScope ? "error" : ""}>
+      <FormItem>
         <FormLabel htmlFor="auditScope" className="text-sm font-medium">Audit Scope *</FormLabel>
         <FormControl>
           <Textarea 
@@ -116,6 +124,8 @@ const TechnicalInfoStep: React.FC<TechnicalInfoStepProps> = ({
             className={`min-h-[120px] ${formErrors.auditScope ? "border-destructive" : ""}`}
             value={formData.auditScope}
             onChange={handleChange}
+            aria-invalid={!!formErrors.auditScope}
+            aria-describedby={formErrors.auditScope ? "auditScope-error" : undefined}
             required
           />
         </FormControl>
