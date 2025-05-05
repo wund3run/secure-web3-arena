@@ -38,6 +38,7 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
   const [formStep, setFormStep] = useState(1);
   const [projectType, setProjectType] = useState("");
   const [showAIMatching, setShowAIMatching] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<AuditFormData>({
     projectName: "",
     projectDescription: "",
@@ -113,6 +114,8 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
     }
     
     try {
+      setIsSubmitting(true);
+      
       // If "Other" is selected, use the custom blockchain name instead
       const blockchain = formData.blockchain === "Other" && formData.customBlockchain 
         ? formData.customBlockchain 
@@ -161,17 +164,70 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
         description: error.message || "Please try again later",
       });
       console.error("Error submitting audit request:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const validateStep = (step: number): boolean => {
+    switch (step) {
+      case 1:
+        if (!formData.projectName.trim()) {
+          toast.error("Project name is required");
+          return false;
+        }
+        if (!formData.contactName.trim()) {
+          toast.error("Contact name is required");
+          return false;
+        }
+        if (!formData.contactEmail.trim() || !/\S+@\S+\.\S+/.test(formData.contactEmail)) {
+          toast.error("Valid email address is required");
+          return false;
+        }
+        if (!formData.projectDescription.trim()) {
+          toast.error("Project description is required");
+          return false;
+        }
+        return true;
+      case 2:
+        if (!formData.contractCount) {
+          toast.error("Number of contracts is required");
+          return false;
+        }
+        if (!formData.linesOfCode) {
+          toast.error("Code size is required");
+          return false;
+        }
+        if (!formData.auditScope.trim()) {
+          toast.error("Audit scope is required");
+          return false;
+        }
+        return true;
+      case 3:
+        if (!formData.deadline) {
+          toast.error("Timeline is required");
+          return false;
+        }
+        if (!formData.budget) {
+          toast.error("Budget range is required");
+          return false;
+        }
+        return true;
+      default:
+        return true;
     }
   };
 
   const nextStep = () => {
-    window.scrollTo(0, 0);
-    
-    // After requirements step, show AI matching
-    if (formStep === 3) {
-      setShowAIMatching(true);
-    } else {
-      setFormStep(formStep + 1);
+    if (validateStep(formStep)) {
+      window.scrollTo(0, 0);
+      
+      // After requirements step, show AI matching
+      if (formStep === 3) {
+        setShowAIMatching(true);
+      } else {
+        setFormStep(formStep + 1);
+      }
     }
   };
 
@@ -248,6 +304,7 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
                 <ReviewStep
                   formData={formData}
                   prevStep={prevStep}
+                  isSubmitting={isSubmitting}
                 />
               )}
             </>

@@ -1,18 +1,20 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ClipboardCheck, ArrowLeft } from "lucide-react";
+import { ArrowRight, ClipboardCheck, ArrowLeft, Loader } from "lucide-react";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { AuditFormData } from '../AuditRequestForm';
 
 interface ReviewStepProps {
   formData: AuditFormData;
   prevStep: () => void;
+  isSubmitting?: boolean;
 }
 
 const ReviewStep: React.FC<ReviewStepProps> = ({
   formData,
-  prevStep
+  prevStep,
+  isSubmitting = false
 }) => {
   const formatValue = (key: string, value: any): string => {
     if (value === "" || value === undefined) return "Not provided";
@@ -129,15 +131,26 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
           type="button" 
           onClick={prevStep}
           variant="outline"
+          disabled={isSubmitting}
         >
           Back
         </Button>
         <Button 
           type="submit"
           className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+          disabled={isSubmitting}
         >
-          Submit Audit Request
-          <ArrowRight className="ml-2 h-4 w-4" />
+          {isSubmitting ? (
+            <>
+              <Loader className="mr-2 h-4 w-4 animate-spin" />
+              Submitting...
+            </>
+          ) : (
+            <>
+              Submit Audit Request
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </>
+          )}
         </Button>
       </div>
     </div>
