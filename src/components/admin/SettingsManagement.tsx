@@ -26,6 +26,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const securityFormSchema = z.object({
   twoFactorAuth: z.boolean().default(false),
@@ -53,6 +54,7 @@ const appearanceFormSchema = z.object({
 
 const SettingsManagement = () => {
   const [activeTab, setActiveTab] = useState("security");
+  const { theme, setTheme } = useTheme();
 
   // Security form
   const securityForm = useForm<z.infer<typeof securityFormSchema>>({
@@ -81,10 +83,10 @@ const SettingsManagement = () => {
   const appearanceForm = useForm<z.infer<typeof appearanceFormSchema>>({
     resolver: zodResolver(appearanceFormSchema),
     defaultValues: {
-      platformName: "Hawkly",
+      platformName: "ICOinc Security",
       logoUrl: "",
       primaryColor: "#5E35B1",
-      darkMode: false,
+      darkMode: theme === "dark",
       termsContent: "",
       privacyContent: "",
     },
@@ -102,7 +104,15 @@ const SettingsManagement = () => {
 
   const onAppearanceSubmit = (values: z.infer<typeof appearanceFormSchema>) => {
     console.log("Appearance settings:", values);
+    // Update theme based on the form submission
+    setTheme(values.darkMode ? "dark" : "light");
     toast.success("Appearance settings updated successfully");
+  };
+
+  // Handle direct theme change from the switch
+  const handleThemeChange = (checked: boolean) => {
+    appearanceForm.setValue("darkMode", checked);
+    setTheme(checked ? "dark" : "light");
   };
 
   return (
@@ -338,6 +348,29 @@ const SettingsManagement = () => {
         <TabsContent value="appearance" className="space-y-4">
           <Card>
             <CardHeader>
+              <CardTitle>Theme Settings</CardTitle>
+              <CardDescription>
+                Configure the visual appearance of the platform
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-row items-center justify-between">
+                <div className="space-y-0.5">
+                  <h3 className="font-medium">Dark Mode</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Switch between light and dark themes
+                  </p>
+                </div>
+                <Switch
+                  checked={theme === "dark"}
+                  onCheckedChange={handleThemeChange}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        
+          <Card>
+            <CardHeader>
               <CardTitle>Appearance Settings</CardTitle>
               <CardDescription>
                 Customize platform appearance and branding
@@ -396,27 +429,6 @@ const SettingsManagement = () => {
                         <FormDescription>
                           Hex code for your main brand color
                         </FormDescription>
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={appearanceForm.control}
-                    name="darkMode"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center justify-between">
-                        <div className="space-y-0.5">
-                          <FormLabel>Dark Mode Default</FormLabel>
-                          <FormDescription>
-                            Set dark mode as the default appearance
-                          </FormDescription>
-                        </div>
-                        <FormControl>
-                          <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
                       </FormItem>
                     )}
                   />

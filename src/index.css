@@ -5,6 +5,7 @@
 
 @layer base {
   :root {
+    /* Light mode variables */
     --background: 0 0% 100%; /* Pure white background */
     --foreground: 222 47% 11%; /* Dark text for contrast */
     
@@ -37,17 +38,69 @@
     --web3-teal: 187 100% 42%; /* Teal #33C3F0 */
     --web3-orange: 14 100% 57%;
     --web3-gray: 220 14% 54%; /* Gray for tagline */
+    
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 262 57% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 14 100% 57%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 262 57% 45%;
+  }
+  
+  .dark {
+    /* Dark mode variables */
+    --background: 222 47% 11%; /* Dark background */
+    --foreground: 210 40% 98%; /* Light text for contrast */
+    
+    --primary: 262 57% 45%; /* Main purple #8A73E2 */
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 187 100% 42%; /* Teal #33C3F0 */
+    --secondary-foreground: 0 0% 100%;
+    
+    --accent: 14 100% 57%; /* Bright orange */
+    --accent-foreground: 0 0% 100%;
+    
+    --card: 224 47% 15%; /* Slightly lighter than background */
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 224 47% 15%;
+    --popover-foreground: 210 40% 98%;
+    
+    --muted: 223 47% 20%;
+    --muted-foreground: 215 20% 65%;
+    
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+    --ring: 262 57% 45%;
+    
+    --web3-purple: 262 57% 55%; /* Brighter in dark mode #9B87F5 */
+    --web3-purple-dark: 252 28% 65%; /* Lighter in dark mode */
+    --web3-teal: 187 100% 50%; /* Brighter teal in dark mode */
+    --web3-orange: 14 100% 65%; /* Brighter orange in dark mode */
+    --web3-gray: 220 14% 70%; /* Lighter gray for dark mode */
+    
+    --sidebar-background: 224 47% 15%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 262 57% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 14 100% 65%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 216 34% 17%;
+    --sidebar-ring: 262 57% 55%;
   }
 }
 
 /* Add glass effect utilities */
 @layer utilities {
   .glass-effect {
-    @apply backdrop-blur-md bg-white/70 border border-white/20 shadow-lg;
+    @apply backdrop-blur-md bg-white/70 border border-white/20 shadow-lg dark:bg-black/30 dark:border-white/10;
   }
   
   .glass-card {
-    @apply bg-gradient-to-br from-white/80 to-white/40 backdrop-blur-md border border-white/20 shadow-lg;
+    @apply bg-gradient-to-br from-white/80 to-white/40 backdrop-blur-md border border-white/20 shadow-lg dark:from-gray-800/50 dark:to-gray-900/30;
   }
   
   .hover-lift {
@@ -55,11 +108,19 @@
   }
   
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#8A73E2] to-[#33C3F0];
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#8A73E2] to-[#33C3F0] dark:from-[#9B87F5] dark:to-[#4DD0E1];
   }
   
   .hawkly-gradient-button {
-    @apply bg-gradient-to-r from-[#8A73E2] to-[#33C3F0] text-white hover:opacity-90 transition-all shadow-md;
+    @apply bg-gradient-to-r from-[#8A73E2] to-[#33C3F0] text-white hover:opacity-90 transition-all shadow-md dark:from-[#9B87F5] dark:to-[#4DD0E1];
+  }
+  
+  .dark-card {
+    @apply bg-card dark:bg-gray-800/50 dark:backdrop-blur-md dark:border dark:border-gray-700/30;
+  }
+  
+  .cybersecurity-border {
+    @apply border border-purple-300/30 dark:border-purple-500/20;
   }
   
   @keyframes float {
