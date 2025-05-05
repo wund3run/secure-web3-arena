@@ -24,9 +24,15 @@ export const useAuditFormState = () => {
     deadline: "",
     budget: "",
     auditScope: "",
-    previousAudits: false, // Initialize with a default value since it's required
-    specificConcerns: "", // Initialize with empty string since it's now required
-    previousAuditLinks: ""
+    previousAudits: false,
+    specificConcerns: "",
+    previousAuditLinks: "",
+    // New enhanced audit model options
+    collaborativeAudit: false,
+    continuousAuditing: false,
+    hybridModel: false,
+    specializedAuditType: "",
+    accountabilityPreference: "standard", // Default to standard accountability
   });
 
   return {

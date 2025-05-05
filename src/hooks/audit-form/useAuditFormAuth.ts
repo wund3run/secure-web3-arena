@@ -49,7 +49,14 @@ export const useAuditFormAuth = (
               budget: "",
               auditScope: "",
               previousAudits: false,
-              specificConcerns: ""
+              specificConcerns: "",
+              previousAuditLinks: "",
+              // Initialize new enhanced audit fields
+              collaborativeAudit: false,
+              continuousAuditing: false,
+              hybridModel: false,
+              specializedAuditType: "",
+              accountabilityPreference: "standard"
             });
           }
         });

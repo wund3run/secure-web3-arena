@@ -18,6 +18,12 @@ export interface AuditFormData {
   specificConcerns: string; // Changed from optional to required
   aiAssisted?: boolean;
   continuousMonitoring?: boolean;
+  // New fields for enhanced audit features
+  collaborativeAudit?: boolean;
+  continuousAuditing?: boolean;
+  hybridModel?: boolean;
+  specializedAuditType?: string;
+  accountabilityPreference?: string;
 }
 
 export interface AuditFormErrors {
@@ -36,6 +42,12 @@ export interface AuditFormErrors {
   specificConcerns?: string;
   previousAuditLinks?: string;
   preferredCommunication?: string;
+  // New error fields
+  collaborativeAudit?: string;
+  continuousAuditing?: string;
+  hybridModel?: string;
+  specializedAuditType?: string;
+  accountabilityPreference?: string;
 }
 
 export interface FormStepValidators {
