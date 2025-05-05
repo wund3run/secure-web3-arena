@@ -33,7 +33,7 @@ export const useAuditForm = (onSubmitSuccess: () => void) => {
     deadline: "",
     budget: "",
     auditScope: "",
-    previousAudits: false,
+    previousAudits: false, // Initialize with a default value since it's required
     specificConcerns: ""
   });
 

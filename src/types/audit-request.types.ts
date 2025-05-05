@@ -1,3 +1,4 @@
+
 export interface AuditFormData {
   projectName: string;
   contactName: string;
@@ -11,10 +12,10 @@ export interface AuditFormData {
   auditScope: string;
   deadline: string;
   budget: string;
-  specificConcerns?: string;
-  previousAudits?: boolean;
+  previousAudits: boolean; // Changed from optional to required
   previousAuditLinks?: string;
   preferredCommunication?: string;
+  specificConcerns?: string;
   aiAssisted?: boolean;
   continuousMonitoring?: boolean;
 }
