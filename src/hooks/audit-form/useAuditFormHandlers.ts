@@ -15,7 +15,10 @@ export const useAuditFormHandlers = (
     
     // Clear error for this field when user starts typing
     if (formErrors[name]) {
-      setFormErrors(prev => ({ ...prev, [name]: '' }));
+      // Fix: Create a new errors object instead of using a callback
+      const newErrors = { ...formErrors };
+      delete newErrors[name];
+      setFormErrors(newErrors);
     }
   };
 
@@ -24,7 +27,10 @@ export const useAuditFormHandlers = (
     
     // Clear error for this field when user changes selection
     if (formErrors[name]) {
-      setFormErrors(prev => ({ ...prev, [name]: '' }));
+      // Fix: Create a new errors object instead of using a callback
+      const newErrors = { ...formErrors };
+      delete newErrors[name];
+      setFormErrors(newErrors);
     }
   };
 
