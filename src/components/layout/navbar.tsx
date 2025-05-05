@@ -49,7 +49,7 @@ export function Navbar() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center">
-              <HawklyLogo size="sm" />
+              <HawklyLogo variant="compact" />
             </Link>
           </div>
 
