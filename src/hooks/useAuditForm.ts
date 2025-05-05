@@ -34,7 +34,8 @@ export const useAuditForm = (onSubmitSuccess: () => void) => {
     budget: "",
     auditScope: "",
     previousAudits: false, // Initialize with a default value since it's required
-    specificConcerns: ""
+    specificConcerns: "", // Initialize with empty string since it's now required
+    previousAuditLinks: ""
   });
 
   useEffect(() => {
