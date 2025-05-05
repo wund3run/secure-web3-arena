@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ClipboardCheck, ArrowLeft, Loader } from "lucide-react";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { AuditFormData } from '../AuditRequestForm';
+import { AuditFormData } from '@/types/audit-request.types';
 
 interface ReviewStepProps {
   formData: AuditFormData;

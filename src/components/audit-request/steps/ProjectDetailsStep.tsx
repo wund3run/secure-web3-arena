@@ -6,8 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRight, FileText } from "lucide-react";
 import { BlockchainEcosystems } from "@/components/marketplace/sections/BlockchainEcosystems";
-import { AuditFormData } from '../AuditRequestForm';
 import { Badge } from "@/components/ui/badge";
+import { AuditFormData } from '@/types/audit-request.types';
 
 interface ProjectDetailsStepProps {
   formData: AuditFormData;
