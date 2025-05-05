@@ -28,12 +28,29 @@ export const useAuditFormAuth = (
         .single()
         .then(({ data, error }) => {
           if (!error && data && data.full_name) {
-            // Fix: Create and pass a complete AuditFormData object
-            setFormData(prevData => ({
-              ...prevData, // Keep all existing form data
-              contactName: data.full_name || '',
-              contactEmail: user.email || ''
-            }));
+            // Get the current form data first, then update it
+            // Instead of using a callback which creates TypeScript issues,
+            // we'll directly create and pass a new object
+            const fullName = data.full_name || '';
+            const userEmail = user.email || '';
+            
+            // Pre-fill only the contact fields while preserving all other fields
+            setFormData({
+              projectName: "",
+              projectDescription: "",
+              contactEmail: userEmail,
+              contactName: fullName,
+              blockchain: "Ethereum",
+              customBlockchain: "",
+              repositoryUrl: "",
+              contractCount: "",
+              linesOfCode: "",
+              deadline: "",
+              budget: "",
+              auditScope: "",
+              previousAudits: false,
+              specificConcerns: ""
+            });
           }
         });
     }
