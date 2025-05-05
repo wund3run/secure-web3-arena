@@ -88,6 +88,13 @@ const validateTechnicalInfo = (formData: AuditFormData): { isValid: boolean; err
     errors.auditScope = "Please provide a more detailed audit scope (minimum 30 characters)";
   }
 
+  // If previous audits are indicated, validate the links if provided
+  if (formData.previousAudits && formData.previousAuditLinks) {
+    if (formData.previousAuditLinks && !formData.previousAuditLinks.startsWith('http')) {
+      errors.previousAuditLinks = "Please enter valid URLs for previous audits";
+    }
+  }
+
   return {
     isValid: Object.keys(errors).length === 0,
     errors
@@ -106,6 +113,7 @@ const validateRequirements = (formData: AuditFormData): { isValid: boolean; erro
   }
 
   // Specific concerns field is optional, no validation needed
+  // AI-assisted and continuous monitoring are boolean flags, no validation needed
 
   return {
     isValid: Object.keys(errors).length === 0,

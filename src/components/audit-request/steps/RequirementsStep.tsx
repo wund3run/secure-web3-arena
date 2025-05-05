@@ -3,15 +3,18 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, ListChecks } from "lucide-react";
+import { ArrowRight, ListChecks, Cpu } from "lucide-react";
 import { AuditFormData, AuditFormErrors } from '@/types/audit-request.types';
 import { FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Link } from "react-router-dom";
 
 interface RequirementsStepProps {
   formData: AuditFormData;
   formErrors?: AuditFormErrors;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleSelectChange: (name: string, value: string) => void;
+  handleCheckboxChange?: (name: string, checked: boolean) => void;
   prevStep: () => void;
   nextStep: () => void;
 }
@@ -21,6 +24,7 @@ const RequirementsStep: React.FC<RequirementsStepProps> = ({
   formErrors = {},
   handleChange,
   handleSelectChange,
+  handleCheckboxChange,
   prevStep,
   nextStep
 }) => {
@@ -107,6 +111,55 @@ const RequirementsStep: React.FC<RequirementsStepProps> = ({
           Optional: Let auditors know if you have specific security concerns.
         </FormDescription>
       </FormItem>
+
+      <div className="bg-primary/5 p-4 rounded-lg border border-primary/20">
+        <div className="flex items-start space-x-4">
+          <div className="bg-primary/20 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
+            <Cpu className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h3 className="font-medium text-lg">AI-Enhanced Security</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Our AI systems can help detect vulnerabilities before and during the audit process, providing continuous security monitoring for your project.
+            </p>
+            <div className="flex items-center space-x-2 mb-3">
+              <Checkbox 
+                id="aiAssisted" 
+                checked={formData.aiAssisted} 
+                onCheckedChange={checked => 
+                  handleCheckboxChange && handleCheckboxChange("aiAssisted", Boolean(checked))
+                }
+              />
+              <label 
+                htmlFor="aiAssisted" 
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Include AI-assisted vulnerability detection
+              </label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="continuousMonitoring" 
+                checked={formData.continuousMonitoring}
+                onCheckedChange={checked => 
+                  handleCheckboxChange && handleCheckboxChange("continuousMonitoring", Boolean(checked))
+                }
+              />
+              <label 
+                htmlFor="continuousMonitoring" 
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Add continuous security monitoring
+              </label>
+            </div>
+            <div className="mt-3">
+              <Link to="/security-insights" className="text-primary hover:underline text-sm">
+                Preview AI security features
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
       
       <div className="flex justify-between mt-8">
         <Button 

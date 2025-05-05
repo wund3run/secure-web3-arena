@@ -1,23 +1,40 @@
-
 export interface AuditFormData {
   projectName: string;
-  projectDescription: string;
-  contactEmail: string;
   contactName: string;
+  contactEmail: string;
   blockchain: string;
   customBlockchain?: string;
-  repositoryUrl: string;
+  projectDescription: string;
+  repositoryUrl?: string;
   contractCount: string;
   linesOfCode: string;
+  auditScope: string;
   deadline: string;
   budget: string;
-  auditScope: string;
-  previousAudits: boolean;
-  specificConcerns: string;
+  specificConcerns?: string;
+  previousAudits?: boolean;
+  previousAuditLinks?: string;
+  preferredCommunication?: string;
+  aiAssisted?: boolean;
+  continuousMonitoring?: boolean;
 }
 
 export interface AuditFormErrors {
-  [key: string]: string;
+  projectName?: string;
+  contactName?: string;
+  contactEmail?: string;
+  blockchain?: string;
+  customBlockchain?: string;
+  projectDescription?: string;
+  repositoryUrl?: string;
+  contractCount?: string;
+  linesOfCode?: string;
+  auditScope?: string;
+  deadline?: string;
+  budget?: string;
+  specificConcerns?: string;
+  previousAuditLinks?: string;
+  preferredCommunication?: string;
 }
 
 export interface FormStepValidators {

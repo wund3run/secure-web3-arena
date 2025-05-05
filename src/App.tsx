@@ -25,6 +25,7 @@ import AuditorOnboarding from "@/pages/AuditorOnboarding";
 import ServiceProviderOnboarding from "@/pages/ServiceProviderOnboarding";
 import ApplicationSubmitted from "@/pages/ApplicationSubmitted";
 import Auth from "@/pages/Auth";
+import SecurityInsights from "@/pages/SecurityInsights";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -58,6 +59,9 @@ const App = () => (
                     path="/request-audit" 
                     element={<RequestAudit />} 
                   />
+
+                  {/* Security Insights route */}
+                  <Route path="/security-insights" element={<SecurityInsights />} />
                   
                   <Route 
                     path="/escrow" 
