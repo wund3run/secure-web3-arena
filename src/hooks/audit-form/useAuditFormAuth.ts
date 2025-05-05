@@ -28,12 +28,12 @@ export const useAuditFormAuth = (
         .single()
         .then(({ data, error }) => {
           if (!error && data && data.full_name) {
-            // Fix: Create a new object instead of using a callback
-            setFormData({
-              ...data,
+            // Fix: Create and pass a complete AuditFormData object
+            setFormData(prevData => ({
+              ...prevData, // Keep all existing form data
               contactName: data.full_name || '',
               contactEmail: user.email || ''
-            } as AuditFormData);
+            }));
           }
         });
     }
