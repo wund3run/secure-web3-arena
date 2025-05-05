@@ -1,43 +1,31 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRight, FileText } from "lucide-react";
-import { BlockchainEcosystems } from "@/components/marketplace/sections/BlockchainEcosystems";
-import { Badge } from "@/components/ui/badge";
-import { AuditFormData } from '@/types/audit-request.types';
+import { AuditFormData, AuditFormErrors } from '@/types/audit-request.types';
+import { FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
 
 interface ProjectDetailsStepProps {
   formData: AuditFormData;
+  formErrors?: AuditFormErrors;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   projectType: string;
-  setProjectType: (value: string) => void;
+  setProjectType: React.Dispatch<React.SetStateAction<string>>;
   handleEcosystemClick: (ecosystem: string) => void;
   nextStep: () => void;
 }
 
 const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
   formData,
+  formErrors = {},
   handleChange,
   projectType,
   setProjectType,
   handleEcosystemClick,
   nextStep
 }) => {
-  const [showCustomBlockchain, setShowCustomBlockchain] = useState(formData.blockchain === "Other");
-  
-  const handleBlockchainSelection = (blockchain: string) => {
-    if (blockchain === "Other") {
-      setShowCustomBlockchain(true);
-      handleEcosystemClick("Other");
-    } else {
-      setShowCustomBlockchain(false);
-      handleEcosystemClick(blockchain);
-    }
-  };
-
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold mb-4 flex items-center">
@@ -45,139 +33,120 @@ const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
       </h2>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <div className="space-y-2">
-          <label htmlFor="projectName" className="text-sm font-medium">Project Name *</label>
-          <Input 
-            id="projectName" 
-            name="projectName" 
-            placeholder="e.g., DeFi Protocol X" 
-            value={formData.projectName}
-            onChange={handleChange}
-            required 
-          />
-        </div>
+        <FormItem className={formErrors.projectName ? "error" : ""}>
+          <FormLabel htmlFor="projectName" className="text-sm font-medium">Project Name *</FormLabel>
+          <FormControl>
+            <Input 
+              id="projectName" 
+              name="projectName" 
+              placeholder="Enter your project name" 
+              value={formData.projectName}
+              onChange={handleChange}
+              className={formErrors.projectName ? "border-destructive" : ""}
+            />
+          </FormControl>
+          {formErrors.projectName && (
+            <FormMessage>{formErrors.projectName}</FormMessage>
+          )}
+        </FormItem>
         
-        <div className="space-y-2">
-          <label htmlFor="contactName" className="text-sm font-medium">Contact Name *</label>
-          <Input 
-            id="contactName" 
-            name="contactName" 
-            placeholder="Your full name" 
-            value={formData.contactName}
-            onChange={handleChange}
-            required 
-          />
-        </div>
+        <FormItem className={formErrors.contactName ? "error" : ""}>
+          <FormLabel htmlFor="contactName" className="text-sm font-medium">Contact Name *</FormLabel>
+          <FormControl>
+            <Input 
+              id="contactName" 
+              name="contactName" 
+              placeholder="Enter your name" 
+              value={formData.contactName}
+              onChange={handleChange}
+              className={formErrors.contactName ? "border-destructive" : ""}
+            />
+          </FormControl>
+          {formErrors.contactName && (
+            <FormMessage>{formErrors.contactName}</FormMessage>
+          )}
+        </FormItem>
       </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <div className="space-y-2">
-          <label htmlFor="contactEmail" className="text-sm font-medium">Contact Email *</label>
+      
+      <FormItem className={formErrors.contactEmail ? "error" : ""}>
+        <FormLabel htmlFor="contactEmail" className="text-sm font-medium">Contact Email *</FormLabel>
+        <FormControl>
           <Input 
             id="contactEmail" 
             name="contactEmail" 
             type="email" 
-            placeholder="your-email@example.com" 
+            placeholder="Enter your email address" 
             value={formData.contactEmail}
             onChange={handleChange}
-            required 
+            className={formErrors.contactEmail ? "border-destructive" : ""}
           />
-        </div>
+        </FormControl>
+        {formErrors.contactEmail && (
+          <FormMessage>{formErrors.contactEmail}</FormMessage>
+        )}
+      </FormItem>
+      
+      <div className="space-y-3">
+        <FormLabel className="text-sm font-medium block">Blockchain Ecosystem *</FormLabel>
+        <FormControl>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {["Ethereum", "Solana", "Binance Smart Chain", "Polygon", "Avalanche", "Other"].map((ecosystem) => (
+              <div
+                key={ecosystem}
+                className={`
+                  cursor-pointer rounded-lg border p-3 text-center transition-all
+                  ${formData.blockchain === ecosystem 
+                    ? 'border-primary bg-primary/10 text-primary' 
+                    : 'border-border/40 hover:border-primary/60 hover:bg-muted'}
+                `}
+                onClick={() => handleEcosystemClick(ecosystem)}
+              >
+                <div className="font-medium">{ecosystem}</div>
+              </div>
+            ))}
+          </div>
+        </FormControl>
         
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Project Type *</label>
-          <Select 
-            value={projectType} 
-            onValueChange={(value) => setProjectType(value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select project type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="defi">DeFi Protocol</SelectItem>
-              <SelectItem value="nft">NFT Project</SelectItem>
-              <SelectItem value="dao">DAO</SelectItem>
-              <SelectItem value="wallet">Wallet/Custody Solution</SelectItem>
-              <SelectItem value="bridge">Cross-Chain Bridge</SelectItem>
-              <SelectItem value="lending">Lending Protocol</SelectItem>
-              <SelectItem value="game">GameFi</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <label htmlFor="projectDescription" className="text-sm font-medium">Project Description *</label>
-        <Textarea 
-          id="projectDescription" 
-          name="projectDescription" 
-          placeholder="Please provide a brief description of your project, its purpose and functionality..." 
-          className="min-h-[120px]"
-          value={formData.projectDescription}
-          onChange={handleChange}
-          required
-        />
-        <p className="text-xs text-muted-foreground">
-          A detailed description helps auditors understand your project's context and security requirements.
-        </p>
-      </div>
-
-      <div className="space-y-4">
-        <div>
-          <label className="text-sm font-medium block mb-2">Blockchain Ecosystem *</label>
-          <p className="text-xs text-muted-foreground mb-3">
-            Select the primary blockchain your project is built on. Click on the relevant ecosystem or select "Other" below.
-          </p>
-          
-          {/* Use the BlockchainEcosystems component with custom onClick handler */}
-          <div className="mt-2 mb-6">
-            <BlockchainEcosystems
-              ecosystems={[
-                { name: "Ethereum", logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png", color: "#627EEA" },
-                { name: "Solana", logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png", color: "#9945FF" },
-                { name: "Polygon", logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png", color: "#8247E5" },
-                { name: "Avalanche", logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png", color: "#E84142" },
-                { name: "BNB Chain", logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png", color: "#F3BA2F" },
-                { name: "Arbitrum", logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png", color: "#28A0F0" },
-                { name: "Optimism", logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png", color: "#FF0420" },
-                { name: "Aptos", logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png", color: "#277DA1" },
-                { name: "Sui", logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png", color: "#6FBCF0" }
-              ]}
-              onEcosystemClick={handleBlockchainSelection}
-            />
-          </div>
-          
-          <div className="flex items-center gap-3 mb-4">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => handleBlockchainSelection("Other")}
-              className={`${formData.blockchain === "Other" ? "bg-primary/10 border-primary" : ""}`}
-            >
-              Other Blockchain
-            </Button>
-            
-            <Badge variant="outline" className="bg-primary/5 border-primary/30 text-primary px-3 py-1.5">
-              Selected: <span className="font-semibold ml-1">{formData.blockchain}</span>
-            </Badge>
-          </div>
-          
-          {showCustomBlockchain && (
-            <div className="mt-2">
-              <Input
-                id="customBlockchain"
-                name="customBlockchain"
-                placeholder="Enter blockchain name"
-                value={formData.customBlockchain || ""}
+        {formData.blockchain === "Other" && (
+          <FormItem className={formErrors.customBlockchain ? "error mt-3" : "mt-3"}>
+            <FormLabel htmlFor="customBlockchain" className="text-sm font-medium">Blockchain Name *</FormLabel>
+            <FormControl>
+              <Input 
+                id="customBlockchain" 
+                name="customBlockchain" 
+                placeholder="Specify blockchain name" 
+                value={formData.customBlockchain}
                 onChange={handleChange}
-                className="max-w-xs"
+                className={formErrors.customBlockchain ? "border-destructive" : ""}
               />
-            </div>
-          )}
-        </div>
+            </FormControl>
+            {formErrors.customBlockchain && (
+              <FormMessage>{formErrors.customBlockchain}</FormMessage>
+            )}
+          </FormItem>
+        )}
       </div>
+      
+      <FormItem className={formErrors.projectDescription ? "error" : ""}>
+        <FormLabel htmlFor="projectDescription" className="text-sm font-medium">Project Description *</FormLabel>
+        <FormControl>
+          <Textarea 
+            id="projectDescription" 
+            name="projectDescription" 
+            placeholder="Describe your project, its purpose, and what you're trying to achieve..." 
+            className={`min-h-[120px] ${formErrors.projectDescription ? "border-destructive" : ""}`}
+            value={formData.projectDescription}
+            onChange={handleChange}
+            required
+          />
+        </FormControl>
+        {formErrors.projectDescription && (
+          <FormMessage>{formErrors.projectDescription}</FormMessage>
+        )}
+        <FormDescription>
+          A detailed description helps auditors understand your project better.
+        </FormDescription>
+      </FormItem>
       
       <div className="flex justify-end mt-8">
         <Button 

@@ -3,12 +3,13 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowRight, Briefcase, Brain, Sparkles } from "lucide-react";
-import { AuditFormData } from '@/types/audit-request.types';
+import { ArrowRight, ListChecks } from "lucide-react";
+import { AuditFormData, AuditFormErrors } from '@/types/audit-request.types';
+import { FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
 
 interface RequirementsStepProps {
   formData: AuditFormData;
+  formErrors?: AuditFormErrors;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleSelectChange: (name: string, value: string) => void;
   prevStep: () => void;
@@ -17,6 +18,7 @@ interface RequirementsStepProps {
 
 const RequirementsStep: React.FC<RequirementsStepProps> = ({
   formData,
+  formErrors = {},
   handleChange,
   handleSelectChange,
   prevStep,
@@ -25,97 +27,80 @@ const RequirementsStep: React.FC<RequirementsStepProps> = ({
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold mb-4 flex items-center">
-        <Briefcase className="mr-2 h-5 w-5 text-primary" /> Requirements & Preferences
+        <ListChecks className="mr-2 h-5 w-5 text-primary" /> Requirements & Preferences
       </h2>
-
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <div className="space-y-2">
-          <label htmlFor="budget" className="text-sm font-medium">Estimated Budget Range *</label>
-          <Select 
-            value={formData.budget} 
-            onValueChange={(value) => handleSelectChange("budget", value)}
-            required
-          >
-            <SelectTrigger className="bg-background">
-              <SelectValue placeholder="Select budget range" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="<5k">Less than $5,000</SelectItem>
-              <SelectItem value="5k-15k">$5,000 - $15,000</SelectItem>
-              <SelectItem value="15k-50k">$15,000 - $50,000</SelectItem>
-              <SelectItem value="50k-100k">$50,000 - $100,000</SelectItem>
-              <SelectItem value="100k+">More than $100,000</SelectItem>
-              <SelectItem value="flexible">Flexible / Not sure</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <FormItem className={formErrors.deadline ? "error" : ""}>
+          <FormLabel htmlFor="deadline" className="text-sm font-medium">Expected Timeline *</FormLabel>
+          <FormControl>
+            <Select 
+              value={formData.deadline} 
+              onValueChange={(value) => handleSelectChange("deadline", value)}
+            >
+              <SelectTrigger className={formErrors.deadline ? "border-destructive" : ""}>
+                <SelectValue placeholder="Select your deadline" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="urgent">Urgent (within 1 week)</SelectItem>
+                <SelectItem value="standard">Standard (2-3 weeks)</SelectItem>
+                <SelectItem value="flexible">Flexible (1 month or more)</SelectItem>
+              </SelectContent>
+            </Select>
+          </FormControl>
+          {formErrors.deadline && (
+            <FormMessage>{formErrors.deadline}</FormMessage>
+          )}
+          <FormDescription>
+            Faster turnaround times may affect auditor availability and pricing.
+          </FormDescription>
+        </FormItem>
         
-        <div className="space-y-2">
-          <label htmlFor="deadline" className="text-sm font-medium">Expected Timeline/Deadline *</label>
-          <Select 
-            value={formData.deadline} 
-            onValueChange={(value) => handleSelectChange("deadline", value)}
-            required
-          >
-            <SelectTrigger className="bg-background">
-              <SelectValue placeholder="Select timeline" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="urgent">Urgent (less than 1 week)</SelectItem>
-              <SelectItem value="1-2weeks">1-2 weeks</SelectItem>
-              <SelectItem value="2-4weeks">2-4 weeks</SelectItem>
-              <SelectItem value="1-2months">1-2 months</SelectItem>
-              <SelectItem value="flexible">Flexible</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <FormItem className={formErrors.budget ? "error" : ""}>
+          <FormLabel htmlFor="budget" className="text-sm font-medium">Budget Range *</FormLabel>
+          <FormControl>
+            <Select 
+              value={formData.budget} 
+              onValueChange={(value) => handleSelectChange("budget", value)}
+            >
+              <SelectTrigger className={formErrors.budget ? "border-destructive" : ""}>
+                <SelectValue placeholder="Select your budget range" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="under5k">Under $5,000</SelectItem>
+                <SelectItem value="5k-15k">$5,000 - $15,000</SelectItem>
+                <SelectItem value="15k-30k">$15,000 - $30,000</SelectItem>
+                <SelectItem value="30k-50k">$30,000 - $50,000</SelectItem>
+                <SelectItem value="above50k">Above $50,000</SelectItem>
+                <SelectItem value="flexible">Flexible / To be discussed</SelectItem>
+              </SelectContent>
+            </Select>
+          </FormControl>
+          {formErrors.budget && (
+            <FormMessage>{formErrors.budget}</FormMessage>
+          )}
+          <FormDescription>
+            Budget range helps match you with appropriate auditors.
+          </FormDescription>
+        </FormItem>
       </div>
-
-      <div className="space-y-2">
-        <label htmlFor="specificConcerns" className="text-sm font-medium">Specific Security Concerns</label>
-        <Textarea 
-          id="specificConcerns" 
-          name="specificConcerns" 
-          placeholder="Are there any specific security concerns or areas you want the auditors to focus on?" 
-          className="min-h-[100px] bg-background"
-          value={formData.specificConcerns}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/10 rounded-lg p-5 mt-6">
-        <div className="flex items-start space-x-4">
-          <div className="bg-primary/10 rounded-full p-3">
-            <Brain className="h-6 w-6 text-primary" />
-          </div>
-          <div>
-            <h3 className="text-base font-medium flex items-center">
-              AI Auditor Matching
-              <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary/10 text-secondary">
-                Coming Next
-              </span>
-            </h3>
-            <p className="text-sm text-muted-foreground mt-1">
-              Our advanced AI system analyzes your project details and matches you with the most suitable security experts based on their expertise, reputation, and past performance with similar projects.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex items-start space-x-2 mt-6">
-        <Checkbox id="terms" required />
-        <div className="grid gap-1.5 leading-none">
-          <label
-            htmlFor="terms"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            I agree to the terms and conditions *
-          </label>
-          <p className="text-sm text-muted-foreground">
-            By submitting this form, you agree to our <a href="/terms" className="text-primary hover:underline">Terms of Service</a> and <a href="/privacy" className="text-primary hover:underline">Privacy Policy</a>.
-          </p>
-        </div>
-      </div>
+      
+      <FormItem>
+        <FormLabel htmlFor="specificConcerns" className="text-sm font-medium">Specific Security Concerns</FormLabel>
+        <FormControl>
+          <Textarea 
+            id="specificConcerns" 
+            name="specificConcerns" 
+            placeholder="Describe any specific security concerns or areas you'd like the auditors to focus on..." 
+            className="min-h-[120px]"
+            value={formData.specificConcerns}
+            onChange={handleChange}
+          />
+        </FormControl>
+        <FormDescription>
+          Optional: Let auditors know if you have specific security concerns.
+        </FormDescription>
+      </FormItem>
       
       <div className="flex justify-between mt-8">
         <Button 
@@ -126,12 +111,12 @@ const RequirementsStep: React.FC<RequirementsStepProps> = ({
           Back
         </Button>
         <Button 
-          type="button"
+          type="button" 
           onClick={nextStep}
           className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
         >
-          Find Your Perfect Match
-          <Sparkles className="ml-2 h-4 w-4" />
+          Next Step: AI Matching
+          <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
     </div>

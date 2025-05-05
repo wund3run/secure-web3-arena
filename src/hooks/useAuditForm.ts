@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { AuditFormData } from "@/types/audit-request.types";
+import { AuditFormData, AuditFormErrors } from "@/types/audit-request.types";
 import { validateFormStep } from "@/services/audit-form-validation";
 import { handleApiError } from "@/utils/apiErrorHandler";
+import { showFeedback } from "@/components/ui/interactive-feedback";
 
 export const useAuditForm = (onSubmitSuccess: () => void) => {
   const { user } = useAuth();
@@ -15,7 +16,9 @@ export const useAuditForm = (onSubmitSuccess: () => void) => {
   const [projectType, setProjectType] = useState("");
   const [showAIMatching, setShowAIMatching] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formErrors, setFormErrors] = useState<{[key: string]: string}>({});
+  const [formErrors, setFormErrors] = useState<AuditFormErrors>({});
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [submissionAttempted, setSubmissionAttempted] = useState(false);
   
   const [formData, setFormData] = useState<AuditFormData>({
     projectName: "",
@@ -91,28 +94,40 @@ export const useAuditForm = (onSubmitSuccess: () => void) => {
   };
 
   const validateStep = (step: number): boolean => {
+    setValidationError(null);
     const validation = validateFormStep(step, formData);
     
     if (!validation.isValid) {
       setFormErrors(validation.errors);
       
-      // Show first error as a toast
+      // Show first error as a toast and set validation error
       const firstError = Object.values(validation.errors)[0];
       if (firstError) {
-        toast.error("Validation error", {
-          description: firstError
+        setValidationError("Please correct the highlighted fields");
+        
+        // Visual feedback for validation error
+        showFeedback('error', { 
+          message: "Form validation failed", 
+          description: firstError,
+          duration: 5000
         });
       }
       
       return false;
     }
     
+    setFormErrors({});
     return true;
   };
 
   const nextStep = () => {
     if (validateStep(formStep)) {
       window.scrollTo(0, 0);
+      
+      showFeedback('success', {
+        message: "Step completed successfully",
+        duration: 2000
+      });
       
       // After requirements step, show AI matching
       if (formStep === 3) {
@@ -125,6 +140,7 @@ export const useAuditForm = (onSubmitSuccess: () => void) => {
 
   const prevStep = () => {
     window.scrollTo(0, 0);
+    setValidationError(null);
     
     // If coming back from AI matching, return to step 3
     if (showAIMatching) {
@@ -138,10 +154,22 @@ export const useAuditForm = (onSubmitSuccess: () => void) => {
     setShowAIMatching(false);
     setFormStep(4); // Go to review step after AI matching
     window.scrollTo(0, 0);
+    
+    showFeedback('success', {
+      message: "AI matching complete",
+      description: "Review your information before submitting",
+      duration: 3000
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmissionAttempted(true);
+    
+    // Validate the form one last time
+    if (!validateStep(formStep)) {
+      return;
+    }
     
     if (!user) {
       toast.error("Authentication required", {
@@ -150,6 +178,13 @@ export const useAuditForm = (onSubmitSuccess: () => void) => {
       navigate('/auth');
       return;
     }
+    
+    // Visual feedback for submission started
+    const dismissLoading = showFeedback('loading', {
+      message: "Submitting your audit request...",
+      description: "This might take a few moments",
+      duration: 0 // No auto-dismiss
+    });
     
     try {
       setIsSubmitting(true);
@@ -191,7 +226,8 @@ export const useAuditForm = (onSubmitSuccess: () => void) => {
         audit_scope: formData.auditScope,
         previous_audits: formData.previousAudits,
         specific_concerns: formData.specificConcerns,
-        status: 'pending'
+        status: 'pending',
+        created_at: new Date().toISOString()
       };
       
       console.log("Submitting data:", auditRequestData);
@@ -204,13 +240,29 @@ export const useAuditForm = (onSubmitSuccess: () => void) => {
         throw error;
       }
       
-      toast.success("Audit request submitted successfully!", {
+      // Clear loading feedback and show success
+      dismissLoading();
+      showFeedback('success', {
+        message: "Audit request submitted successfully!",
         description: "Our AI will match you with the perfect auditors for your project.",
+        duration: 5000
       });
       
-      onSubmitSuccess();
+      // Give the user time to see the success message before redirecting
+      setTimeout(() => {
+        onSubmitSuccess();
+      }, 1000);
+      
     } catch (error) {
+      // Clear loading feedback and show error
+      dismissLoading();
       handleApiError(error, "Error submitting audit request");
+      
+      showFeedback('error', {
+        message: "Submission failed",
+        description: "Please try again or contact support if the issue persists.",
+        duration: 5000
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -223,6 +275,8 @@ export const useAuditForm = (onSubmitSuccess: () => void) => {
     showAIMatching,
     isSubmitting,
     formErrors,
+    validationError,
+    submissionAttempted,
     setProjectType,
     handleChange,
     handleSelectChange,

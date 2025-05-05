@@ -9,6 +9,9 @@ import FormProgress from './FormProgress';
 import AIMatchingJourney from './AIMatchingJourney';
 import ErrorBoundary from "@/components/ui/error-boundary";
 import LoadingState from "@/components/ui/loading-state";
+import { showFeedback } from "@/components/ui/interactive-feedback";
+import { AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface AuditRequestFormProps {
   onSubmitSuccess: () => void;
@@ -21,6 +24,8 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
     projectType,
     showAIMatching,
     isSubmitting,
+    formErrors,
+    validationError,
     setProjectType,
     handleChange,
     handleSelectChange,
@@ -40,10 +45,23 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
 
         {/* Form */}
         <div className="bg-card border border-border/40 rounded-xl p-6 md:p-8 shadow-sm">
+          {validationError && (
+            <Alert variant="destructive" className="mb-6 animate-fade-in">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                {validationError}
+              </AlertDescription>
+            </Alert>
+          )}
+          
           <form onSubmit={handleSubmit}>
-            {isSubmitting && <LoadingState message="Processing your request..." fullPage={false} />}
-            
-            {!isSubmitting && (
+            {isSubmitting ? (
+              <LoadingState 
+                message="Processing your audit request..." 
+                fullPage={false} 
+                size="lg"
+              />
+            ) : (
               <>
                 {/* AI Matching Journey */}
                 {showAIMatching ? (
@@ -62,6 +80,7 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
                         setProjectType={setProjectType}
                         handleEcosystemClick={handleEcosystemClick}
                         nextStep={nextStep}
+                        formErrors={formErrors}
                       />
                     )}
 
@@ -74,6 +93,7 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
                         handleCheckboxChange={handleCheckboxChange}
                         prevStep={prevStep}
                         nextStep={nextStep}
+                        formErrors={formErrors}
                       />
                     )}
 
@@ -85,6 +105,7 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
                         handleSelectChange={handleSelectChange}
                         prevStep={prevStep}
                         nextStep={nextStep}
+                        formErrors={formErrors}
                       />
                     )}
 
