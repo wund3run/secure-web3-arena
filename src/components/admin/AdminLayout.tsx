@@ -17,8 +17,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { BetaWarning } from "@/components/ui/beta-warning";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
-import { useTheme } from "@/contexts/ThemeContext";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -30,7 +28,6 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
   const [showBetaNotice, setShowBetaNotice] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
-  const { theme } = useTheme();
   const currentPath = location.pathname;
 
   const handleLogout = () => {
@@ -86,7 +83,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
             <Link to="/admin/dashboard" className="flex items-center">
               <span className="font-semibold text-lg flex items-center">
                 <Shield className="h-5 w-5 text-primary mr-2" />
-                ICOinc Admin
+                Hawkly Admin
               </span>
             </Link>
           )}
@@ -125,22 +122,9 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
               </div>
             </Link>
             
-            {!collapsed && (
-              <div className="flex items-center px-2 py-2 text-sm">
-                <span className="mr-3"><ThemeToggle /></span>
-                <span>Theme</span>
-              </div>
-            )}
-            
-            {collapsed && (
-              <div className="flex justify-center mt-2">
-                <ThemeToggle />
-              </div>
-            )}
-            
             <Button
               variant="ghost"
-              className="w-full justify-start px-2 py-2 text-sm mt-2"
+              className="w-full justify-start px-2 py-2 text-sm"
               onClick={handleLogout}
             >
               <LogOut className="h-4 w-4 mr-3" />
