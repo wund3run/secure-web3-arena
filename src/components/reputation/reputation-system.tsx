@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Star, Shield, Award } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface ReputationLevelProps {
   level: string;
@@ -213,8 +214,10 @@ export function ReputationSystem() {
                 </div>
                 
                 <div className="text-center mt-4">
-                  <Button variant="outline" size="sm">
-                    View All Achievements ({userReputation.achievements}/{userReputation.totalAchievements})
+                  <Button asChild variant="outline" size="sm">
+                    <Link to="/achievements">
+                      View All Achievements ({userReputation.achievements}/{userReputation.totalAchievements})
+                    </Link>
                   </Button>
                 </div>
               </div>

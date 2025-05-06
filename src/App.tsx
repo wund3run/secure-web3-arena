@@ -26,6 +26,7 @@ import ServiceProviderOnboarding from "@/pages/ServiceProviderOnboarding";
 import ApplicationSubmitted from "@/pages/ApplicationSubmitted";
 import Auth from "@/pages/Auth";
 import SecurityInsights from "@/pages/SecurityInsights";
+import Achievements from "@/pages/Achievements";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -63,6 +64,9 @@ const App = () => (
                   {/* Security Insights route */}
                   <Route path="/security-insights" element={<SecurityInsights />} />
                   
+                  {/* Achievements route */}
+                  <Route path="/achievements" element={<Achievements />} />
+                  
                   <Route 
                     path="/escrow" 
                     element={
@@ -90,7 +94,7 @@ const App = () => (
                   {/* Community routes */}
                   <Route path="/leaderboard" element={<Leaderboard />} />
                   <Route path="/community" element={<Community />} />
-                  <Route path="/achievements" element={<NotFound />} />
+                  <Route path="/achievements" element={<Achievements />} />
                   <Route path="/events" element={<NotFound />} />
                   <Route path="/forum" element={<NotFound />} />
                   

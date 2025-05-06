@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { BadgeAward } from "@/components/ui/badge-award";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 // Sample leaderboard data
 const TOP_AUDITORS = [
@@ -180,8 +181,10 @@ export function GamificationSection() {
                 </div>
                 
                 <div className="mt-6 text-center">
-                  <Button variant="outline" className="text-sm">
-                    View All Achievements
+                  <Button asChild variant="outline" className="text-sm">
+                    <Link to="/achievements">
+                      View All Achievements
+                    </Link>
                   </Button>
                 </div>
               </CardContent>
