@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -33,6 +32,7 @@ const securityFormSchema = z.object({
   passwordExpiry: z.string().min(1, { message: "Password expiry is required" }),
   ipRestriction: z.boolean().default(false),
   loginAttempts: z.string().min(1, { message: "Max login attempts is required" }),
+  otpExpiryTime: z.string().min(1, { message: "OTP expiry time is required" }),
 });
 
 const auditFormSchema = z.object({
@@ -63,6 +63,7 @@ const SettingsManagement = () => {
       passwordExpiry: "90",
       ipRestriction: false,
       loginAttempts: "5",
+      otpExpiryTime: "5", // 5 minutes default
     },
   });
 
@@ -185,6 +186,22 @@ const SettingsManagement = () => {
                         </FormControl>
                         <FormDescription>
                           How often users must change their passwords
+                        </FormDescription>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={securityForm.control}
+                    name="otpExpiryTime"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>OTP Expiry Time (minutes)</FormLabel>
+                        <FormControl>
+                          <Input {...field} type="number" min="1" max="15" />
+                        </FormControl>
+                        <FormDescription>
+                          How long before OTP codes expire (recommended: 5-15 minutes)
                         </FormDescription>
                       </FormItem>
                     )}

@@ -27,6 +27,7 @@ import ApplicationSubmitted from "@/pages/ApplicationSubmitted";
 import Auth from "@/pages/Auth";
 import SecurityInsights from "@/pages/SecurityInsights";
 import Achievements from "@/pages/Achievements";
+import TwoFactorAuth from "@/pages/TwoFactorAuth";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -44,16 +45,17 @@ const App = () => (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <ErrorBoundary>
-          <AuthProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
+          <BrowserRouter>
+            <AuthProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
                 <Routes>
                   <Route path="/" element={<Index />} />
                   
                   {/* Auth routes */}
                   <Route path="/auth" element={<Auth />} />
+                  <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
                   
                   {/* Protected routes */}
                   <Route 
@@ -181,9 +183,9 @@ const App = () => (
                   {/* Catch-all route */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
-              </BrowserRouter>
-            </TooltipProvider>
-          </AuthProvider>
+              </TooltipProvider>
+            </AuthProvider>
+          </BrowserRouter>
         </ErrorBoundary>
       </QueryClientProvider>
     </HelmetProvider>
