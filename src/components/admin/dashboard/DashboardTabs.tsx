@@ -5,7 +5,7 @@ import { DashboardOverview } from "./DashboardOverview";
 import { ServiceManagement } from "@/components/admin/ServiceManagement";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { AuditManagement } from "@/components/admin/AuditManagement";
-import { SettingsManagement } from "@/components/admin/SettingsManagement";
+import SettingsManagement from "@/components/admin/SettingsManagement";
 import { ProviderApplications } from "@/components/admin/ProviderApplications";
 import { AdminServiceApproval } from "@/components/admin/AdminServiceApproval";
 import { ReportManagement } from "@/components/admin/ReportManagement";

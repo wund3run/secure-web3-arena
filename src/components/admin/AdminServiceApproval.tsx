@@ -1,315 +1,349 @@
 
 import { useState, useEffect } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Check, X, Eye, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
-import { CheckCircle, XCircle, AlertTriangle, Eye } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { ServiceCardProps } from "@/data/marketplace-data";
+import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Define the service type
+interface ServiceSubmission {
+  id: string;
+  title: string;
+  category: string;
+  provider_name: string;
+  provider_id: string;
+  submission_date: string;
+  status: "pending" | "approved" | "rejected";
+  blockchain_ecosystems: string[];
+  description: string;
+  delivery_time: number;
+  price_range: {
+    min: number;
+    max: number;
+  };
+  portfolio_link?: string;
+}
+
+// Mock data for pending services
+const MOCK_PENDING_SERVICES: ServiceSubmission[] = [
+  {
+    id: "serv-1",
+    title: "Smart Contract Security Audit",
+    category: "smart-contract-audit",
+    provider_name: "SecureChain Audits",
+    provider_id: "prov-123",
+    submission_date: "2025-04-01T10:30:00Z",
+    status: "pending",
+    blockchain_ecosystems: ["ethereum", "polygon"],
+    description: "Comprehensive audit of smart contracts to identify vulnerabilities and ensure security best practices.",
+    delivery_time: 7,
+    price_range: {
+      min: 3000,
+      max: 8000
+    },
+    portfolio_link: "https://securechain.example.com/portfolio"
+  },
+  {
+    id: "serv-2",
+    title: "Protocol Security Assessment",
+    category: "protocol-audit",
+    provider_name: "BlockSafe Security",
+    provider_id: "prov-456",
+    submission_date: "2025-04-02T14:15:00Z",
+    status: "pending",
+    blockchain_ecosystems: ["ethereum", "arbitrum", "optimism"],
+    description: "In-depth assessment of protocol security including architecture review, code audit, and threat modeling.",
+    delivery_time: 14,
+    price_range: {
+      min: 8000,
+      max: 25000
+    }
+  },
+  {
+    id: "serv-3",
+    title: "DApp Penetration Testing",
+    category: "penetration-testing",
+    provider_name: "CryptoDefense",
+    provider_id: "prov-789",
+    submission_date: "2025-04-03T09:45:00Z",
+    status: "pending",
+    blockchain_ecosystems: ["solana", "near"],
+    description: "Comprehensive penetration testing for decentralized applications to identify and exploit security weaknesses.",
+    delivery_time: 10,
+    price_range: {
+      min: 5000,
+      max: 12000
+    },
+    portfolio_link: "https://cryptodefense.example.com/projects"
+  }
+];
 
 export function AdminServiceApproval() {
-  const [pendingServices, setPendingServices] = useState<ServiceCardProps[]>([]);
-  const [selectedService, setSelectedService] = useState<ServiceCardProps | null>(null);
-  const [viewDialogOpen, setViewDialogOpen] = useState(false);
-  const [approveDialogOpen, setApproveDialogOpen] = useState(false);
-  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Fetch pending services
-  const fetchPendingServices = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .eq('status', 'pending');
-        
-      if (error) throw error;
-      
-      setPendingServices(data || []);
-    } catch (error) {
-      console.error('Error fetching pending services:', error);
-      toast.error('Failed to load pending services');
-    }
-  };
-
+  const [pendingServices, setPendingServices] = useState<ServiceSubmission[]>([]);
+  const [approvedServices, setApprovedServices] = useState<ServiceSubmission[]>([]);
+  const [rejectedServices, setRejectedServices] = useState<ServiceSubmission[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [activeTab, setActiveTab] = useState<string>("pending");
+  
   useEffect(() => {
-    fetchPendingServices();
+    // Simulate API fetch
+    setTimeout(() => {
+      setPendingServices(MOCK_PENDING_SERVICES);
+      setApprovedServices([]);
+      setRejectedServices([]);
+      setIsLoading(false);
+    }, 1000);
   }, []);
-
-  const handleApproveService = async () => {
-    if (!selectedService) return;
+  
+  const handleApprove = (serviceId: string) => {
+    const service = pendingServices.find(s => s.id === serviceId);
+    if (!service) return;
     
-    setIsLoading(true);
-    try {
-      const { error } = await supabase
-        .from('services')
-        .update({ status: 'approved' })
-        .eq('id', selectedService.id);
-        
-      if (error) throw error;
-      
-      toast.success('Service approved successfully', {
-        description: `"${selectedService.title}" is now live on the platform`
-      });
-      
-      // Update local state
-      setPendingServices(pendingServices.filter(service => service.id !== selectedService.id));
-      setApproveDialogOpen(false);
-    } catch (error) {
-      console.error('Error approving service:', error);
-      toast.error('Failed to approve service');
-    } finally {
-      setIsLoading(false);
-    }
+    // Update service status
+    const updatedService = { ...service, status: "approved" as const };
+    
+    // Update lists
+    setPendingServices(pendingServices.filter(s => s.id !== serviceId));
+    setApprovedServices([updatedService, ...approvedServices]);
+    
+    toast.success(`Service "${service.title}" approved`, {
+      description: "The service is now live on the marketplace."
+    });
   };
-
-  const handleRejectService = async () => {
-    if (!selectedService) return;
+  
+  const handleReject = (serviceId: string) => {
+    const service = pendingServices.find(s => s.id === serviceId);
+    if (!service) return;
     
-    setIsLoading(true);
-    try {
-      const { error } = await supabase
-        .from('services')
-        .update({ status: 'rejected' })
-        .eq('id', selectedService.id);
-        
-      if (error) throw error;
-      
-      toast.success('Service rejected', {
-        description: `"${selectedService.title}" has been rejected`
-      });
-      
-      // Update local state
-      setPendingServices(pendingServices.filter(service => service.id !== selectedService.id));
-      setRejectDialogOpen(false);
-    } catch (error) {
-      console.error('Error rejecting service:', error);
-      toast.error('Failed to reject service');
-    } finally {
-      setIsLoading(false);
-    }
+    // Update service status
+    const updatedService = { ...service, status: "rejected" as const };
+    
+    // Update lists
+    setPendingServices(pendingServices.filter(s => s.id !== serviceId));
+    setRejectedServices([updatedService, ...rejectedServices]);
+    
+    toast.success(`Service "${service.title}" rejected`, {
+      description: "The provider has been notified."
+    });
+  };
+  
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Service Approval Queue</CardTitle>
-          <CardDescription>
-            Review and approve security services submitted by providers
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {pendingServices.length === 0 ? (
-            <div className="text-center py-8">
-              <div className="flex justify-center mb-2">
-                <CheckCircle className="h-12 w-12 text-green-500 opacity-80" />
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-2xl">Service Approval Queue</CardTitle>
+        <CardDescription>
+          Review and approve service submissions from security providers
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Tabs defaultValue={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="mb-6">
+            <TabsTrigger value="pending" className="relative">
+              Pending
+              {pendingServices.length > 0 && (
+                <Badge variant="destructive" className="ml-2">{pendingServices.length}</Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="approved">
+              Approved
+              {approvedServices.length > 0 && (
+                <Badge variant="outline" className="ml-2">{approvedServices.length}</Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="rejected">
+              Rejected
+              {rejectedServices.length > 0 && (
+                <Badge variant="outline" className="ml-2">{rejectedServices.length}</Badge>
+              )}
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="pending" className="m-0">
+            {isLoading ? (
+              <div className="space-y-4">
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
               </div>
-              <h3 className="text-lg font-medium mb-1">No pending services</h3>
-              <p className="text-muted-foreground">
-                All service submissions have been reviewed
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {pendingServices.map((service) => (
-                <div 
-                  key={service.id}
-                  className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/40 transition-colors"
-                >
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-medium">{service.title}</h3>
-                      <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
-                        Pending
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Provider: {service.provider.name} · Category: {service.category}
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setSelectedService(service);
-                        setViewDialogOpen(true);
-                      }}
-                    >
-                      <Eye className="h-4 w-4 mr-1" />
-                      View
-                    </Button>
-                    <Button
-                      variant="default"
-                      size="sm"
-                      className="bg-green-600 hover:bg-green-700"
-                      onClick={() => {
-                        setSelectedService(service);
-                        setApproveDialogOpen(true);
-                      }}
-                    >
-                      <CheckCircle className="h-4 w-4 mr-1" />
-                      Approve
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => {
-                        setSelectedService(service);
-                        setRejectDialogOpen(true);
-                      }}
-                    >
-                      <XCircle className="h-4 w-4 mr-1" />
-                      Reject
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* View Service Dialog */}
-      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Service Details</DialogTitle>
-          </DialogHeader>
-          {selectedService && (
-            <div className="space-y-4">
-              <div className="relative h-48 rounded-lg overflow-hidden">
-                <img 
-                  src={selectedService.imageUrl || `https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1600&auto=format&fit=crop`}
-                  alt={selectedService.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute bottom-4 left-4">
-                  <Badge className="bg-primary/90 text-white">{selectedService.category}</Badge>
-                </div>
+            ) : pendingServices.length === 0 ? (
+              <div className="text-center py-8">
+                <AlertTriangle className="mx-auto h-12 w-12 text-muted-foreground opacity-50" />
+                <p className="mt-2 text-lg font-medium">No pending services</p>
+                <p className="text-sm text-muted-foreground">
+                  All service submissions have been processed.
+                </p>
               </div>
-              
-              <h2 className="text-2xl font-bold">{selectedService.title}</h2>
-              <p className="text-muted-foreground">{selectedService.description}</p>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <h3 className="font-medium text-sm mb-1">Provider</h3>
-                  <p>{selectedService.provider.name}</p>
-                </div>
-                <div>
-                  <h3 className="font-medium text-sm mb-1">Price</h3>
-                  <p>{selectedService.pricing.amount} {selectedService.pricing.currency}</p>
-                </div>
-                <div>
-                  <h3 className="font-medium text-sm mb-1">Reputation</h3>
-                  <p>{selectedService.provider.reputation}%</p>
-                </div>
-                <div>
-                  <h3 className="font-medium text-sm mb-1">Completed Jobs</h3>
-                  <p>{selectedService.completedJobs}</p>
-                </div>
+            ) : (
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Service</TableHead>
+                      <TableHead>Provider</TableHead>
+                      <TableHead>Submission Date</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {pendingServices.map((service) => (
+                      <TableRow key={service.id}>
+                        <TableCell className="font-medium">{service.title}</TableCell>
+                        <TableCell>{service.provider_name}</TableCell>
+                        <TableCell>{formatDate(service.submission_date)}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">
+                            {service.category.replace(/-/g, ' ')}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-8 w-8 p-0"
+                              onClick={() => toast.info("Service details", {
+                                description: service.description
+                              })}
+                            >
+                              <Eye className="h-4 w-4" />
+                              <span className="sr-only">View</span>
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-8 w-8 p-0 text-destructive hover:bg-destructive/20"
+                              onClick={() => handleReject(service.id)}
+                            >
+                              <X className="h-4 w-4" />
+                              <span className="sr-only">Reject</span>
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-8 w-8 p-0 text-primary hover:bg-primary/20"
+                              onClick={() => handleApprove(service.id)}
+                            >
+                              <Check className="h-4 w-4" />
+                              <span className="sr-only">Approve</span>
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
-              
-              <div>
-                <h3 className="font-medium text-sm mb-1">Tags</h3>
-                <div className="flex flex-wrap gap-2">
-                  {selectedService.tags.map(tag => (
-                    <Badge key={tag} variant="outline">{tag}</Badge>
-                  ))}
-                </div>
+            )}
+          </TabsContent>
+          
+          <TabsContent value="approved" className="m-0">
+            {approvedServices.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">No approved services yet.</p>
               </div>
-            </div>
-          )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
-              Close
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Approve Service Dialog */}
-      <Dialog open={approveDialogOpen} onOpenChange={setApproveDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Approve Service</DialogTitle>
-            <DialogDescription>
-              This service will be published and visible to all users on the platform.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-2">
-            <div className="flex items-center p-3 border border-green-200 bg-green-50 rounded-md">
-              <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-              <p className="text-green-800 text-sm">
-                "{selectedService?.title}" will appear in the marketplace immediately after approval.
-              </p>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setApproveDialogOpen(false)} disabled={isLoading}>
-              Cancel
-            </Button>
-            <Button 
-              variant="default" 
-              className="bg-green-600 hover:bg-green-700" 
-              onClick={handleApproveService}
-              disabled={isLoading}
-            >
-              {isLoading ? "Processing..." : "Approve Service"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Reject Service Dialog */}
-      <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Reject Service</DialogTitle>
-            <DialogDescription>
-              This service will be rejected and not published on the platform.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-2">
-            <div className="flex items-center p-3 border border-red-200 bg-red-50 rounded-md">
-              <AlertTriangle className="h-5 w-5 text-red-600 mr-2" />
-              <p className="text-red-800 text-sm">
-                The provider will be notified that their service submission was rejected.
-              </p>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setRejectDialogOpen(false)} disabled={isLoading}>
-              Cancel
-            </Button>
-            <Button 
-              variant="destructive" 
-              onClick={handleRejectService}
-              disabled={isLoading}
-            >
-              {isLoading ? "Processing..." : "Reject Service"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+            ) : (
+              <div className="rounded-md border">
+                {/* Approved services table - similar structure to pending */}
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Service</TableHead>
+                      <TableHead>Provider</TableHead>
+                      <TableHead>Submission Date</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {approvedServices.map((service) => (
+                      <TableRow key={service.id}>
+                        <TableCell className="font-medium">{service.title}</TableCell>
+                        <TableCell>{service.provider_name}</TableCell>
+                        <TableCell>{formatDate(service.submission_date)}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">
+                            {service.category.replace(/-/g, ' ')}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 w-8 p-0"
+                          >
+                            <Eye className="h-4 w-4" />
+                            <span className="sr-only">View</span>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </TabsContent>
+          
+          <TabsContent value="rejected" className="m-0">
+            {rejectedServices.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">No rejected services.</p>
+              </div>
+            ) : (
+              <div className="rounded-md border">
+                {/* Rejected services table - similar structure to pending */}
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Service</TableHead>
+                      <TableHead>Provider</TableHead>
+                      <TableHead>Submission Date</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {rejectedServices.map((service) => (
+                      <TableRow key={service.id}>
+                        <TableCell className="font-medium">{service.title}</TableCell>
+                        <TableCell>{service.provider_name}</TableCell>
+                        <TableCell>{formatDate(service.submission_date)}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">
+                            {service.category.replace(/-/g, ' ')}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 w-8 p-0"
+                          >
+                            <Eye className="h-4 w-4" />
+                            <span className="sr-only">View</span>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
   );
 }

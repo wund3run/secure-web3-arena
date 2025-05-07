@@ -1,11 +1,11 @@
+
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Helmet } from 'react-helmet-async';
 import { Toaster } from "sonner";
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Import pages
-import Index from "./pages";
 import Auth from "./pages/Auth";
 import Marketplace from "./pages/Marketplace";
 import ServiceDetails from "./pages/ServiceDetails";
@@ -22,15 +22,13 @@ import Escrow from "./pages/Escrow";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import ServiceProviderOnboarding from "./pages/onboarding/ServiceProviderOnboarding";
-import AuditorOnboarding from "./pages/onboarding/AuditorOnboarding";
-import ApplicationSubmitted from "./pages/onboarding/ApplicationSubmitted";
 import AuditRequestForService from "./pages/AuditRequestForService";
 import ContactProvider from "./pages/ContactProvider";
 import SubmitService from "./pages/SubmitService";
+import Index from "./pages/Index";
 
 // Import components
-import PrivateRoute from "./components/PrivateRoute";
+import { PrivateRoute } from "./components/auth/PrivateRoute";
 
 // Import contexts
 import { AuthProvider } from "./contexts/AuthContext";
