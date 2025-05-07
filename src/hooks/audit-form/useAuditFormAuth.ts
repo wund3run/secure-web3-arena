@@ -1,5 +1,5 @@
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,6 +20,7 @@ export const useAuditFormAuth = (
 ) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [userProfile, setUserProfile] = useState<{fullName?: string, email?: string}>({});
 
   useEffect(() => {
     // Check if user is authenticated
@@ -29,7 +30,10 @@ export const useAuditFormAuth = (
       });
       navigate('/auth');
     } else {
-      // Pre-fill user information if available
+      // Store user email immediately
+      setUserProfile(prev => ({ ...prev, email: user.email || '' }));
+      
+      // Fetch additional profile data
       supabase
         .from('extended_profiles')
         .select('full_name')
@@ -37,23 +41,35 @@ export const useAuditFormAuth = (
         .single()
         .then(({ data, error }) => {
           if (!error && data && data.full_name) {
-            // Get the current form data first, then update it
-            // Instead of using a callback which creates TypeScript issues,
-            // we'll directly create and pass a new object
-            const fullName = data.full_name || '';
-            const userEmail = user.email || '';
-            
-            // Pre-fill only the contact fields while preserving all other fields
-            // and respecting any prefilled service data that may exist
-            setFormData(prevData => ({
-              ...prevData,
-              contactEmail: userEmail,
-              contactName: fullName
-            }));
+            setUserProfile(prev => ({ ...prev, fullName: data.full_name }));
           }
         });
     }
-  }, [user, navigate, setFormData]);
+  }, [user, navigate]);
+  
+  // Update form data when user profile changes
+  useEffect(() => {
+    if (userProfile.email || userProfile.fullName) {
+      // Update form with user contact info
+      setFormData({
+        projectName: "",
+        projectDescription: "",
+        contactEmail: userProfile.email || "",
+        contactName: userProfile.fullName || "",
+        blockchain: "Ethereum",
+        customBlockchain: "",
+        repositoryUrl: "",
+        contractCount: "",
+        linesOfCode: "",
+        deadline: "",
+        budget: "",
+        auditScope: "",
+        previousAudits: false,
+        specificConcerns: "",
+        previousAuditLinks: ""
+      });
+    }
+  }, [userProfile, setFormData]);
 
   return { user, navigate };
 };
