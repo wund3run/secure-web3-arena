@@ -27,6 +27,11 @@ import ContactProvider from "./pages/ContactProvider";
 import SubmitService from "./pages/SubmitService";
 import Index from "./pages/Index";
 
+// Import onboarding pages
+import ServiceProviderOnboarding from "./pages/onboarding/ServiceProviderOnboarding";
+import AuditorOnboarding from "./pages/onboarding/AuditorOnboarding";
+import ApplicationSubmitted from "./pages/onboarding/ApplicationSubmitted";
+
 // Import components
 import { PrivateRoute } from "./components/auth/PrivateRoute";
 
@@ -71,13 +76,31 @@ function App() {
             <Route path="/contact-provider/:providerId" element={<ContactProvider />} />
             
             {/* Protected Routes */}
-            <Route element={<PrivateRoute />}>
-              <Route path="/request-audit" element={<RequestAudit />} />
-              <Route path="/request-audit/:serviceId" element={<AuditRequestForService />} />
-              <Route path="/audits" element={<Audits />} />
-              <Route path="/achievements" element={<Achievements />} />
-              <Route path="/escrow" element={<Escrow />} />
-            </Route>
+            <Route path="/request-audit" element={
+              <PrivateRoute>
+                <RequestAudit />
+              </PrivateRoute>
+            } />
+            <Route path="/request-audit/:serviceId" element={
+              <PrivateRoute>
+                <AuditRequestForService />
+              </PrivateRoute>
+            } />
+            <Route path="/audits" element={
+              <PrivateRoute>
+                <Audits />
+              </PrivateRoute>
+            } />
+            <Route path="/achievements" element={
+              <PrivateRoute>
+                <Achievements />
+              </PrivateRoute>
+            } />
+            <Route path="/escrow" element={
+              <PrivateRoute>
+                <Escrow />
+              </PrivateRoute>
+            } />
             
             {/* Provider Onboarding */}
             <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
