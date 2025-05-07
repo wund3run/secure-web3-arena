@@ -13,11 +13,21 @@ import { showFeedback } from "@/components/ui/interactive-feedback";
 import { AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-interface AuditRequestFormProps {
-  onSubmitSuccess: () => void;
+// Define a type for the prefilledData prop
+interface PrefilledData {
+  serviceType?: string;
+  serviceName?: string;
+  providerId?: string;
+  providerName?: string;
 }
 
-const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
+// Update the props interface to include prefilledData
+interface AuditRequestFormProps {
+  onSubmitSuccess: () => void;
+  prefilledData?: PrefilledData;
+}
+
+const AuditRequestForm = ({ onSubmitSuccess, prefilledData }: AuditRequestFormProps) => {
   const {
     formData,
     formStep,
@@ -35,7 +45,7 @@ const AuditRequestForm = ({ onSubmitSuccess }: AuditRequestFormProps) => {
     nextStep,
     prevStep,
     completeAIMatching
-  } = useAuditForm(onSubmitSuccess);
+  } = useAuditForm(onSubmitSuccess, prefilledData);
 
   return (
     <ErrorBoundary>

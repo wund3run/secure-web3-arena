@@ -6,8 +6,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { AuditFormData } from "@/types/audit-request.types";
 
+// Define a type for the prefilledData parameter
+interface PrefilledData {
+  serviceType?: string;
+  serviceName?: string;
+  providerId?: string;
+  providerName?: string;
+}
+
 export const useAuditFormAuth = (
-  setFormData: (data: AuditFormData) => void
+  setFormData: (data: AuditFormData) => void,
+  prefilledData?: PrefilledData
 ) => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -35,29 +44,12 @@ export const useAuditFormAuth = (
             const userEmail = user.email || '';
             
             // Pre-fill only the contact fields while preserving all other fields
-            setFormData({
-              projectName: "",
-              projectDescription: "",
+            // and respecting any prefilled service data that may exist
+            setFormData(prevData => ({
+              ...prevData,
               contactEmail: userEmail,
-              contactName: fullName,
-              blockchain: "Ethereum",
-              customBlockchain: "",
-              repositoryUrl: "",
-              contractCount: "",
-              linesOfCode: "",
-              deadline: "",
-              budget: "",
-              auditScope: "",
-              previousAudits: false,
-              specificConcerns: "",
-              previousAuditLinks: "",
-              // Initialize new enhanced audit fields
-              collaborativeAudit: false,
-              continuousAuditing: false,
-              hybridModel: false,
-              specializedAuditType: "",
-              accountabilityPreference: "standard"
-            });
+              contactName: fullName
+            }));
           }
         });
     }

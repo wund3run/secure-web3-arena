@@ -1,8 +1,16 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AuditFormData, AuditFormErrors } from "@/types/audit-request.types";
 
-export const useAuditFormState = () => {
+// Define a type for the prefilledData parameter
+interface PrefilledData {
+  serviceType?: string;
+  serviceName?: string;
+  providerId?: string;
+  providerName?: string;
+}
+
+export const useAuditFormState = (prefilledData?: PrefilledData) => {
   const [formStep, setFormStep] = useState(1);
   const [projectType, setProjectType] = useState("");
   const [showAIMatching, setShowAIMatching] = useState(false);
@@ -11,6 +19,7 @@ export const useAuditFormState = () => {
   const [validationError, setValidationError] = useState<string | null>(null);
   const [submissionAttempted, setSubmissionAttempted] = useState(false);
   
+  // Initialize form data with default values
   const [formData, setFormData] = useState<AuditFormData>({
     projectName: "",
     projectDescription: "",
@@ -34,6 +43,25 @@ export const useAuditFormState = () => {
     specializedAuditType: "",
     accountabilityPreference: "standard", // Default to standard accountability
   });
+
+  // Update form data with prefilled values if provided
+  useEffect(() => {
+    if (prefilledData) {
+      setFormData(prevData => ({
+        ...prevData,
+        // If the service has a specific blockchain focus, set it as the blockchain
+        ...(prefilledData.serviceType && { blockchain: prefilledData.serviceType }),
+        // Use service name as the project name prefix if available
+        ...(prefilledData.serviceName && { 
+          projectName: `${prefilledData.serviceName} Audit Request` 
+        }),
+        // Use service provider name in project description if available
+        ...(prefilledData.providerName && { 
+          projectDescription: `Requesting an audit from ${prefilledData.providerName}` 
+        })
+      }));
+    }
+  }, [prefilledData]);
 
   return {
     formData,

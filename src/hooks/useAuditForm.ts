@@ -5,7 +5,15 @@ import { useAuditFormNavigation } from './audit-form/useAuditFormNavigation';
 import { useAuditFormAuth } from './audit-form/useAuditFormAuth';
 import { useAuditFormSubmission } from './audit-form/useAuditFormSubmission';
 
-export const useAuditForm = (onSubmitSuccess: () => void) => {
+// Define a type for the prefilledData parameter
+interface PrefilledData {
+  serviceType?: string;
+  serviceName?: string;
+  providerId?: string;
+  providerName?: string;
+}
+
+export const useAuditForm = (onSubmitSuccess: () => void, prefilledData?: PrefilledData) => {
   const {
     formData,
     formStep,
@@ -23,9 +31,9 @@ export const useAuditForm = (onSubmitSuccess: () => void) => {
     setFormErrors,
     setValidationError,
     setSubmissionAttempted
-  } = useAuditFormState();
+  } = useAuditFormState(prefilledData);
 
-  const { user, navigate } = useAuditFormAuth(setFormData);
+  const { user, navigate } = useAuditFormAuth(setFormData, prefilledData);
 
   const {
     handleChange,
