@@ -13,6 +13,10 @@ interface AuthFormProps {
 }
 
 export const SignInForm = ({ 
+  email, 
+  setEmail, 
+  password, 
+  setPassword, 
   onSubmit, 
   isLoading, 
   error 
@@ -75,6 +79,12 @@ export const SignInForm = ({
 };
 
 export const SignUpForm = ({ 
+  email,
+  setEmail,
+  password,
+  setPassword,
+  fullName,
+  setFullName,
   onSubmit, 
   isLoading, 
   error 
