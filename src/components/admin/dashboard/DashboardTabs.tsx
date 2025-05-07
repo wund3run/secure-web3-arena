@@ -1,126 +1,80 @@
 
+import { useState, ReactNode } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  BarChart4, 
-  Users, 
-  Shield, 
-  FileText,
-  Search,
-  Plus,
-  Settings,
-  UserPlus
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { DashboardOverview } from "./DashboardOverview";
 import { ServiceManagement } from "@/components/admin/ServiceManagement";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { AuditManagement } from "@/components/admin/AuditManagement";
-import { ReportManagement } from "@/components/admin/ReportManagement";
-import SettingsManagement from "@/components/admin/SettingsManagement";
-import { DashboardOverview } from "./DashboardOverview";
-import { AdminDashboardWidgets } from "@/components/admin/dashboard/AdminDashboardWidgets";
+import { SettingsManagement } from "@/components/admin/SettingsManagement";
 import { ProviderApplications } from "@/components/admin/ProviderApplications";
-import { useNavigate } from "react-router-dom";
+import { AdminServiceApproval } from "@/components/admin/AdminServiceApproval";
+import { ReportManagement } from "@/components/admin/ReportManagement";
 
-// Define the valid tab values as a type
-export type DashboardTabValue = "dashboard" | "services" | "users" | "audits" | "reports" | "settings" | "applications";
+export type DashboardTabValue = "dashboard" | "users" | "services" | "audits" | "settings" | "providers" | "approvals" | "reports";
 
 interface DashboardTabsProps {
   activeTab: DashboardTabValue;
-  onTabChange: (value: DashboardTabValue) => void;
+  onTabChange: (tab: DashboardTabValue) => void;
 }
 
 export function DashboardTabs({ activeTab, onTabChange }: DashboardTabsProps) {
-  const navigate = useNavigate();
-
-  // Handle tab change and update URL
-  const handleTabChange = (value: string) => {
-    // Cast the string value to our specific type
-    onTabChange(value as DashboardTabValue);
-    navigate(`/admin/${value}`);
-  };
-
   return (
-    <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-4">
-      <div className="flex items-center justify-between">
-        <TabsList>
-          <TabsTrigger value="dashboard" className="flex gap-2">
-            <BarChart4 className="h-4 w-4" />
-            <span className="hidden md:inline">Dashboard</span>
+    <Tabs value={activeTab} onValueChange={(value) => onTabChange(value as DashboardTabValue)}>
+      <div className="border-b">
+        <TabsList className="flex h-14 px-2 overflow-x-auto no-scrollbar">
+          <TabsTrigger value="dashboard" className="rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:border-primary">
+            Dashboard
           </TabsTrigger>
-          <TabsTrigger value="services" className="flex gap-2">
-            <Shield className="h-4 w-4" />
-            <span className="hidden md:inline">Services</span>
+          <TabsTrigger value="services" className="rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:border-primary">
+            Services
           </TabsTrigger>
-          <TabsTrigger value="users" className="flex gap-2">
-            <Users className="h-4 w-4" />
-            <span className="hidden md:inline">Users</span>
+          <TabsTrigger value="approvals" className="rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:border-primary">
+            Approvals
           </TabsTrigger>
-          <TabsTrigger value="applications" className="flex gap-2">
-            <UserPlus className="h-4 w-4" />
-            <span className="hidden md:inline">Applications</span>
+          <TabsTrigger value="audits" className="rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:border-primary">
+            Audits
           </TabsTrigger>
-          <TabsTrigger value="audits" className="flex gap-2">
-            <Shield className="h-4 w-4" />
-            <span className="hidden md:inline">Audits</span>
+          <TabsTrigger value="users" className="rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:border-primary">
+            Users
           </TabsTrigger>
-          <TabsTrigger value="reports" className="flex gap-2">
-            <FileText className="h-4 w-4" />
-            <span className="hidden md:inline">Reports</span>
+          <TabsTrigger value="providers" className="rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:border-primary">
+            Providers
           </TabsTrigger>
-          <TabsTrigger value="settings" className="flex gap-2">
-            <Settings className="h-4 w-4" />
-            <span className="hidden md:inline">Settings</span>
+          <TabsTrigger value="reports" className="rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:border-primary">
+            Reports
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:border-primary">
+            Settings
           </TabsTrigger>
         </TabsList>
-        
-        <div className="hidden md:flex items-center gap-2">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search..."
-              className="pl-8 w-[200px] lg:w-[300px]"
-            />
-          </div>
-          <Button size="sm">
-            <Plus className="h-4 w-4 mr-2" />
-            Create New
-          </Button>
-        </div>
       </div>
-
-      <TabsContent value="dashboard" className="space-y-4">
-        {/* New real-time dashboard widgets */}
-        <AdminDashboardWidgets />
-        
-        {/* Keep existing dashboard cards (for backward compatibility) */}
-        <DashboardOverview />
-      </TabsContent>
-
-      <TabsContent value="services">
-        <ServiceManagement />
-      </TabsContent>
-
-      <TabsContent value="users">
-        <UserManagement />
-      </TabsContent>
       
-      <TabsContent value="applications">
-        <ProviderApplications />
-      </TabsContent>
-
-      <TabsContent value="audits">
-        <AuditManagement />
-      </TabsContent>
-
-      <TabsContent value="reports">
-        <ReportManagement />
-      </TabsContent>
-      
-      <TabsContent value="settings">
-        <SettingsManagement />
-      </TabsContent>
+      <div className="p-4 sm:p-6">
+        <TabsContent value="dashboard" className="mt-0">
+          <DashboardOverview />
+        </TabsContent>
+        <TabsContent value="services" className="mt-0">
+          <ServiceManagement />
+        </TabsContent>
+        <TabsContent value="approvals" className="mt-0">
+          <AdminServiceApproval />
+        </TabsContent>
+        <TabsContent value="audits" className="mt-0">
+          <AuditManagement />
+        </TabsContent>
+        <TabsContent value="users" className="mt-0">
+          <UserManagement />
+        </TabsContent>
+        <TabsContent value="providers" className="mt-0">
+          <ProviderApplications />
+        </TabsContent>
+        <TabsContent value="reports" className="mt-0">
+          <ReportManagement />
+        </TabsContent>
+        <TabsContent value="settings" className="mt-0">
+          <SettingsManagement />
+        </TabsContent>
+      </div>
     </Tabs>
   );
 }

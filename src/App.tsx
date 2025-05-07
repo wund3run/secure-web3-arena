@@ -1,201 +1,112 @@
+import React, { useState, useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { Helmet } from 'react-helmet-async';
+import { Toaster } from "sonner";
+import { QueryClient, QueryClientProvider } from 'react-query';
 
-import React from 'react';
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { HelmetProvider } from "react-helmet-async";
-import { AuthProvider } from "./contexts/AuthContext";
-import PrivateRoute from "./components/auth/PrivateRoute";
-import ErrorBoundary from "./components/ui/error-boundary";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+// Import pages
+import Index from "./pages";
+import Auth from "./pages/Auth";
 import Marketplace from "./pages/Marketplace";
 import ServiceDetails from "./pages/ServiceDetails";
-import AuditRequestForService from "./pages/AuditRequestForService";
-import ContactProvider from "./pages/ContactProvider";
-import Leaderboard from "./pages/Leaderboard";
-import Audits from "./pages/Audits";
-import Community from "./pages/Community";
-import Stats from "./pages/Stats";
-import Escrow from "./pages/Escrow";
 import Contact from "./pages/Contact";
+import Stats from "./pages/Stats";
+import Leaderboard from "./pages/Leaderboard";
+import Community from "./pages/Community";
+import SecurityInsights from "./pages/SecurityInsights";
+import TwoFactorAuth from "./pages/TwoFactorAuth";
 import RequestAudit from "./pages/RequestAudit";
+import Audits from "./pages/Audits";
+import Achievements from "./pages/Achievements";
+import Escrow from "./pages/Escrow";
+import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import AuditorOnboarding from "@/pages/AuditorOnboarding";
-import ServiceProviderOnboarding from "@/pages/ServiceProviderOnboarding";
-import ApplicationSubmitted from "@/pages/ApplicationSubmitted";
-import Auth from "@/pages/Auth";
-import SecurityInsights from "@/pages/SecurityInsights";
-import Achievements from "@/pages/Achievements";
-import TwoFactorAuth from "@/pages/TwoFactorAuth";
+import ServiceProviderOnboarding from "./pages/onboarding/ServiceProviderOnboarding";
+import AuditorOnboarding from "./pages/onboarding/AuditorOnboarding";
+import ApplicationSubmitted from "./pages/onboarding/ApplicationSubmitted";
+import AuditRequestForService from "./pages/AuditRequestForService";
+import ContactProvider from "./pages/ContactProvider";
+import SubmitService from "./pages/SubmitService";
 
-// Create a client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+// Import components
+import PrivateRoute from "./components/PrivateRoute";
 
-const App = () => (
-  <React.StrictMode>
-    <HelmetProvider>
+// Import contexts
+import { AuthProvider } from "./contexts/AuthContext";
+
+// Create a new QueryClient instance
+const queryClient = new QueryClient();
+
+function App() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  }, []);
+
+  return (
+    <AuthProvider>
       <QueryClientProvider client={queryClient}>
-        <ErrorBoundary>
-          <BrowserRouter>
-            <AuthProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  
-                  {/* Auth routes */}
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
-                  
-                  {/* Protected routes */}
-                  <Route 
-                    path="/request-audit" 
-                    element={<RequestAudit />} 
-                  />
-
-                  {/* Security Insights route */}
-                  <Route path="/security-insights" element={<SecurityInsights />} />
-                  
-                  {/* Achievements route */}
-                  <Route path="/achievements" element={<Achievements />} />
-                  
-                  <Route 
-                    path="/escrow" 
-                    element={
-                      <PrivateRoute>
-                        <Escrow />
-                      </PrivateRoute>
-                    } 
-                  />
-                  
-                  <Route 
-                    path="/auditor-onboarding" 
-                    element={
-                      <PrivateRoute>
-                        <AuditorOnboarding />
-                      </PrivateRoute>
-                    } 
-                  />
-                  
-                  {/* Marketplace routes */}
-                  <Route path="/marketplace" element={<Marketplace />} />
-                  <Route path="/service/:serviceId" element={<ServiceDetails />} />
-                  <Route path="/service/:serviceId/request" element={<AuditRequestForService />} />
-                  <Route path="/service/:serviceId/contact" element={<ContactProvider />} />
-                  <Route path="/auditors" element={<NotFound />} />
-                  <Route path="/listings" element={<NotFound />} />
-                  <Route path="/requests" element={<NotFound />} />
-                  
-                  {/* Community routes */}
-                  <Route path="/leaderboard" element={<Leaderboard />} />
-                  <Route path="/community" element={<Community />} />
-                  <Route path="/achievements" element={<Achievements />} />
-                  <Route path="/events" element={<NotFound />} />
-                  <Route path="/forum" element={<NotFound />} />
-                  
-                  {/* Content routes */}
-                  <Route path="/audits" element={<Audits />} />
-                  <Route path="/stats" element={<Stats />} />
-                  <Route path="/docs" element={<NotFound />} />
-                  <Route path="/blog" element={<NotFound />} />
-                  <Route path="/vulnerabilities" element={<NotFound />} />
-                  <Route path="/faqs" element={<NotFound />} />
-                  <Route path="/contact" element={<Contact />} />
-                  
-                  {/* Admin routes */}
-                  <Route 
-                    path="/admin" 
-                    element={<AdminLogin />} 
-                  />
-                  <Route 
-                    path="/admin/dashboard" 
-                    element={
-                      <PrivateRoute>
-                        <AdminDashboard />
-                      </PrivateRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/admin/services" 
-                    element={
-                      <PrivateRoute>
-                        <AdminDashboard section="services" />
-                      </PrivateRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/admin/users" 
-                    element={
-                      <PrivateRoute>
-                        <AdminDashboard section="users" />
-                      </PrivateRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/admin/applications" 
-                    element={
-                      <PrivateRoute>
-                        <AdminDashboard section="applications" />
-                      </PrivateRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/admin/audits" 
-                    element={
-                      <PrivateRoute>
-                        <AdminDashboard section="audits" />
-                      </PrivateRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/admin/reports" 
-                    element={
-                      <PrivateRoute>
-                        <AdminDashboard section="reports" />
-                      </PrivateRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/admin/settings" 
-                    element={
-                      <PrivateRoute>
-                        <AdminDashboard section="settings" />
-                      </PrivateRoute>
-                    } 
-                  />
-                  
-                  {/* Onboarding routes */}
-                  <Route path="/join" element={<ServiceProviderOnboarding />} />
-                  <Route path="/application-submitted" element={<ApplicationSubmitted />} />
-                  
-                  {/* Legal routes */}
-                  <Route path="/terms" element={<NotFound />} />
-                  <Route path="/privacy" element={<NotFound />} />
-                  <Route path="/security-policy" element={<NotFound />} /> 
-                  
-                  {/* Catch-all route */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </TooltipProvider>
-            </AuthProvider>
-          </BrowserRouter>
-        </ErrorBoundary>
+        <Helmet>
+          <title>Hawkly - Web3 Security Audit Marketplace</title>
+          <meta name="description" content="Connect with top Web3 security auditors, view their reputation, and request personalized audits for your projects." />
+        </Helmet>
+        
+        <div className="app">
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/service/:serviceId" element={<ServiceDetails />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/stats" element={<Stats />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/security-insights" element={<SecurityInsights />} />
+            <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
+            <Route path="/submit-service" element={<SubmitService />} />
+            <Route path="/contact-provider/:providerId" element={<ContactProvider />} />
+            
+            {/* Protected Routes */}
+            <Route element={<PrivateRoute />}>
+              <Route path="/request-audit" element={<RequestAudit />} />
+              <Route path="/request-audit/:serviceId" element={<AuditRequestForService />} />
+              <Route path="/audits" element={<Audits />} />
+              <Route path="/achievements" element={<Achievements />} />
+              <Route path="/escrow" element={<Escrow />} />
+            </Route>
+            
+            {/* Provider Onboarding */}
+            <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
+            <Route path="/auditor-onboarding" element={<AuditorOnboarding />} />
+            <Route path="/application-submitted" element={<ApplicationSubmitted />} />
+            
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard section="dashboard" />} />
+            <Route path="/admin/users" element={<AdminDashboard section="users" />} />
+            <Route path="/admin/services" element={<AdminDashboard section="services" />} />
+            <Route path="/admin/approvals" element={<AdminDashboard section="approvals" />} />
+            <Route path="/admin/audits" element={<AdminDashboard section="audits" />} />
+            <Route path="/admin/providers" element={<AdminDashboard section="providers" />} />
+            <Route path="/admin/reports" element={<AdminDashboard section="reports" />} />
+            <Route path="/admin/settings" element={<AdminDashboard section="settings" />} />
+            
+            {/* 404 Page */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          
+          {/* Global Components */}
+          <Toaster />
+        </div>
       </QueryClientProvider>
-    </HelmetProvider>
-  </React.StrictMode>
-);
+    </AuthProvider>
+  );
+}
 
 export default App;

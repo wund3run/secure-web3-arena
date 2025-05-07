@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { MarketplaceHeader } from "@/components/home/marketplace/marketplace-header";
 import { CategoryTabs } from "@/components/home/marketplace/category-tabs";
@@ -72,7 +71,6 @@ export function MarketplaceSection() {
   };
 
   const filteredServices = getFilteredServices();
-  // Fix: Pass an object with maxCompare property to ComparisonManager
   const { ComparisonProvider, SelectionIndicator, SelectionToggle, ComparisonDialog } = ComparisonManager({ maxCompare: 3 });
 
   const handleTabChange = (tab: string) => {
@@ -87,7 +85,6 @@ export function MarketplaceSection() {
   // Add a handler for recommendation selection
   const handleRecommendationSelect = (service: any) => {
     console.log("Recommendation selected:", service);
-    // Add any logic you need for handling the selection
   };
 
   return (

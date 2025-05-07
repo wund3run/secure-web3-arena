@@ -1,3 +1,4 @@
+
 import { Star, BadgeCheck, Users, Shield, ArrowRight, Clock } from "lucide-react";
 import { BadgeAward } from "@/components/ui/badge-award";
 import { Button } from "@/components/ui/button";
@@ -45,8 +46,26 @@ export function ServiceCard({
   
   const navigate = useNavigate();
 
+  // Enhanced function to navigate to service details
   const handleViewDetails = () => {
-    navigate(`/service/${id}`);
+    navigate(`/service/${id}`, { 
+      state: { 
+        serviceDetail: {
+          id,
+          title,
+          description,
+          provider,
+          pricing,
+          rating,
+          completedJobs,
+          category,
+          tags,
+          imageUrl,
+          securityScore,
+          responseTime
+        }
+      }
+    });
   };
 
   // Define consistent high-quality images with theme-aligned gradients for different security categories
