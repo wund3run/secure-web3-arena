@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { useAuth } from '@/contexts/AuthContext';
@@ -13,9 +13,15 @@ const RequestAudit = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-
-  // This handle redirection is now being done in the AuditRequestForm component
-  // to provide a better user experience with toasts and pre-filled data
+  const location = useLocation();
+  
+  // Check if we have pre-filled data from a specific service
+  const prefilledData = location.state?.serviceInfo ? {
+    serviceType: location.state.serviceInfo.category,
+    serviceName: location.state.serviceInfo.title,
+    providerId: location.state.serviceInfo.id,
+    providerName: location.state.serviceInfo.provider
+  } : undefined;
 
   return (
     <>
@@ -30,7 +36,10 @@ const RequestAudit = () => {
         ) : (
           <>
             <AuditRequestHeader />
-            <AuditRequestForm onSubmitSuccess={() => setFormSubmitted(true)} />
+            <AuditRequestForm 
+              onSubmitSuccess={() => setFormSubmitted(true)} 
+              prefilledData={prefilledData}
+            />
             
             {/* Contact Info */}
             <div className="mt-8 text-center">

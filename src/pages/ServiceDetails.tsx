@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { ArrowLeft, Star, BadgeCheck, Shield, Users, ExternalLink, Clock } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
@@ -16,6 +16,7 @@ import { toast } from "sonner";
 
 export default function ServiceDetails() {
   const { serviceId } = useParams<{ serviceId: string }>();
+  const navigate = useNavigate();
   const [service, setService] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [relatedServices, setRelatedServices] = useState<any[]>([]);
@@ -70,14 +71,24 @@ export default function ServiceDetails() {
   }
 
   const handleRequestService = () => {
-    toast.success("Service request initiated", {
-      description: "Your request has been sent to the provider.",
-    });
+    navigate(`/service/${serviceId}/request`);
   };
 
   const handleContactProvider = () => {
-    toast.success("Message sent to provider", {
-      description: "You'll be notified when they respond.",
+    navigate(`/service/${serviceId}/contact`);
+  };
+
+  const handleCustomAuditRequest = () => {
+    navigate('/request-audit', { 
+      state: { 
+        fromService: true,
+        serviceInfo: {
+          id: service.id,
+          title: service.title,
+          provider: service.provider.name,
+          category: service.category
+        }
+      }
     });
   };
 
@@ -399,17 +410,26 @@ export default function ServiceDetails() {
                     
                     {/* Actions */}
                     <div className="space-y-3">
-                      <Button className="w-full bg-gradient-to-r from-primary to-secondary" onClick={handleRequestService}>
+                      <Button 
+                        className="w-full bg-gradient-to-r from-primary to-secondary" 
+                        onClick={handleRequestService}
+                      >
                         Request This Service
                       </Button>
-                      <Button variant="outline" className="w-full" onClick={handleContactProvider}>
+                      <Button 
+                        variant="outline" 
+                        className="w-full" 
+                        onClick={handleContactProvider}
+                      >
                         Contact Provider
                       </Button>
-                      <Link to="/request-audit" className="block">
-                        <Button variant="secondary" className="w-full">
-                          Custom Audit Request
-                        </Button>
-                      </Link>
+                      <Button 
+                        variant="secondary" 
+                        className="w-full"
+                        onClick={handleCustomAuditRequest}
+                      >
+                        Custom Audit Request
+                      </Button>
                     </div>
                     
                     <div className="mt-6 text-center">

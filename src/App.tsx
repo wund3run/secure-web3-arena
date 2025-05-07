@@ -13,6 +13,8 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Marketplace from "./pages/Marketplace";
 import ServiceDetails from "./pages/ServiceDetails";
+import AuditRequestForService from "./pages/AuditRequestForService";
+import ContactProvider from "./pages/ContactProvider";
 import Leaderboard from "./pages/Leaderboard";
 import Audits from "./pages/Audits";
 import Community from "./pages/Community";
@@ -91,6 +93,8 @@ const App = () => (
                   {/* Marketplace routes */}
                   <Route path="/marketplace" element={<Marketplace />} />
                   <Route path="/service/:serviceId" element={<ServiceDetails />} />
+                  <Route path="/service/:serviceId/request" element={<AuditRequestForService />} />
+                  <Route path="/service/:serviceId/contact" element={<ContactProvider />} />
                   <Route path="/auditors" element={<NotFound />} />
                   <Route path="/listings" element={<NotFound />} />
                   <Route path="/requests" element={<NotFound />} />
