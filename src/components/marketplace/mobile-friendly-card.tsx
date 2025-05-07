@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Heart, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { TrustIndicators } from "./trust-indicators";
+import { useNavigate } from "react-router-dom";
 
 interface MobileFriendlyCardProps {
   id: string;
@@ -24,7 +24,7 @@ interface MobileFriendlyCardProps {
   category: string;
   tags: string[];
   imageUrl?: string;
-  onSelect: () => void;
+  onSelect?: () => void;
 }
 
 export function MobileFriendlyCard({
@@ -38,6 +38,7 @@ export function MobileFriendlyCard({
   imageUrl,
   onSelect
 }: MobileFriendlyCardProps) {
+  const navigate = useNavigate();
   const [isFavorite, setIsFavorite] = useState(false);
   
   const toggleFavorite = (e: React.MouseEvent) => {
@@ -47,6 +48,14 @@ export function MobileFriendlyCard({
       isFavorite ? "Removed from favorites" : "Added to favorites", 
       { description: isFavorite ? "Service removed from your saved list" : "Service added to your saved list" }
     );
+  };
+
+  const handleCardClick = () => {
+    if (onSelect) {
+      onSelect();
+    } else {
+      navigate(`/service/${id}`);
+    }
   };
 
   // Generate themed images for different categories
@@ -68,7 +77,7 @@ export function MobileFriendlyCard({
   return (
     <Card 
       className="h-full flex flex-col transform transition-all duration-300 hover:shadow-md border border-border/50 hover:border-primary/50 active:scale-[0.99] touch-manipulation"
-      onClick={onSelect}
+      onClick={handleCardClick}
     >
       <CardHeader className="p-0">
         <div className="relative h-32 rounded-t-lg overflow-hidden">
@@ -127,7 +136,7 @@ export function MobileFriendlyCard({
             securityScore={provider.securityScore}
             verificationLevel={provider.verificationLevel}
             completedProjects={provider.completedProjects}
-            size="sm" // Fix: Changed from "xs" to "sm" to match the allowed types
+            size="sm" 
           />
           
           <div className="text-xs text-muted-foreground line-clamp-2 min-h-[2rem]">
@@ -156,7 +165,7 @@ export function MobileFriendlyCard({
         <Button 
           className="w-full touch-manipulation h-8 text-sm"
           variant="default"
-          onClick={onSelect}
+          onClick={handleCardClick}
         >
           View Details
           <ArrowRight className="ml-1 h-3.5 w-3.5" />

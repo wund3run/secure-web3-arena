@@ -1,10 +1,9 @@
-
 import { Star, BadgeCheck, Users, Shield, ArrowRight, Clock } from "lucide-react";
 import { BadgeAward } from "@/components/ui/badge-award";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { SecurityScore } from "@/components/trust/security-metrics";
-import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export interface ServiceCardProps {
   id: string;
@@ -44,10 +43,10 @@ export function ServiceCard({
   responseTime = "24h",
 }: ServiceCardProps) {
   
+  const navigate = useNavigate();
+
   const handleViewDetails = () => {
-    toast.success(`Service details for ${title}`, {
-      description: "Full service details would open here",
-    });
+    navigate(`/service/${id}`);
   };
 
   // Define consistent high-quality images with theme-aligned gradients for different security categories
