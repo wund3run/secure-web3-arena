@@ -20,6 +20,7 @@ import { useMarketplaceServices } from "@/components/marketplace/hooks/useMarket
 import { useMarketplaceComparison } from "@/components/marketplace/hooks/useMarketplaceComparison";
 import { useMarketplaceState } from "@/components/marketplace/hooks/useMarketplaceState";
 import { ServiceCardProps } from "@/data/marketplace-data";
+import { useEffect } from "react";
 
 // Define global interface for window to include SERVICES with correct type
 declare global {
@@ -47,7 +48,8 @@ export default function Marketplace() {
     services,
     BLOCKCHAIN_ECOSYSTEMS,
     SAMPLE_REVIEWS,
-    filterServices
+    filterServices,
+    getServiceById
   } = useMarketplaceServices();
 
   const {
@@ -61,6 +63,14 @@ export default function Marketplace() {
 
   // Filter services based on active filters and category
   const filteredServices = filterServices(activeCategory, activeFilters);
+
+  // Handle service selection by ID
+  const handleServiceSelect = (serviceId: string) => {
+    const service = getServiceById(serviceId);
+    if (service) {
+      setSelectedService(service);
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -106,7 +116,7 @@ export default function Marketplace() {
                       services={services}
                       projectSize={activeFilters.projectSize || "medium"}
                       blockchains={activeFilters.blockchains || []}
-                      onRecommendationSelect={setSelectedService}
+                      onRecommendationSelect={(serviceId) => handleServiceSelect(serviceId)}
                     />
                   </div>
                 )}
@@ -128,12 +138,12 @@ export default function Marketplace() {
                 <OptimizedListingGrid 
                   services={filteredServices.map(service => ({
                     ...service,
-                    onSelect: () => setSelectedService(service),
                     isSelected: isServiceInComparison(service.id),
                     onToggleCompare: () => toggleCompareService(service)
                   }))}
                   isLoading={isLoading}
                   layout={viewMode}
+                  onServiceSelect={handleServiceSelect}
                 />
 
                 {/* Web2 + Web3 Security Services Section */}

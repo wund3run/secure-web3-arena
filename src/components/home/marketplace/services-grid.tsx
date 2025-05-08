@@ -12,12 +12,17 @@ interface ServicesGridProps {
 export function ServicesGrid({ services, isLoading = false }: ServicesGridProps) {
   const navigate = useNavigate();
   
-  const handleServiceClick = (service: ServiceCardProps) => {
-    navigate(`/service/${service.id}`, { 
-      state: { 
-        serviceDetail: service
-      }
-    });
+  const handleServiceClick = (serviceId: string) => {
+    // Find the service by id
+    const service = services.find(s => s.id === serviceId);
+    
+    if (service) {
+      navigate(`/service/${service.id}`, { 
+        state: { 
+          serviceDetail: service
+        }
+      });
+    }
   };
   
   if (isLoading) {
@@ -39,7 +44,7 @@ export function ServicesGrid({ services, isLoading = false }: ServicesGridProps)
         <ServiceCard 
           key={service.id} 
           {...service} 
-          onClick={() => handleServiceClick(service)}
+          onClick={() => handleServiceClick(service.id)}
         />
       ))}
       

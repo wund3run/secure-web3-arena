@@ -15,7 +15,7 @@ interface OptimizedListingGridProps {
   })[];
   isLoading?: boolean;
   layout?: "grid" | "list";
-  onServiceSelect?: (service: ServiceCardProps) => void;
+  onServiceSelect?: (serviceId: string) => void;
 }
 
 export function OptimizedListingGrid({
@@ -65,11 +65,17 @@ export function OptimizedListingGrid({
 
   const handleServiceSelect = (service: ServiceCardProps) => {
     if (onServiceSelect) {
-      onServiceSelect(service);
+      onServiceSelect(service.id);
     } else {
+      // Pass only serializable data to navigate
       navigate(`/service/${service.id}`, { 
         state: { 
-          serviceDetail: service
+          serviceDetail: {
+            ...service,
+            // Remove any functions or non-serializable data
+            onToggleCompare: undefined,
+            isSelected: undefined
+          }
         }
       });
     }

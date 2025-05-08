@@ -55,6 +55,7 @@ export function MobileFriendlyCard({
     if (onSelect) {
       onSelect();
     } else {
+      // Only navigate if onSelect is not provided
       navigate(`/service/${id}`, { 
         state: { 
           serviceDetail: {
@@ -70,11 +71,6 @@ export function MobileFriendlyCard({
         }
       });
     }
-  };
-
-  const handleViewDetailsClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    handleCardClick();
   };
 
   // Generate themed images for different categories
@@ -184,7 +180,10 @@ export function MobileFriendlyCard({
         <Button 
           className="w-full touch-manipulation h-8 text-sm z-10"
           variant="default"
-          onClick={handleViewDetailsClick}
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent the card click handler from firing
+            handleCardClick();
+          }}
         >
           View Details
           <ArrowRight className="ml-1 h-3.5 w-3.5" />

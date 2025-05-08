@@ -1,190 +1,157 @@
 
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { ServiceCardProps } from "@/data/marketplace-data";
-import { Sparkles, Shield, Clock } from "lucide-react";
-import { toast } from "sonner";
+import { Brain, Shield, Sparkles, Star, Zap } from "lucide-react";
+import { MobileFriendlyCard } from "./mobile-friendly-card";
 
 interface AIRecommendationsProps {
   services: ServiceCardProps[];
-  projectSize?: "small" | "medium" | "large";
-  blockchains?: string[];
-  onRecommendationSelect?: (service: ServiceCardProps) => void;
+  projectSize: string;
+  blockchains: string[];
+  onRecommendationSelect: (serviceId: string) => void;
 }
 
-export function AIRecommendations({ 
-  services, 
-  projectSize = "medium",
-  blockchains = [], 
-  onRecommendationSelect 
+export function AIRecommendations({
+  services,
+  projectSize,
+  blockchains,
+  onRecommendationSelect,
 }: AIRecommendationsProps) {
-  const [recommendations, setRecommendations] = useState<ServiceCardProps[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  
-  // Generate AI recommendations based on project size and blockchain
-  useEffect(() => {
-    setIsLoading(true);
+  // This would normally be a complex AI-driven recommendation algorithm
+  // For demo purposes, we'll just select based on some simple rules
+  const getRecommendations = () => {
+    // First, filter by relevant blockchains if specified
+    let filtered = [...services];
     
-    // Simulate AI processing delay
-    const timer = setTimeout(() => {
-      let recommendedServices = [...services];
-      
-      // Filter based on project size
-      if (projectSize === "small") {
-        // For small projects, prefer faster delivery and lower cost
-        recommendedServices = recommendedServices.sort((a, b) => {
-          // Prioritize cost and then reputation for small projects
-          if (a.pricing.amount !== b.pricing.amount) {
-            return a.pricing.amount - b.pricing.amount;
-          }
-          return b.provider.reputation - a.provider.reputation;
-        });
-      } else if (projectSize === "large") {
-        // For large projects, prioritize high reputation and expertise
-        recommendedServices = recommendedServices.sort((a, b) => {
-          // Prioritize expertise level and then reputation
-          if (a.provider.level !== b.provider.level) {
-            return a.provider.level === "expert" ? -1 : 1;
-          }
-          return b.provider.reputation - a.provider.reputation;
-        });
-      } else {
-        // For medium projects, balance reputation and cost
-        recommendedServices = recommendedServices.sort((a, b) => {
-          // Combined score of reputation and inverse of price
-          const scoreA = a.provider.reputation - (a.pricing.amount * 5);
-          const scoreB = b.provider.reputation - (b.pricing.amount * 5);
-          return scoreB - scoreA;
-        });
-      }
-      
-      // Further filter by blockchain if specified
-      if (blockchains.length > 0) {
-        recommendedServices = recommendedServices.filter(service => 
-          service.tags.some(tag => 
-            blockchains.includes(tag.toLowerCase())
+    if (blockchains && blockchains.length > 0) {
+      filtered = filtered.filter(service =>
+        service.tags.some(tag =>
+          blockchains.some(chain => 
+            tag.toLowerCase().includes(chain.toLowerCase())
           )
-        );
-      }
-      
-      // Take top 3 recommendations
-      setRecommendations(recommendedServices.slice(0, 3));
-      setIsLoading(false);
-    }, 800);
+        )
+      );
+    }
     
-    return () => clearTimeout(timer);
-  }, [services, projectSize, blockchains]);
-
-  const getRecommendationReason = (service: ServiceCardProps) => {
-    if (projectSize === "small") {
-      return "Best value for small projects";
-    } else if (projectSize === "large") {
-      return "Comprehensive coverage for large codebases";
-    } else {
-      return "Balanced quality and value";
-    }
-  };
-
-  const handleSelect = (service: ServiceCardProps) => {
-    if (onRecommendationSelect) {
-      onRecommendationSelect(service);
-    } else {
-      toast.info(`Selected recommended service: ${service.title}`);
-    }
+    // Then sort by rating and pick top 3
+    filtered = filtered.sort((a, b) => {
+      // Boost services based on project size
+      const sizeBoostA = a.tags.includes(projectSize) ? 1 : 0;
+      const sizeBoostB = b.tags.includes(projectSize) ? 1 : 0;
+      
+      return (b.rating + sizeBoostB) - (a.rating + sizeBoostA);
+    });
+    
+    return filtered.slice(0, 3);
   };
   
-  if (isLoading) {
+  const recommendations = getRecommendations();
+  
+  if (recommendations.length === 0) {
     return (
-      <Card className="w-full bg-gradient-to-br from-background to-muted/30 border border-border/50">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg flex items-center">
-            <Sparkles className="h-4 w-4 mr-2 text-yellow-500" />
-            AI Recommendations
-          </CardTitle>
-          <CardDescription>Finding the best security services for your project...</CardDescription>
-        </CardHeader>
-        <CardContent className="pb-2">
-          <div className="space-y-4 pt-2">
-            {[1, 2, 3].map((_, idx) => (
-              <div key={idx} className="h-24 rounded-md bg-muted animate-pulse"></div>
-            ))}
+      <Card className="bg-primary/5 border border-primary/20">
+        <CardContent className="pt-6">
+          <div className="flex items-center space-x-2 text-primary">
+            <Brain className="h-5 w-5" />
+            <h3 className="font-semibold">No AI Recommendations Available</h3>
           </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            We couldn't find any services that match your specific requirements. 
+            Try adjusting your filters or browse all available services below.
+          </p>
         </CardContent>
       </Card>
     );
   }
-
-  if (recommendations.length === 0) {
-    return (
-      <Card className="w-full bg-gradient-to-br from-background to-muted/30 border border-border/50">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg flex items-center">
-            <Sparkles className="h-4 w-4 mr-2 text-yellow-500" />
-            AI Recommendations
-          </CardTitle>
-          <CardDescription>No matching services found for your criteria</CardDescription>
+  
+  const mapProviderLevel = (level: "rookie" | "verified" | "expert") => {
+    if (level === "rookie") return "verified";
+    if (level === "expert") return "expert";
+    return "verified";
+  };
+  
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center space-x-2">
+        <div className="bg-primary/10 p-1 rounded">
+          <Sparkles className="h-5 w-5 text-primary" />
+        </div>
+        <h2 className="text-lg font-bold">AI-Recommended Security Services</h2>
+        <Badge variant="outline" className="bg-primary/5 border-primary/20 text-xs">Powered by AI</Badge>
+      </div>
+      
+      <Card className="bg-primary/5 border border-primary/20">
+        <CardHeader className="pb-2 pt-4">
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="font-semibold flex items-center">
+                <Brain className="h-4 w-4 mr-1 text-primary" />
+                Personalized Security Recommendations
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Based on your {projectSize} project size
+                {blockchains && blockchains.length > 0 && ` and ${blockchains.join(', ')} compatibility`}
+              </p>
+            </div>
+            <div className="flex items-center space-x-1 bg-background/50 px-2 py-1 rounded-full">
+              <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+              <span className="text-xs font-medium">AI Match</span>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-center p-6 text-center">
-            <p className="text-muted-foreground">
-              Try adjusting your project size or blockchain selection
+        
+        <CardContent className="pt-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {recommendations.map((service, index) => (
+              <div key={service.id} className="relative">
+                {index === 0 && (
+                  <div className="absolute -top-1 -right-1 z-10">
+                    <Badge className="bg-primary text-primary-foreground">Best Match</Badge>
+                  </div>
+                )}
+                <MobileFriendlyCard
+                  id={service.id}
+                  title={service.title}
+                  description={service.description}
+                  provider={{
+                    name: service.provider.name,
+                    securityScore: service.provider.reputation,
+                    verificationLevel: mapProviderLevel(service.provider.level),
+                    completedProjects: service.completedJobs
+                  }}
+                  pricing={service.pricing}
+                  category={service.category}
+                  tags={service.tags}
+                  imageUrl={service.imageUrl}
+                  onSelect={() => onRecommendationSelect(service.id)}
+                />
+              </div>
+            ))}
+          </div>
+          
+          <div className="mt-4 text-xs text-muted-foreground bg-background/50 p-2 rounded">
+            <p className="flex items-center">
+              <Shield className="h-3 w-3 mr-1 inline" />
+              These recommendations are based on your project parameters and security requirements
             </p>
           </div>
         </CardContent>
-      </Card>
-    );
-  }
-
-  return (
-    <Card className="w-full bg-gradient-to-br from-background to-muted/30 border border-border/50">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg flex items-center">
-          <Sparkles className="h-4 w-4 mr-2 text-yellow-500" />
-          AI Recommendations
-        </CardTitle>
-        <CardDescription>
-          Tailored services for {projectSize} projects
-          {blockchains.length > 0 && ` on ${blockchains.map(b => b.charAt(0).toUpperCase() + b.slice(1)).join(', ')}`}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="pb-2">
-        <div className="space-y-3 pt-2">
-          {recommendations.map((service, index) => (
-            <div 
-              key={service.id}
-              className="flex justify-between p-3 bg-card border border-border/60 rounded-md hover:border-primary/50 transition-colors"
-            >
-              <div className="flex flex-col">
-                <div className="font-medium">{service.title}</div>
-                <div className="text-xs flex items-center text-muted-foreground">
-                  <Shield className="h-3 w-3 mr-1" />
-                  {service.provider.name} · {service.provider.reputation}% reputation
-                </div>
-                <Badge variant="outline" className="mt-1 text-xs w-fit bg-primary/10 border-primary/30">
-                  {getRecommendationReason(service)}
-                </Badge>
-              </div>
-              <div className="flex flex-col items-end">
-                <div className="font-medium">{service.pricing.amount} {service.pricing.currency}</div>
-                <div className="text-xs text-muted-foreground flex items-center">
-                  <Clock className="h-3 w-3 mr-1" />
-                  {service.completedJobs} completed jobs
-                </div>
-                <Button size="sm" variant="ghost" className="mt-1" onClick={() => handleSelect(service)}>
-                  View
-                </Button>
-              </div>
+        
+        <CardFooter className="pt-0 pb-4">
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Zap className="h-4 w-4 mr-1" />
+              <span>Matches optimized for your project</span>
             </div>
-          ))}
-        </div>
-      </CardContent>
-      <CardFooter className="pt-2">
-        <div className="text-xs text-muted-foreground">
-          Recommendations based on project complexity and security requirements
-        </div>
-      </CardFooter>
-    </Card>
+            
+            <Button variant="link" size="sm" className="text-primary p-0">
+              How are matches determined?
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }
