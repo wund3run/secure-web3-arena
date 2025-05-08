@@ -191,6 +191,7 @@ export function ServiceCard({
             size="sm" 
             className="group-hover:bg-primary/90"
             onClick={handleViewDetails}
+            type="button"
           >
             <span>View Details</span>
             <ArrowRight className="ml-1 h-3 w-3 opacity-70 transition-transform group-hover:translate-x-1" />

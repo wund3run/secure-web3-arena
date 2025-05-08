@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -54,7 +55,20 @@ export function MobileFriendlyCard({
     if (onSelect) {
       onSelect();
     } else {
-      navigate(`/service/${id}`);
+      navigate(`/service/${id}`, {
+        state: {
+          serviceDetail: {
+            id,
+            title,
+            description,
+            provider,
+            pricing,
+            category,
+            tags,
+            imageUrl
+          }
+        }
+      });
     }
   };
 
@@ -107,6 +121,7 @@ export function MobileFriendlyCard({
               size="icon"
               className="h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white touch-manipulation"
               onClick={toggleFavorite}
+              type="button"
             >
               <Heart
                 className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
@@ -166,6 +181,7 @@ export function MobileFriendlyCard({
           className="w-full touch-manipulation h-8 text-sm"
           variant="default"
           onClick={handleCardClick}
+          type="button"
         >
           View Details
           <ArrowRight className="ml-1 h-3.5 w-3.5" />
