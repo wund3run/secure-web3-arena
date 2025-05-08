@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FilterSectionHeader } from "./filter-section-header";
@@ -29,11 +28,13 @@ export function AuditTypesFilter({
   toggleSection 
 }: AuditTypesFilterProps) {
   const handleAuditTypeChange = (auditType: string) => {
-    setSelectedAuditTypes(prev => 
-      prev.includes(auditType) 
-        ? prev.filter(type => type !== auditType) 
-        : [...prev, auditType]
-    );
+    // Create a new array based on the current selection
+    const updatedTypes = selectedAuditTypes.includes(auditType) 
+      ? selectedAuditTypes.filter(type => type !== auditType) 
+      : [...selectedAuditTypes, auditType];
+    
+    // Pass the new array directly to the setter function
+    setSelectedAuditTypes(updatedTypes);
   };
 
   return (

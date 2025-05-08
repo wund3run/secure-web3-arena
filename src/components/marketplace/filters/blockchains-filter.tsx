@@ -28,11 +28,13 @@ export function BlockchainsFilter({
   toggleSection 
 }: BlockchainsFilterProps) {
   const handleBlockchainChange = (blockchain: string) => {
-    setSelectedBlockchains(prev => 
-      prev.includes(blockchain) 
-        ? prev.filter(chain => chain !== blockchain) 
-        : [...prev, blockchain]
-    );
+    // Create a new array based on the current selection
+    const updatedBlockchains = selectedBlockchains.includes(blockchain) 
+      ? selectedBlockchains.filter(chain => chain !== blockchain) 
+      : [...selectedBlockchains, blockchain];
+    
+    // Pass the new array directly to the setter function
+    setSelectedBlockchains(updatedBlockchains);
   };
 
   return (
