@@ -1,5 +1,5 @@
 
-import { Review } from "./hooks/useMarketplaceServices";
+import { Review } from "./hooks/types/marketplace-types";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
