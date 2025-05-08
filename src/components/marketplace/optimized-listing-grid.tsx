@@ -3,10 +3,10 @@ import { useRef, useState, useEffect } from "react";
 import { MobileFriendlyCard } from "./mobile-friendly-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ServiceCardProps } from "@/data/marketplace-data";
-import { toast } from "sonner";
 import { Shield } from "lucide-react"; 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface OptimizedListingGridProps {
   services: (ServiceCardProps & { 
@@ -24,6 +24,7 @@ export function OptimizedListingGrid({
   layout = "grid",
   onServiceSelect
 }: OptimizedListingGridProps) {
+  const navigate = useNavigate();
   const [visibleServices, setVisibleServices] = useState<(ServiceCardProps & { 
     isSelected?: boolean;
     onToggleCompare?: () => void;
@@ -66,8 +67,10 @@ export function OptimizedListingGrid({
     if (onServiceSelect) {
       onServiceSelect(service);
     } else {
-      toast.info(`Selected service: ${service.title}`, {
-        description: "Service details would open here"
+      navigate(`/service/${service.id}`, { 
+        state: { 
+          serviceDetail: service
+        }
       });
     }
   };

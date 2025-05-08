@@ -27,6 +27,7 @@ export interface ServiceCardProps {
   imageUrl?: string;
   securityScore?: number;
   responseTime?: string;
+  onClick?: () => void;
 }
 
 export function ServiceCard({
@@ -42,30 +43,39 @@ export function ServiceCard({
   imageUrl,
   securityScore = 85,
   responseTime = "24h",
+  onClick
 }: ServiceCardProps) {
   
   const navigate = useNavigate();
 
   // Enhanced function to navigate to service details
-  const handleViewDetails = () => {
-    navigate(`/service/${id}`, { 
-      state: { 
-        serviceDetail: {
-          id,
-          title,
-          description,
-          provider,
-          pricing,
-          rating,
-          completedJobs,
-          category,
-          tags,
-          imageUrl,
-          securityScore,
-          responseTime
+  const handleViewDetails = (e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+    }
+    
+    if (onClick) {
+      onClick();
+    } else {
+      navigate(`/service/${id}`, { 
+        state: { 
+          serviceDetail: {
+            id,
+            title,
+            description,
+            provider,
+            pricing,
+            rating,
+            completedJobs,
+            category,
+            tags,
+            imageUrl,
+            securityScore,
+            responseTime
+          }
         }
-      }
-    });
+      });
+    }
   };
 
   // Define consistent high-quality images with theme-aligned gradients for different security categories
@@ -88,7 +98,10 @@ export function ServiceCard({
   const displayImage = imageUrl || getCategoryImage(category);
 
   return (
-    <Card className="overflow-hidden border border-border/50 hover:border-primary/50 transition-all duration-300 bg-card h-full flex flex-col group">
+    <Card 
+      className="overflow-hidden border border-border/50 hover:border-primary/50 transition-all duration-300 bg-card h-full flex flex-col group cursor-pointer" 
+      onClick={handleViewDetails}
+    >
       <CardHeader className="p-0">
         <div className="h-48 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10">
@@ -189,8 +202,8 @@ export function ServiceCard({
           <Button 
             variant="default" 
             size="sm" 
-            className="group-hover:bg-primary/90"
-            onClick={handleViewDetails}
+            className="group-hover:bg-primary/90 z-10"
+            onClick={(e) => handleViewDetails(e)}
           >
             <span>View Details</span>
             <ArrowRight className="ml-1 h-3 w-3 opacity-70 transition-transform group-hover:translate-x-1" />

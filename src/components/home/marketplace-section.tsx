@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { MarketplaceHeader } from "@/components/home/marketplace/marketplace-header";
 import { CategoryTabs } from "@/components/home/marketplace/category-tabs";

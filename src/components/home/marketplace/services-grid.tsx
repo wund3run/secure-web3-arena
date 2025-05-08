@@ -2,6 +2,7 @@
 import { ServiceCard } from "@/components/marketplace/service-card";
 import { ServiceCardProps } from "@/data/marketplace-data";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useNavigate } from "react-router-dom";
 
 interface ServicesGridProps {
   services: ServiceCardProps[];
@@ -9,6 +10,16 @@ interface ServicesGridProps {
 }
 
 export function ServicesGrid({ services, isLoading = false }: ServicesGridProps) {
+  const navigate = useNavigate();
+  
+  const handleServiceClick = (service: ServiceCardProps) => {
+    navigate(`/service/${service.id}`, { 
+      state: { 
+        serviceDetail: service
+      }
+    });
+  };
+  
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -28,6 +39,7 @@ export function ServicesGrid({ services, isLoading = false }: ServicesGridProps)
         <ServiceCard 
           key={service.id} 
           {...service} 
+          onClick={() => handleServiceClick(service)}
         />
       ))}
       

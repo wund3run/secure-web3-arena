@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -54,8 +55,26 @@ export function MobileFriendlyCard({
     if (onSelect) {
       onSelect();
     } else {
-      navigate(`/service/${id}`);
+      navigate(`/service/${id}`, { 
+        state: { 
+          serviceDetail: {
+            id,
+            title,
+            description,
+            provider,
+            pricing,
+            category,
+            tags,
+            imageUrl
+          }
+        }
+      });
     }
+  };
+
+  const handleViewDetailsClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    handleCardClick();
   };
 
   // Generate themed images for different categories
@@ -76,7 +95,7 @@ export function MobileFriendlyCard({
 
   return (
     <Card 
-      className="h-full flex flex-col transform transition-all duration-300 hover:shadow-md border border-border/50 hover:border-primary/50 active:scale-[0.99] touch-manipulation"
+      className="h-full flex flex-col transform transition-all duration-300 hover:shadow-md border border-border/50 hover:border-primary/50 active:scale-[0.99] touch-manipulation cursor-pointer"
       onClick={handleCardClick}
     >
       <CardHeader className="p-0">
@@ -105,7 +124,7 @@ export function MobileFriendlyCard({
             <Button
               variant="secondary"
               size="icon"
-              className="h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white touch-manipulation"
+              className="h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white touch-manipulation z-10"
               onClick={toggleFavorite}
             >
               <Heart
@@ -163,9 +182,9 @@ export function MobileFriendlyCard({
       
       <CardFooter className="p-3 pt-0">
         <Button 
-          className="w-full touch-manipulation h-8 text-sm"
+          className="w-full touch-manipulation h-8 text-sm z-10"
           variant="default"
-          onClick={handleCardClick}
+          onClick={handleViewDetailsClick}
         >
           View Details
           <ArrowRight className="ml-1 h-3.5 w-3.5" />
