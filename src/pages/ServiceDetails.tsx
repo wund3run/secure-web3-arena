@@ -1,296 +1,270 @@
-import { useState, useEffect } from "react";
+
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
-import { ClientTestimonial } from "@/components/trust/client-testimonial";
-import { TrustSignals } from "@/components/trust/trust-signals";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ServiceReviews } from "@/components/marketplace/service-reviews";
 import { SecurityScore } from "@/components/trust/security-metrics";
-import { ReportIssue } from "@/components/trust/report-issue";
-import { ServiceCardProps } from "@/data/marketplace-data";
+import { ChevronLeft, CheckCheck, Clock, Calendar, MessageSquare, Shield } from "lucide-react";
 
 export default function ServiceDetails() {
   const location = useLocation();
   const navigate = useNavigate();
-  const service = location.state?.serviceDetail as ServiceCardProps;
-
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [reviewText, setReviewText] = useState("");
-	const [date, setDate] = useState<Date | undefined>(new Date());
-
-  useEffect(() => {
-    if (!service) {
-      // Redirect to marketplace if service details are not available
-      navigate("/marketplace");
-    }
-  }, [service, navigate]);
-
-  if (!service) {
-    // Render a loading state or a message indicating redirection
-    return <div>Redirecting to Marketplace...</div>;
-  }
-
-  const handleReviewSubmit = () => {
-    // Implement your review submission logic here
-    console.log("Review submitted:", reviewText);
-    setIsDialogOpen(false);
-    setReviewText("");
-  };
-
-  // Fix the testimonials data structure to match the required type
-  const testimonials = [
+  const [activeTab, setActiveTab] = useState("overview");
+  const [service, setService] = useState<any>(null);
+  
+  // Sample reviews for the service
+  const reviews = [
     {
-      name: "Alex Johnson",
-      avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-      isVerified: true,
-      badges: ["Top Client", "5+ Projects"]
+      id: "rev1",
+      author: {
+        name: "Alex Johnson",
+        avatar: "https://i.pravatar.cc/150?img=1",
+        isVerified: true,
+      },
+      rating: 5,
+      content: "Exceptionally thorough security audit. They identified critical vulnerabilities in our smart contract that other auditors missed. The remediation advice was clear and actionable.",
+      date: "2 weeks ago",
+      helpful: 12
     },
     {
-      name: "Sarah Williams",
-      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-      isVerified: true,
-      badges: ["Enterprise"]
-    },
-    {
-      name: "Michael Chen",
-      avatar: "https://randomuser.me/api/portraits/men/22.jpg",
-      isVerified: false,
-      badges: ["New Client"]
+      id: "rev2",
+      author: {
+        name: "Maria Chen",
+        avatar: "https://i.pravatar.cc/150?img=5",
+        isVerified: true,
+      },
+      rating: 4,
+      content: "Good communication throughout the entire process. They were responsive to questions and provided detailed explanations for all identified issues.",
+      date: "1 month ago",
+      helpful: 8
     }
   ];
 
-  return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+  // Get service details from location state or fetch from API
+  useEffect(() => {
+    if (location.state?.serviceDetail) {
+      setService(location.state.serviceDetail);
+    } else {
+      // In a real app, you would fetch the service details from the API
+      // For now, we'll just redirect to the marketplace
+      navigate("/marketplace");
+    }
+  }, [location.state, navigate]);
 
-      <main className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Hero Section */}
-          <div className="relative rounded-lg overflow-hidden mb-8">
-            <img
+  // If service is not loaded yet
+  if (!service) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center">
+          <div className="animate-pulse flex flex-col items-center">
+            <div className="h-12 w-48 bg-muted rounded-md mb-4"></div>
+            <div className="h-6 w-64 bg-muted rounded-md"></div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <Helmet>
+        <title>{service.title} | Hawkly Security</title>
+        <meta name="description" content={service.description.substring(0, 160)} />
+      </Helmet>
+      <Navbar />
+      <div className="flex-grow">
+        {/* Hero Section */}
+        <div className="relative h-64 md:h-80">
+          <div className="absolute inset-0">
+            <img 
               src={service.imageUrl || `https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1600&auto=format&fit=crop`}
               alt={service.title}
-              className="w-full h-64 object-cover"
+              className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-            <div className="absolute bottom-4 left-4">
-              <Badge className="bg-primary/90 text-white mb-2">{service.category}</Badge>
-              <h1 className="text-3xl font-bold text-white">{service.title}</h1>
-            </div>
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/40"></div>
           </div>
-
-          {/* Service Details Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Left Column - Service Description and Features */}
-            <div className="md:col-span-2">
-              <h2 className="text-2xl font-bold mb-4">Service Overview</h2>
-              <p className="text-muted-foreground mb-6">{service.description}</p>
-
-              <h3 className="text-xl font-bold mb-3">Key Features</h3>
-              <ul className="list-disc list-inside text-muted-foreground mb-6">
-                {service.tags.map((tag: string, index: number) => (
-                  <li key={index}>{tag}</li>
-                ))}
-              </ul>
-
-              {/* Accordion for More Details */}
-              <Accordion type="single" collapsible className="w-full mb-6">
-                <AccordionItem value="details">
-                  <AccordionTrigger>Additional Details</AccordionTrigger>
-                  <AccordionContent>
-                    <p className="text-muted-foreground">
-                      This service provides comprehensive security audits and
-                      penetration testing for smart contracts, ensuring the
-                      highest level of protection against potential threats.
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="pricing">
-                  <AccordionTrigger>Pricing Information</AccordionTrigger>
-                  <AccordionContent>
-                    <p className="text-muted-foreground">
-                      The pricing for this service is {service.pricing.amount}{" "}
-                      {service.pricing.currency} per audit. Custom pricing
-                      options are available for long-term engagements.
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-
-              {/* Client Testimonials */}
-              <h3 className="text-xl font-bold mb-3">Client Testimonials</h3>
-              <div className="space-y-4">
-                {testimonials.map((testimonial, index) => (
-                  <div key={index} className="p-4">
-                    <ClientTestimonial client={testimonial} quote={`${service.title} exceeded our expectations. The audit was thorough and the security recommendations were actionable.`} />
-                  </div>
-                ))}
-              </div>
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-end pb-6">
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="bg-black/30 backdrop-blur-sm border-white/20 text-white hover:bg-black/50"
+                onClick={() => navigate("/marketplace")}
+              >
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                Back to Marketplace
+              </Button>
+              <Badge className="bg-primary/90 text-white">{service.category}</Badge>
             </div>
-
-            {/* Right Column - Booking and Provider Info */}
-            <div>
-              <div className="bg-card border border-border rounded-lg p-6 sticky top-4">
-                <div className="text-2xl font-bold text-center mb-4">
-                  {service.pricing.amount} {service.pricing.currency}
-                </div>
-
-                <div className="flex justify-between text-sm text-muted-foreground mb-4">
-                  <span>Provider</span>
-                  <span className="font-medium">{service.provider.name}</span>
-                </div>
-
-                <div className="flex justify-between text-sm text-muted-foreground mb-4">
-                  <span>Reputation</span>
-                  <span className="font-medium">{service.provider.reputation}%</span>
-                </div>
-
-                <div className="flex justify-between text-sm text-muted-foreground mb-4">
-                  <span>Completed Jobs</span>
-                  <span className="font-medium">{service.completedJobs}</span>
-                </div>
-
-                {/* Calendar and Booking Section */}
-                <div className="mb-4">
-                  <h4 className="font-semibold text-sm mb-2">Book a Consultation</h4>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !date && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {date ? format(date, "PPP") : <span>Pick a date</span>}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="center" side="bottom">
-                      <Calendar
-                        mode="single"
-                        selected={date}
-                        onSelect={setDate}
-                        disabled={(date) =>
-                          date < new Date()
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-
-                <div className="space-y-3 mt-6">
-                  <Button className="w-full bg-gradient-to-r from-primary to-secondary">
-                    Request Service
-                  </Button>
-                  <Button variant="outline" className="w-full">
-                    Contact Provider
-                  </Button>
-                </div>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">{service.title}</h1>
+            <div className="flex items-center flex-wrap gap-3">
+              <div className="flex items-center gap-1 text-white/90">
+                <SecurityScore score={service.securityScore || 85} size="sm" />
+                <span className="text-sm">Security Score</span>
+              </div>
+              <div className="h-4 border-l border-white/30"></div>
+              <div className="flex items-center text-white/90">
+                <CheckCheck className="h-4 w-4 mr-1 text-green-400" />
+                <span className="text-sm">{service.completedJobs} Completed Jobs</span>
+              </div>
+              <div className="h-4 border-l border-white/30"></div>
+              <div className="flex items-center text-white/90">
+                <Clock className="h-4 w-4 mr-1 text-orange-300" />
+                <span className="text-sm">{service.responseTime || "24h"} Response Time</span>
               </div>
             </div>
           </div>
-
-          {/* Trust and Security Section */}
-          <section className="mt-12">
-            <h2 className="text-2xl font-bold mb-4">Trust & Security</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-xl font-semibold mb-2">Trust Signals</h3>
-                <TrustSignals reputation={service.provider.reputation} isVerified={service.provider.isVerified} />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-2">Security Score</h3>
-                <SecurityScore score={85} />
-              </div>
-            </div>
-            <div className="mt-6">
-              <ReportIssue />
-            </div>
-          </section>
-
-          {/* Review Submission Section */}
-          <section className="mt-12">
-            <h2 className="text-2xl font-bold mb-4">Leave a Review</h2>
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline">Write a Review</Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl">
-                <div className="grid gap-4">
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-medium">Write a Review</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Share your experience with this service.
-                    </p>
-                  </div>
-                  <div className="grid gap-2">
-                    <Textarea
-                      placeholder="Your review here..."
-                      value={reviewText}
-                      onChange={(e) => setReviewText(e.target.value)}
-                    />
-                  </div>
-                  <Button onClick={handleReviewSubmit}>Submit Review</Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-          </section>
         </div>
-      </main>
-
+        
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content Area */}
+            <div className="lg:col-span-2 space-y-8">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="mb-6">
+                  <TabsTrigger value="overview">Overview</TabsTrigger>
+                  <TabsTrigger value="reviews">Reviews</TabsTrigger>
+                  <TabsTrigger value="samples">Work Samples</TabsTrigger>
+                </TabsList>
+                <TabsContent value="overview" className="space-y-6">
+                  <div>
+                    <h2 className="text-xl font-bold mb-4">Service Description</h2>
+                    <p className="text-muted-foreground">{service.description}</p>
+                  </div>
+                  
+                  <div>
+                    <h2 className="text-xl font-bold mb-4">Key Features</h2>
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {service.tags.map((tag: string) => (
+                        <li key={tag} className="flex items-center">
+                          <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
+                          <span>{tag}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h2 className="text-xl font-bold mb-4">Delivery Process</h2>
+                    <div className="border border-border rounded-lg overflow-hidden">
+                      <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
+                        <div className="p-4 flex flex-col items-center text-center">
+                          <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-3">
+                            <Calendar className="h-5 w-5" />
+                          </div>
+                          <h3 className="font-semibold mb-1">Initial Consultation</h3>
+                          <p className="text-sm text-muted-foreground">We'll discuss your project's specific security needs</p>
+                        </div>
+                        <div className="p-4 flex flex-col items-center text-center">
+                          <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-3">
+                            <Shield className="h-5 w-5" />
+                          </div>
+                          <h3 className="font-semibold mb-1">Security Analysis</h3>
+                          <p className="text-sm text-muted-foreground">Our experts conduct a comprehensive security audit</p>
+                        </div>
+                        <div className="p-4 flex flex-col items-center text-center">
+                          <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-3">
+                            <MessageSquare className="h-5 w-5" />
+                          </div>
+                          <h3 className="font-semibold mb-1">Detailed Reporting</h3>
+                          <p className="text-sm text-muted-foreground">Receive a comprehensive report with actionable insights</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="reviews">
+                  <ServiceReviews 
+                    serviceId={service.id}
+                    averageRating={service.rating}
+                    totalReviews={reviews.length}
+                    reviews={reviews}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="samples">
+                  <div className="bg-muted/30 border border-border rounded-lg p-8 text-center">
+                    <h3 className="font-semibold text-lg mb-2">Sample Reports Available on Request</h3>
+                    <p className="text-muted-foreground mb-4">Contact the provider to see samples of their previous work</p>
+                    <Button>Contact Provider</Button>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
+            
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* Pricing Card */}
+              <div className="bg-card border border-border rounded-lg shadow-sm overflow-hidden">
+                <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-6">
+                  <div className="text-3xl font-bold text-center">
+                    {service.pricing.amount} {service.pricing.currency}
+                  </div>
+                </div>
+                <div className="p-6 space-y-5">
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Provider</span>
+                      <span className="font-medium">{service.provider.name}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Reputation</span>
+                      <span className="font-medium">{service.provider.reputation}%</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Response Time</span>
+                      <span className="font-medium">{service.responseTime || "24h"}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="pt-4 border-t border-border">
+                    <Button className="w-full bg-gradient-to-r from-primary to-secondary mb-3">
+                      Request Service
+                    </Button>
+                    <Button variant="outline" className="w-full">
+                      Contact Provider
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Provider Card */}
+              <div className="bg-card border border-border rounded-lg shadow-sm p-6 space-y-4">
+                <h3 className="font-bold">About the Provider</h3>
+                
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                    {service.provider.name.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="font-semibold">{service.provider.name}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {service.provider.level === "expert" 
+                        ? "Expert Auditor" 
+                        : service.provider.level === "verified" 
+                          ? "Verified Provider" 
+                          : "Security Provider"}
+                    </div>
+                  </div>
+                </div>
+                
+                <Button variant="outline" className="w-full">
+                  View Full Profile
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <Footer />
     </div>
   );
