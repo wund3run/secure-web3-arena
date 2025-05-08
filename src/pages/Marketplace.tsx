@@ -16,7 +16,7 @@ import { BlockchainEcosystems } from "@/components/marketplace/sections/Blockcha
 import { ComprehensiveServices } from "@/components/marketplace/sections/ComprehensiveServices";
 import { MarketplaceCallToAction } from "@/components/marketplace/sections/MarketplaceCallToAction";
 import { ComparisonFloatingIndicator } from "@/components/marketplace/sections/ComparisonFloatingIndicator";
-import { useMarketplaceServices } from "@/components/marketplace/hooks/useMarketplaceServices";
+import { useMarketplaceServices, BlockchainEcosystem } from "@/components/marketplace/hooks/useMarketplaceServices";
 import { useMarketplaceComparison } from "@/components/marketplace/hooks/useMarketplaceComparison";
 import { useMarketplaceState } from "@/components/marketplace/hooks/useMarketplaceState";
 import { ServiceCardProps } from "@/data/marketplace-data";
@@ -128,7 +128,7 @@ export default function Marketplace() {
                 />
 
                 {/* Blockchain Ecosystem Logos */}
-                <BlockchainEcosystems ecosystems={BLOCKCHAIN_ECOSYSTEMS} />
+                <BlockchainEcosystems ecosystems={BLOCKCHAIN_ECOSYSTEMS as BlockchainEcosystem[]} />
 
                 {/* Services Grid with Optimized Listing Component */}
                 <h3 className="text-xl font-bold mb-4 flex items-center">

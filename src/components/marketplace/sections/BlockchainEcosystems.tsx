@@ -1,11 +1,6 @@
 
 import { toast } from "sonner";
-
-interface BlockchainEcosystem {
-  name: string;
-  logoUrl: string;
-  color: string;
-}
+import { BlockchainEcosystem } from "../hooks/useMarketplaceServices";
 
 interface BlockchainEcosystemsProps {
   ecosystems?: BlockchainEcosystem[];
