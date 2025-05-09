@@ -1,6 +1,5 @@
-
 import { useRef, useState, useEffect } from "react";
-import { MobileFriendlyCard } from "./mobile-friendly-card";
+import { MobileFriendlyCard } from "./mobile-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ServiceCardProps } from "@/data/marketplace-data";
 import { Shield } from "lucide-react"; 
