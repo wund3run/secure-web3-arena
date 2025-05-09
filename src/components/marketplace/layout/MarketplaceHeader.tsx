@@ -32,7 +32,7 @@ export function MarketplaceHeader({
               Request for Audit
             </Button>
           </Link>
-          <Link to="/service-provider-onboarding" className="w-full sm:w-auto">
+          <Link to="/join" className="w-full sm:w-auto">
             <Button 
               className="w-full bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] hover:opacity-90 flex items-center justify-center shadow-sm"
             >

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Helmet } from 'react-helmet-async';
@@ -74,9 +75,8 @@ function App() {
             <Route path="/submit-service" element={<SubmitService />} />
             <Route path="/contact-provider/:providerId" element={<ContactProvider />} />
             
-            {/* Join Redirect - Keep both for compatibility */}
+            {/* Join Redirect */}
             <Route path="/join" element={<Navigate to="/service-provider-onboarding" replace />} />
-            <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
             
             {/* Protected Routes */}
             <Route path="/request-audit" element={
@@ -106,6 +106,7 @@ function App() {
             } />
             
             {/* Provider Onboarding */}
+            <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
             <Route path="/auditor-onboarding" element={<AuditorOnboarding />} />
             <Route path="/application-submitted" element={<ApplicationSubmitted />} />
             
