@@ -7,9 +7,15 @@ interface ReportReviewContentProps {
   showingDetails: string | null;
   toggleDetails: (id: string) => void;
   progress: number;
+  incrementProgress: (detailId?: string) => void;
 }
 
-export function ReportReviewContent({ showingDetails, toggleDetails, progress }: ReportReviewContentProps) {
+export function ReportReviewContent({ 
+  showingDetails, 
+  toggleDetails, 
+  progress,
+  incrementProgress 
+}: ReportReviewContentProps) {
   return (
     <div className="space-y-5 p-6">
       <div>
@@ -27,7 +33,10 @@ export function ReportReviewContent({ showingDetails, toggleDetails, progress }:
               description={guidance.description}
               icon={guidance.icon}
               completed={progress >= (index + 1) * 25}
-              onClick={() => toggleDetails(`review-report-${index}`)}
+              onClick={() => {
+                toggleDetails(`review-report-${index}`);
+                incrementProgress(`review-report-${index}`);
+              }}
             />
             {showingDetails === `review-report-${index}` && guidance.details}
           </div>

@@ -7,9 +7,15 @@ interface AuditPreparationContentProps {
   showingDetails: string | null;
   toggleDetails: (id: string) => void;
   progress: number;
+  incrementProgress: (detailId?: string) => void;
 }
 
-export function AuditPreparationContent({ showingDetails, toggleDetails, progress }: AuditPreparationContentProps) {
+export function AuditPreparationContent({ 
+  showingDetails, 
+  toggleDetails, 
+  progress,
+  incrementProgress
+}: AuditPreparationContentProps) {
   return (
     <div className="space-y-5 p-6">
       <div>
@@ -27,7 +33,10 @@ export function AuditPreparationContent({ showingDetails, toggleDetails, progres
               description={step.description}
               icon={step.icon}
               completed={progress >= (index + 1) * 25}
-              onClick={() => toggleDetails(`prepare-audit-${index}`)}
+              onClick={() => {
+                toggleDetails(`prepare-audit-${index}`);
+                incrementProgress(`prepare-audit-${index}`);
+              }}
             />
             {showingDetails === `prepare-audit-${index}` && step.details}
           </div>
