@@ -9,9 +9,10 @@ interface AuthContextProps {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, metadata?: { full_name?: string }) => Promise<void>;
+  signIn: (email: string, password: string, captchaToken: string) => Promise<void>;
+  signUp: (email: string, password: string, metadata?: { full_name?: string }, captchaToken?: string) => Promise<void>;
   signOut: () => Promise<void>;
+  signInWithDiscord: () => Promise<void>;
   updateProfile: (data: any) => Promise<void>;
   verifyOTP: (otp: string) => Promise<void>;
   resendOTP: (email: string) => Promise<void>;
@@ -53,9 +54,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (email: string, password: string, captchaToken: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ 
+        email, 
+        password,
+        options: {
+          captchaToken
+        }
+      });
+      
       if (error) throw error;
 
       // If MFA is required, redirect to 2FA page
@@ -75,13 +83,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signUp = async (email: string, password: string, metadata?: { full_name?: string }) => {
+  const signUp = async (email: string, password: string, metadata?: { full_name?: string }, captchaToken?: string) => {
     try {
       const { error } = await supabase.auth.signUp({ 
         email, 
         password,
         options: {
           data: metadata,
+          captchaToken
         },
       });
       
@@ -92,6 +101,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
     } catch (error: any) {
       toast.error("Error signing up", {
+        description: error.message,
+      });
+      throw error;
+    }
+  };
+
+  const signInWithDiscord = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'discord',
+        options: {
+          redirectTo: `${window.location.origin}/auth-callback`
+        }
+      });
+      
+      if (error) throw error;
+      
+    } catch (error: any) {
+      toast.error("Error signing in with Discord", {
         description: error.message,
       });
       throw error;
@@ -174,7 +202,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       loading, 
       signIn, 
       signUp, 
-      signOut, 
+      signOut,
+      signInWithDiscord, 
       updateProfile,
       verifyOTP,
       resendOTP,

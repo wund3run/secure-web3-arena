@@ -7,13 +7,18 @@ import { useAuth } from '@/contexts/AuthContext';
 import { AuthLayout } from '@/components/auth/AuthLayout';
 import { SignInForm, SignUpForm } from '@/components/auth/AuthForms';
 import { SocialLoginOptions } from '@/components/auth/SocialLoginOptions';
+import { CaptchaVerification } from '@/components/auth/CaptchaVerification';
+import { Button } from '@/components/ui/button';
+import { Discord } from 'lucide-react';
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { user, signIn, signUp } = useAuth();
+  const { user, signIn, signUp, signInWithDiscord } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<string>("signin");
   const [error, setError] = useState<string | null>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaError, setCaptchaError] = useState<string | null>(null);
 
   // Form states
   const [email, setEmail] = useState("");
@@ -27,13 +32,34 @@ const Auth = () => {
     }
   }, [user, navigate]);
 
+  const handleCaptchaVerify = (token: string) => {
+    setCaptchaToken(token);
+    setCaptchaError(null);
+  };
+
+  const handleCaptchaExpire = () => {
+    setCaptchaToken(null);
+    setCaptchaError("Captcha has expired. Please verify again.");
+  };
+
+  const validateCaptcha = () => {
+    if (!captchaToken) {
+      setCaptchaError("Please complete the captcha verification");
+      return false;
+    }
+    return true;
+  };
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    
+    if (!validateCaptcha()) return;
+    
     setIsLoading(true);
 
     try {
-      await signIn(email, password);
+      await signIn(email, password, captchaToken as string);
       // Redirect will happen automatically due to the useEffect
     } catch (error) {
       // Error is already handled in the auth context
@@ -44,14 +70,29 @@ const Auth = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    
+    if (!validateCaptcha()) return;
+    
     setIsLoading(true);
 
     try {
-      await signUp(email, password, { full_name: fullName });
+      await signUp(email, password, { full_name: fullName }, captchaToken as string);
       setActiveTab("signin");
     } catch (error) {
       // Error is already handled in the auth context
     } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDiscordSignIn = async () => {
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      await signInWithDiscord();
+    } catch (error) {
+      // Error is already handled in the auth context
       setIsLoading(false);
     }
   };
@@ -98,6 +139,25 @@ const Auth = () => {
               />
             </TabsContent>
           </Tabs>
+          
+          <CaptchaVerification 
+            onVerify={handleCaptchaVerify} 
+            onExpire={handleCaptchaExpire} 
+            error={captchaError}
+          />
+
+          <div className="mt-6">
+            <Button
+              variant="outline"
+              className="w-full bg-[#5865F2] text-white hover:bg-[#4752c4] hover:text-white"
+              type="button"
+              onClick={handleDiscordSignIn}
+              disabled={isLoading}
+            >
+              <Discord className="mr-2 h-5 w-5" />
+              Continue with Discord
+            </Button>
+          </div>
           
           <SocialLoginOptions />
         </CardContent>
