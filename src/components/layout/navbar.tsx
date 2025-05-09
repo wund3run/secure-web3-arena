@@ -93,7 +93,7 @@ export function Navbar() {
                 <Link to="/auth">Sign In</Link>
               </Button>
               <Button asChild>
-                <Link to="/join">Join the Circle</Link>
+                <Link to="/service-provider-onboarding">Join the Circle</Link>
               </Button>
             </>
           ) : (

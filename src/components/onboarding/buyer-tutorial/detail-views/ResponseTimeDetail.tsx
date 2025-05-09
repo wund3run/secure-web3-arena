@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Clock } from "lucide-react";
+import { Clock, Check } from "lucide-react";
 
 export function ResponseTimeDetail() {
   return (
@@ -8,19 +8,19 @@ export function ResponseTimeDetail() {
       <h4 className="font-semibold mb-2">Communication expectations:</h4>
       <div className="space-y-3">
         <div className="flex items-center">
-          <div className="w-4 h-4 rounded-full bg-green-500 mr-2"></div>
+          <Check className="h-4 w-4 text-primary mr-2" />
           <span className="text-sm">Initial response within 24 hours</span>
         </div>
         <div className="flex items-center">
-          <div className="w-4 h-4 rounded-full bg-green-500 mr-2"></div>
+          <Check className="h-4 w-4 text-primary mr-2" />
           <span className="text-sm">Regular progress updates during audit</span>
         </div>
         <div className="flex items-center">
-          <div className="w-4 h-4 rounded-full bg-green-500 mr-2"></div>
+          <Check className="h-4 w-4 text-primary mr-2" />
           <span className="text-sm">Immediate notification for critical findings</span>
         </div>
         <div className="flex items-center">
-          <div className="w-4 h-4 rounded-full bg-green-500 mr-2"></div>
+          <Check className="h-4 w-4 text-primary mr-2" />
           <span className="text-sm">Post-audit support for implementing fixes</span>
         </div>
       </div>

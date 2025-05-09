@@ -1,5 +1,5 @@
 
-import { ArrowRight, Shield, Check, FileText, Mail, UserPlus } from "lucide-react";
+import { ArrowRight, Shield, Check, FileText, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -24,7 +24,7 @@ export function MarketplaceFooter() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
-            <Link to="/join">
+            <Link to="/service-provider-onboarding">
               <Button size="lg" variant="outline" className="flex items-center border-primary text-primary hover:bg-primary/10">
                 <Shield className="mr-2 h-5 w-5" />
                 Join the Circle
@@ -109,7 +109,7 @@ export function MarketplaceFooter() {
             <Check className="h-4 w-4 text-primary mr-2" />
             <span>DeFi Security Reviews</span>
           </Link>
-          <Link to="/join" className="flex items-center p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
+          <Link to="/service-provider-onboarding" className="flex items-center p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
             <Shield className="h-4 w-4 text-primary mr-2" />
             <span>Join the Circle</span>
           </Link>

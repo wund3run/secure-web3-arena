@@ -39,17 +39,35 @@ export function TutorialTabs({
     >
       <div className="px-6 pt-4">
         <TabsList className="w-full grid grid-cols-3 h-auto p-1 mb-2">
-          <TabsTrigger value="choose-auditor" className="py-2 text-xs sm:text-sm flex items-center justify-center">
+          <TabsTrigger 
+            value="choose-auditor" 
+            className="py-2 text-xs sm:text-sm flex items-center justify-center relative"
+          >
             <Shield className="h-4 w-4 mr-2 hidden sm:inline" />
             <span>Choosing an Auditor</span>
+            {progress["choose-auditor"] === 100 && (
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full"></span>
+            )}
           </TabsTrigger>
-          <TabsTrigger value="prepare-audit" className="py-2 text-xs sm:text-sm flex items-center justify-center">
+          <TabsTrigger 
+            value="prepare-audit" 
+            className="py-2 text-xs sm:text-sm flex items-center justify-center relative"
+          >
             <FileCheck className="h-4 w-4 mr-2 hidden sm:inline" />
             <span>Preparing for Audit</span>
+            {progress["prepare-audit"] === 100 && (
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full"></span>
+            )}
           </TabsTrigger>
-          <TabsTrigger value="review-report" className="py-2 text-xs sm:text-sm flex items-center justify-center">
+          <TabsTrigger 
+            value="review-report" 
+            className="py-2 text-xs sm:text-sm flex items-center justify-center relative"
+          >
             <Book className="h-4 w-4 mr-2 hidden sm:inline" />
             <span>Reviewing Reports</span>
+            {progress["review-report"] === 100 && (
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full"></span>
+            )}
           </TabsTrigger>
         </TabsList>
       </div>

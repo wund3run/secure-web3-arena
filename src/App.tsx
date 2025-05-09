@@ -75,8 +75,8 @@ function App() {
             <Route path="/submit-service" element={<SubmitService />} />
             <Route path="/contact-provider/:providerId" element={<ContactProvider />} />
             
-            {/* Join Redirect */}
-            <Route path="/join" element={<Navigate to="/service-provider-onboarding" replace />} />
+            {/* Join Routes - both direct and redirect */}
+            <Route path="/join" element={<ServiceProviderOnboarding />} />
             
             {/* Protected Routes */}
             <Route path="/request-audit" element={

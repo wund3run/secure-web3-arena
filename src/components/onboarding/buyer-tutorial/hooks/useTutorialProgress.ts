@@ -12,8 +12,8 @@ export function useTutorialProgress() {
 
   const incrementProgress = (tab: string) => {
     setProgress(prev => {
-      // For the auditor selection tab, increment by 20% each time
-      // For other tabs, increment by 25% each time
+      // For the auditor selection tab, increment by 20% each time (5 items)
+      // For other tabs, increment by 25% each time (4 items)
       const incrementAmount = tab === "choose-auditor" ? 20 : 25;
       
       // Don't exceed 100%
@@ -26,6 +26,7 @@ export function useTutorialProgress() {
     });
   };
 
+  // Check if all tabs are complete
   const allCompleted = 
     progress["choose-auditor"] === 100 &&
     progress["prepare-audit"] === 100 &&
