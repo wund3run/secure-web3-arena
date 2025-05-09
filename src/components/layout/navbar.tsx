@@ -36,10 +36,8 @@ export function Navbar() {
           <NavigationMenu className="hidden md:flex ml-6">
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Link to="/marketplace" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Security Services
-                  </NavigationMenuLink>
+                <Link to="/marketplace" className={navigationMenuTriggerStyle()}>
+                  Security Services
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
@@ -62,10 +60,8 @@ export function Navbar() {
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/contact" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Contact
-                  </NavigationMenuLink>
+                <Link to="/contact" className={navigationMenuTriggerStyle()}>
+                  Contact
                 </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
