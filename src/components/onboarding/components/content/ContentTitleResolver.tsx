@@ -1,5 +1,5 @@
 
-interface ContentTitleResolverProps {
+interface ContentStateProps {
   showConnectWallet: boolean;
   showUserTypeSelection: boolean;
   showVerification: boolean;
@@ -13,7 +13,7 @@ export function ContentTitleResolver({
   showVerification,
   showTutorial,
   showCompletion
-}: ContentTitleResolverProps) {
+}: ContentStateProps) {
   // Dynamically determine title based on current view
   if (showConnectWallet) return "Connect to Hawkly";
   if (showUserTypeSelection) return "Choose Your Path";
@@ -29,7 +29,7 @@ export function ContentDescriptionResolver({
   showTutorial,
   showCompletion,
   showUserTypeSelection
-}: ContentTitleResolverProps) {
+}: ContentStateProps) {
   // Dynamically determine description based on current view
   if (showConnectWallet) return "Choose your preferred authentication method";
   if (showVerification || showTutorial || showCompletion || showUserTypeSelection) return null;
