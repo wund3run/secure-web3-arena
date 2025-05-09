@@ -11,7 +11,11 @@ export function MobileCardFooter({ onClick }: MobileCardFooterProps) {
     <Button 
       className="w-full touch-manipulation h-8 text-sm z-10"
       variant="default"
-      onClick={onClick}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onClick(e);
+      }}
     >
       View Details
       <ArrowRight className="ml-1 h-3.5 w-3.5" />
