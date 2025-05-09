@@ -1,5 +1,5 @@
 
-import { ServiceCard } from "@/components/marketplace/service-card";
+import { ServiceCard } from "@/components/marketplace/card";
 import { ServiceCardProps } from "@/data/marketplace-data";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
