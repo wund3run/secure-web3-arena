@@ -149,9 +149,9 @@ export function MarketplaceSection() {
   );
 }
 
-// Add SERVICES to the Window interface
+// Update the Window interface declaration to match the one in Marketplace.tsx
 declare global {
   interface Window {
-    SERVICES?: typeof SERVICES;
+    SERVICES?: any[];
   }
 }
