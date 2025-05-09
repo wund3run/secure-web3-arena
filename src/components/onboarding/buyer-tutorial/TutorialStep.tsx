@@ -17,16 +17,25 @@ export function TutorialStep({ title, description, icon, completed = false, onCl
       onClick={onClick}
     >
       <div className="flex items-start">
-        <div className={`mr-4 rounded-full p-2 ${completed ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}>
+        <div className={`mr-4 p-2 rounded-full ${completed ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}>
           {icon}
         </div>
-        <div>
+        <div className="flex-1">
           <h3 className="font-medium mb-1 flex items-center">
             {title}
             {completed && <CheckCircle className="ml-2 h-4 w-4 text-primary" />}
           </h3>
           <div className="text-sm text-muted-foreground">{description}</div>
         </div>
+        {onClick && (
+          <div className="ml-2 flex items-center self-center">
+            <div className="p-1 rounded-full hover:bg-muted">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

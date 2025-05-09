@@ -40,7 +40,7 @@ export function AuditorSelectionContent({ showingDetails, toggleDetails, progres
     <div className="space-y-5 p-6">
       <div>
         <h3 className="text-lg font-medium mb-1">How to Choose the Right Security Auditor</h3>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground mb-4">
           Selecting the right security auditor is crucial for the safety of your blockchain project. Here's what to look for:
         </p>
       </div>
@@ -52,7 +52,7 @@ export function AuditorSelectionContent({ showingDetails, toggleDetails, progres
               title={criteria.title}
               description={criteria.description}
               icon={criteria.icon}
-              completed={progress >= (index + 1) * 25}
+              completed={progress >= (index + 1) * 20}
               onClick={() => toggleDetails(`choose-auditor-${index}`)}
             />
             {showingDetails === `choose-auditor-${index}` && renderDetailComponent(showingDetails)}
@@ -60,8 +60,8 @@ export function AuditorSelectionContent({ showingDetails, toggleDetails, progres
         ))}
       </div>
       
-      <div className="pt-2">
-        <div className="flex items-center justify-between mb-1">
+      <div className="pt-4">
+        <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium">Progress</span>
           <span className="text-sm text-muted-foreground">{progress}% complete</span>
         </div>

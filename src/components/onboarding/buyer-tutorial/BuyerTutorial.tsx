@@ -40,9 +40,9 @@ export function BuyerTutorial({ onComplete, onClose }: BuyerTutorialProps) {
   };
 
   return (
-    <Card className="w-full max-w-3xl mx-auto">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center text-xl">
+    <Card className="w-full max-w-3xl mx-auto shadow-md">
+      <CardHeader className="pb-3 border-b">
+        <CardTitle className="flex items-center text-xl font-semibold">
           <Book className="h-5 w-5 mr-2 text-primary" />
           Smart Contract Audit Guide
         </CardTitle>
@@ -57,21 +57,20 @@ export function BuyerTutorial({ onComplete, onClose }: BuyerTutorialProps) {
         progress={progress}
       />
       
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex justify-between pt-4 border-t">
         <Button variant="outline" onClick={onClose}>Close</Button>
-        <div>
-          <Button 
-            onClick={() => {
-              incrementProgress(activeTab);
-              if (allCompleted) {
-                onComplete();
-              }
-            }}
-          >
-            {!allCompleted ? "Mark Section Complete" : "Finish Tutorial"}
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
+        <Button 
+          onClick={() => {
+            incrementProgress(activeTab);
+            if (allCompleted) {
+              onComplete();
+            }
+          }}
+          className="gap-2"
+        >
+          {!allCompleted ? "Mark Section Complete" : "Finish Tutorial"}
+          <ArrowRight className="h-4 w-4" />
+        </Button>
       </CardFooter>
     </Card>
   );

@@ -1,5 +1,6 @@
 
 import React from "react";
+import { Clock } from "lucide-react";
 
 export function ResponseTimeDetail() {
   return (
@@ -23,8 +24,9 @@ export function ResponseTimeDetail() {
           <span className="text-sm">Post-audit support for implementing fixes</span>
         </div>
       </div>
-      <div className="mt-4 text-xs text-muted-foreground">
-        Tip: Send a test message before hiring to gauge response time
+      <div className="mt-4 text-xs text-muted-foreground p-2 bg-primary/5 border border-primary/20 rounded">
+        <Clock className="h-3 w-3 inline mr-1" />
+        <span>Tip: Send a test message before hiring to gauge response time</span>
       </div>
     </div>
   );
