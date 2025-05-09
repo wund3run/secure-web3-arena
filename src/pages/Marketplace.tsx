@@ -8,7 +8,7 @@ import { MarketplaceEnhancedFooter } from "@/components/marketplace/marketplace-
 import { EnhancedFilters } from "@/components/marketplace/enhanced-filters";
 import { OptimizedListingGrid } from "@/components/marketplace/optimized-listing-grid";
 import { ServiceReviews } from "@/components/marketplace/service-reviews";
-import { ServiceComparison } from "@/components/marketplace/service-comparison";
+import { ServiceComparison } from "@/components/marketplace/comparison";
 import { AIRecommendations } from "@/components/marketplace/ai-recommendations";
 import { EnhancedOnboarding } from "@/components/onboarding/enhanced-onboarding";
 import { ServiceCategories } from "@/components/marketplace/sections/ServiceCategories";

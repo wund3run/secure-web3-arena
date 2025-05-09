@@ -4,7 +4,7 @@ import { ServiceCardProps } from "@/data/marketplace-data";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { toast } from "sonner";
-import { ServiceComparison, CompareButton } from "./service-comparison";
+import { ServiceComparison, CompareButton } from "./comparison";
 
 // Custom Compare icon since it's not available in lucide-react
 const Compare = (props: React.SVGProps<SVGSVGElement>) => (

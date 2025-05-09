@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { Compare } from "../icons/Compare";
+import { CompareButton } from "../comparison";
 
 interface ComparisonFloatingIndicatorProps {
   servicesForComparison: any[];
@@ -57,15 +58,10 @@ export function ComparisonFloatingIndicator({
           <span className="text-xs text-muted-foreground">
             {servicesForComparison.length} of 3 selected
           </span>
-          <Button
-            variant={servicesForComparison.length >= 2 ? "default" : "outline"}
-            size="sm"
-            disabled={servicesForComparison.length < 2}
-            onClick={handleOpenComparison}
-          >
-            <Compare className="h-4 w-4 mr-1" />
-            Compare
-          </Button>
+          <CompareButton
+            count={servicesForComparison.length}
+            onCompare={handleOpenComparison}
+          />
         </div>
       </div>
     </div>
