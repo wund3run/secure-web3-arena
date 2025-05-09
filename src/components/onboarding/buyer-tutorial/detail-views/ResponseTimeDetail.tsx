@@ -1,33 +1,39 @@
 
 import React from "react";
-import { Clock, Check } from "lucide-react";
+import { Clock, Check, AlertTriangle } from "lucide-react";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 export function ResponseTimeDetail() {
   return (
-    <div className="mt-4 p-4 rounded-lg bg-muted/50">
-      <h4 className="font-semibold mb-2">Communication expectations:</h4>
-      <div className="space-y-3">
-        <div className="flex items-center">
-          <Check className="h-4 w-4 text-primary mr-2" />
-          <span className="text-sm">Initial response within 24 hours</span>
+    <Card className="mt-3 shadow-sm border-primary/20 overflow-hidden">
+      <CardContent className="p-4 pb-0">
+        <h4 className="font-semibold mb-2 text-primary">Communication expectations:</h4>
+        <div className="space-y-2">
+          <div className="flex items-center">
+            <Check className="h-4 w-4 text-green-500 mr-2 shrink-0" />
+            <span className="text-sm">Initial response within 24 hours</span>
+          </div>
+          <div className="flex items-center">
+            <Check className="h-4 w-4 text-green-500 mr-2 shrink-0" />
+            <span className="text-sm">Regular progress updates during audit</span>
+          </div>
+          <div className="flex items-center">
+            <Check className="h-4 w-4 text-green-500 mr-2 shrink-0" />
+            <span className="text-sm">Immediate notification for critical findings</span>
+          </div>
+          <div className="flex items-center">
+            <Check className="h-4 w-4 text-green-500 mr-2 shrink-0" />
+            <span className="text-sm">Post-audit support for implementing fixes</span>
+          </div>
         </div>
-        <div className="flex items-center">
-          <Check className="h-4 w-4 text-primary mr-2" />
-          <span className="text-sm">Regular progress updates during audit</span>
+      </CardContent>
+      
+      <CardFooter className="mt-3 text-xs text-muted-foreground p-3 bg-primary/5 border-t border-primary/10">
+        <div className="flex items-start">
+          <AlertTriangle className="h-3.5 w-3.5 text-amber-500 mr-1.5 mt-0.5 shrink-0" />
+          <p>Tip: Send a test message before hiring to gauge response time and communication style</p>
         </div>
-        <div className="flex items-center">
-          <Check className="h-4 w-4 text-primary mr-2" />
-          <span className="text-sm">Immediate notification for critical findings</span>
-        </div>
-        <div className="flex items-center">
-          <Check className="h-4 w-4 text-primary mr-2" />
-          <span className="text-sm">Post-audit support for implementing fixes</span>
-        </div>
-      </div>
-      <div className="mt-4 text-xs text-muted-foreground p-2 bg-primary/5 border border-primary/20 rounded">
-        <Clock className="h-3 w-3 inline mr-1" />
-        <span>Tip: Send a test message before hiring to gauge response time</span>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 }

@@ -1,6 +1,7 @@
 
 import { CheckCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 interface TutorialStepProps {
   title: string;
@@ -8,24 +9,41 @@ interface TutorialStepProps {
   icon: React.ReactNode;
   completed?: boolean;
   onClick?: () => void;
+  id?: string;
+  active?: boolean;
 }
 
-export function TutorialStep({ title, description, icon, completed = false, onClick }: TutorialStepProps) {
+export function TutorialStep({ 
+  title, 
+  description, 
+  icon, 
+  completed = false, 
+  onClick, 
+  id,
+  active = false
+}: TutorialStepProps) {
   return (
     <div 
-      className={`p-4 border rounded-lg mb-4 relative transition-all duration-200 
-                ${completed ? 'border-primary/30 bg-primary/5' : 'border-border'} 
-                ${onClick ? 'cursor-pointer hover:border-primary/50 hover:shadow-sm' : ''}`}
+      id={id}
+      className={cn(
+        "p-4 border rounded-lg mb-3 relative transition-all duration-200",
+        completed ? "border-primary/30 bg-primary/5" : "border-border",
+        active ? "ring-2 ring-primary/30 shadow-sm" : "",
+        onClick ? "cursor-pointer hover:border-primary/50 hover:shadow-sm" : ""
+      )}
       onClick={onClick}
     >
       <div className="flex items-start">
-        <div className={`mr-4 p-2 rounded-full ${completed ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}>
+        <div className={cn(
+          "mr-4 p-2 rounded-full flex items-center justify-center",
+          completed ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"
+        )}>
           {icon}
         </div>
         <div className="flex-1 pr-6">
           <h3 className="font-medium mb-1 flex items-center">
             {title}
-            {completed && <CheckCircle className="ml-2 h-4 w-4 text-primary" />}
+            {completed && <CheckCircle className="ml-2 h-4 w-4 text-green-500" />}
           </h3>
           <div className="text-sm text-muted-foreground">{description}</div>
         </div>
@@ -42,7 +60,7 @@ export function TutorialStep({ title, description, icon, completed = false, onCl
                 </div>
               </TooltipTrigger>
               <TooltipContent side="right">
-                <p>View details</p>
+                <p>{active ? 'Hide details' : 'View details'}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

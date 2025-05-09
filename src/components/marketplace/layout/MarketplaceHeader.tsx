@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Shield, FileText } from "lucide-react";
+import { FileText, Shield } from "lucide-react";
 
 interface MarketplaceHeaderProps {
   showFilters: boolean;

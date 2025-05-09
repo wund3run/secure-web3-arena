@@ -15,6 +15,7 @@ import { EnhancedOnboarding } from "@/components/onboarding/enhanced-onboarding"
 import { Button } from "@/components/ui/button";
 import { Shield, ArrowRight } from "lucide-react";
 import { BetaWarning } from "@/components/ui/beta-warning";
+import { toast } from "sonner";
 
 const Index = () => {
   const [showEnhancedOnboarding, setShowEnhancedOnboarding] = useState(false);
@@ -44,6 +45,13 @@ const Index = () => {
   const handleCloseBetaMessage = () => {
     setShowBetaMessage(false);
     localStorage.setItem("hawkly_beta_notice_closed", "true");
+  };
+
+  const handleStartOnboarding = () => {
+    setShowEnhancedOnboarding(true);
+    toast.info("Starting guided onboarding...", { 
+      duration: 2000 
+    });
   };
 
   return (
@@ -113,7 +121,7 @@ const Index = () => {
               <Button 
                 size="lg" 
                 className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 px-8 transition-all"
-                onClick={() => setShowEnhancedOnboarding(true)}
+                onClick={handleStartOnboarding}
               >
                 <Shield className="mr-2 h-5 w-5" />
                 Start Guided Onboarding
