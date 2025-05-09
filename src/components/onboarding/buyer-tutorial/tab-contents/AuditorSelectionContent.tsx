@@ -2,6 +2,13 @@
 import { TutorialStep } from "../TutorialStep";
 import { Progress } from "@/components/ui/progress";
 import { securityCriteria } from "../data/securityCriteria";
+import { 
+  VerificationStatusDetail,
+  PastExperienceDetail,
+  ReviewsRatingsDetail,
+  ResponseTimeDetail,
+  TransparentPricingDetail
+} from "../detail-views";
 
 interface AuditorSelectionContentProps {
   showingDetails: string | null;
@@ -10,6 +17,25 @@ interface AuditorSelectionContentProps {
 }
 
 export function AuditorSelectionContent({ showingDetails, toggleDetails, progress }: AuditorSelectionContentProps) {
+  const renderDetailComponent = (detailId: string | null) => {
+    if (!detailId) return null;
+    
+    switch (detailId) {
+      case "choose-auditor-0":
+        return <VerificationStatusDetail />;
+      case "choose-auditor-1":
+        return <PastExperienceDetail />;
+      case "choose-auditor-2":
+        return <ReviewsRatingsDetail />;
+      case "choose-auditor-3":
+        return <ResponseTimeDetail />;
+      case "choose-auditor-4":
+        return <TransparentPricingDetail />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="space-y-5 p-6">
       <div>
@@ -29,7 +55,7 @@ export function AuditorSelectionContent({ showingDetails, toggleDetails, progres
               completed={progress >= (index + 1) * 25}
               onClick={() => toggleDetails(`choose-auditor-${index}`)}
             />
-            {showingDetails === `choose-auditor-${index}` && criteria.details}
+            {showingDetails === `choose-auditor-${index}` && renderDetailComponent(showingDetails)}
           </div>
         ))}
       </div>
