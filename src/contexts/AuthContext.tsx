@@ -56,6 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string, captchaToken: string) => {
     try {
+      setLoading(true);
       const { error } = await supabase.auth.signInWithPassword({ 
         email, 
         password,
@@ -80,11 +81,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: error.message,
       });
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   const signUp = async (email: string, password: string, metadata?: { full_name?: string }, captchaToken?: string) => {
     try {
+      setLoading(true);
       const { error } = await supabase.auth.signUp({ 
         email, 
         password,
@@ -104,6 +108,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: error.message,
       });
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -112,7 +118,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'discord',
         options: {
-          redirectTo: `${window.location.origin}/auth-callback`
+          redirectTo: `${window.location.origin}/auth-callback`,
+          scopes: 'identify email'
         }
       });
       

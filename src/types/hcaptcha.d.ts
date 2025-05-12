@@ -18,6 +18,7 @@ declare global {
       reset: (widgetId?: number) => void;
       remove: (widgetId?: number) => void;
       execute: (widgetId?: number) => void;
+      getResponse: (widgetId?: number) => string;
     };
   }
 }

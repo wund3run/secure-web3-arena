@@ -61,7 +61,7 @@ const Auth = () => {
     try {
       await signIn(email, password, captchaToken as string);
       // Redirect will happen automatically due to the useEffect
-    } catch (error) {
+    } catch (error: any) {
       // Error is already handled in the auth context
       setIsLoading(false);
     }
@@ -91,6 +91,7 @@ const Auth = () => {
 
     try {
       await signInWithDiscord();
+      // Redirect will happen in AuthContext or AuthCallback
     } catch (error) {
       // Error is already handled in the auth context
       setIsLoading(false);
