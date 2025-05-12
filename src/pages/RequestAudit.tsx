@@ -1,12 +1,12 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { useAuth } from '@/contexts/AuthContext';
 import AuditRequestHeader from '@/components/audit-request/AuditRequestHeader';
-import AuditRequestForm from '@/components/audit-request/AuditRequestForm';
+import WizardRequestForm from '@/components/audit-request/WizardRequestForm';
 import RequestSuccessMessage from '@/components/audit-request/RequestSuccessMessage';
 
 const RequestAudit = () => {
@@ -30,13 +30,23 @@ const RequestAudit = () => {
         <meta name="description" content="Request a comprehensive security audit for your Web3 project. Connect with top security experts." />
       </Helmet>
       <Navbar />
-      <main className="min-h-screen bg-gradient-to-br from-white via-primary/5 to-secondary/5 pt-10 pb-16">
+      <main className="min-h-screen bg-gradient-to-br from-white via-primary/5 to-secondary/5 py-10">
         {formSubmitted ? (
           <RequestSuccessMessage />
         ) : (
-          <>
-            <AuditRequestHeader />
-            <AuditRequestForm 
+          <div className="container px-4 sm:px-6 lg:px-8">
+            {/* Header - simplified for wizard approach */}
+            <div className="text-center mb-8">
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
+                Request Your Security Audit
+              </h1>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+                Tell us about your project and we'll match you with the perfect security experts.
+              </p>
+            </div>
+            
+            {/* Wizard Form */}
+            <WizardRequestForm 
               onSubmitSuccess={() => setFormSubmitted(true)} 
               prefilledData={prefilledData}
             />
@@ -47,7 +57,7 @@ const RequestAudit = () => {
                 Questions? Contact our support team at <a href="mailto:join@hawkly.com" className="text-primary hover:underline">join@hawkly.com</a>
               </p>
             </div>
-          </>
+          </div>
         )}
       </main>
       <Footer />

@@ -29,6 +29,7 @@ const SecurityInsights = lazy(() => import("./pages/SecurityInsights"));
 const TwoFactorAuth = lazy(() => import("./pages/TwoFactorAuth"));
 const RequestAudit = lazy(() => import("./pages/RequestAudit"));
 const Audits = lazy(() => import("./pages/Audits"));
+const AuditDetails = lazy(() => import("./pages/AuditDetails"));
 const Achievements = lazy(() => import("./pages/Achievements"));
 const Escrow = lazy(() => import("./pages/Escrow"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -116,6 +117,11 @@ function App() {
               <Route path="/audits" element={
                 <PrivateRoute>
                   <Audits />
+                </PrivateRoute>
+              } />
+              <Route path="/audit/:auditId" element={
+                <PrivateRoute>
+                  <AuditDetails />
                 </PrivateRoute>
               } />
               <Route path="/achievements" element={
