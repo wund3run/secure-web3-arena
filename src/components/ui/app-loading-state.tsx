@@ -13,7 +13,7 @@ const AppLoadingState: React.FC<AppLoadingProps> = ({
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center bg-background z-50">
       <div className="flex flex-col items-center justify-center p-8 text-center">
-        <HawklyLogo size="large" className="mb-6" />
+        <HawklyLogo variant="large" className="mb-6" />
         <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
         <p className="text-lg font-medium text-muted-foreground">{message}</p>
         <p className="text-sm text-muted-foreground/70 mt-2 max-w-md">
