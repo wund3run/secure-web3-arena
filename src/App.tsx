@@ -16,7 +16,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 const queryClient = new QueryClient();
 
 // Lazy load pages to improve initial loading performance
-const Index = lazy(() => import("./pages/Index.tsx"));  // Explicitly add the file extension
+const Index = lazy(() => import("./pages/Index"));  // Fixed import path
 const Auth = lazy(() => import("./pages/Auth"));
 const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 const Marketplace = lazy(() => import("./pages/Marketplace"));
