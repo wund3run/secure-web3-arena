@@ -1,64 +1,54 @@
 
-import { TabsList as ShadcnTabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DashboardTabValue, TabChangeHandler } from "./types";
+import { TabsList as UITabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  LayoutDashboard, 
+  Users, 
+  ShieldCheck, 
+  ClipboardSignature, 
+  Settings, 
+  FileSpreadsheet, 
+  CheckSquare,
+  FileBarChart 
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { DashboardTabValue } from "./types";
 
-interface TabsListProps extends TabChangeHandler {
+interface TabsListProps {
   activeTab: DashboardTabValue;
+  onTabChange: (tab: DashboardTabValue) => void;
 }
 
 export function TabsList({ activeTab, onTabChange }: TabsListProps) {
+  const tabItems = [
+    { value: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { value: "users", label: "Users", icon: Users },
+    { value: "services", label: "Services", icon: ShieldCheck },
+    { value: "audits", label: "Audits", icon: ClipboardSignature },
+    { value: "providers", label: "Providers", icon: FileSpreadsheet },
+    { value: "approvals", label: "Approvals", icon: CheckSquare },
+    { value: "reports", label: "Reports", icon: FileBarChart },
+    { value: "settings", label: "Settings", icon: Settings },
+  ];
+
   return (
-    <div className="border-b">
-      <ShadcnTabsList className="flex h-14 px-2 overflow-x-auto no-scrollbar">
-        <TabsTrigger 
-          value="dashboard" 
-          className="rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:border-primary"
-        >
-          Dashboard
-        </TabsTrigger>
-        <TabsTrigger 
-          value="services" 
-          className="rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:border-primary"
-        >
-          Services
-        </TabsTrigger>
-        <TabsTrigger 
-          value="approvals" 
-          className="rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:border-primary"
-        >
-          Approvals
-        </TabsTrigger>
-        <TabsTrigger 
-          value="audits" 
-          className="rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:border-primary"
-        >
-          Audits
-        </TabsTrigger>
-        <TabsTrigger 
-          value="users" 
-          className="rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:border-primary"
-        >
-          Users
-        </TabsTrigger>
-        <TabsTrigger 
-          value="providers" 
-          className="rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:border-primary"
-        >
-          Providers
-        </TabsTrigger>
-        <TabsTrigger 
-          value="reports" 
-          className="rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:border-primary"
-        >
-          Reports
-        </TabsTrigger>
-        <TabsTrigger 
-          value="settings" 
-          className="rounded-none px-6 data-[state=active]:border-b-2 data-[state=active]:border-primary"
-        >
-          Settings
-        </TabsTrigger>
-      </ShadcnTabsList>
-    </div>
+    <UITabsList className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-8 h-auto p-1 bg-muted/60">
+      {tabItems.map((tab) => {
+        const Icon = tab.icon;
+        return (
+          <TabsTrigger
+            key={tab.value}
+            value={tab.value}
+            className={cn(
+              "flex flex-col items-center justify-center h-16 gap-1 data-[state=active]:bg-background py-2",
+              activeTab === tab.value ? "text-primary" : "text-muted-foreground"
+            )}
+            onClick={() => onTabChange(tab.value as DashboardTabValue)}
+          >
+            <Icon className="h-4 w-4" />
+            <span className="text-xs">{tab.label}</span>
+          </TabsTrigger>
+        );
+      })}
+    </UITabsList>
   );
 }

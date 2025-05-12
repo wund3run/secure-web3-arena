@@ -1,13 +1,13 @@
 
-import { TabsContent as ShadcnTabsContent } from "@/components/ui/tabs";
+import { TabsContent as UITabsContent } from "@/components/ui/tabs";
 import { DashboardOverview } from "./DashboardOverview";
-import { ServiceManagement } from "@/components/admin/ServiceManagement";
 import { UserManagement } from "@/components/admin/UserManagement";
+import { ServiceManagement } from "@/components/admin/ServiceManagement";
 import { AuditManagement } from "@/components/admin/AuditManagement";
-import SettingsManagement from "@/components/admin/SettingsManagement";
 import { ProviderApplications } from "@/components/admin/ProviderApplications";
 import { AdminServiceApproval } from "@/components/admin/AdminServiceApproval";
 import { ReportManagement } from "@/components/admin/ReportManagement";
+import { SettingsManagement } from "@/components/admin/SettingsManagement";
 import { DashboardTabValue } from "./types";
 
 interface TabsContentProps {
@@ -16,31 +16,38 @@ interface TabsContentProps {
 
 export function TabsContent({ activeTab }: TabsContentProps) {
   return (
-    <div className="p-4 sm:p-6">
-      <ShadcnTabsContent value="dashboard" className="mt-0">
+    <>
+      <UITabsContent value="dashboard" className="space-y-4 mt-4">
         <DashboardOverview />
-      </ShadcnTabsContent>
-      <ShadcnTabsContent value="services" className="mt-0">
-        <ServiceManagement />
-      </ShadcnTabsContent>
-      <ShadcnTabsContent value="approvals" className="mt-0">
-        <AdminServiceApproval />
-      </ShadcnTabsContent>
-      <ShadcnTabsContent value="audits" className="mt-0">
-        <AuditManagement />
-      </ShadcnTabsContent>
-      <ShadcnTabsContent value="users" className="mt-0">
+      </UITabsContent>
+      
+      <UITabsContent value="users" className="space-y-4 mt-4">
         <UserManagement />
-      </ShadcnTabsContent>
-      <ShadcnTabsContent value="providers" className="mt-0">
+      </UITabsContent>
+      
+      <UITabsContent value="services" className="space-y-4 mt-4">
+        <ServiceManagement />
+      </UITabsContent>
+      
+      <UITabsContent value="audits" className="space-y-4 mt-4">
+        <AuditManagement />
+      </UITabsContent>
+      
+      <UITabsContent value="providers" className="space-y-4 mt-4">
         <ProviderApplications />
-      </ShadcnTabsContent>
-      <ShadcnTabsContent value="reports" className="mt-0">
+      </UITabsContent>
+      
+      <UITabsContent value="approvals" className="space-y-4 mt-4">
+        <AdminServiceApproval />
+      </UITabsContent>
+      
+      <UITabsContent value="reports" className="space-y-4 mt-4">
         <ReportManagement />
-      </ShadcnTabsContent>
-      <ShadcnTabsContent value="settings" className="mt-0">
+      </UITabsContent>
+      
+      <UITabsContent value="settings" className="space-y-4 mt-4">
         <SettingsManagement />
-      </ShadcnTabsContent>
-    </div>
+      </UITabsContent>
+    </>
   );
 }
