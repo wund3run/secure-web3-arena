@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { Helmet } from 'react-helmet-async';
-import { NavBar } from "@/components/layout/navbar";
+import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { GuidelinesHeader } from "@/components/guidelines/guidelines-header";
 import { GuidelinesTabs } from "@/components/guidelines/guidelines-tabs";
@@ -18,7 +18,7 @@ export default function AuditGuidelines() {
       </Helmet>
       
       <div className="min-h-screen flex flex-col">
-        <NavBar />
+        <Navbar />
         
         <main className="flex-grow">
           <GuidelinesHeader />
