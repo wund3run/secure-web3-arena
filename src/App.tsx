@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Helmet } from 'react-helmet-async';
@@ -9,6 +8,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AppLoadingState from "./components/ui/app-loading-state";
 import LoadingState from "./components/ui/loading-state";
 import ErrorBoundary from "./components/ui/error-boundary";
+import { BetaBanner } from "./components/ui/beta-banner";
 
 // Import contexts
 import { AuthProvider } from "./contexts/AuthContext";
@@ -93,6 +93,9 @@ function App() {
         
         <div className="app">
           <ErrorBoundary>
+            {/* Add Beta Banner at the top of the application */}
+            <BetaBanner dismissible={true} />
+            
             <Suspense fallback={<LoadingState fullPage message="Loading page..." />}>
               <Routes>
                 {/* Public Routes */}
