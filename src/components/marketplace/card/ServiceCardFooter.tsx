@@ -7,6 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger 
 } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 
 interface ServiceCardFooterProps {
   pricing: {
@@ -20,17 +21,29 @@ export function ServiceCardFooter({
   pricing,
   onViewDetails
 }: ServiceCardFooterProps) {
+  // Determine the price tier badge based on amount
+  const getPriceBadge = (amount: number) => {
+    if (amount >= 5000) return { text: "Premium", className: "bg-amber-100 text-amber-800 border-amber-200" };
+    if (amount >= 2000) return { text: "Standard", className: "bg-blue-100 text-blue-800 border-blue-200" };
+    return { text: "Basic", className: "bg-green-100 text-green-800 border-green-200" };
+  };
+  
+  const priceBadge = getPriceBadge(pricing.amount);
+  
   return (
     <div className="p-5 pt-0 mt-auto border-t border-border/30">
       <div className="w-full flex justify-between items-center">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="flex items-center" tabIndex={0}>
+              <div className="flex items-center gap-2" tabIndex={0}>
                 <div className="font-bold text-lg text-gradient bg-gradient-to-r from-primary to-primary/80">
                   {pricing.amount} {pricing.currency}
                 </div>
-                <InfoIcon className="h-3.5 w-3.5 ml-1 text-muted-foreground" aria-hidden="true" />
+                <Badge variant="outline" className={`text-xs ${priceBadge.className}`}>
+                  {priceBadge.text}
+                </Badge>
+                <InfoIcon className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                 <span className="sr-only">Price information</span>
               </div>
             </TooltipTrigger>
