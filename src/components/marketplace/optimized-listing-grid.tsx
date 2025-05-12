@@ -1,3 +1,4 @@
+
 import { useRef, useState, useEffect } from "react";
 import { MobileFriendlyCard } from "./mobile-card";
 import { Skeleton } from "@/components/ui/skeleton";

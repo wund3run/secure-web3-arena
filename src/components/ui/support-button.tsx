@@ -4,9 +4,11 @@ import { MessageSquare, X, Mail, FileText, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export function SupportButton() {
   const [isOpen, setIsOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   const toggleSupport = () => {
     setIsOpen(!isOpen);
