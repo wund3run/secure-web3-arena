@@ -24,19 +24,19 @@
     --popover-foreground: 222 47% 11%;
     
     --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted-foreground: 215.4 16.3% 36.9%; /* Improved contrast from 46.9% */
     
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --border: 214.3 31.8% 81.4%; /* Improved contrast from 91.4% */
+    --input: 214.3 31.8% 81.4%;
     --ring: 262 57% 45%;
     
     --radius: 0.75rem;
     
     --web3-purple: 262 57% 45%; /* Main purple #8A73E2 */
-    --web3-purple-dark: 252 28% 55%; /* Darker purple #6E59A5 */
-    --web3-teal: 187 100% 42%; /* Teal #33C3F0 */
+    --web3-purple-dark: 252 28% 45%; /* Darker purple #5c46a1 - improved contrast */
+    --web3-teal: 187 100% 40%; /* Teal #28a7d3 - slightly darker for contrast */
     --web3-orange: 14 100% 57%;
-    --web3-gray: 220 14% 54%; /* Gray for tagline */
+    --web3-gray: 220 14% 45%; /* Gray for tagline - improved contrast */
   }
   
   /* Enhanced Standardized headings with improved visual hierarchy */
@@ -95,11 +95,11 @@
   
   /* CTA button styles */
   .cta-primary {
-    @apply bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white font-medium px-6 py-3 rounded-md shadow-md;
+    @apply bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white font-medium px-6 py-3 rounded-md shadow-md focus:ring-2 focus:ring-primary/50 focus:outline-none;
   }
   
   .cta-secondary {
-    @apply border-primary text-primary hover:bg-primary/10 px-6 py-3 rounded-md;
+    @apply border-primary text-primary hover:bg-primary/10 px-6 py-3 rounded-md focus:ring-2 focus:ring-primary/50 focus:outline-none;
   }
   
   /* Stats display */
@@ -123,5 +123,41 @@
   /* Card hover effects */
   .card-hover {
     @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-md;
+  }
+
+  /* Accessibility improvements */
+  .sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+  }
+
+  .focus-visible {
+    @apply outline-none ring-2 ring-primary/50 ring-offset-2;
+  }
+
+  /* Skip to content link for keyboard users */
+  .skip-link {
+    @apply bg-white text-primary font-medium py-2 px-4 rounded-md absolute top-0 left-0 -translate-y-full focus:translate-y-0 z-50;
+  }
+
+  /* High contrast focus styles */
+  :focus {
+    @apply outline-none ring-2 ring-primary/50;
+  }
+
+  /* Input accessibility */
+  input, button, select, textarea {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary/50;
+  }
+
+  /* Table accessibility */
+  table {
+    @apply border-collapse;
+  }
+
+  /* Dark mode adjustments for better contrast */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --muted-foreground: 215.4 16.3% 75%; /* Even better contrast in dark mode */
+    }
   }
 }

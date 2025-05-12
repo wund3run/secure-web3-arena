@@ -16,14 +16,15 @@ export function AuditManagement() {
   const { audits, viewAudit, downloadReport, viewOnExplorer } = useAuditManagement();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" role="region" aria-label="Audit Management">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-xl font-semibold">Audit Management</h2>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
               <div className="flex items-center cursor-help">
-                <InfoIcon className="h-4 w-4 text-muted-foreground" />
+                <InfoIcon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                <span className="sr-only">Information about audit management</span>
               </div>
             </TooltipTrigger>
             <TooltipContent side="left" className="max-w-xs">

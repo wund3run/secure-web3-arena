@@ -26,11 +26,12 @@ export function ServiceCardFooter({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="flex items-center">
+              <div className="flex items-center" tabIndex={0}>
                 <div className="font-bold text-lg text-gradient bg-gradient-to-r from-primary to-primary/80">
                   {pricing.amount} {pricing.currency}
                 </div>
-                <InfoIcon className="h-3.5 w-3.5 ml-1 text-muted-foreground" />
+                <InfoIcon className="h-3.5 w-3.5 ml-1 text-muted-foreground" aria-hidden="true" />
+                <span className="sr-only">Price information</span>
               </div>
             </TooltipTrigger>
             <TooltipContent>
@@ -45,14 +46,14 @@ export function ServiceCardFooter({
               <Button 
                 variant="default" 
                 size="sm" 
-                className="group-hover:bg-primary/90 z-10 flex items-center hover:shadow-sm transition-all group"
+                className="group-hover:bg-primary/90 z-10 flex items-center hover:shadow-sm transition-all group focus:ring-2 focus:ring-primary/50 focus:outline-none"
                 onClick={onViewDetails}
                 title="View detailed service information"
                 aria-label="View service details"
               >
-                <Eye className="mr-1.5 h-3.5 w-3.5 opacity-80" />
+                <Eye className="mr-1.5 h-3.5 w-3.5 opacity-80" aria-hidden="true" />
                 <span className="hidden sm:inline">View Details</span>
-                <ArrowRight className="ml-1 h-3 w-3 opacity-70 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="ml-1 h-3 w-3 opacity-70 transition-transform group-hover:translate-x-1" aria-hidden="true" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>

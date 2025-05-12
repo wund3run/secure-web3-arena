@@ -100,12 +100,13 @@ export function ComparisonTable({ services }: ComparisonTableProps) {
   return (
     <div className="border rounded-md overflow-auto">
       <div className="min-w-[600px]">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm" aria-label="Service comparison table">
+          <caption className="sr-only">Comparison of security services</caption>
           <thead className="bg-muted/50">
             <tr>
-              <th className="text-left p-3 font-medium">Feature</th>
+              <th scope="col" className="text-left p-3 font-medium">Feature</th>
               {services.map(service => (
-                <th key={service.id} className="text-left p-3 font-medium">
+                <th scope="col" key={service.id} className="text-left p-3 font-medium">
                   {service.provider.name}
                 </th>
               ))}
@@ -118,9 +119,10 @@ export function ComparisonTable({ services }: ComparisonTableProps) {
                 <td className="p-3 font-medium">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger className="flex items-center gap-1">
+                      <TooltipTrigger className="flex items-center gap-1" tabIndex={0}>
                         <span>{criteria.name}</span>
-                        <InfoIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                        <InfoIcon className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
+                        <span className="sr-only">{criteria.description}</span>
                       </TooltipTrigger>
                       <TooltipContent side="right">
                         <p className="text-xs max-w-xs">{criteria.description}</p>
@@ -144,9 +146,10 @@ export function ComparisonTable({ services }: ComparisonTableProps) {
               <td className="p-3 font-medium">
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger className="flex items-center gap-1">
+                    <TooltipTrigger className="flex items-center gap-1" tabIndex={0}>
                       <span>Specialization</span>
-                      <InfoIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                      <InfoIcon className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
+                      <span className="sr-only">Primary security focus areas and expertise</span>
                     </TooltipTrigger>
                     <TooltipContent side="right">
                       <p className="text-xs">Primary security focus areas and expertise</p>
@@ -178,9 +181,10 @@ export function ComparisonTable({ services }: ComparisonTableProps) {
                 <td className="p-3 font-medium">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger className="flex items-center gap-1">
+                      <TooltipTrigger className="flex items-center gap-1" tabIndex={0}>
                         <span>{feature.name}</span>
-                        <InfoIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                        <InfoIcon className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
+                        <span className="sr-only">{feature.description}</span>
                       </TooltipTrigger>
                       <TooltipContent side="right">
                         <p className="text-xs max-w-xs">{feature.description}</p>
@@ -200,7 +204,11 @@ export function ComparisonTable({ services }: ComparisonTableProps) {
                     
                   return (
                     <td key={service.id} className="p-3">
-                      {hasFeature ? <Check className="h-4 w-4 text-green-500" /> : <Minus className="h-4 w-4 text-muted" />}
+                      {hasFeature ? (
+                        <Check className="h-4 w-4 text-green-500" aria-label={`${feature.name} included`} />
+                      ) : (
+                        <Minus className="h-4 w-4 text-muted" aria-label={`${feature.name} not included`} />
+                      )}
                     </td>
                   );
                 })}

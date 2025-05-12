@@ -33,32 +33,38 @@ export function MobileCardImage({
     return images[category] || "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=1600&auto=format&fit=crop&blend=9b87f5&blend-mode=multiply&sat=-40";
   };
 
+  const altText = `${title} - ${category} security service`;
+
   return (
     <div className="relative h-32 rounded-t-lg overflow-hidden">
       {imageUrl ? (
         <div className="w-full h-full bg-gradient-to-br from-primary/10 to-secondary/10">
           <img 
             src={imageUrl} 
-            alt={title} 
+            alt={altText} 
             className="w-full h-full object-cover" 
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               target.onerror = null;
               target.src = getFallbackImage(category);
+              target.alt = `Default image for ${category} security service`;
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" aria-hidden="true"></div>
         </div>
       ) : (
         <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-          <Shield className="h-12 w-12 text-primary/50" />
+          <Shield className="h-12 w-12 text-primary/50" aria-hidden="true" />
+          <span className="sr-only">{category} security service</span>
         </div>
       )}
       
       <div className="absolute top-2 right-2">
         <button
-          className="h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white touch-manipulation z-10 flex items-center justify-center"
+          className="h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white touch-manipulation z-10 flex items-center justify-center focus:ring-2 focus:ring-primary/50 focus:outline-none"
           onClick={toggleFavorite}
+          aria-pressed={isFavorite}
+          aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -71,6 +77,7 @@ export function MobileCardImage({
             strokeLinecap="round"
             strokeLinejoin="round"
             className={`${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+            aria-hidden="true"
           >
             <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
           </svg>

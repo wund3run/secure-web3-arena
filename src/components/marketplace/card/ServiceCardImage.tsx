@@ -40,21 +40,23 @@ export function ServiceCardImage({
   };
 
   const displayImage = imageUrl || getCategoryImage(category);
+  const altText = `${title} - ${category} security service`;
   
   return (
     <div className="h-48 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10">
         <img 
           src={displayImage} 
-          alt={title} 
+          alt={altText} 
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.onerror = null;
             target.src = getCategoryImage("default");
+            target.alt = `Default image for ${category} security service`;
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-60"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-60" aria-hidden="true"></div>
       </div>
       
       <div className="absolute top-3 right-3 flex space-x-2">
@@ -67,8 +69,8 @@ export function ServiceCardImage({
       </div>
       
       <div className="absolute bottom-3 left-3">
-        <div className="flex items-center bg-black/60 backdrop-blur-sm rounded-md px-2 py-1">
-          <Star className="h-4 w-4 fill-web3-orange text-web3-orange mr-1" />
+        <div className="flex items-center bg-black/60 backdrop-blur-sm rounded-md px-2 py-1" aria-label={`Rating: ${rating.toFixed(1)} out of 5`}>
+          <Star className="h-4 w-4 fill-web3-orange text-web3-orange mr-1" aria-hidden="true" />
           <span className="text-sm font-semibold text-white">{rating.toFixed(1)}</span>
         </div>
       </div>

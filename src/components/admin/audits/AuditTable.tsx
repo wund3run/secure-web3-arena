@@ -29,20 +29,23 @@ interface AuditTableProps {
 export function AuditTable({ audits, onView, onDownload, onViewExplorer }: AuditTableProps) {
   return (
     <div className="rounded-md border overflow-x-auto">
-      <Table>
+      <Table aria-label="Audit results table">
         <TableHeader>
           <TableRow>
-            <TableHead>Project</TableHead>
-            <TableHead className="hidden md:table-cell">Auditor</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="hidden lg:table-cell">Audit Type</TableHead>
-            <TableHead className="hidden md:table-cell">
+            <TableHead scope="col">Project</TableHead>
+            <TableHead scope="col" className="hidden md:table-cell">Auditor</TableHead>
+            <TableHead scope="col">Status</TableHead>
+            <TableHead scope="col" className="hidden lg:table-cell">Audit Type</TableHead>
+            <TableHead scope="col" className="hidden md:table-cell">
               <div className="flex items-center space-x-1">
                 <span>Severity</span>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <InfoIcon className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                      <span className="inline-flex">
+                        <InfoIcon className="h-3.5 w-3.5 text-muted-foreground cursor-help" aria-hidden="true" />
+                        <span className="sr-only">Severity information</span>
+                      </span>
                     </TooltipTrigger>
                     <TooltipContent side="top">
                       <p className="text-xs max-w-xs">
@@ -54,7 +57,7 @@ export function AuditTable({ audits, onView, onDownload, onViewExplorer }: Audit
                 </TooltipProvider>
               </div>
             </TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead scope="col" className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -84,6 +87,13 @@ export function AuditTable({ audits, onView, onDownload, onViewExplorer }: Audit
               </TableCell>
             </TableRow>
           ))}
+          {audits.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center py-6">
+                No audits found. Try adjusting your search filters.
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>
