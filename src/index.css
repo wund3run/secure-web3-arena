@@ -38,47 +38,82 @@
     --web3-orange: 14 100% 57%;
     --web3-gray: 220 14% 54%; /* Gray for tagline */
   }
+  
+  /* Standardized headings */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium leading-tight mb-4;
+  }
+  
+  h1 {
+    @apply text-3xl md:text-4xl;
+  }
+  
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
+  
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+  
+  h4 {
+    @apply text-lg md:text-xl;
+  }
+  
+  /* Standardized list styles */
+  ul.standard-list, ol.standard-list {
+    @apply space-y-2 my-4 pl-5;
+  }
+  
+  ul.standard-list > li {
+    @apply list-disc list-outside;
+  }
+  
+  ol.standard-list > li {
+    @apply list-decimal list-outside;
+  }
 }
 
 /* Add glass effect utilities */
 @layer utilities {
-  .glass-effect {
-    @apply backdrop-blur-md bg-white/70 border border-white/20 shadow-lg;
+  /* ... keep existing code (glass effect utilities) */
+  
+  .section-heading {
+    @apply text-2xl font-bold mb-4;
   }
   
-  .glass-card {
-    @apply bg-gradient-to-br from-white/80 to-white/40 backdrop-blur-md border border-white/20 shadow-lg;
+  .subsection-heading {
+    @apply text-xl font-semibold mb-3;
   }
   
-  .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+  .list-item-with-icon {
+    @apply flex items-start gap-2;
   }
   
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#8A73E2] to-[#33C3F0];
+  .list-icon {
+    @apply flex-none mt-1 h-2 w-2 rounded-full bg-primary;
   }
   
-  .hawkly-gradient-button {
-    @apply bg-gradient-to-r from-[#8A73E2] to-[#33C3F0] text-white hover:opacity-90 transition-all shadow-md;
+  .list-container {
+    @apply space-y-2 my-2;
   }
   
-  @keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
+  .card-heading {
+    @apply text-lg font-semibold mb-3;
   }
   
-  @keyframes pulse-glow {
-    0% { filter: drop-shadow(0 0 2px rgba(138, 115, 226, 0.3)); }
-    50% { filter: drop-shadow(0 0 10px rgba(138, 115, 226, 0.6)); }
-    100% { filter: drop-shadow(0 0 2px rgba(138, 115, 226, 0.3)); }
+  .standardized-list {
+    @apply space-y-3 my-3;
   }
   
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
+  .standardized-list-item {
+    @apply flex gap-2;
   }
   
-  .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
+  .standardized-list-item:before {
+    content: "";
+    @apply block h-2 w-2 rounded-full bg-primary mt-2 flex-shrink-0;
   }
 }
+
+/* ... keep existing code (animations and other utilities) */

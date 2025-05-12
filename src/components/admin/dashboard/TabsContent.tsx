@@ -17,35 +17,35 @@ interface TabsContentProps {
 export function TabsContent({ activeTab }: TabsContentProps) {
   return (
     <>
-      <UITabsContent value="dashboard" className="space-y-4 mt-4">
+      <UITabsContent value="dashboard" className="space-y-6 mt-4">
         <DashboardOverview />
       </UITabsContent>
       
-      <UITabsContent value="users" className="space-y-4 mt-4">
+      <UITabsContent value="users" className="space-y-6 mt-4">
         <UserManagement />
       </UITabsContent>
       
-      <UITabsContent value="services" className="space-y-4 mt-4">
+      <UITabsContent value="services" className="space-y-6 mt-4">
         <ServiceManagement />
       </UITabsContent>
       
-      <UITabsContent value="audits" className="space-y-4 mt-4">
+      <UITabsContent value="audits" className="space-y-6 mt-4">
         <AuditManagement />
       </UITabsContent>
       
-      <UITabsContent value="providers" className="space-y-4 mt-4">
+      <UITabsContent value="providers" className="space-y-6 mt-4">
         <ProviderApplications />
       </UITabsContent>
       
-      <UITabsContent value="approvals" className="space-y-4 mt-4">
+      <UITabsContent value="approvals" className="space-y-6 mt-4">
         <AdminServiceApproval />
       </UITabsContent>
       
-      <UITabsContent value="reports" className="space-y-4 mt-4">
+      <UITabsContent value="reports" className="space-y-6 mt-4">
         <ReportManagement />
       </UITabsContent>
       
-      <UITabsContent value="settings" className="space-y-4 mt-4">
+      <UITabsContent value="settings" className="space-y-6 mt-4">
         <SettingsManagement />
       </UITabsContent>
     </>
