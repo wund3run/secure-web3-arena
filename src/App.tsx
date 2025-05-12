@@ -13,8 +13,9 @@ import LoadingState from "./components/ui/loading-state";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
-// Import css - the dark-theme.css now contains all necessary Tailwind directives
-import "./styles/dark-theme.css";
+// Import css files - order matters for proper cascading
+import "./index.css"; // Base styles with Tailwind directives
+import "./styles/dark-theme.css"; // Theme-specific overrides
 
 // Create a new QueryClient instance
 const queryClient = new QueryClient();

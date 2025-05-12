@@ -1,8 +1,10 @@
 
 /* 
-  Note: We've moved the Tailwind directives to dark-theme.css
-  This file now only contains additional custom styles that don't conflict
+  Note: We need to include Tailwind directives here since we're using @layer
 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer components {
   :root {
