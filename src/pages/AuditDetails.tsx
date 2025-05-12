@@ -73,7 +73,7 @@ const mockAuditData = {
         avatar: '',
         role: 'auditor'
       },
-      content: 'I've completed the initial analysis of your lending pool contract. I found a potential reentrancy vulnerability in the withdraw function.',
+      content: "I've completed the initial analysis of your lending pool contract. I found a potential reentrancy vulnerability in the withdraw function.",
       timestamp: '10:30 AM',
       status: 'read'
     },
@@ -85,7 +85,7 @@ const mockAuditData = {
         avatar: '',
         role: 'client'
       },
-      content: 'Thanks for the update. Can you provide more details about this vulnerability?',
+      content: "Thanks for the update. Can you provide more details about this vulnerability?",
       timestamp: '10:45 AM',
       status: 'read'
     },
@@ -96,7 +96,7 @@ const mockAuditData = {
         name: 'System',
         role: 'system'
       },
-      content: 'Alex Chen has shared a code snippet',
+      content: "Alex Chen has shared a code snippet",
       timestamp: '11:02 AM'
     },
     {
@@ -107,7 +107,7 @@ const mockAuditData = {
         avatar: '',
         role: 'auditor'
       },
-      content: 'Here's the vulnerable code section. The issue is that the contract updates the user's balance after sending ETH, which could allow an attacker to call back into the withdraw function before the balance is updated.',
+      content: "Here's the vulnerable code section. The issue is that the contract updates the user's balance after sending ETH, which could allow an attacker to call back into the withdraw function before the balance is updated.",
       timestamp: '11:02 AM',
       attachments: [
         {
