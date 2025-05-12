@@ -128,12 +128,12 @@ export function ReportingContent() {
               Properly formatted code examples with annotations highlighting vulnerable sections.
             </p>
             <div className="bg-black/90 rounded p-3 font-mono text-xs text-gray-300 overflow-x-auto">
-              <pre><code><span className="text-blue-400">function</span> <span className="text-green-400">transfer</span>(address to, uint256 amount) <span className="text-blue-400">public</span> {
-  <span className="text-red-400">// VULNERABILITY: Missing balance check</span>
-  balances[msg.sender] <span className="text-yellow-400">-=</span> amount;
-  balances[to] <span className="text-yellow-400">+=</span> amount;
-  <span className="text-purple-400">emit</span> Transfer(msg.sender, to, amount);
-}</code></pre>
+              <pre><code>{`function transfer(address to, uint256 amount) public {
+  // VULNERABILITY: Missing balance check
+  balances[msg.sender] -= amount;
+  balances[to] += amount;
+  emit Transfer(msg.sender, to, amount);
+}`}</code></pre>
             </div>
           </div>
           
