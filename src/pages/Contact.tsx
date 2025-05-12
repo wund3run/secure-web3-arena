@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Navbar } from "@/components/layout/navbar";
@@ -43,6 +42,16 @@ const Contact = () => {
               Have questions about our Web3 security services? We're here to help.
               Get in touch with our team for inquiries about audits, security assessments, or partnership opportunities.
             </p>
+            {/* Direct Email Link - Prominently Displayed */}
+            <div className="mt-6 inline-flex items-center justify-center px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/15 transition-colors">
+              <Mail className="h-5 w-5 mr-2" />
+              <a 
+                href="mailto:join@hawkly.com" 
+                className="text-lg font-medium hover:underline"
+              >
+                join@hawkly.com
+              </a>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
@@ -94,7 +103,7 @@ const Contact = () => {
                     <p className="font-medium">Email</p>
                     <a 
                       href="mailto:join@hawkly.com" 
-                      className="text-primary hover:underline"
+                      className="text-primary hover:underline font-medium"
                     >
                       join@hawkly.com
                     </a>
