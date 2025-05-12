@@ -21,6 +21,7 @@ interface AuditCardProps {
     avatar?: string;
   }>;
   unreadMessages?: number;
+  severity?: 'critical' | 'high' | 'medium' | 'low'; // Added severity property
 }
 
 export const AuditCard = ({
@@ -33,7 +34,8 @@ export const AuditCard = ({
   criticalIssues = 0,
   highIssues = 0,
   auditors = [],
-  unreadMessages = 0
+  unreadMessages = 0,
+  severity // Added severity parameter
 }: AuditCardProps) => {
   const navigate = useNavigate();
   
@@ -47,6 +49,24 @@ export const AuditCard = ({
         return <Badge className="bg-green-500"><CheckCircle className="mr-1 h-3 w-3" /> Completed</Badge>;
       case 'paused':
         return <Badge className="bg-orange-500"><AlertCircle className="mr-1 h-3 w-3" /> Paused</Badge>;
+      default:
+        return null;
+    }
+  };
+  
+  // Add a function to get severity badge if needed
+  const getSeverityBadge = () => {
+    if (!severity) return null;
+    
+    switch (severity) {
+      case 'critical':
+        return <Badge variant="outline" className="bg-red-50 text-red-600 border-red-200"><AlertCircle className="mr-1 h-3 w-3" />Critical</Badge>;
+      case 'high':
+        return <Badge variant="outline" className="bg-orange-50 text-orange-600 border-orange-200"><AlertCircle className="mr-1 h-3 w-3" />High</Badge>;
+      case 'medium':
+        return <Badge variant="outline" className="bg-yellow-50 text-yellow-600 border-yellow-200"><AlertCircle className="mr-1 h-3 w-3" />Medium</Badge>;
+      case 'low':
+        return <Badge variant="outline" className="bg-green-50 text-green-600 border-green-200"><AlertCircle className="mr-1 h-3 w-3" />Low</Badge>;
       default:
         return null;
     }
@@ -75,22 +95,21 @@ export const AuditCard = ({
           <Progress value={progress} className="h-2" />
         </div>
         
-        {(criticalIssues > 0 || highIssues > 0) && (
-          <div className="mt-3 flex gap-2">
-            {criticalIssues > 0 && (
-              <Badge variant="outline" className="bg-red-50 text-red-600 hover:bg-red-100 border-red-200">
-                <AlertCircle className="mr-1 h-3 w-3" />
-                {criticalIssues} Critical
-              </Badge>
-            )}
-            {highIssues > 0 && (
-              <Badge variant="outline" className="bg-orange-50 text-orange-600 hover:bg-orange-100 border-orange-200">
-                <AlertCircle className="mr-1 h-3 w-3" />
-                {highIssues} High
-              </Badge>
-            )}
-          </div>
-        )}
+        <div className="mt-3 flex flex-wrap gap-2">
+          {criticalIssues > 0 && (
+            <Badge variant="outline" className="bg-red-50 text-red-600 hover:bg-red-100 border-red-200">
+              <AlertCircle className="mr-1 h-3 w-3" />
+              {criticalIssues} Critical
+            </Badge>
+          )}
+          {highIssues > 0 && (
+            <Badge variant="outline" className="bg-orange-50 text-orange-600 hover:bg-orange-100 border-orange-200">
+              <AlertCircle className="mr-1 h-3 w-3" />
+              {highIssues} High
+            </Badge>
+          )}
+          {severity && getSeverityBadge()}
+        </div>
         
         <div className="mt-4 flex items-center justify-between">
           <div className="text-sm text-muted-foreground">

@@ -150,71 +150,34 @@ export default function Audits() {
                   <AuditCard 
                     id="1"
                     title="DeFi Lending Protocol Audit"
+                    projectName="LendFlow Finance"
+                    startDate="2025-03-15"
                     status="completed"
+                    progress={100}
                     severity="high"
-                    date="2025-03-15"
-                    auditor={{
-                      name: "CryptoShield Security",
-                      verified: true,
-                      imageUrl: "https://placekitten.com/40/40"
-                    }}
-                    project={{
-                      name: "LendFlow Finance",
-                      type: "DeFi Protocol"
-                    }}
-                    findings={{
-                      critical: 2,
-                      high: 3,
-                      medium: 7,
-                      low: 12
-                    }}
-                    viewMode={viewMode}
+                    criticalIssues={2}
+                    highIssues={3}
                   />
                   <AuditCard 
                     id="2"
                     title="NFT Marketplace Smart Contract Audit"
+                    projectName="PixelVerse Market"
+                    startDate="2025-04-20"
                     status="in-progress"
+                    progress={65}
                     severity="medium"
-                    date="2025-04-20"
-                    auditor={{
-                      name: "SecureLabs",
-                      verified: true,
-                      imageUrl: "https://placekitten.com/39/39"
-                    }}
-                    project={{
-                      name: "PixelVerse Market",
-                      type: "NFT Protocol"
-                    }}
-                    findings={{
-                      critical: 0,
-                      high: 2,
-                      medium: 4,
-                      low: 8
-                    }}
-                    viewMode={viewMode}
+                    highIssues={2}
                   />
                   <AuditCard 
                     id="3"
                     title="Cross-Chain Bridge Security Review"
+                    projectName="OmniBridge"
+                    startDate="2025-03-28"
                     status="completed"
+                    progress={100}
                     severity="critical"
-                    date="2025-03-28"
-                    auditor={{
-                      name: "ChainGuardian",
-                      verified: false,
-                      imageUrl: "https://placekitten.com/38/38"
-                    }}
-                    project={{
-                      name: "OmniBridge",
-                      type: "Cross-Chain"
-                    }}
-                    findings={{
-                      critical: 3,
-                      high: 5,
-                      medium: 9,
-                      low: 11
-                    }}
-                    viewMode={viewMode}
+                    criticalIssues={3}
+                    highIssues={5}
                   />
                 </div>
               </TabsContent>
