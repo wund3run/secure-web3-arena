@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Helmet } from 'react-helmet-async';
@@ -12,7 +13,7 @@ import LoadingState from "./components/ui/loading-state";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
-// Import css
+// Import css - the dark-theme.css now contains all necessary Tailwind directives
 import "./styles/dark-theme.css";
 
 // Create a new QueryClient instance

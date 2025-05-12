@@ -1,9 +1,10 @@
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* 
+  Note: We've moved the Tailwind directives to dark-theme.css
+  This file now only contains additional custom styles that don't conflict
+*/
 
-@layer base {
+@layer components {
   :root {
     --background: 0 0% 100%; /* Pure white background */
     --foreground: 222 47% 11%; /* Dark text for contrast */
