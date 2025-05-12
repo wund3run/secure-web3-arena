@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { FileText, Shield, ArrowRight } from "lucide-react";
+import { FileText, Shield, ArrowRight, Search } from "lucide-react";
 import { HawklyLogo } from "@/components/layout/hawkly-logo";
 
 export function MarketplaceEnhancedHeader() {
@@ -30,10 +30,10 @@ export function MarketplaceEnhancedHeader() {
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
-          <Link to="/join">
-            <Button variant="outline" className="w-full md:w-auto border-primary text-primary hover:bg-primary/10">
-              <Shield className="mr-2 h-5 w-5" />
-              Join the Circle
+          <Link to="/marketplace">
+            <Button variant="outline" className="w-full md:w-auto border-secondary text-secondary hover:bg-secondary/10">
+              <Search className="mr-2 h-5 w-5" />
+              Browse Services
             </Button>
           </Link>
         </div>

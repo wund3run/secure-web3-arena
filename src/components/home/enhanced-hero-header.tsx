@@ -21,7 +21,7 @@ export function EnhancedHeroHeader() {
           <div className="flex items-center justify-center text-sm">
             <Zap className="h-4 w-4 text-secondary mr-2" />
             <span className="font-medium">New: Automated vulnerability scanning for smart contract security</span>
-            <Link to="/marketplace" className="ml-3 text-primary hover:text-primary/80 font-semibold flex items-center">
+            <Link to="/security-insights" className="ml-3 text-primary hover:text-primary/80 font-semibold flex items-center">
               Learn more <ArrowRight className="ml-1 h-3 w-3" />
             </Link>
           </div>
@@ -56,32 +56,23 @@ export function EnhancedHeroHeader() {
               <div className="bg-card/80 backdrop-blur-sm p-5 rounded-lg border border-border/30 shadow-sm hover-lift transition-all duration-300">
                 <h2 className="text-xl font-semibold mb-3 flex items-center">
                   <Shield className="h-6 w-6 text-primary mr-2" />
-                  For Blockchain Project Owners
+                  For Project Owners
                 </h2>
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <div className="flex-shrink-0 h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center mt-0.5 mr-2">
-                      <Check className="h-3 w-3 text-primary" />
-                    </div>
+                <ul className="standardized-list">
+                  <li className="standardized-list-item">
                     <span className="text-muted-foreground">Connect with verified smart contract auditors</span>
                   </li>
-                  <li className="flex items-start">
-                    <div className="flex-shrink-0 h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center mt-0.5 mr-2">
-                      <Check className="h-3 w-3 text-primary" />
-                    </div>
+                  <li className="standardized-list-item">
                     <span className="text-muted-foreground">Identify vulnerabilities in your blockchain projects</span>
                   </li>
-                  <li className="flex items-start">
-                    <div className="flex-shrink-0 h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center mt-0.5 mr-2">
-                      <Check className="h-3 w-3 text-primary" />
-                    </div>
+                  <li className="standardized-list-item">
                     <span className="text-muted-foreground">Protect DApps with comprehensive security audits</span>
                   </li>
                 </ul>
                 <div className="mt-4">
-                  <Link to="/marketplace">
+                  <Link to="/request-audit">
                     <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-                      Find Web3 Security Experts
+                      Request an Audit
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </Link>
@@ -91,32 +82,23 @@ export function EnhancedHeroHeader() {
               <div className="bg-card/80 backdrop-blur-sm p-5 rounded-lg border border-border/30 shadow-sm hover-lift transition-all duration-300">
                 <h2 className="text-xl font-semibold mb-3 flex items-center">
                   <User className="h-6 w-6 text-web3-orange mr-2" />
-                  For Blockchain Security Experts
+                  For Security Experts
                 </h2>
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <div className="flex-shrink-0 h-5 w-5 rounded-full bg-web3-orange/10 flex items-center justify-center mt-0.5 mr-2">
-                      <Check className="h-3 w-3 text-web3-orange" />
-                    </div>
+                <ul className="standardized-list">
+                  <li className="standardized-list-item">
                     <span className="text-muted-foreground">Monetize your security expertise</span>
                   </li>
-                  <li className="flex items-start">
-                    <div className="flex-shrink-0 h-5 w-5 rounded-full bg-web3-orange/10 flex items-center justify-center mt-0.5 mr-2">
-                      <Check className="h-3 w-3 text-web3-orange" />
-                    </div>
+                  <li className="standardized-list-item">
                     <span className="text-muted-foreground">Build reputation with our verified auditor program</span>
                   </li>
-                  <li className="flex items-start">
-                    <div className="flex-shrink-0 h-5 w-5 rounded-full bg-web3-orange/10 flex items-center justify-center mt-0.5 mr-2">
-                      <Check className="h-3 w-3 text-web3-orange" />
-                    </div>
+                  <li className="standardized-list-item">
                     <span className="text-muted-foreground">Join elite Web3 security researcher community</span>
                   </li>
                 </ul>
                 <div className="mt-4">
-                  <Link to="/audits">
+                  <Link to="/service-provider-onboarding">
                     <Button variant="outline" className="w-full border-web3-orange text-web3-orange hover:bg-web3-orange/10">
-                      Become a Web3 Auditor
+                      Join as an Auditor
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </Link>
@@ -127,15 +109,15 @@ export function EnhancedHeroHeader() {
             <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
               <div className="flex items-center gap-x-2">
                 <Shield className="h-6 w-6 text-web3-teal" />
-                <BadgeAward variant="verified">Verified Auditors</BadgeAward>
+                <BadgeAward variant="verified">500+ Verified Auditors</BadgeAward>
               </div>
               <div className="flex items-center gap-x-2">
                 <Trophy className="h-6 w-6 text-web3-orange" />
-                <BadgeAward variant="expert">Protected Assets</BadgeAward>
+                <BadgeAward variant="expert">$350M+ Protected Assets</BadgeAward>
               </div>
               <div className="flex items-center gap-x-2">
                 <Award className="h-6 w-6 text-web3-purple" />
-                <BadgeAward variant="elite">Security Excellence</BadgeAward>
+                <BadgeAward variant="elite">12,800+ Vulnerabilities Found</BadgeAward>
               </div>
             </div>
             

@@ -1,5 +1,5 @@
 
-import { Shield, Twitter, Github, MessageSquare, Globe, ArrowRight, Mail, Map, Star } from "lucide-react";
+import { Shield, Twitter, Github, MessageSquare, Globe, ArrowRight, Mail, Map, FileSearch } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { BetaWarning } from "@/components/ui/beta-warning";
@@ -16,39 +16,40 @@ export function EnhancedFooter() {
             <div>
               <h3 className="text-3xl font-bold mb-4">Ready to secure your Web3 project?</h3>
               <p className="text-lg text-muted-foreground mb-2">
-                Join Hawkly today and connect with top security experts who can help protect your blockchain assets.
+                Our platform connects you with the top security experts in the Web3 space to protect your blockchain investments.
               </p>
               
               {/* Security stats moved from dashboard to footer */}
               <div className="mt-6 grid grid-cols-2 gap-3">
                 <div className="flex justify-between items-center p-2 bg-background/60 rounded-lg">
-                  <span className="text-muted-foreground text-sm">Verified Auditors</span>
+                  <span className="text-muted-foreground text-sm">Security Experts</span>
                   <span className="font-semibold text-foreground">500+</span>
                 </div>
                 <div className="flex justify-between items-center p-2 bg-background/60 rounded-lg">
-                  <span className="text-muted-foreground text-sm">Secured Projects</span>
+                  <span className="text-muted-foreground text-sm">Projects Protected</span>
                   <span className="font-semibold text-foreground">2,500+</span>
                 </div>
                 <div className="flex justify-between items-center p-2 bg-background/60 rounded-lg">
-                  <span className="text-muted-foreground text-sm">Issues Found</span>
+                  <span className="text-muted-foreground text-sm">Vulnerabilities Found</span>
                   <span className="font-semibold text-foreground">12,800+</span>
                 </div>
                 <div className="flex justify-between items-center p-2 bg-background/60 rounded-lg">
-                  <span className="text-muted-foreground text-sm">Assets Protected</span>
+                  <span className="text-muted-foreground text-sm">Value Protected</span>
                   <span className="font-semibold text-foreground">$350M+</span>
                 </div>
               </div>
             </div>
             <div className="flex flex-col space-y-4 items-center lg:items-end justify-center">
-              <Link to="/marketplace" className="w-full sm:w-auto">
+              <Link to="/request-audit" className="w-full sm:w-auto">
                 <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 w-full">
-                  Find Security Experts
+                  <FileSearch className="mr-2 h-5 w-5" />
+                  Get a Security Assessment
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Link to="/contact" className="w-full sm:w-auto">
+              <Link to="/marketplace" className="w-full sm:w-auto">
                 <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10 w-full">
-                  Contact Us
+                  Browse Security Services
                 </Button>
               </Link>
             </div>
@@ -62,7 +63,7 @@ export function EnhancedFooter() {
               <span className="font-bold text-xl">Hawkly</span>
             </div>
             <p className="text-sm text-muted-foreground mb-4">
-              The leading Web3 security marketplace connecting projects with top security experts.
+              The premier Web3 security marketplace connecting projects with top security experts.
               Protecting blockchain assets through expert audits and continuous security monitoring.
             </p>
             <div className="flex mt-4 space-x-4">
@@ -108,10 +109,10 @@ export function EnhancedFooter() {
           <div className="col-span-1">
             <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Marketplace</h3>
             <ul className="mt-4 space-y-3">
-              <li><Link to="/marketplace" className="text-sm text-muted-foreground hover:text-primary transition-colors">Browse Services</Link></li>
-              <li><Link to="/auditors" className="text-sm text-muted-foreground hover:text-primary transition-colors">Find Auditors</Link></li>
-              <li><Link to="/listings" className="text-sm text-muted-foreground hover:text-primary transition-colors">Create Listing</Link></li>
-              <li><Link to="/requests" className="text-sm text-muted-foreground hover:text-primary transition-colors">Security Requests</Link></li>
+              <li><Link to="/marketplace" className="text-sm text-muted-foreground hover:text-primary transition-colors">Security Services</Link></li>
+              <li><Link to="/audits" className="text-sm text-muted-foreground hover:text-primary transition-colors">Audit Reports</Link></li>
+              <li><Link to="/submit-service" className="text-sm text-muted-foreground hover:text-primary transition-colors">List Your Service</Link></li>
+              <li><Link to="/request-audit" className="text-sm text-muted-foreground hover:text-primary transition-colors">Request Security Review</Link></li>
               <li><Link to="/stats" className="text-sm text-muted-foreground hover:text-primary transition-colors">Platform Statistics</Link></li>
             </ul>
           </div>
@@ -131,7 +132,7 @@ export function EnhancedFooter() {
             <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Resources</h3>
             <ul className="mt-4 space-y-3">
               <li><Link to="/docs" className="text-sm text-muted-foreground hover:text-primary transition-colors">Documentation</Link></li>
-              <li><Link to="/audits" className="text-sm text-muted-foreground hover:text-primary transition-colors">Audit Methodology</Link></li>
+              <li><Link to="/audit-guidelines" className="text-sm text-muted-foreground hover:text-primary transition-colors">Audit Methodology</Link></li>
               <li><Link to="/security-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Security Policy</Link></li>
               <li><Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link></li>
               <li><Link to="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact Us</Link></li>

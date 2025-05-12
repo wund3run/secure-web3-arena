@@ -1,5 +1,5 @@
 
-import { ArrowRight, FileText, ShieldCheck, Mail } from "lucide-react";
+import { ArrowRight, FileText, ShieldCheck, Mail, FileSearch } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { BetaWarning } from "@/components/ui/beta-warning";
@@ -14,10 +14,10 @@ export function AuditsFooter() {
           </div>
         </div>
         <h2 className="text-2xl font-bold mb-1">
-          Secure Your Web3 Project Today
+          Need Expert Security Analysis?
         </h2>
         <p className="text-lg mb-6 max-w-2xl mx-auto">
-          Connect with expert auditors who will identify vulnerabilities before they can be exploited.
+          Connect with top Web3 security experts and protect your blockchain assets before deployment.
         </p>
         
         <div className="mb-6">
@@ -59,12 +59,13 @@ export function AuditsFooter() {
           <Link to="/request-audit">
             <Button size="lg" className="bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] hover:opacity-90 transition-all">
               <FileText className="mr-2 h-5 w-5" />
-              Request an Audit
+              Submit Your Project
             </Button>
           </Link>
-          <Link to="/leaderboard">
+          <Link to="/marketplace">
             <Button size="lg" variant="outline" className="group border-secondary transition-all">
-              Find Security Experts
+              <FileSearch className="mr-2 h-5 w-5" />
+              View Security Services
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>

@@ -1,5 +1,5 @@
 
-import { Award, FileText, ShieldCheck, ArrowRight, CheckCircle, Shield } from "lucide-react";
+import { Award, FileText, ShieldCheck, ArrowRight, CheckCircle, Shield, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { HawklyLogo } from "@/components/layout/hawkly-logo";
@@ -29,14 +29,14 @@ export function AuditsHeader() {
           <Link to="/request-audit">
             <Button className="w-full md:w-auto bg-gradient-to-r from-[#8A73E2] to-[#33C3F0] hover:opacity-90 group shadow-md">
               <FileText className="mr-2 h-5 w-5" />
-              Request for Audit
+              Request New Audit
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
-          <Link to="/join">
-            <Button variant="outline" className="w-full md:w-auto border-[#8A73E2] text-[#8A73E2] hover:bg-[#8A73E2]/10">
-              <Shield className="mr-2 h-5 w-5" />
-              Join the Circle
+          <Link to="/audits">
+            <Button variant="outline" className="w-full md:w-auto border-[#33C3F0] text-[#33C3F0] hover:bg-[#33C3F0]/10">
+              <Search className="mr-2 h-5 w-5" />
+              Browse Completed Audits
             </Button>
           </Link>
         </div>
@@ -57,7 +57,7 @@ export function AuditsHeader() {
             <div className="mt-6">
               <Link to="/request-audit">
                 <Button className="group">
-                  Request Audit Now
+                  Get Started
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
@@ -77,9 +77,9 @@ export function AuditsHeader() {
               build your reputation, and earn rewards for identifying critical vulnerabilities.
             </p>
             <div className="mt-6">
-              <Link to="/join">
+              <Link to="/service-provider-onboarding">
                 <Button variant="outline" className="group border-secondary text-secondary hover:bg-secondary/10">
-                  Join the Circle
+                  Apply Now
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>

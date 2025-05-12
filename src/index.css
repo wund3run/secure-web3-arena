@@ -102,6 +102,7 @@
     @apply text-lg font-semibold mb-3;
   }
   
+  /* New standardized list styles - consolidated and consistent */
   .standardized-list {
     @apply space-y-3 my-3;
   }
@@ -113,6 +114,33 @@
   .standardized-list-item:before {
     content: "";
     @apply block h-2 w-2 rounded-full bg-primary mt-2 flex-shrink-0;
+  }
+  
+  /* Consistent call-to-action button styles */
+  .cta-primary {
+    @apply bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white font-medium;
+  }
+  
+  .cta-secondary {
+    @apply border-primary text-primary hover:bg-primary/10;
+  }
+  
+  /* Consistent stat display */
+  .stat-card {
+    @apply p-4 bg-card rounded-lg border border-border/30 flex flex-col;
+  }
+  
+  .stat-value {
+    @apply text-2xl font-bold;
+  }
+  
+  .stat-label {
+    @apply text-sm text-muted-foreground;
+  }
+  
+  /* Consistent badges and labels */
+  .feature-badge {
+    @apply inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-medium;
   }
 }
 

@@ -1,5 +1,5 @@
 
-import { ArrowRight, Shield, Check, FileText, Mail } from "lucide-react";
+import { ArrowRight, FileSearch, Check, Mail, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -19,15 +19,9 @@ export function MarketplaceFooter() {
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/request-audit">
               <Button size="lg" variant="default" className="flex items-center bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-                <FileText className="mr-2 h-5 w-5" />
-                Request for Audit
+                <FileSearch className="mr-2 h-5 w-5" />
+                Get a Security Assessment
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Link to="/service-provider-onboarding">
-              <Button size="lg" variant="outline" className="flex items-center border-primary text-primary hover:bg-primary/10">
-                <Shield className="mr-2 h-5 w-5" />
-                Join the Circle
               </Button>
             </Link>
           </div>
@@ -35,7 +29,7 @@ export function MarketplaceFooter() {
           {/* Contact Email */}
           <div className="mt-6 flex items-center justify-center text-sm text-muted-foreground">
             <Mail className="h-4 w-4 mr-2" />
-            <span>Contact us: <a href="mailto:join@hawkly.com" className="hover:text-primary">join@hawkly.com</a></span>
+            <span>Questions? Contact us: <a href="mailto:join@hawkly.com" className="hover:text-primary">join@hawkly.com</a></span>
           </div>
         </div>
       </div>
@@ -111,11 +105,11 @@ export function MarketplaceFooter() {
           </Link>
           <Link to="/service-provider-onboarding" className="flex items-center p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
             <Shield className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
-            <span>Join the Circle</span>
+            <span>Apply as an Auditor</span>
           </Link>
           <Link to="/request-audit" className="flex items-center p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
-            <FileText className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
-            <span>Request for Audit</span>
+            <FileSearch className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
+            <span>Security Assessment</span>
           </Link>
         </div>
       </div>
