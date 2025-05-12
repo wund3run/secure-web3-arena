@@ -1,241 +1,251 @@
 
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, AlertOctagon, AlertCircle, Info } from "lucide-react";
+import React from "react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Shield, AlertTriangle, AlertCircle, Info } from "lucide-react";
 
 export function ClassificationContent() {
   return (
     <div className="space-y-8">
-      <div>
+      <section>
         <h2 className="text-2xl font-bold mb-4">Vulnerability Classification System</h2>
         <p className="text-muted-foreground mb-6">
-          Hawkly uses a standardized vulnerability classification system to ensure consistency across audits and provide clear risk assessments for project owners. Our classification combines severity levels with vulnerability categories to communicate both impact and type.
-        </p>
-      </div>
-      
-      <div>
-        <h3 className="text-xl font-semibold mb-4">Severity Levels</h3>
-        <p className="text-muted-foreground mb-6">
-          Each identified vulnerability is assigned a severity level based on its potential impact, exploitability, and likelihood:
+          Our standardized classification system ensures consistent evaluation and reporting of security issues across all audits on the Hawkly platform.
         </p>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {/* Critical */}
-          <div className="border border-border rounded-lg overflow-hidden">
-            <div className="bg-destructive/10 border-b border-border p-4 flex items-center gap-3">
-              <AlertOctagon className="h-8 w-8 text-destructive" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="border border-border/60 rounded-lg p-5 bg-card/50">
+            <div className="flex items-start mb-4">
+              <div className="mr-3 mt-1 p-1.5 bg-red-500/10 rounded-full">
+                <Shield className="h-5 w-5 text-red-500" />
+              </div>
               <div>
-                <h4 className="font-bold text-lg">Critical</h4>
-                <p className="text-sm text-muted-foreground">Highest severity</p>
+                <h3 className="text-lg font-semibold text-red-500">Critical</h3>
+                <p className="text-sm text-muted-foreground">
+                  Issues that can result in immediate loss of funds or system compromise
+                </p>
               </div>
             </div>
-            <div className="p-4">
-              <p className="mb-2 text-sm">Vulnerabilities that:</p>
-              <ul className="list-disc list-inside text-sm space-y-1 text-muted-foreground">
-                <li>Can result in direct loss of funds</li>
-                <li>Allow unauthorized access to system control</li>
-                <li>Enable complete system compromise</li>
-                <li>Have trivial exploit paths with major consequences</li>
-              </ul>
+            <ul className="space-y-3">
+              <li className="flex items-center">
+                <div className="h-1.5 w-1.5 rounded-full bg-red-500 mr-2"></div>
+                <span className="text-sm">Direct theft of funds</span>
+              </li>
+              <li className="flex items-center">
+                <div className="h-1.5 w-1.5 rounded-full bg-red-500 mr-2"></div>
+                <span className="text-sm">Permanent freezing of funds</span>
+              </li>
+              <li className="flex items-center">
+                <div className="h-1.5 w-1.5 rounded-full bg-red-500 mr-2"></div>
+                <span className="text-sm">Protocol insolvency</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div className="border border-border/60 rounded-lg p-5 bg-card/50">
+            <div className="flex items-start mb-4">
+              <div className="mr-3 mt-1 p-1.5 bg-amber-500/10 rounded-full">
+                <AlertTriangle className="h-5 w-5 text-amber-500" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-amber-500">High</h3>
+                <p className="text-sm text-muted-foreground">
+                  Issues affecting data integrity that are not immediately exploitable
+                </p>
+              </div>
+            </div>
+            <ul className="space-y-3">
+              <li className="flex items-center">
+                <div className="h-1.5 w-1.5 rounded-full bg-amber-500 mr-2"></div>
+                <span className="text-sm">Loss of user funds under specific conditions</span>
+              </li>
+              <li className="flex items-center">
+                <div className="h-1.5 w-1.5 rounded-full bg-amber-500 mr-2"></div>
+                <span className="text-sm">Severe logic flaws</span>
+              </li>
+              <li className="flex items-center">
+                <div className="h-1.5 w-1.5 rounded-full bg-amber-500 mr-2"></div>
+                <span className="text-sm">Privilege escalation</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div className="border border-border/60 rounded-lg p-5 bg-card/50">
+            <div className="flex items-start mb-4">
+              <div className="mr-3 mt-1 p-1.5 bg-orange-500/10 rounded-full">
+                <AlertCircle className="h-5 w-5 text-orange-500" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-orange-500">Medium</h3>
+                <p className="text-sm text-muted-foreground">
+                  Risks that arise under specific conditions
+                </p>
+              </div>
+            </div>
+            <ul className="space-y-3">
+              <li className="flex items-center">
+                <div className="h-1.5 w-1.5 rounded-full bg-orange-500 mr-2"></div>
+                <span className="text-sm">Denial of service attacks</span>
+              </li>
+              <li className="flex items-center">
+                <div className="h-1.5 w-1.5 rounded-full bg-orange-500 mr-2"></div>
+                <span className="text-sm">Function failures</span>
+              </li>
+              <li className="flex items-center">
+                <div className="h-1.5 w-1.5 rounded-full bg-orange-500 mr-2"></div>
+                <span className="text-sm">Economic vulnerabilities requiring specific conditions</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div className="border border-border/60 rounded-lg p-5 bg-card/50">
+            <div className="flex items-start mb-4">
+              <div className="mr-3 mt-1 p-1.5 bg-blue-500/10 rounded-full">
+                <Info className="h-5 w-5 text-blue-500" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-blue-500">Low</h3>
+                <p className="text-sm text-muted-foreground">
+                  Minor issues or best practice recommendations
+                </p>
+              </div>
+            </div>
+            <ul className="space-y-3">
+              <li className="flex items-center">
+                <div className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></div>
+                <span className="text-sm">Gas optimizations</span>
+              </li>
+              <li className="flex items-center">
+                <div className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></div>
+                <span className="text-sm">Code quality issues</span>
+              </li>
+              <li className="flex items-center">
+                <div className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></div>
+                <span className="text-sm">Deviations from best practices</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Common Vulnerability Types</h2>
+        <p className="text-muted-foreground mb-6">
+          We use standardized vulnerability classifications to ensure consistent reporting across all audits.
+        </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Smart Contract Vulnerabilities</h3>
+            <ul className="space-y-2">
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Reentrancy</span>
+              </li>
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Integer Overflow/Underflow</span>
+              </li>
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Access Control Failures</span>
+              </li>
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Front-Running</span>
+              </li>
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Oracle Manipulation</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Protocol-Level Vulnerabilities</h3>
+            <ul className="space-y-2">
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Economic Attack Vectors</span>
+              </li>
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Governance Vulnerabilities</span>
+              </li>
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>MEV Vulnerabilities</span>
+              </li>
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Cross-Chain Vulnerabilities</span>
+              </li>
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Token Economic Issues</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Industry Standards Integration</h2>
+        <p className="text-muted-foreground mb-6">
+          Our classification system aligns with industry standards to provide comprehensive coverage.
+        </p>
+        
+        <div className="space-y-4">
+          <div className="flex items-start gap-2">
+            <div className="flex h-5 w-5 items-center justify-center">
+              <div className="h-2 w-2 rounded-full bg-primary"></div>
+            </div>
+            <div>
+              <h4 className="font-medium">Smart Contract Weakness Classification (SWC)</h4>
+              <p className="text-sm text-muted-foreground">Mapping to standardized smart contract vulnerabilities</p>
             </div>
           </div>
           
-          {/* High */}
-          <div className="border border-border rounded-lg overflow-hidden">
-            <div className="bg-[#FF8A65]/10 border-b border-border p-4 flex items-center gap-3">
-              <AlertTriangle className="h-8 w-8 text-[#FF8A65]" />
-              <div>
-                <h4 className="font-bold text-lg">High</h4>
-                <p className="text-sm text-muted-foreground">Serious risk</p>
-              </div>
+          <div className="flex items-start gap-2">
+            <div className="flex h-5 w-5 items-center justify-center">
+              <div className="h-2 w-2 rounded-full bg-primary"></div>
             </div>
-            <div className="p-4">
-              <p className="mb-2 text-sm">Vulnerabilities that:</p>
-              <ul className="list-disc list-inside text-sm space-y-1 text-muted-foreground">
-                <li>Can significantly impact system integrity</li>
-                <li>May lead to fund loss under specific conditions</li>
-                <li>Allow partial system compromise</li>
-                <li>Have complex exploit paths with serious consequences</li>
-              </ul>
+            <div>
+              <h4 className="font-medium">Common Weakness Enumeration (CWE)</h4>
+              <p className="text-sm text-muted-foreground">References to widely recognized software weakness categories</p>
             </div>
           </div>
           
-          {/* Medium */}
-          <div className="border border-border rounded-lg overflow-hidden">
-            <div className="bg-[#FFB74D]/10 border-b border-border p-4 flex items-center gap-3">
-              <AlertCircle className="h-8 w-8 text-[#FFB74D]" />
-              <div>
-                <h4 className="font-bold text-lg">Medium</h4>
-                <p className="text-sm text-muted-foreground">Moderate risk</p>
-              </div>
+          <div className="flex items-start gap-2">
+            <div className="flex h-5 w-5 items-center justify-center">
+              <div className="h-2 w-2 rounded-full bg-primary"></div>
             </div>
-            <div className="p-4">
-              <p className="mb-2 text-sm">Vulnerabilities that:</p>
-              <ul className="list-disc list-inside text-sm space-y-1 text-muted-foreground">
-                <li>Have limited impact on system functionality</li>
-                <li>May lead to unintended behaviors</li>
-                <li>Can be exploited only under specific conditions</li>
-                <li>Require multiple prerequisites to exploit</li>
-              </ul>
-            </div>
-          </div>
-          
-          {/* Low */}
-          <div className="border border-border rounded-lg overflow-hidden">
-            <div className="bg-[#4FC3F7]/10 border-b border-border p-4 flex items-center gap-3">
-              <Info className="h-8 w-8 text-[#4FC3F7]" />
-              <div>
-                <h4 className="font-bold text-lg">Low</h4>
-                <p className="text-sm text-muted-foreground">Minor issues</p>
-              </div>
-            </div>
-            <div className="p-4">
-              <p className="mb-2 text-sm">Vulnerabilities that:</p>
-              <ul className="list-disc list-inside text-sm space-y-1 text-muted-foreground">
-                <li>Represent best practice violations</li>
-                <li>Have minimal direct security impact</li>
-                <li>May lead to minor inefficiencies</li>
-                <li>Could potentially escalate if combined with other issues</li>
-              </ul>
+            <div>
+              <h4 className="font-medium">OWASP Top 10 for Smart Contracts</h4>
+              <p className="text-sm text-muted-foreground">Alignment with OWASP's top security risks for smart contracts</p>
             </div>
           </div>
         </div>
-      </div>
-      
-      <Separator />
-      
-      <div>
-        <h3 className="text-xl font-semibold mb-4">Vulnerability Categories</h3>
-        <p className="text-muted-foreground mb-6">
-          Vulnerabilities are categorized by type to help identify common patterns and facilitate remediation planning:
-        </p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          <div className="border border-border/60 rounded-lg p-4 hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-semibold flex items-center gap-2 mb-2">
-              <Badge variant="outline" className="bg-primary/10">AC</Badge>
-              Access Control
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              Vulnerabilities related to improper implementation of access restrictions, permission checks, and authorization mechanisms.
-            </p>
-          </div>
-          
-          <div className="border border-border/60 rounded-lg p-4 hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-semibold flex items-center gap-2 mb-2">
-              <Badge variant="outline" className="bg-primary/10">RE</Badge>
-              Reentrancy
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              Vulnerabilities that allow external calls to maliciously re-enter the contract before the original execution is complete.
-            </p>
-          </div>
-          
-          <div className="border border-border/60 rounded-lg p-4 hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-semibold flex items-center gap-2 mb-2">
-              <Badge variant="outline" className="bg-primary/10">OV</Badge>
-              Arithmetic Overflow/Underflow
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              Issues arising from improper handling of numeric calculations that exceed variable limits.
-            </p>
-          </div>
-          
-          <div className="border border-border/60 rounded-lg p-4 hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-semibold flex items-center gap-2 mb-2">
-              <Badge variant="outline" className="bg-primary/10">FL</Badge>
-              Front-running/MEV
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              Vulnerabilities that allow malicious actors to observe and manipulate transaction ordering for profit.
-            </p>
-          </div>
-          
-          <div className="border border-border/60 rounded-lg p-4 hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-semibold flex items-center gap-2 mb-2">
-              <Badge variant="outline" className="bg-primary/10">OR</Badge>
-              Oracle Manipulation
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              Vulnerabilities allowing manipulation of price feeds, oracle data, or other external inputs.
-            </p>
-          </div>
-          
-          <div className="border border-border/60 rounded-lg p-4 hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-semibold flex items-center gap-2 mb-2">
-              <Badge variant="outline" className="bg-primary/10">TS</Badge>
-              Time/Sequence Dependence
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              Issues related to improper handling of time-based logic or sequence-dependent operations.
-            </p>
-          </div>
-          
-          <div className="border border-border/60 rounded-lg p-4 hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-semibold flex items-center gap-2 mb-2">
-              <Badge variant="outline" className="bg-primary/10">GC</Badge>
-              Gas Consumption/Limits
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              Inefficiencies or vulnerabilities related to excessive gas consumption or gas limit issues.
-            </p>
-          </div>
-          
-          <div className="border border-border/60 rounded-lg p-4 hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-semibold flex items-center gap-2 mb-2">
-              <Badge variant="outline" className="bg-primary/10">DO</Badge>
-              Denial of Service
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              Vulnerabilities that can render a contract or function unusable through resource exhaustion.
-            </p>
-          </div>
-          
-          <div className="border border-border/60 rounded-lg p-4 hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-semibold flex items-center gap-2 mb-2">
-              <Badge variant="outline" className="bg-primary/10">SC</Badge>
-              Smart Contract Logic
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              Design flaws in contract logic that can lead to unintended behaviors or exploits.
-            </p>
-          </div>
-          
-          <div className="border border-border/60 rounded-lg p-4 hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-semibold flex items-center gap-2 mb-2">
-              <Badge variant="outline" className="bg-primary/10">BP</Badge>
-              Best Practices
-            </h4>
-            <p className="text-sm text-muted-foreground">
-              Code quality issues, optimization opportunities, and deviations from recommended patterns.
-            </p>
-          </div>
-        </div>
-      </div>
-      
-      <Separator />
-      
-      <div>
-        <h3 className="text-xl font-semibold mb-4">Combined Classification</h3>
-        <p className="text-muted-foreground mb-6">
-          Findings in audit reports combine the severity level with the vulnerability category to provide comprehensive classification. For example:
-        </p>
-        
-        <div className="bg-muted rounded-lg p-6 mb-6">
-          <h4 className="font-medium mb-3">Example Finding: [Critical-RE] Reentrancy in Withdrawal Function</h4>
-          <p className="text-sm text-muted-foreground mb-4">
-            This classification indicates a Critical severity issue related to Reentrancy, found in the withdrawal functionality of the contract.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <Badge variant="destructive" className="text-xs">Critical</Badge>
-            <Badge variant="outline" className="bg-primary/10 text-xs">RE</Badge>
-          </div>
-        </div>
-        
-        <p className="text-muted-foreground">
-          This standardized classification system helps project owners understand the relative risk and priority of identified issues, while helping auditors maintain consistency across different audits and teams.
-        </p>
-      </div>
+      </section>
     </div>
   );
 }

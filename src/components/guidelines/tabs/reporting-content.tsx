@@ -1,239 +1,262 @@
 
-import { Separator } from "@/components/ui/separator";
-import { FileText, CheckSquare, AlertTriangle, MessageSquare } from "lucide-react";
+import React from "react";
 
 export function ReportingContent() {
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-2xl font-bold mb-4">Audit Reporting Standards</h2>
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Audit Report Standards</h2>
         <p className="text-muted-foreground mb-6">
-          Hawkly maintains rigorous standards for audit reporting to ensure clarity, consistency, and usefulness across all security assessments. Our reports are designed to provide actionable insights for technical teams while remaining accessible to project stakeholders.
-        </p>
-      </div>
-      
-      <div>
-        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <FileText className="h-5 w-5 text-primary" />
-          Report Structure
-        </h3>
-        
-        <div className="space-y-5 mb-8">
-          <div className="border border-border p-4 rounded-lg hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-medium mb-2">Executive Summary</h4>
-            <p className="text-sm text-muted-foreground">
-              A concise overview of the audit results, highlighting key findings, risk assessment, and overall security posture. This section should be accessible to non-technical stakeholders while providing a comprehensive snapshot of the project's security status.
-            </p>
-            <div className="mt-3 text-xs bg-muted p-2 rounded-md">
-              <strong>Required elements:</strong> Audit scope summary, key metrics (total issues by severity), risk summary statement, and recommendation overview.
-            </div>
-          </div>
-          
-          <div className="border border-border p-4 rounded-lg hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-medium mb-2">Scope & Methodology</h4>
-            <p className="text-sm text-muted-foreground">
-              Detailed description of what was included in the audit scope, including specific contract files, versions, lines of code, and the methodologies and tools used during the assessment.
-            </p>
-            <div className="mt-3 text-xs bg-muted p-2 rounded-md">
-              <strong>Required elements:</strong> Precise scope definition (including file hashes), excluded components, tool versions used, and methodology description.
-            </div>
-          </div>
-          
-          <div className="border border-border p-4 rounded-lg hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-medium mb-2">Findings Summary</h4>
-            <p className="text-sm text-muted-foreground">
-              A tabular overview of all identified issues, organized by severity and category, with unique finding identifiers to facilitate tracking and remediation efforts.
-            </p>
-            <div className="mt-3 text-xs bg-muted p-2 rounded-md">
-              <strong>Required elements:</strong> Issue IDs, severity classifications, vulnerability categories, affected components, and remediation status.
-            </div>
-          </div>
-          
-          <div className="border border-border p-4 rounded-lg hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-medium mb-2">Detailed Findings</h4>
-            <p className="text-sm text-muted-foreground">
-              Comprehensive analysis of each identified vulnerability, including technical details, impact assessment, and specific remediation guidance.
-            </p>
-            <div className="mt-3 text-xs bg-muted p-2 rounded-md">
-              <strong>Required elements for each finding:</strong> Description, technical impact, affected code (with line references), proof of concept (where applicable), remediation recommendations, and risk assessment.
-            </div>
-          </div>
-          
-          <div className="border border-border p-4 rounded-lg hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-medium mb-2">Code Quality Assessment</h4>
-            <p className="text-sm text-muted-foreground">
-              Evaluation of general code quality, documentation, testing coverage, and adherence to best practices, including recommendations for improvements beyond security concerns.
-            </p>
-            <div className="mt-3 text-xs bg-muted p-2 rounded-md">
-              <strong>Required elements:</strong> Code quality metrics, documentation assessment, test coverage analysis, and best practice adherence evaluation.
-            </div>
-          </div>
-          
-          <div className="border border-border p-4 rounded-lg hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-medium mb-2">Remediation Plan</h4>
-            <p className="text-sm text-muted-foreground">
-              Prioritized recommendations for addressing identified vulnerabilities, including suggested approaches and potential trade-offs.
-            </p>
-            <div className="mt-3 text-xs bg-muted p-2 rounded-md">
-              <strong>Required elements:</strong> Prioritized action items, remediation complexity assessment, and suggested timelines based on risk levels.
-            </div>
-          </div>
-          
-          <div className="border border-border p-4 rounded-lg hover:border-primary/40 transition-all duration-300">
-            <h4 className="font-medium mb-2">Appendices</h4>
-            <p className="text-sm text-muted-foreground">
-              Supporting information including tool configurations, detailed test results, background information on vulnerability types, and glossary of technical terms.
-            </p>
-            <div className="mt-3 text-xs bg-muted p-2 rounded-md">
-              <strong>Optional but recommended elements:</strong> Tool configurations, technical references, test scripts, and vulnerability background information.
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <Separator />
-      
-      <div>
-        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <CheckSquare className="h-5 w-5 text-primary" />
-          Reporting Quality Standards
-        </h3>
-        
-        <div className="bg-muted p-6 rounded-lg mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-medium mb-3">Clarity & Accessibility</h4>
-              <ul className="list-disc list-inside text-sm space-y-2 text-muted-foreground">
-                <li>Technical findings must include explanations accessible to semi-technical stakeholders</li>
-                <li>Executive summary must be understandable by non-technical decision-makers</li>
-                <li>Visual aids (diagrams, flowcharts) are required for complex vulnerabilities</li>
-                <li>Technical jargon must be explained or included in a glossary</li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-medium mb-3">Accuracy & Precision</h4>
-              <ul className="list-disc list-inside text-sm space-y-2 text-muted-foreground">
-                <li>All findings must include specific code references (file, line number)</li>
-                <li>Impact assessments must be evidence-based and realistic</li>
-                <li>Findings must be reproducible based on the information provided</li>
-                <li>False positives must be eliminated through verification</li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-medium mb-3">Actionability & Guidance</h4>
-              <ul className="list-disc list-inside text-sm space-y-2 text-muted-foreground">
-                <li>Every finding must include specific remediation guidance</li>
-                <li>Complex fixes must include code examples where appropriate</li>
-                <li>Remediation guidance must consider implementation complexity</li>
-                <li>Alternative approaches should be provided where relevant</li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-medium mb-3">Consistency & Standardization</h4>
-              <ul className="list-disc list-inside text-sm space-y-2 text-muted-foreground">
-                <li>All reports must follow the Hawkly standardized template</li>
-                <li>Finding classifications must adhere to standard severity criteria</li>
-                <li>Writing style must be consistent throughout the report</li>
-                <li>All measurements and metrics must use consistent units</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <Separator />
-      
-      <div>
-        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <AlertTriangle className="h-5 w-5 text-primary" />
-          Risk Communication Guidelines
-        </h3>
-        
-        <p className="text-muted-foreground mb-6">
-          Effective communication of security risks is critical to ensure project teams understand the implications of identified vulnerabilities and can make informed decisions about remediation priorities.
+          Our standardized reporting format ensures clear communication of security findings and actionable remediation guidance.
         </p>
         
-        <div className="space-y-4 mb-8">
-          <div className="border border-border p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Contextual Risk Assessment</h4>
-            <p className="text-sm text-muted-foreground">
-              Risks must be presented within the context of the project's specific use case, user base, and deployed value. Risk assessments should consider both technical severity and business impact.
-            </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="border border-border/60 rounded-lg p-5 bg-card/50">
+            <h3 className="text-lg font-semibold mb-3">Report Structure</h3>
+            <ul className="space-y-3">
+              <li className="flex gap-3">
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-primary bg-primary/10">
+                  <span className="text-xs font-bold">1</span>
+                </div>
+                <div>
+                  <span className="font-medium">Executive Summary</span>
+                  <p className="text-sm text-muted-foreground">High-level overview with key findings and metrics</p>
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-primary bg-primary/10">
+                  <span className="text-xs font-bold">2</span>
+                </div>
+                <div>
+                  <span className="font-medium">Scope & Methodology</span>
+                  <p className="text-sm text-muted-foreground">Detailed description of what was audited and how</p>
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-primary bg-primary/10">
+                  <span className="text-xs font-bold">3</span>
+                </div>
+                <div>
+                  <span className="font-medium">Findings & Vulnerabilities</span>
+                  <p className="text-sm text-muted-foreground">Detailed technical analysis of each issue</p>
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-primary bg-primary/10">
+                  <span className="text-xs font-bold">4</span>
+                </div>
+                <div>
+                  <span className="font-medium">Remediation Guidance</span>
+                  <p className="text-sm text-muted-foreground">Actionable recommendations for fixing issues</p>
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-primary bg-primary/10">
+                  <span className="text-xs font-bold">5</span>
+                </div>
+                <div>
+                  <span className="font-medium">Appendices</span>
+                  <p className="text-sm text-muted-foreground">Supplementary technical details and resources</p>
+                </div>
+              </li>
+            </ul>
           </div>
           
-          <div className="border border-border p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Realistic Exploit Scenarios</h4>
-            <p className="text-sm text-muted-foreground">
-              For each significant vulnerability, the report must include realistic attack scenarios that illustrate how the vulnerability could be exploited and the potential consequences for users and the project.
+          <div className="border border-border/60 rounded-lg p-5 bg-card/50">
+            <h3 className="text-lg font-semibold mb-3">Finding Documentation Standards</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Each security finding must include the following components:
             </p>
-          </div>
-          
-          <div className="border border-border p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Quantified Impact Assessment</h4>
-            <p className="text-sm text-muted-foreground">
-              Where possible, impact should be quantified in terms relevant to the project (e.g., potential financial loss, number of affected users, data exposure scope). This helps project teams prioritize remediation efforts.
-            </p>
-          </div>
-          
-          <div className="border border-border p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Risk Evolution Factors</h4>
-            <p className="text-sm text-muted-foreground">
-              Reports should identify factors that could change the risk profile over time, such as increased adoption, value growth, or changes in the threat landscape, helping projects plan long-term security strategies.
-            </p>
+            <div className="space-y-4">
+              <div className="flex gap-2">
+                <div className="h-6 w-1 bg-primary rounded"></div>
+                <div>
+                  <h4 className="font-medium">Unique Identifier</h4>
+                  <p className="text-sm text-muted-foreground">Traceable reference code for each finding</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <div className="h-6 w-1 bg-primary rounded"></div>
+                <div>
+                  <h4 className="font-medium">Severity Rating</h4>
+                  <p className="text-sm text-muted-foreground">Critical, High, Medium, or Low classification</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <div className="h-6 w-1 bg-primary rounded"></div>
+                <div>
+                  <h4 className="font-medium">Technical Description</h4>
+                  <p className="text-sm text-muted-foreground">Detailed explanation with affected components</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <div className="h-6 w-1 bg-primary rounded"></div>
+                <div>
+                  <h4 className="font-medium">Proof of Concept</h4>
+                  <p className="text-sm text-muted-foreground">Code or scenario demonstrating the vulnerability</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <div className="h-6 w-1 bg-primary rounded"></div>
+                <div>
+                  <h4 className="font-medium">Impact Assessment</h4>
+                  <p className="text-sm text-muted-foreground">Potential consequences if exploited</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <div className="h-6 w-1 bg-primary rounded"></div>
+                <div>
+                  <h4 className="font-medium">Remediation Steps</h4>
+                  <p className="text-sm text-muted-foreground">Clear guidance for addressing the vulnerability</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
       
-      <Separator />
-      
-      <div>
-        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <MessageSquare className="h-5 w-5 text-primary" />
-          Collaborative Reporting Process
-        </h3>
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Visual Documentation</h2>
+        <p className="text-muted-foreground mb-6">
+          Visual elements provide clarity and enhance understanding of complex security concepts.
+        </p>
         
-        <div className="space-y-6 mb-8">
-          <p className="text-muted-foreground">
-            Hawkly employs a collaborative reporting process that engages project teams throughout the audit to ensure maximum value and understanding.
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="border border-border p-4 rounded-lg text-center">
-              <h4 className="font-medium mb-2">Pre-Report Discussion</h4>
-              <p className="text-xs text-muted-foreground">
-                Critical findings are communicated immediately upon discovery, allowing teams to begin remediation before the final report is complete.
-              </p>
-            </div>
-            
-            <div className="border border-border p-4 rounded-lg text-center">
-              <h4 className="font-medium mb-2">Report Review Period</h4>
-              <p className="text-xs text-muted-foreground">
-                Project teams receive a draft report for review, allowing them to ask questions, request clarification, and provide context before finalization.
-              </p>
-            </div>
-            
-            <div className="border border-border p-4 rounded-lg text-center">
-              <h4 className="font-medium mb-2">Post-Report Support</h4>
-              <p className="text-xs text-muted-foreground">
-                Auditors remain available for a designated period to discuss findings, assist with remediation approaches, and verify fixes.
-              </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="border border-border/60 rounded-lg p-5 bg-card/50">
+            <h3 className="text-lg font-semibold mb-3">Code Snippets</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Properly formatted code examples with annotations highlighting vulnerable sections.
+            </p>
+            <div className="bg-black/90 rounded p-3 font-mono text-xs text-gray-300 overflow-x-auto">
+              <pre><code><span className="text-blue-400">function</span> <span className="text-green-400">transfer</span>(address to, uint256 amount) <span className="text-blue-400">public</span> {
+  <span className="text-red-400">// VULNERABILITY: Missing balance check</span>
+  balances[msg.sender] <span className="text-yellow-400">-=</span> amount;
+  balances[to] <span className="text-yellow-400">+=</span> amount;
+  <span className="text-purple-400">emit</span> Transfer(msg.sender, to, amount);
+}</code></pre>
             </div>
           </div>
           
-          <div className="bg-muted p-4 rounded-lg text-sm text-muted-foreground">
-            <p className="font-medium text-foreground mb-2">Report Confidentiality</p>
-            <p>
-              All audit reports are treated as confidential by default. Project teams decide whether to publish full reports, summaries, or keep findings private. Hawkly encourages transparency but respects client confidentiality requirements.
+          <div className="border border-border/60 rounded-lg p-5 bg-card/50">
+            <h3 className="text-lg font-semibold mb-3">Vulnerability Flow Diagrams</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Visual representation of attack vectors and exploitation paths.
             </p>
-            <p className="mt-2">
-              For public audits, Hawkly provides standardized disclosure timelines to balance security needs with transparency goals.
+            <div className="bg-muted rounded p-4 h-36 flex items-center justify-center">
+              <div className="text-center text-sm text-muted-foreground">
+                [Diagram Placeholder]
+                <p className="mt-2">Attack Vector Visualization</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="border border-border/60 rounded-lg p-5 bg-card/50">
+            <h3 className="text-lg font-semibold mb-3">Severity Metrics</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Graphical representation of security findings and their impact.
             </p>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-24 text-xs">Critical</div>
+                <div className="h-4 bg-red-500 rounded" style={{ width: '30%' }}></div>
+                <div className="text-xs">3</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-24 text-xs">High</div>
+                <div className="h-4 bg-amber-500 rounded" style={{ width: '50%' }}></div>
+                <div className="text-xs">5</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-24 text-xs">Medium</div>
+                <div className="h-4 bg-orange-500 rounded" style={{ width: '70%' }}></div>
+                <div className="text-xs">7</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-24 text-xs">Low</div>
+                <div className="h-4 bg-blue-500 rounded" style={{ width: '90%' }}></div>
+                <div className="text-xs">9</div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+      
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Verification & Follow-Up</h2>
+        <p className="text-muted-foreground mb-6">
+          Our audit process includes verification of remediation measures and ongoing support.
+        </p>
+        
+        <div className="border border-border/60 rounded-lg overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border/60">
+            <div className="p-5">
+              <h3 className="font-semibold mb-3">Remediation Verification</h3>
+              <ul className="space-y-2">
+                <li className="flex gap-2">
+                  <div className="flex-none mt-1">
+                    <div className="h-2 w-2 rounded-full bg-primary"></div>
+                  </div>
+                  <div>
+                    <span>Implementation Review</span>
+                    <p className="text-xs text-muted-foreground">Review of applied fixes for correctness</p>
+                  </div>
+                </li>
+                <li className="flex gap-2">
+                  <div className="flex-none mt-1">
+                    <div className="h-2 w-2 rounded-full bg-primary"></div>
+                  </div>
+                  <div>
+                    <span>Regression Testing</span>
+                    <p className="text-xs text-muted-foreground">Verification that fixes don't introduce new issues</p>
+                  </div>
+                </li>
+                <li className="flex gap-2">
+                  <div className="flex-none mt-1">
+                    <div className="h-2 w-2 rounded-full bg-primary"></div>
+                  </div>
+                  <div>
+                    <span>Final Security Assessment</span>
+                    <p className="text-xs text-muted-foreground">Updated security posture evaluation</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            
+            <div className="p-5">
+              <h3 className="font-semibold mb-3">Continuous Support</h3>
+              <ul className="space-y-2">
+                <li className="flex gap-2">
+                  <div className="flex-none mt-1">
+                    <div className="h-2 w-2 rounded-full bg-primary"></div>
+                  </div>
+                  <div>
+                    <span>Technical Consultation</span>
+                    <p className="text-xs text-muted-foreground">Ongoing guidance for security concerns</p>
+                  </div>
+                </li>
+                <li className="flex gap-2">
+                  <div className="flex-none mt-1">
+                    <div className="h-2 w-2 rounded-full bg-primary"></div>
+                  </div>
+                  <div>
+                    <span>Security Monitoring</span>
+                    <p className="text-xs text-muted-foreground">Optional continuous security assessment</p>
+                  </div>
+                </li>
+                <li className="flex gap-2">
+                  <div className="flex-none mt-1">
+                    <div className="h-2 w-2 rounded-full bg-primary"></div>
+                  </div>
+                  <div>
+                    <span>Vulnerability Disclosure</span>
+                    <p className="text-xs text-muted-foreground">Coordination for responsible disclosure if needed</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

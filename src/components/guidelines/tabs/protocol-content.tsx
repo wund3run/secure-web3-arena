@@ -1,243 +1,350 @@
 
-import { Separator } from "@/components/ui/separator";
-import { AlertOctagon, UserCheck, BookOpen, FileCheck, Eye } from "lucide-react";
+import React from "react";
 
 export function ProtocolContent() {
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-2xl font-bold mb-4">Auditor Protocol & Professional Conduct</h2>
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Professional Conduct Standards</h2>
         <p className="text-muted-foreground mb-6">
-          Hawkly auditors adhere to a strict professional code of conduct that ensures ethical engagement, confidentiality, and the highest standards of professional practice when working with client projects.
+          Auditors on the Hawkly platform adhere to strict professional standards to ensure integrity and quality.
         </p>
-      </div>
-      
-      <div>
-        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <AlertOctagon className="h-5 w-5 text-primary" />
-          Ethical Obligations
-        </h3>
         
-        <div className="space-y-4 mb-8">
-          <div className="border border-border p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Confidentiality</h4>
-            <p className="text-sm text-muted-foreground">
-              Auditors must maintain strict confidentiality regarding all non-public information accessed during audits. This includes code, documentation, project plans, and business strategy. Confidential information may not be shared or discussed outside the audit team without explicit client permission.
-            </p>
-          </div>
-          
-          <div className="border border-border p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Conflict of Interest</h4>
-            <p className="text-sm text-muted-foreground">
-              Auditors must disclose any potential conflicts of interest before accepting an engagement. This includes financial interests in competing projects, prior involvement with the project being audited, or personal relationships with project team members. Auditors may not audit projects where their objectivity could reasonably be questioned.
-            </p>
-          </div>
-          
-          <div className="border border-border p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Non-Exploitation</h4>
-            <p className="text-sm text-muted-foreground">
-              Auditors are prohibited from exploiting vulnerabilities discovered during audits, even after public disclosure. Knowledge of vulnerabilities must never be used for personal gain or to manipulate markets. This includes trading based on non-public information about security issues.
-            </p>
-          </div>
-          
-          <div className="border border-border p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Responsible Disclosure</h4>
-            <p className="text-sm text-muted-foreground">
-              Vulnerabilities must be reported through proper channels and never disclosed publicly without following the agreed-upon disclosure timeline. Client permission is required before discussing specific vulnerabilities in any public forum, including research papers and conference presentations.
-            </p>
-          </div>
-        </div>
-      </div>
-      
-      <Separator />
-      
-      <div>
-        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <UserCheck className="h-5 w-5 text-primary" />
-          Professional Standards
-        </h3>
-        
-        <div className="space-y-4 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="border border-border p-4 rounded-lg hover:border-primary/40 transition-all duration-300">
-              <h4 className="font-medium mb-2">Qualification Maintenance</h4>
-              <p className="text-sm text-muted-foreground">
-                Auditors must maintain and regularly update their technical knowledge and skills. This includes staying current with emerging vulnerability types, attack vectors, and security best practices in the rapidly evolving blockchain space.
-              </p>
-            </div>
-            
-            <div className="border border-border p-4 rounded-lg hover:border-primary/40 transition-all duration-300">
-              <h4 className="font-medium mb-2">Due Diligence</h4>
-              <p className="text-sm text-muted-foreground">
-                Auditors must perform thorough and complete assessments using all appropriate methods and tools. Cutting corners or performing superficial reviews is strictly prohibited, even under time constraints.
-              </p>
-            </div>
-            
-            <div className="border border-border p-4 rounded-lg hover:border-primary/40 transition-all duration-300">
-              <h4 className="font-medium mb-2">Objective Communication</h4>
-              <p className="text-sm text-muted-foreground">
-                Findings must be communicated clearly, accurately, and objectively, without exaggeration or minimization. Technical limitations and confidence levels should be transparently disclosed when reporting potential vulnerabilities.
-              </p>
-            </div>
-            
-            <div className="border border-border p-4 rounded-lg hover:border-primary/40 transition-all duration-300">
-              <h4 className="font-medium mb-2">Scope Adherence</h4>
-              <p className="text-sm text-muted-foreground">
-                Auditors must respect audit scope boundaries while still highlighting related risks. Any necessary scope expansion must be discussed with clients before proceeding.
-              </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="border border-border/60 rounded-lg p-5 bg-card/50">
+            <h3 className="text-lg font-semibold mb-3">Ethics & Integrity</h3>
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="h-6 w-6 flex-none rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className="h-2.5 w-2.5 rounded-full bg-primary"></div>
+                </div>
+                <div>
+                  <h4 className="font-medium">Confidentiality</h4>
+                  <p className="text-sm text-muted-foreground">Strict protection of client information and code</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <div className="h-6 w-6 flex-none rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className="h-2.5 w-2.5 rounded-full bg-primary"></div>
+                </div>
+                <div>
+                  <h4 className="font-medium">Objectivity</h4>
+                  <p className="text-sm text-muted-foreground">Unbiased assessment regardless of client relationship</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <div className="h-6 w-6 flex-none rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className="h-2.5 w-2.5 rounded-full bg-primary"></div>
+                </div>
+                <div>
+                  <h4 className="font-medium">Conflict of Interest</h4>
+                  <p className="text-sm text-muted-foreground">Disclosure of any potential conflicts</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <div className="h-6 w-6 flex-none rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className="h-2.5 w-2.5 rounded-full bg-primary"></div>
+                </div>
+                <div>
+                  <h4 className="font-medium">Responsible Disclosure</h4>
+                  <p className="text-sm text-muted-foreground">Ethical handling of vulnerability information</p>
+                </div>
+              </div>
             </div>
           </div>
           
-          <div className="bg-muted p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Quality Assurance Process</h4>
-            <p className="text-sm text-muted-foreground">
-              All audits undergo internal quality assurance review by senior auditors to ensure consistency, thoroughness, and adherence to Hawkly standards. Every finding must be verified by at least one auditor who was not involved in the initial discovery.
-            </p>
-          </div>
-        </div>
-      </div>
-      
-      <Separator />
-      
-      <div>
-        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <BookOpen className="h-5 w-5 text-primary" />
-          Client Communication Guidelines
-        </h3>
-        
-        <div className="space-y-4 mb-8">
-          <p className="text-muted-foreground">
-            Clear, prompt, and professional communication is essential to successful security audits. Hawkly auditors follow these guidelines when interacting with clients:
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="border border-border p-4 rounded-lg">
-              <h4 className="font-medium mb-2">Responsiveness</h4>
-              <p className="text-sm text-muted-foreground">
-                Client inquiries must receive acknowledgment within 24 hours (business days). Substantive responses should be provided within agreed-upon timeframes based on urgency and complexity.
-              </p>
-            </div>
-            
-            <div className="border border-border p-4 rounded-lg">
-              <h4 className="font-medium mb-2">Clarity</h4>
-              <p className="text-sm text-muted-foreground">
-                Technical concepts must be explained at a level appropriate for the client's technical background. Avoid jargon when communicating with non-technical stakeholders and provide glossaries when necessary.
-              </p>
-            </div>
-            
-            <div className="border border-border p-4 rounded-lg">
-              <h4 className="font-medium mb-2">Transparency</h4>
-              <p className="text-sm text-muted-foreground">
-                Limitations, challenges, and uncertainties encountered during the audit must be proactively disclosed to clients, including tool limitations and areas where manual review may be insufficient.
-              </p>
-            </div>
-            
-            <div className="border border-border p-4 rounded-lg">
-              <h4 className="font-medium mb-2">Constructive Feedback</h4>
-              <p className="text-sm text-muted-foreground">
-                Issues should be presented with a focus on improvement rather than criticism. Positive aspects of the codebase should be acknowledged alongside identified vulnerabilities.
-              </p>
+          <div className="border border-border/60 rounded-lg p-5 bg-card/50">
+            <h3 className="text-lg font-semibold mb-3">Professional Qualifications</h3>
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="h-6 w-6 flex-none rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className="h-2.5 w-2.5 rounded-full bg-primary"></div>
+                </div>
+                <div>
+                  <h4 className="font-medium">Technical Expertise</h4>
+                  <p className="text-sm text-muted-foreground">Demonstrated knowledge in relevant technologies</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <div className="h-6 w-6 flex-none rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className="h-2.5 w-2.5 rounded-full bg-primary"></div>
+                </div>
+                <div>
+                  <h4 className="font-medium">Continuous Education</h4>
+                  <p className="text-sm text-muted-foreground">Ongoing learning about emerging threats and technologies</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <div className="h-6 w-6 flex-none rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className="h-2.5 w-2.5 rounded-full bg-primary"></div>
+                </div>
+                <div>
+                  <h4 className="font-medium">Certification</h4>
+                  <p className="text-sm text-muted-foreground">Industry-recognized security credentials</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <div className="h-6 w-6 flex-none rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className="h-2.5 w-2.5 rounded-full bg-primary"></div>
+                </div>
+                <div>
+                  <h4 className="font-medium">Track Record</h4>
+                  <p className="text-sm text-muted-foreground">Verified history of quality security work</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
       
-      <Separator />
-      
-      <div>
-        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <FileCheck className="h-5 w-5 text-primary" />
-          Audit Documentation Requirements
-        </h3>
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Client Interaction Protocol</h2>
+        <p className="text-muted-foreground mb-6">
+          Guidelines for professional communication and collaboration throughout the audit process.
+        </p>
         
-        <div className="space-y-4 mb-8">
-          <p className="text-muted-foreground">
-            Proper documentation of the audit process is essential for quality assurance, knowledge transfer, and potential regulatory compliance. Auditors must maintain the following records:
-          </p>
-          
-          <div className="grid grid-cols-1 gap-4">
-            <div className="border border-border p-4 rounded-lg">
-              <h4 className="font-medium mb-2">Audit Plan & Scope Document</h4>
-              <p className="text-sm text-muted-foreground">
-                Detailed description of the agreed-upon scope, methodology, timeline, and resource allocation. Any subsequent scope changes must be documented with client approval.
-              </p>
-            </div>
-            
-            <div className="border border-border p-4 rounded-lg">
-              <h4 className="font-medium mb-2">Analysis Workpapers</h4>
-              <p className="text-sm text-muted-foreground">
-                Detailed notes, tool outputs, testing scripts, and evidence collected during the audit process. This documentation must be sufficient for another qualified auditor to understand the work performed and verify conclusions.
-              </p>
-            </div>
-            
-            <div className="border border-border p-4 rounded-lg">
-              <h4 className="font-medium mb-2">Client Communications</h4>
-              <p className="text-sm text-muted-foreground">
-                Records of substantive communications with clients regarding audit findings, scope, and recommendations. These records help prevent misunderstandings and provide context for audit decisions.
-              </p>
-            </div>
-            
-            <div className="border border-border p-4 rounded-lg">
-              <h4 className="font-medium mb-2">Audit Report & Deliverables</h4>
-              <p className="text-sm text-muted-foreground">
-                Final versions of all materials provided to clients, including the main report, executive summary, supporting files, and any presentation materials used in delivery meetings.
-              </p>
+        <div className="border border-border/60 rounded-lg overflow-hidden">
+          <div className="bg-primary/5 border-b border-border/60 px-5 py-3">
+            <h3 className="font-semibold">Communication Standards</h3>
+          </div>
+          <div className="p-5">
+            <div className="space-y-6">
+              <div>
+                <h4 className="text-sm font-semibold uppercase text-muted-foreground tracking-wider mb-3">Initial Engagement</h4>
+                <ul className="space-y-2">
+                  <li className="flex gap-2">
+                    <div className="flex-none mt-1">
+                      <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    </div>
+                    <span>Clear scope definition and expectations setting</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <div className="flex-none mt-1">
+                      <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    </div>
+                    <span>Transparent pricing and timeline discussion</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <div className="flex-none mt-1">
+                      <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    </div>
+                    <span>Documentation of agreed-upon deliverables</span>
+                  </li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 className="text-sm font-semibold uppercase text-muted-foreground tracking-wider mb-3">During Audit</h4>
+                <ul className="space-y-2">
+                  <li className="flex gap-2">
+                    <div className="flex-none mt-1">
+                      <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    </div>
+                    <span>Regular progress updates (minimum weekly)</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <div className="flex-none mt-1">
+                      <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    </div>
+                    <span>Prompt notification of critical findings</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <div className="flex-none mt-1">
+                      <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    </div>
+                    <span>Availability for technical clarifications</span>
+                  </li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 className="text-sm font-semibold uppercase text-muted-foreground tracking-wider mb-3">Findings Presentation</h4>
+                <ul className="space-y-2">
+                  <li className="flex gap-2">
+                    <div className="flex-none mt-1">
+                      <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    </div>
+                    <span>Clear, jargon-free explanations</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <div className="flex-none mt-1">
+                      <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    </div>
+                    <span>Technical depth appropriate to client expertise</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <div className="flex-none mt-1">
+                      <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    </div>
+                    <span>Availability for follow-up questions</span>
+                  </li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 className="text-sm font-semibold uppercase text-muted-foreground tracking-wider mb-3">Post-Audit Support</h4>
+                <ul className="space-y-2">
+                  <li className="flex gap-2">
+                    <div className="flex-none mt-1">
+                      <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    </div>
+                    <span>Remediation guidance and verification</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <div className="flex-none mt-1">
+                      <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    </div>
+                    <span>Clear timeframe for post-audit support</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <div className="flex-none mt-1">
+                      <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    </div>
+                    <span>Professional handover if continued support is needed</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
       
-      <Separator />
-      
-      <div>
-        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <Eye className="h-5 w-5 text-primary" />
-          Auditor Oversight & Accountability
-        </h3>
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Dispute Resolution</h2>
+        <p className="text-muted-foreground mb-6">
+          Fair and transparent process for resolving disagreements between auditors and clients.
+        </p>
         
-        <div className="bg-muted p-6 rounded-lg mb-4">
-          <p className="text-sm text-muted-foreground mb-4">
-            Hawkly maintains a robust system of oversight to ensure auditor adherence to these protocols and professional standards:
-          </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="border border-border/60 rounded-lg p-5 bg-card/50">
+            <h3 className="font-semibold mb-3">Dispute Categories</h3>
+            <ul className="space-y-2">
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Scope disagreements</span>
+              </li>
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Findings validity challenges</span>
+              </li>
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Severity classification disputes</span>
+              </li>
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Delivery timeline issues</span>
+              </li>
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Quality of deliverables concerns</span>
+              </li>
+            </ul>
+          </div>
           
-          <div className="space-y-4">
-            <div>
-              <h4 className="font-medium mb-1">Peer Review System</h4>
-              <p className="text-xs text-muted-foreground">
-                Every audit undergoes peer review by senior auditors who evaluate adherence to protocols, methodology, and reporting standards.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-medium mb-1">Client Feedback Mechanism</h4>
-              <p className="text-xs text-muted-foreground">
-                Structured client feedback is collected after each audit and incorporated into auditor performance evaluations.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-medium mb-1">Ethics Committee</h4>
-              <p className="text-xs text-muted-foreground">
-                An independent committee reviews potential ethics violations and makes determinations on appropriate remediation or disciplinary actions.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-medium mb-1">Continuing Education Requirements</h4>
-              <p className="text-xs text-muted-foreground">
-                Auditors must complete a minimum of 40 hours of approved professional development annually to maintain their status on the Hawkly platform.
-              </p>
-            </div>
+          <div className="border border-border/60 rounded-lg p-5 bg-card/50">
+            <h3 className="font-semibold mb-3">Resolution Process</h3>
+            <ol className="space-y-3">
+              <li className="flex">
+                <div className="flex-none mr-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full border border-primary bg-primary/10">
+                    <span className="text-xs">1</span>
+                  </div>
+                </div>
+                <div>
+                  <span className="font-medium">Direct Communication</span>
+                  <p className="text-xs text-muted-foreground">Initial attempt at resolution between parties</p>
+                </div>
+              </li>
+              <li className="flex">
+                <div className="flex-none mr-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full border border-primary bg-primary/10">
+                    <span className="text-xs">2</span>
+                  </div>
+                </div>
+                <div>
+                  <span className="font-medium">Platform Mediation</span>
+                  <p className="text-xs text-muted-foreground">Hawkly team provides neutral assessment</p>
+                </div>
+              </li>
+              <li className="flex">
+                <div className="flex-none mr-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full border border-primary bg-primary/10">
+                    <span className="text-xs">3</span>
+                  </div>
+                </div>
+                <div>
+                  <span className="font-medium">Expert Panel Review</span>
+                  <p className="text-xs text-muted-foreground">Independent assessment by security experts</p>
+                </div>
+              </li>
+              <li className="flex">
+                <div className="flex-none mr-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full border border-primary bg-primary/10">
+                    <span className="text-xs">4</span>
+                  </div>
+                </div>
+                <div>
+                  <span className="font-medium">Resolution & Documentation</span>
+                  <p className="text-xs text-muted-foreground">Formal agreement and implementation</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+          
+          <div className="border border-border/60 rounded-lg p-5 bg-card/50">
+            <h3 className="font-semibold mb-3">Prevention Measures</h3>
+            <ul className="space-y-2">
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Detailed engagement agreements</span>
+              </li>
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Clear scope documentation</span>
+              </li>
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Regular communication checkpoints</span>
+              </li>
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Expectations management</span>
+              </li>
+              <li className="flex gap-2">
+                <div className="flex-none mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary"></div>
+                </div>
+                <span>Documentation of all key decisions</span>
+              </li>
+            </ul>
           </div>
         </div>
-        
-        <div className="border border-border p-4 rounded-lg">
-          <h4 className="font-medium mb-2">Protocol Violations & Consequences</h4>
-          <p className="text-sm text-muted-foreground">
-            Violations of these protocols are taken seriously and may result in remedial training, temporary suspension, permanent removal from the Hawkly platform, or legal action in cases of serious ethical breaches. The specific consequence depends on the severity, intent, and pattern of violations.
-          </p>
-        </div>
-      </div>
+      </section>
     </div>
   );
 }
