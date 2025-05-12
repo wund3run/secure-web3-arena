@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Eye } from "lucide-react";
 
 interface ServiceCardFooterProps {
   pricing: {
@@ -23,10 +23,12 @@ export function ServiceCardFooter({
         <Button 
           variant="default" 
           size="sm" 
-          className="group-hover:bg-primary/90 z-10"
+          className="group-hover:bg-primary/90 z-10 flex items-center"
           onClick={onViewDetails}
+          title="View detailed service information"
         >
-          <span>View Details</span>
+          <Eye className="mr-1.5 h-3.5 w-3.5 opacity-80" />
+          <span>Service Details</span>
           <ArrowRight className="ml-1 h-3 w-3 opacity-70 transition-transform group-hover:translate-x-1" />
         </Button>
       </div>
