@@ -9,6 +9,12 @@
     <meta name="keywords" content="Web3 security, blockchain security, smart contract audit, DApp security, solidity security, reentrancy protection, oracle manipulation prevention, crypto security, Web3 vulnerability assessment" />
     <meta name="author" content="Hawkly" />
 
+    <!-- Preload critical resources -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+    <link rel="preload" as="script" href="/src/main.tsx" type="module" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
     <!-- Open Graph / Social Media - Updated with Hawkly brand identity image -->
     <meta property="og:title" content="Hawkly | Leading Web3 Security Marketplace" />
     <meta property="og:description" content="Connect with verified security experts to protect your smart contracts, DApps, and prevent vulnerabilities. Join our trusted Web3 security marketplace." />
@@ -24,8 +30,6 @@
     <meta name="twitter:image" content="https://i.imgur.com/xM0nBw6.png" />
     
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     
     <!-- Structured Data -->
@@ -76,7 +80,24 @@
   </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Initial loading indicator -->
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #ffffff;">
+        <div style="text-align: center; padding: 20px;">
+          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#5E35B1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V4H4v8c0 6 8 10 8 10z"></path>
+          </svg>
+          <div style="margin-top: 20px; display: inline-block; width: 40px; height: 40px; border: 4px solid rgba(94, 53, 177, 0.1); border-radius: 50%; border-top-color: #5E35B1; animation: spin 1s linear infinite;"></div>
+          <p style="margin-top: 16px; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #64748b;">Loading Hawkly...</p>
+        </div>
+      </div>
+      <style>
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      </style>
+    </div>
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
