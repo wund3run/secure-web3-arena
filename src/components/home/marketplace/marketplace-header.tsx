@@ -1,3 +1,4 @@
+
 import { Shield, Star, Users, BadgeCheck, ArrowRight, FileCode, LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -15,10 +16,10 @@ export function MarketplaceHeader() {
         </div>
         <div className="inline-flex items-center justify-center bg-[#8A73E2]/10 px-4 py-2 rounded-full text-[#8A73E2] mb-4">
           <Shield className="h-5 w-5 mr-2" />
-          <span className="font-medium">Web3 Security Services</span>
+          <span className="font-medium">Blockchain Security Hub</span>
         </div>
         <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground mb-4 flex items-center justify-center gap-2">
-          Web3 Security Marketplace
+          Security Expert Marketplace
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -77,7 +78,7 @@ export function MarketplaceHeader() {
           <div className="mt-6">
             <Link to="/marketplace">
               <Button className="w-full group bg-primary hover:bg-primary/90 transition-all">
-                Find Web3 Security Services
+                View Security Services
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
@@ -109,7 +110,7 @@ export function MarketplaceHeader() {
           <div className="mt-6">
             <Link to="/audits">
               <Button variant="outline" className="w-full group border-secondary text-secondary hover:bg-secondary/10 transition-all">
-                Become a Web3 Auditor
+                Become a Certified Auditor
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
@@ -124,7 +125,7 @@ export function MarketplaceHeader() {
             <FileCode className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h4 className="font-medium text-sm">Smart Contract Audits</h4>
+            <h4 className="font-medium text-sm">Code Audit Services</h4>
             <p className="text-xs text-muted-foreground">Find vulnerabilities in blockchain code</p>
           </div>
         </div>
@@ -142,8 +143,8 @@ export function MarketplaceHeader() {
             <Shield className="h-5 w-5 text-web3-orange" />
           </div>
           <div>
-            <h4 className="font-medium text-sm">DApp Security</h4>
-            <p className="text-xs text-muted-foreground">Complete application protection</p>
+            <h4 className="font-medium text-sm">DApp Protection</h4>
+            <p className="text-xs text-muted-foreground">Complete application security</p>
           </div>
         </div>
       </div>

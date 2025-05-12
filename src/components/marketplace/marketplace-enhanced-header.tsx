@@ -13,10 +13,10 @@ export function MarketplaceEnhancedHeader() {
         </div>
         <div className="inline-flex items-center justify-center bg-primary/10 px-4 py-2 rounded-full text-primary mb-4">
           <Shield className="h-5 w-5 mr-2" />
-          <span className="font-medium">Web3 Security Marketplace</span>
+          <span className="font-medium">Security Service Catalog</span>
         </div>
         <h1 className="text-3xl md:text-4xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-          Find Security Services for Your Web3 Project
+          Find Expert Security Services for Your Web3 Project
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
           Connect with vetted security experts, protect your blockchain assets, and build with confidence in the Web3 ecosystem.
@@ -33,7 +33,7 @@ export function MarketplaceEnhancedHeader() {
           <Link to="/marketplace">
             <Button variant="outline" className="w-full md:w-auto border-secondary text-secondary hover:bg-secondary/10">
               <Search className="mr-2 h-5 w-5" />
-              Browse Services
+              Browse All Services
             </Button>
           </Link>
         </div>

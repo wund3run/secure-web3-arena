@@ -14,10 +14,10 @@ export function AuditsHeader() {
           </div>
           <div className="inline-flex items-center justify-center bg-[#8A73E2]/10 px-4 py-2 rounded-full text-[#8A73E2] mb-4 mt-4">
             <ShieldCheck className="h-5 w-5 mr-2" />
-            <span className="font-medium">Verified Security</span>
+            <span className="font-medium">Audit Repository</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#8A73E2] to-[#33C3F0]">
-            Smart Contract Security Audits
+            Smart Contract Audit Reports
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Browse completed audits, track ongoing security reviews, or request a new audit for your Web3 project.
@@ -36,7 +36,7 @@ export function AuditsHeader() {
           <Link to="/audits">
             <Button variant="outline" className="w-full md:w-auto border-[#33C3F0] text-[#33C3F0] hover:bg-[#33C3F0]/10">
               <Search className="mr-2 h-5 w-5" />
-              Browse Completed Audits
+              Browse Audit Reports
             </Button>
           </Link>
         </div>
@@ -48,7 +48,7 @@ export function AuditsHeader() {
               <div className="p-3 bg-primary/10 rounded-full mr-4">
                 <FileText className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="text-xl font-bold">Request an Audit</h3>
+              <h3 className="text-xl font-bold">Request Security Review</h3>
             </div>
             <p className="mb-4 text-muted-foreground">
               Get your smart contracts or protocols reviewed by top security experts. Our auditors specialize in 
@@ -57,7 +57,7 @@ export function AuditsHeader() {
             <div className="mt-6">
               <Link to="/request-audit">
                 <Button className="group">
-                  Get Started
+                  Start Request Process
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
@@ -70,7 +70,7 @@ export function AuditsHeader() {
               <div className="p-3 bg-secondary/10 rounded-full mr-4">
                 <Award className="h-6 w-6 text-secondary" />
               </div>
-              <h3 className="text-xl font-bold">Join as an Auditor</h3>
+              <h3 className="text-xl font-bold">Become a Security Auditor</h3>
             </div>
             <p className="mb-4 text-muted-foreground">
               Are you a security expert? Join our platform to connect with projects seeking audits,
@@ -79,7 +79,7 @@ export function AuditsHeader() {
             <div className="mt-6">
               <Link to="/service-provider-onboarding">
                 <Button variant="outline" className="group border-secondary text-secondary hover:bg-secondary/10">
-                  Apply Now
+                  Apply as Auditor
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>

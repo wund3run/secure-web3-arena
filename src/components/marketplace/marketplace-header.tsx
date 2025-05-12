@@ -42,7 +42,7 @@ export function MarketplaceHeader({
     <div className="flex flex-col gap-4 mb-6">
       <div className="flex flex-col gap-2">
         <div className="flex items-center">
-          <h1 className="text-3xl font-bold text-foreground">Security Services</h1>
+          <h1 className="text-3xl font-bold text-foreground">Security Service Directory</h1>
           <Badge variant="outline" className="ml-3 bg-primary/5 text-primary border-primary/20">
             Web3 Security
           </Badge>
@@ -123,7 +123,7 @@ export function MarketplaceHeader({
               className="w-full border-primary text-primary hover:bg-primary/10 flex items-center justify-center"
             >
               <FileText className="mr-2 h-4 w-4" />
-              Request for Audit
+              Request Security Audit
             </Button>
           </Link>
           <Link to="/join" className="w-full sm:w-auto">
@@ -131,7 +131,7 @@ export function MarketplaceHeader({
               className="w-full bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] hover:opacity-90 flex items-center justify-center shadow-sm"
             >
               <Shield className="mr-2 h-4 w-4" />
-              Join the Circle
+              Apply as an Auditor
             </Button>
           </Link>
         </div>

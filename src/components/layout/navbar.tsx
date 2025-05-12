@@ -31,7 +31,7 @@ export function Navbar() {
                   )}
                 >
                   <Shield className="mr-2 h-4 w-4" />
-                  Security Services
+                  Service Directory
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
@@ -55,7 +55,7 @@ export function Navbar() {
                   )}
                 >
                   <Users className="mr-2 h-4 w-4" />
-                  Leaderboard
+                  Top Auditors
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
@@ -67,7 +67,7 @@ export function Navbar() {
                   )}
                 >
                   <BarChart2 className="mr-2 h-4 w-4" />
-                  Stats
+                  Platform Stats
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
@@ -79,7 +79,7 @@ export function Navbar() {
                   )}
                 >
                   <BookOpen className="mr-2 h-4 w-4" />
-                  Community
+                  Security Hub
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
@@ -93,13 +93,13 @@ export function Navbar() {
                 <Link to="/auth">Sign In</Link>
               </Button>
               <Button asChild>
-                <Link to="/service-provider-onboarding">Join the Circle</Link>
+                <Link to="/service-provider-onboarding">Join as Auditor</Link>
               </Button>
             </>
           ) : (
             <>
               <Button variant="outline" asChild>
-                <Link to="/request-audit">Request Audit</Link>
+                <Link to="/request-audit">Request Security Review</Link>
               </Button>
               <Button variant="ghost" onClick={() => signOut()}>
                 Sign Out
