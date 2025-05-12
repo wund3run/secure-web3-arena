@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Shield, ArrowRight } from "lucide-react";
 import { BetaWarning } from "@/components/ui/beta-warning";
 import { toast } from "sonner";
+import { Separator } from "@/components/ui/separator"; 
 
 const Index = () => {
   const [showEnhancedOnboarding, setShowEnhancedOnboarding] = useState(false);
@@ -75,32 +76,37 @@ const Index = () => {
           </div>
         )}
       
+        {/* Hero Section */}
         <EnhancedHeroHeader />
         
-        {/* Stats and features sections */}
-        <section className="bg-gradient-to-r from-primary/5 via-white to-secondary/5 py-12">
+        {/* Stats Section with visual separator */}
+        <section className="bg-gradient-to-r from-primary/5 via-white to-secondary/5 py-16 border-y border-border/20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-              {/* Stats cards */}
-              <div className="glass-card p-6 rounded-xl hover-lift transition-all duration-300">
+            <h2 className="text-3xl font-bold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+              Securing the Web3 Ecosystem
+            </h2>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {/* Stats cards with enhanced visual separation */}
+              <div className="glass-card p-6 rounded-xl shadow-md hover-lift transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary to-secondary mb-2">
                   500+
                 </div>
                 <div className="text-muted-foreground font-medium">Security Experts</div>
               </div>
-              <div className="glass-card p-6 rounded-xl hover-lift transition-all duration-300">
+              <div className="glass-card p-6 rounded-xl shadow-md hover-lift transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary to-secondary mb-2">
                   $350M+
                 </div>
                 <div className="text-muted-foreground font-medium">Assets Protected</div>
               </div>
-              <div className="glass-card p-6 rounded-xl hover-lift transition-all duration-300">
+              <div className="glass-card p-6 rounded-xl shadow-md hover-lift transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary to-secondary mb-2">
                   2,500+
                 </div>
                 <div className="text-muted-foreground font-medium">Projects Secured</div>
               </div>
-              <div className="glass-card p-6 rounded-xl hover-lift transition-all duration-300">
+              <div className="glass-card p-6 rounded-xl shadow-md hover-lift transition-all duration-300">
                 <div className="text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary to-secondary mb-2">
                   12,800+
                 </div>
@@ -110,58 +116,68 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Get started CTA */}
-        <section className="py-12 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="max-w-3xl mx-auto">
-              <h2 className="text-3xl font-extrabold mb-6">Join Our Web3 Security Community</h2>
-              <p className="text-lg text-muted-foreground mb-8">
-                Whether you're a security provider or project owner, our guided onboarding will help you get started.
-              </p>
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 px-8 transition-all"
-                onClick={handleStartOnboarding}
-              >
-                <Shield className="mr-2 h-5 w-5" />
-                Start Guided Onboarding
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+        {/* Primary Value Proposition */}
+        <section className="py-20 bg-gradient-to-b from-white to-primary/5">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <MarketplaceSection />
+          </div>
+          <Separator className="max-w-5xl mx-auto my-16 opacity-30" />
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <AuditStatsTable />
+          </div>
+        </section>
+        
+        {/* Clear CTA Section with visual emphasis */}
+        <section className="py-16 bg-gradient-to-br from-primary/10 via-background to-secondary/10 border-y border-border/20">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-3xl font-bold mb-6">Join Our Web3 Security Community</h2>
+            <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
+              Whether you're a security provider or project owner, our guided onboarding will help you get started.
+            </p>
+            <Button 
+              size="lg" 
+              className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 px-8 py-6 text-lg transition-all shadow-lg"
+              onClick={handleStartOnboarding}
+            >
+              <Shield className="mr-2 h-6 w-6" />
+              Start Guided Onboarding
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </div>
+        </section>
+        
+        {/* Key Features Section with improved visual hierarchy */}
+        <section className="py-20 bg-gradient-to-b from-white to-muted/30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-bold text-center mb-16">Key Platform Features</h2>
+            <div className="space-y-24">
+              <GamificationSection />
+              <Separator className="max-w-5xl mx-auto opacity-30" />
+              <OnboardingPaths />
+              <Separator className="max-w-5xl mx-auto opacity-30" />
+              <IntelligentMatching />
             </div>
           </div>
         </section>
         
-        {/* Main content sections */}
-        <MarketplaceSection />
-        <AuditStatsTable />
-        <GamificationSection />
-        
-        <section className="py-16 bg-gradient-to-b from-muted/30 to-background">
+        {/* Additional Value Props with better spacing */}
+        <section className="py-20 bg-gradient-to-b from-muted/30 to-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <OnboardingPaths />
-          </div>
-        </section>
-        
-        <section className="py-16 bg-gradient-to-b from-background to-muted/30">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <IntelligentMatching />
-          </div>
-        </section>
-        
-        <section className="py-16 bg-gradient-to-b from-muted/30 to-background">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <ReputationSystem />
-          </div>
-        </section>
-        
-        <section className="py-16 bg-gradient-to-b from-background to-muted/30">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <ContinuousSecurity />
+            <h2 className="text-3xl font-bold text-center mb-16">Why Choose Hawkly</h2>
+            <div className="space-y-24">
+              <ReputationSystem />
+              <Separator className="max-w-5xl mx-auto opacity-30" />
+              <ContinuousSecurity />
+            </div>
           </div>
         </section>
         
         {/* FAQ Section */}
-        <FaqSection />
+        <section className="py-20 bg-gradient-to-b from-white to-muted/20 border-t border-border/20">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <FaqSection />
+          </div>
+        </section>
       </main>
       <EnhancedFooter />
       

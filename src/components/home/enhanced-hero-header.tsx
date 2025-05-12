@@ -6,13 +6,10 @@ import { BadgeAward } from "@/components/ui/badge-award";
 
 export function EnhancedHeroHeader() {
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-white via-primary/5 to-secondary/5 pt-10 pb-20">
+    <div className="relative overflow-hidden bg-gradient-to-br from-white via-primary/5 to-secondary/5 pt-10 pb-16">
       {/* Decorative elements with reduced opacity */}
       <div className="absolute top-20 right-10 opacity-10">
         <Shield className="w-40 h-40 text-primary animate-float" />
-      </div>
-      <div className="absolute bottom-10 left-10 opacity-5">
-        <Trophy className="w-32 h-32 text-web3-teal animate-float" style={{ animationDelay: "2s" }} />
       </div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -29,6 +26,7 @@ export function EnhancedHeroHeader() {
         
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-12">
+            {/* Logo & Title Section */}
             <div className="flex items-center mb-6">
               <div className="relative flex items-center justify-center mr-3">
                 <Shield className="h-16 w-16 text-primary" />
@@ -43,6 +41,7 @@ export function EnhancedHeroHeader() {
               </div>
             </div>
             
+            {/* Main Headline - Enlarged for better visual hierarchy */}
             <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl mb-6">
               <span className="block text-foreground mb-2">The Premier Platform for</span>
               <span className="block text-gradient bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Web3 Security Solutions</span>
@@ -52,61 +51,65 @@ export function EnhancedHeroHeader() {
               Connect with top security experts to protect your smart contracts, DApps, and blockchain assets from critical vulnerabilities and exploits.
             </p>
             
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-card/80 backdrop-blur-sm p-5 rounded-lg border border-border/30 shadow-sm hover-lift transition-all duration-300">
-                <h2 className="text-xl font-semibold mb-3 flex items-center">
+            {/* Primary CTA Cards - Streamlined design */}
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="bg-card/80 backdrop-blur-sm p-6 rounded-lg border border-border/30 shadow-sm hover-lift transition-all duration-300">
+                <h2 className="text-2xl font-semibold mb-4 flex items-center">
                   <Shield className="h-6 w-6 text-primary mr-2" />
                   For Project Owners
                 </h2>
-                <ul className="standardized-list">
-                  <li className="standardized-list-item">
-                    <span className="text-muted-foreground">Connect with verified smart contract auditors</span>
+                <ul className="space-y-3 mb-6">
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Connect with verified smart contract auditors</span>
                   </li>
-                  <li className="standardized-list-item">
-                    <span className="text-muted-foreground">Identify vulnerabilities in your blockchain projects</span>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Identify vulnerabilities in your blockchain projects</span>
                   </li>
-                  <li className="standardized-list-item">
-                    <span className="text-muted-foreground">Protect DApps with comprehensive security audits</span>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Protect DApps with comprehensive security audits</span>
                   </li>
                 </ul>
-                <div className="mt-4">
-                  <Link to="/request-audit">
-                    <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-                      Request an Audit
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                </div>
+                <Link to="/request-audit">
+                  <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 group">
+                    Request an Audit
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
               </div>
 
-              <div className="bg-card/80 backdrop-blur-sm p-5 rounded-lg border border-border/30 shadow-sm hover-lift transition-all duration-300">
-                <h2 className="text-xl font-semibold mb-3 flex items-center">
+              <div className="bg-card/80 backdrop-blur-sm p-6 rounded-lg border border-border/30 shadow-sm hover-lift transition-all duration-300">
+                <h2 className="text-2xl font-semibold mb-4 flex items-center">
                   <User className="h-6 w-6 text-web3-orange mr-2" />
                   For Security Experts
                 </h2>
-                <ul className="standardized-list">
-                  <li className="standardized-list-item">
-                    <span className="text-muted-foreground">Monetize your security expertise</span>
+                <ul className="space-y-3 mb-6">
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 text-web3-orange mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Monetize your security expertise</span>
                   </li>
-                  <li className="standardized-list-item">
-                    <span className="text-muted-foreground">Build reputation with our verified auditor program</span>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 text-web3-orange mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Build reputation with our verified auditor program</span>
                   </li>
-                  <li className="standardized-list-item">
-                    <span className="text-muted-foreground">Join elite Web3 security researcher community</span>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 text-web3-orange mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Join elite Web3 security researcher community</span>
                   </li>
                 </ul>
-                <div className="mt-4">
-                  <Link to="/service-provider-onboarding">
-                    <Button variant="outline" className="w-full border-web3-orange text-web3-orange hover:bg-web3-orange/10">
-                      Join as an Auditor
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                </div>
+                <Link to="/service-provider-onboarding">
+                  <Button variant="outline" className="w-full border-web3-orange text-web3-orange hover:bg-web3-orange/10 group">
+                    Join as an Auditor
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
               </div>
             </div>
             
-            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+            {/* Platform Statistics - Simplified as badges */}
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-6">
               <div className="flex items-center gap-x-2">
                 <Shield className="h-6 w-6 text-web3-teal" />
                 <BadgeAward variant="verified">500+ Verified Auditors</BadgeAward>
@@ -121,9 +124,8 @@ export function EnhancedHeroHeader() {
               </div>
             </div>
             
-            {/* Updated blockchain ecosystems supported section */}
+            {/* Blockchain ecosystems supported - More compact */}
             <div className="mt-8 pt-6 border-t border-border/30">
-              <p className="text-sm text-muted-foreground mb-3">Blockchain ecosystems supported:</p>
               <div className="flex flex-wrap gap-2">
                 <span className="px-3 py-1 bg-[#627EEA]/10 text-[#627EEA] rounded-full text-xs font-medium">Ethereum</span>
                 <span className="px-3 py-1 bg-[#9945FF]/10 text-[#9945FF] rounded-full text-xs font-medium">Solana</span>
@@ -132,8 +134,6 @@ export function EnhancedHeroHeader() {
                 <span className="px-3 py-1 bg-[#F3BA2F]/10 text-[#F3BA2F] rounded-full text-xs font-medium">BNB Chain</span>
                 <span className="px-3 py-1 bg-[#28A0F0]/10 text-[#28A0F0] rounded-full text-xs font-medium">Arbitrum</span>
                 <span className="px-3 py-1 bg-[#FF0420]/10 text-[#FF0420] rounded-full text-xs font-medium">Optimism</span>
-                <span className="px-3 py-1 bg-[#277DA1]/10 text-[#277DA1] rounded-full text-xs font-medium">Aptos</span>
-                <span className="px-3 py-1 bg-[#6FBCF0]/10 text-[#6FBCF0] rounded-full text-xs font-medium">Sui</span>
               </div>
             </div>
           </div>

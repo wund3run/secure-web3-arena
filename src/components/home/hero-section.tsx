@@ -8,7 +8,7 @@ export function HeroSection() {
   return (
     <div className="px-4 py-16 sm:px-6 sm:py-24 md:py-32 lg:px-8 bg-gradient-to-br from-black to-primary/90 text-white">
       <div className="max-w-7xl mx-auto text-center">
-        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl mb-6">
           <span className="block">Smart Contract Security</span>
           <span className="block mt-2">for Web3 Builders</span>
         </h1>
@@ -17,7 +17,7 @@ export function HeroSection() {
         </p>
         
         <div className="mt-10 max-w-xl mx-auto flex flex-col sm:flex-row justify-center gap-4">
-          <Button asChild className="bg-white text-primary hover:bg-white/90 text-lg h-12 px-8">
+          <Button asChild className="bg-white text-primary hover:bg-white/90 text-lg h-12 px-8 shadow-lg">
             <Link to="/marketplace">
               Find Security Services
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -31,7 +31,7 @@ export function HeroSection() {
         </div>
         
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-left">
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-left shadow-md">
             <div className="bg-primary/20 rounded-full w-12 h-12 flex items-center justify-center mb-4">
               <Shield className="h-6 w-6" />
             </div>
@@ -41,7 +41,7 @@ export function HeroSection() {
             </p>
           </div>
           
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-left">
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-left shadow-md">
             <div className="bg-primary/20 rounded-full w-12 h-12 flex items-center justify-center mb-4">
               <Code className="h-6 w-6" />
             </div>
@@ -51,7 +51,7 @@ export function HeroSection() {
             </p>
           </div>
           
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-left">
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-left shadow-md">
             <div className="bg-primary/20 rounded-full w-12 h-12 flex items-center justify-center mb-4">
               <Cpu className="h-6 w-6" />
             </div>
@@ -72,7 +72,7 @@ export function HeroSection() {
         </div>
         
         <div className="mt-12 flex justify-center">
-          <Link to="/audit-guidelines" className="flex items-center gap-2 bg-white/10 hover:bg-white/20 transition-colors px-5 py-2 rounded-lg group">
+          <Link to="/audit-guidelines" className="flex items-center gap-2 bg-white/10 hover:bg-white/20 transition-colors px-5 py-2 rounded-lg group shadow-md">
             <FileText className="h-5 w-5 text-white/90" />
             <span className="text-white font-medium">View Security Audit Guidelines</span>
             <ArrowRight className="h-4 w-4 text-white/90 group-hover:translate-x-1 transition-transform" />

@@ -39,70 +39,42 @@
     --web3-gray: 220 14% 54%; /* Gray for tagline */
   }
   
-  /* Standardized headings */
+  /* Enhanced Standardized headings with improved visual hierarchy */
   h1, h2, h3, h4, h5, h6 {
     @apply font-medium leading-tight mb-4;
   }
   
   h1 {
-    @apply text-3xl md:text-4xl;
+    @apply text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight;
   }
   
   h2 {
-    @apply text-2xl md:text-3xl;
+    @apply text-2xl md:text-3xl font-bold tracking-tight;
   }
   
   h3 {
-    @apply text-xl md:text-2xl;
+    @apply text-xl md:text-2xl font-semibold;
   }
   
   h4 {
-    @apply text-lg md:text-xl;
+    @apply text-lg md:text-xl font-medium;
   }
   
-  /* Standardized list styles */
-  ul.standard-list, ol.standard-list {
-    @apply space-y-2 my-4 pl-5;
+  /* Standardized section containers for consistent spacing */
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20;
   }
   
-  ul.standard-list > li {
-    @apply list-disc list-outside;
-  }
-  
-  ol.standard-list > li {
-    @apply list-decimal list-outside;
-  }
-}
-
-/* Add glass effect utilities */
-@layer utilities {
-  /* ... keep existing code (glass effect utilities) */
-  
+  /* Section headings with consistent styling */
   .section-heading {
-    @apply text-2xl font-bold mb-4;
+    @apply text-2xl md:text-3xl font-bold mb-6 text-center;
   }
   
   .subsection-heading {
-    @apply text-xl font-semibold mb-3;
+    @apply text-xl md:text-2xl font-semibold mb-4;
   }
   
-  .list-item-with-icon {
-    @apply flex items-start gap-2;
-  }
-  
-  .list-icon {
-    @apply flex-none mt-1 h-2 w-2 rounded-full bg-primary;
-  }
-  
-  .list-container {
-    @apply space-y-2 my-2;
-  }
-  
-  .card-heading {
-    @apply text-lg font-semibold mb-3;
-  }
-  
-  /* New standardized list styles - consolidated and consistent */
+  /* Enhanced list styles */
   .standardized-list {
     @apply space-y-3 my-3;
   }
@@ -116,16 +88,21 @@
     @apply block h-2 w-2 rounded-full bg-primary mt-2 flex-shrink-0;
   }
   
-  /* Consistent call-to-action button styles */
+  /* Feature card consistent styling */
+  .feature-card {
+    @apply bg-card p-6 rounded-lg border border-border/30 shadow-sm hover:shadow-md transition-all duration-300;
+  }
+  
+  /* CTA button styles */
   .cta-primary {
-    @apply bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white font-medium;
+    @apply bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white font-medium px-6 py-3 rounded-md shadow-md;
   }
   
   .cta-secondary {
-    @apply border-primary text-primary hover:bg-primary/10;
+    @apply border-primary text-primary hover:bg-primary/10 px-6 py-3 rounded-md;
   }
   
-  /* Consistent stat display */
+  /* Stats display */
   .stat-card {
     @apply p-4 bg-card rounded-lg border border-border/30 flex flex-col;
   }
@@ -138,10 +115,13 @@
     @apply text-sm text-muted-foreground;
   }
   
-  /* Consistent badges and labels */
+  /* Badge styles */
   .feature-badge {
     @apply inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-medium;
   }
+  
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-md;
+  }
 }
-
-/* ... keep existing code (animations and other utilities) */
