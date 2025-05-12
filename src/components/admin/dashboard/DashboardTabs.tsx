@@ -2,7 +2,7 @@
 import { Tabs } from "@/components/ui/tabs";
 import { TabsList } from "./TabsList";
 import { TabsContent } from "./TabsContent";
-import { DashboardTabsProps } from "./types";
+import { DashboardTabsProps, DashboardTabValue } from "./types";
 
 export * from "./types";
 
