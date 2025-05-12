@@ -41,15 +41,15 @@ export function MarketplaceFooter() {
           <div className="bg-card/60 p-6 rounded-lg border border-border/30">
             <div className="flex items-start">
               <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center mr-3 mt-0.5">
-                <span className="font-bold text-primary">D</span>
+                <span className="font-bold text-primary">DH</span>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground italic mb-3">
                   "Hawkly's security experts found critical vulnerabilities in our DeFi protocol that could have resulted in significant fund loss."
                 </p>
                 <div>
-                  <p className="font-medium text-sm">DeFi Protocol Founder</p>
-                  <p className="text-xs text-muted-foreground">DEX with $120M+ TVL</p>
+                  <p className="font-medium text-sm">Daniel Hernandez</p>
+                  <p className="text-xs text-muted-foreground">Lead Developer at DeFiChain</p>
                 </div>
               </div>
             </div>
@@ -58,15 +58,15 @@ export function MarketplaceFooter() {
           <div className="bg-card/60 p-6 rounded-lg border border-border/30">
             <div className="flex items-start">
               <div className="h-8 w-8 rounded-full bg-secondary/10 flex items-center justify-center mr-3 mt-0.5">
-                <span className="font-bold text-secondary">N</span>
+                <span className="font-bold text-secondary">NP</span>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground italic mb-3">
                   "The smart contract audit delivered by Hawkly's experts was comprehensive, detailed, and identified issues other auditors missed."
                 </p>
                 <div>
-                  <p className="font-medium text-sm">NFT Marketplace CTO</p>
-                  <p className="text-xs text-muted-foreground">50K+ Monthly Users</p>
+                  <p className="font-medium text-sm">Natalie Patel</p>
+                  <p className="text-xs text-muted-foreground">CTO at MetaCollect NFT Marketplace</p>
                 </div>
               </div>
             </div>
@@ -75,15 +75,15 @@ export function MarketplaceFooter() {
           <div className="bg-card/60 p-6 rounded-lg border border-border/30">
             <div className="flex items-start">
               <div className="h-8 w-8 rounded-full bg-web3-orange/10 flex items-center justify-center mr-3 mt-0.5">
-                <span className="font-bold text-web3-orange">G</span>
+                <span className="font-bold text-web3-orange">GS</span>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground italic mb-3">
                   "Working with Hawkly's security experts gave us confidence in our code and helped us build trust with our community."
                 </p>
                 <div>
-                  <p className="font-medium text-sm">GameFi Project Lead</p>
-                  <p className="text-xs text-muted-foreground">Play-to-Earn Platform</p>
+                  <p className="font-medium text-sm">Gabriel Santos</p>
+                  <p className="text-xs text-muted-foreground">Project Lead at BlockQuest Gaming</p>
                 </div>
               </div>
             </div>
@@ -116,3 +116,4 @@ export function MarketplaceFooter() {
     </div>
   );
 }
+

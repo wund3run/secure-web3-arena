@@ -16,11 +16,11 @@ export function MarketplaceCallToAction() {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link to="/request-audit">
+                <Link to="/request-audit" className="w-full sm:w-auto">
                   <Button 
                     size="lg" 
                     variant="default" 
-                    className="flex items-center whitespace-nowrap group bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] hover:opacity-90"
+                    className="w-full flex items-center whitespace-nowrap group bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] hover:opacity-90 hover:shadow-md transition-all"
                   >
                     <FileText className="mr-2 h-5 w-5" />
                     Submit Project for Audit
@@ -37,11 +37,11 @@ export function MarketplaceCallToAction() {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link to="/service-provider-onboarding">
+                <Link to="/service-provider-onboarding" className="w-full sm:w-auto">
                   <Button 
                     size="lg" 
                     variant="outline" 
-                    className="flex items-center whitespace-nowrap group border-[#9b87f5] text-[#9b87f5] hover:bg-[#9b87f5]/10"
+                    className="w-full flex items-center whitespace-nowrap group border-[#9b87f5] text-[#9b87f5] hover:bg-[#9b87f5]/10 hover:shadow-sm transition-all"
                   >
                     <Shield className="mr-2 h-5 w-5" />
                     Join as Security Expert

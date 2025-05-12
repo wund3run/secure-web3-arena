@@ -23,12 +23,13 @@ export function ServiceCardFooter({
         <Button 
           variant="default" 
           size="sm" 
-          className="group-hover:bg-primary/90 z-10 flex items-center"
+          className="group-hover:bg-primary/90 z-10 flex items-center hover:shadow-sm transition-all group"
           onClick={onViewDetails}
           title="View detailed service information"
+          aria-label="View service details"
         >
           <Eye className="mr-1.5 h-3.5 w-3.5 opacity-80" />
-          <span>Service Details</span>
+          <span>View Details</span>
           <ArrowRight className="ml-1 h-3 w-3 opacity-70 transition-transform group-hover:translate-x-1" />
         </Button>
       </div>

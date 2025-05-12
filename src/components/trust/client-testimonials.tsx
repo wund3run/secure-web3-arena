@@ -1,4 +1,3 @@
-
 import { Star, Quote, CheckCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -53,7 +52,7 @@ export function ClientTestimonial({
           <div>
             <Avatar className="h-12 w-12">
               <AvatarImage src={avatar} />
-              <AvatarFallback>{name.charAt(0)}</AvatarFallback>
+              <AvatarFallback>{name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
             </Avatar>
           </div>
           <div className="flex-1">
@@ -141,9 +140,9 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
 export function FeaturedTestimonials() {
   const testimonials = [
     {
-      name: "Alex Johnson",
-      role: "CTO",
-      company: "DeFi Protocol",
+      name: "Alexander Johnson",
+      role: "Chief Technology Officer",
+      company: "SecureDeFi Protocol",
       projectType: "Smart Contract Audit",
       testimonial: "The security audit was incredibly thorough. They identified critical vulnerabilities that could have resulted in significant fund loss.",
       rating: 5,
@@ -155,8 +154,8 @@ export function FeaturedTestimonials() {
     },
     {
       name: "Maria Chen",
-      role: "Founder",
-      company: "NFT Marketplace",
+      role: "Founder & Creative Director",
+      company: "ArtBlock NFT Marketplace",
       projectType: "Security Assessment",
       testimonial: "Working with Hawkly's security experts gave us confidence in our code and helped us build trust with our community.",
       rating: 5,
@@ -168,8 +167,8 @@ export function FeaturedTestimonials() {
     },
     {
       name: "David Kim",
-      role: "Lead Developer",
-      company: "GameFi Project",
+      role: "Lead Developer & Architect",
+      company: "CryptoQuest GameFi",
       projectType: "Penetration Testing",
       testimonial: "The audit delivered was comprehensive, detailed, and identified issues other auditors missed. Highly recommended!",
       rating: 4,
