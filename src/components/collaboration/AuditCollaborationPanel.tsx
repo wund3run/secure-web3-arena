@@ -77,7 +77,7 @@ export function AuditCollaborationPanel({
   return (
     <Card className={cn("flex flex-col h-[600px] overflow-hidden", className)}>
       <CardHeader className="pb-2">
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <div>
             <CardTitle>{auditName}</CardTitle>
             <CardDescription>Real-time collaboration</CardDescription>
