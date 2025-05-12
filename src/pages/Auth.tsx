@@ -9,7 +9,7 @@ import { SignInForm, SignUpForm } from '@/components/auth/AuthForms';
 import { SocialLoginOptions } from '@/components/auth/SocialLoginOptions';
 import { CaptchaVerification } from '@/components/auth/CaptchaVerification';
 import { Button } from '@/components/ui/button';
-import { Discord } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -154,7 +154,7 @@ const Auth = () => {
               onClick={handleDiscordSignIn}
               disabled={isLoading}
             >
-              <Discord className="mr-2 h-5 w-5" />
+              <MessageCircle className="mr-2 h-5 w-5" />
               Continue with Discord
             </Button>
           </div>
