@@ -1,3 +1,4 @@
+
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -83,14 +84,30 @@ TableHead.displayName = "TableHead"
 
 const TableCell = React.forwardRef<
   HTMLTableCellElement,
-  React.TdHTMLAttributes<HTMLTableCellElement>
->(({ className, ...props }, ref) => (
-  <td
-    ref={ref}
-    className={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0", className)}
-    {...props}
-  />
-))
+  React.TdHTMLAttributes<HTMLTableCellElement> & { tooltipContent?: string }
+>(({ className, tooltipContent, ...props }, ref) => {
+  if (tooltipContent) {
+    return (
+      <td
+        ref={ref}
+        className={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0 relative group", className)}
+        {...props}
+      >
+        {props.children}
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-background border rounded shadow-lg text-xs w-max max-w-xs opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+          {tooltipContent}
+        </div>
+      </td>
+    );
+  }
+  return (
+    <td
+      ref={ref}
+      className={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0", className)}
+      {...props}
+    />
+  );
+})
 TableCell.displayName = "TableCell"
 
 const TableCaption = React.forwardRef<

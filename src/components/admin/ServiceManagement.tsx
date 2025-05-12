@@ -42,9 +42,16 @@ import {
   Edit,
   Trash,
   Eye,
+  InfoIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { SERVICES } from "@/data/marketplace-data";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function ServiceManagement() {
   const [services, setServices] = useState(SERVICES.slice(0, 10));
@@ -100,26 +107,54 @@ export function ServiceManagement() {
                     className="pl-8 w-full md:w-[300px]"
                   />
                 </div>
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon" aria-label="Filter services">
                   <Filter className="h-4 w-4" />
                 </Button>
-                <Button>
+                <Button aria-label="Add new service">
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Service
+                  <span className="hidden sm:inline">Add Service</span>
                 </Button>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="rounded-md border">
+            <div className="rounded-md border overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Title</TableHead>
                     <TableHead>Provider</TableHead>
                     <TableHead>Category</TableHead>
-                    <TableHead className="hidden md:table-cell">Status</TableHead>
-                    <TableHead className="hidden lg:table-cell">Price</TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      <div className="flex items-center">
+                        <span>Status</span>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <InfoIcon className="h-3.5 w-3.5 ml-1 text-muted-foreground cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">Current availability of the service</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    </TableHead>
+                    <TableHead className="hidden lg:table-cell">
+                      <div className="flex items-center">
+                        <span>Price</span>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <InfoIcon className="h-3.5 w-3.5 ml-1 text-muted-foreground cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">Base price in USD</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    </TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -170,18 +205,39 @@ export function ServiceManagement() {
               </Table>
             </div>
 
-            <div className="flex items-center justify-end space-x-2 py-4">
-              <div className="text-sm text-muted-foreground">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 py-4">
+              <div className="text-sm text-muted-foreground order-2 sm:order-1">
                 Showing <span className="font-medium">1</span> to{" "}
                 <span className="font-medium">{services.length}</span> of{" "}
                 <span className="font-medium">{SERVICES.length}</span> services
               </div>
-              <Button variant="outline" size="sm" disabled>
-                Previous
-              </Button>
-              <Button variant="outline" size="sm">
-                Next
-              </Button>
+              <div className="flex gap-2 order-1 sm:order-2">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="sm" disabled>
+                        Previous
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">Already on the first page</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        Next
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">Go to next page</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </div>
           </CardContent>
         </Card>

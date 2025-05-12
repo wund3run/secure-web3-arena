@@ -3,6 +3,7 @@ import { Audit } from "@/hooks/useAuditManagement";
 import { AuditStatusBadge } from "./AuditStatusBadge";
 import { AuditSeverityBadge } from "./AuditSeverityBadge";
 import { AuditActionMenu } from "./AuditActionMenu";
+import { InfoIcon } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -11,6 +12,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger 
+} from "@/components/ui/tooltip";
 
 interface AuditTableProps {
   audits: Audit[];
@@ -21,7 +28,7 @@ interface AuditTableProps {
 
 export function AuditTable({ audits, onView, onDownload, onViewExplorer }: AuditTableProps) {
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
@@ -29,7 +36,24 @@ export function AuditTable({ audits, onView, onDownload, onViewExplorer }: Audit
             <TableHead className="hidden md:table-cell">Auditor</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="hidden lg:table-cell">Audit Type</TableHead>
-            <TableHead className="hidden md:table-cell">Severity</TableHead>
+            <TableHead className="hidden md:table-cell">
+              <div className="flex items-center space-x-1">
+                <span>Severity</span>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <InfoIcon className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      <p className="text-xs max-w-xs">
+                        Security severity level indicates the highest risk vulnerability 
+                        found during the audit. Critical issues need immediate attention.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>

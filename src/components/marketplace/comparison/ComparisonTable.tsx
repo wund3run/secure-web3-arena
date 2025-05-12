@@ -1,7 +1,13 @@
 
-import { Check, Minus } from "lucide-react";
+import { Check, InfoIcon, Minus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ServiceCardProps } from "@/data/marketplace-data";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from "@/components/ui/tooltip";
 
 interface ComparisonTableProps {
   services: ServiceCardProps[];
@@ -10,11 +16,31 @@ interface ComparisonTableProps {
 export function ComparisonTable({ services }: ComparisonTableProps) {
   // Comparison criteria
   const comparisonCriteria = [
-    { name: "Price", key: "pricing" },
-    { name: "Provider Reputation", key: "reputation" },
-    { name: "Completed Jobs", key: "completedJobs" },
-    { name: "Provider Level", key: "level" },
-    { name: "Category", key: "category" },
+    { 
+      name: "Price", 
+      key: "pricing",
+      description: "Starting price for the security service"
+    },
+    { 
+      name: "Provider Reputation", 
+      key: "reputation",
+      description: "Overall satisfaction rating from previous clients"
+    },
+    { 
+      name: "Completed Jobs", 
+      key: "completedJobs",
+      description: "Number of successfully delivered security audits"
+    },
+    { 
+      name: "Provider Level", 
+      key: "level",
+      description: "Qualification level based on experience and success rate"
+    },
+    { 
+      name: "Category", 
+      key: "category",
+      description: "Type of security service offered"
+    },
   ];
 
   // Helper functions to get values
@@ -63,80 +89,126 @@ export function ComparisonTable({ services }: ComparisonTableProps) {
     }
   };
 
+  // Features with descriptions for tooltips
+  const auditFeatures = [
+    { name: "Code Review", description: "Detailed analysis of smart contract code for vulnerabilities" },
+    { name: "Vulnerability Assessment", description: "Identification and evaluation of security risks" },
+    { name: "Gas Optimization", description: "Analysis and recommendations for reducing transaction costs" },
+    { name: "Documentation Review", description: "Evaluation of technical documentation accuracy and completeness" }
+  ];
+
   return (
-    <div className="border rounded-md overflow-hidden">
-      <table className="w-full text-sm">
-        <thead className="bg-muted/50">
-          <tr>
-            <th className="text-left p-3 font-medium">Feature</th>
-            {services.map(service => (
-              <th key={service.id} className="text-left p-3 font-medium">
-                {service.provider.name}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {/* Basic comparison criteria */}
-          {comparisonCriteria.map(criteria => (
-            <tr key={criteria.key} className="border-t border-border/50">
-              <td className="p-3 font-medium">{criteria.name}</td>
+    <div className="border rounded-md overflow-auto">
+      <div className="min-w-[600px]">
+        <table className="w-full text-sm">
+          <thead className="bg-muted/50">
+            <tr>
+              <th className="text-left p-3 font-medium">Feature</th>
               {services.map(service => (
-                <td 
-                  key={service.id} 
-                  className={`p-3 ${getCellClass(service, criteria.key, services)}`}
-                >
-                  {getValueForCriteria(service, criteria.key)}
+                <th key={service.id} className="text-left p-3 font-medium">
+                  {service.provider.name}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {/* Basic comparison criteria */}
+            {comparisonCriteria.map(criteria => (
+              <tr key={criteria.key} className="border-t border-border/50">
+                <td className="p-3 font-medium">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="flex items-center gap-1">
+                        <span>{criteria.name}</span>
+                        <InfoIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent side="right">
+                        <p className="text-xs max-w-xs">{criteria.description}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </td>
+                {services.map(service => (
+                  <td 
+                    key={service.id} 
+                    className={`p-3 ${getCellClass(service, criteria.key, services)}`}
+                  >
+                    {getValueForCriteria(service, criteria.key)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+            
+            {/* Tags/Features */}
+            <tr className="border-t border-border/50">
+              <td className="p-3 font-medium">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger className="flex items-center gap-1">
+                      <span>Specialization</span>
+                      <InfoIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <p className="text-xs">Primary security focus areas and expertise</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </td>
+              {services.map(service => (
+                <td key={service.id} className="p-3">
+                  <div className="flex flex-wrap gap-1">
+                    {service.tags.slice(0, 3).map(tag => (
+                      <Badge key={tag} variant="outline" className="text-[10px]">
+                        {tag}
+                      </Badge>
+                    ))}
+                    {service.tags.length > 3 && (
+                      <Badge variant="outline" className="text-[10px]">
+                        +{service.tags.length - 3}
+                      </Badge>
+                    )}
+                  </div>
                 </td>
               ))}
             </tr>
-          ))}
-          
-          {/* Tags/Features */}
-          <tr className="border-t border-border/50">
-            <td className="p-3 font-medium">Specialization</td>
-            {services.map(service => (
-              <td key={service.id} className="p-3">
-                <div className="flex flex-wrap gap-1">
-                  {service.tags.slice(0, 3).map(tag => (
-                    <Badge key={tag} variant="outline" className="text-[10px]">
-                      {tag}
-                    </Badge>
-                  ))}
-                  {service.tags.length > 3 && (
-                    <Badge variant="outline" className="text-[10px]">
-                      +{service.tags.length - 3}
-                    </Badge>
-                  )}
-                </div>
-              </td>
+            
+            {/* Audit Features */}
+            {auditFeatures.map(feature => (
+              <tr key={feature.name} className="border-t border-border/50">
+                <td className="p-3 font-medium">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="flex items-center gap-1">
+                        <span>{feature.name}</span>
+                        <InfoIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent side="right">
+                        <p className="text-xs max-w-xs">{feature.description}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </td>
+                {services.map(service => {
+                  // Simulate feature presence based on service type and provider level
+                  const hasFeature = 
+                    (feature.name === "Code Review") ||
+                    (feature.name === "Vulnerability Assessment") ||
+                    (feature.name === "Gas Optimization" && 
+                      (service.provider.level === "expert" || 
+                      service.category === "Smart Contracts")) ||
+                    (feature.name === "Documentation Review" && service.provider.level === "expert");
+                    
+                  return (
+                    <td key={service.id} className="p-3">
+                      {hasFeature ? <Check className="h-4 w-4 text-green-500" /> : <Minus className="h-4 w-4 text-muted" />}
+                    </td>
+                  );
+                })}
+              </tr>
             ))}
-          </tr>
-          
-          {/* Audit Features */}
-          {["Code Review", "Vulnerability Assessment", "Gas Optimization", "Documentation Review"].map(feature => (
-            <tr key={feature} className="border-t border-border/50">
-              <td className="p-3 font-medium">{feature}</td>
-              {services.map(service => {
-                // Simulate feature presence based on service type and provider level
-                const hasFeature = 
-                  (feature === "Code Review") ||
-                  (feature === "Vulnerability Assessment") ||
-                  (feature === "Gas Optimization" && 
-                    (service.provider.level === "expert" || 
-                     service.category === "Smart Contracts")) ||
-                  (feature === "Documentation Review" && service.provider.level === "expert");
-                  
-                return (
-                  <td key={service.id} className="p-3">
-                    {hasFeature ? <Check className="h-4 w-4 text-green-500" /> : <Minus className="h-4 w-4 text-muted" />}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
