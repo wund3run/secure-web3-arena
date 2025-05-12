@@ -37,6 +37,7 @@ const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AuditRequestForService = lazy(() => import("./pages/AuditRequestForService"));
 const ContactProvider = lazy(() => import("./pages/ContactProvider"));
 const SubmitService = lazy(() => import("./pages/SubmitService"));
+const AuditGuidelines = lazy(() => import("./pages/AuditGuidelines"));
 
 // Import onboarding pages
 const ServiceProviderOnboarding = lazy(() => import("./pages/onboarding/ServiceProviderOnboarding"));
@@ -96,6 +97,7 @@ function App() {
               <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
               <Route path="/submit-service" element={<SubmitService />} />
               <Route path="/contact-provider/:providerId" element={<ContactProvider />} />
+              <Route path="/audit-guidelines" element={<AuditGuidelines />} />
               
               {/* Join Routes - both direct and redirect */}
               <Route path="/join" element={<ServiceProviderOnboarding />} />

@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight, Shield, Code, Cpu } from "lucide-react";
+import { ArrowRight, Shield, Code, Cpu, FileText } from "lucide-react";
 
 export function HeroSection() {
   return (
@@ -69,6 +69,14 @@ export function HeroSection() {
               <ArrowRight className="ml-1 h-3 w-3" />
             </Link>
           </div>
+        </div>
+        
+        <div className="mt-12 flex justify-center">
+          <Link to="/audit-guidelines" className="flex items-center gap-2 bg-white/10 hover:bg-white/20 transition-colors px-5 py-2 rounded-lg group">
+            <FileText className="h-5 w-5 text-white/90" />
+            <span className="text-white font-medium">View Security Audit Guidelines</span>
+            <ArrowRight className="h-4 w-4 text-white/90 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
       </div>
     </div>
