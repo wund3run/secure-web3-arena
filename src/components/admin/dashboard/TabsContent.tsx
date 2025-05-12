@@ -7,7 +7,7 @@ import { AuditManagement } from "@/components/admin/AuditManagement";
 import { ProviderApplications } from "@/components/admin/ProviderApplications";
 import { AdminServiceApproval } from "@/components/admin/AdminServiceApproval";
 import { ReportManagement } from "@/components/admin/ReportManagement";
-import { SettingsManagement } from "@/components/admin/SettingsManagement";
+import SettingsManagement from "@/components/admin/SettingsManagement";
 import { DashboardTabValue } from "./types";
 
 interface TabsContentProps {
