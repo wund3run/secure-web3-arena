@@ -23,7 +23,7 @@ export function SupportButton() {
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
       {isOpen && (
-        <div className="mb-4 rounded-lg bg-card border border-border shadow-lg min-w-[250px] animate-in slide-in-from-bottom">
+        <div className={`mb-4 rounded-lg bg-card border border-border shadow-lg ${isMobile ? 'w-[90vw] max-w-[350px]' : 'min-w-[250px]'} animate-in slide-in-from-bottom`}>
           <div className="p-3 border-b border-border flex justify-between items-center">
             <h3 className="font-medium text-sm">Need help?</h3>
             <button
@@ -71,14 +71,14 @@ export function SupportButton() {
 
       <Button
         size="icon"
-        className={`rounded-full h-14 w-14 shadow-lg ${isOpen ? 'bg-foreground text-background' : 'bg-primary text-primary-foreground'}`}
+        className={`rounded-full ${isMobile ? 'h-12 w-12' : 'h-14 w-14'} shadow-lg ${isOpen ? 'bg-foreground text-background' : 'bg-primary text-primary-foreground'}`}
         onClick={toggleSupport}
         aria-label="Get support"
       >
         {isOpen ? (
-          <X className="h-6 w-6" />
+          <X className={`${isMobile ? 'h-5 w-5' : 'h-6 w-6'}`} />
         ) : (
-          <MessageSquare className="h-6 w-6" />
+          <MessageSquare className={`${isMobile ? 'h-5 w-5' : 'h-6 w-6'}`} />
         )}
       </Button>
     </div>
