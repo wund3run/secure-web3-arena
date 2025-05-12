@@ -19,5 +19,25 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     host: "::"
   },
+  build: {
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'router-vendor': ['react-router-dom'],
+          'ui-components': [
+            '@radix-ui/react-progress',
+            '@radix-ui/react-slider',
+            '@radix-ui/react-tooltip'
+          ]
+        }
+      }
+    }
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom'],
+    exclude: []
+  },
   assetsInclude: ['**/*.svg'], // Ensure SVGs are properly handled
 }));

@@ -1,4 +1,5 @@
 
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Shield, Award, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
