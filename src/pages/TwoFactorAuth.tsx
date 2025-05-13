@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -10,7 +9,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { HawklyLogo } from "@/components/layout/hawkly-logo";
 import { OTPInput } from "@/components/auth/otp-input";
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/auth';
 
 const TwoFactorAuth = () => {
   const navigate = useNavigate();

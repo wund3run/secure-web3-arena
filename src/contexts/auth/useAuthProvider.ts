@@ -1,27 +1,11 @@
 
-import React, { createContext, useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-interface AuthContextProps {
-  user: User | null;
-  session: Session | null;
-  loading: boolean;
-  signIn: (email: string, password: string, captchaToken: string) => Promise<void>;
-  signUp: (email: string, password: string, metadata?: { full_name?: string }, captchaToken?: string) => Promise<void>;
-  signOut: () => Promise<void>;
-  signInWithDiscord: () => Promise<void>;
-  updateProfile: (data: any) => Promise<void>;
-  verifyOTP: (otp: string) => Promise<void>;
-  resendOTP: (email: string) => Promise<void>;
-  requireMFA: boolean;
-}
-
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
-
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function useAuthProvider() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
@@ -113,26 +97,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signInWithDiscord = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'discord',
-        options: {
-          redirectTo: `${window.location.origin}/auth-callback`,
-          scopes: 'identify email'
-        }
-      });
-      
-      if (error) throw error;
-      
-    } catch (error: any) {
-      toast.error("Error signing in with Discord", {
-        description: error.message,
-      });
-      throw error;
-    }
-  };
-
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
@@ -202,29 +166,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  return (
-    <AuthContext.Provider value={{ 
-      user, 
-      session, 
-      loading, 
-      signIn, 
-      signUp, 
-      signOut,
-      signInWithDiscord, 
-      updateProfile,
-      verifyOTP,
-      resendOTP,
-      requireMFA
-    }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return {
+    user,
+    session,
+    loading,
+    signIn,
+    signUp,
+    signOut,
+    updateProfile,
+    verifyOTP,
+    resendOTP,
+    requireMFA
+  };
 }
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};

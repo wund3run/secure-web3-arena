@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/auth';
 import { AuthLayout } from '@/components/auth/AuthLayout';
 import { SignInForm, SignUpForm } from '@/components/auth/AuthForms';
 import { SocialLoginOptions } from '@/components/auth/SocialLoginOptions';

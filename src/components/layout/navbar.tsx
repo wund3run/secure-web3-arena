@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 import { FileText, Shield, Code, Users, BarChart2, BookOpen } from "lucide-react";
 import { HawklyLogo } from "./hawkly-logo";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/auth";
 
 export function Navbar() {
   const { user, signOut } = useAuth();
