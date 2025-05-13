@@ -15,6 +15,7 @@ export function MarketplaceSection() {
   const [activeTab, setActiveTab] = useState("all");
   const [activeFilters, setActiveFilters] = useState<any>({});
   const [showAIRecommendations, setShowAIRecommendations] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
   
   // Expose services globally for the comparison functionality
   useEffect(() => {
@@ -143,7 +144,7 @@ export function MarketplaceSection() {
         
         {/* Floating comparison selector */}
         <SelectionIndicator />
-        {ComparisonDialog}
+        <ComparisonDialog services={[]} open={showComparison} onOpenChange={setShowComparison} />
       </section>
     </ComparisonProvider>
   );
