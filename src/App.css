@@ -103,6 +103,30 @@ h3 {
   margin-bottom: 1rem;
 }
 
+/* Section headings with visual emphasis */
+.section-heading {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.section-heading::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--secondary)));
+  margin: 0.75rem auto 0;
+  border-radius: 2px;
+}
+
+.subsection-heading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
 /* Improved spacing and layout on mobile */
 @media (max-width: 640px) {
   .container {
@@ -128,6 +152,15 @@ h3 {
   /* Adjust section separators for mobile */
   .section-divider {
     margin: 2rem auto;
+  }
+  
+  /* Smaller headings on mobile */
+  h1 {
+    font-size: 2.5rem !important;
+  }
+  
+  .section-heading {
+    font-size: 1.75rem;
   }
 }
 

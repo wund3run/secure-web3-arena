@@ -6,136 +6,63 @@ import { BadgeAward } from "@/components/ui/badge-award";
 
 export function EnhancedHeroHeader() {
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-white via-primary/5 to-secondary/5 pt-10 pb-16">
+    <div className="relative overflow-hidden bg-gradient-to-br from-white via-primary/5 to-secondary/5 pt-16 pb-20">
       {/* Decorative elements with reduced opacity */}
       <div className="absolute top-20 right-10 opacity-10">
         <Shield className="w-40 h-40 text-primary animate-float" />
       </div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Announcement banner */}
-        <div className="bg-gradient-to-r from-secondary/10 to-primary/10 rounded-lg p-3 mb-8 shadow-sm">
-          <div className="flex items-center justify-center text-sm">
-            <Zap className="h-4 w-4 text-secondary mr-2" />
-            <span className="font-medium">New: Automated vulnerability scanning for smart contract security</span>
-            <Link to="/security-insights" className="ml-3 text-primary hover:text-primary/80 font-semibold flex items-center">
-              Learn more <ArrowRight className="ml-1 h-3 w-3" />
-            </Link>
-          </div>
-        </div>
+        {/* Platform headline - Large, bold headline that clearly communicates value */}
+        <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-center mb-6">
+          <span className="block text-foreground">Secure Your</span>
+          <span className="block text-gradient bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Web3 Projects</span>
+        </h1>
         
-        <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-12">
-            {/* Logo & Title Section */}
-            <div className="flex items-center mb-6">
-              <div className="relative flex items-center justify-center mr-3">
-                <Shield className="h-16 w-16 text-primary" />
-                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-primary rotate-45 rounded-sm opacity-70"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-5 h-5 bg-secondary rounded-full animate-pulse-glow"></div>
-                </div>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-extrabold text-5xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Hawkly</span>
-                <span className="text-lg text-muted-foreground leading-tight">Securing the Future of Web3</span>
-              </div>
-            </div>
-            
-            {/* Main Headline - Enlarged for better visual hierarchy */}
-            <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl mb-6">
-              <span className="block text-foreground mb-2">The Premier Platform for</span>
-              <span className="block text-gradient bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Web3 Security Solutions</span>
-            </h1>
-            
-            <p className="mt-3 text-xl text-muted-foreground max-w-3xl">
-              Connect with top security experts to protect your smart contracts, DApps, and blockchain assets from critical vulnerabilities and exploits.
-            </p>
-            
-            {/* Primary CTA Cards - Streamlined design */}
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-card/80 backdrop-blur-sm p-6 rounded-lg border border-border/30 shadow-sm hover-lift transition-all duration-300">
-                <h2 className="text-2xl font-semibold mb-4 flex items-center">
-                  <Shield className="h-6 w-6 text-primary mr-2" />
-                  For Project Owners
-                </h2>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-start">
-                    <Check className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Connect with verified smart contract auditors</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Identify vulnerabilities in your blockchain projects</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check className="h-5 w-5 text-primary mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Protect DApps with comprehensive security audits</span>
-                  </li>
-                </ul>
-                <Link to="/request-audit">
-                  <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 group">
-                    Request an Audit
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </Link>
-              </div>
+        <p className="mt-6 text-xl md:text-2xl text-center text-muted-foreground max-w-3xl mx-auto">
+          Connect with expert auditors to protect your blockchain applications from critical vulnerabilities
+        </p>
+        
+        {/* Primary CTA - Clear, high-contrast call to action */}
+        <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+          <Link to="/request-audit">
+            <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-lg px-8 py-6 shadow-lg">
+              <Shield className="mr-2 h-6 w-6" />
+              Request Security Audit
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
+          <Link to="/marketplace">
+            <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10 text-lg px-8 py-6">
+              Explore Security Services
+            </Button>
+          </Link>
+        </div>
 
-              <div className="bg-card/80 backdrop-blur-sm p-6 rounded-lg border border-border/30 shadow-sm hover-lift transition-all duration-300">
-                <h2 className="text-2xl font-semibold mb-4 flex items-center">
-                  <User className="h-6 w-6 text-web3-orange mr-2" />
-                  For Security Experts
-                </h2>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-start">
-                    <Check className="h-5 w-5 text-web3-orange mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Monetize your security expertise</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check className="h-5 w-5 text-web3-orange mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Build reputation with our verified auditor program</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check className="h-5 w-5 text-web3-orange mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Join elite Web3 security researcher community</span>
-                  </li>
-                </ul>
-                <Link to="/service-provider-onboarding">
-                  <Button variant="outline" className="w-full border-web3-orange text-web3-orange hover:bg-web3-orange/10 group">
-                    Join as an Auditor
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </Link>
-              </div>
+        {/* Social proof - Compelling stats to build trust */}
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="bg-card/80 backdrop-blur-sm p-6 rounded-xl border border-border/30 shadow-sm text-center">
+            <div className="flex justify-center mb-3">
+              <Trophy className="h-10 w-10 text-web3-orange" />
             </div>
-            
-            {/* Platform Statistics - Simplified as badges */}
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-6">
-              <div className="flex items-center gap-x-2">
-                <Shield className="h-6 w-6 text-web3-teal" />
-                <BadgeAward variant="verified">500+ Verified Auditors</BadgeAward>
-              </div>
-              <div className="flex items-center gap-x-2">
-                <Trophy className="h-6 w-6 text-web3-orange" />
-                <BadgeAward variant="expert">$350M+ Protected Assets</BadgeAward>
-              </div>
-              <div className="flex items-center gap-x-2">
-                <Award className="h-6 w-6 text-web3-purple" />
-                <BadgeAward variant="elite">12,800+ Vulnerabilities Found</BadgeAward>
-              </div>
+            <h3 className="text-3xl font-bold">500+</h3>
+            <p className="text-muted-foreground">Security Experts</p>
+          </div>
+          
+          <div className="bg-card/80 backdrop-blur-sm p-6 rounded-xl border border-border/30 shadow-sm text-center">
+            <div className="flex justify-center mb-3">
+              <Shield className="h-10 w-10 text-primary" />
             </div>
-            
-            {/* Blockchain ecosystems supported - More compact */}
-            <div className="mt-8 pt-6 border-t border-border/30">
-              <div className="flex flex-wrap gap-2">
-                <span className="px-3 py-1 bg-[#627EEA]/10 text-[#627EEA] rounded-full text-xs font-medium">Ethereum</span>
-                <span className="px-3 py-1 bg-[#9945FF]/10 text-[#9945FF] rounded-full text-xs font-medium">Solana</span>
-                <span className="px-3 py-1 bg-[#8247E5]/10 text-[#8247E5] rounded-full text-xs font-medium">Polygon</span>
-                <span className="px-3 py-1 bg-[#E84142]/10 text-[#E84142] rounded-full text-xs font-medium">Avalanche</span>
-                <span className="px-3 py-1 bg-[#F3BA2F]/10 text-[#F3BA2F] rounded-full text-xs font-medium">BNB Chain</span>
-                <span className="px-3 py-1 bg-[#28A0F0]/10 text-[#28A0F0] rounded-full text-xs font-medium">Arbitrum</span>
-                <span className="px-3 py-1 bg-[#FF0420]/10 text-[#FF0420] rounded-full text-xs font-medium">Optimism</span>
-              </div>
+            <h3 className="text-3xl font-bold">$350M+</h3>
+            <p className="text-muted-foreground">Assets Protected</p>
+          </div>
+          
+          <div className="bg-card/80 backdrop-blur-sm p-6 rounded-xl border border-border/30 shadow-sm text-center">
+            <div className="flex justify-center mb-3">
+              <Award className="h-10 w-10 text-web3-purple" />
             </div>
+            <h3 className="text-3xl font-bold">12,800+</h3>
+            <p className="text-muted-foreground">Vulnerabilities Found</p>
           </div>
         </div>
       </div>
