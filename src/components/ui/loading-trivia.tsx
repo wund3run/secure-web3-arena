@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { Loader, Shield } from "lucide-react";
+import { Loader, Shield, Lock, ShieldCheck, Key } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -10,47 +10,57 @@ interface LoadingTriviaProps {
   fullPage?: boolean;
 }
 
-// Web3 security trivia items to display during loading
+// Concise security trivia items with decorative elements
 const securityTrivia = [
   {
-    title: "Smart Contract Reentrancy",
-    fact: "Reentrancy attacks occur when external contract calls allow attackers to re-enter the calling contract before the first execution is complete, potentially leading to multiple withdrawals."
+    title: "🔐 Reentrancy Protection",
+    fact: "Always check-effects-interact to prevent reentrancy attacks.",
+    icon: <Shield className="h-5 w-5 text-primary" />
   },
   {
-    title: "Hardware Wallets",
-    fact: "Hardware wallets are considered one of the most secure ways to store cryptocurrency as they keep your private keys offline, away from potential online threats."
+    title: "🛡️ Hardware Security",
+    fact: "Cold storage keeps crypto assets safe from online threats.",
+    icon: <Lock className="h-5 w-5 text-primary" />
   },
   {
-    title: "Oracle Manipulation",
-    fact: "Oracle manipulation attacks target the data feeds that smart contracts rely on, potentially allowing attackers to profit from price discrepancies."
+    title: "⚠️ Oracle Security",
+    fact: "Multiple oracles prevent price manipulation vulnerabilities.",
+    icon: <ShieldCheck className="h-5 w-5 text-primary" />
   },
   {
-    title: "Multi-Signature Wallets",
-    fact: "Multi-signature wallets require multiple private keys to authorize a transaction, adding an extra layer of security for high-value accounts and DAOs."
+    title: "🔑 Key Management",
+    fact: "Multi-sig requires multiple approvals for enhanced security.",
+    icon: <Key className="h-5 w-5 text-primary" />
   },
   {
-    title: "Zero-Knowledge Proofs",
-    fact: "Zero-knowledge proofs allow one party to prove to another that they know a value without conveying any information apart from the fact that they know the value."
+    title: "🧩 Zero-Knowledge",
+    fact: "ZK proofs verify without revealing sensitive information.",
+    icon: <Shield className="h-5 w-5 text-primary" />
   },
   {
-    title: "Gas Optimization",
-    fact: "Proper gas optimization not only reduces transaction costs but also mitigates the risk of denial-of-service attacks by preventing excessive computational requirements."
+    title: "⛽ Gas Optimization",
+    fact: "Efficient code reduces costs and prevents DOS attacks.",
+    icon: <ShieldCheck className="h-5 w-5 text-primary" />
   },
   {
-    title: "Security Audits",
-    fact: "Professional security audits can identify up to 80% of critical vulnerabilities in smart contract code before deployment."
+    title: "🔍 Audit Essentials",
+    fact: "Professional audits find 80% of critical vulnerabilities.",
+    icon: <Lock className="h-5 w-5 text-primary" />
   },
   {
-    title: "Formal Verification",
-    fact: "Formal verification mathematically proves the correctness of smart contracts against their specifications, offering stronger security guarantees than traditional testing."
+    title: "✅ Formal Verification",
+    fact: "Mathematical proofs guarantee smart contract correctness.",
+    icon: <Key className="h-5 w-5 text-primary" />
   },
   {
-    title: "MEV Protection",
-    fact: "Maximal Extractable Value (MEV) protection helps prevent front-running and transaction reordering attacks in DeFi applications."
+    title: "🚫 MEV Defense",
+    fact: "Protection prevents front-running and transaction manipulation.",
+    icon: <Shield className="h-5 w-5 text-primary" />
   },
   {
-    title: "Cold Storage",
-    fact: "Cold storage solutions keep private keys entirely offline and air-gapped, providing maximum protection against online hacking attempts."
+    title: "❄️ Cold Storage",
+    fact: "Air-gapped solutions maximize protection against hackers.",
+    icon: <ShieldCheck className="h-5 w-5 text-primary" />
   }
 ];
 
@@ -92,8 +102,8 @@ const LoadingTrivia: React.FC<LoadingTriviaProps> = ({
       <Card className="max-w-md w-full bg-background/50 border-primary/20 mb-4 animate-pulse">
         <CardContent className="p-4">
           <div className="flex items-center mb-2">
-            <Shield className="h-5 w-5 text-primary mr-2" />
-            <h3 className="font-medium">Web3 Security Trivia</h3>
+            {currentTrivia.icon}
+            <h3 className="font-medium ml-2">Web3 Security Tip</h3>
           </div>
           <div className="space-y-2">
             <h4 className="font-medium text-sm">{currentTrivia.title}</h4>
