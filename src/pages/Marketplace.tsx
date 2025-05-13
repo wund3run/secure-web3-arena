@@ -4,10 +4,13 @@ import { MarketplaceHeader } from "@/components/marketplace/layout/MarketplaceHe
 import { MarketplaceContent } from "@/components/marketplace/layout/MarketplaceContent";
 import { MarketplaceDialogs } from "@/components/marketplace/layout/MarketplaceDialogs";
 import { ComparisonFloatingIndicator } from "@/components/marketplace/sections/ComparisonFloatingIndicator";
-import { useMarketplaceServices } from "@/components/marketplace/hooks/useMarketplaceServices";
-import { useMarketplaceComparison } from "@/components/marketplace/hooks/useMarketplaceComparison";
-import { useMarketplaceState } from "@/components/marketplace/hooks/useMarketplaceState";
-import { useEffect } from "react";
+import { SERVICES } from "@/data/marketplace-data";
+import { MarketplaceProvider, useMarketplace } from "@/contexts/marketplace/MarketplaceContext";
+import { MarketplaceErrorBoundary } from "@/components/marketplace/error-handling/MarketplaceErrorBoundary";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { handleApiError } from "@/utils/apiErrorHandler";
+import ErrorBoundary from "@/components/ui/error-boundary";
 
 // Define global interface for window to include SERVICES with correct type
 declare global {
@@ -16,72 +19,80 @@ declare global {
   }
 }
 
-export default function Marketplace() {
-  // Use custom hooks to organize state and logic
+function MarketplaceContent() {
   const {
-    viewMode, setViewMode,
-    showFilters, setShowFilters,
-    activeCategory, setActiveCategory,
-    isLoading,
-    showEnhancedOnboarding, setShowEnhancedOnboarding,
-    selectedService, setSelectedService,
-    activeFilters,
-    showAIRecommendations,
+    state,
+    setViewMode,
+    setShowFilters,
+    setActiveCategory,
+    setSelectedService,
     handleApplyFilters,
-    handleOnboardingComplete
-  } = useMarketplaceState();
-
-  const {
-    services,
-    BLOCKCHAIN_ECOSYSTEMS,
-    SAMPLE_REVIEWS,
-    filterServices,
-    getServiceById
-  } = useMarketplaceServices();
-
-  const {
-    servicesForComparison,
-    showComparison,
-    setShowComparison,
     toggleCompareService,
     isServiceInComparison,
-    handleOpenComparison
-  } = useMarketplaceComparison();
+    handleOpenComparison,
+    setShowComparison,
+    handleOnboardingComplete,
+    filterServices,
+    servicesQuery
+  } = useMarketplace();
+  
+  // Destructure state for better readability
+  const {
+    viewMode,
+    showFilters,
+    activeCategory,
+    isLoading,
+    showEnhancedOnboarding,
+    selectedService,
+    activeFilters,
+    showAIRecommendations,
+    servicesForComparison,
+    showComparison
+  } = state;
 
   // Filter services based on active filters and category
-  const filteredServices = filterServices(activeCategory, activeFilters);
+  const filteredServices = servicesQuery.data ? filterServices(servicesQuery.data) : [];
 
   // Handle service selection by ID
   const handleServiceSelect = (serviceId: string) => {
-    const service = getServiceById(serviceId);
+    const service = servicesQuery.data?.find(service => service.id === serviceId) || null;
     if (service) {
       setSelectedService(service);
     }
   };
 
-  return (
-    <MarketplaceLayout>
-      <div className="flex flex-col gap-6">
-        <MarketplaceHeader 
-          showFilters={showFilters}
-          setShowFilters={setShowFilters}
-        />
-        
-        <MarketplaceContent 
-          showFilters={showFilters}
-          activeCategory={activeCategory}
-          setActiveCategory={setActiveCategory}
-          viewMode={viewMode}
-          isLoading={isLoading}
-          filteredServices={filteredServices}
-          showAIRecommendations={showAIRecommendations}
-          activeFilters={activeFilters}
-          handleServiceSelect={handleServiceSelect}
-          isServiceInComparison={isServiceInComparison}
-          toggleCompareService={toggleCompareService}
-          handleApplyFilters={handleApplyFilters}
-        />
+  if (servicesQuery.error) {
+    return (
+      <div className="flex flex-col items-center justify-center p-8 text-center">
+        <div className="bg-destructive/10 p-4 rounded-lg mb-4">
+          <p className="text-destructive font-medium">Failed to load marketplace services</p>
+        </div>
+        <p className="text-muted-foreground">Please try again later or contact support if the issue persists.</p>
       </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      <MarketplaceHeader 
+        showFilters={showFilters}
+        setShowFilters={setShowFilters}
+      />
+      
+      <MarketplaceContent 
+        showFilters={showFilters}
+        activeCategory={activeCategory}
+        setActiveCategory={setActiveCategory}
+        viewMode={viewMode}
+        isLoading={isLoading}
+        filteredServices={filteredServices}
+        showAIRecommendations={showAIRecommendations}
+        activeFilters={activeFilters}
+        handleServiceSelect={handleServiceSelect}
+        isServiceInComparison={isServiceInComparison}
+        toggleCompareService={toggleCompareService}
+        handleApplyFilters={handleApplyFilters}
+      />
 
       {/* Dialogs */}
       <MarketplaceDialogs 
@@ -93,15 +104,36 @@ export default function Marketplace() {
         showEnhancedOnboarding={showEnhancedOnboarding}
         setShowEnhancedOnboarding={setShowEnhancedOnboarding}
         handleOnboardingComplete={handleOnboardingComplete}
-        reviews={SAMPLE_REVIEWS}
+        reviews={[]} // Pass reviews from a context or state in a real implementation
       />
       
       {/* Floating comparison indicator if items are selected */}
-      <ComparisonFloatingIndicator
-        servicesForComparison={servicesForComparison}
-        toggleCompareService={toggleCompareService}
-        handleOpenComparison={handleOpenComparison}
-      />
-    </MarketplaceLayout>
+      {servicesForComparison.length > 0 && (
+        <ComparisonFloatingIndicator
+          servicesForComparison={servicesForComparison}
+          toggleCompareService={toggleCompareService}
+          handleOpenComparison={handleOpenComparison}
+        />
+      )}
+    </div>
+  );
+}
+
+export default function Marketplace() {
+  // Make services available globally for the comparison functionality
+  React.useEffect(() => {
+    window.SERVICES = SERVICES;
+  }, []);
+
+  return (
+    <ErrorBoundary>
+      <MarketplaceProvider services={SERVICES}>
+        <MarketplaceLayout>
+          <MarketplaceErrorBoundary>
+            <MarketplaceContent />
+          </MarketplaceErrorBoundary>
+        </MarketplaceLayout>
+      </MarketplaceProvider>
+    </ErrorBoundary>
   );
 }

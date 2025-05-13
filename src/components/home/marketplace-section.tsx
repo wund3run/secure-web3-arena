@@ -1,89 +1,49 @@
-import { useState, useEffect } from "react";
+
+import React from "react";
 import { MarketplaceHeader } from "@/components/home/marketplace/marketplace-header";
 import { CategoryTabs } from "@/components/home/marketplace/category-tabs";
 import { ServicesGrid } from "@/components/home/marketplace/services-grid";
 import { ComprehensiveSecurity } from "@/components/home/marketplace/comprehensive-security";
 import { MarketplaceFooter } from "@/components/home/marketplace/marketplace-footer";
 import { AIRecommendations } from "@/components/marketplace/ai-recommendations";
-import { 
-  ComparisonProvider, 
-  SelectionIndicator, 
-  ComparisonDialog 
-} from "@/components/marketplace/comparison-manager";
-import { SERVICES } from "@/data/marketplace-data";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { SERVICES } from "@/data/marketplace-data";
+import { MarketplaceProvider, useMarketplace } from "@/contexts/marketplace/MarketplaceContext";
+import { MarketplaceErrorBoundary } from "@/components/marketplace/error-handling/MarketplaceErrorBoundary";
+import { ComparisonFloatingIndicator } from "@/components/marketplace/sections/ComparisonFloatingIndicator";
+import { MarketplaceDialogs } from "@/components/marketplace/layout/MarketplaceDialogs";
 
-export function MarketplaceSection() {
-  const [activeTab, setActiveTab] = useState("all");
-  const [activeFilters, setActiveFilters] = useState<any>({});
-  const [showAIRecommendations, setShowAIRecommendations] = useState(false);
-  const [showComparison, setShowComparison] = useState(false);
-  
-  // Expose services globally for the comparison functionality
-  useEffect(() => {
-    window.SERVICES = SERVICES;
-  }, []);
-  
-  // Get filtered services based on active tab and any other filters
-  const getFilteredServices = () => {
-    let filtered = activeTab === "all" 
-      ? [...SERVICES] 
-      : SERVICES.filter(service => 
-          service.category.toLowerCase() === activeTab.toLowerCase() || 
-          service.tags.some(tag => tag.toLowerCase() === activeTab.toLowerCase())
-        );
-    
-    // Apply additional filters if any
-    if (activeFilters.auditTypes && activeFilters.auditTypes.length > 0) {
-      filtered = filtered.filter(service => 
-        service.tags.some(tag => 
-          activeFilters.auditTypes.includes(tag.toLowerCase())
-        )
-      );
-    }
-    
-    if (activeFilters.priceRange) {
-      filtered = filtered.filter(service => 
-        service.pricing.amount >= activeFilters.priceRange[0] && 
-        service.pricing.amount <= activeFilters.priceRange[1]
-      );
-    }
-    
-    if (activeFilters.blockchains && activeFilters.blockchains.length > 0) {
-      filtered = filtered.filter(service => 
-        service.tags.some(tag => 
-          activeFilters.blockchains.includes(tag.toLowerCase())
-        )
-      );
-    }
-    
-    if (activeFilters.minReputation) {
-      filtered = filtered.filter(service => 
-        service.provider.reputation >= activeFilters.minReputation
-      );
-    }
-    
-    // Sort by verification status and then by rating to show best services first
-    filtered = filtered.sort((a, b) => {
-      if (a.provider.isVerified !== b.provider.isVerified) {
-        return a.provider.isVerified ? -1 : 1;
-      }
-      return b.rating - a.rating;
-    });
-    
-    return filtered.slice(0, 4);
-  };
+function MarketplaceContent() {
+  const {
+    state,
+    setActiveCategory,
+    handleApplyFilters,
+    filterServices,
+    servicesQuery,
+    toggleCompareService,
+    isServiceInComparison,
+    handleOpenComparison,
+    setShowComparison
+  } = useMarketplace();
 
-  const filteredServices = getFilteredServices();
+  const {
+    activeCategory,
+    activeFilters,
+    showAIRecommendations,
+    servicesForComparison,
+    showComparison
+  } = state;
+
+  // Filter and limit services for the home page
+  const filteredServices = servicesQuery.data ? filterServices(servicesQuery.data).slice(0, 4) : [];
 
   const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
+    setActiveCategory(tab);
   };
 
   const handleFilterChange = (filters: any) => {
-    setActiveFilters(filters);
-    setShowAIRecommendations(filters.aiRecommendations || false);
+    handleApplyFilters(filters);
   };
 
   // Add a handler for recommendation selection
@@ -91,68 +51,100 @@ export function MarketplaceSection() {
     console.log("Recommendation selected:", service);
   };
 
-  const handleCompare = () => {
-    setShowComparison(true);
-  };
+  return (
+    <>
+      <MarketplaceHeader />
+      <CategoryTabs activeTab={activeCategory} onTabChange={handleTabChange} />
+      
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* AI Recommendations Section (conditional) */}
+        {showAIRecommendations && (
+          <div className="lg:col-span-3 mb-2">
+            <AIRecommendations 
+              services={servicesQuery.data || []}
+              projectSize={activeFilters.projectSize || "medium"}
+              blockchains={activeFilters.blockchains || []}
+              onRecommendationSelect={handleRecommendationSelect}
+            />
+          </div>
+        )}
+        
+        {/* Services Grid - With comparison toggle buttons */}
+        <div className="lg:col-span-3">
+          <ServicesGrid 
+            services={filteredServices} 
+            isLoading={servicesQuery.isLoading} 
+          />
+          
+          <div className="flex justify-center mt-4 mb-10">
+            <Link to="/marketplace">
+              <Button variant="outline" className="group">
+                View all security services
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+      
+      <ComprehensiveSecurity />
+      <MarketplaceFooter />
+
+      {/* Dialogs for comparison */}
+      <MarketplaceDialogs 
+        selectedService={null}
+        setSelectedService={() => {}}
+        showComparison={showComparison}
+        setShowComparison={setShowComparison}
+        servicesForComparison={servicesForComparison}
+        showEnhancedOnboarding={false}
+        setShowEnhancedOnboarding={() => {}}
+        handleOnboardingComplete={() => {}}
+        reviews={[]}
+      />
+      
+      {/* Floating comparison indicator */}
+      {servicesForComparison.length > 0 && (
+        <ComparisonFloatingIndicator
+          servicesForComparison={servicesForComparison}
+          toggleCompareService={toggleCompareService}
+          handleOpenComparison={handleOpenComparison}
+        />
+      )}
+    </>
+  );
+}
+
+export function MarketplaceSection() {
+  // Expose services globally for the comparison functionality
+  React.useEffect(() => {
+    window.SERVICES = SERVICES;
+  }, []);
 
   return (
-    <ComparisonProvider maxCompare={3}>
-      <section className="py-16 bg-gradient-to-b from-background to-muted/30 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <MarketplaceHeader />
-          <CategoryTabs activeTab={activeTab} onTabChange={handleTabChange} />
-          
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            {/* AI Recommendations Section (conditional) */}
-            {showAIRecommendations && (
-              <div className="lg:col-span-3 mb-2">
-                <AIRecommendations 
-                  services={SERVICES}
-                  projectSize={activeFilters.projectSize || "medium"}
-                  blockchains={activeFilters.blockchains || []}
-                  onRecommendationSelect={handleRecommendationSelect}
-                />
-              </div>
-            )}
-            
-            {/* Services Grid - Now with comparison toggle buttons */}
-            <div className="lg:col-span-3">
-              <ServicesGrid services={filteredServices} isLoading={false} />
-              
-              <div className="flex justify-center mt-4 mb-10">
-                <Link to="/marketplace">
-                  <Button variant="outline" className="group">
-                    View all security services
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1"
-                    >
-                      <path d="M5 12h14" />
-                      <path d="m12 5 7 7-7 7" />
-                    </svg>
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-          
-          <ComprehensiveSecurity />
-          <MarketplaceFooter />
-        </div>
-        
-        {/* Floating comparison selector */}
-        <SelectionIndicator onCompare={handleCompare} />
-        <ComparisonDialog open={showComparison} onOpenChange={setShowComparison} />
-      </section>
-    </ComparisonProvider>
+    <section className="py-16 bg-gradient-to-b from-background to-muted/30 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <MarketplaceProvider services={SERVICES}>
+          <MarketplaceErrorBoundary>
+            <MarketplaceContent />
+          </MarketplaceErrorBoundary>
+        </MarketplaceProvider>
+      </div>
+    </section>
   );
 }
 
