@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import {
   Toast,
@@ -13,6 +14,8 @@ type ToasterToast = Toast & {
   title?: React.ReactNode
   description?: React.ReactNode
   action?: ToastActionElement
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
 const actionTypes = {
@@ -137,9 +140,10 @@ function dispatch(action: Action) {
   })
 }
 
-interface Toast extends Omit<ToasterToast, "id"> {}
+// Define a type for toast props without causing a recursive reference
+type ToastProps = Omit<ToasterToast, "id">
 
-function toast({ ...props }: Toast) {
+function toast({ ...props }: ToastProps) {
   const id = genId()
 
   const update = (props: ToasterToast) =>
