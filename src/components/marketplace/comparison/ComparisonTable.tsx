@@ -1,221 +1,160 @@
 
-import { Check, InfoIcon, Minus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { ServiceCardProps } from "@/data/marketplace-data";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from "@/components/ui/tooltip";
+import { MarketplaceService } from "../hooks/types/marketplace-types";
+import { CircleX } from "lucide-react";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 interface ComparisonTableProps {
-  services: ServiceCardProps[];
+  services: MarketplaceService[];
+  onRemoveService: (serviceId: string) => void;
 }
 
-export function ComparisonTable({ services }: ComparisonTableProps) {
-  // Comparison criteria
-  const comparisonCriteria = [
-    { 
-      name: "Price", 
-      key: "pricing",
-      description: "Starting price for the security service"
-    },
-    { 
-      name: "Provider Reputation", 
-      key: "reputation",
-      description: "Overall satisfaction rating from previous clients"
-    },
-    { 
-      name: "Completed Jobs", 
-      key: "completedJobs",
-      description: "Number of successfully delivered security audits"
-    },
-    { 
-      name: "Provider Level", 
-      key: "level",
-      description: "Qualification level based on experience and success rate"
-    },
-    { 
-      name: "Category", 
-      key: "category",
-      description: "Type of security service offered"
-    },
+export function ComparisonTable({ services, onRemoveService }: ComparisonTableProps) {
+  // Define comparison categories
+  const categories = [
+    { id: "general", label: "General Information" },
+    { id: "pricing", label: "Pricing & Delivery" },
+    { id: "features", label: "Features & Capabilities" },
+    { id: "provider", label: "Provider Information" },
   ];
 
-  // Helper functions to get values
-  const getValueForCriteria = (service: ServiceCardProps, key: string) => {
-    switch(key) {
-      case "pricing":
-        return `${service.pricing.amount} ${service.pricing.currency}`;
-      case "reputation":
-        return `${service.provider.reputation}%`;
-      case "completedJobs":
-        return service.completedJobs;
-      case "level":
-        return service.provider.level.charAt(0).toUpperCase() + service.provider.level.slice(1);
+  // Define comparison fields for each category
+  const fields = {
+    general: [
+      { id: "name", label: "Service Name" },
+      { id: "category", label: "Category" },
+      { id: "description", label: "Description" },
+      { id: "tags", label: "Tags" },
+    ],
+    pricing: [
+      { id: "price", label: "Price" },
+      { id: "deliveryTime", label: "Delivery Time" },
+    ],
+    features: [
+      { id: "securityScore", label: "Security Score" },
+      { id: "responseTime", label: "Response Time" },
+    ],
+    provider: [
+      { id: "providerName", label: "Provider" },
+      { id: "completedJobs", label: "Completed Jobs" },
+      { id: "rating", label: "Rating" },
+    ],
+  };
+
+  // Get a specific field value from a service
+  const getFieldValue = (service: any, fieldId: string) => {
+    switch (fieldId) {
+      case "name":
+        return service.title;
       case "category":
         return service.category;
-      default:
-        return "-";
-    }
-  };
-
-  // Function to render appropriate styling based on criteria
-  const getCellClass = (service: ServiceCardProps, key: string, services: ServiceCardProps[]) => {
-    // Don't highlight if there's only one service
-    if (services.length <= 1) return "";
-    
-    switch(key) {
-      case "pricing":
-        // Lower price is better (highlighted)
-        const prices = services.map(s => s.pricing.amount);
-        return service.pricing.amount === Math.min(...prices) ? "bg-green-500/10" : "";
-      case "reputation":
-        // Higher reputation is better
-        const reputations = services.map(s => s.provider.reputation);
-        return service.provider.reputation === Math.max(...reputations) ? "bg-green-500/10" : "";
+      case "description":
+        return service.description;
+      case "tags":
+        return service.tags;
+      case "price":
+        return service.pricing ? `${service.pricing.amount} ${service.pricing.currency}` : "N/A";
+      case "deliveryTime":
+        return service.deliveryTime ? `${service.deliveryTime} days` : "N/A";
+      case "securityScore":
+        return `${service.securityScore || "N/A"}`;
+      case "responseTime":
+        return service.responseTime || "N/A";
+      case "providerName":
+        return service.provider?.name || "N/A";
       case "completedJobs":
-        // More jobs is better
-        const jobs = services.map(s => s.completedJobs);
-        return service.completedJobs === Math.max(...jobs) ? "bg-green-500/10" : "";
-      case "level":
-        // Expert is best, then verified, then rookie
-        const levels = {expert: 3, verified: 2, rookie: 1};
-        const maxLevel = Math.max(...services.map(s => levels[s.provider.level as keyof typeof levels]));
-        return levels[service.provider.level as keyof typeof levels] === maxLevel ? "bg-green-500/10" : "";
+        return `${service.completedJobs || 0}`;
+      case "rating":
+        return `${service.rating || 0}/5`;
       default:
-        return "";
+        return "N/A";
     }
   };
-
-  // Features with descriptions for tooltips
-  const auditFeatures = [
-    { name: "Code Review", description: "Detailed analysis of smart contract code for vulnerabilities" },
-    { name: "Vulnerability Assessment", description: "Identification and evaluation of security risks" },
-    { name: "Gas Optimization", description: "Analysis and recommendations for reducing transaction costs" },
-    { name: "Documentation Review", description: "Evaluation of technical documentation accuracy and completeness" }
-  ];
 
   return (
-    <div className="border rounded-md overflow-auto">
-      <div className="min-w-[600px]">
-        <table className="w-full text-sm" aria-label="Service comparison table">
-          <caption className="sr-only">Comparison of security services</caption>
-          <thead className="bg-muted/50">
-            <tr>
-              <th scope="col" className="text-left p-3 font-medium">Feature</th>
-              {services.map(service => (
-                <th scope="col" key={service.id} className="text-left p-3 font-medium">
-                  {service.provider.name}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {/* Basic comparison criteria */}
-            {comparisonCriteria.map(criteria => (
-              <tr key={criteria.key} className="border-t border-border/50">
-                <td className="p-3 font-medium">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger className="flex items-center gap-1" tabIndex={0}>
-                        <span>{criteria.name}</span>
-                        <InfoIcon className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-                        <span className="sr-only">{criteria.description}</span>
-                      </TooltipTrigger>
-                      <TooltipContent side="right">
-                        <p className="text-xs max-w-xs">{criteria.description}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </td>
-                {services.map(service => (
-                  <td 
-                    key={service.id} 
-                    className={`p-3 ${getCellClass(service, criteria.key, services)}`}
-                  >
-                    {getValueForCriteria(service, criteria.key)}
-                  </td>
-                ))}
-              </tr>
-            ))}
+    <div className="space-y-6 mt-4">
+      {/* Service headers with images */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="hidden md:block"></div> {/* Empty cell for field labels */}
+        
+        {services.map((service) => (
+          <div key={service.id} className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute -right-2 -top-2 h-6 w-6 bg-background border border-border rounded-full z-10"
+              onClick={() => onRemoveService(service.id)}
+            >
+              <CircleX className="h-6 w-6 text-muted-foreground" />
+              <span className="sr-only">Remove {service.title} from comparison</span>
+            </Button>
             
-            {/* Tags/Features */}
-            <tr className="border-t border-border/50">
-              <td className="p-3 font-medium">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger className="flex items-center gap-1" tabIndex={0}>
-                      <span>Specialization</span>
-                      <InfoIcon className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-                      <span className="sr-only">Primary security focus areas and expertise</span>
-                    </TooltipTrigger>
-                    <TooltipContent side="right">
-                      <p className="text-xs">Primary security focus areas and expertise</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </td>
-              {services.map(service => (
-                <td key={service.id} className="p-3">
-                  <div className="flex flex-wrap gap-1">
-                    {service.tags.slice(0, 3).map(tag => (
-                      <Badge key={tag} variant="outline" className="text-[10px]">
-                        {tag}
-                      </Badge>
-                    ))}
-                    {service.tags.length > 3 && (
-                      <Badge variant="outline" className="text-[10px]">
-                        +{service.tags.length - 3}
-                      </Badge>
-                    )}
-                  </div>
-                </td>
-              ))}
-            </tr>
-            
-            {/* Audit Features */}
-            {auditFeatures.map(feature => (
-              <tr key={feature.name} className="border-t border-border/50">
-                <td className="p-3 font-medium">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger className="flex items-center gap-1" tabIndex={0}>
-                        <span>{feature.name}</span>
-                        <InfoIcon className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-                        <span className="sr-only">{feature.description}</span>
-                      </TooltipTrigger>
-                      <TooltipContent side="right">
-                        <p className="text-xs max-w-xs">{feature.description}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </td>
-                {services.map(service => {
-                  // Simulate feature presence based on service type and provider level
-                  const hasFeature = 
-                    (feature.name === "Code Review") ||
-                    (feature.name === "Vulnerability Assessment") ||
-                    (feature.name === "Gas Optimization" && 
-                      (service.provider.level === "expert" || 
-                      service.category === "Smart Contracts")) ||
-                    (feature.name === "Documentation Review" && service.provider.level === "expert");
+            <div className="border border-border rounded-md overflow-hidden">
+              <div className="relative h-32 bg-muted">
+                <AspectRatio ratio={16/9}>
+                  <img 
+                    src={service.imageUrl || `https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1600&auto=format&fit=crop`}
+                    alt={service.title}
+                    className="object-cover w-full h-full"
+                  />
+                </AspectRatio>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div className="absolute bottom-2 left-2 text-white">
+                  <p className="font-medium text-sm line-clamp-1">{service.title}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Comparison tables by category */}
+      {categories.map((category) => (
+        <div key={category.id} className="border border-border rounded-md overflow-hidden">
+          <div className="bg-muted px-4 py-2">
+            <h3 className="font-medium">{category.label}</h3>
+          </div>
+          
+          <Table>
+            <TableBody>
+              {fields[category.id as keyof typeof fields].map((field) => (
+                <TableRow key={field.id}>
+                  <TableCell className="font-medium w-1/4">{field.label}</TableCell>
+                  
+                  {services.map((service) => {
+                    const value = getFieldValue(service, field.id);
                     
-                  return (
-                    <td key={service.id} className="p-3">
-                      {hasFeature ? (
-                        <Check className="h-4 w-4 text-green-500" aria-label={`${feature.name} included`} />
-                      ) : (
-                        <Minus className="h-4 w-4 text-muted" aria-label={`${feature.name} not included`} />
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    return (
+                      <TableCell key={`${service.id}-${field.id}`} className="w-1/4">
+                        {field.id === 'tags' && Array.isArray(value) ? (
+                          <div className="flex flex-wrap gap-1">
+                            {value.map((tag: string) => (
+                              <Badge variant="outline" key={tag}>{tag}</Badge>
+                            ))}
+                          </div>
+                        ) : (
+                          <span>{value}</span>
+                        )}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ))}
+
+      <div className="flex justify-center mt-6">
+        <Button
+          variant="outline"
+          className="px-8"
+          onClick={() => onRemoveService(services[0]?.id || "")}
+        >
+          Clear Comparison
+        </Button>
       </div>
     </div>
   );

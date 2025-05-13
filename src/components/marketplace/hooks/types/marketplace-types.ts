@@ -1,41 +1,31 @@
 
-// Define service-related types used across the marketplace components
-
-// Define BlockchainEcosystem type
-export type BlockchainEcosystem = {
-  name: string;
-  logo?: string;
-  logoUrl: string;
-  color: string;
-};
-
-// Define Review type to match expected structure
-export type Review = {
+export interface BlockchainEcosystem {
   id: string;
-  username: string;
-  date: string;
-  rating: number;
-  text: string;
-  author: string;
-  content: string;
-  helpful: number;
-};
+  name: string;
+  logoUrl: string;
+  projectCount: number;
+}
 
-// Define MarketplaceService type (needed by useMarketplaceComparison)
-export type MarketplaceService = {
+export interface ServiceProvider {
+  id: string;
+  name: string;
+  reputation: number;
+  isVerified: boolean;
+  avatarUrl?: string;
+}
+
+export interface ServicePricing {
+  amount: number;
+  currency: string;
+  model: "fixed" | "hourly" | "range";
+}
+
+export interface MarketplaceService {
   id: string;
   title: string;
   description: string;
-  provider: {
-    name: string;
-    reputation: number;
-    isVerified: boolean;
-    level: "rookie" | "expert" | "verified";
-  };
-  pricing: {
-    amount: number;
-    currency: string;
-  };
+  provider: ServiceProvider;
+  pricing: ServicePricing;
   rating: number;
   completedJobs: number;
   category: string;
@@ -43,4 +33,19 @@ export type MarketplaceService = {
   imageUrl?: string;
   securityScore?: number;
   responseTime?: string;
-};
+}
+
+export interface ServiceFilterOptions {
+  category?: string;
+  priceRange?: [number, number];
+  blockchains?: string[];
+  auditTypes?: string[];
+  minReputation?: number;
+  minRating?: number;
+  projectSize?: "small" | "medium" | "large";
+  aiRecommendations?: boolean;
+}
+
+export interface ComparisonService extends MarketplaceService {
+  isSelected: boolean;
+}
