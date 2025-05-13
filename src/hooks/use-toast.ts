@@ -1,15 +1,13 @@
-
 import * as React from "react"
 import {
   Toast,
   ToastActionElement,
-  ToastProps,
 } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 5
 const TOAST_REMOVE_DELAY = 1000000
 
-type ToasterToast = Toast & {
+type ToasterToast = {
   id: string
   title?: React.ReactNode
   description?: React.ReactNode
@@ -140,10 +138,10 @@ function dispatch(action: Action) {
   })
 }
 
-// Define a type for toast props without causing a recursive reference
-type ToastProps = Omit<ToasterToast, "id">
+// Define a type for toast input props to avoid naming conflicts
+type ToastInputProps = Omit<ToasterToast, "id">
 
-function toast({ ...props }: ToastProps) {
+function toast({ ...props }: ToastInputProps) {
   const id = genId()
 
   const update = (props: ToasterToast) =>
