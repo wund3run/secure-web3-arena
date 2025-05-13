@@ -3,12 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { CircleX } from "lucide-react";
-import { ServiceCardProps } from "@/types/marketplace";
+import { MarketplaceService } from "../hooks/types/marketplace-types";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface MobileComparisonTableProps {
-  services: ServiceCardProps[];
+  services: MarketplaceService[];
   onRemoveService: (serviceId: string) => void;
 }
 
@@ -45,7 +45,7 @@ export function MobileComparisonTable({ services, onRemoveService }: MobileCompa
   };
 
   // Get a specific field value from a service (same as in ComparisonTable)
-  const getFieldValue = (service: ServiceCardProps, fieldId: string) => {
+  const getFieldValue = (service: MarketplaceService, fieldId: string) => {
     switch (fieldId) {
       case "name":
         return service.title;

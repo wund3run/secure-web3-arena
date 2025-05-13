@@ -1,9 +1,9 @@
 
-import { ServiceCardProps } from "@/components/marketplace/card/ServiceCardProps";
-import { MarketplaceService } from "@/components/marketplace/hooks/types/marketplace-types";
+import { ServiceCardProps } from "@/types/marketplace";
+import { MarketplaceService } from "../hooks/types/marketplace-types";
 
-// Convert ServiceCardProps to MarketplaceService for comparison
-export const convertToMarketplaceService = (service: ServiceCardProps): MarketplaceService => {
+// Helper function to convert ServiceCardProps to MarketplaceService
+export function convertToMarketplaceService(service: ServiceCardProps): MarketplaceService {
   return {
     id: service.id,
     title: service.title,
@@ -13,13 +13,12 @@ export const convertToMarketplaceService = (service: ServiceCardProps): Marketpl
       name: service.provider.name,
       reputation: service.provider.reputation,
       isVerified: service.provider.isVerified,
-      level: service.provider.level || "verified", // Ensure level is provided
-      avatarUrl: service.provider.avatarUrl
+      level: service.provider.level // Add the required level property
     },
     pricing: {
       amount: service.pricing.amount,
       currency: service.pricing.currency,
-      model: service.pricing.model || "fixed" // Use model from input or default to "fixed"
+      model: "fixed" // Default to fixed pricing model
     },
     rating: service.rating,
     completedJobs: service.completedJobs,
@@ -29,10 +28,10 @@ export const convertToMarketplaceService = (service: ServiceCardProps): Marketpl
     securityScore: service.securityScore || 85, // Provide default value if undefined
     responseTime: service.responseTime || "24h" // Provide default value if undefined
   };
-};
+}
 
-// Add a new function to convert MarketplaceService back to ServiceCardProps
-export const convertToServiceCardProps = (service: MarketplaceService): ServiceCardProps => {
+// Helper function to convert MarketplaceService back to ServiceCardProps
+export function convertToServiceCardProps(service: MarketplaceService): ServiceCardProps {
   return {
     id: service.id,
     title: service.title,
@@ -41,13 +40,11 @@ export const convertToServiceCardProps = (service: MarketplaceService): ServiceC
       name: service.provider.name,
       reputation: service.provider.reputation,
       isVerified: service.provider.isVerified,
-      level: service.provider.level,
-      avatarUrl: service.provider.avatarUrl
+      level: service.provider.level
     },
     pricing: {
       amount: service.pricing.amount,
-      currency: service.pricing.currency,
-      model: service.pricing.model
+      currency: service.pricing.currency
     },
     rating: service.rating,
     completedJobs: service.completedJobs,
@@ -57,4 +54,4 @@ export const convertToServiceCardProps = (service: MarketplaceService): ServiceC
     securityScore: service.securityScore,
     responseTime: service.responseTime
   };
-};
+}
