@@ -12,7 +12,8 @@ export function convertToMarketplaceService(service: ServiceCardProps): Marketpl
       id: service.id + "-provider", // Generate an id for the provider
       name: service.provider.name,
       reputation: service.provider.reputation,
-      isVerified: service.provider.isVerified
+      isVerified: service.provider.isVerified,
+      level: service.provider.level // Add the required level property
     },
     pricing: {
       amount: service.pricing.amount,
