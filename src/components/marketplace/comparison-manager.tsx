@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { ServiceCardProps } from "@/data/marketplace-data";
 import { Button } from "@/components/ui/button";
@@ -53,8 +52,8 @@ function convertToMarketplaceService(service: ServiceCardProps): MarketplaceServ
     category: service.category,
     tags: service.tags,
     imageUrl: service.imageUrl,
-    securityScore: service.securityScore,
-    responseTime: service.responseTime
+    securityScore: service.securityScore || 85, // Provide default value if undefined
+    responseTime: service.responseTime || "24h" // Provide default value if undefined
   };
 }
 
