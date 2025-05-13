@@ -1,6 +1,5 @@
 import * as React from "react"
 import {
-  Toast,
   ToastActionElement,
 } from "@/components/ui/toast"
 
@@ -12,7 +11,7 @@ type ToasterToast = {
   title?: React.ReactNode
   description?: React.ReactNode
   action?: ToastActionElement
-  open?: boolean
+  open: boolean
   onOpenChange?: (open: boolean) => void
 }
 

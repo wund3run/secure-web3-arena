@@ -55,6 +55,7 @@ export function MarketplaceCallToAction() {
                       variant="default" 
                       className="w-full flex items-center whitespace-nowrap group bg-gradient-to-r from-primary to-secondary hover:opacity-90 hover:shadow-md transition-all focus:ring-2 focus:ring-primary/50 focus:outline-none btn-pulse"
                       aria-label="Submit your project for security audit"
+                      type="button" // Explicitly set type to prevent form submission
                     >
                       <Shield className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" aria-hidden="true" />
                       Start Your Security Assessment
