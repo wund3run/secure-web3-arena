@@ -1,15 +1,21 @@
 
+import React from "react";
 import { ServiceCard } from "@/components/marketplace/card";
-import { ServiceCardProps } from "@/data/marketplace-data";
+import { ServiceCardProps } from "@/types/marketplace";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 
 interface ServicesGridProps {
   services: ServiceCardProps[];
   isLoading?: boolean;
+  enableComparison?: boolean;
 }
 
-export function ServicesGrid({ services, isLoading = false }: ServicesGridProps) {
+export function ServicesGrid({ 
+  services, 
+  isLoading = false, 
+  enableComparison = false 
+}: ServicesGridProps) {
   const navigate = useNavigate();
   
   const handleServiceClick = (serviceId: string) => {

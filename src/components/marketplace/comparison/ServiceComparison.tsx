@@ -1,14 +1,15 @@
 
+import React from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ComparisonHeader } from "./ComparisonHeader";
-import { ComparisonTable } from "./ComparisonTable";
+import { ComparisonResponsive } from "./ComparisonResponsive";
 import { EmptyComparison } from "./EmptyComparison";
-import { MarketplaceService } from "../hooks/types/marketplace-types";
+import { ServiceCardProps } from "@/types/marketplace";
 import { X } from "lucide-react";
 
 interface ServiceComparisonProps {
-  services: MarketplaceService[];
+  services: ServiceCardProps[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -43,7 +44,7 @@ export function ServiceComparison({ services, open, onOpenChange }: ServiceCompa
         <ComparisonHeader services={services} />
         
         {services.length > 0 ? (
-          <ComparisonTable 
+          <ComparisonResponsive 
             services={services} 
             onRemoveService={handleRemoveService} 
           />
