@@ -1,11 +1,10 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useState } from "react";
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend } from "@/components/ui/chart";
-import { Line, LineChart, PieChart, Pie, ResponsiveContainer, Cell, Legend, Tooltip } from "recharts";
-import { Badge } from "@/components/ui/badge";
-import { TrendingUp, TrendingDown } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TotalRevenueDisplay } from "./components/TotalRevenueDisplay";
+import { RevenueTrendChart } from "./charts/RevenueTrendChart";
+import { RevenueSources } from "./components/RevenueSources";
 
 interface RevenueStreamsProps {
   title?: string;
@@ -126,16 +125,6 @@ export function RevenueStreamsWidget({
       }));
     }
   };
-  
-  // Format the total with currency symbol
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(amount);
-  };
 
   return (
     <Card className={className}>
@@ -162,137 +151,17 @@ export function RevenueStreamsWidget({
         <div className="space-y-8">
           {/* Total Revenue */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
-                <div className="flex items-center gap-1">
-                  <h3 className="text-3xl font-bold">{formatCurrency(revenueData.total)}</h3>
-                  <Badge variant={revenueData.change >= 0 ? "success" : "destructive"} className="text-xs">
-                    {revenueData.change >= 0 ? (
-                      <TrendingUp className="h-3 w-3 mr-1" />
-                    ) : (
-                      <TrendingDown className="h-3 w-3 mr-1" />
-                    )}
-                    {Math.abs(revenueData.change)}%
-                  </Badge>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {period === "day" ? "Today" : period === "week" ? "This week" : "This month"}
-                </p>
-              </div>
-            </div>
+            <TotalRevenueDisplay 
+              total={revenueData.total} 
+              change={revenueData.change} 
+              period={revenueData.period} 
+            />
             
-            <ChartContainer 
-              config={{
-                revenue: {
-                  label: "Revenue",
-                  color: "hsl(var(--primary))"
-                }
-              }}
-              className="h-48"
-            >
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={revenueData.trends}
-                  margin={{ top: 5, right: 10, left: 10, bottom: 0 }}
-                >
-                  <ChartTooltip
-                    content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
-                        return (
-                          <ChartTooltipContent
-                            label={payload[0].payload.name}
-                          >
-                            {formatCurrency(payload[0].value as number)}
-                          </ChartTooltipContent>
-                        )
-                      }
-                      return null
-                    }}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="value" 
-                    stroke="hsl(var(--primary))" 
-                    strokeWidth={2} 
-                    dot={{ r: 3 }}
-                    activeDot={{ r: 5 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </ChartContainer>
+            <RevenueTrendChart trends={revenueData.trends} />
           </div>
           
           {/* Revenue Sources */}
-          <div>
-            <h4 className="font-medium text-sm mb-4">Revenue by Source</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="h-48">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={revenueData.sources}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={45}
-                      outerRadius={80}
-                      paddingAngle={2}
-                      dataKey="value"
-                      labelLine={false}
-                      label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-                        const RADIAN = Math.PI / 180;
-                        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                        const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                        const y = cy + radius * Math.sin(-midAngle * RADIAN);
-                        return (
-                          <text
-                            x={x}
-                            y={y}
-                            fill="#fff"
-                            textAnchor="middle"
-                            dominantBaseline="central"
-                            fontSize={12}
-                            fontWeight="bold"
-                          >
-                            {`${(percent * 100).toFixed(0)}%`}
-                          </text>
-                        );
-                      }}
-                    >
-                      {revenueData.sources.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      formatter={(value: number) => [formatCurrency(value), "Revenue"]}
-                    />
-                    <Legend 
-                      layout="vertical" 
-                      verticalAlign="middle" 
-                      align="right"
-                      wrapperStyle={{ fontSize: "12px" }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div>
-                <div className="space-y-4">
-                  {revenueData.sources.map((source, index) => (
-                    <div key={index} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-3 h-3 rounded-full" 
-                          style={{ backgroundColor: source.color }}
-                        />
-                        <span className="text-sm font-medium">{source.name}</span>
-                      </div>
-                      <span className="text-sm">{formatCurrency(source.value)}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+          <RevenueSources sources={revenueData.sources} />
         </div>
       </CardContent>
     </Card>
