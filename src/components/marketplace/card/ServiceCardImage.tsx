@@ -1,8 +1,8 @@
 
 import { memo } from "react";
-import { Star, BadgeCheck } from "lucide-react";
-import { BadgeAward } from "@/components/ui/badge-award";
-import { SecurityScore } from "@/components/trust/security-metrics";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Star, Shield, BadgeCheck } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface ServiceCardImageProps {
   title: string;
@@ -10,80 +10,68 @@ interface ServiceCardImageProps {
   category: string;
   rating: number;
   provider: {
-    level: "rookie" | "expert" | "verified";
+    name: string;
+    isVerified: boolean;
   };
-  securityScore: number;
+  securityScore?: number;
 }
 
-// Memoize the component to prevent unnecessary re-renders
 export const ServiceCardImage = memo(function ServiceCardImage({
   title,
   imageUrl,
   category,
   rating,
   provider,
-  securityScore
+  securityScore = 85
 }: ServiceCardImageProps) {
-  // Define consistent high-quality images with theme-aligned gradients for different security categories
-  const getCategoryImage = (category: string) => {
-    const images = {
-      "Smart Contracts": "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1600&auto=format&fit=crop&blend=9b87f5&blend-mode=multiply&sat=-50",
-      "DApps": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1600&auto=format&fit=crop&blend=9b87f5&blend-mode=multiply&sat=-30",
-      "Protocols": "https://images.unsplash.com/photo-1526378800651-c32d170fe6f8?q=80&w=1600&auto=format&fit=crop&blend=7E69AB&blend-mode=multiply&sat=-40",
-      "NFTs": "https://images.unsplash.com/photo-1618044733300-9472054094ee?q=80&w=1600&auto=format&fit=crop&blend=8B5CF6&blend-mode=multiply&sat=-30",
-      "Bridges": "https://images.unsplash.com/photo-1639762681057-408e52192e55?q=80&w=1600&auto=format&fit=crop&blend=6E59A5&blend-mode=multiply&sat=-40",
-      "Infrastructure": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1600&auto=format&fit=crop&blend=9b87f5&blend-mode=multiply&sat=-30",
-      "DAOs": "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?q=80&w=1600&auto=format&fit=crop&blend=7E69AB&blend-mode=multiply&sat=-30",
-      "ZK Proofs": "https://images.unsplash.com/photo-1633265486064-086b219458ec?q=80&w=1600&auto=format&fit=crop&blend=8B5CF6&blend-mode=multiply&sat=-30",
-      "default": "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=1600&auto=format&fit=crop&blend=9b87f5&blend-mode=multiply&sat=-40"
-    };
-    
-    return images[category] || images["default"];
-  };
-
-  const displayImage = imageUrl || getCategoryImage(category);
-  const altText = `${title} - ${category} security service`;
+  const placeholderColors = [
+    "bg-gradient-to-br from-violet-500 to-purple-800",
+    "bg-gradient-to-br from-blue-500 to-indigo-800",
+    "bg-gradient-to-br from-emerald-500 to-teal-800",
+    "bg-gradient-to-br from-amber-500 to-orange-800",
+  ];
   
+  // Pick a color based on the title string to ensure consistency
+  const colorIndex = title.length % placeholderColors.length;
+  const placeholderColor = placeholderColors[colorIndex];
+
   return (
-    <div className="h-48 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10">
-        <img 
-          src={displayImage} 
-          alt={altText} 
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-          loading="lazy" // Add lazy loading
-          decoding="async" // Use async decoding for better performance
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.onerror = null;
-            target.src = getCategoryImage("default");
-            target.alt = `Default image for ${category} security service`;
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-60" aria-hidden="true"></div>
+    <div className="relative">
+      <AspectRatio ratio={16 / 9}>
+        {imageUrl ? (
+          <img 
+            src={imageUrl} 
+            alt={title}
+            className="object-cover w-full h-full rounded-t-lg"
+          />
+        ) : (
+          <div className={`w-full h-full flex items-center justify-center ${placeholderColor} rounded-t-lg`}>
+            <Shield className="w-12 h-12 text-white/80" />
+          </div>
+        )}
+      </AspectRatio>
+      
+      <div className="absolute top-4 left-4 z-10">
+        <Badge 
+          className="bg-black/60 text-white text-xs backdrop-blur-sm border-white/20"
+        >
+          {category}
+        </Badge>
       </div>
       
-      <div className="absolute top-3 right-3 flex space-x-2">
-        <div className="bg-sky-100/80 text-sky-700 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium shadow-sm flex items-center">
-          <span>24h</span>
-          <span className="ml-1">response</span>
-        </div>
+      <div className="absolute top-4 right-4 z-10 flex items-center gap-1 bg-black/60 text-white px-2 py-1 rounded-full backdrop-blur-sm text-xs">
+        <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+        <span>{rating.toFixed(1)}</span>
       </div>
       
-      <div className="absolute bottom-3 left-3">
-        <div className="flex items-center bg-black/60 backdrop-blur-sm rounded-md px-2 py-1" aria-label={`Rating: ${rating.toFixed(1)} out of 5`}>
-          <Star className="h-4 w-4 fill-web3-orange text-web3-orange mr-1" aria-hidden="true" />
-          <span className="text-sm font-semibold text-white">{rating.toFixed(1)}</span>
-          <span className="ml-1 text-white font-medium">ETH</span>
+      {securityScore && (
+        <div className="absolute bottom-4 right-4 z-10">
+          <div className="bg-black/60 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs flex items-center gap-1">
+            <Shield className="w-3 h-3" />
+            <span>Score: {securityScore}%</span>
+          </div>
         </div>
-      </div>
-      
-      {/* Security score */}
-      <div className="absolute bottom-3 right-3">
-        <div className="bg-black/60 backdrop-blur-sm rounded-md px-2 py-1">
-          <SecurityScore score={securityScore} size="sm" showLabel={false} />
-        </div>
-      </div>
+      )}
     </div>
   );
 });

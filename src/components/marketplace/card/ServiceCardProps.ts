@@ -5,9 +5,9 @@ export interface ServiceCardProps {
   description: string;
   provider: {
     name: string;
-    reputation: number;
+    reputation?: number;
+    level?: "rookie" | "verified" | "expert";
     isVerified: boolean;
-    level: "rookie" | "expert" | "verified";
   };
   pricing: {
     amount: number;
