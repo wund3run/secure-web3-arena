@@ -9,9 +9,38 @@ export function useAuthProvider() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState<any>(null);
   // Set this to true to enable MFA/2FA
   const [requireMFA, setRequireMFA] = useState(false);
   const navigate = useNavigate();
+
+  // Fetch user profile when user changes
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (user) {
+        try {
+          const { data, error } = await supabase
+            .from('extended_profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+            
+          if (error) {
+            console.error('Error fetching user profile:', error);
+            return;
+          }
+          
+          setUserProfile(data);
+        } catch (error) {
+          console.error('Error in user profile fetch:', error);
+        }
+      } else {
+        setUserProfile(null);
+      }
+    };
+    
+    fetchUserProfile();
+  }, [user]);
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -170,6 +199,7 @@ export function useAuthProvider() {
     user,
     session,
     loading,
+    userProfile,
     signIn,
     signUp,
     signOut,

@@ -12,7 +12,7 @@ interface PrefilledData {
 }
 
 export const useAuditFormAuth = (
-  setFormData: (data: AuditFormData) => void,
+  setFormData: (data: AuditFormData | ((prevData: AuditFormData) => AuditFormData)) => void,
   prefilledData?: PrefilledData
 ) => {
   const { user, loading, userProfile } = useAuth();
@@ -34,15 +34,12 @@ export const useAuditFormAuth = (
   useEffect(() => {
     if (userProfile) {
       // Prepare the initial form data with user profile information
-      setFormData(prevData => ({
+      setFormData((prevData: AuditFormData) => ({
         ...prevData,
         contactName: userProfile.full_name || prevData.contactName || '',
         contactEmail: user?.email || prevData.contactEmail || '',
       }));
     }
-
-    // If the user has a project and this is a new audit request,
-    // we could prefill project data here if available
   }, [userProfile, user, setFormData]);
 
   // Prefill form with service provider data if available
@@ -50,7 +47,7 @@ export const useAuditFormAuth = (
     if (!userProfile) return;
     
     if (prefilledData) {
-      setFormData(prevData => ({
+      setFormData((prevData: AuditFormData) => ({
         ...prevData,
         // Fill in audit-specific fields
         projectName: prefilledData.serviceName 
