@@ -1,8 +1,7 @@
 
-import { Trophy, Shield, Award, ArrowRight, Check, User, Zap } from "lucide-react";
+import { Trophy, Shield, Award, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { BadgeAward } from "@/components/ui/badge-award";
 
 export function EnhancedHeroHeader() {
   return (
@@ -23,18 +22,18 @@ export function EnhancedHeroHeader() {
           Connect with expert auditors to protect your blockchain applications from critical vulnerabilities
         </p>
         
-        {/* Primary CTA - Clear, high-contrast call to action */}
+        {/* Primary CTA - Single, clear primary action with secondary alternative */}
         <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
           <Link to="/request-audit">
             <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-lg px-8 py-6 shadow-lg">
               <Shield className="mr-2 h-6 w-6" />
-              Request Security Audit
+              Get Your Project Audited
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>
           <Link to="/marketplace">
             <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10 text-lg px-8 py-6">
-              Explore Security Services
+              Browse Auditor Profiles
             </Button>
           </Link>
         </div>

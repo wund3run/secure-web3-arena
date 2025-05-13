@@ -32,12 +32,12 @@ export function MarketplaceHero({ onShowOnboarding }: MarketplaceHeroProps) {
           
           {/* Bold, prominent headline */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-6">
-            Web3 Security Marketplace
+            Find Your Perfect Security Expert
           </h1>
           
           {/* Concise value proposition */}
           <p className="text-xl md:text-2xl text-white/90 max-w-2xl mb-8">
-            Protect your blockchain projects from vulnerabilities and attacks
+            Browse profiles of verified auditors specialized in your blockchain ecosystem
           </p>
           
           {/* Social proof - Key stats */}
@@ -55,16 +55,16 @@ export function MarketplaceHero({ onShowOnboarding }: MarketplaceHeroProps) {
             ))}
           </div>
           
-          {/* Primary CTA button */}
+          {/* Single, focused CTA button */}
           <Button 
             size="lg"
             variant="default" 
             className="bg-white text-primary hover:bg-white/90 focus:ring-2 focus:ring-white focus:outline-none text-lg py-6 px-8 shadow-lg"
             onClick={onShowOnboarding}
-            aria-label="Start guided marketplace onboarding"
+            aria-label="Find matching security experts for your project"
           >
             <Shield className="mr-2 h-5 w-5" aria-hidden="true" />
-            Start Guided Onboarding
+            Find Your Security Match
           </Button>
         </div>
       </div>

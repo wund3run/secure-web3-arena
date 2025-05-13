@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/auth';
 import { HawklyLogo } from "@/components/layout/hawkly-logo";
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { Shield } from 'lucide-react';
 
 const AuditRequestHeader: React.FC = () => {
   const { user } = useAuth();
@@ -23,12 +24,12 @@ const AuditRequestHeader: React.FC = () => {
       
       {!user && (
         <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mt-6 max-w-xl mx-auto">
-          <h3 className="text-sm font-medium text-primary">Already have an account?</h3>
-          <p className="text-sm text-muted-foreground mt-1 mb-3">
-            Sign in to pre-fill your information and track your audit requests.
-          </p>
-          <Button variant="outline" asChild>
-            <Link to="/auth">Sign In</Link>
+          <h3 className="text-sm font-medium text-primary mb-2">Already have an account?</h3>
+          <Button variant="outline" asChild className="flex items-center gap-2">
+            <Link to="/auth">
+              <Shield className="h-4 w-4" />
+              Sign In to Track Your Audit Requests
+            </Link>
           </Button>
         </div>
       )}

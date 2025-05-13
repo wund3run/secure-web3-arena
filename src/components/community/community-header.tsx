@@ -24,20 +24,13 @@ export function CommunityHeader() {
           </p>
         </div>
 
-        {/* Prominent call-to-action buttons with clear hierarchy */}
-        <div className="flex flex-col md:flex-row gap-5 justify-center mb-12">
+        {/* Single, prominent CTA button - focused on community joining */}
+        <div className="flex justify-center mb-12">
           <Link to="/join">
-            <Button size="lg" className="w-full md:w-auto bg-gradient-to-r from-primary to-secondary hover:opacity-90 group text-lg py-6 px-8 shadow-lg">
-              <Shield className="mr-2 h-6 w-6" />
-              Join the Circle
+            <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 group text-lg py-6 px-8 shadow-lg">
+              <Users className="mr-2 h-6 w-6" />
+              Join the Security Circle
               <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Button>
-          </Link>
-          
-          <Link to="/request-audit">
-            <Button size="lg" variant="outline" className="w-full md:w-auto border-primary text-primary hover:bg-primary/10 text-lg py-6 px-8">
-              <FileText className="mr-2 h-6 w-6" />
-              Request for Audit
             </Button>
           </Link>
         </div>
@@ -91,7 +84,7 @@ export function CommunityHeader() {
             <div className="mt-6">
               <Link to="/marketplace">
                 <Button size="lg" className="group w-full py-5">
-                  Find Security Partners
+                  Find Security Experts
                   <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
@@ -129,9 +122,9 @@ export function CommunityHeader() {
             </ul>
             
             <div className="mt-6">
-              <Link to="/join">
+              <Link to="/audits">
                 <Button size="lg" variant="outline" className="group w-full border-secondary text-secondary hover:bg-secondary/10 py-5">
-                  Join the Circle
+                  View Public Audit Reports
                   <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>

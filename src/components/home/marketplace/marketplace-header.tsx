@@ -1,10 +1,9 @@
 
-import { Shield, Star, Users, BadgeCheck, ArrowRight, FileCode, LockKeyhole } from "lucide-react";
+import { Shield, Star, Users, BadgeCheck, ArrowRight, FileCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { BetaWarning } from "@/components/ui/beta-warning";
 import { HawklyLogo } from "@/components/layout/hawkly-logo";
 
 export function MarketplaceHeader() {
@@ -48,7 +47,7 @@ export function MarketplaceHeader() {
             <div className="p-4 bg-primary/10 rounded-full mr-4">
               <Shield className="h-8 w-8 text-primary" />
             </div>
-            <h3 className="text-2xl font-bold">For Project Owners</h3>
+            <h3 className="text-2xl font-bold">Need a Security Audit?</h3>
           </div>
           
           <ul className="space-y-4 mb-8">
@@ -67,9 +66,9 @@ export function MarketplaceHeader() {
           </ul>
           
           {/* Primary CTA for this user path */}
-          <Link to="/marketplace">
+          <Link to="/request-audit">
             <Button className="w-full text-lg py-6 group bg-primary hover:bg-primary/90 transition-all">
-              View Security Services
+              Request Your Security Audit
               <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
@@ -81,7 +80,7 @@ export function MarketplaceHeader() {
             <div className="p-4 bg-secondary/10 rounded-full mr-4">
               <Users className="h-8 w-8 text-secondary" />
             </div>
-            <h3 className="text-2xl font-bold">For Security Experts</h3>
+            <h3 className="text-2xl font-bold">Are You a Security Expert?</h3>
           </div>
           
           <ul className="space-y-4 mb-8">
@@ -100,9 +99,9 @@ export function MarketplaceHeader() {
           </ul>
           
           {/* Secondary CTA */}
-          <Link to="/audits">
+          <Link to="/service-provider-onboarding">
             <Button variant="outline" className="w-full text-lg py-6 group border-secondary text-secondary hover:bg-secondary/10 transition-all">
-              Become a Certified Auditor
+              Apply as Security Expert
               <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
@@ -123,7 +122,7 @@ export function MarketplaceHeader() {
         
         <div className="flex items-center p-5 bg-muted/60 rounded-lg hover:bg-muted/80 transition-all">
           <div className="h-12 w-12 rounded-full bg-secondary/10 flex items-center justify-center mr-4">
-            <LockKeyhole className="h-6 w-6 text-secondary" />
+            <Shield className="h-6 w-6 text-secondary" />
           </div>
           <div>
             <h4 className="font-semibold text-base">Security Assessments</h4>
@@ -132,12 +131,12 @@ export function MarketplaceHeader() {
         </div>
         
         <div className="flex items-center p-5 bg-muted/60 rounded-lg hover:bg-muted/80 transition-all">
-          <div className="h-12 w-12 rounded-full bg-web3-orange/10 flex items-center justify-center mr-4">
-            <Shield className="h-6 w-6 text-web3-orange" />
+          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mr-4">
+            <Star className="h-6 w-6 text-primary" />
           </div>
           <div>
-            <h4 className="font-semibold text-base">DApp Protection</h4>
-            <p className="text-sm text-muted-foreground">Complete application security</p>
+            <h4 className="font-semibold text-base">Expert Reputation</h4>
+            <p className="text-sm text-muted-foreground">Verified security professionals</p>
           </div>
         </div>
       </div>
