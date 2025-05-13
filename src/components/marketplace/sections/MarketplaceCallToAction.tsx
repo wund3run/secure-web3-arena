@@ -7,8 +7,8 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export function MarketplaceCallToAction() {
   return (
-    <Card className="mt-12 overflow-hidden" role="region" aria-labelledby="cta-heading">
-      <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-1"></div>
+    <Card className="mt-12 overflow-hidden interactive-card" role="region" aria-labelledby="cta-heading">
+      <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-1 transition-all duration-300"></div>
       <CardContent className="p-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
@@ -17,11 +17,11 @@ export function MarketplaceCallToAction() {
             
             <ul className="mt-4 space-y-2">
               <li className="flex items-start">
-                <BadgeCheck className="h-5 w-5 text-primary mr-2 mt-0.5" />
+                <BadgeCheck className="h-5 w-5 text-primary mr-2 mt-0.5 animate-in zoom-in-50 transition-all" />
                 <span className="text-sm">AI-powered matching with top auditors</span>
               </li>
               <li className="flex items-start">
-                <BadgeCheck className="h-5 w-5 text-primary mr-2 mt-0.5" />
+                <BadgeCheck className="h-5 w-5 text-primary mr-2 mt-0.5 animate-in zoom-in-75 delay-100 transition-all" />
                 <span className="text-sm">Comprehensive vulnerability assessments</span>
               </li>
             </ul>
@@ -36,10 +36,10 @@ export function MarketplaceCallToAction() {
                     <Button 
                       size="lg" 
                       variant="default" 
-                      className="w-full flex items-center whitespace-nowrap group bg-gradient-to-r from-primary to-secondary hover:opacity-90 hover:shadow-md transition-all focus:ring-2 focus:ring-primary/50 focus:outline-none"
+                      className="w-full flex items-center whitespace-nowrap group bg-gradient-to-r from-primary to-secondary hover:opacity-90 hover:shadow-md transition-all focus:ring-2 focus:ring-primary/50 focus:outline-none btn-pulse"
                       aria-label="Submit your project for security audit"
                     >
-                      <Shield className="mr-2 h-5 w-5" aria-hidden="true" />
+                      <Shield className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" aria-hidden="true" />
                       Start Your Security Assessment
                       <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                     </Button>

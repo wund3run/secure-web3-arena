@@ -10,6 +10,30 @@ body {
 a {
   transition: all 0.2s ease;
   text-decoration: none;
+  position: relative;
+}
+
+/* Interactive element styling */
+a:not(.btn):not(.no-underline):hover {
+  text-decoration: none;
+}
+
+a:not(.btn):not(.no-underline):after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: -1px;
+  left: 0;
+  background-color: currentColor;
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-out;
+}
+
+a:not(.btn):not(.no-underline):hover:after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
 }
 
 /* Improved hover transitions */
@@ -22,12 +46,29 @@ a {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
+/* Interactive card hover effect */
+.interactive-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.interactive-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.09);
+  border-color: hsl(var(--primary) / 0.2);
+}
+
 /* Improved glass card effect */
 .glass-card {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.17);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  box-shadow: 0 12px 36px 0 rgba(31, 38, 135, 0.25);
 }
 
 /* Animation for floating elements */
@@ -66,6 +107,28 @@ a {
   outline-offset: 2px;
 }
 
+/* Button pulse effect for primary actions */
+.btn-pulse {
+  position: relative;
+}
+
+.btn-pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: currentColor;
+  opacity: 0;
+  z-index: -1;
+  animation: pulse-effect 2s ease-in-out infinite;
+}
+
+@keyframes pulse-effect {
+  0% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.1); opacity: 0; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
 /* Smoother transitions for interactive elements */
 button, 
 .btn, 
@@ -73,6 +136,21 @@ input,
 select, 
 textarea {
   transition: all 0.2s ease;
+}
+
+/* Consistent clickable styles */
+.clickable {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clickable:hover {
+  transform: translateY(-2px);
+}
+
+.clickable:active {
+  transform: translateY(0);
 }
 
 /* Improved section divisions */
@@ -189,4 +267,22 @@ h3 {
 [role="tooltip"],
 .dropdown-content {
   z-index: 50 !important;
+}
+
+/* Interactive filter styling */
+.filter-option {
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.filter-option:hover {
+  border-color: hsl(var(--primary) / 0.3);
+  background-color: hsl(var(--primary) / 0.05);
+}
+
+.filter-option[aria-selected="true"],
+.filter-option[data-state="checked"] {
+  background-color: hsl(var(--primary) / 0.1);
+  border-color: hsl(var(--primary) / 0.4);
 }
