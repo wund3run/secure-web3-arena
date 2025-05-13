@@ -8,12 +8,10 @@ import { AuthLayout } from '@/components/auth/AuthLayout';
 import { SignInForm, SignUpForm } from '@/components/auth/AuthForms';
 import { SocialLoginOptions } from '@/components/auth/SocialLoginOptions';
 import { CaptchaVerification } from '@/components/auth/CaptchaVerification';
-import { Button } from '@/components/ui/button';
-import { MessageCircle } from 'lucide-react';
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { user, signIn, signUp, signInWithDiscord } = useAuth();
+  const { user, signIn, signUp } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<string>("signin");
   const [error, setError] = useState<string | null>(null);
@@ -85,19 +83,6 @@ const Auth = () => {
     }
   };
 
-  const handleDiscordSignIn = async () => {
-    setError(null);
-    setIsLoading(true);
-
-    try {
-      await signInWithDiscord();
-      // Redirect will happen in AuthContext or AuthCallback
-    } catch (error) {
-      // Error is already handled in the auth context
-      setIsLoading(false);
-    }
-  };
-
   return (
     <AuthLayout>
       <Card className="border border-border/40 shadow-sm backdrop-blur-sm bg-white/80">
@@ -146,19 +131,6 @@ const Auth = () => {
             onExpire={handleCaptchaExpire} 
             error={captchaError}
           />
-
-          <div className="mt-6">
-            <Button
-              variant="outline"
-              className="w-full bg-[#5865F2] text-white hover:bg-[#4752c4] hover:text-white"
-              type="button"
-              onClick={handleDiscordSignIn}
-              disabled={isLoading}
-            >
-              <MessageCircle className="mr-2 h-5 w-5" />
-              Continue with Discord
-            </Button>
-          </div>
           
           <SocialLoginOptions />
         </CardContent>
