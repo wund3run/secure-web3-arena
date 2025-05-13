@@ -79,7 +79,7 @@ export default function EnhancedAuditOptions({
                 <div className="flex items-center space-x-2">
                   <Checkbox 
                     id="collaborativeAudit" 
-                    checked={formData.collaborativeAudit} 
+                    checked={formData.collaborativeAudit || false} 
                     onCheckedChange={(checked) => handleCheckboxChange("collaborativeAudit", checked === true)}
                   />
                   <Label htmlFor="collaborativeAudit">Enable</Label>
@@ -114,7 +114,7 @@ export default function EnhancedAuditOptions({
                 <div className="flex items-center space-x-2">
                   <Checkbox 
                     id="continuousAuditing" 
-                    checked={formData.continuousAuditing} 
+                    checked={formData.continuousAuditing || false} 
                     onCheckedChange={(checked) => handleCheckboxChange("continuousAuditing", checked === true)}
                   />
                   <Label htmlFor="continuousAuditing">Enable</Label>
@@ -149,7 +149,7 @@ export default function EnhancedAuditOptions({
                 <div className="flex items-center space-x-2">
                   <Checkbox 
                     id="hybridModel" 
-                    checked={formData.hybridModel} 
+                    checked={formData.hybridModel || false} 
                     onCheckedChange={(checked) => handleCheckboxChange("hybridModel", checked === true)}
                   />
                   <Label htmlFor="hybridModel">Enable</Label>
@@ -182,14 +182,14 @@ export default function EnhancedAuditOptions({
                   </TooltipProvider>
                 </div>
                 <Select
-                  value={formData.specializedAuditType || ""}
+                  value={formData.specializedAuditType || "Standard"}
                   onValueChange={(value) => handleSelectChange("specializedAuditType", value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger id="specializedAuditType">
                     <SelectValue placeholder="Select specialized audit type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Standard Audit</SelectItem>
+                    <SelectItem value="Standard">Standard Audit</SelectItem>
                     <SelectItem value="zk-proofs">Zero-Knowledge Proofs</SelectItem>
                     <SelectItem value="layer2">Layer 2 Solutions</SelectItem>
                     <SelectItem value="ai-driven">AI-Driven Smart Contracts</SelectItem>
@@ -229,7 +229,7 @@ export default function EnhancedAuditOptions({
                   value={formData.accountabilityPreference || "standard"}
                   onValueChange={(value) => handleSelectChange("accountabilityPreference", value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger id="accountabilityPreference">
                     <SelectValue placeholder="Select accountability model" />
                   </SelectTrigger>
                   <SelectContent>

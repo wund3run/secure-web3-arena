@@ -1,9 +1,6 @@
-
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/auth";
+import { useAuth } from '@/contexts/auth';
 import { AuditFormData } from "@/types/audit-request.types";
 
 // Define a type for the prefilledData parameter
@@ -18,60 +15,73 @@ export const useAuditFormAuth = (
   setFormData: (data: AuditFormData) => void,
   prefilledData?: PrefilledData
 ) => {
-  const { user } = useAuth();
+  const { user, loading, userProfile } = useAuth();
   const navigate = useNavigate();
-  const [userProfile, setUserProfile] = useState<{fullName?: string, email?: string}>({});
 
+  // Redirect to login if not authenticated
   useEffect(() => {
-    // Check if user is authenticated
-    if (!user) {
-      toast.error("Authentication required", {
-        description: "You need to sign in to request an audit.",
-      });
-      navigate('/auth');
-    } else {
-      // Store user email immediately
-      setUserProfile(prev => ({ ...prev, email: user.email || '' }));
-      
-      // Fetch additional profile data
-      supabase
-        .from('extended_profiles')
-        .select('full_name')
-        .eq('id', user.id)
-        .single()
-        .then(({ data, error }) => {
-          if (!error && data && data.full_name) {
-            setUserProfile(prev => ({ ...prev, fullName: data.full_name }));
-          }
-        });
-    }
-  }, [user, navigate]);
-  
-  // Update form data when user profile changes
-  useEffect(() => {
-    if (userProfile.email || userProfile.fullName) {
-      // Update form with user contact info
-      setFormData({
-        projectName: "",
-        projectDescription: "",
-        contactEmail: userProfile.email || "",
-        contactName: userProfile.fullName || "",
-        blockchain: "Ethereum",
-        customBlockchain: "",
-        repositoryUrl: "",
-        contractCount: "",
-        linesOfCode: "",
-        deadline: "",
-        budget: "",
-        auditScope: "",
-        previousAudits: false,
-        specificConcerns: "",
-        previousAuditLinks: "",
-        // Add the required preferredCommunication field with a default value
-        preferredCommunication: "email"
+    if (!loading && !user) {
+      navigate('/login', { 
+        state: { 
+          fromPath: '/request-audit',
+          message: 'Please log in or create an account to request an audit.' 
+        } 
       });
     }
-  }, [userProfile, setFormData]);
+  }, [user, loading, navigate]);
+
+  // Prefill form with user data if available
+  useEffect(() => {
+    if (userProfile) {
+      // Prepare the initial form data with user profile information
+      setFormData(prevData => ({
+        ...prevData,
+        contactName: userProfile.full_name || prevData.contactName || '',
+        contactEmail: user?.email || prevData.contactEmail || '',
+      }));
+    }
+
+    // If the user has a project and this is a new audit request,
+    // we could prefill project data here if available
+  }, [userProfile, user, setFormData]);
+
+  // Prefill form with service provider data if available
+  useEffect(() => {
+    if (!userProfile) return;
+    
+    if (prefilledData) {
+      setFormData(prevData => ({
+        ...prevData,
+        // Fill in audit-specific fields
+        projectName: prefilledData.serviceName 
+          ? `${prefilledData.serviceName} Audit Request` 
+          : prevData.projectName,
+        projectDescription: prefilledData.providerName 
+          ? `Requesting an audit from ${prefilledData.providerName}` 
+          : prevData.projectDescription,
+        blockchain: prefilledData.serviceType || prevData.blockchain,
+        // Keep all other form fields as is
+        contactName: prevData.contactName || userProfile.full_name || '',
+        contactEmail: prevData.contactEmail || user?.email || '',
+        customBlockchain: prevData.customBlockchain || '',
+        repositoryUrl: prevData.repositoryUrl || '',
+        contractCount: prevData.contractCount || '1-5',
+        linesOfCode: prevData.linesOfCode || '< 1,000',
+        deadline: prevData.deadline || '1-2 weeks',
+        budget: prevData.budget || '$5,000 - $10,000',
+        auditScope: prevData.auditScope || '',
+        previousAudits: prevData.previousAudits || false,
+        specificConcerns: prevData.specificConcerns || '',
+        previousAuditLinks: prevData.previousAuditLinks || '',
+        preferredCommunication: prevData.preferredCommunication || 'email',
+        collaborativeAudit: prevData.collaborativeAudit || false,
+        continuousAuditing: prevData.continuousAuditing || false,
+        hybridModel: prevData.hybridModel || false,
+        specializedAuditType: prevData.specializedAuditType || 'Standard',
+        accountabilityPreference: prevData.accountabilityPreference || 'standard'
+      }));
+    }
+  }, [userProfile, prefilledData, setFormData, user]);
 
   return { user, navigate };
 };

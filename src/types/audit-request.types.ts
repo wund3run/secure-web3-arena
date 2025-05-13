@@ -12,10 +12,10 @@ export interface AuditFormData {
   auditScope: string;
   deadline: string;
   budget: string;
-  previousAudits: boolean; // Changed from optional to required
+  previousAudits: boolean;
   previousAuditLinks?: string;
-  preferredCommunication: string; // Changed from optional to required
-  specificConcerns: string; // Changed from optional to required
+  preferredCommunication: string;
+  specificConcerns: string;
   aiAssisted?: boolean;
   continuousMonitoring?: boolean;
   // New fields for enhanced audit features

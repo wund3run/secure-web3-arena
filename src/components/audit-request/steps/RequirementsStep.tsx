@@ -164,7 +164,7 @@ export default function RequirementsStep({
                   id="previousAuditLinks"
                   name="previousAuditLinks"
                   placeholder="Links to previous audit reports"
-                  value={formData.previousAuditLinks}
+                  value={formData.previousAuditLinks || ''}
                   onChange={handleChange}
                   className={formErrors.previousAuditLinks ? "border-red-500" : ""}
                 />
@@ -181,7 +181,7 @@ export default function RequirementsStep({
               value={formData.preferredCommunication || 'email'} 
               onValueChange={(value) => handleSelectChange("preferredCommunication", value)}
             >
-              <SelectTrigger>
+              <SelectTrigger id="preferredCommunication">
                 <SelectValue placeholder="How would you like to communicate?" />
               </SelectTrigger>
               <SelectContent>
