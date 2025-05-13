@@ -66,7 +66,9 @@ export const useAuditFormAuth = (
         auditScope: "",
         previousAudits: false,
         specificConcerns: "",
-        previousAuditLinks: ""
+        previousAuditLinks: "",
+        // Add the required preferredCommunication field with a default value
+        preferredCommunication: "email"
       });
     }
   }, [userProfile, setFormData]);
