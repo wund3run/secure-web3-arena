@@ -19,7 +19,9 @@ export const useAuditFormNavigation = (
       setFormErrors(validation.errors);
       
       // Show first error as a toast and set validation error
-      const firstError = Object.values(validation.errors)[0];
+      const firstErrorKey = Object.keys(validation.errors)[0];
+      const firstError = firstErrorKey ? validation.errors[firstErrorKey] : '';
+      
       if (firstError) {
         setValidationError("Please correct the highlighted fields");
         

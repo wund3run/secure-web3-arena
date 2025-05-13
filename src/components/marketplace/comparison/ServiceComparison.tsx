@@ -19,11 +19,21 @@ export function ServiceComparison({
   onOpenChange 
 }: ServiceComparisonProps) {
   
+  // Handler for removing a service from comparison
+  const handleRemoveService = (serviceId: string) => {
+    // This function would typically be implemented in a parent component
+    // and passed down via props, but we're adding a placeholder here
+    console.log(`Remove service with ID: ${serviceId}`);
+    // Ideally, we would call something like:
+    // const updatedServices = services.filter(service => service.id !== serviceId);
+    // setServices(updatedServices);
+  };
+  
   if (!services || services.length === 0) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <EmptyComparison />
+          <EmptyComparison onClose={() => onOpenChange(false)} />
         </DialogContent>
       </Dialog>
     );
@@ -47,7 +57,7 @@ export function ServiceComparison({
         <div className="px-6 pb-6 space-y-6">
           <ComparisonHeader services={services} />
           
-          <ServiceCards services={services} />
+          <ServiceCards services={services} onRemoveService={handleRemoveService} />
           
           <ComparisonTable services={services} />
         </div>

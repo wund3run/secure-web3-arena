@@ -24,6 +24,16 @@ export interface AuditFormData {
   preferredCommunication: string;
 }
 
+// Define form errors type
+export interface AuditFormErrors {
+  [key: string]: string;
+}
+
+// Define form step validators type
+export interface FormStepValidators {
+  [key: number]: (formData: AuditFormData) => { isValid: boolean; errors: AuditFormErrors };
+}
+
 // Additional types can be added here
 export interface AuditResponse {
   id: string;

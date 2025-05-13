@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 
-interface EmptyComparisonProps {
+export interface EmptyComparisonProps {
   onClose: () => void;
 }
 

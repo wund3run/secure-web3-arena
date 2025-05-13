@@ -6,7 +6,7 @@ import { Star, Shield, Clock, X, Eye, BadgeCheck } from "lucide-react";
 import { toast } from "sonner";
 import { ServiceCardProps } from "@/data/marketplace-data";
 
-interface ServiceCardsProps {
+export interface ServiceCardsProps {
   services: ServiceCardProps[];
   onRemoveService: (serviceId: string) => void;
 }
