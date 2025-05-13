@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/auth';
 import { HawklyLogo } from "@/components/layout/hawkly-logo";
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';

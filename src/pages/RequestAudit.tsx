@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/auth';
 import AuditRequestHeader from '@/components/audit-request/AuditRequestHeader';
 import WizardRequestForm from '@/components/audit-request/WizardRequestForm';
 import RequestSuccessMessage from '@/components/audit-request/RequestSuccessMessage';

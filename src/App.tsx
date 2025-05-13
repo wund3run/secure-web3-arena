@@ -13,7 +13,7 @@ import { BetaBanner } from "./components/ui/beta-banner";
 import { SupportButton } from "./components/ui/support-button";
 
 // Import contexts
-import { AuthProvider } from "./contexts/AuthContext";
+import { AuthProvider } from "./contexts/auth";
 
 // Create a new QueryClient instance
 const queryClient = new QueryClient({
