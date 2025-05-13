@@ -1,11 +1,12 @@
 
-import { ArrowRight, FileSearch, Check, Mail, Shield } from "lucide-react";
+import { ArrowRight, FileSearch, Check, Mail, Shield, Award, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 export function MarketplaceFooter() {
   return (
     <div className="mt-12">
+      {/* Primary CTA Section */}
       <div className="text-center bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl p-8">
         <div className="max-w-3xl mx-auto">
           <div className="flex justify-center mb-4">
@@ -16,6 +17,7 @@ export function MarketplaceFooter() {
             Protect your smart contracts, DApps, and Web3 infrastructure with our verified security experts. 
             Get detailed vulnerability assessments and comprehensive remediation guidance.
           </p>
+          
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/request-audit">
               <Button size="lg" variant="default" className="flex items-center bg-gradient-to-r from-primary to-secondary hover:opacity-90">
@@ -24,6 +26,32 @@ export function MarketplaceFooter() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
+            <Link to="/service-provider-onboarding">
+              <Button size="lg" variant="outline" className="flex items-center border-primary text-primary hover:bg-primary/10">
+                <Award className="mr-2 h-5 w-5" />
+                Join as a Security Expert
+              </Button>
+            </Link>
+          </div>
+          
+          {/* Unified Platform Statistics */}
+          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="flex flex-col items-center p-3 bg-background/60 rounded-lg">
+              <span className="text-2xl font-bold text-primary">500+</span>
+              <span className="text-sm text-muted-foreground">Security Experts</span>
+            </div>
+            <div className="flex flex-col items-center p-3 bg-background/60 rounded-lg">
+              <span className="text-2xl font-bold text-secondary">$350M+</span>
+              <span className="text-sm text-muted-foreground">Assets Protected</span>
+            </div>
+            <div className="flex flex-col items-center p-3 bg-background/60 rounded-lg">
+              <span className="text-2xl font-bold text-web3-orange">2,500+</span>
+              <span className="text-sm text-muted-foreground">Projects Secured</span>
+            </div>
+            <div className="flex flex-col items-center p-3 bg-background/60 rounded-lg">
+              <span className="text-2xl font-bold text-web3-teal">12,800+</span>
+              <span className="text-sm text-muted-foreground">Vulnerabilities Found</span>
+            </div>
           </div>
           
           {/* Contact Email */}
@@ -91,24 +119,24 @@ export function MarketplaceFooter() {
         </div>
       </div>
       
-      {/* Quick links section for better user experience and SEO */}
+      {/* Consolidated Service Links - More Visually Distinguished */}
       <div className="mt-12 border-t border-border/30 pt-8">
         <h4 className="subsection-heading text-center mb-4">Popular Security Services</h4>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-          <Link to="/marketplace" className="flex items-center p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
+          <Link to="/marketplace" className="flex items-center p-3 bg-primary/5 rounded-lg hover:bg-primary/10 transition-colors">
             <Check className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
             <span>Smart Contract Audits</span>
           </Link>
-          <Link to="/marketplace" className="flex items-center p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
-            <Check className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
+          <Link to="/marketplace" className="flex items-center p-3 bg-secondary/5 rounded-lg hover:bg-secondary/10 transition-colors">
+            <Check className="h-4 w-4 text-secondary mr-2 flex-shrink-0" />
             <span>DeFi Security Reviews</span>
           </Link>
-          <Link to="/service-provider-onboarding" className="flex items-center p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
-            <Shield className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
+          <Link to="/service-provider-onboarding" className="flex items-center p-3 bg-web3-teal/5 rounded-lg hover:bg-web3-teal/10 transition-colors">
+            <Shield className="h-4 w-4 text-web3-teal mr-2 flex-shrink-0" />
             <span>Apply as an Auditor</span>
           </Link>
-          <Link to="/request-audit" className="flex items-center p-3 bg-muted/40 rounded-lg hover:bg-muted/60 transition-colors">
-            <FileSearch className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
+          <Link to="/request-audit" className="flex items-center p-3 bg-web3-orange/5 rounded-lg hover:bg-web3-orange/10 transition-colors">
+            <FileSearch className="h-4 w-4 text-web3-orange mr-2 flex-shrink-0" />
             <span>Security Assessment</span>
           </Link>
         </div>
