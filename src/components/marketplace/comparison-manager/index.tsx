@@ -31,7 +31,15 @@ export function ComparisonManager({ maxCompare = 3 }: ComparisonManagerProps) {
       }} />
     ),
     SelectionToggle,
-    ComparisonDialog: ({ services = [] }: { services?: any[] }) => {
+    ComparisonDialog: ({ 
+      services = [], 
+      open, 
+      onOpenChange 
+    }: { 
+      services?: any[], 
+      open?: boolean, 
+      onOpenChange?: (open: boolean) => void 
+    }) => {
       const { selectedServices } = useComparison();
       
       // Convert ServiceCardProps to MarketplaceService for the comparison dialog
@@ -40,8 +48,8 @@ export function ComparisonManager({ maxCompare = 3 }: ComparisonManagerProps) {
       return (
         <ServiceComparison
           services={marketplaceServices}
-          open={showComparison}
-          onOpenChange={setShowComparison}
+          open={open !== undefined ? open : showComparison}
+          onOpenChange={onOpenChange || setShowComparison}
         />
       );
     }
