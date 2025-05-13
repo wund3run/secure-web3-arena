@@ -3,13 +3,13 @@ import { BlockchainEcosystem, Review } from "../types/marketplace-types";
 
 // Define blockchain ecosystems
 export const BLOCKCHAIN_ECOSYSTEMS: BlockchainEcosystem[] = [
-  { name: "Ethereum", logo: "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=024", logoUrl: "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=024", color: "#627EEA" },
-  { name: "Solana", logo: "https://cryptologos.cc/logos/solana-sol-logo.svg?v=024", logoUrl: "https://cryptologos.cc/logos/solana-sol-logo.svg?v=024", color: "#9945FF" },
-  { name: "Polkadot", logo: "https://cryptologos.cc/logos/polkadot-new-dot-logo.svg?v=024", logoUrl: "https://cryptologos.cc/logos/polkadot-new-dot-logo.svg?v=024", color: "#E6007A" },
-  { name: "Avalanche", logo: "https://cryptologos.cc/logos/avalanche-avax-logo.svg?v=024", logoUrl: "https://cryptologos.cc/logos/avalanche-avax-logo.svg?v=024", color: "#E84142" },
-  { name: "Cosmos", logo: "https://cryptologos.cc/logos/cosmos-atom-logo.svg?v=024", logoUrl: "https://cryptologos.cc/logos/cosmos-atom-logo.svg?v=024", color: "#2E3148" },
-  { name: "Near", logo: "https://cryptologos.cc/logos/near-protocol-near-logo.svg?v=024", logoUrl: "https://cryptologos.cc/logos/near-protocol-near-logo.svg?v=024", color: "#000000" },
-  { name: "Binance", logo: "https://cryptologos.cc/logos/bnb-bnb-logo.svg?v=024", logoUrl: "https://cryptologos.cc/logos/bnb-bnb-logo.svg?v=024", color: "#F3BA2F" }
+  { id: "ethereum", name: "Ethereum", logoUrl: "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=024", projectCount: 1245, color: "#627EEA" },
+  { id: "solana", name: "Solana", logoUrl: "https://cryptologos.cc/logos/solana-sol-logo.svg?v=024", projectCount: 789, color: "#9945FF" },
+  { id: "polkadot", name: "Polkadot", logoUrl: "https://cryptologos.cc/logos/polkadot-new-dot-logo.svg?v=024", projectCount: 432, color: "#E6007A" },
+  { id: "avalanche", name: "Avalanche", logoUrl: "https://cryptologos.cc/logos/avalanche-avax-logo.svg?v=024", projectCount: 367, color: "#E84142" },
+  { id: "cosmos", name: "Cosmos", logoUrl: "https://cryptologos.cc/logos/cosmos-atom-logo.svg?v=024", projectCount: 289, color: "#2E3148" },
+  { id: "near", name: "Near", logoUrl: "https://cryptologos.cc/logos/near-protocol-near-logo.svg?v=024", projectCount: 176, color: "#000000" },
+  { id: "binance", name: "Binance", logoUrl: "https://cryptologos.cc/logos/bnb-bnb-logo.svg?v=024", projectCount: 654, color: "#F3BA2F" }
 ];
 
 // Sample reviews for the marketplace

@@ -4,6 +4,7 @@ export interface BlockchainEcosystem {
   name: string;
   logoUrl: string;
   projectCount: number;
+  color?: string; // Add color property
 }
 
 export interface ServiceProvider {
@@ -33,6 +34,18 @@ export interface MarketplaceService {
   imageUrl?: string;
   securityScore?: number;
   responseTime?: string;
+}
+
+// Add Review interface
+export interface Review {
+  id: string;
+  username?: string;
+  date: string;
+  rating: number;
+  text?: string;
+  author: string;
+  content: string;
+  helpful: number;
 }
 
 export interface ServiceFilterOptions {

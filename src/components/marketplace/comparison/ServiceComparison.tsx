@@ -13,15 +13,6 @@ interface ServiceComparisonProps {
   onOpenChange: (open: boolean) => void;
 }
 
-interface ServiceCardsProps {
-  services: MarketplaceService[];
-  onRemoveService: (serviceId: string) => void;
-}
-
-interface EmptyComparisonProps {
-  onClose: () => void;
-}
-
 export function ServiceComparison({ services, open, onOpenChange }: ServiceComparisonProps) {
   const handleClose = () => {
     onOpenChange(false);

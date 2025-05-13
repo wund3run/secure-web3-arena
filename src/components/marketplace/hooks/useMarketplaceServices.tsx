@@ -3,10 +3,10 @@ import { useState, useEffect } from 'react';
 import { ServiceCardProps, SERVICES } from "@/data/marketplace-data";
 import { BLOCKCHAIN_ECOSYSTEMS, SAMPLE_REVIEWS } from './constants/marketplace-constants';
 import { filterServices as filterServicesByCategory, getServiceById as findServiceById } from './utils/service-filter-utils';
-import { BlockchainEcosystem, Review, MarketplaceService } from './types/marketplace-types';
+import { BlockchainEcosystem, MarketplaceService, Review } from './types/marketplace-types';
 
 // Export the types for other components to use
-export type { BlockchainEcosystem, Review, MarketplaceService };
+export type { BlockchainEcosystem, MarketplaceService, Review };
 
 export function useMarketplaceServices() {
   const [services, setServices] = useState<ServiceCardProps[]>(SERVICES);

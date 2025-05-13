@@ -59,8 +59,8 @@ export function ComparisonFloatingIndicator({
             {servicesForComparison.length} of 3 selected
           </span>
           <CompareButton
-            count={servicesForComparison.length}
-            onCompare={handleOpenComparison}
+            serviceCount={servicesForComparison.length}
+            onClick={handleOpenComparison}
           />
         </div>
       </div>

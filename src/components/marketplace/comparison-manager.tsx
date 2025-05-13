@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { toast } from "sonner";
 import { ServiceComparison, CompareButton } from "./comparison";
+import { MarketplaceService } from "./hooks/types/marketplace-types";
 
 // Custom Compare icon since it's not available in lucide-react
 const Compare = (props: React.SVGProps<SVGSVGElement>) => (
@@ -28,6 +29,33 @@ const Compare = (props: React.SVGProps<SVGSVGElement>) => (
 
 interface ComparisonManagerProps {
   maxCompare?: number;
+}
+
+// Helper function to convert ServiceCardProps to MarketplaceService
+function convertToMarketplaceService(service: ServiceCardProps): MarketplaceService {
+  return {
+    id: service.id,
+    title: service.title,
+    description: service.description,
+    provider: {
+      id: service.id + "-provider", // Generate an id for the provider
+      name: service.provider.name,
+      reputation: service.provider.reputation,
+      isVerified: service.provider.isVerified
+    },
+    pricing: {
+      amount: service.pricing.amount,
+      currency: service.pricing.currency,
+      model: "fixed" // Default to fixed pricing model
+    },
+    rating: service.rating,
+    completedJobs: service.completedJobs,
+    category: service.category,
+    tags: service.tags,
+    imageUrl: service.imageUrl,
+    securityScore: service.securityScore,
+    responseTime: service.responseTime
+  };
 }
 
 export function ComparisonManager({ maxCompare = 3 }: ComparisonManagerProps) {
@@ -138,8 +166,8 @@ export function ComparisonManager({ maxCompare = 3 }: ComparisonManagerProps) {
               {selectedServices.length} of {maxCompare} selected
             </span>
             <CompareButton
-              onCompare={() => setShowComparison(true)}
               count={selectedServices.length}
+              onCompare={() => setShowComparison(true)}
             />
           </div>
         </div>
@@ -189,6 +217,9 @@ export function ComparisonManager({ maxCompare = 3 }: ComparisonManagerProps) {
     );
   }
 
+  // Convert ServiceCardProps to MarketplaceService for the comparison dialog
+  const marketplaceServices = selectedServices.map(convertToMarketplaceService);
+
   return {
     ComparisonProvider,
     useComparison,
@@ -196,7 +227,7 @@ export function ComparisonManager({ maxCompare = 3 }: ComparisonManagerProps) {
     SelectionToggle,
     ComparisonDialog: (
       <ServiceComparison
-        services={selectedServices}
+        services={marketplaceServices}
         open={showComparison}
         onOpenChange={setShowComparison}
       />
