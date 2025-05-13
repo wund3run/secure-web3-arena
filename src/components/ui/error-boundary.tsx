@@ -48,8 +48,8 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return this.props.fallback || (
-        <div className="p-6 max-w-md mx-auto">
-          <Alert variant="destructive" className="mb-4">
+        <div className="p-6 max-w-md mx-auto animate-in fade-in duration-300">
+          <Alert variant="destructive" className="mb-4 shadow-md">
             <XCircle className="h-4 w-4" />
             <AlertTitle>Something went wrong</AlertTitle>
             <AlertDescription>
@@ -57,7 +57,7 @@ class ErrorBoundary extends Component<Props, State> {
             </AlertDescription>
           </Alert>
           
-          <div className="bg-muted/30 p-4 rounded-md mb-4 max-h-32 overflow-auto">
+          <div className="bg-muted/30 p-4 rounded-md mb-4 max-h-32 overflow-auto border border-border/40 shadow-inner">
             <p className="text-sm font-mono text-muted-foreground">
               {this.state.error?.toString()}
             </p>
@@ -65,10 +65,10 @@ class ErrorBoundary extends Component<Props, State> {
           
           <Button 
             onClick={this.handleReset}
-            className="w-full"
+            className="w-full group"
             variant="outline"
           >
-            <RefreshCw className="mr-2 h-4 w-4" />
+            <RefreshCw className="mr-2 h-4 w-4 group-hover:rotate-90 transition-transform duration-300" />
             Try Again
           </Button>
         </div>
