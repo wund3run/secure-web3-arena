@@ -4,8 +4,25 @@ import { ArrowRight, FileText, Shield, BadgeCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card, CardContent } from "@/components/ui/card";
+import { useAuth } from "@/contexts/auth";
+import { toast } from "sonner";
 
 export function MarketplaceCallToAction() {
+  const { user } = useAuth();
+
+  const handleAuditClick = (e: React.MouseEvent) => {
+    if (!user) {
+      e.preventDefault();
+      toast.info("Authentication required", {
+        description: "Please sign in to request an audit",
+        action: {
+          label: "Sign In",
+          onClick: () => window.location.href = "/auth"
+        }
+      });
+    }
+  };
+
   return (
     <Card className="mt-12 overflow-hidden interactive-card" role="region" aria-labelledby="cta-heading">
       <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-1 transition-all duration-300"></div>
@@ -32,7 +49,7 @@ export function MarketplaceCallToAction() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Link to="/request-audit" className="w-full sm:w-auto">
+                  <Link to="/request-audit" className="w-full sm:w-auto" onClick={handleAuditClick}>
                     <Button 
                       size="lg" 
                       variant="default" 
