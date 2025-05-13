@@ -1,4 +1,5 @@
 
+import { memo, useCallback } from "react";
 import { Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -10,7 +11,7 @@ interface MobileCardImageProps {
   toggleFavorite: (e: React.MouseEvent) => void;
 }
 
-export function MobileCardImage({
+export const MobileCardImage = memo(function MobileCardImage({
   imageUrl,
   title,
   category,
@@ -35,6 +36,11 @@ export function MobileCardImage({
 
   const altText = `${title} - ${category} security service`;
 
+  // Memoize the toggle favorite handler
+  const handleToggleFavorite = useCallback((e: React.MouseEvent) => {
+    toggleFavorite(e);
+  }, [toggleFavorite]);
+
   return (
     <div className="relative h-32 rounded-t-lg overflow-hidden">
       {imageUrl ? (
@@ -43,6 +49,8 @@ export function MobileCardImage({
             src={imageUrl} 
             alt={altText} 
             className="w-full h-full object-cover" 
+            loading="lazy"
+            decoding="async"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               target.onerror = null;
@@ -74,7 +82,7 @@ export function MobileCardImage({
       <div className="absolute top-2 left-2">
         <button
           className="h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white touch-manipulation z-10 flex items-center justify-center focus:ring-2 focus:ring-primary/50 focus:outline-none"
-          onClick={toggleFavorite}
+          onClick={handleToggleFavorite}
           aria-pressed={isFavorite}
           aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
         >
@@ -97,4 +105,4 @@ export function MobileCardImage({
       </div>
     </div>
   );
-}
+});

@@ -1,4 +1,5 @@
 
+import { memo } from "react";
 import { BadgeCheck, Users, Clock } from "lucide-react";
 
 interface ServiceCardContentProps {
@@ -13,7 +14,7 @@ interface ServiceCardContentProps {
   responseTime?: string;
 }
 
-export function ServiceCardContent({
+export const ServiceCardContent = memo(function ServiceCardContent({
   title,
   description,
   provider,
@@ -65,4 +66,4 @@ export function ServiceCardContent({
       </div>
     </div>
   );
-}
+});

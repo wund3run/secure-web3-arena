@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +27,7 @@ export interface MobileFriendlyCardProps {
   onSelect?: () => void;
 }
 
-export function MobileFriendlyCard({
+export const MobileFriendlyCard = memo(function MobileFriendlyCard({
   id,
   title,
   description,
@@ -41,16 +41,21 @@ export function MobileFriendlyCard({
   const navigate = useNavigate();
   const [isFavorite, setIsFavorite] = useState(false);
   
-  const toggleFavorite = (e: React.MouseEvent) => {
+  // Memoize toggle favorite handler
+  const toggleFavorite = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsFavorite(!isFavorite);
-    toast.success(
-      isFavorite ? "Removed from favorites" : "Added to favorites", 
-      { description: isFavorite ? "Service removed from your saved list" : "Service added to your saved list" }
-    );
-  };
+    setIsFavorite(prevState => {
+      const newState = !prevState;
+      toast.success(
+        newState ? "Added to favorites" : "Removed from favorites", 
+        { description: newState ? "Service added to your saved list" : "Service removed from your saved list" }
+      );
+      return newState;
+    });
+  }, []);
 
-  const handleCardClick = () => {
+  // Memoize card click handler
+  const handleCardClick = useCallback(() => {
     if (onSelect) {
       onSelect();
     } else {
@@ -70,12 +75,13 @@ export function MobileFriendlyCard({
         }
       });
     }
-  };
+  }, [id, title, description, provider, pricing, category, tags, imageUrl, onSelect, navigate]);
 
-  const handleFooterClick = (e: React.MouseEvent) => {
+  // Memoize footer click handler
+  const handleFooterClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent the card click handler from firing
     handleCardClick();
-  };
+  }, [handleCardClick]);
 
   return (
     <Card 
@@ -107,4 +113,4 @@ export function MobileFriendlyCard({
       </CardFooter>
     </Card>
   );
-}
+});

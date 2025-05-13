@@ -1,6 +1,7 @@
 
+import { memo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Eye } from "lucide-react";
+import { Eye } from "lucide-react";
 import { 
   Tooltip,
   TooltipContent,
@@ -17,10 +18,15 @@ interface ServiceCardFooterProps {
   onViewDetails: (e: React.MouseEvent) => void;
 }
 
-export function ServiceCardFooter({
+export const ServiceCardFooter = memo(function ServiceCardFooter({
   pricing,
   onViewDetails
 }: ServiceCardFooterProps) {
+  // Memoize the click handler
+  const handleViewDetailsClick = useCallback((e: React.MouseEvent) => {
+    onViewDetails(e);
+  }, [onViewDetails]);
+
   return (
     <div className="p-5 pt-0 mt-auto border-t border-border/30">
       <div className="w-full flex justify-between items-center">
@@ -37,7 +43,7 @@ export function ServiceCardFooter({
                 variant="default" 
                 size="sm" 
                 className="bg-indigo-600 hover:bg-indigo-700 text-white z-10 flex items-center hover:shadow-sm transition-all group focus:ring-2 focus:ring-primary/50 focus:outline-none"
-                onClick={onViewDetails}
+                onClick={handleViewDetailsClick}
                 title="View detailed service information"
                 aria-label="View service details"
               >
@@ -53,4 +59,4 @@ export function ServiceCardFooter({
       </div>
     </div>
   );
-}
+});

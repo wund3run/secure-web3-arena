@@ -1,4 +1,5 @@
 
+import { memo } from "react";
 import { Star, BadgeCheck } from "lucide-react";
 import { BadgeAward } from "@/components/ui/badge-award";
 import { SecurityScore } from "@/components/trust/security-metrics";
@@ -14,7 +15,8 @@ interface ServiceCardImageProps {
   securityScore: number;
 }
 
-export function ServiceCardImage({
+// Memoize the component to prevent unnecessary re-renders
+export const ServiceCardImage = memo(function ServiceCardImage({
   title,
   imageUrl,
   category,
@@ -49,6 +51,8 @@ export function ServiceCardImage({
           src={displayImage} 
           alt={altText} 
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+          loading="lazy" // Add lazy loading
+          decoding="async" // Use async decoding for better performance
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.onerror = null;
@@ -82,4 +86,4 @@ export function ServiceCardImage({
       </div>
     </div>
   );
-}
+});

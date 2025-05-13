@@ -1,4 +1,5 @@
 
+import { memo, useCallback } from "react";
 import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +8,7 @@ import { ServiceCardImage } from "./ServiceCardImage";
 import { ServiceCardContent } from "./ServiceCardContent";
 import { ServiceCardFooter } from "./ServiceCardFooter";
 
-export function ServiceCard({
+export const ServiceCard = memo(function ServiceCard({
   id,
   title,
   description,
@@ -22,11 +23,10 @@ export function ServiceCard({
   responseTime = "24h",
   onClick
 }: ServiceCardProps) {
-  
   const navigate = useNavigate();
 
-  // Enhanced function to navigate to service details
-  const handleViewDetails = (e?: React.MouseEvent) => {
+  // Memoize the function to navigate to service details
+  const handleViewDetails = useCallback((e?: React.MouseEvent) => {
     if (e) {
       e.stopPropagation();
     }
@@ -53,7 +53,7 @@ export function ServiceCard({
         }
       });
     }
-  };
+  }, [id, title, description, provider, pricing, rating, completedJobs, category, tags, imageUrl, securityScore, responseTime, onClick, navigate]);
 
   return (
     <Card 
@@ -90,4 +90,4 @@ export function ServiceCard({
       </CardFooter>
     </Card>
   );
-}
+});

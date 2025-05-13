@@ -1,5 +1,5 @@
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback, memo } from "react";
 import { MobileFriendlyCard } from "./mobile-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ServiceCardProps } from "@/data/marketplace-data";
@@ -18,7 +18,8 @@ interface OptimizedListingGridProps {
   onServiceSelect?: (serviceId: string) => void;
 }
 
-export function OptimizedListingGrid({
+// Memoize the entire component
+export const OptimizedListingGrid = memo(function OptimizedListingGrid({
   services,
   isLoading = false,
   layout = "grid",
@@ -63,7 +64,8 @@ export function OptimizedListingGrid({
     setVisibleServices(services.slice(0, endIndex));
   }, [page, services, itemsPerPage]);
 
-  const handleServiceSelect = (service: ServiceCardProps) => {
+  // Memoize service selection handler
+  const handleServiceSelect = useCallback((service: ServiceCardProps) => {
     if (onServiceSelect) {
       onServiceSelect(service.id);
     } else {
@@ -79,14 +81,14 @@ export function OptimizedListingGrid({
         }
       });
     }
-  };
+  }, [onServiceSelect, navigate]);
 
   // Map the provider level to supported verificationLevel values
-  const mapProviderLevel = (level: "rookie" | "verified" | "expert"): "verified" | "expert" | "elite" => {
+  const mapProviderLevel = useCallback((level: "rookie" | "verified" | "expert"): "verified" | "expert" | "elite" => {
     if (level === "rookie") return "verified";
     if (level === "expert") return "expert";
     return "verified"; // Default for "verified" or any other value
-  };
+  }, []);
 
   return (
     <div>
@@ -183,4 +185,4 @@ export function OptimizedListingGrid({
       )}
     </div>
   );
-}
+});
