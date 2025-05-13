@@ -18,7 +18,7 @@ export function MobileCardFooter({ onClick }: MobileCardFooterProps) {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button 
-            className="w-full touch-manipulation h-10 text-sm z-10 flex items-center justify-center hover:shadow-md transition-all group focus:ring-2 focus:ring-primary/50 focus:outline-none"
+            className="w-full touch-manipulation h-10 text-sm z-10 flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white hover:shadow-md transition-all group focus:ring-2 focus:ring-primary/50 focus:outline-none"
             variant="default"
             onClick={(e) => {
               e.preventDefault();
@@ -29,9 +29,8 @@ export function MobileCardFooter({ onClick }: MobileCardFooterProps) {
             aria-label="View service details"
           >
             <Eye className="mr-1.5 h-3.5 w-3.5 opacity-80" aria-hidden="true" />
-            <span className="hidden xs:inline">View Service Details</span>
+            <span className="hidden xs:inline">View Details</span>
             <span className="xs:hidden">View Details</span>
-            <ArrowRight className="ml-1 h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>

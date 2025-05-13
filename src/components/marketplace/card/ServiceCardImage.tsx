@@ -60,18 +60,17 @@ export function ServiceCardImage({
       </div>
       
       <div className="absolute top-3 right-3 flex space-x-2">
-        <BadgeAward 
-          variant={provider.level === "rookie" ? "verified" : provider.level} 
-          className="font-medium backdrop-blur-sm shadow-lg"
-        >
-          {provider.level === "rookie" ? "Verified" : provider.level === "expert" ? "Expert" : "Verified"}
-        </BadgeAward>
+        <div className="bg-sky-100/80 text-sky-700 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium shadow-sm flex items-center">
+          <span>24h</span>
+          <span className="ml-1">response</span>
+        </div>
       </div>
       
       <div className="absolute bottom-3 left-3">
         <div className="flex items-center bg-black/60 backdrop-blur-sm rounded-md px-2 py-1" aria-label={`Rating: ${rating.toFixed(1)} out of 5`}>
           <Star className="h-4 w-4 fill-web3-orange text-web3-orange mr-1" aria-hidden="true" />
           <span className="text-sm font-semibold text-white">{rating.toFixed(1)}</span>
+          <span className="ml-1 text-white font-medium">ETH</span>
         </div>
       </div>
       

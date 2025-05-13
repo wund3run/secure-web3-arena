@@ -125,6 +125,27 @@
     @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-md;
   }
 
+  /* Service card specific styles to match screenshot */
+  .service-card {
+    @apply border border-border/30 hover:border-primary/50 transition-all duration-300 rounded-lg overflow-hidden;
+  }
+  
+  .service-provider {
+    @apply flex items-center gap-1 text-sm;
+  }
+  
+  .service-tag {
+    @apply bg-primary/5 border border-primary/20 px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .response-time {
+    @apply bg-sky-100/80 text-sky-700 backdrop-blur-sm px-2 py-0.5 rounded-full text-xs;
+  }
+  
+  .view-details-btn {
+    @apply bg-indigo-600 hover:bg-indigo-700 text-white text-sm py-1.5 px-3 rounded flex items-center gap-1;
+  }
+
   /* Accessibility improvements */
   .sr-only {
     @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;

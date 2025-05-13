@@ -59,7 +59,19 @@ export function MobileCardImage({
         </div>
       )}
       
-      <div className="absolute top-2 right-2">
+      <div className="absolute top-2 right-2 flex space-x-2">
+        <div className="bg-sky-100/80 text-sky-700 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium shadow-sm">
+          24h response
+        </div>
+      </div>
+      
+      <div className="absolute bottom-2 left-2">
+        <Badge className="bg-black/70 text-white hover:bg-black/80 backdrop-blur-sm px-2 py-0.5 text-xs font-medium">
+          {category}
+        </Badge>
+      </div>
+      
+      <div className="absolute top-2 left-2">
         <button
           className="h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white touch-manipulation z-10 flex items-center justify-center focus:ring-2 focus:ring-primary/50 focus:outline-none"
           onClick={toggleFavorite}
@@ -82,12 +94,6 @@ export function MobileCardImage({
             <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
           </svg>
         </button>
-      </div>
-      
-      <div className="absolute bottom-2 left-2">
-        <Badge className="bg-black/70 text-white hover:bg-black/80 backdrop-blur-sm px-2 py-0.5 text-xs font-medium">
-          {category}
-        </Badge>
       </div>
     </div>
   );
