@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { MarketplaceHeader } from "@/components/home/marketplace/marketplace-header";
 import { CategoryTabs } from "@/components/home/marketplace/category-tabs";
@@ -6,7 +5,11 @@ import { ServicesGrid } from "@/components/home/marketplace/services-grid";
 import { ComprehensiveSecurity } from "@/components/home/marketplace/comprehensive-security";
 import { MarketplaceFooter } from "@/components/home/marketplace/marketplace-footer";
 import { AIRecommendations } from "@/components/marketplace/ai-recommendations";
-import { ComparisonManager } from "@/components/marketplace/comparison-manager";
+import { 
+  ComparisonProvider, 
+  SelectionIndicator, 
+  ComparisonDialog 
+} from "@/components/marketplace/comparison-manager";
 import { SERVICES } from "@/data/marketplace-data";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -73,7 +76,6 @@ export function MarketplaceSection() {
   };
 
   const filteredServices = getFilteredServices();
-  const { ComparisonProvider, SelectionIndicator, SelectionToggle, ComparisonDialog } = ComparisonManager({ maxCompare: 3 });
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
@@ -89,8 +91,12 @@ export function MarketplaceSection() {
     console.log("Recommendation selected:", service);
   };
 
+  const handleCompare = () => {
+    setShowComparison(true);
+  };
+
   return (
-    <ComparisonProvider>
+    <ComparisonProvider maxCompare={3}>
       <section className="py-16 bg-gradient-to-b from-background to-muted/30 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <MarketplaceHeader />
@@ -143,8 +149,8 @@ export function MarketplaceSection() {
         </div>
         
         {/* Floating comparison selector */}
-        <SelectionIndicator />
-        <ComparisonDialog services={[]} open={showComparison} onOpenChange={setShowComparison} />
+        <SelectionIndicator onCompare={handleCompare} />
+        <ComparisonDialog open={showComparison} onOpenChange={setShowComparison} />
       </section>
     </ComparisonProvider>
   );
