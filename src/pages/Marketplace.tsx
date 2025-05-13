@@ -1,7 +1,8 @@
 
+import React, { useEffect } from "react";
 import { MarketplaceLayout } from "@/components/marketplace/layout/MarketplaceLayout";
 import { MarketplaceHeader } from "@/components/marketplace/layout/MarketplaceHeader";
-import { MarketplaceContent } from "@/components/marketplace/layout/MarketplaceContent";
+import { MarketplaceContent as MarketplaceContentComponent } from "@/components/marketplace/layout/MarketplaceContent";
 import { MarketplaceDialogs } from "@/components/marketplace/layout/MarketplaceDialogs";
 import { ComparisonFloatingIndicator } from "@/components/marketplace/sections/ComparisonFloatingIndicator";
 import { SERVICES } from "@/data/marketplace-data";
@@ -19,7 +20,7 @@ declare global {
   }
 }
 
-function MarketplaceContent() {
+function MarketplacePageContent() {
   const {
     state,
     setViewMode,
@@ -79,7 +80,7 @@ function MarketplaceContent() {
         setShowFilters={setShowFilters}
       />
       
-      <MarketplaceContent 
+      <MarketplaceContentComponent 
         showFilters={showFilters}
         activeCategory={activeCategory}
         setActiveCategory={setActiveCategory}
@@ -102,7 +103,7 @@ function MarketplaceContent() {
         setShowComparison={setShowComparison}
         servicesForComparison={servicesForComparison}
         showEnhancedOnboarding={showEnhancedOnboarding}
-        setShowEnhancedOnboarding={setShowEnhancedOnboarding}
+        setShowEnhancedOnboarding={setShowComparison}
         handleOnboardingComplete={handleOnboardingComplete}
         reviews={[]} // Pass reviews from a context or state in a real implementation
       />
@@ -121,7 +122,7 @@ function MarketplaceContent() {
 
 export default function Marketplace() {
   // Make services available globally for the comparison functionality
-  React.useEffect(() => {
+  useEffect(() => {
     window.SERVICES = SERVICES;
   }, []);
 
@@ -130,7 +131,7 @@ export default function Marketplace() {
       <MarketplaceProvider services={SERVICES}>
         <MarketplaceLayout>
           <MarketplaceErrorBoundary>
-            <MarketplaceContent />
+            <MarketplacePageContent />
           </MarketplaceErrorBoundary>
         </MarketplaceLayout>
       </MarketplaceProvider>

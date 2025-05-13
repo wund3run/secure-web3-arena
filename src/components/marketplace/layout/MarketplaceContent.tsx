@@ -1,4 +1,5 @@
 
+import React from "react";
 import { ServiceCategories } from "@/components/marketplace/sections/ServiceCategories";
 import { BlockchainEcosystems } from "@/components/marketplace/sections/BlockchainEcosystems";
 import { ComprehensiveServices } from "@/components/marketplace/sections/ComprehensiveServices";
@@ -6,7 +7,8 @@ import { MarketplaceCallToAction } from "@/components/marketplace/sections/Marke
 import { OptimizedListingGrid } from "@/components/marketplace/optimized-listing-grid";
 import { AIRecommendations } from "@/components/marketplace/ai-recommendations";
 import { EnhancedFilters } from "@/components/marketplace/enhanced-filters";
-import { BlockchainEcosystem } from "@/components/marketplace/hooks/types/marketplace-types";
+import { ServiceCardProps } from "@/components/marketplace/card/ServiceCardProps";
+import { FilterState } from "@/components/marketplace/filters/filter-types";
 
 interface MarketplaceContentProps {
   showFilters: boolean;
@@ -14,13 +16,13 @@ interface MarketplaceContentProps {
   setActiveCategory: (category: string) => void;
   viewMode: "grid" | "list";
   isLoading: boolean;
-  filteredServices: any[];
+  filteredServices: ServiceCardProps[];
   showAIRecommendations: boolean;
-  activeFilters: any;
+  activeFilters: Record<string, any>;
   handleServiceSelect: (id: string) => void;
   isServiceInComparison: (id: string) => boolean;
-  toggleCompareService: (service: any) => void;
-  handleApplyFilters: (filters: any) => void;
+  toggleCompareService: (service: ServiceCardProps) => void;
+  handleApplyFilters: (filters: Record<string, any>) => void;
 }
 
 export function MarketplaceContent({
