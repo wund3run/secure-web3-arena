@@ -14,7 +14,7 @@ export interface AuditFormData {
   budget: string;
   previousAudits: boolean; // Changed from optional to required
   previousAuditLinks?: string;
-  preferredCommunication?: string;
+  preferredCommunication: string; // Changed from optional to required
   specificConcerns: string; // Changed from optional to required
   aiAssisted?: boolean;
   continuousMonitoring?: boolean;

@@ -19,7 +19,7 @@ export const useAuditFormState = (prefilledData?: PrefilledData) => {
   const [validationError, setValidationError] = useState<string | null>(null);
   const [submissionAttempted, setSubmissionAttempted] = useState(false);
   
-  // Initialize form data with default values
+  // Initialize form data with valid default values for all select fields
   const [formData, setFormData] = useState<AuditFormData>({
     projectName: "",
     projectDescription: "",
@@ -42,6 +42,7 @@ export const useAuditFormState = (prefilledData?: PrefilledData) => {
     hybridModel: false,
     specializedAuditType: "Standard", // Default to a valid value
     accountabilityPreference: "standard", // Default to standard accountability
+    preferredCommunication: "email", // Add default value for communication preference
   });
 
   // Update form data with prefilled values if provided
