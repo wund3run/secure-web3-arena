@@ -5,8 +5,8 @@ export interface ServiceCardProps {
   description: string;
   provider: {
     name: string;
-    reputation?: number;
-    level?: "rookie" | "verified" | "expert";
+    reputation: number; // Changed from optional to required
+    level: "rookie" | "verified" | "expert"; // Changed from optional to required
     isVerified: boolean;
   };
   pricing: {

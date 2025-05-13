@@ -8,7 +8,6 @@ import { OptimizedListingGrid } from "@/components/marketplace/optimized-listing
 import { AIRecommendations } from "@/components/marketplace/ai-recommendations";
 import { EnhancedFilters } from "@/components/marketplace/enhanced-filters";
 import { ServiceCardProps } from "@/components/marketplace/card/ServiceCardProps";
-import { FilterState } from "@/components/marketplace/filters/filter-types";
 
 interface MarketplaceContentProps {
   showFilters: boolean;
