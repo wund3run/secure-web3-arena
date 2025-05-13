@@ -1,55 +1,32 @@
 
+// Define form data type
 export interface AuditFormData {
   projectName: string;
+  projectDescription: string;
   contactName: string;
   contactEmail: string;
   blockchain: string;
-  customBlockchain?: string;
-  projectDescription: string;
-  repositoryUrl?: string;
+  customBlockchain: string;
+  repositoryUrl: string;
   contractCount: string;
   linesOfCode: string;
-  auditScope: string;
   deadline: string;
   budget: string;
-  previousAudits: boolean;
-  previousAuditLinks?: string;
-  preferredCommunication: string;
+  auditScope: string;
   specificConcerns: string;
-  aiAssisted?: boolean;
-  continuousMonitoring?: boolean;
-  // New fields for enhanced audit features
-  collaborativeAudit?: boolean;
-  continuousAuditing?: boolean;
-  hybridModel?: boolean;
-  specializedAuditType?: string;
-  accountabilityPreference?: string;
+  previousAudits: boolean;
+  previousAuditLinks: string;
+  collaborativeAudit: boolean;
+  continuousAuditing: boolean;
+  hybridModel: boolean;
+  specializedAuditType: string;
+  accountabilityPreference: string;
+  preferredCommunication: string;
 }
 
-export interface AuditFormErrors {
-  projectName?: string;
-  contactName?: string;
-  contactEmail?: string;
-  blockchain?: string;
-  customBlockchain?: string;
-  projectDescription?: string;
-  repositoryUrl?: string;
-  contractCount?: string;
-  linesOfCode?: string;
-  auditScope?: string;
-  deadline?: string;
-  budget?: string;
-  specificConcerns?: string;
-  previousAuditLinks?: string;
-  preferredCommunication?: string;
-  // New error fields
-  collaborativeAudit?: string;
-  continuousAuditing?: string;
-  hybridModel?: string;
-  specializedAuditType?: string;
-  accountabilityPreference?: string;
-}
-
-export interface FormStepValidators {
-  [key: number]: (formData: AuditFormData) => { isValid: boolean; errors: AuditFormErrors };
+// Additional types can be added here
+export interface AuditResponse {
+  id: string;
+  status: string;
+  created_at: string;
 }

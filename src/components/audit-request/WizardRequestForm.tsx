@@ -3,6 +3,7 @@ import React from 'react';
 import { Form } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import AuditRequestForm from './AuditRequestForm';
+import { AuditFormData } from '@/types/audit-request.types';
 
 // Define a type for the prefilledData prop
 interface PrefilledData {
@@ -19,7 +20,7 @@ interface WizardRequestFormProps {
 
 const WizardRequestForm = ({ onSubmitSuccess, prefilledData }: WizardRequestFormProps) => {
   // Create a form for context wrapping with comprehensive default values
-  const methods = useForm({
+  const methods = useForm<AuditFormData>({
     defaultValues: {
       // Add comprehensive default values for all required form fields
       projectName: prefilledData?.serviceName ? `${prefilledData.serviceName} Audit Request` : "",

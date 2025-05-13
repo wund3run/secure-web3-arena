@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/auth';
+
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/auth";
 import { AuditFormData } from "@/types/audit-request.types";
 
 // Define a type for the prefilledData parameter
@@ -18,19 +19,19 @@ export const useAuditFormAuth = (
   const { user, loading, userProfile } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect to login if not authenticated
+  // Redirect unauthenticated users to the login page
   useEffect(() => {
     if (!loading && !user) {
-      navigate('/login', { 
+      navigate("/auth", { 
         state: { 
-          fromPath: '/request-audit',
-          message: 'Please log in or create an account to request an audit.' 
+          returnUrl: "/request-audit",
+          message: "Please sign in to submit an audit request" 
         } 
       });
     }
   }, [user, loading, navigate]);
 
-  // Prefill form with user data if available
+  // Prefill form with user profile data if available
   useEffect(() => {
     if (userProfile) {
       // Prepare the initial form data with user profile information
@@ -57,28 +58,9 @@ export const useAuditFormAuth = (
           ? `Requesting an audit from ${prefilledData.providerName}` 
           : prevData.projectDescription,
         blockchain: prefilledData.serviceType || prevData.blockchain,
-        // Keep all other form fields as is
-        contactName: prevData.contactName || userProfile.full_name || '',
-        contactEmail: prevData.contactEmail || user?.email || '',
-        customBlockchain: prevData.customBlockchain || '',
-        repositoryUrl: prevData.repositoryUrl || '',
-        contractCount: prevData.contractCount || '1-5',
-        linesOfCode: prevData.linesOfCode || '< 1,000',
-        deadline: prevData.deadline || '1-2 weeks',
-        budget: prevData.budget || '$5,000 - $10,000',
-        auditScope: prevData.auditScope || '',
-        previousAudits: prevData.previousAudits || false,
-        specificConcerns: prevData.specificConcerns || '',
-        previousAuditLinks: prevData.previousAuditLinks || '',
-        preferredCommunication: prevData.preferredCommunication || 'email',
-        collaborativeAudit: prevData.collaborativeAudit || false,
-        continuousAuditing: prevData.continuousAuditing || false,
-        hybridModel: prevData.hybridModel || false,
-        specializedAuditType: prevData.specializedAuditType || 'Standard',
-        accountabilityPreference: prevData.accountabilityPreference || 'standard'
       }));
     }
-  }, [userProfile, prefilledData, setFormData, user]);
+  }, [prefilledData, userProfile, setFormData]);
 
   return { user, navigate };
 };

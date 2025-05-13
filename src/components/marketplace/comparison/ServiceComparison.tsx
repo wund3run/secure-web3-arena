@@ -1,57 +1,59 @@
 
-import { useState } from "react";
-import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ServiceCardProps } from "@/data/marketplace-data";
+import { X } from "lucide-react";
 import { ComparisonHeader } from "./ComparisonHeader";
-import { ServiceCards } from "./ServiceCards";
 import { ComparisonTable } from "./ComparisonTable";
 import { EmptyComparison } from "./EmptyComparison";
-import { CompareButton } from "./CompareButton";
+import { ServiceCards } from "./ServiceCards";
 
 interface ServiceComparisonProps {
-  services: ServiceCardProps[];
+  services: any[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function ServiceComparison({ services, open, onOpenChange }: ServiceComparisonProps) {
-  const [selectedServices, setSelectedServices] = useState<ServiceCardProps[]>(services || []);
+export function ServiceComparison({ 
+  services, 
+  open, 
+  onOpenChange 
+}: ServiceComparisonProps) {
   
-  const handleRemoveService = (serviceId: string) => {
-    setSelectedServices(prev => prev.filter(service => service.id !== serviceId));
-    if (selectedServices.length <= 1) {
-      onOpenChange(false);
-    }
-  };
-  
+  if (!services || services.length === 0) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <EmptyComparison />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
-        <ComparisonHeader />
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto p-0">
+        <div className="flex justify-end p-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full h-6 w-6"
+            onClick={() => onOpenChange(false)}
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </Button>
+        </div>
         
-        {selectedServices.length === 0 ? (
-          <EmptyComparison onClose={() => onOpenChange(false)} />
-        ) : (
-          <>
-            <ServiceCards 
-              services={selectedServices} 
-              onRemoveService={handleRemoveService} 
-            />
-            
-            {/* Detailed comparison table */}
-            <ComparisonTable services={selectedServices} />
-            
-            <DialogFooter className="flex flex-col sm:flex-row gap-3 mt-4">
-              <Button variant="outline" onClick={() => onOpenChange(false)}>
-                Close
-              </Button>
-            </DialogFooter>
-          </>
-        )}
+        <div className="px-6 pb-6 space-y-6">
+          <ComparisonHeader services={services} />
+          
+          <ServiceCards services={services} />
+          
+          <ComparisonTable services={services} />
+        </div>
       </DialogContent>
     </Dialog>
   );
 }
 
-export { CompareButton };
+export { CompareButton } from './CompareButton';
