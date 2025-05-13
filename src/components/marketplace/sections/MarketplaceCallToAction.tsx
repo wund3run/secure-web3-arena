@@ -44,7 +44,7 @@ export function MarketplaceCallToAction() {
             </ul>
           </div>
           
-          {/* Single, focused CTA */}
+          {/* Explicitly set type="button" to prevent form submission */}
           <div>
             <TooltipProvider>
               <Tooltip>

@@ -25,13 +25,13 @@ export const useAuditFormState = (prefilledData?: PrefilledData) => {
     projectDescription: "",
     contactEmail: "",
     contactName: "",
-    blockchain: "Ethereum",
+    blockchain: "Ethereum", // Default to a valid value
     customBlockchain: "",
     repositoryUrl: "",
-    contractCount: "",
-    linesOfCode: "",
-    deadline: "",
-    budget: "",
+    contractCount: "1-5", // Set a default value
+    linesOfCode: "< 1,000", // Set a default value
+    deadline: "1-2 weeks", // Set a default value
+    budget: "$5,000 - $10,000", // Set a default value
     auditScope: "",
     previousAudits: false,
     specificConcerns: "",
@@ -40,7 +40,7 @@ export const useAuditFormState = (prefilledData?: PrefilledData) => {
     collaborativeAudit: false,
     continuousAuditing: false,
     hybridModel: false,
-    specializedAuditType: "",
+    specializedAuditType: "Standard", // Default to a valid value
     accountabilityPreference: "standard", // Default to standard accountability
   });
 
