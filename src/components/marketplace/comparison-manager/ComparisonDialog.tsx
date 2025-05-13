@@ -2,7 +2,8 @@
 import React, { useState } from "react";
 import { ServiceComparison } from "../comparison";
 import { useComparison } from "./ComparisonContext";
-import { convertToMarketplaceService } from "./utils/ServiceConverter";
+import { convertToMarketplaceService, convertToServiceCardProps } from "./utils/ServiceConverter";
+import { ServiceCardProps } from "@/types/marketplace";
 
 interface ComparisonDialogProps {
   services?: any[];
@@ -18,12 +19,15 @@ export function ComparisonDialog({
   const [showComparison, setShowComparison] = useState(false);
   const { selectedServices } = useComparison();
   
-  // Convert ServiceCardProps to MarketplaceService for the comparison dialog
-  const marketplaceServices = selectedServices.map(convertToMarketplaceService);
+  // Convert ServiceCardProps to MarketplaceService and then back to ServiceCardProps for the comparison dialog
+  // This ensures the types match properly while preserving all data
+  const convertedServices: ServiceCardProps[] = selectedServices.map(service => 
+    convertToServiceCardProps(convertToMarketplaceService(service))
+  );
   
   return (
     <ServiceComparison
-      services={marketplaceServices}
+      services={convertedServices}
       open={open !== undefined ? open : showComparison}
       onOpenChange={onOpenChange || setShowComparison}
     />

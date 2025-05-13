@@ -13,6 +13,7 @@ export interface ServiceProvider {
   reputation: number;
   isVerified: boolean;
   avatarUrl?: string;
+  level: "rookie" | "verified" | "expert"; // Add level property to match ServiceCardProps
 }
 
 export interface ServicePricing {

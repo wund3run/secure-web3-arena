@@ -7,6 +7,7 @@ import { ComparisonResponsive } from "./ComparisonResponsive";
 import { EmptyComparison } from "./EmptyComparison";
 import { ServiceCardProps } from "@/types/marketplace";
 import { X } from "lucide-react";
+import { convertToMarketplaceService } from "../comparison-manager/utils/ServiceConverter";
 
 interface ServiceComparisonProps {
   services: ServiceCardProps[];
@@ -41,7 +42,9 @@ export function ServiceComparison({ services, open, onOpenChange }: ServiceCompa
           <span className="sr-only">Close</span>
         </Button>
 
-        <ComparisonHeader services={services} />
+        <ComparisonHeader 
+          services={services.map(convertToMarketplaceService)}
+        />
         
         {services.length > 0 ? (
           <ComparisonResponsive 

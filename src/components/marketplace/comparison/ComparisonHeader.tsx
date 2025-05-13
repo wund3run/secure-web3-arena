@@ -7,7 +7,7 @@ export interface ComparisonHeaderProps {
   services?: MarketplaceService[];
 }
 
-export function ComparisonHeader({ services }: ComparisonHeaderProps) {
+export function ComparisonHeader({ services = [] }: ComparisonHeaderProps) {
   return (
     <DialogHeader>
       <DialogTitle className="flex items-center">
