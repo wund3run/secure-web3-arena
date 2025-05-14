@@ -60,3 +60,17 @@ export function convertToServiceCardProps(service: MarketplaceService): ServiceC
     responseTime: service.responseTime
   };
 }
+
+/**
+ * Helper function to bulk convert ServiceCardProps[] to MarketplaceService[]
+ */
+export function convertArrayToMarketplaceServices(services: ServiceCardProps[]): MarketplaceService[] {
+  return services.map(convertToMarketplaceService);
+}
+
+/**
+ * Helper function to bulk convert MarketplaceService[] to ServiceCardProps[]
+ */
+export function convertArrayToServiceCardProps(services: MarketplaceService[]): ServiceCardProps[] {
+  return services.map(convertToServiceCardProps);
+}

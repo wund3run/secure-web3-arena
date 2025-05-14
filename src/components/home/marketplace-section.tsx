@@ -13,6 +13,8 @@ import { MarketplaceProvider, useMarketplace } from "@/contexts/marketplace/Mark
 import { MarketplaceErrorBoundary } from "@/components/marketplace/error-handling/MarketplaceErrorBoundary";
 import { ComparisonFloatingIndicator } from "@/components/marketplace/sections/ComparisonFloatingIndicator";
 import { MarketplaceDialogs } from "@/components/marketplace/layout/MarketplaceDialogs";
+import { convertArrayToMarketplaceServices, convertToMarketplaceService } from "@/components/marketplace/comparison-manager/utils/ServiceConverter";
+import { ServiceCardProps } from "@/types/marketplace-unified";
 
 function MarketplaceContent() {
   const {
@@ -51,6 +53,9 @@ function MarketplaceContent() {
     console.log("Recommendation selected:", service);
   };
 
+  // Convert ServiceCardProps to MarketplaceService for AIRecommendations
+  const convertedServices = convertArrayToMarketplaceServices(filteredServices);
+
   return (
     <>
       <MarketplaceHeader />
@@ -61,10 +66,18 @@ function MarketplaceContent() {
         {showAIRecommendations && (
           <div className="lg:col-span-3 mb-2">
             <AIRecommendations 
-              services={servicesQuery.data || []}
+              services={convertedServices}
               projectSize={activeFilters.projectSize || "medium"}
               blockchains={activeFilters.blockchains || []}
-              onRecommendationSelect={handleRecommendationSelect}
+              onRecommendationSelect={(service) => {
+                if (typeof service === 'string') {
+                  handleRecommendationSelect(service);
+                } else if (Array.isArray(service)) {
+                  handleRecommendationSelect(service[0]);
+                } else {
+                  handleRecommendationSelect(service);
+                }
+              }}
             />
           </div>
         )}
