@@ -48,20 +48,18 @@ function MarketplaceContent() {
     handleApplyFilters(filters);
   };
 
-  // Add a handler for recommendation selection that handles both single items and arrays
-  const handleRecommendationSelect = (service: MarketplaceService | MarketplaceService[]) => {
-    if (Array.isArray(service)) {
-      console.log("Recommendation array selected:", service);
-      // If needed, you can convert MarketplaceService[] to ServiceCardProps[] here
-      // const convertedServices = service.map(convertToServiceCardProps);
-    } else {
-      console.log("Recommendation selected:", service);
-      // If needed, you can convert MarketplaceService to ServiceCardProps here
-      // const convertedService = convertToServiceCardProps(service);
+  // Create a wrapper function to handle string serviceId input
+  const handleAIRecommendationSelect = (serviceId: string) => {
+    console.log("Recommendation selected by ID:", serviceId);
+    // Find the service by ID in the filtered services if needed
+    const service = filteredServices.find(s => s.id === serviceId);
+    if (service) {
+      console.log("Found service:", service);
     }
   };
 
   // Convert ServiceCardProps to MarketplaceService for AIRecommendations
+  // This is needed because AIRecommendations expects MarketplaceService objects
   const marketplaceServices = convertArrayToMarketplaceServices(filteredServices);
 
   return (
@@ -77,7 +75,7 @@ function MarketplaceContent() {
               services={marketplaceServices}
               projectSize={activeFilters.projectSize || "medium"}
               blockchains={activeFilters.blockchains || []}
-              onRecommendationSelect={handleRecommendationSelect}
+              onRecommendationSelect={handleAIRecommendationSelect}
             />
           </div>
         )}

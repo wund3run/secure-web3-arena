@@ -56,9 +56,6 @@ function MarketplacePageContent() {
   // Filter services based on active filters and category
   const filteredServices = servicesQuery.data ? filterServices(servicesQuery.data) : [];
   
-  // Convert ServiceCardProps to MarketplaceService for components that require it
-  const marketplaceServices = convertArrayToMarketplaceServices(filteredServices);
-
   // Handle service selection by ID
   const handleServiceSelect = (serviceId: string) => {
     const service = servicesQuery.data?.find(service => service.id === serviceId) || null;
@@ -67,18 +64,19 @@ function MarketplacePageContent() {
     }
   };
 
-  // Add a handler for recommendation selection that handles both single items and arrays
-  const handleRecommendationSelect = (service: MarketplaceService | MarketplaceService[]) => {
-    if (Array.isArray(service)) {
-      console.log("Recommendation array selected:", service);
-      // If needed, you can convert MarketplaceService[] to ServiceCardProps[] here
-      // const convertedServices = service.map(convertToServiceCardProps);
-    } else {
-      console.log("Recommendation selected:", service);
-      // If needed, you can convert MarketplaceService to ServiceCardProps here
-      // const convertedService = convertToServiceCardProps(service);
+  // Create a wrapper function to handle string serviceId input
+  const handleAIRecommendationSelect = (serviceId: string) => {
+    console.log("Recommendation selected by ID:", serviceId);
+    // Find the service by ID in the filtered services if needed
+    const service = filteredServices.find(s => s.id === serviceId);
+    if (service) {
+      console.log("Found service:", service);
+      setSelectedService(service);
     }
   };
+
+  // Convert ServiceCardProps to MarketplaceService for components that require it
+  const marketplaceServices = convertArrayToMarketplaceServices(filteredServices);
 
   if (servicesQuery.error) {
     return (
