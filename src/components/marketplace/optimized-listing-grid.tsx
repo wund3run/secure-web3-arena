@@ -18,7 +18,7 @@ interface OptimizedListingGridProps {
   onServiceSelect?: (serviceId: string) => void;
 }
 
-// Memoize the entire component
+// Memoize the entire component for better performance
 export const OptimizedListingGrid = memo(function OptimizedListingGrid({
   services,
   isLoading = false,
@@ -33,51 +33,58 @@ export const OptimizedListingGrid = memo(function OptimizedListingGrid({
   const [page, setPage] = useState(1);
   const loaderRef = useRef<HTMLDivElement>(null);
   const itemsPerPage = layout === "grid" ? 12 : 8;
+  const observerInitialized = useRef(false);
 
-  // Handle intersection for infinite scrolling
+  // Performance optimization - Only update visible services when necessary
   useEffect(() => {
-    if (isLoading) return;
+    const endIndex = page * itemsPerPage;
+    setVisibleServices(prevServices => {
+      if (prevServices.length >= services.length) {
+        return services; // Already showing all services
+      }
+      return services.slice(0, endIndex);
+    });
+  }, [page, services, itemsPerPage]);
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && visibleServices.length < services.length) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      { threshold: 0.1 }
-    );
+  // Implement intersection observer for virtualized loading
+  useEffect(() => {
+    if (isLoading || observerInitialized.current) return;
+
+    const handleObserver = (entries: IntersectionObserverEntry[]) => {
+      const [entry] = entries;
+      if (entry.isIntersecting && visibleServices.length < services.length) {
+        setPage((prev) => prev + 1);
+      }
+    };
+
+    const observer = new IntersectionObserver(handleObserver, { 
+      root: null,
+      rootMargin: "100px",
+      threshold: 0.1 
+    });
 
     if (loaderRef.current) {
       observer.observe(loaderRef.current);
+      observerInitialized.current = true;
     }
 
     return () => {
       if (loaderRef.current) {
         observer.unobserve(loaderRef.current);
+        observerInitialized.current = false;
       }
     };
   }, [isLoading, visibleServices.length, services.length]);
 
-  // Update visible services when page or services change
-  useEffect(() => {
-    const endIndex = page * itemsPerPage;
-    setVisibleServices(services.slice(0, endIndex));
-  }, [page, services, itemsPerPage]);
-
-  // Memoize service selection handler
+  // Memoize service selection handler to prevent unnecessary re-renders
   const handleServiceSelect = useCallback((service: ServiceCardProps) => {
     if (onServiceSelect) {
       onServiceSelect(service.id);
     } else {
-      // Pass only serializable data to navigate
+      // Navigate with minimal state for better performance
       navigate(`/service/${service.id}`, { 
         state: { 
-          serviceDetail: {
-            ...service,
-            // Remove any functions or non-serializable data
-            onToggleCompare: undefined,
-            isSelected: undefined
-          }
+          serviceId: service.id
         }
       });
     }
@@ -93,7 +100,7 @@ export const OptimizedListingGrid = memo(function OptimizedListingGrid({
   return (
     <div>
       <div className={layout === "grid" 
-        ? "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3" 
+        ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" 
         : "space-y-3"}>
         {isLoading
           ? Array.from({ length: 8 }).map((_, index) => (
@@ -103,7 +110,7 @@ export const OptimizedListingGrid = memo(function OptimizedListingGrid({
             ))
           : visibleServices.map((service) => (
               <div key={service.id} className="relative group">
-                {/* Selection indicator - Placed as a separate div, not inside a button */}
+                {/* Selection indicator */}
                 {service.isSelected && (
                   <div className="absolute top-2 left-2 z-10">
                     <Badge 
@@ -114,7 +121,7 @@ export const OptimizedListingGrid = memo(function OptimizedListingGrid({
                   </div>
                 )}
                 
-                {/* Comparison toggle button */}
+                {/* Comparison toggle button with optimized event handling */}
                 {service.onToggleCompare && (
                   <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button
@@ -148,6 +155,7 @@ export const OptimizedListingGrid = memo(function OptimizedListingGrid({
                   </div>
                 )}
                 
+                {/* Optimized card component */}
                 <MobileFriendlyCard
                   id={service.id}
                   title={service.title}
@@ -170,7 +178,7 @@ export const OptimizedListingGrid = memo(function OptimizedListingGrid({
             ))}
       </div>
 
-      {/* Loader element for infinite scrolling */}
+      {/* Optimized loader element for infinite scrolling */}
       {!isLoading && visibleServices.length < services.length && (
         <div ref={loaderRef} className="py-4 flex justify-center">
           <Skeleton className="h-6 w-6 rounded-full" />

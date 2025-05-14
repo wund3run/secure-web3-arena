@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => ({
     host: "::"
   },
   build: {
-    sourcemap: true,
+    sourcemap: mode === 'development',
     rollupOptions: {
       output: {
         manualChunks: {
@@ -30,10 +30,18 @@ export default defineConfig(({ mode }) => ({
             '@radix-ui/react-progress',
             '@radix-ui/react-slider',
             '@radix-ui/react-tooltip'
-          ]
+          ],
+          'form-components': [
+            '@hookform/resolvers',
+            'react-hook-form',
+            'zod'
+          ],
+          'charts': ['recharts'],
+          'auth': ['@supabase/supabase-js']
         }
       }
-    }
+    },
+    chunkSizeWarningLimit: 1000
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom'],

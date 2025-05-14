@@ -3,8 +3,38 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import App from './App';  // Simplified import
+import App from './App';
 import './index.css';
+
+// Preload critical fonts for better performance
+const preloadFonts = () => {
+  const links = [
+    { rel: 'preload', href: '/fonts/inter-var.woff2', as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' }
+  ];
+  
+  links.forEach(attributes => {
+    const link = document.createElement('link');
+    Object.entries(attributes).forEach(([key, value]) => {
+      link.setAttribute(key, value as string);
+    });
+    document.head.appendChild(link);
+  });
+};
+
+// Initialize performance monitoring
+if (process.env.NODE_ENV === 'production') {
+  // Add web vitals reporting in production
+  import('web-vitals').then(({ getCLS, getFID, getLCP, getFCP, getTTFB }) => {
+    getCLS(console.log);
+    getFID(console.log);
+    getLCP(console.log);
+    getFCP(console.log);
+    getTTFB(console.log);
+  });
+}
+
+// Preload fonts before rendering
+preloadFonts();
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
