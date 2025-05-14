@@ -12,8 +12,8 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { handleApiError } from "@/utils/apiErrorHandler";
 import ErrorBoundary from "@/components/ui/error-boundary";
-import { convertArrayToMarketplaceServices } from "@/components/marketplace/comparison-manager/utils/ServiceConverter";
-import { ServiceCardProps } from "@/types/marketplace-unified";
+import { convertArrayToMarketplaceServices, convertToServiceCardProps } from "@/components/marketplace/comparison-manager/utils/ServiceConverter";
+import { ServiceCardProps, MarketplaceService } from "@/types/marketplace-unified";
 
 // Define global interface for window to include SERVICES with correct type
 declare global {
@@ -64,6 +64,19 @@ function MarketplacePageContent() {
     const service = servicesQuery.data?.find(service => service.id === serviceId) || null;
     if (service) {
       setSelectedService(service);
+    }
+  };
+
+  // Add a handler for recommendation selection that handles both single items and arrays
+  const handleRecommendationSelect = (service: MarketplaceService | MarketplaceService[]) => {
+    if (Array.isArray(service)) {
+      console.log("Recommendation array selected:", service);
+      // If needed, you can convert MarketplaceService[] to ServiceCardProps[] here
+      // const convertedServices = service.map(convertToServiceCardProps);
+    } else {
+      console.log("Recommendation selected:", service);
+      // If needed, you can convert MarketplaceService to ServiceCardProps here
+      // const convertedService = convertToServiceCardProps(service);
     }
   };
 

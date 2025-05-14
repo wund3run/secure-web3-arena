@@ -13,8 +13,8 @@ import { MarketplaceProvider, useMarketplace } from "@/contexts/marketplace/Mark
 import { MarketplaceErrorBoundary } from "@/components/marketplace/error-handling/MarketplaceErrorBoundary";
 import { ComparisonFloatingIndicator } from "@/components/marketplace/sections/ComparisonFloatingIndicator";
 import { MarketplaceDialogs } from "@/components/marketplace/layout/MarketplaceDialogs";
-import { convertArrayToMarketplaceServices } from "@/components/marketplace/comparison-manager/utils/ServiceConverter";
-import { ServiceCardProps } from "@/types/marketplace-unified";
+import { convertArrayToMarketplaceServices, convertToServiceCardProps } from "@/components/marketplace/comparison-manager/utils/ServiceConverter";
+import { ServiceCardProps, MarketplaceService } from "@/types/marketplace-unified";
 
 function MarketplaceContent() {
   const {
@@ -48,9 +48,17 @@ function MarketplaceContent() {
     handleApplyFilters(filters);
   };
 
-  // Add a handler for recommendation selection
-  const handleRecommendationSelect = (service: any) => {
-    console.log("Recommendation selected:", service);
+  // Add a handler for recommendation selection that handles both single items and arrays
+  const handleRecommendationSelect = (service: MarketplaceService | MarketplaceService[]) => {
+    if (Array.isArray(service)) {
+      console.log("Recommendation array selected:", service);
+      // If needed, you can convert MarketplaceService[] to ServiceCardProps[] here
+      // const convertedServices = service.map(convertToServiceCardProps);
+    } else {
+      console.log("Recommendation selected:", service);
+      // If needed, you can convert MarketplaceService to ServiceCardProps here
+      // const convertedService = convertToServiceCardProps(service);
+    }
   };
 
   // Convert ServiceCardProps to MarketplaceService for AIRecommendations
@@ -69,15 +77,7 @@ function MarketplaceContent() {
               services={marketplaceServices}
               projectSize={activeFilters.projectSize || "medium"}
               blockchains={activeFilters.blockchains || []}
-              onRecommendationSelect={(service) => {
-                if (typeof service === 'string') {
-                  handleRecommendationSelect(service);
-                } else if (Array.isArray(service)) {
-                  handleRecommendationSelect(service[0]);
-                } else {
-                  handleRecommendationSelect(service);
-                }
-              }}
+              onRecommendationSelect={handleRecommendationSelect}
             />
           </div>
         )}
