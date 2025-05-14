@@ -1,8 +1,7 @@
-
 import { useRef, useState, useEffect, useCallback, memo } from "react";
 import { MobileFriendlyCard } from "./mobile-card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ServiceCardProps } from "@/data/marketplace-data";
+import { ServiceCardProps } from "@/types/marketplace-unified";
 import { Shield } from "lucide-react"; 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -154,13 +153,15 @@ export const OptimizedListingGrid = memo(function OptimizedListingGrid({
                     name: service.provider.name,
                     securityScore: service.provider.reputation,
                     verificationLevel: mapProviderLevel(service.provider.level),
-                    completedProjects: service.completedJobs
+                    completedProjects: service.completedJobs || 0
                   }}
                   pricing={service.pricing}
                   category={service.category}
                   tags={service.tags}
                   imageUrl={service.imageUrl}
                   onSelect={() => handleServiceSelect(service)}
+                  rating={service.rating}
+                  completedJobs={service.completedJobs}
                 />
               </div>
             ))}

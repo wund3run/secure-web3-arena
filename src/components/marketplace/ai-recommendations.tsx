@@ -1,4 +1,3 @@
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
@@ -119,13 +118,15 @@ export function AIRecommendations({
                     name: service.provider.name,
                     securityScore: service.provider.reputation,
                     verificationLevel: mapProviderLevel(service.provider.level),
-                    completedProjects: service.completedJobs
+                    completedProjects: service.completedJobs || 0
                   }}
                   pricing={service.pricing}
                   category={service.category}
                   tags={service.tags}
                   imageUrl={service.imageUrl}
                   onSelect={() => onRecommendationSelect(service.id)}
+                  rating={service.rating}
+                  completedJobs={service.completedJobs}
                 />
               </div>
             ))}
