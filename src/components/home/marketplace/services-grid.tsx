@@ -1,7 +1,7 @@
 
 import React from "react";
 import { ServiceCard } from "@/components/marketplace/card";
-import { ServiceCardProps } from "@/types/marketplace";
+import { ServiceCardProps } from "@/types/marketplace-unified";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 

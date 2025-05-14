@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { ServiceComparison } from "../comparison";
 import { useComparison } from "./ComparisonContext";
 import { convertToMarketplaceService, convertToServiceCardProps } from "./utils/ServiceConverter";
-import { ServiceCardProps } from "@/types/marketplace";
+import { ServiceCardProps } from "@/types/marketplace-unified";
 
 interface ComparisonDialogProps {
   services?: any[];
