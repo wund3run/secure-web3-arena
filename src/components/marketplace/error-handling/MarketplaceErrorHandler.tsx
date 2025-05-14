@@ -1,6 +1,7 @@
 
 import { toast } from "sonner";
 import { useEffect } from "react";
+import { handleError } from "@/utils/error-handling";
 
 export interface ErrorHandlerProps {
   error: Error | null;
@@ -22,29 +23,17 @@ export function MarketplaceErrorHandler({
   useEffect(() => {
     if (!error) return;
     
-    // Log error to console for debugging
-    console.error(`Marketplace error in ${context}:`, error);
+    // Use the centralized error handling utility
+    handleError(error, `marketplace ${context}`);
     
-    // Determine if error is network related
+    // Show appropriate toast message with retry action if available
     const isNetworkError = error.message.includes("network") || 
                           error.message.includes("fetch") ||
                           error.message.includes("connection");
     
-    // Show appropriate toast message
     if (isNetworkError) {
       toast.error("Network connection issue", {
         description: "Please check your internet connection and try again",
-        action: retry ? {
-          label: "Retry",
-          onClick: () => {
-            retry();
-            if (clearError) clearError();
-          }
-        } : undefined
-      });
-    } else {
-      toast.error(`Error in marketplace ${context}`, {
-        description: error.message.substring(0, 100), // Truncate very long messages
         action: retry ? {
           label: "Retry",
           onClick: () => {

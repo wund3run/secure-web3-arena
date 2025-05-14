@@ -2,7 +2,7 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Helmet } from 'react-helmet-async';
-import { Toaster } from "sonner"; // Use sonner for toasts
+import { Toaster } from "sonner"; // Use sonner directly
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Import loading state components
