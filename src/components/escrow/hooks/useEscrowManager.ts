@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useEscrow } from "@/contexts/EscrowContext";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { withErrorHandling } from "@/utils/error-handling";
 
 export function useEscrowManager() {
   const { profile, loading } = useEscrow();
@@ -11,6 +11,7 @@ export function useEscrowManager() {
   const [walletAddress, setWalletAddress] = useState<string>("");
   const [chainId, setChainId] = useState<string>("");
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [isWalletConnecting, setIsWalletConnecting] = useState(false);
 
   useEffect(() => {
     // Check if user has a wallet connected already
@@ -19,23 +20,61 @@ export function useEscrowManager() {
     }
     
     // Check if Ethereum is available and get chain ID
-    if (window.ethereum) {
-      window.ethereum.request({ method: 'eth_chainId' })
-        .then(setChainId)
-        .catch(console.error);
-    }
+    const checkEthereum = async () => {
+      if (window.ethereum) {
+        try {
+          setIsWalletConnecting(true);
+          const chainIdResponse = await withErrorHandling(
+            async () => window.ethereum.request({ method: 'eth_chainId' }),
+            "Failed to get network information"
+          );
+          
+          if (chainIdResponse) {
+            setChainId(chainIdResponse);
+          }
+        } catch (error) {
+          console.error("Error checking ethereum:", error);
+        } finally {
+          setIsWalletConnecting(false);
+        }
+      }
+    };
+    
+    checkEthereum();
   }, [profile]);
 
-  const handleWalletConnect = (address: string) => {
-    setWalletAddress(address);
+  const handleWalletConnect = async (address: string) => {
+    try {
+      setIsWalletConnecting(true);
+      setWalletAddress(address);
+      
+      // Success feedback
+      toast.success("Wallet connected", {
+        description: `Connected to ${address.substring(0, 6)}...${address.substring(address.length - 4)}`
+      });
+      
+      return true;
+    } catch (error) {
+      console.error("Wallet connection error:", error);
+      toast.error("Connection failed", {
+        description: "Could not connect to wallet. Please try again."
+      });
+      return false;
+    } finally {
+      setIsWalletConnecting(false);
+    }
   };
   
-  const handleConnect = (provider: string, address: string) => {
+  const handleConnect = async (provider: string, address: string) => {
     console.log(`Connected with ${provider}: ${address}`);
-    setShowConnect(false);
-    toast.success(`Connected with ${provider}`, {
-      description: `You can now access the secure escrow system.`
-    });
+    const success = await handleWalletConnect(address);
+    
+    if (success) {
+      setShowConnect(false);
+      toast.success(`Connected with ${provider}`, {
+        description: `You can now access the secure escrow system.`
+      });
+    }
   };
 
   return {
@@ -50,6 +89,7 @@ export function useEscrowManager() {
     showCreateForm,
     setShowCreateForm,
     handleWalletConnect,
-    handleConnect
+    handleConnect,
+    isWalletConnecting
   };
 }

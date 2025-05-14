@@ -10,3 +10,17 @@ export type {
   ComparisonService,
   ServiceCardProps
 } from "@/types/marketplace-unified";
+
+// Additional marketplace specific types
+export interface AuditCriteria {
+  name: string;
+  description: string;
+  importance: 'critical' | 'high' | 'medium' | 'low';
+}
+
+export interface ServiceComparison {
+  id: string;
+  services: string[]; // IDs of services being compared
+  criteria: AuditCriteria[];
+  createdAt: Date;
+}

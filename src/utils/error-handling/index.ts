@@ -6,6 +6,9 @@
 // Re-export API error handler
 export { handleApiError, withErrorHandling } from "../apiErrorHandler";
 
+// Re-export error categories
+export { ErrorCategory } from "../error-handling";
+
 // Re-export marketplace error components
 export {
   MarketplaceErrorBoundary,
@@ -17,4 +20,11 @@ export {
 export { default as ErrorBoundary } from "@/components/ui/error-boundary";
 
 // Re-export utility functions
-export { handleError, createBoundary } from "../error-handling";
+export { 
+  handleError, 
+  createBoundary,
+  logErrorToAnalytics 
+} from "../error-handling";
+
+// Export new accessibility-focused error handling
+export { handleAccessibilityError } from "./accessibilityErrorHandler";

@@ -1,8 +1,7 @@
 
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { StarIcon } from "lucide-react";
-import { truncateText } from "@/lib/utils";
+import { StarRating } from "@/components/marketplace/card/StarRating";
 
 interface MobileCardContentProps {
   title: string;
@@ -11,11 +10,11 @@ interface MobileCardContentProps {
     name: string;
     securityScore?: number;
     verificationLevel?: string;
-    completedProjects?: number;
   };
   category: string;
   tags: string[];
-  rating?: number;
+  rating: number;
+  descriptionId?: string; // Added for accessibility
 }
 
 export function MobileCardContent({
@@ -24,67 +23,66 @@ export function MobileCardContent({
   provider,
   category,
   tags,
-  rating
+  rating,
+  descriptionId
 }: MobileCardContentProps) {
+  // Truncate description for better display
+  const truncatedDescription = description.length > 80 
+    ? `${description.substring(0, 80)}...` 
+    : description;
+  
   return (
-    <div className="space-y-3">
-      {/* Category Badge and Rating */}
-      <div className="flex items-center justify-between">
-        <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20">
-          {category}
-        </Badge>
-        
-        {rating !== undefined && (
-          <div className="flex items-center gap-1 text-amber-500" aria-label={`Rating: ${rating.toFixed(1)} out of 5`}>
-            <StarIcon className="h-4 w-4 fill-current" aria-hidden="true" />
-            <span className="font-medium text-sm">{rating.toFixed(1)}</span>
-          </div>
+    <div className="space-y-2">
+      <h3 className="font-semibold text-base line-clamp-1">{title}</h3>
+      
+      <p 
+        className="text-sm text-muted-foreground line-clamp-2" 
+        id={descriptionId}
+      >
+        {truncatedDescription}
+      </p>
+      
+      <div className="flex items-center gap-1">
+        <p className="text-xs font-medium">{provider.name}</p>
+        {provider.verificationLevel && provider.verificationLevel === "verified" && (
+          <span 
+            className="text-primary" 
+            aria-label="Verified provider"
+            role="img"
+          >
+            ✓
+          </span>
         )}
       </div>
       
-      {/* Title and Description */}
-      <div>
-        <h3 className="font-semibold text-lg mb-1 line-clamp-2" title={title}>
-          {truncateText(title, 60)}
-        </h3>
-        <p className="text-muted-foreground text-sm line-clamp-3" title={description}>
-          {truncateText(description, 150)}
-        </p>
+      <div className="flex flex-wrap items-center gap-1">
+        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+          {category}
+        </Badge>
+        
+        {tags.slice(0, 2).map((tag) => (
+          <Badge 
+            key={tag} 
+            variant="secondary" 
+            className="text-[10px] px-1.5 py-0 bg-secondary/20"
+          >
+            {tag}
+          </Badge>
+        ))}
+        
+        {tags.length > 2 && (
+          <span className="text-[10px] text-muted-foreground">
+            +{tags.length - 2} more
+          </span>
+        )}
       </div>
       
-      {/* Provider Info */}
-      <div className="flex items-center gap-2">
-        <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-xs text-primary font-medium" aria-hidden="true">
-          {provider.name.charAt(0).toUpperCase()}
-        </div>
-        <div className="text-sm">
-          <span className="font-medium">{provider.name}</span>
-          {provider.verificationLevel && (
-            <span className="text-xs ml-2 bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">
-              {provider.verificationLevel}
-            </span>
-          )}
-        </div>
+      <div className="flex items-center gap-1" aria-label={`Rating: ${rating} out of 5 stars`}>
+        <StarRating rating={rating} size="small" />
+        <span className="text-xs text-muted-foreground">
+          {rating.toFixed(1)}
+        </span>
       </div>
-      
-      {/* Tags */}
-      {tags && tags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mt-1" aria-label="Service tags">
-          {tags.slice(0, 3).map((tag, index) => (
-            <span 
-              key={index} 
-              className="text-xs bg-muted px-2 py-0.5 rounded-full text-muted-foreground"
-            >
-              {tag}
-            </span>
-          ))}
-          {tags.length > 3 && (
-            <span className="text-xs bg-muted px-2 py-0.5 rounded-full text-muted-foreground">
-              +{tags.length - 3}
-            </span>
-          )}
-        </div>
-      )}
     </div>
   );
 }

@@ -27,8 +27,8 @@ export interface MobileFriendlyCardProps {
   tags: string[];
   imageUrl?: string;
   onSelect?: () => void;
-  rating: number;  // Make this required to fix TypeScript errors
-  completedJobs: number; // Make this required to fix TypeScript errors
+  rating: number;
+  completedJobs: number;
 }
 
 export function MobileFriendlyCard({
@@ -44,11 +44,19 @@ export function MobileFriendlyCard({
   rating,
   completedJobs
 }: MobileFriendlyCardProps) {
+  // Generate a unique ID for accessibility purposes
+  const cardId = `service-card-${id}`;
+  const descriptionId = `service-description-${id}`;
+  
   return (
-    <Card className="overflow-hidden h-full flex flex-col interactive-card border-border/30 hover:border-primary/20 transition-all duration-300 group">
+    <Card 
+      className="overflow-hidden h-full flex flex-col interactive-card border-border/30 hover:border-primary/20 transition-all duration-300 group"
+      id={cardId}
+    >
       <MobileCardImage 
         imageUrl={imageUrl} 
         title={title} 
+        alt={`${title} service preview`} // Added alt for accessibility
       />
       
       <CardContent className="p-4 flex-grow">
@@ -59,6 +67,7 @@ export function MobileFriendlyCard({
           category={category}
           tags={tags}
           rating={rating}
+          descriptionId={descriptionId} // Pass ID for accessibility
         />
       </CardContent>
       
@@ -74,6 +83,7 @@ export function MobileFriendlyCard({
           onClick={onSelect}
           className="hover:bg-primary/5 group-hover:border-primary/30 transition-colors duration-300"
           aria-label={`View details for ${title}`}
+          aria-describedby={descriptionId}
         >
           View Details
         </Button>
