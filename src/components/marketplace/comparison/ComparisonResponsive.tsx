@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useMediaQuery } from "@/hooks/use-mobile";
-import { ServiceCardProps } from "@/types/marketplace";
+import { ServiceCardProps, MarketplaceService } from "@/types/marketplace-unified";
 import { ComparisonTable } from "./ComparisonTable";
 import { MobileComparisonTable } from "./MobileComparisonTable";
 import { convertToMarketplaceService } from "../comparison-manager/utils/ServiceConverter";

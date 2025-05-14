@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ComparisonHeader } from "./ComparisonHeader";
 import { ComparisonResponsive } from "./ComparisonResponsive";
 import { EmptyComparison } from "./EmptyComparison";
-import { ServiceCardProps } from "@/types/marketplace";
+import { ServiceCardProps } from "@/types/marketplace-unified";
 import { X } from "lucide-react";
 import { convertToMarketplaceService } from "../comparison-manager/utils/ServiceConverter";
 

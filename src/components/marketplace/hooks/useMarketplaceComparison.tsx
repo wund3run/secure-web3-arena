@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import { toast } from "sonner";
-import { MarketplaceService } from "./types/marketplace-types";
+import { MarketplaceService } from "@/types/marketplace-unified";
 
 export function useMarketplaceComparison() {
   const [servicesForComparison, setServicesForComparison] = useState<MarketplaceService[]>([]);

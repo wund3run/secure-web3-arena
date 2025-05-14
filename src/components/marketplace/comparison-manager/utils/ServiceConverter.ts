@@ -1,8 +1,10 @@
 
-import { ServiceCardProps } from "@/types/marketplace";
-import { MarketplaceService } from "@/components/marketplace/hooks/types/marketplace-types";
+import { ServiceCardProps, MarketplaceService } from "@/types/marketplace-unified";
 
-// Helper function to convert ServiceCardProps to MarketplaceService
+/**
+ * Helper function to convert ServiceCardProps to MarketplaceService
+ * This ensures consistent data structure across components
+ */
 export function convertToMarketplaceService(service: ServiceCardProps): MarketplaceService {
   return {
     id: service.id,
@@ -13,7 +15,7 @@ export function convertToMarketplaceService(service: ServiceCardProps): Marketpl
       name: service.provider.name,
       reputation: service.provider.reputation,
       isVerified: service.provider.isVerified,
-      level: service.provider.level // Add the required level property
+      level: service.provider.level
     },
     pricing: {
       amount: service.pricing.amount,
@@ -30,7 +32,10 @@ export function convertToMarketplaceService(service: ServiceCardProps): Marketpl
   };
 }
 
-// Helper function to convert MarketplaceService back to ServiceCardProps
+/**
+ * Helper function to convert MarketplaceService back to ServiceCardProps
+ * Useful for bidirectional conversions
+ */
 export function convertToServiceCardProps(service: MarketplaceService): ServiceCardProps {
   return {
     id: service.id,

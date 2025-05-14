@@ -5,17 +5,18 @@ import { Button } from "@/components/ui/button";
 import { ServiceReviews } from "@/components/marketplace/service-reviews";
 import { ServiceComparison } from "@/components/marketplace/comparison";
 import { EnhancedOnboarding } from "@/components/onboarding/enhanced-onboarding";
+import { ServiceCardProps, Review } from "@/types/marketplace-unified";
 
 interface MarketplaceDialogsProps {
-  selectedService: any | null;
-  setSelectedService: (service: any | null) => void;
+  selectedService: ServiceCardProps | null;
+  setSelectedService: (service: ServiceCardProps | null) => void;
   showComparison: boolean;
   setShowComparison: (show: boolean) => void;
-  servicesForComparison: any[];
+  servicesForComparison: ServiceCardProps[];
   showEnhancedOnboarding: boolean;
   setShowEnhancedOnboarding: (show: boolean) => void;
   handleOnboardingComplete: () => void;
-  reviews: any[];
+  reviews: Review[];
 }
 
 export function MarketplaceDialogs({
