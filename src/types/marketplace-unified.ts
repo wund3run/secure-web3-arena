@@ -18,7 +18,7 @@ export interface ServiceProvider {
 export interface ServicePricing {
   amount: number;
   currency: string;
-  model: "fixed" | "hourly" | "range";
+  model?: "fixed" | "hourly" | "range"; // Make model optional to fix compatibility issues
 }
 
 // Main service type
@@ -68,7 +68,7 @@ export interface ServiceCardProps {
   pricing: {
     amount: number;
     currency: string;
-    model?: "fixed" | "hourly" | "range"; // Make model optional to maintain compatibility
+    model?: "fixed" | "hourly" | "range"; // Keep model optional for compatibility
   };
   rating: number;
   completedJobs: number;
