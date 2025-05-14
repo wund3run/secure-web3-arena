@@ -1,111 +1,72 @@
 
 import React from "react";
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer 
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-interface DataPoint {
-  name: string;
-  value: number;
-  average?: number;
-  target?: number;
-}
+// Sample performance data - in a real app, this would come from an API
+const performanceData = [
+  { day: "Mon", responseTime: 120, errorRate: 0.8, throughput: 85 },
+  { day: "Tue", responseTime: 132, errorRate: 0.5, throughput: 89 },
+  { day: "Wed", responseTime: 101, errorRate: 1.2, throughput: 91 },
+  { day: "Thu", responseTime: 134, errorRate: 0.8, throughput: 86 },
+  { day: "Fri", responseTime: 90, errorRate: 0.6, throughput: 95 },
+  { day: "Sat", responseTime: 85, errorRate: 0.2, throughput: 88 },
+  { day: "Sun", responseTime: 75, errorRate: 0.1, throughput: 80 },
+];
 
 interface AdminPerformanceChartProps {
-  title: string;
-  data: DataPoint[];
-  description?: string;
-  valueLabel?: string;
-  averageLabel?: string;
-  targetLabel?: string;
-  showTarget?: boolean;
-  showAverage?: boolean;
+  className?: string;
 }
 
-/**
- * A reusable chart component for visualizing admin performance metrics
- * Supports line graphs with optional target and average lines
- */
-export function AdminPerformanceChart({
-  title,
-  data,
-  description,
-  valueLabel = "Value",
-  averageLabel = "Average",
-  targetLabel = "Target",
-  showTarget = false,
-  showAverage = false,
-}: AdminPerformanceChartProps) {
+export function AdminPerformanceChart({ className }: AdminPerformanceChartProps) {
   return (
-    <Card className="w-full">
-      <CardHeader className="pb-2">
-        <CardTitle>{title}</CardTitle>
-        {description && <p className="text-sm text-muted-foreground">{description}</p>}
+    <Card className={className}>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">
+          System Performance
+        </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
+        <div className="h-[200px]">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={data}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
+            <AreaChart
+              data={performanceData}
+              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
             >
-              <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: "rgba(255, 255, 255, 0.95)", 
-                  borderRadius: "8px",
-                  border: "1px solid rgba(0,0,0,0.1)",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
-                }} 
-              />
-              <Legend />
-              
-              <Line
+              <defs>
+                <linearGradient id="colorResponseTime" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="colorErrorRate" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#ff4d4f" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#ff4d4f" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="colorThroughput" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+              <XAxis dataKey="day" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis fontSize={12} tickLine={false} axisLine={false} />
+              <Tooltip />
+              <Area
                 type="monotone"
-                dataKey="value"
-                name={valueLabel}
+                dataKey="responseTime"
                 stroke="#8884d8"
-                strokeWidth={2}
-                activeDot={{ r: 8 }}
+                fillOpacity={1}
+                fill="url(#colorResponseTime)"
               />
-              
-              {showAverage && (
-                <Line
-                  type="monotone"
-                  dataKey="average"
-                  name={averageLabel}
-                  stroke="#82ca9d"
-                  strokeWidth={1.5}
-                  strokeDasharray="5 5"
-                />
-              )}
-              
-              {showTarget && (
-                <Line
-                  type="monotone"
-                  dataKey="target"
-                  name={targetLabel}
-                  stroke="#ff7300"
-                  strokeWidth={1.5}
-                  strokeDasharray="3 3"
-                />
-              )}
-            </LineChart>
+            </AreaChart>
           </ResponsiveContainer>
         </div>
       </CardContent>

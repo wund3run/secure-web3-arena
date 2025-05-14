@@ -1,3 +1,4 @@
+
 import { useRef, useState, useEffect, useCallback, memo } from "react";
 import { MobileFriendlyCard } from "./mobile-card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -102,6 +103,17 @@ export const OptimizedListingGrid = memo(function OptimizedListingGrid({
             ))
           : visibleServices.map((service) => (
               <div key={service.id} className="relative group">
+                {/* Selection indicator - Placed as a separate div, not inside a button */}
+                {service.isSelected && (
+                  <div className="absolute top-2 left-2 z-10">
+                    <Badge 
+                      className="bg-primary text-primary-foreground text-xs px-1.5 py-0.5"
+                    >
+                      Selected
+                    </Badge>
+                  </div>
+                )}
+                
                 {/* Comparison toggle button */}
                 {service.onToggleCompare && (
                   <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -134,15 +146,6 @@ export const OptimizedListingGrid = memo(function OptimizedListingGrid({
                       {service.isSelected ? "Selected" : "Compare"}
                     </Button>
                   </div>
-                )}
-                
-                {/* Selected badge */}
-                {service.isSelected && (
-                  <Badge 
-                    className="absolute top-2 left-2 z-10 bg-primary text-primary-foreground text-xs px-1.5 py-0.5"
-                  >
-                    Selected
-                  </Badge>
                 )}
                 
                 <MobileFriendlyCard
