@@ -41,7 +41,27 @@ export interface CollapsedSections {
   [key: string]: boolean;
 }
 
-// Comparison related types
-export interface ComparisonService extends ServiceCardProps {
+// Comparison related types - use proper import for ServiceCardProps
+export interface ComparisonService {
   isSelected: boolean;
+  // Extend from the properly imported ServiceCardProps from marketplace-unified
+  id: string;
+  title: string;
+  description: string;
+  provider: {
+    name: string;
+    reputation: number;
+    level: "rookie" | "verified" | "expert";
+    isVerified: boolean;
+  };
+  pricing: {
+    amount: number;
+    currency: string;
+    model?: "fixed" | "hourly" | "range";
+  };
+  rating: number;
+  completedJobs: number;
+  category: string;
+  tags: string[];
+  imageUrl?: string;
 }
