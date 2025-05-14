@@ -1,6 +1,6 @@
 
 // Re-export from unified types
-export { 
+export type { 
   BlockchainEcosystem,
   ServiceProvider,
   ServicePricing,

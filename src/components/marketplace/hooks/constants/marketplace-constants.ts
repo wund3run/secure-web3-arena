@@ -16,31 +16,25 @@ export const BLOCKCHAIN_ECOSYSTEMS: BlockchainEcosystem[] = [
 export const SAMPLE_REVIEWS: Review[] = [
   {
     id: "r1",
-    username: "CryptoBuilder",
+    author: "CryptoBuilder",
     date: "2023-12-10",
     rating: 4.5,
-    text: "The audit was thorough and helped us identify critical vulnerabilities before launch. Great communication throughout the process.",
-    author: "CryptoBuilder",
     content: "The audit was thorough and helped us identify critical vulnerabilities before launch. Great communication throughout the process.",
     helpful: 5
   },
   {
     id: "r2",
-    username: "DeFiDeveloper",
+    author: "DeFiDeveloper",
     date: "2023-11-25",
     rating: 5,
-    text: "Excellent service! The security recommendations were invaluable and potentially saved us from a major exploit.",
-    author: "DeFiDeveloper",
     content: "Excellent service! The security recommendations were invaluable and potentially saved us from a major exploit.",
     helpful: 8
   },
   {
     id: "r3",
-    username: "BlockchainStartup",
+    author: "BlockchainStartup",
     date: "2023-12-18",
     rating: 4,
-    text: "Professional audit with detailed reporting. Would have appreciated more guidance on implementing the fixes.",
-    author: "BlockchainStartup",
     content: "Professional audit with detailed reporting. Would have appreciated more guidance on implementing the fixes.",
     helpful: 3
   }
