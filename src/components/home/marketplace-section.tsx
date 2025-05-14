@@ -14,6 +14,7 @@ import { MarketplaceErrorBoundary } from "@/components/marketplace/error-handlin
 import { ComparisonFloatingIndicator } from "@/components/marketplace/sections/ComparisonFloatingIndicator";
 import { MarketplaceDialogs } from "@/components/marketplace/layout/MarketplaceDialogs";
 import { ServiceCardProps } from "@/types/marketplace-unified";
+import { convertArrayToMarketplaceServices } from "@/components/marketplace/comparison-manager/utils/ServiceConverter";
 
 function MarketplaceContent() {
   const {

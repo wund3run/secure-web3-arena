@@ -3,7 +3,7 @@ import { memo, useCallback } from "react";
 import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { ServiceCardProps } from "./ServiceCardProps";
+import { ServiceCardProps } from "@/types/marketplace-unified";
 import { ServiceCardImage } from "./ServiceCardImage";
 import { ServiceCardContent } from "./ServiceCardContent";
 import { ServiceCardFooter } from "./ServiceCardFooter";
@@ -34,6 +34,7 @@ export const ServiceCard = memo(function ServiceCard({
     if (onClick) {
       onClick();
     } else {
+      // Only navigate if onSelect is not provided
       navigate(`/service/${id}`, { 
         state: { 
           serviceDetail: {

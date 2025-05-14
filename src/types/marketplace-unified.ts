@@ -65,7 +65,10 @@ export interface ServiceCardProps {
   title: string;
   description: string;
   provider: Omit<ServiceProvider, "id">;
-  pricing: Omit<ServicePricing, "model">;
+  pricing: {
+    amount: number;
+    currency: string;
+  };
   rating: number;
   completedJobs: number;
   category: string;

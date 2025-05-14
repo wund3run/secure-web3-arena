@@ -5,4 +5,4 @@ export { ServiceCardFooter } from "./ServiceCardFooter";
 export { ServiceCardImage } from "./ServiceCardImage";
 
 // Re-export the types from central location
-export type { ServiceCardProps } from "@/types/marketplace";
+export type { ServiceCardProps } from "@/types/marketplace-unified";

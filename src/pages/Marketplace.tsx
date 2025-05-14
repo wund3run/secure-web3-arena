@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { handleApiError } from "@/utils/apiErrorHandler";
 import ErrorBoundary from "@/components/ui/error-boundary";
 import { ServiceCardProps } from "@/types/marketplace-unified";
+import { convertArrayToMarketplaceServices } from "@/components/marketplace/comparison-manager/utils/ServiceConverter";
 
 // Define global interface for window to include SERVICES with correct type
 declare global {
