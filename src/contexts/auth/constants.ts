@@ -1,7 +1,8 @@
 
-
-// Authentication constants
-// Updated version that should be recognized by the build system
+/**
+ * Authentication constants for the Hawkly platform
+ * These constants are used throughout the authentication flow
+ */
 
 // Auth state event types
 export const AUTH_EVENTS = {
@@ -9,50 +10,48 @@ export const AUTH_EVENTS = {
   SIGNED_OUT: 'SIGNED_OUT',
   USER_UPDATED: 'USER_UPDATED',
   PASSWORD_RECOVERY: 'PASSWORD_RECOVERY',
-  TOKEN_REFRESHED: 'TOKEN_REFRESHED'
+  TOKEN_REFRESHED: 'TOKEN_REFRESHED',
+  USER_DELETED: 'USER_DELETED',
+};
+
+// Authentication providers
+export const AUTH_PROVIDERS = {
+  EMAIL: 'email',
+  GOOGLE: 'google',
+  GITHUB: 'github',
+  METAMASK: 'metamask',
+  PHANTOM: 'phantom',
+  COINBASE: 'coinbase',
+  WALLETCONNECT: 'walletconnect',
+};
+
+// Redirection paths
+export const AUTH_REDIRECTS = {
+  AFTER_SIGN_IN: '/',
+  AFTER_SIGN_UP: '/onboarding',
+  AFTER_SIGN_OUT: '/',
+  AFTER_PASSWORD_RECOVERY: '/auth',
 };
 
 // Storage keys
-export const STORAGE_KEYS = {
-  AUTH_TOKEN: 'hawkly_auth_token',
+export const AUTH_STORAGE_KEYS = {
+  ACCESS_TOKEN: 'hawkly_access_token',
   REFRESH_TOKEN: 'hawkly_refresh_token',
-  USER_DATA: 'hawkly_user_data'
-};
-
-// Auth redirect paths
-export const REDIRECT_PATHS = {
-  AFTER_LOGIN: '/',
-  AFTER_SIGNUP: '/',
-  AFTER_LOGOUT: '/auth',
-  CALLBACK: '/auth-callback'
+  USER: 'hawkly_user',
 };
 
 // Auth error messages
-export const ERROR_MESSAGES = {
+export const AUTH_ERRORS = {
   INVALID_CREDENTIALS: 'Invalid email or password',
-  EMAIL_IN_USE: 'Email address is already in use',
+  EMAIL_IN_USE: 'Email is already in use',
   WEAK_PASSWORD: 'Password is too weak',
-  EXPIRED_SESSION: 'Your session has expired, please log in again',
-  GENERIC_ERROR: 'Authentication error occurred'
+  NETWORK_ERROR: 'Network error. Please try again',
+  UNKNOWN_ERROR: 'An unknown error occurred',
 };
 
-// Default timeout values (in milliseconds)
-export const TIMEOUTS = {
-  SESSION_EXPIRY: 3600000, // 1 hour
-  TOKEN_REFRESH: 300000,   // 5 minutes
-  OTP_EXPIRY: 300000       // 5 minutes
-};
-
-// Authentication requirements
-export const REQUIREMENTS = {
-  MIN_PASSWORD_LENGTH: 8,
-  REQUIRE_CAPTCHA: true,
-  REQUIRE_EMAIL_VERIFICATION: true
-};
-
-// Default authentication options
-export const DEFAULT_AUTH_OPTIONS = {
+// Supabase auth configuration
+export const AUTH_CONFIG = {
   persistSession: true,
+  detectSessionInUrl: true,
   autoRefreshToken: true
 };
-
