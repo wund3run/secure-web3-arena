@@ -189,9 +189,10 @@ function App() {
               richColors 
               closeButton
               toastOptions={{
-                // Make toasts accessible
-                role: "status",
-                "aria-live": "polite",
+                // Make toasts accessible with aria attributes instead of role
+                duration: 5000,
+                className: "rounded-md border border-border bg-background text-foreground",
+                "aria-live": "polite"
               }}
             />
             
