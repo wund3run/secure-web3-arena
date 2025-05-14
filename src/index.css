@@ -39,6 +39,34 @@
     --web3-gray: 220 14% 45%; /* Gray for tagline - improved contrast */
   }
   
+  /* Dark theme root colors */
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    
+    --card: 222 47% 14%;
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 222 47% 14%;
+    --popover-foreground: 210 40% 98%;
+    
+    --primary: 262 57% 65%; /* Lighter purple for dark mode */
+    --primary-foreground: 222 47% 11%;
+    
+    --secondary: 187 90% 50%; /* Brighter teal for dark mode */
+    --secondary-foreground: 222 47% 11%;
+    
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    --accent: 14 100% 67%; /* Brighter orange for dark mode */
+    --accent-foreground: 222 47% 11%;
+    
+    --border: 217.2 32.6% 30%; /* Higher contrast border for dark mode */
+    --input: 217.2 32.6% 30%;
+    --ring: 262 57% 65%;
+  }
+  
   /* Enhanced Standardized headings with improved visual hierarchy */
   h1, h2, h3, h4, h5, h6 {
     @apply font-medium leading-tight mb-4;
@@ -151,23 +179,9 @@
     @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
   }
 
-  .focus-visible {
-    @apply outline-none ring-2 ring-primary/50 ring-offset-2;
-  }
-
   /* Skip to content link for keyboard users */
   .skip-link {
-    @apply bg-white text-primary font-medium py-2 px-4 rounded-md absolute top-0 left-0 -translate-y-full focus:translate-y-0 z-50;
-  }
-
-  /* High contrast focus styles */
-  :focus {
-    @apply outline-none ring-2 ring-primary/50;
-  }
-
-  /* Input accessibility */
-  input, button, select, textarea {
-    @apply focus:outline-none focus:ring-2 focus:ring-primary/50;
+    @apply bg-white text-primary font-medium py-2 px-4 rounded-md absolute top-0 left-0 -translate-y-full focus:translate-y-0 z-50 focus:outline-none focus:ring-2 focus:ring-primary/50;
   }
 
   /* Table accessibility */
@@ -206,7 +220,111 @@
   .interactive-card {
     @apply transition-all duration-300 hover:shadow-md hover:border-primary/30 rounded-lg;
   }
-
+  
+  /* ========== ACCESSIBILITY STYLES ========== */
+  
+  /* High contrast mode */
+  .high-contrast {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --muted: 0 0% 90%;
+    --muted-foreground: 0 0% 0%;
+    --border: 0 0% 0%;
+    --primary: 240 100% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 200 100% 40%;
+    --secondary-foreground: 0 0% 100%;
+  }
+  
+  .high-contrast a {
+    @apply underline;
+  }
+  
+  .high-contrast button:focus,
+  .high-contrast a:focus,
+  .high-contrast input:focus,
+  .high-contrast select:focus,
+  .high-contrast textarea:focus {
+    @apply outline-black outline-2 outline-offset-4 ring-0;
+  }
+  
+  /* Large text mode */
+  .large-text {
+    font-size: 120% !important;
+    line-height: 1.5 !important;
+  }
+  
+  /* Keyboard mode for better focus visibility */
+  .keyboard-mode :focus {
+    @apply outline-none ring-2 ring-primary/70 ring-offset-2;
+  }
+  
+  .keyboard-mode :focus-visible {
+    @apply outline-none ring-2 ring-primary/70 ring-offset-2;
+  }
+  
+  /* Reduced motion */
+  .reduced-motion * {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Screen reader friendly mode */
+  .screen-reader-friendly [aria-hidden="true"] {
+    @apply hidden;
+  }
+  
+  .screen-reader-friendly button,
+  .screen-reader-friendly a {
+    @apply relative;
+  }
+  
+  .screen-reader-friendly button:focus::after,
+  .screen-reader-friendly a:focus::after {
+    content: attr(aria-label);
+    @apply sr-only;
+  }
+  
+  /* Focus visible mode - always show focus rings */
+  .focus-visible-mode :focus {
+    @apply outline-none ring-2 ring-primary/50 ring-offset-2;
+  }
+  
+  /* === Input & Control Accessibility === */
+  
+  /* Ensure inputs have sufficient padding */
+  input, 
+  select, 
+  textarea {
+    @apply px-3 py-2;
+  }
+  
+  /* Make sure checkboxes and radio buttons have appropriate size */
+  input[type="checkbox"],
+  input[type="radio"] {
+    @apply h-4 w-4;
+  }
+  
+  /* Larger touch targets on mobile */
+  @media (max-width: 640px) {
+    button, 
+    a, 
+    [role="button"],
+    input[type="submit"],
+    input[type="reset"],
+    input[type="button"] {
+      @apply min-h-[44px] min-w-[44px];
+    }
+    
+    input, 
+    select, 
+    textarea {
+      @apply py-3;
+    }
+  }
+  
   /* Dark mode adjustments for better contrast */
   @media (prefers-color-scheme: dark) {
     :root {

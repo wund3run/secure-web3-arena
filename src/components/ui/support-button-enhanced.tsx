@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -20,8 +20,47 @@ export function SupportButtonEnhanced() {
   const [supportOpen, setSupportOpen] = useState(false);
   const [accessibilityOpen, setAccessibilityOpen] = useState(false);
 
+  // Add keyboard shortcut for accessibility menu (Alt+A)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Alt + A for accessibility menu
+      if (e.altKey && e.key === 'a') {
+        e.preventDefault();
+        setAccessibilityOpen(true);
+      }
+      
+      // Alt + S for skip to content
+      if (e.altKey && e.key === 's') {
+        e.preventDefault();
+        const mainContent = document.querySelector('main');
+        if (mainContent) {
+          const focusableElement = mainContent.querySelector('h1, h2, button, a, input') as HTMLElement;
+          if (focusableElement) {
+            focusableElement.focus();
+          } else {
+            mainContent.setAttribute('tabindex', '-1');
+            mainContent.focus();
+          }
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <>
+      {/* Skip to content link - visible only when focused */}
+      <a 
+        href="#main-content" 
+        className="skip-link" 
+        onFocus={(e) => e.currentTarget.classList.add('focus-visible')}
+        onBlur={(e) => e.currentTarget.classList.remove('focus-visible')}
+      >
+        Skip to main content
+      </a>
+      
       <Popover open={supportOpen} onOpenChange={setSupportOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -74,6 +113,7 @@ export function SupportButtonEnhanced() {
             >
               <Accessibility className="h-4 w-4" />
               Accessibility
+              <kbd className="ml-auto text-xs bg-muted px-1.5 rounded">Alt+A</kbd>
             </Button>
           </div>
         </PopoverContent>

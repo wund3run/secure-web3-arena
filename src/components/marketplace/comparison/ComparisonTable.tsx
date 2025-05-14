@@ -74,7 +74,7 @@ export function ComparisonTable({ services, onRemoveService }: ComparisonTablePr
   };
 
   return (
-    <div className="space-y-6 mt-4">
+    <div className="space-y-6 mt-4" role="region" aria-label="Service Comparison">
       {/* Service headers with images */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="hidden md:block"></div> {/* Empty cell for field labels */}
@@ -86,9 +86,9 @@ export function ComparisonTable({ services, onRemoveService }: ComparisonTablePr
               size="icon"
               className="absolute -right-2 -top-2 h-6 w-6 bg-background border border-border rounded-full z-10"
               onClick={() => onRemoveService(service.id)}
+              aria-label={`Remove ${service.title} from comparison`}
             >
-              <CircleX className="h-6 w-6 text-muted-foreground" />
-              <span className="sr-only">Remove {service.title} from comparison</span>
+              <CircleX className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
             </Button>
             
             <div className="border border-border rounded-md overflow-hidden">
@@ -96,7 +96,7 @@ export function ComparisonTable({ services, onRemoveService }: ComparisonTablePr
                 <AspectRatio ratio={16/9}>
                   <img 
                     src={service.imageUrl || `https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1600&auto=format&fit=crop`}
-                    alt={service.title}
+                    alt={`${service.title} illustration`}
                     className="object-cover w-full h-full"
                   />
                 </AspectRatio>
@@ -113,21 +113,37 @@ export function ComparisonTable({ services, onRemoveService }: ComparisonTablePr
       {/* Comparison tables by category */}
       {categories.map((category) => (
         <div key={category.id} className="border border-border rounded-md overflow-hidden">
-          <div className="bg-muted px-4 py-2">
+          <div className="bg-muted px-4 py-2" id={`category-${category.id}`}>
             <h3 className="font-medium">{category.label}</h3>
           </div>
           
           <Table>
+            <TableHead className="sr-only">
+              <TableRow>
+                <TableCell>Field</TableCell>
+                {services.map(service => (
+                  <TableCell key={`header-${service.id}`}>{service.title}</TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
             <TableBody>
               {fields[category.id as keyof typeof fields].map((field) => (
                 <TableRow key={field.id}>
-                  <TableCell className="font-medium w-1/4">{field.label}</TableCell>
+                  <TableCell className="font-medium w-1/4">
+                    <span id={`${category.id}-${field.id}-label`}>{field.label}</span>
+                  </TableCell>
                   
                   {services.map((service) => {
                     const value = getFieldValue(service, field.id);
+                    const cellId = `${category.id}-${field.id}-${service.id}`;
                     
                     return (
-                      <TableCell key={`${service.id}-${field.id}`} className="w-1/4">
+                      <TableCell 
+                        key={`${service.id}-${field.id}`} 
+                        className="w-1/4"
+                        id={cellId}
+                        aria-labelledby={`${category.id}-${field.id}-label`}
+                      >
                         {field.id === 'tags' && Array.isArray(value) ? (
                           <div className="flex flex-wrap gap-1">
                             {value.map((tag: string) => (
@@ -152,6 +168,7 @@ export function ComparisonTable({ services, onRemoveService }: ComparisonTablePr
           variant="outline"
           className="px-8"
           onClick={() => onRemoveService(services[0]?.id || "")}
+          aria-label="Clear all services from comparison"
         >
           Clear Comparison
         </Button>

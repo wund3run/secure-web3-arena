@@ -6,10 +6,14 @@ interface AccessibilityContextState {
   largeText: boolean;
   reducedMotion: boolean;
   screenReaderFriendly: boolean;
+  keyboardMode: boolean;
+  focusVisible: boolean;
   toggleHighContrast: () => void;
   toggleLargeText: () => void;
   toggleReducedMotion: () => void;
   toggleScreenReaderFriendly: () => void;
+  toggleKeyboardMode: () => void;
+  toggleFocusVisible: () => void;
 }
 
 const defaultState: AccessibilityContextState = {
@@ -17,10 +21,14 @@ const defaultState: AccessibilityContextState = {
   largeText: false,
   reducedMotion: false,
   screenReaderFriendly: false,
+  keyboardMode: false,
+  focusVisible: false,
   toggleHighContrast: () => {},
   toggleLargeText: () => {},
   toggleReducedMotion: () => {},
   toggleScreenReaderFriendly: () => {},
+  toggleKeyboardMode: () => {},
+  toggleFocusVisible: () => {},
 };
 
 const AccessibilityContext = createContext<AccessibilityContextState>(defaultState);
@@ -32,6 +40,8 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
   const [largeText, setLargeText] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [screenReaderFriendly, setScreenReaderFriendly] = useState(false);
+  const [keyboardMode, setKeyboardMode] = useState(false);
+  const [focusVisible, setFocusVisible] = useState(true);
 
   // Check for user preferences from system
   useEffect(() => {
@@ -49,10 +59,31 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
         setLargeText(preferences.largeText ?? false);
         setReducedMotion(preferences.reducedMotion ?? prefersReducedMotion);
         setScreenReaderFriendly(preferences.screenReaderFriendly ?? false);
+        setKeyboardMode(preferences.keyboardMode ?? false);
+        setFocusVisible(preferences.focusVisible ?? true);
       } catch (e) {
         console.error("Failed to parse accessibility preferences:", e);
       }
     }
+    
+    // Setup keyboard detection
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Tab') {
+        setKeyboardMode(true);
+      }
+    };
+    
+    const handleMouseDown = () => {
+      setKeyboardMode(false);
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('mousedown', handleMouseDown);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('mousedown', handleMouseDown);
+    };
   }, []);
 
   // Apply preferences to document
@@ -60,11 +91,19 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     // Store preferences
     localStorage.setItem(
       "accessibility-preferences",
-      JSON.stringify({ highContrast, largeText, reducedMotion, screenReaderFriendly })
+      JSON.stringify({ 
+        highContrast, 
+        largeText, 
+        reducedMotion, 
+        screenReaderFriendly,
+        keyboardMode,
+        focusVisible
+      })
     );
 
     // Apply classes to body
     const body = document.body;
+    
     if (highContrast) {
       body.classList.add("high-contrast");
     } else {
@@ -88,12 +127,26 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     } else {
       body.classList.remove("screen-reader-friendly");
     }
-  }, [highContrast, largeText, reducedMotion, screenReaderFriendly]);
+    
+    if (keyboardMode) {
+      body.classList.add("keyboard-mode");
+    } else {
+      body.classList.remove("keyboard-mode");
+    }
+    
+    if (focusVisible) {
+      body.classList.add("focus-visible-mode");
+    } else {
+      body.classList.remove("focus-visible-mode");
+    }
+  }, [highContrast, largeText, reducedMotion, screenReaderFriendly, keyboardMode, focusVisible]);
 
   const toggleHighContrast = () => setHighContrast((prev) => !prev);
   const toggleLargeText = () => setLargeText((prev) => !prev);
   const toggleReducedMotion = () => setReducedMotion((prev) => !prev);
   const toggleScreenReaderFriendly = () => setScreenReaderFriendly((prev) => !prev);
+  const toggleKeyboardMode = () => setKeyboardMode((prev) => !prev);
+  const toggleFocusVisible = () => setFocusVisible((prev) => !prev);
 
   return (
     <AccessibilityContext.Provider
@@ -102,10 +155,14 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
         largeText,
         reducedMotion,
         screenReaderFriendly,
+        keyboardMode,
+        focusVisible,
         toggleHighContrast,
         toggleLargeText,
         toggleReducedMotion,
         toggleScreenReaderFriendly,
+        toggleKeyboardMode,
+        toggleFocusVisible
       }}
     >
       {children}
