@@ -1,5 +1,9 @@
 
+/**
+ * Export all error handling utilities for marketplace components
+ */
+
 export { MarketplaceErrorBoundary } from './MarketplaceErrorBoundary';
-export { MarketplaceLoadingState } from './MarketplaceLoadingState';
-export { MarketplaceErrorHandler } from './MarketplaceErrorHandler';
 export { useMarketplaceError } from './useMarketplaceError';
+export { MarketplaceErrorHandler } from './MarketplaceErrorHandler';
+export { MarketplaceLoadingState } from './MarketplaceLoadingState';

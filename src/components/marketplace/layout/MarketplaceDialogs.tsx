@@ -1,5 +1,5 @@
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ServiceReviews } from "@/components/marketplace/service-reviews";
@@ -36,6 +36,11 @@ export function MarketplaceDialogs({
       {selectedService && (
         <Dialog open={!!selectedService} onOpenChange={() => setSelectedService(null)}>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            {/* Add DialogTitle for accessibility */}
+            <DialogTitle className="sr-only">
+              {selectedService.title} Details
+            </DialogTitle>
+            
             <div className="space-y-6">
               <div className="relative h-56 rounded-lg overflow-hidden">
                 <img 

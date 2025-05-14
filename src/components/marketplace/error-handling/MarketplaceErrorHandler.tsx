@@ -37,14 +37,13 @@ export function MarketplaceErrorHandler({
         action: retry ? {
           label: "Retry",
           onClick: () => {
-            retry();
+            if (retry) retry();
             if (clearError) clearError();
           }
         } : undefined
       });
     }
     
-    // Clean up error after display
     return () => {
       if (clearError) clearError();
     };

@@ -4,18 +4,18 @@ import { MessageSquare, X, Mail, FileText, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useMediaQuery } from "@/hooks/use-mobile";
 
 export function SupportButton() {
   const [isOpen, setIsOpen] = useState(false);
-  const isMobile = useIsMobile();
+  const isMobile = useMediaQuery("(max-width: 640px)");
 
   const toggleSupport = () => {
     setIsOpen(!isOpen);
   };
 
   const sendEmail = () => {
-    window.location.href = "mailto:join@hawkly.com?subject=Support%20Request%20from%20Hawkly";
+    window.location.href = "mailto:support@hawkly.com?subject=Support%20Request";
     toast.success("Preparing email client", { description: "Opening your email client to contact support" });
     setIsOpen(false);
   };
@@ -63,7 +63,7 @@ export function SupportButton() {
             </Link>
             
             <div className="text-xs text-muted-foreground mt-2 pt-2 border-t border-border/30">
-              Our team is ready to assist you with any questions you may have.
+              Our team is ready to assist you with any questions about Web3 security audits.
             </div>
           </div>
         </div>

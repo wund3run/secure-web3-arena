@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ComparisonHeader } from "./ComparisonHeader";
 import { ComparisonResponsive } from "./ComparisonResponsive";
@@ -36,6 +36,9 @@ export function ServiceComparison({ services, open, onOpenChange }: ServiceCompa
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+        {/* Add DialogTitle for accessibility */}
+        <DialogTitle className="sr-only">Service Comparison</DialogTitle>
+        
         <Button
           variant="ghost"
           size="icon"
