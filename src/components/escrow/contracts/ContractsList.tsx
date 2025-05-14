@@ -7,6 +7,7 @@ import { EmptyContractsList, NoMatchingContracts } from "./EmptyContractsList";
 import { ContractCard } from "./ContractCard";
 import { ErrorBoundary } from "@/utils/error-handling";
 import LoadingState from "@/components/ui/loading-state";
+import { ContractsGridView } from "./ContractsGridView";
 
 export function ContractsList() {
   const { contracts, fetchContracts, loading, profile } = useEscrow();
@@ -63,16 +64,11 @@ export function ContractsList() {
         {filteredContracts.length === 0 ? (
           <NoMatchingContracts />
         ) : (
-          <div className="grid gap-4">
-            {filteredContracts.map((contract) => (
-              <ContractCard 
-                key={contract.id}
-                contract={contract}
-                currentUser={profile}
-                onViewDetails={handleViewContract}
-              />
-            ))}
-          </div>
+          <ContractsGridView 
+            contracts={filteredContracts}
+            currentUser={profile}
+            onViewDetails={handleViewContract}
+          />
         )}
         
         {selectedContract && (
