@@ -1,67 +1,44 @@
+// Import necessary types
+import { ServiceCardProps } from "./marketplace-unified";
 
-/**
- * Centralized type definitions for marketplace components
- */
-
-// Re-export types from unified definitions for better compatibility
-export { 
-  type ServiceProvider,
-  type ServicePricing,
-  type ServiceCardProps
-} from "./marketplace-unified";
-
-// Filter related types
 export interface FilterOption {
-  id: string;
   label: string;
+  value: string;
+  count?: number;
 }
 
 export interface FilterState {
-  priceRange: [number, number];
-  selectedAuditTypes: string[];
-  selectedBlockchains: string[];
-  deliveryTime: string;
-  minReputation: number;
-  showAIRecommendations: boolean;
-  projectSize: string;
+  price: {
+    min: number;
+    max: number;
+  };
+  rating: number;
+  blockchains: string[];
+  categories: string[];
+  deliveryTime?: {
+    min: number;
+    max: number;
+  };
+  auditTypes?: string;
+  projectSize?: string;
 }
 
 export interface EnhancedFiltersProps {
   onFilterChange: (filters: Record<string, any>) => void;
+  initialFilters?: Record<string, any>;
 }
 
 export interface FilterSectionProps {
   title: string;
-  section: string;
-  isCollapsed: boolean;
-  toggleSection: (section: string) => void;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
 }
 
 export interface CollapsedSections {
   [key: string]: boolean;
 }
 
-// Comparison related types - use proper import for ServiceCardProps
-export interface ComparisonService {
+// Comparison related types
+export interface ComparisonService extends ServiceCardProps {
   isSelected: boolean;
-  // Extend from the properly imported ServiceCardProps from marketplace-unified
-  id: string;
-  title: string;
-  description: string;
-  provider: {
-    name: string;
-    reputation: number;
-    level: "rookie" | "verified" | "expert";
-    isVerified: boolean;
-  };
-  pricing: {
-    amount: number;
-    currency: string;
-    model?: "fixed" | "hourly" | "range";
-  };
-  rating: number;
-  completedJobs: number;
-  category: string;
-  tags: string[];
-  imageUrl?: string;
 }
