@@ -3,5 +3,5 @@
 export { AuthProvider, useAuth } from './AuthContext';
 export type { AuthContextProps } from './types';
 
-// Re-export any auth-related constants or utilities
+// Re-export auth-related constants
 export * from './constants';
