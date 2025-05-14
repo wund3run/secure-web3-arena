@@ -10,7 +10,7 @@ export function Toaster() {
       expand
       toastOptions={{
         duration: 5000,
-        className: "rounded-md border border-border bg-background text-foreground",
+        className: "rounded-md border border-border bg-background text-foreground accessible-toast",
         descriptionClassName: "text-muted-foreground text-sm"
       }}
     />
