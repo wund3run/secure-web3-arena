@@ -162,7 +162,6 @@ function App() {
                 <Route path="/admin/users" element={<AdminDashboard section="users" />} />
                 <Route path="/admin/services" element={<AdminDashboard section="services" />} />
                 <Route path="/admin/approvals" element={<AdminDashboard section="approvals" />} />
-                <Route path="/admin/users" element={<AdminDashboard section="users" />} />
                 <Route path="/admin/audits" element={<AdminDashboard section="audits" />} />
                 <Route path="/admin/providers" element={<AdminDashboard section="providers" />} />
                 <Route path="/admin/reports" element={<AdminDashboard section="reports" />} />

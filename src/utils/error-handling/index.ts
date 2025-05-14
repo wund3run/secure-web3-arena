@@ -4,7 +4,7 @@
  */
 
 // Re-export API error handler
-export { handleApiError, withErrorHandling } from "@/utils/apiErrorHandler";
+export { handleApiError, withErrorHandling } from "../apiErrorHandler";
 
 // Re-export marketplace error components
 export {
@@ -15,3 +15,6 @@ export {
 
 // Re-export base error boundary
 export { default as ErrorBoundary } from "@/components/ui/error-boundary";
+
+// Re-export utility functions
+export { handleError, createBoundary } from "../error-handling";
