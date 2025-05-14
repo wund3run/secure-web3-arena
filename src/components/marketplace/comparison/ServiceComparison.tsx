@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ComparisonHeader } from "./ComparisonHeader";
@@ -8,6 +8,8 @@ import { EmptyComparison } from "./EmptyComparison";
 import { ServiceCardProps } from "@/types/marketplace-unified";
 import { X } from "lucide-react";
 import { convertToMarketplaceService } from "../comparison-manager/utils/ServiceConverter";
+import { MarketplaceErrorBoundary } from "@/utils/error-handling";
+import { MarketplaceLoadingState } from "../error-handling/MarketplaceLoadingState";
 
 interface ServiceComparisonProps {
   services: ServiceCardProps[];
@@ -16,6 +18,8 @@ interface ServiceComparisonProps {
 }
 
 export function ServiceComparison({ services, open, onOpenChange }: ServiceComparisonProps) {
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleClose = () => {
     onOpenChange(false);
   };
@@ -42,18 +46,26 @@ export function ServiceComparison({ services, open, onOpenChange }: ServiceCompa
           <span className="sr-only">Close</span>
         </Button>
 
-        <ComparisonHeader 
-          services={services.map(convertToMarketplaceService)}
-        />
-        
-        {services.length > 0 ? (
-          <ComparisonResponsive 
-            services={services} 
-            onRemoveService={handleRemoveService} 
-          />
-        ) : (
-          <EmptyComparison onClose={handleClose} />
-        )}
+        <MarketplaceErrorBoundary>
+          {isLoading ? (
+            <MarketplaceLoadingState type="detail" />
+          ) : (
+            <>
+              <ComparisonHeader 
+                services={services.map(convertToMarketplaceService)}
+              />
+              
+              {services.length > 0 ? (
+                <ComparisonResponsive 
+                  services={services} 
+                  onRemoveService={handleRemoveService} 
+                />
+              ) : (
+                <EmptyComparison onClose={handleClose} />
+              )}
+            </>
+          )}
+        </MarketplaceErrorBoundary>
       </DialogContent>
     </Dialog>
   );

@@ -5,6 +5,8 @@ import { ContractDetails } from "../ContractDetails";
 import { ContractFilters } from "./ContractFilters";
 import { EmptyContractsList, NoMatchingContracts } from "./EmptyContractsList";
 import { ContractCard } from "./ContractCard";
+import { ErrorBoundary } from "@/utils/error-handling";
+import LoadingState from "@/components/ui/loading-state";
 
 export function ContractsList() {
   const { contracts, fetchContracts, loading, profile } = useEscrow();
@@ -40,11 +42,7 @@ export function ContractsList() {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingState message="Loading contracts..." fullPage={false} size="md" />;
   }
 
   if (contracts.length === 0) {
@@ -52,37 +50,39 @@ export function ContractsList() {
   }
 
   return (
-    <div className="space-y-4">
-      <ContractFilters 
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        viewType={viewType}
-        setViewType={setViewType}
-        onRefresh={() => fetchContracts()}
-      />
-      
-      {filteredContracts.length === 0 ? (
-        <NoMatchingContracts />
-      ) : (
-        <div className="grid gap-4">
-          {filteredContracts.map((contract) => (
-            <ContractCard 
-              key={contract.id}
-              contract={contract}
-              currentUser={profile}
-              onViewDetails={handleViewContract}
-            />
-          ))}
-        </div>
-      )}
-      
-      {selectedContract && (
-        <ContractDetails 
-          contract={selectedContract}
-          open={showDetails}
-          onOpenChange={setShowDetails}
+    <ErrorBoundary>
+      <div className="space-y-4">
+        <ContractFilters 
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          viewType={viewType}
+          setViewType={setViewType}
+          onRefresh={() => fetchContracts()}
         />
-      )}
-    </div>
+        
+        {filteredContracts.length === 0 ? (
+          <NoMatchingContracts />
+        ) : (
+          <div className="grid gap-4">
+            {filteredContracts.map((contract) => (
+              <ContractCard 
+                key={contract.id}
+                contract={contract}
+                currentUser={profile}
+                onViewDetails={handleViewContract}
+              />
+            ))}
+          </div>
+        )}
+        
+        {selectedContract && (
+          <ContractDetails 
+            contract={selectedContract}
+            open={showDetails}
+            onOpenChange={setShowDetails}
+          />
+        )}
+      </div>
+    </ErrorBoundary>
   );
 }

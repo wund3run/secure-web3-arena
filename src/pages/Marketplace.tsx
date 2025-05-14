@@ -7,12 +7,12 @@ import { MarketplaceDialogs } from "@/components/marketplace/layout/MarketplaceD
 import { ComparisonFloatingIndicator } from "@/components/marketplace/sections/ComparisonFloatingIndicator";
 import { SERVICES } from "@/data/marketplace-data";
 import { MarketplaceProvider, useMarketplace } from "@/contexts/marketplace/MarketplaceContext";
-import { MarketplaceErrorBoundary } from "@/components/marketplace/error-handling/MarketplaceErrorBoundary";
+import { MarketplaceErrorBoundary, ErrorBoundary } from "@/utils/error-handling";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { handleApiError } from "@/utils/apiErrorHandler";
-import ErrorBoundary from "@/components/ui/error-boundary";
 import { ServiceCardProps } from "@/types/marketplace-unified";
+import { MarketplaceLoadingState } from "@/components/marketplace/error-handling";
 
 // Define global interface for window to include SERVICES with correct type
 declare global {
@@ -85,49 +85,55 @@ function MarketplacePageContent() {
     );
   }
 
+  if (isLoading || servicesQuery.isLoading) {
+    return <MarketplaceLoadingState count={8} />;
+  }
+
   return (
     <div className="flex flex-col gap-6">
-      <MarketplaceHeader 
-        showFilters={showFilters}
-        setShowFilters={setShowFilters}
-      />
-      
-      <MarketplaceContentComponent 
-        showFilters={showFilters}
-        activeCategory={activeCategory}
-        setActiveCategory={setActiveCategory}
-        viewMode={viewMode}
-        isLoading={isLoading}
-        filteredServices={filteredServices}
-        showAIRecommendations={showAIRecommendations}
-        activeFilters={activeFilters}
-        handleServiceSelect={handleServiceSelect}
-        isServiceInComparison={isServiceInComparison}
-        toggleCompareService={toggleCompareService}
-        handleApplyFilters={handleApplyFilters}
-      />
-
-      {/* Dialogs */}
-      <MarketplaceDialogs 
-        selectedService={selectedService}
-        setSelectedService={setSelectedService}
-        showComparison={showComparison}
-        setShowComparison={setShowComparison}
-        servicesForComparison={servicesForComparison}
-        showEnhancedOnboarding={showEnhancedOnboarding}
-        setShowEnhancedOnboarding={setShowComparison}
-        handleOnboardingComplete={handleOnboardingComplete}
-        reviews={[]} // Pass reviews from a context or state in a real implementation
-      />
-      
-      {/* Floating comparison indicator if items are selected */}
-      {servicesForComparison.length > 0 && (
-        <ComparisonFloatingIndicator
-          servicesForComparison={servicesForComparison}
-          toggleCompareService={toggleCompareService}
-          handleOpenComparison={handleOpenComparison}
+      <MarketplaceErrorBoundary>
+        <MarketplaceHeader 
+          showFilters={showFilters}
+          setShowFilters={setShowFilters}
         />
-      )}
+        
+        <MarketplaceContentComponent 
+          showFilters={showFilters}
+          activeCategory={activeCategory}
+          setActiveCategory={setActiveCategory}
+          viewMode={viewMode}
+          isLoading={isLoading}
+          filteredServices={filteredServices}
+          showAIRecommendations={showAIRecommendations}
+          activeFilters={activeFilters}
+          handleServiceSelect={handleServiceSelect}
+          isServiceInComparison={isServiceInComparison}
+          toggleCompareService={toggleCompareService}
+          handleApplyFilters={handleApplyFilters}
+        />
+
+        {/* Dialogs */}
+        <MarketplaceDialogs 
+          selectedService={selectedService}
+          setSelectedService={setSelectedService}
+          showComparison={showComparison}
+          setShowComparison={setShowComparison}
+          servicesForComparison={servicesForComparison}
+          showEnhancedOnboarding={showEnhancedOnboarding}
+          setShowEnhancedOnboarding={setShowComparison}
+          handleOnboardingComplete={handleOnboardingComplete}
+          reviews={[]} // Pass reviews from a context or state in a real implementation
+        />
+        
+        {/* Floating comparison indicator if items are selected */}
+        {servicesForComparison.length > 0 && (
+          <ComparisonFloatingIndicator
+            servicesForComparison={servicesForComparison}
+            toggleCompareService={toggleCompareService}
+            handleOpenComparison={handleOpenComparison}
+          />
+        )}
+      </MarketplaceErrorBoundary>
     </div>
   );
 }

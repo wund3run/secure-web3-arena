@@ -1,10 +1,11 @@
 
 import React from "react";
 import { useMediaQuery } from "@/hooks/use-mobile";
-import { ServiceCardProps, MarketplaceService } from "@/types/marketplace-unified";
+import { ServiceCardProps } from "@/types/marketplace-unified";
 import { ComparisonTable } from "./ComparisonTable";
 import { MobileComparisonTable } from "./MobileComparisonTable";
 import { convertToMarketplaceService } from "../comparison-manager/utils/ServiceConverter";
+import { MarketplaceErrorBoundary } from "@/utils/error-handling";
 
 interface ComparisonResponsiveProps {
   services: ServiceCardProps[];
@@ -19,11 +20,13 @@ export function ComparisonResponsive({ services, onRemoveService }: ComparisonRe
   
   return (
     <div className="space-y-6 mt-4">
-      {isMobile ? (
-        <MobileComparisonTable services={marketplaceServices} onRemoveService={onRemoveService} />
-      ) : (
-        <ComparisonTable services={marketplaceServices} onRemoveService={onRemoveService} />
-      )}
+      <MarketplaceErrorBoundary>
+        {isMobile ? (
+          <MobileComparisonTable services={marketplaceServices} onRemoveService={onRemoveService} />
+        ) : (
+          <ComparisonTable services={marketplaceServices} onRemoveService={onRemoveService} />
+        )}
+      </MarketplaceErrorBoundary>
     </div>
   );
 }

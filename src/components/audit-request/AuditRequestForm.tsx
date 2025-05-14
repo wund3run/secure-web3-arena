@@ -7,7 +7,7 @@ import RequirementsStep from './steps/RequirementsStep';
 import ReviewStep from './steps/ReviewStep';
 import FormProgress from './FormProgress';
 import AIMatchingJourney from './AIMatchingJourney';
-import ErrorBoundary from "@/components/ui/error-boundary";
+import { ErrorBoundary } from "@/utils/error-handling";
 import LoadingState from "@/components/ui/loading-state";
 import { showFeedback } from "@/components/ui/interactive-feedback";
 import { AlertTriangle } from "lucide-react";
@@ -70,10 +70,10 @@ const AuditRequestForm = ({ onSubmitSuccess, prefilledData }: AuditRequestFormPr
                 message="Processing your audit request..." 
                 fullPage={false} 
                 size="lg"
+                showTrivia={true}
               />
             ) : (
-              <>
-                {/* AI Matching Journey */}
+              <ErrorBoundary>
                 {showAIMatching ? (
                   <AIMatchingJourney 
                     formData={formData} 
@@ -129,7 +129,7 @@ const AuditRequestForm = ({ onSubmitSuccess, prefilledData }: AuditRequestFormPr
                     )}
                   </>
                 )}
-              </>
+              </ErrorBoundary>
             )}
           </form>
         </div>
