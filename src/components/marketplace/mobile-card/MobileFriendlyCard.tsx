@@ -15,6 +15,8 @@ export interface MobileFriendlyCardProps extends Omit<ServiceCardProps, 'provide
     completedProjects: number;
   };
   onSelect?: () => void;
+  rating?: number;
+  completedJobs?: number;
 }
 
 export function MobileFriendlyCard({
@@ -26,7 +28,9 @@ export function MobileFriendlyCard({
   category,
   tags,
   imageUrl,
-  onSelect
+  onSelect,
+  rating,
+  completedJobs
 }: MobileFriendlyCardProps) {
   return (
     <Card className="overflow-hidden h-full flex flex-col">
