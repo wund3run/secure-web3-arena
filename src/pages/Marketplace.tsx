@@ -12,8 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { handleApiError } from "@/utils/apiErrorHandler";
 import ErrorBoundary from "@/components/ui/error-boundary";
-import { convertArrayToMarketplaceServices, convertToServiceCardProps } from "@/components/marketplace/comparison-manager/utils/ServiceConverter";
-import { ServiceCardProps, MarketplaceService } from "@/types/marketplace-unified";
+import { ServiceCardProps } from "@/types/marketplace";
 
 // Define global interface for window to include SERVICES with correct type
 declare global {
@@ -74,9 +73,6 @@ function MarketplacePageContent() {
       setSelectedService(service);
     }
   };
-
-  // Convert ServiceCardProps to MarketplaceService for components that require it
-  const marketplaceServices = convertArrayToMarketplaceServices(filteredServices);
 
   if (servicesQuery.error) {
     return (

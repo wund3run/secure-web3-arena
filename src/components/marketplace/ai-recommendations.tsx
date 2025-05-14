@@ -1,7 +1,8 @@
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { ServiceCardProps } from "@/data/marketplace-data";
+import { ServiceCardProps } from "@/types/marketplace";
 import { Brain, Shield, Sparkles, Star, Zap } from "lucide-react";
 import { MobileFriendlyCard } from "./mobile-card";
 

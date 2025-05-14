@@ -13,8 +13,7 @@ import { MarketplaceProvider, useMarketplace } from "@/contexts/marketplace/Mark
 import { MarketplaceErrorBoundary } from "@/components/marketplace/error-handling/MarketplaceErrorBoundary";
 import { ComparisonFloatingIndicator } from "@/components/marketplace/sections/ComparisonFloatingIndicator";
 import { MarketplaceDialogs } from "@/components/marketplace/layout/MarketplaceDialogs";
-import { convertArrayToMarketplaceServices, convertToServiceCardProps } from "@/components/marketplace/comparison-manager/utils/ServiceConverter";
-import { ServiceCardProps, MarketplaceService } from "@/types/marketplace-unified";
+import { ServiceCardProps } from "@/types/marketplace";
 
 function MarketplaceContent() {
   const {
@@ -58,10 +57,6 @@ function MarketplaceContent() {
     }
   };
 
-  // Convert ServiceCardProps to MarketplaceService for AIRecommendations
-  // This is needed because AIRecommendations expects MarketplaceService objects
-  const marketplaceServices = convertArrayToMarketplaceServices(filteredServices);
-
   return (
     <>
       <MarketplaceHeader />
@@ -72,7 +67,7 @@ function MarketplaceContent() {
         {showAIRecommendations && (
           <div className="lg:col-span-3 mb-2">
             <AIRecommendations 
-              services={marketplaceServices}
+              services={filteredServices}
               projectSize={activeFilters.projectSize || "medium"}
               blockchains={activeFilters.blockchains || []}
               onRecommendationSelect={handleAIRecommendationSelect}
