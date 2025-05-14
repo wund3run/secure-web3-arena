@@ -14,9 +14,10 @@ export interface MobileFriendlyCardProps {
   description: string;
   provider: {
     name: string;
-    securityScore: number;
-    verificationLevel: string;
-    completedProjects: number;
+    securityScore?: number;
+    verificationLevel?: string;
+    completedProjects?: number;
+    reputation?: number;
   };
   pricing: {
     amount: number;
@@ -45,7 +46,7 @@ export function MobileFriendlyCard({
   completedJobs
 }: MobileFriendlyCardProps) {
   return (
-    <Card className="overflow-hidden h-full flex flex-col">
+    <Card className="overflow-hidden h-full flex flex-col interactive-card border-border/30 hover:border-primary/20 transition-all duration-300 group">
       <MobileCardImage imageUrl={imageUrl} title={title} />
       
       <CardContent className="p-4 flex-grow">
@@ -55,21 +56,25 @@ export function MobileFriendlyCard({
           provider={provider}
           category={category}
           tags={tags}
+          rating={rating}
         />
       </CardContent>
       
-      <CardFooter className="p-4 pt-0 flex-shrink-0">
-        <MobileCardFooter pricing={pricing} />
+      <CardFooter className="p-4 pt-0 flex-shrink-0 justify-between items-center">
+        <MobileCardFooter 
+          pricing={pricing} 
+          completedJobs={completedJobs} 
+        />
         
-        <div className="flex justify-end flex-1">
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={onSelect}
-          >
-            View Details
-          </Button>
-        </div>
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={onSelect}
+          className="hover:bg-primary/5 group-hover:border-primary/30 transition-colors duration-300"
+          aria-label={`View details for ${title}`}
+        >
+          View Details
+        </Button>
       </CardFooter>
     </Card>
   );

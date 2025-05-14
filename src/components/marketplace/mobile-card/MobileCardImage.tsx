@@ -9,19 +9,20 @@ interface MobileCardImageProps {
 
 export function MobileCardImage({ imageUrl, title }: MobileCardImageProps) {
   return (
-    <div className="overflow-hidden">
-      <AspectRatio ratio={16 / 9}>
+    <div className="rounded-t-lg overflow-hidden">
+      <AspectRatio ratio={16/9} className="bg-muted">
         {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={title}
-            className="object-cover w-full h-full"
+          <img 
+            src={imageUrl} 
+            alt={`${title} service cover image`}
+            className="object-cover w-full h-full transition-all duration-300 hover:scale-105"
+            loading="lazy"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-primary/20 to-muted flex items-center justify-center">
-            <span className="text-xl font-semibold text-primary/60">
-              {title.substring(0, 2).toUpperCase()}
-            </span>
+          <div className="flex items-center justify-center h-full bg-gradient-to-br from-muted to-muted/50">
+            <div className="text-muted-foreground text-2xl font-medium opacity-50">
+              {title.charAt(0)}
+            </div>
           </div>
         )}
       </AspectRatio>
