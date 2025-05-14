@@ -20,7 +20,7 @@ export function convertToMarketplaceService(service: ServiceCardProps): Marketpl
     pricing: {
       amount: service.pricing.amount,
       currency: service.pricing.currency,
-      model: "fixed" // Default to fixed pricing model
+      model: service.pricing.model || "fixed" // Use model if provided, otherwise default to fixed
     },
     rating: service.rating,
     completedJobs: service.completedJobs,
@@ -49,7 +49,8 @@ export function convertToServiceCardProps(service: MarketplaceService): ServiceC
     },
     pricing: {
       amount: service.pricing.amount,
-      currency: service.pricing.currency
+      currency: service.pricing.currency,
+      model: service.pricing.model
     },
     rating: service.rating,
     completedJobs: service.completedJobs,

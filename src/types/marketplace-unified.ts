@@ -68,6 +68,7 @@ export interface ServiceCardProps {
   pricing: {
     amount: number;
     currency: string;
+    model?: "fixed" | "hourly" | "range"; // Make model optional to maintain compatibility
   };
   rating: number;
   completedJobs: number;
