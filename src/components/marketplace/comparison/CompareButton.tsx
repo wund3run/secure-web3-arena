@@ -47,15 +47,20 @@ export function CompareButton({
         className
       )}
       onClick={handleClick}
+      aria-pressed={selected}
+      aria-label={selected ? "Remove from comparison" : "Add to comparison"}
       {...props}
     >
-      <Compare className={touchFriendly ? "h-5 w-5" : "h-4 w-4"} />
-      {children || "Compare"}
+      <Compare className={touchFriendly ? "h-5 w-5" : "h-4 w-4"} aria-hidden="true" />
+      <span>{children || "Compare"}</span>
       {displayCount > 0 && (
-        <span className={cn(
-          "inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground",
-          touchFriendly ? "h-6 w-6 text-sm" : "h-5 w-5 text-xs"
-        )}>
+        <span 
+          className={cn(
+            "inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground",
+            touchFriendly ? "h-6 w-6 text-sm" : "h-5 w-5 text-xs"
+          )}
+          aria-label={`${displayCount} ${displayCount === 1 ? 'item' : 'items'} selected`}
+        >
           {displayCount}
         </span>
       )}

@@ -24,7 +24,11 @@ export function MarketplaceCallToAction() {
   };
 
   return (
-    <Card className="mt-12 overflow-hidden interactive-card" role="region" aria-labelledby="cta-heading">
+    <Card 
+      className="mt-12 overflow-hidden interactive-card" 
+      role="region" 
+      aria-labelledby="cta-heading"
+    >
       <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-1 transition-all duration-300"></div>
       <CardContent className="p-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
@@ -32,33 +36,37 @@ export function MarketplaceCallToAction() {
             <h3 className="text-2xl font-bold mb-2" id="cta-heading">Ready for Expert Security Review?</h3>
             <p className="text-muted-foreground">Let us match you with the perfect security experts for your project needs.</p>
             
-            <ul className="mt-4 space-y-2">
+            <ul className="mt-4 space-y-2" aria-label="Benefits">
               <li className="flex items-start">
-                <BadgeCheck className="h-5 w-5 text-primary mr-2 mt-0.5 animate-in zoom-in-50 transition-all" />
+                <BadgeCheck className="h-5 w-5 text-primary mr-2 mt-0.5 animate-in zoom-in-50 transition-all" aria-hidden="true" />
                 <span className="text-sm">AI-powered matching with top auditors</span>
               </li>
               <li className="flex items-start">
-                <BadgeCheck className="h-5 w-5 text-primary mr-2 mt-0.5 animate-in zoom-in-75 delay-100 transition-all" />
+                <BadgeCheck className="h-5 w-5 text-primary mr-2 mt-0.5 animate-in zoom-in-75 delay-100 transition-all" aria-hidden="true" />
                 <span className="text-sm">Comprehensive vulnerability assessments</span>
               </li>
             </ul>
           </div>
           
-          {/* Explicitly set type="button" to prevent form submission */}
           <div>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Link to="/request-audit" className="w-full sm:w-auto" onClick={handleAuditClick}>
+                  <Link 
+                    to="/request-audit" 
+                    className="w-full sm:w-auto" 
+                    onClick={handleAuditClick}
+                    role="button"
+                    aria-label="Submit your project for security audit"
+                  >
                     <Button 
                       size="lg" 
                       variant="default" 
                       className="w-full flex items-center whitespace-nowrap group bg-gradient-to-r from-primary to-secondary hover:opacity-90 hover:shadow-md transition-all focus:ring-2 focus:ring-primary/50 focus:outline-none btn-pulse"
-                      aria-label="Submit your project for security audit"
-                      type="button" // Explicitly set type to prevent form submission
+                      type="button" 
                     >
                       <Shield className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" aria-hidden="true" />
-                      Start Your Security Assessment
+                      <span>Start Your Security Assessment</span>
                       <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                     </Button>
                   </Link>

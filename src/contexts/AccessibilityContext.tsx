@@ -22,7 +22,7 @@ const defaultState: AccessibilityContextState = {
   reducedMotion: false,
   screenReaderFriendly: false,
   keyboardMode: false,
-  focusVisible: false,
+  focusVisible: true,
   toggleHighContrast: () => {},
   toggleLargeText: () => {},
   toggleReducedMotion: () => {},
@@ -70,11 +70,13 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Tab') {
         setKeyboardMode(true);
+        document.body.classList.add('keyboard-mode');
       }
     };
     
     const handleMouseDown = () => {
       setKeyboardMode(false);
+      document.body.classList.remove('keyboard-mode');
     };
     
     window.addEventListener('keydown', handleKeyDown);
@@ -139,6 +141,40 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     } else {
       body.classList.remove("focus-visible-mode");
     }
+    
+    // Add some global CSS for accessibility
+    const styleId = "accessibility-styles";
+    let styleEl = document.getElementById(styleId) as HTMLStyleElement;
+    
+    if (!styleEl) {
+      styleEl = document.createElement("style");
+      styleEl.id = styleId;
+      document.head.appendChild(styleEl);
+    }
+    
+    styleEl.textContent = `
+      .keyboard-mode :focus {
+        outline: 2px solid hsl(var(--primary));
+        outline-offset: 2px;
+      }
+      
+      .high-contrast {
+        --primary: 240 100% 50%;
+        --contrast-ratio: 7;
+      }
+      
+      .large-text {
+        font-size: 1.2rem;
+      }
+      
+      .reduced-motion *,
+      .reduced-motion *::before,
+      .reduced-motion *::after {
+        animation-duration: 0.0001s !important;
+        transition-duration: 0.0001s !important;
+      }
+    `;
+    
   }, [highContrast, largeText, reducedMotion, screenReaderFriendly, keyboardMode, focusVisible]);
 
   const toggleHighContrast = () => setHighContrast((prev) => !prev);

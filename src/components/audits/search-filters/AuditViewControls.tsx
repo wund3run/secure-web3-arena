@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Filter, ArrowUpDown, HelpCircle } from "lucide-react";
+import { Filter, ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   Tooltip,
@@ -23,21 +23,32 @@ export const AuditViewControls: React.FC<AuditViewControlsProps> = ({
   setShowFilters
 }) => {
   return (
-    <div className="flex flex-wrap gap-2 items-center" role="toolbar" aria-label="View controls">
+    <div 
+      className="flex flex-wrap gap-2 items-center" 
+      role="toolbar" 
+      aria-label="View controls"
+      aria-controls="audit-items-container"
+    >
       <Button 
         variant={showFilters ? "default" : "outline"} 
         size="sm"
         onClick={() => setShowFilters(!showFilters)}
         className="hover:bg-muted transition-colors relative focus:ring-2 focus:ring-primary/50 focus:outline-none group"
         aria-pressed={showFilters}
+        aria-expanded={showFilters}
+        aria-controls="filter-panel"
         aria-label={showFilters ? "Hide filters" : "Show filters"}
       >
         <Filter className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" aria-hidden="true" />
         <span className="hidden sm:inline">{showFilters ? "Hide Filters" : "Show Filters"}</span>
       </Button>
       
-      <div className="flex border rounded-md overflow-hidden" role="group" aria-label="View mode selection">
-        <TooltipProvider>
+      <div 
+        className="flex border rounded-md overflow-hidden" 
+        role="radiogroup" 
+        aria-label="View mode selection"
+      >
+        <TooltipProvider delayDuration={300}>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -47,6 +58,8 @@ export const AuditViewControls: React.FC<AuditViewControlsProps> = ({
                 onClick={() => setViewMode("grid")}
                 aria-label="Switch to grid view"
                 aria-pressed={viewMode === "grid"}
+                role="radio"
+                aria-checked={viewMode === "grid"}
               >
                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transition-transform group-hover:scale-110" aria-hidden="true">
                   <path d="M4 2H2V13H4V2ZM7 2H5V13H7V2ZM8 2H10V13H8V2ZM13 2H11V13H13V2Z" fill="currentColor" />
@@ -54,13 +67,13 @@ export const AuditViewControls: React.FC<AuditViewControlsProps> = ({
                 <span className="sr-only md:not-sr-only md:ml-1.5">Grid</span>
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent side="bottom">
               <p className="text-xs">Display items in a grid layout</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
         
-        <TooltipProvider>
+        <TooltipProvider delayDuration={300}>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -70,6 +83,8 @@ export const AuditViewControls: React.FC<AuditViewControlsProps> = ({
                 onClick={() => setViewMode("list")}
                 aria-label="Switch to list view"
                 aria-pressed={viewMode === "list"}
+                role="radio"
+                aria-checked={viewMode === "list"}
               >
                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transition-transform group-hover:scale-110" aria-hidden="true">
                   <path d="M2 4H13V5.5H2V4ZM2 6.5H13V8H2V6.5ZM2 9H13V10.5H2V9Z" fill="currentColor" />
@@ -84,7 +99,7 @@ export const AuditViewControls: React.FC<AuditViewControlsProps> = ({
         </TooltipProvider>
       </div>
       
-      <TooltipProvider>
+      <TooltipProvider delayDuration={300}>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button 

@@ -1,26 +1,42 @@
+
 import React, { useEffect, useRef } from 'react';
 
 interface FocusTrapProps {
   children: React.ReactNode;
   active?: boolean;
   initialFocus?: React.RefObject<HTMLElement>;
+  returnFocusOnDeactivate?: boolean;
+  onEscape?: () => void;
 }
 
-export function FocusTrap({ children, active = true, initialFocus }: FocusTrapProps) {
+export function FocusTrap({ 
+  children, 
+  active = true, 
+  initialFocus,
+  returnFocusOnDeactivate = true,
+  onEscape
+}: FocusTrapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!active) return;
+    
+    // Store the previously focused element
+    previousFocusRef.current = document.activeElement as HTMLElement;
     
     // Get all focusable elements
     const getFocusableElements = () => {
       if (!containerRef.current) return [];
       
+      const selector = 
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+      
       return Array.from(
-        containerRef.current.querySelectorAll<HTMLElement>(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        )
-      ).filter(el => !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true');
+        containerRef.current.querySelectorAll<HTMLElement>(selector)
+      ).filter(el => !el.hasAttribute('disabled') && 
+                    !el.hasAttribute('hidden') &&
+                    el.getAttribute('aria-hidden') !== 'true');
     };
     
     // Set initial focus
@@ -31,12 +47,23 @@ export function FocusTrap({ children, active = true, initialFocus }: FocusTrapPr
         const focusableElements = getFocusableElements();
         if (focusableElements.length > 0) {
           focusableElements[0].focus();
+        } else if (containerRef.current) {
+          // If no focusable elements, make container focusable
+          containerRef.current.tabIndex = -1;
+          containerRef.current.focus();
         }
       }
     };
     
-    // Handle tab key to keep focus inside the trap
+    // Handle key events
     const handleKeyDown = (event: KeyboardEvent) => {
+      // Handle Escape key
+      if (event.key === 'Escape' && onEscape) {
+        event.preventDefault();
+        onEscape();
+        return;
+      }
+      
       if (event.key !== 'Tab') return;
       
       const focusableElements = getFocusableElements();
@@ -61,25 +88,45 @@ export function FocusTrap({ children, active = true, initialFocus }: FocusTrapPr
       }
     };
     
-    // Save previous active element to return focus when unmounted
-    const previousActiveElement = document.activeElement as HTMLElement;
-    
     // Set up trap
     setInitialFocus();
     document.addEventListener('keydown', handleKeyDown);
     
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      
-      // Return focus when unmounted
-      if (previousActiveElement) {
-        previousActiveElement.focus();
+    // Prevents scrolling and focusing outside the trap
+    const preventFocus = (e: FocusEvent) => {
+      if (containerRef.current && 
+          e.target instanceof Node && 
+          !containerRef.current.contains(e.target)) {
+        e.preventDefault();
+        const focusableElements = getFocusableElements();
+        if (focusableElements.length > 0) {
+          focusableElements[0].focus();
+        }
       }
     };
-  }, [active, initialFocus]);
+    
+    document.addEventListener('focusin', preventFocus);
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('focusin', preventFocus);
+      
+      // Return focus when unmounted if needed
+      if (returnFocusOnDeactivate && previousFocusRef.current) {
+        setTimeout(() => {
+          previousFocusRef.current?.focus();
+        }, 0);
+      }
+    };
+  }, [active, initialFocus, onEscape, returnFocusOnDeactivate]);
   
   return (
-    <div ref={containerRef}>
+    <div 
+      ref={containerRef} 
+      aria-modal={active} 
+      role="dialog"
+      className="outline-none"
+    >
       {children}
     </div>
   );

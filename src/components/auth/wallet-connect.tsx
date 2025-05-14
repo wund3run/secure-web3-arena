@@ -71,15 +71,28 @@ export function WalletConnect({ onConnect, onClose }: WalletConnectProps) {
       }
       
       toast.success(`Connected to ${walletName}`, {
-        description: `Address: ${address}`
+        description: `Address: ${address}`,
+        duration: 5000,
       });
       onConnect(walletName, address);
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Failed to connect wallet");
       toast.error("Connection failed", {
-        description: err.message || "Could not connect to wallet"
+        description: err.message || "Could not connect to wallet",
+        duration: 5000,
       });
+      
+      // Announce error to screen readers
+      const announcer = document.createElement('div');
+      announcer.setAttribute('aria-live', 'assertive');
+      announcer.textContent = `Error: ${err.message || "Could not connect to wallet"}`;
+      document.body.appendChild(announcer);
+      
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(announcer);
+      }, 3000);
     } finally {
       setIsConnecting(false);
     }
@@ -89,7 +102,7 @@ export function WalletConnect({ onConnect, onClose }: WalletConnectProps) {
     setIsConnecting(true);
     setError(null);
     
-    toast.info(`Connecting to ${provider}...`);
+    toast.info(`Connecting to ${provider}...`, { duration: 2000 });
     
     // In a real implementation, this would redirect to the OAuth flow
     // For now, we simulate a successful connection with a delay
@@ -130,19 +143,37 @@ export function WalletConnect({ onConnect, onClose }: WalletConnectProps) {
       </CardHeader>
       
       <CardContent>
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-4">
-            <TabsTrigger value="wallet" className="flex items-center">
-              <Wallet className="h-4 w-4 mr-2" />
+        <Tabs 
+          value={activeTab} 
+          onValueChange={setActiveTab} 
+          className="w-full"
+          aria-label="Authentication options"
+        >
+          <TabsList className="grid w-full grid-cols-2 mb-4" aria-label="Authentication methods">
+            <TabsTrigger 
+              value="wallet" 
+              className="flex items-center"
+              aria-controls="wallet-tab-content"
+            >
+              <Wallet className="h-4 w-4 mr-2" aria-hidden="true" />
               Web3 Wallet
             </TabsTrigger>
-            <TabsTrigger value="social" className="flex items-center">
-              <Mail className="h-4 w-4 mr-2" />
+            <TabsTrigger 
+              value="social" 
+              className="flex items-center"
+              aria-controls="social-tab-content"
+            >
+              <Mail className="h-4 w-4 mr-2" aria-hidden="true" />
               Social / Email
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="wallet" className="mt-0 space-y-4">
+          <TabsContent 
+            value="wallet" 
+            className="mt-0 space-y-4"
+            id="wallet-tab-content"
+            role="tabpanel"
+          >
             <WalletProvidersList
               isMetaMaskDetected={isMetaMaskDetected}
               isPhantomDetected={isPhantomDetected}
@@ -153,7 +184,12 @@ export function WalletConnect({ onConnect, onClose }: WalletConnectProps) {
             />
           </TabsContent>
           
-          <TabsContent value="social" className="mt-0 space-y-3">
+          <TabsContent 
+            value="social" 
+            className="mt-0 space-y-3"
+            id="social-tab-content"
+            role="tabpanel"
+          >
             <SocialLoginList
               onSocialConnect={handleSocialConnect}
               onEmailConnect={handleEmailConnect}
@@ -161,15 +197,31 @@ export function WalletConnect({ onConnect, onClose }: WalletConnectProps) {
             />
           </TabsContent>
         </Tabs>
+        
+        {error && (
+          <div 
+            role="alert" 
+            aria-live="assertive" 
+            className="mt-4 p-2 bg-destructive/10 text-destructive text-sm rounded border border-destructive/20"
+          >
+            {error}
+          </div>
+        )}
       </CardContent>
       
       <CardFooter className="flex flex-col space-y-4 pt-0">
         <div className="text-xs text-center text-muted-foreground w-full">
-          By connecting, you agree to our <a href="#" className="underline">Terms of Service</a> and <a href="#" className="underline">Privacy Policy</a>
+          By connecting, you agree to our <a href="#" className="underline focus:outline-none focus:ring-2 focus:ring-primary rounded-sm">Terms of Service</a> and <a href="#" className="underline focus:outline-none focus:ring-2 focus:ring-primary rounded-sm">Privacy Policy</a>
         </div>
         
         {onClose && (
-          <Button variant="ghost" size="sm" onClick={onClose} disabled={isConnecting}>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={onClose} 
+            disabled={isConnecting}
+            aria-label="Skip sign in for now"
+          >
             I'll join later
           </Button>
         )}

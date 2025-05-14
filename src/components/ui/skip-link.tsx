@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface SkipLinkProps {
@@ -23,21 +23,19 @@ export function SkipLink({ targetId, className }: SkipLinkProps) {
       // Focus the element
       targetElement.focus();
       
+      // Scroll into view if needed
+      targetElement.scrollIntoView({ behavior: 'smooth' });
+      
       // For screen readers, announce that focus has moved
       const announcer = document.createElement('div');
       announcer.setAttribute('aria-live', 'polite');
-      announcer.textContent = `Navigated to ${targetElement.tagName}`;
+      announcer.textContent = `Navigated to ${targetElement.tagName.toLowerCase()}`;
       document.body.appendChild(announcer);
       
       // Clean up
       setTimeout(() => {
         document.body.removeChild(announcer);
       }, 1000);
-      
-      // If there's a hash link in the URL format, update browser history
-      if (targetId) {
-        window.location.hash = targetId;
-      }
     }
   };
   
@@ -45,7 +43,7 @@ export function SkipLink({ targetId, className }: SkipLinkProps) {
     <a 
       href={`#${targetId}`}
       className={cn(
-        "skip-link",
+        "skip-link fixed z-50 left-4 top-4 bg-background p-2 border border-border rounded-md shadow-md transition-transform",
         focused ? "translate-y-0" : "-translate-y-full",
         className
       )}

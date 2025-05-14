@@ -1,51 +1,53 @@
 
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
-import App from './App';
-import './index.css';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "./index.css";
+import { BrowserRouter } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AccessibilityProvider } from "./contexts/AccessibilityContext";
 
-// Preload critical fonts for better performance
-const preloadFonts = () => {
-  const links = [
-    { rel: 'preload', href: '/fonts/inter-var.woff2', as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' }
-  ];
-  
-  links.forEach(attributes => {
-    const link = document.createElement('link');
-    Object.entries(attributes).forEach(([key, value]) => {
-      link.setAttribute(key, value as string);
-    });
-    document.head.appendChild(link);
-  });
-};
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1,
+    },
+  },
+});
+
+const root = ReactDOM.createRoot(document.getElementById("root")!);
 
 // Initialize performance monitoring
 if (process.env.NODE_ENV === 'production') {
-  // Add web vitals reporting in production using the correct import method for v5.0.1
-  import('web-vitals').then(({ onCLS, onFCP, onLCP, onTTFB }) => {
+  // Add web vitals reporting in production with the correct imports and usage
+  import('web-vitals').then((webVitals) => {
     const reportWebVitals = (metric: any) => {
-      // Log the metric to console (in production, you might send to an analytics service)
-      console.log(metric);
+      // In production, you might send to an analytics service
+      console.log(metric.name, metric.value, metric.rating);
     };
     
-    // Use available metrics from web-vitals 5.0.1
-    onCLS(reportWebVitals);
-    onFCP(reportWebVitals);
-    onLCP(reportWebVitals);
-    onTTFB(reportWebVitals);
+    // Use the direct named imports from web-vitals v5
+    webVitals.onCLS(reportWebVitals);
+    webVitals.onLCP(reportWebVitals);
+    webVitals.onFCP(reportWebVitals);
+    webVitals.onTTFB(reportWebVitals);
+    // Note: FID was removed in web-vitals v5 and replaced with INP
+    webVitals.onINP?.(reportWebVitals); // Optional chaining in case INP isn't available
   });
 }
 
-// Preload fonts before rendering
-preloadFonts();
-
-createRoot(document.getElementById("root")!).render(
+root.render(
   <React.StrictMode>
     <BrowserRouter>
       <HelmetProvider>
-        <App />
+        <QueryClientProvider client={queryClient}>
+          <AccessibilityProvider>
+            <App />
+          </AccessibilityProvider>
+        </QueryClientProvider>
       </HelmetProvider>
     </BrowserRouter>
   </React.StrictMode>
