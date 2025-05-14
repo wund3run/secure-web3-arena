@@ -5,25 +5,15 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { MobileCardContent } from "./MobileCardContent";
 import { MobileCardFooter } from "./MobileCardFooter";
 import { MobileCardImage } from "./MobileCardImage";
+import { ServiceCardProps } from "@/types/marketplace-unified";
 
-export interface MobileFriendlyCardProps {
-  id: string;
-  title: string;
-  description: string;
+export interface MobileFriendlyCardProps extends Omit<ServiceCardProps, 'provider'> {
   provider: {
     name: string;
     securityScore: number;
     verificationLevel: string;
     completedProjects: number;
   };
-  pricing: {
-    amount: number;
-    currency: string;
-    model?: "fixed" | "hourly" | "range";
-  };
-  category: string;
-  tags: string[];
-  imageUrl?: string;
   onSelect?: () => void;
 }
 
