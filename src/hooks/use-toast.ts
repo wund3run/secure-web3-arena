@@ -1,12 +1,20 @@
 
 import * as React from "react"
-import { toast as sonnerToast, type ToastOptions } from "sonner";
+import { toast as sonnerToast } from "sonner";
 
 type ToastProps = {
   title?: React.ReactNode
   description?: React.ReactNode
   action?: React.ReactElement
   variant?: "default" | "destructive" | "success"
+}
+
+// Define our own toast options interface based on what sonner accepts
+interface CustomToastOptions {
+  description?: string;
+  action?: React.ReactElement;
+  className?: string;
+  duration?: number;
 }
 
 // This is a compatibility layer for shadcn toast system
@@ -17,7 +25,7 @@ export function useToast() {
     const { title, description, variant = "default", action } = props;
     
     // Create accessible toast options
-    const accessibleOptions: ToastOptions = {
+    const accessibleOptions: CustomToastOptions = {
       description: description as string,
       action,
       className: "accessible-toast", // Add class for styling and accessibility hooks

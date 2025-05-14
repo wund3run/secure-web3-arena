@@ -189,7 +189,7 @@ function App() {
               closeButton
               toastOptions={{
                 duration: 5000,
-                className: "rounded-md border border-border bg-background text-foreground"
+                className: "rounded-md border border-border bg-background text-foreground accessible-toast"
               }}
             />
             
