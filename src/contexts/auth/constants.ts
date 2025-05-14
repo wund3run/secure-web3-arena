@@ -1,5 +1,7 @@
 
+
 // Authentication constants
+// Updated version that should be recognized by the build system
 
 // Auth state event types
 export const AUTH_EVENTS = {
@@ -53,3 +55,4 @@ export const DEFAULT_AUTH_OPTIONS = {
   persistSession: true,
   autoRefreshToken: true
 };
+
