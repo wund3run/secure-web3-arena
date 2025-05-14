@@ -7,5 +7,6 @@ export type {
   MarketplaceService,
   Review,
   ServiceFilterOptions,
-  ComparisonService
+  ComparisonService,
+  ServiceCardProps
 } from "@/types/marketplace-unified";

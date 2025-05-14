@@ -13,7 +13,7 @@ import { MarketplaceProvider, useMarketplace } from "@/contexts/marketplace/Mark
 import { MarketplaceErrorBoundary } from "@/components/marketplace/error-handling/MarketplaceErrorBoundary";
 import { ComparisonFloatingIndicator } from "@/components/marketplace/sections/ComparisonFloatingIndicator";
 import { MarketplaceDialogs } from "@/components/marketplace/layout/MarketplaceDialogs";
-import { ServiceCardProps } from "@/types/marketplace";
+import { ServiceCardProps } from "@/types/marketplace-unified";
 
 function MarketplaceContent() {
   const {

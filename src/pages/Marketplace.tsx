@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { handleApiError } from "@/utils/apiErrorHandler";
 import ErrorBoundary from "@/components/ui/error-boundary";
-import { ServiceCardProps } from "@/types/marketplace";
+import { ServiceCardProps } from "@/types/marketplace-unified";
 
 // Define global interface for window to include SERVICES with correct type
 declare global {

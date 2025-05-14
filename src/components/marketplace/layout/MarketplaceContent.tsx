@@ -7,7 +7,7 @@ import { MarketplaceCallToAction } from "@/components/marketplace/sections/Marke
 import { OptimizedListingGrid } from "@/components/marketplace/optimized-listing-grid";
 import { AIRecommendations } from "@/components/marketplace/ai-recommendations";
 import { EnhancedFilters } from "@/components/marketplace/enhanced-filters";
-import { ServiceCardProps } from "@/types/marketplace";
+import { ServiceCardProps } from "@/types/marketplace-unified";
 
 interface MarketplaceContentProps {
   showFilters: boolean;

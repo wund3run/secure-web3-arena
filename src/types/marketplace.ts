@@ -3,38 +3,12 @@
  * Centralized type definitions for marketplace components
  */
 
-// Service provider type
-export interface ServiceProvider {
-  name: string;
-  reputation: number;
-  level: "rookie" | "verified" | "expert";
-  isVerified: boolean;
-  avatarUrl?: string;
-}
-
-// Service pricing type
-export interface ServicePricing {
-  amount: number;
-  currency: string;
-  model?: "fixed" | "hourly" | "range";
-}
-
-// Main service card props type
-export interface ServiceCardProps {
-  id: string;
-  title: string;
-  description: string;
-  provider: ServiceProvider;
-  pricing: ServicePricing;
-  rating: number;
-  completedJobs: number;
-  category: string;
-  tags: string[];
-  imageUrl?: string;
-  securityScore?: number;
-  responseTime?: string;
-  onClick?: () => void;
-}
+// Re-export types from unified definitions for better compatibility
+export { 
+  type ServiceProvider,
+  type ServicePricing,
+  type ServiceCardProps
+} from "./marketplace-unified";
 
 // Filter related types
 export interface FilterOption {

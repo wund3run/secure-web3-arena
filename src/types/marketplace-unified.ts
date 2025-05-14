@@ -6,7 +6,7 @@
 
 // Service provider type
 export interface ServiceProvider {
-  id: string;
+  id?: string; // Made optional to be compatible with ServiceCardProps
   name: string;
   reputation: number;
   level: "rookie" | "verified" | "expert";
@@ -89,4 +89,3 @@ export interface BlockchainEcosystem {
   projectCount: number;
   color?: string;
 }
-
