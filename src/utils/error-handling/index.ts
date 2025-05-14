@@ -15,4 +15,3 @@ export {
 
 // Re-export base error boundary
 export { default as ErrorBoundary } from "@/components/ui/error-boundary";
-
