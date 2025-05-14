@@ -1,7 +1,8 @@
 
 import { toast } from "sonner";
 import { MarketplaceErrorBoundary, useMarketplaceError } from "@/components/marketplace/error-handling";
-import { ErrorBoundary } from "@/components/ui/error-boundary";
+import ErrorBoundary from "@/components/ui/error-boundary";
+import React from "react";
 
 // Re-export components for consistent usage
 export { 
@@ -46,10 +47,11 @@ export async function withErrorHandling<T>(
 }
 
 // Create a utility to help standardize error boundary usage
-export const createBoundary = (component: React.ReactNode, fallback?: React.ReactNode) => {
-  return (
-    <ErrorBoundary fallback={fallback}>
-      {component}
-    </ErrorBoundary>
+// Changed to use a function that returns a React element instead of JSX directly
+export const createBoundary = (component: React.ReactNode, fallback?: React.ReactNode): React.ReactElement => {
+  return React.createElement(
+    ErrorBoundary,
+    { fallback },
+    component
   );
 };
