@@ -46,13 +46,13 @@ export async function withErrorHandling<T>(
   }
 }
 
-// Create a utility to help standardize error boundary usage
+// Fix the createBoundary function to properly include children
 export const createBoundary = (component: React.ReactNode, fallback?: React.ReactNode): React.ReactElement => {
   return React.createElement(
     ErrorBoundary,
     { 
-      fallback,
-      children: component  // Add children explicitly in the props object
+      fallback: fallback,
+      children: component  // Explicitly add children to props
     }
   );
 };
