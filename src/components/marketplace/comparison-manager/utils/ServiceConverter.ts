@@ -1,6 +1,6 @@
 
 import { ServiceCardProps } from "@/types/marketplace";
-import { MarketplaceService } from "../hooks/types/marketplace-types";
+import { MarketplaceService } from "@/components/marketplace/hooks/types/marketplace-types";
 
 // Helper function to convert ServiceCardProps to MarketplaceService
 export function convertToMarketplaceService(service: ServiceCardProps): MarketplaceService {
