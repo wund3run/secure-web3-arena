@@ -47,7 +47,10 @@ export function MobileFriendlyCard({
 }: MobileFriendlyCardProps) {
   return (
     <Card className="overflow-hidden h-full flex flex-col interactive-card border-border/30 hover:border-primary/20 transition-all duration-300 group">
-      <MobileCardImage imageUrl={imageUrl} title={title} />
+      <MobileCardImage 
+        imageUrl={imageUrl} 
+        title={title} 
+      />
       
       <CardContent className="p-4 flex-grow">
         <MobileCardContent

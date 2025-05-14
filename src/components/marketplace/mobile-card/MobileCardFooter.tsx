@@ -1,5 +1,6 @@
 
 import React from "react";
+import { formatCurrency } from "@/lib/utils";
 
 interface MobileCardFooterProps {
   pricing: {
@@ -14,12 +15,16 @@ export function MobileCardFooter({
   pricing,
   completedJobs
 }: MobileCardFooterProps) {
+  const formattedAmount = formatCurrency(pricing.amount, pricing.currency);
+  
   return (
     <div className="flex justify-between items-center w-full">
       <div>
-        <div className="font-bold text-lg">
-          {pricing.currency === "USD" ? "$" : pricing.currency} {pricing.amount}
-          {pricing.model === "hourly" && <span className="text-sm font-medium text-muted-foreground">/hr</span>}
+        <div className="font-bold text-lg" aria-label={`Price: ${formattedAmount}${pricing.model === "hourly" ? " per hour" : ""}`}>
+          {formattedAmount}
+          {pricing.model === "hourly" && (
+            <span className="text-sm font-medium text-muted-foreground">/hr</span>
+          )}
         </div>
         
         {completedJobs !== undefined && (

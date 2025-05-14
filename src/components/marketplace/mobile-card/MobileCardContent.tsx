@@ -2,6 +2,7 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { StarIcon } from "lucide-react";
+import { truncateText } from "@/lib/utils";
 
 interface MobileCardContentProps {
   title: string;
@@ -27,15 +28,15 @@ export function MobileCardContent({
 }: MobileCardContentProps) {
   return (
     <div className="space-y-3">
-      {/* Category Badge */}
+      {/* Category Badge and Rating */}
       <div className="flex items-center justify-between">
         <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20">
           {category}
         </Badge>
         
-        {rating && (
-          <div className="flex items-center gap-1 text-amber-500">
-            <StarIcon className="h-4 w-4 fill-current" />
+        {rating !== undefined && (
+          <div className="flex items-center gap-1 text-amber-500" aria-label={`Rating: ${rating.toFixed(1)} out of 5`}>
+            <StarIcon className="h-4 w-4 fill-current" aria-hidden="true" />
             <span className="font-medium text-sm">{rating.toFixed(1)}</span>
           </div>
         )}
@@ -43,14 +44,18 @@ export function MobileCardContent({
       
       {/* Title and Description */}
       <div>
-        <h3 className="font-semibold text-lg mb-1 line-clamp-2">{title}</h3>
-        <p className="text-muted-foreground text-sm line-clamp-3">{description}</p>
+        <h3 className="font-semibold text-lg mb-1 line-clamp-2" title={title}>
+          {truncateText(title, 60)}
+        </h3>
+        <p className="text-muted-foreground text-sm line-clamp-3" title={description}>
+          {truncateText(description, 150)}
+        </p>
       </div>
       
       {/* Provider Info */}
       <div className="flex items-center gap-2">
-        <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-xs text-primary font-medium">
-          {provider.name.charAt(0)}
+        <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-xs text-primary font-medium" aria-hidden="true">
+          {provider.name.charAt(0).toUpperCase()}
         </div>
         <div className="text-sm">
           <span className="font-medium">{provider.name}</span>
@@ -64,7 +69,7 @@ export function MobileCardContent({
       
       {/* Tags */}
       {tags && tags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mt-1">
+        <div className="flex flex-wrap gap-1.5 mt-1" aria-label="Service tags">
           {tags.slice(0, 3).map((tag, index) => (
             <span 
               key={index} 
