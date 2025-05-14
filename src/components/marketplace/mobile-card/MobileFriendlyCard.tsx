@@ -5,7 +5,6 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { MobileCardContent } from "./MobileCardContent";
 import { MobileCardFooter } from "./MobileCardFooter";
 import { MobileCardImage } from "./MobileCardImage";
-import { ServiceCardProps } from "@/types/marketplace-unified";
 
 // Define a standalone interface without extending ServiceCardProps
 export interface MobileFriendlyCardProps {
@@ -28,8 +27,8 @@ export interface MobileFriendlyCardProps {
   tags: string[];
   imageUrl?: string;
   onSelect?: () => void;
-  rating?: number;
-  completedJobs?: number;
+  rating: number;  // Make this required to fix TypeScript errors
+  completedJobs: number; // Make this required to fix TypeScript errors
 }
 
 export function MobileFriendlyCard({
