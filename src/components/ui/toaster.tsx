@@ -8,13 +8,15 @@ export function Toaster() {
       richColors
       closeButton
       expand
-      // Add more consistent styling
       toastOptions={{
         duration: 5000,
         className: "rounded-md border border-border bg-background text-foreground",
         descriptionClassName: "text-muted-foreground text-sm",
-        actionButtonClassName: "bg-primary text-primary-foreground hover:bg-primary/90",
-        cancelButtonClassName: "bg-muted text-muted-foreground hover:bg-muted/80",
+        // Remove the invalid properties, sonner doesn't support these directly
+        // Use the style prop instead for consistent styling
+        style: {
+          // Add any custom styles if needed
+        }
       }}
     />
   );
