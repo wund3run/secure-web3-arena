@@ -23,13 +23,18 @@ const preloadFonts = () => {
 
 // Initialize performance monitoring
 if (process.env.NODE_ENV === 'production') {
-  // Add web vitals reporting in production
-  import('web-vitals').then(({ getCLS, getFID, getLCP, getFCP, getTTFB }) => {
-    getCLS(console.log);
-    getFID(console.log);
-    getLCP(console.log);
-    getFCP(console.log);
-    getTTFB(console.log);
+  // Add web vitals reporting in production using the correct import method for v5.0.1
+  import('web-vitals').then((webVitals) => {
+    const reportWebVitals = (metric: any) => {
+      // Log the metric to console (in production, you might send to an analytics service)
+      console.log(metric);
+    };
+    
+    webVitals.onCLS(reportWebVitals);
+    webVitals.onFID(reportWebVitals);
+    webVitals.onLCP(reportWebVitals);
+    webVitals.onFCP(reportWebVitals);
+    webVitals.onTTFB(reportWebVitals);
   });
 }
 
