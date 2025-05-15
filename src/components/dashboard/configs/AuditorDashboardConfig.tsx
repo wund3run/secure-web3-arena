@@ -11,7 +11,7 @@ export const AuditorDashboardConfig = [
   {
     id: 'auditor-stats',
     title: 'Performance Overview',
-    size: 'medium',
+    size: 'medium' as const,
     type: 'stats',
     content: <AuditorStats />,
     colSpan: 2,
@@ -20,7 +20,7 @@ export const AuditorDashboardConfig = [
   {
     id: 'earnings',
     title: 'Earnings',
-    size: 'small',
+    size: 'small' as const,
     type: 'chart',
     content: <EarningsWidget />,
     minimizable: true,
@@ -29,7 +29,7 @@ export const AuditorDashboardConfig = [
   {
     id: 'reputation',
     title: 'Reputation & Reviews',
-    size: 'small',
+    size: 'small' as const,
     type: 'stats',
     content: <ReputationWidget />,
     minimizable: true
@@ -37,7 +37,7 @@ export const AuditorDashboardConfig = [
   {
     id: 'activity',
     title: 'Recent Activity',
-    size: 'medium',
+    size: 'medium' as const,
     type: 'activity',
     content: <ActivityLog userType="auditor" />,
     colSpan: 2,
@@ -46,7 +46,7 @@ export const AuditorDashboardConfig = [
   {
     id: 'performance',
     title: 'Audit Performance',
-    size: 'medium',
+    size: 'medium' as const,
     type: 'chart',
     content: <AuditPerformanceWidget />,
     minimizable: true
@@ -54,7 +54,7 @@ export const AuditorDashboardConfig = [
   {
     id: 'deadlines',
     title: 'Upcoming Deadlines',
-    size: 'small',
+    size: 'small' as const,
     type: 'list',
     content: <UpcomingDeadlinesWidget />,
     minimizable: true

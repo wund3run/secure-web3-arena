@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/auth';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CustomizableDashboard } from './CustomizableDashboard';
 import { DashboardWidgets } from './DashboardWidgets';
-import { LoadingState } from '@/components/ui/loading-state';
+import LoadingState from '@/components/ui/loading-state';
 import { AuditorDashboardConfig } from './configs/AuditorDashboardConfig';
 import { ProjectOwnerDashboardConfig } from './configs/ProjectOwnerDashboardConfig';
 import { UserStats } from './stats/UserStats';

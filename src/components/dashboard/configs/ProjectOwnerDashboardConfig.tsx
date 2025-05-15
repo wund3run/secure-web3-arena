@@ -11,7 +11,7 @@ export const ProjectOwnerDashboardConfig = [
   {
     id: 'project-stats',
     title: 'Project Overview',
-    size: 'medium',
+    size: 'medium' as const,
     type: 'stats',
     content: <ProjectOwnerStats />,
     colSpan: 2,
@@ -20,7 +20,7 @@ export const ProjectOwnerDashboardConfig = [
   {
     id: 'security-score',
     title: 'Security Score',
-    size: 'small',
+    size: 'small' as const,
     type: 'score',
     content: <SecurityScoreWidget />,
     minimizable: true
@@ -28,7 +28,7 @@ export const ProjectOwnerDashboardConfig = [
   {
     id: 'vulnerabilities',
     title: 'Vulnerability Breakdown',
-    size: 'small',
+    size: 'small' as const,
     type: 'chart',
     content: <VulnerabilityWidget />,
     minimizable: true
@@ -36,7 +36,7 @@ export const ProjectOwnerDashboardConfig = [
   {
     id: 'audit-progress',
     title: 'Audit Progress',
-    size: 'medium',
+    size: 'medium' as const,
     type: 'progress',
     content: <AuditProgressWidget />,
     colSpan: 2,
@@ -45,7 +45,7 @@ export const ProjectOwnerDashboardConfig = [
   {
     id: 'projects',
     title: 'Projects Status',
-    size: 'medium',
+    size: 'medium' as const,
     type: 'list',
     content: <ProjectsWidget />,
     minimizable: true
@@ -53,7 +53,7 @@ export const ProjectOwnerDashboardConfig = [
   {
     id: 'activity',
     title: 'Recent Activity',
-    size: 'small',
+    size: 'small' as const,
     type: 'activity',
     content: <ActivityLog userType="project_owner" />,
     minimizable: true

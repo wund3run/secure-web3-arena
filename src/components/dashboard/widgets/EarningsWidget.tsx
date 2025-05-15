@@ -43,7 +43,7 @@ export function EarningsWidget() {
                 tickFormatter={(value) => `$${value}`} 
               />
               <Tooltip 
-                formatter={(value) => [`${formatCurrency(value)}`, "Earnings"]}
+                formatter={(value: number) => [`${formatCurrency(value)}`, "Earnings"]}
               />
               <Line
                 type="monotone"
