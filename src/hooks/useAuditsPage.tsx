@@ -1,15 +1,16 @@
 
 import { useState, useEffect } from "react";
-import { useLocalStorage } from "@/hooks/use-mobile";
 
 export function useAuditsPage() {
   // Retrieve user preferences from local storage with defaults
   const [viewMode, setViewMode] = useState<"grid" | "list">(() => {
+    if (typeof window === 'undefined') return "grid";
     const saved = localStorage.getItem("audit-view-preference");
     return (saved === "list" || saved === "grid") ? saved : "grid";
   });
   
   const [showFilters, setShowFilters] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
     const saved = localStorage.getItem("audit-filters-visible");
     return saved === "true";
   });

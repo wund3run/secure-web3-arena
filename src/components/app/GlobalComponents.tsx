@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { SupportButton } from "@/components/ui/support-button";
 import { CookieConsent } from "@/components/ui/cookie-consent";
@@ -9,13 +9,19 @@ import { KeyboardShortcuts } from "@/components/ui/keyboard-shortcuts";
 import { PerformanceMonitor } from "@/components/ui/performance-monitor";
 
 export function GlobalComponents() {
+  // Add state for accessibility menu
+  const [accessibilityOpen, setAccessibilityOpen] = useState(false);
+  
   return (
     <>
       <Toaster position="top-right" richColors closeButton />
       <SupportButton />
       <CookieConsent />
       <BetaBanner />
-      <AccessibilityMenu />
+      <AccessibilityMenu 
+        open={accessibilityOpen} 
+        onOpenChange={setAccessibilityOpen} 
+      />
       <KeyboardShortcuts />
       <PerformanceMonitor />
     </>
