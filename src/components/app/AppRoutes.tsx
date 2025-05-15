@@ -58,9 +58,12 @@ const RouteLoadingState: React.FC<{ route?: string }> = ({ route }) => {
 };
 
 // Custom fallback component for error boundary
-const ErrorFallback: React.FC<{error: Error; resetErrorBoundary: () => void}> = ({
+const ErrorFallback = ({
   error,
   resetErrorBoundary
+}: {
+  error: Error;
+  resetErrorBoundary: () => void;
 }) => (
   <div className="min-h-screen flex items-center justify-center p-4">
     <div className="bg-card border border-border rounded-lg p-6 max-w-md w-full shadow-lg">
@@ -86,7 +89,7 @@ const ErrorFallback: React.FC<{error: Error; resetErrorBoundary: () => void}> = 
  */
 export const AppRoutes: React.FC = () => {
   return (
-    <ErrorBoundary fallback={<ErrorFallback />}>
+    <ErrorBoundary fallback={ErrorFallback}>
       <Suspense fallback={<RouteLoadingState />}>
         <main id="main-content" tabIndex={-1} className="outline-none focus:ring-0">
           <Routes>
