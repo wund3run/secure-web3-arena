@@ -1,190 +1,73 @@
 
-import React, { lazy, Suspense } from "react";
+import React from "react";
 import { Routes, Route } from "react-router-dom";
+import { Suspense, lazy } from "react";
 import LoadingState from "@/components/ui/loading-state";
-import ErrorBoundary from "@/components/ui/error-boundary";
+import { PrivateRoute } from "@/components/auth/PrivateRoute";
 
-// Import PrivateRoute
-const PrivateRoute = lazy(() => import("@/components/auth/PrivateRoute").then(module => ({ default: module.PrivateRoute })));
+// Lazy-loaded pages for better performance
+const Index = lazy(() => import("@/pages/Index"));
+const Marketplace = lazy(() => import("@/pages/Marketplace"));
+const ServiceDetails = lazy(() => import("@/pages/ServiceDetails"));
+const Audits = lazy(() => import("@/pages/Audits"));
+const AuditDetail = lazy(() => import("@/pages/AuditDetail"));
+const Guidelines = lazy(() => import("@/pages/Guidelines"));
+const AuditorOnboarding = lazy(() => import("@/pages/onboarding/AuditorOnboarding"));
+const Admin = lazy(() => import("@/pages/Admin"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
+const LoginPage = lazy(() => import("@/pages/Login"));
+const RegisterPage = lazy(() => import("@/pages/Register"));
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const RequestAudit = lazy(() => import("@/pages/RequestAudit"));
+const Pricing = lazy(() => import("@/pages/Pricing"));
+const EnhancedDashboard = lazy(() => import("@/pages/EnhancedDashboard"));
 
-// Lazy load pages with explicitly named chunks for better debugging
-const Index = lazy(() => import(/* webpackChunkName: "index-page" */ "@/pages/Index"));
-const Auth = lazy(() => import(/* webpackChunkName: "auth-page" */ "@/pages/Auth"));
-const AuthCallback = lazy(() => import(/* webpackChunkName: "auth-callback-page" */ "@/pages/AuthCallback"));
-const Marketplace = lazy(() => import(/* webpackChunkName: "marketplace-page" */ "@/pages/Marketplace"));
-const ServiceDetails = lazy(() => import(/* webpackChunkName: "service-details-page" */ "@/pages/ServiceDetails"));
-const Contact = lazy(() => import(/* webpackChunkName: "contact-page" */ "@/pages/Contact"));
-const Stats = lazy(() => import(/* webpackChunkName: "stats-page" */ "@/pages/Stats"));
-const Leaderboard = lazy(() => import(/* webpackChunkName: "leaderboard-page" */ "@/pages/Leaderboard"));
-const Community = lazy(() => import(/* webpackChunkName: "community-page" */ "@/pages/Community"));
-const SecurityInsights = lazy(() => import(/* webpackChunkName: "security-insights-page" */ "@/pages/SecurityInsights"));
-const TwoFactorAuth = lazy(() => import(/* webpackChunkName: "two-factor-auth-page" */ "@/pages/TwoFactorAuth"));
-const RequestAudit = lazy(() => import(/* webpackChunkName: "request-audit-page" */ "@/pages/RequestAudit"));
-const Audits = lazy(() => import(/* webpackChunkName: "audits-page" */ "@/pages/Audits"));
-const AuditDetails = lazy(() => import(/* webpackChunkName: "audit-details-page" */ "@/pages/AuditDetails"));
-const Achievements = lazy(() => import(/* webpackChunkName: "achievements-page" */ "@/pages/Achievements"));
-const Escrow = lazy(() => import(/* webpackChunkName: "escrow-page" */ "@/pages/Escrow"));
-const NotFound = lazy(() => import(/* webpackChunkName: "not-found-page" */ "@/pages/NotFound"));
-const AdminLogin = lazy(() => import(/* webpackChunkName: "admin-login-page" */ "@/pages/admin/AdminLogin"));
-const AdminDashboard = lazy(() => import(/* webpackChunkName: "admin-dashboard-page" */ "@/pages/admin/AdminDashboard"));
-const AuditRequestForService = lazy(() => import(/* webpackChunkName: "audit-request-service-page" */ "@/pages/AuditRequestForService"));
-const ContactProvider = lazy(() => import(/* webpackChunkName: "contact-provider-page" */ "@/pages/ContactProvider"));
-const SubmitService = lazy(() => import(/* webpackChunkName: "submit-service-page" */ "@/pages/SubmitService"));
-const AuditGuidelines = lazy(() => import(/* webpackChunkName: "audit-guidelines-page" */ "@/pages/AuditGuidelines"));
+// Loading component for Suspense
+const PageLoading = () => <LoadingState message="Loading page..." fullPage={true} size="lg" />;
 
-// Import onboarding pages
-const ServiceProviderOnboarding = lazy(() => import(/* webpackChunkName: "service-provider-onboarding-page" */ "@/pages/onboarding/ServiceProviderOnboarding"));
-const AuditorOnboarding = lazy(() => import(/* webpackChunkName: "auditor-onboarding-page" */ "@/pages/onboarding/AuditorOnboarding"));
-const ApplicationSubmitted = lazy(() => import(/* webpackChunkName: "application-submitted-page" */ "@/pages/onboarding/ApplicationSubmitted"));
-
-// Custom loading component that's route-aware
-const RouteLoadingState: React.FC<{ route?: string }> = ({ route }) => {
-  const getMessage = () => {
-    if (route?.includes('audit')) return 'Loading audit information...';
-    if (route?.includes('marketplace')) return 'Loading marketplace...';
-    if (route?.includes('admin')) return 'Loading admin dashboard...';
-    if (route?.includes('escrow')) return 'Loading secure escrow system...';
-    return 'Loading page...';
-  };
-  
-  return <LoadingState fullPage message={getMessage()} />;
-};
-
-/**
- * Application routes configuration with code splitting and performance optimization
- */
-export const AppRoutes: React.FC = () => {
+export function AppRoutes() {
   return (
-    <ErrorBoundary>
-      <Suspense fallback={<RouteLoadingState />}>
-        <main id="main-content" tabIndex={-1} className="outline-none focus:ring-0">
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={
-              <Suspense fallback={<RouteLoadingState route="auth" />}>
-                <Auth />
-              </Suspense>
-            } />
-            <Route path="/auth-callback" element={<AuthCallback />} />
-            <Route path="/marketplace" element={
-              <Suspense fallback={<RouteLoadingState route="marketplace" />}>
-                <Marketplace />
-              </Suspense>
-            } />
-            <Route path="/service/:serviceId" element={
-              <Suspense fallback={<RouteLoadingState route="service" />}>
-                <ServiceDetails />
-              </Suspense>
-            } />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/stats" element={<Stats />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/security-insights" element={<SecurityInsights />} />
-            <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
-            <Route path="/submit-service" element={<SubmitService />} />
-            <Route path="/contact-provider/:providerId" element={<ContactProvider />} />
-            <Route path="/audit-guidelines" element={<AuditGuidelines />} />
-            
-            {/* Join Routes - both direct and redirect */}
-            <Route path="/join" element={<ServiceProviderOnboarding />} />
-            
-            {/* Protected Routes */}
-            <Route path="/request-audit" element={
-              <PrivateRoute>
-                <Suspense fallback={<RouteLoadingState route="request-audit" />}>
-                  <RequestAudit />
-                </Suspense>
-              </PrivateRoute>
-            } />
-            <Route path="/request-audit/:serviceId" element={
-              <PrivateRoute>
-                <Suspense fallback={<RouteLoadingState route="request-audit" />}>
-                  <AuditRequestForService />
-                </Suspense>
-              </PrivateRoute>
-            } />
-            <Route path="/audits" element={
-              <PrivateRoute>
-                <Suspense fallback={<RouteLoadingState route="audits" />}>
-                  <Audits />
-                </Suspense>
-              </PrivateRoute>
-            } />
-            <Route path="/audit/:auditId" element={
-              <PrivateRoute>
-                <Suspense fallback={<RouteLoadingState route="audit" />}>
-                  <AuditDetails />
-                </Suspense>
-              </PrivateRoute>
-            } />
-            <Route path="/achievements" element={
-              <PrivateRoute>
-                <Achievements />
-              </PrivateRoute>
-            } />
-            <Route path="/escrow" element={
-              <PrivateRoute>
-                <Suspense fallback={<RouteLoadingState route="escrow" />}>
-                  <Escrow />
-                </Suspense>
-              </PrivateRoute>
-            } />
-            
-            {/* Provider Onboarding */}
-            <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
-            <Route path="/auditor-onboarding" element={<AuditorOnboarding />} />
-            <Route path="/application-submitted" element={<ApplicationSubmitted />} />
-            
-            {/* Admin Routes */}
-            <Route path="/admin" element={<AdminLogin />} />
-            <Route path="/admin/dashboard" element={
-              <Suspense fallback={<RouteLoadingState route="admin" />}>
-                <AdminDashboard section="dashboard" />
-              </Suspense>
-            } />
-            <Route path="/admin/users" element={
-              <Suspense fallback={<RouteLoadingState route="admin" />}>
-                <AdminDashboard section="users" />
-              </Suspense>
-            } />
-            <Route path="/admin/services" element={
-              <Suspense fallback={<RouteLoadingState route="admin" />}>
-                <AdminDashboard section="services" />
-              </Suspense>
-            } />
-            <Route path="/admin/approvals" element={
-              <Suspense fallback={<RouteLoadingState route="admin" />}>
-                <AdminDashboard section="approvals" />
-              </Suspense>
-            } />
-            <Route path="/admin/audits" element={
-              <Suspense fallback={<RouteLoadingState route="admin" />}>
-                <AdminDashboard section="audits" />
-              </Suspense>
-            } />
-            <Route path="/admin/providers" element={
-              <Suspense fallback={<RouteLoadingState route="admin" />}>
-                <AdminDashboard section="providers" />
-              </Suspense>
-            } />
-            <Route path="/admin/reports" element={
-              <Suspense fallback={<RouteLoadingState route="admin" />}>
-                <AdminDashboard section="reports" />
-              </Suspense>
-            } />
-            <Route path="/admin/settings" element={
-              <Suspense fallback={<RouteLoadingState route="admin" />}>
-                <AdminDashboard section="settings" />
-              </Suspense>
-            } />
-            
-            {/* 404 Page */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
-      </Suspense>
-    </ErrorBoundary>
+    <Suspense fallback={<PageLoading />}>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<Index />} />
+        <Route path="/marketplace" element={<Marketplace />} />
+        <Route path="/marketplace/:id" element={<ServiceDetails />} />
+        <Route path="/audits" element={<Audits />} />
+        <Route path="/audits/:id" element={<AuditDetail />} />
+        <Route path="/guidelines" element={<Guidelines />} />
+        <Route path="/service-provider-onboarding" element={<AuditorOnboarding />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/request-audit" element={<RequestAudit />} />
+        <Route path="/pricing" element={<Pricing />} />
+        
+        {/* Enhanced pages */}
+        <Route path="/enhanced-dashboard" element={<EnhancedDashboard />} />
+        
+        {/* Protected routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        
+        {/* Admin routes */}
+        <Route
+          path="/admin/*"
+          element={
+            <PrivateRoute adminOnly={true}>
+              <Admin />
+            </PrivateRoute>
+          }
+        />
+        
+        {/* 404 - Not found */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
   );
-};
+}
