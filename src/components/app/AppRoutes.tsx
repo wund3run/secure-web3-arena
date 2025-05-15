@@ -1,4 +1,3 @@
-
 import React, { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import LoadingState from "@/components/ui/loading-state";
@@ -41,6 +40,7 @@ const ApplicationSubmitted = lazy(() => import(/* webpackChunkName: "application
 const EnhancedAITools = lazy(() => import(/* webpackChunkName: "enhanced-ai-tools-page" */ "@/pages/EnhancedAITools"));
 const WebThreeSecurity = lazy(() => import(/* webpackChunkName: "web-three-security-page" */ "@/pages/WebThreeSecurity"));
 const SupportCenter = lazy(() => import(/* webpackChunkName: "support-center-page" */ "@/pages/SupportCenter"));
+const SecurityAnalytics = lazy(() => import(/* webpackChunkName: "security-analytics-page" */ "@/pages/SecurityAnalytics"));
 
 // Custom loading component that's route-aware
 const RouteLoadingState: React.FC<{ route?: string }> = ({ route }) => {
@@ -125,6 +125,7 @@ export const AppRoutes: React.FC = () => {
             <Route path="/ai-tools" element={<EnhancedAITools />} />
             <Route path="/web3-security" element={<WebThreeSecurity />} />
             <Route path="/support-center" element={<SupportCenter />} />
+            <Route path="/security-analytics" element={<SecurityAnalytics />} />
             
             {/* Join Routes - both direct and redirect */}
             <Route path="/join" element={<ServiceProviderOnboarding />} />
