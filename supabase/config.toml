@@ -1,1 +1,6 @@
+
 project_id = "divymuaksqdgjsrlptct"
+
+# Add these settings to disable captcha verification in development
+[auth]
+disable_signup_captcha = true

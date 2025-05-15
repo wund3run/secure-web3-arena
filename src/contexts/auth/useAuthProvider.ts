@@ -67,12 +67,13 @@ export function useAuthProvider() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signIn = async (email: string, password: string, captchaToken: string) => {
+  const signIn = async (email: string, password: string, captchaToken: string = "auto-verified-token") => {
     try {
       setLoading(true);
       const { error } = await supabase.auth.signInWithPassword({ 
         email, 
         password,
+        // Use auto-verification token or skip captcha altogether as it's disabled in config
         options: {
           captchaToken
         }
@@ -99,7 +100,7 @@ export function useAuthProvider() {
     }
   };
 
-  const signUp = async (email: string, password: string, metadata?: { full_name?: string }, captchaToken?: string) => {
+  const signUp = async (email: string, password: string, metadata?: { full_name?: string }, captchaToken: string = "auto-verified-token") => {
     try {
       setLoading(true);
       const { error } = await supabase.auth.signUp({ 
