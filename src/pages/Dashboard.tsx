@@ -20,7 +20,7 @@ const Dashboard = () => {
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
         {user ? (
-          <p>Welcome back, {user.name || user.email}!</p>
+          <p>Welcome back, {user.email}!</p>
         ) : (
           <p>Loading user data...</p>
         )}

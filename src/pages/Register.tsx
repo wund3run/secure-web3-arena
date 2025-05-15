@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth';
 
 const RegisterPage = () => {
-  const { register } = useAuth();
+  const { signUp } = useAuth();
   
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();

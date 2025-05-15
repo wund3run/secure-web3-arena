@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth';
 
 const LoginPage = () => {
-  const { login } = useAuth();
+  const { signIn } = useAuth();
   
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();

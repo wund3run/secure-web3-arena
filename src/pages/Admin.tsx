@@ -2,7 +2,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { AdminLayout } from "@/components/admin/AdminLayout";
+import AdminLayout from "@/components/admin/AdminLayout";
 
 const Admin = () => {
   return (
@@ -12,7 +12,7 @@ const Admin = () => {
         <meta name="description" content="Admin dashboard for managing the Hawkly platform" />
       </Helmet>
       
-      <AdminLayout>
+      <AdminLayout title="Admin Dashboard">
         <Routes>
           {/* Admin sub-routes will be implemented in future updates */}
           <Route path="/" element={<div>Admin Dashboard</div>} />
