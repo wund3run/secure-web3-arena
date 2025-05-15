@@ -1,51 +1,47 @@
 
-import * as React from "react"
 import { toast as sonnerToast } from "sonner";
 
-type ToastProps = {
-  title?: React.ReactNode
-  description?: React.ReactNode
-  action?: React.ReactElement
-  variant?: "default" | "destructive" | "success"
-}
-
-// Define our own toast options interface based on what sonner accepts
-interface CustomToastOptions {
+export type ToastProps = {
+  id?: string | number;
+  title: string;
   description?: string;
-  action?: React.ReactElement;
-  className?: string;
-  duration?: number;
-}
+  action?: React.ReactNode;
+  variant?: "default" | "destructive" | "success" | "warning" | "info";
+};
 
-// This is a compatibility layer for shadcn toast system
-// It maps shadcn toast calls to sonner toast and adds accessibility features
 export function useToast() {
-  // Map states to sonner
-  const toast = (props: ToastProps) => {
-    const { title, description, variant = "default", action } = props;
+  const toast = ({ id, title, description, action, variant = "default" }: ToastProps) => {
+    // Ensure the ID is always a string when passed to sonnerToast
+    const stringId = id?.toString();
     
-    // Create accessible toast options
-    const accessibleOptions: CustomToastOptions = {
-      description: description as string,
+    return sonnerToast(title, {
+      id: stringId,
+      description,
       action,
-      className: "accessible-toast", // Add class for styling and accessibility hooks
-    };
-    
-    // Handle different toast types
-    if (variant === "destructive") {
-      return sonnerToast.error(title as string, accessibleOptions);
-    } else if (variant === "success") {
-      return sonnerToast.success(title as string, accessibleOptions);
-    } else {
-      return sonnerToast(title as string, accessibleOptions);
-    }
+      className: cn(
+        "toast-container",
+        variant === "destructive" && "destructive",
+        variant === "success" && "success",
+        variant === "warning" && "warning",
+        variant === "info" && "info"
+      ),
+    });
   };
 
-  // Return a simplified API that maps to sonner
+  // Function to dismiss a toast programmatically
+  const dismiss = (toastId?: string | number) => {
+    // Convert number to string if needed
+    const stringId = toastId?.toString();
+    sonnerToast.dismiss(stringId);
+  };
+
   return {
     toast,
-    dismiss: sonnerToast.dismiss,
+    dismiss,
   };
 }
 
-export { sonnerToast as toast };
+// Helper function for class names
+function cn(...classes: (string | boolean | undefined)[]) {
+  return classes.filter(Boolean).join(" ");
+}

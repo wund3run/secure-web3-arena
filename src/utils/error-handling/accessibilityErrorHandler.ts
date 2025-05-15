@@ -1,84 +1,79 @@
 
+/**
+ * Enhanced error handling specifically for accessibility issues
+ */
+
 import { toast } from "sonner";
 import { ErrorCategory } from "../error-handling";
 
-interface AccessibilityIssue {
-  element: string;
-  issue: string;
-  impact: 'critical' | 'serious' | 'moderate' | 'minor';
-  wcag?: string; // WCAG reference
-  fix?: string;
+interface AccessibilityErrorOptions {
+  /** The element causing the accessibility issue */
+  element?: HTMLElement;
+  /** The WCAG criterion being violated */
+  wcagCriterion?: string;
+  /** Whether to attempt automatic fixing */
+  attemptAutoFix?: boolean;
 }
 
 /**
- * Specialized handler for accessibility issues
+ * Handle accessibility-related errors with specialized reporting
  */
 export const handleAccessibilityError = (
-  issue: AccessibilityIssue
-): void => {
-  console.warn(`Accessibility issue (${issue.impact}):`, issue);
+  error: unknown, 
+  options: AccessibilityErrorOptions = {}
+) => {
+  console.error('Accessibility error detected:', error);
   
-  // Determine appropriate toast type based on impact
-  const toastType = issue.impact === 'critical' || issue.impact === 'serious' 
-    ? 'error' 
-    : issue.impact === 'moderate' ? 'warning' : 'info';
+  const errorMessage = error instanceof Error ? error.message : String(error);
   
-  const description = issue.fix 
-    ? `${issue.issue}. Fix: ${issue.fix}` 
-    : issue.issue;
-  
-  // Show appropriate toast based on severity
-  if (toastType === 'error') {
-    toast.error(`Accessibility Issue: ${issue.element}`, {
-      description,
-      duration: 6000,
-    });
-  } else if (toastType === 'warning') {
-    toast.warning(`Accessibility Warning: ${issue.element}`, {
-      description,
-      duration: 5000,
-    });
-  } else {
-    toast.info(`Accessibility Notice: ${issue.element}`, {
-      description,
-      duration: 4000,
-    });
-  }
-};
-
-// Helper to check common accessibility issues
-export const checkAccessibility = (element: HTMLElement): AccessibilityIssue[] => {
-  const issues: AccessibilityIssue[] = [];
-  
-  // Check for missing alt text on images
-  const images = element.querySelectorAll('img');
-  images.forEach(img => {
-    if (!img.alt) {
-      issues.push({
-        element: 'Image',
-        issue: 'Missing alt text',
-        impact: 'serious',
-        wcag: '1.1.1',
-        fix: 'Add descriptive alt text to the image'
-      });
-    }
+  // Show a more detailed toast for accessibility errors
+  toast.error("Accessibility Issue Detected", {
+    description: errorMessage.substring(0, 100),
+    action: options.attemptAutoFix ? {
+      label: "Attempt Fix",
+      onClick: () => attemptAccessibilityFix(options.element, errorMessage)
+    } : undefined,
+    // Use a unique ID to prevent duplicate toasts
+    id: `a11y-error-${Date.now()}`,
   });
   
-  // Check for proper heading hierarchy
-  const headings = element.querySelectorAll('h1, h2, h3, h4, h5, h6');
-  const headingLevels = Array.from(headings).map(h => parseInt(h.tagName.charAt(1)));
+  return {
+    message: errorMessage,
+    category: ErrorCategory.Validation,
+    wcagCriterion: options.wcagCriterion
+  };
+};
+
+/**
+ * Attempt to automatically fix common accessibility issues
+ */
+function attemptAccessibilityFix(element?: HTMLElement, errorMessage?: string): boolean {
+  if (!element) return false;
   
-  for (let i = 1; i < headingLevels.length; i++) {
-    if (headingLevels[i] > headingLevels[i-1] + 1) {
-      issues.push({
-        element: `Heading (h${headingLevels[i]})`,
-        issue: 'Skipped heading level',
-        impact: 'moderate',
-        wcag: '1.3.1',
-        fix: 'Maintain proper heading hierarchy'
-      });
-    }
+  // Example fixes for common accessibility issues
+  if (errorMessage?.includes('missing alt text')) {
+    element.setAttribute('alt', 'Image description - please update');
+    return true;
   }
   
-  return issues;
-};
+  if (errorMessage?.includes('missing label')) {
+    const id = `auto-label-${Date.now()}`;
+    element.setAttribute('id', id);
+    
+    const label = document.createElement('label');
+    label.setAttribute('for', id);
+    label.textContent = 'Label - please update';
+    
+    element.parentNode?.insertBefore(label, element);
+    return true;
+  }
+  
+  if (errorMessage?.includes('contrast ratio')) {
+    // This is just an example - real implementation would need more logic
+    element.style.color = '#000000';
+    element.style.backgroundColor = '#ffffff';
+    return true;
+  }
+  
+  return false;
+}

@@ -37,6 +37,11 @@ const ServiceProviderOnboarding = lazy(() => import(/* webpackChunkName: "servic
 const AuditorOnboarding = lazy(() => import(/* webpackChunkName: "auditor-onboarding-page" */ "@/pages/onboarding/AuditorOnboarding"));
 const ApplicationSubmitted = lazy(() => import(/* webpackChunkName: "application-submitted-page" */ "@/pages/onboarding/ApplicationSubmitted"));
 
+// New enhanced pages
+const EnhancedAITools = lazy(() => import(/* webpackChunkName: "enhanced-ai-tools-page" */ "@/pages/EnhancedAITools"));
+const WebThreeSecurity = lazy(() => import(/* webpackChunkName: "web-three-security-page" */ "@/pages/WebThreeSecurity"));
+const SupportCenter = lazy(() => import(/* webpackChunkName: "support-center-page" */ "@/pages/SupportCenter"));
+
 // Custom loading component that's route-aware
 const RouteLoadingState: React.FC<{ route?: string }> = ({ route }) => {
   const getMessage = () => {
@@ -44,18 +49,44 @@ const RouteLoadingState: React.FC<{ route?: string }> = ({ route }) => {
     if (route?.includes('marketplace')) return 'Loading marketplace...';
     if (route?.includes('admin')) return 'Loading admin dashboard...';
     if (route?.includes('escrow')) return 'Loading secure escrow system...';
+    if (route?.includes('ai-tools')) return 'Loading AI security tools...';
+    if (route?.includes('support')) return 'Loading support resources...';
     return 'Loading page...';
   };
   
   return <LoadingState fullPage message={getMessage()} />;
 };
 
+// Custom fallback component for error boundary
+const ErrorFallback: React.FC<{error: Error; resetErrorBoundary: () => void}> = ({
+  error,
+  resetErrorBoundary
+}) => (
+  <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="bg-card border border-border rounded-lg p-6 max-w-md w-full shadow-lg">
+      <h2 className="text-xl font-bold mb-4 text-destructive">Something went wrong</h2>
+      <p className="text-muted-foreground mb-4">
+        We're sorry, but something went wrong. Please try refreshing the page or contact support if the problem persists.
+      </p>
+      <pre className="bg-muted p-3 rounded text-xs overflow-auto mb-4 max-h-32">
+        {error.message}
+      </pre>
+      <button
+        onClick={resetErrorBoundary}
+        className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/90"
+      >
+        Try again
+      </button>
+    </div>
+  </div>
+);
+
 /**
  * Application routes configuration with code splitting and performance optimization
  */
 export const AppRoutes: React.FC = () => {
   return (
-    <ErrorBoundary>
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
       <Suspense fallback={<RouteLoadingState />}>
         <main id="main-content" tabIndex={-1} className="outline-none focus:ring-0">
           <Routes>
@@ -86,6 +117,11 @@ export const AppRoutes: React.FC = () => {
             <Route path="/submit-service" element={<SubmitService />} />
             <Route path="/contact-provider/:providerId" element={<ContactProvider />} />
             <Route path="/audit-guidelines" element={<AuditGuidelines />} />
+            
+            {/* New Enhanced Routes */}
+            <Route path="/ai-tools" element={<EnhancedAITools />} />
+            <Route path="/web3-security" element={<WebThreeSecurity />} />
+            <Route path="/support-center" element={<SupportCenter />} />
             
             {/* Join Routes - both direct and redirect */}
             <Route path="/join" element={<ServiceProviderOnboarding />} />

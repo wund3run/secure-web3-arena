@@ -4,7 +4,7 @@
  */
 
 // Re-export API error handler
-export { handleApiError, withErrorHandling } from "../apiErrorHandler";
+export { handleApiError } from "../apiErrorHandler";
 
 // Re-export error categories
 export { ErrorCategory } from "../error-handling";
