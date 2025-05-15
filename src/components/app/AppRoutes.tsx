@@ -31,6 +31,7 @@ const AuditRequestForService = lazy(() => import(/* webpackChunkName: "audit-req
 const ContactProvider = lazy(() => import(/* webpackChunkName: "contact-provider-page" */ "@/pages/ContactProvider"));
 const SubmitService = lazy(() => import(/* webpackChunkName: "submit-service-page" */ "@/pages/SubmitService"));
 const AuditGuidelines = lazy(() => import(/* webpackChunkName: "audit-guidelines-page" */ "@/pages/AuditGuidelines"));
+const Dashboard = lazy(() => import(/* webpackChunkName: "user-dashboard-page" */ "@/pages/Dashboard"));
 
 // Import onboarding pages
 const ServiceProviderOnboarding = lazy(() => import(/* webpackChunkName: "service-provider-onboarding-page" */ "@/pages/onboarding/ServiceProviderOnboarding"));
@@ -51,6 +52,7 @@ const RouteLoadingState: React.FC<{ route?: string }> = ({ route }) => {
     if (route?.includes('escrow')) return 'Loading secure escrow system...';
     if (route?.includes('ai-tools')) return 'Loading AI security tools...';
     if (route?.includes('support')) return 'Loading support resources...';
+    if (route?.includes('dashboard')) return 'Loading your dashboard...';
     return 'Loading page...';
   };
   
@@ -130,6 +132,20 @@ export const AppRoutes: React.FC = () => {
             <Route path="/join" element={<ServiceProviderOnboarding />} />
             
             {/* Protected Routes */}
+            <Route path="/dashboard" element={
+              <PrivateRoute>
+                <Suspense fallback={<RouteLoadingState route="dashboard" />}>
+                  <Dashboard />
+                </Suspense>
+              </PrivateRoute>
+            } />
+            <Route path="/dashboard/:section" element={
+              <PrivateRoute>
+                <Suspense fallback={<RouteLoadingState route="dashboard" />}>
+                  <Dashboard />
+                </Suspense>
+              </PrivateRoute>
+            } />
             <Route path="/request-audit" element={
               <PrivateRoute>
                 <Suspense fallback={<RouteLoadingState route="request-audit" />}>
