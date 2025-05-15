@@ -24,6 +24,11 @@ const EnhancedDashboard = lazy(() => import("@/pages/EnhancedDashboard"));
 const Auth = lazy(() => import("@/pages/Auth"));
 const AuthCallback = lazy(() => import("@/pages/AuthCallback"));
 const TwoFactorAuth = lazy(() => import("@/pages/TwoFactorAuth"));
+const Achievements = lazy(() => import("@/pages/Achievements"));
+const Escrow = lazy(() => import("@/pages/Escrow"));
+const SecurityInsights = lazy(() => import("@/pages/SecurityInsights"));
+const AuditGuidelines = lazy(() => import("@/pages/AuditGuidelines"));
+const SubmitService = lazy(() => import("@/pages/SubmitService"));
 
 // Loading component for Suspense
 const PageLoading = () => <LoadingState message="Loading page..." fullPage={true} size="lg" />;
@@ -47,6 +52,11 @@ export function AppRoutes() {
         <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
         <Route path="/request-audit" element={<RequestAudit />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/achievements" element={<Achievements />} />
+        <Route path="/security-insights" element={<SecurityInsights />} />
+        <Route path="/audit-guidelines" element={<AuditGuidelines />} />
+        <Route path="/submit-service" element={<SubmitService />} />
+        <Route path="/escrow" element={<Escrow />} />
         
         {/* Enhanced pages */}
         <Route path="/enhanced-dashboard" element={<EnhancedDashboard />} />

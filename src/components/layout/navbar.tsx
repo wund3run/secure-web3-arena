@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -106,6 +105,12 @@ export function Navbar() {
       title: "Learning Center",
       href: "/learn",
       description: "Educational resources on Web3 security",
+    },
+    {
+      title: "Achievements",
+      href: "/achievements",
+      description: "Track your badges and auditor journey",
+      isNew: true,
     },
   ];
 
