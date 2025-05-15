@@ -1,4 +1,3 @@
-
 import React, { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import LoadingState from "@/components/ui/loading-state";
@@ -24,6 +23,7 @@ const Audits = lazy(() => import(/* webpackChunkName: "audits-page" */ "@/pages/
 const AuditDetails = lazy(() => import(/* webpackChunkName: "audit-details-page" */ "@/pages/AuditDetails"));
 const Achievements = lazy(() => import(/* webpackChunkName: "achievements-page" */ "@/pages/Achievements"));
 const Escrow = lazy(() => import(/* webpackChunkName: "escrow-page" */ "@/pages/Escrow"));
+const Dashboard = lazy(() => import(/* webpackChunkName: "dashboard-page" */ "@/pages/Dashboard"));
 const NotFound = lazy(() => import(/* webpackChunkName: "not-found-page" */ "@/pages/NotFound"));
 const AdminLogin = lazy(() => import(/* webpackChunkName: "admin-login-page" */ "@/pages/admin/AdminLogin"));
 const AdminDashboard = lazy(() => import(/* webpackChunkName: "admin-dashboard-page" */ "@/pages/admin/AdminDashboard"));
@@ -130,6 +130,13 @@ export const AppRoutes: React.FC = () => {
             <Route path="/join" element={<ServiceProviderOnboarding />} />
             
             {/* Protected Routes */}
+            <Route path="/dashboard" element={
+              <PrivateRoute>
+                <Suspense fallback={<RouteLoadingState route="dashboard" />}>
+                  <Dashboard />
+                </Suspense>
+              </PrivateRoute>
+            } />
             <Route path="/request-audit" element={
               <PrivateRoute>
                 <Suspense fallback={<RouteLoadingState route="request-audit" />}>
