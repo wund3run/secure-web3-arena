@@ -1,14 +1,57 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocalStorage } from "@/hooks/use-mobile";
 
 export function useAuditsPage() {
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [showFilters, setShowFilters] = useState(false);
+  // Retrieve user preferences from local storage with defaults
+  const [viewMode, setViewMode] = useState<"grid" | "list">(() => {
+    const saved = localStorage.getItem("audit-view-preference");
+    return (saved === "list" || saved === "grid") ? saved : "grid";
+  });
+  
+  const [showFilters, setShowFilters] = useState<boolean>(() => {
+    const saved = localStorage.getItem("audit-filters-visible");
+    return saved === "true";
+  });
+  
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  
+  // Save preferences to local storage when they change
+  useEffect(() => {
+    localStorage.setItem("audit-view-preference", viewMode);
+  }, [viewMode]);
+  
+  useEffect(() => {
+    localStorage.setItem("audit-filters-visible", String(showFilters));
+  }, [showFilters]);
+  
+  // Performance tracking
+  useEffect(() => {
+    const startTime = performance.now();
+    
+    return () => {
+      const loadTime = performance.now() - startTime;
+      console.info(`Audits page render time: ${loadTime.toFixed(2)}ms`);
+      
+      // Report to analytics in a real implementation
+      if (loadTime > 500) {
+        console.warn("Slow render time for audits page");
+      }
+    };
+  }, []);
 
   return {
     viewMode,
     setViewMode,
     showFilters,
-    setShowFilters
+    setShowFilters,
+    activeCategory,
+    setActiveCategory,
+    searchQuery,
+    setSearchQuery,
+    isLoading,
+    setIsLoading
   };
 }

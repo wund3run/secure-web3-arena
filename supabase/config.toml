@@ -1,6 +1,18 @@
 
 project_id = "divymuaksqdgjsrlptct"
 
-# Add these settings to disable captcha verification in development
+# Auth settings for development environment
 [auth]
 disable_signup_captcha = true
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["https://94c46652-d3b3-4056-adcb-4de9e7720c6c.lovableproject.com"]
+enable_signup_captcha = false
+
+# Storage settings
+[storage]
+file_size_limit = "50MiB"
+
+# Functions configuration
+[functions]
+[functions.audit-report]
+verify_jwt = true
