@@ -60,5 +60,24 @@ export function formatDate(date: Date | string, format: 'short' | 'medium' | 'lo
     long: { month: 'long', day: 'numeric', year: 'numeric', weekday: 'long' }
   }[format];
   
-  return new Intl.DateTimeFormat('en-US', options).format(dateObj);
+  // The TypeScript error is because the string values for 'year' need to be type-corrected to match "numeric" | "2-digit"
+  // Let's create a properly typed options object
+  const typedOptions: Intl.DateTimeFormatOptions = {};
+  
+  // Add month formatting
+  if (options.month === 'numeric') typedOptions.month = 'numeric';
+  else if (options.month === 'short') typedOptions.month = 'short';
+  else if (options.month === 'long') typedOptions.month = 'long';
+  
+  // Add day formatting
+  if (options.day === 'numeric') typedOptions.day = 'numeric';
+  
+  // Add year formatting (this was causing the TypeScript error)
+  if (options.year === '2-digit') typedOptions.year = '2-digit';
+  else if (options.year === 'numeric') typedOptions.year = 'numeric';
+  
+  // Add weekday if present
+  if (options.weekday === 'long') typedOptions.weekday = 'long';
+  
+  return new Intl.DateTimeFormat('en-US', typedOptions).format(dateObj);
 }

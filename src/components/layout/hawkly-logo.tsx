@@ -3,11 +3,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 interface HawklyLogoProps {
-  variant?: "default" | "light" | "dark";
+  variant?: "default" | "light" | "dark" | "large" | "full";
   size?: "sm" | "md" | "lg";
+  className?: string;
 }
 
-export function HawklyLogo({ variant = "default", size = "md" }: HawklyLogoProps) {
+export function HawklyLogo({ variant = "default", size = "md", className = "" }: HawklyLogoProps) {
   const sizeClasses = {
     sm: "text-lg",
     md: "text-2xl",
@@ -18,10 +19,12 @@ export function HawklyLogo({ variant = "default", size = "md" }: HawklyLogoProps
     default: "text-primary",
     light: "text-white",
     dark: "text-gray-900",
+    large: "text-primary",
+    full: "text-primary",
   };
 
   return (
-    <div className={`font-bold ${sizeClasses[size]} ${colorClasses[variant]}`}>
+    <div className={`font-bold ${sizeClasses[size]} ${colorClasses[variant]} ${className}`}>
       <Link to="/" className="flex items-center gap-1.5">
         <span className="sr-only">Hawkly</span>
         <span className="inline-block">
