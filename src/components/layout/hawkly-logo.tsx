@@ -1,82 +1,37 @@
 
-import { cn } from "@/lib/utils";
+import React from "react";
 import { Link } from "react-router-dom";
 
 interface HawklyLogoProps {
-  variant?: "default" | "large" | "compact" | "full";
-  className?: string;
+  variant?: "default" | "light" | "dark";
+  size?: "sm" | "md" | "lg";
 }
 
-export function HawklyLogo({ variant = "default", className }: HawklyLogoProps) {
-  const sizes = {
-    compact: {
-      container: "h-8 w-8",
-      icon: "h-4 w-4",
-      text: "text-lg",
-      tagline: "text-xs"
-    },
-    default: {
-      container: "h-10 w-10",
-      icon: "h-5 w-5",
-      text: "text-xl",
-      tagline: "text-xs"
-    },
-    large: {
-      container: "h-12 w-12",
-      icon: "h-6 w-6",
-      text: "text-2xl md:text-3xl",
-      tagline: "text-sm"
-    },
-    full: {
-      container: "h-14 w-14",
-      icon: "h-7 w-7",
-      text: "text-3xl md:text-4xl",
-      tagline: "text-base md:text-lg"
-    }
+export function HawklyLogo({ variant = "default", size = "md" }: HawklyLogoProps) {
+  const sizeClasses = {
+    sm: "text-lg",
+    md: "text-2xl",
+    lg: "text-3xl",
   };
-  
+
+  const colorClasses = {
+    default: "text-primary",
+    light: "text-white",
+    dark: "text-gray-900",
+  };
+
   return (
-    <Link to="/" className={cn("flex items-center space-x-2 group", className)}>
-      <div className="relative transition-all duration-300 group-hover:scale-105">
-        {/* Shield SVG with gradient colors matching the screenshot */}
-        <svg 
-          viewBox="0 0 140 160" 
-          className={cn(sizes[variant].container)}
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          {/* Outer shield outline */}
-          <path 
-            d="M70 0C45 12 20 18 3 20v60c0 35 27 65 67 80 40-15 67-45 67-80V20c-17-2-42-8-67-20z" 
-            fill="#6E59A5" 
-          />
-          
-          {/* Inner shield */}
-          <path 
-            d="M70 10C48 20 25 26 13 28v52c0 30 23 55 57 68 34-13 57-38 57-68V28c-12-2-35-8-57-18z" 
-            fill="#9b87f5" 
-          />
-          
-          {/* Top circle */}
-          <circle cx="70" cy="50" r="25" fill="#8A73E2" />
-          
-          {/* Lower shield inside */}
-          <path 
-            d="M70 55C58 60 40 64 30 65v25c0 15 15 28 40 35 25-7 40-20 40-35V65c-10-1-28-5-40-10z" 
-            fill="#33C3F0" 
-          />
-        </svg>
-      </div>
-      
-      <div className="flex flex-col">
-        <span className={cn("font-bold tracking-tight text-[#8A73E2]", sizes[variant].text)}>
-          Hawkly
+    <div className={`font-bold ${sizeClasses[size]} ${colorClasses[variant]}`}>
+      <Link to="/" className="flex items-center gap-1.5">
+        <span className="sr-only">Hawkly</span>
+        <span className="inline-block">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 2C7.373 2 2 7.373 2 14C2 20.627 7.373 26 14 26C20.627 26 26 20.627 26 14C26 7.373 20.627 2 14 2ZM14 22C9.589 22 6 18.411 6 14C6 9.589 9.589 6 14 6C18.411 6 22 9.589 22 14C22 18.411 18.411 22 14 22Z" fill="currentColor" />
+            <path d="M19.707 8.293C19.316 7.902 18.684 7.902 18.293 8.293L14 12.586L9.707 8.293C9.316 7.902 8.684 7.902 8.293 8.293C7.902 8.684 7.902 9.316 8.293 9.707L12.586 14L8.293 18.293C7.902 18.684 7.902 19.316 8.293 19.707C8.488 19.902 8.744 20 9 20C9.256 20 9.512 19.902 9.707 19.707L14 15.414L18.293 19.707C18.488 19.902 18.744 20 19 20C19.256 20 19.512 19.902 19.707 19.707C20.098 19.316 20.098 18.684 19.707 18.293L15.414 14L19.707 9.707C20.098 9.316 20.098 8.684 19.707 8.293Z" fill="currentColor" />
+          </svg>
         </span>
-        {(variant === "large" || variant === "full") && (
-          <span className={cn("text-gray-500 font-medium", sizes[variant].tagline)}>
-            Web3 Security Marketplace
-          </span>
-        )}
-      </div>
-    </Link>
+        <span>Hawkly</span>
+      </Link>
+    </div>
   );
 }
