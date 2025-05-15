@@ -30,12 +30,25 @@ export function PerformanceMonitor() {
       if (now - lastTime > 1000) {
         const fps = Math.round((frameCount * 1000) / (now - lastTime));
         
-        setMetrics(prev => ({
-          ...prev,
-          fps,
-          // Only works in Chrome
-          memory: Math.round(performance?.memory?.usedJSHeapSize / 1048576) || 0
-        }));
+        setMetrics(prev => {
+          // Access memory if available (Chrome only feature)
+          let memoryUsage = 0;
+          try {
+            // Use a type assertion for memory access
+            const performanceMemory = (performance as any).memory;
+            if (performanceMemory && performanceMemory.usedJSHeapSize) {
+              memoryUsage = Math.round(performanceMemory.usedJSHeapSize / 1048576);
+            }
+          } catch (e) {
+            // Memory API not available (non-Chrome browsers)
+          }
+          
+          return {
+            ...prev,
+            fps,
+            memory: memoryUsage
+          };
+        });
         
         frameCount = 0;
         lastTime = now;

@@ -16,18 +16,24 @@ export const GlobalComponents: React.FC = () => {
   useEffect(() => {
     // Report web vitals
     const reportWebVitals = async () => {
-      const { getCLS, getFID, getLCP, getFCP, getTTFB } = await import('web-vitals');
-      
-      const reportMetric = ({ name, value }: { name: string, value: number }) => {
-        // In production, send to analytics
-        console.log(`Web Vital: ${name}`, value);
-      };
-      
-      getCLS(reportMetric);
-      getFID(reportMetric);
-      getLCP(reportMetric);
-      getFCP(reportMetric);
-      getTTFB(reportMetric);
+      try {
+        const webVitals = await import('web-vitals');
+        
+        const reportMetric = ({ name, value }: { name: string, value: number }) => {
+          // In production, send to analytics
+          console.log(`Web Vital: ${name}`, value);
+        };
+        
+        // Use the direct named imports from web-vitals v5
+        webVitals.onCLS(reportMetric);
+        webVitals.onLCP(reportMetric);
+        webVitals.onFCP(reportMetric);
+        webVitals.onTTFB(reportMetric);
+        // Note: FID was removed in web-vitals v5 and replaced with INP
+        webVitals.onINP?.(reportMetric); // Optional chaining in case INP isn't available
+      } catch (error) {
+        console.error("Failed to load web-vitals:", error);
+      }
     };
     
     reportWebVitals();

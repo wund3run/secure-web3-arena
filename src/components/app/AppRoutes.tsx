@@ -86,7 +86,7 @@ const ErrorFallback: React.FC<{error: Error; resetErrorBoundary: () => void}> = 
  */
 export const AppRoutes: React.FC = () => {
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback}>
+    <ErrorBoundary fallback={<ErrorFallback />}>
       <Suspense fallback={<RouteLoadingState />}>
         <main id="main-content" tabIndex={-1} className="outline-none focus:ring-0">
           <Routes>
