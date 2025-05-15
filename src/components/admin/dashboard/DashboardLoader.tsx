@@ -1,4 +1,5 @@
 
+import React from "react";
 import LoadingTrivia from "@/components/ui/loading-trivia";
 
 export function DashboardLoader() {

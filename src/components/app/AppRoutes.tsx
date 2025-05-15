@@ -21,6 +21,9 @@ const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const RequestAudit = lazy(() => import("@/pages/RequestAudit"));
 const Pricing = lazy(() => import("@/pages/Pricing"));
 const EnhancedDashboard = lazy(() => import("@/pages/EnhancedDashboard"));
+const Auth = lazy(() => import("@/pages/Auth"));
+const AuthCallback = lazy(() => import("@/pages/AuthCallback"));
+const TwoFactorAuth = lazy(() => import("@/pages/TwoFactorAuth"));
 
 // Loading component for Suspense
 const PageLoading = () => <LoadingState message="Loading page..." fullPage={true} size="lg" />;
@@ -39,6 +42,9 @@ export function AppRoutes() {
         <Route path="/service-provider-onboarding" element={<AuditorOnboarding />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
         <Route path="/request-audit" element={<RequestAudit />} />
         <Route path="/pricing" element={<Pricing />} />
         
