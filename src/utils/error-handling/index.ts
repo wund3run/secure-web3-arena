@@ -3,13 +3,16 @@
  * Unified error handling utilities for consistent error management across the application
  */
 
+import React from 'react';
+import { default as ErrorBoundary } from "@/components/ui/error-boundary";
+
 // Re-export components for consistent usage
 export { MarketplaceErrorBoundary } from "@/components/marketplace/error-handling";
 export { default as ErrorBoundary } from "@/components/ui/error-boundary";
 export { useMarketplaceError } from "@/components/marketplace/error-handling/useMarketplaceError";
 
 // Re-export API error handler
-export { handleApiError, withErrorHandling } from "../apiErrorHandler";
+export { handleApiError } from "../apiErrorHandler";
 
 // Re-export accessibility error handling
 export { handleAccessibilityError, checkAccessibility, checkFormAccessibility } from "./accessibilityErrorHandler";
@@ -79,28 +82,8 @@ export const handleError = (error: unknown, context = "application") => {
   };
 };
 
-// Enhanced async wrapper with retry functionality
-export async function withErrorHandling<T>(
-  asyncFn: () => Promise<T>,
-  context = "operation",
-  customMessage?: string,
-  retries = 0
-): Promise<T | null> {
-  try {
-    return await asyncFn();
-  } catch (error) {
-    const message = customMessage || (error instanceof Error ? error.message : "An unexpected error occurred");
-    const result = handleError(error, context);
-    
-    // Implement retry for network errors
-    if (result.category === ErrorCategory.Network && retries > 0) {
-      console.log(`Retrying ${context} (${retries} attempts left)...`);
-      return withErrorHandling(asyncFn, context, customMessage, retries - 1);
-    }
-    
-    return null;
-  }
-}
+// Import withErrorHandling from apiErrorHandler to avoid duplication
+export { withErrorHandling } from "../apiErrorHandler";
 
 // Create a utility to help standardize error boundary usage
 export const createBoundary = (component: React.ReactNode, fallback?: React.ReactNode): React.ReactElement => {

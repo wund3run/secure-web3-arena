@@ -36,7 +36,7 @@ const Community = lazy(() => import("@/pages/Community"));
 // Loading component for Suspense
 const PageLoading = () => <LoadingState message="Loading page..." fullPage={true} size="lg" />;
 
-// Error fallback component
+// Error fallback component - correctly typed as React.ReactNode
 const PageError = ({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) => (
   <div className="min-h-screen flex flex-col items-center justify-center p-4">
     <h1 className="text-2xl font-bold text-destructive mb-4">Something went wrong</h1>
@@ -60,7 +60,7 @@ const PageError = ({ error, resetErrorBoundary }: { error: Error; resetErrorBoun
 
 export function AppRoutes() {
   return (
-    <ErrorBoundary fallback={PageError}>
+    <ErrorBoundary>
       <Suspense fallback={<PageLoading />}>
         <Routes>
           {/* Public routes */}

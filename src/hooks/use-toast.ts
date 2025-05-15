@@ -37,7 +37,8 @@ export const toast = {
       description: props.description,
       action: props.action,
       duration: props.duration,
-      id: props.id,
+      // Convert number IDs to strings to match expected type
+      id: props.id ? String(props.id) : undefined,
     });
   }
 };
