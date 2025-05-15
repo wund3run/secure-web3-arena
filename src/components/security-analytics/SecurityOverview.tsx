@@ -22,11 +22,11 @@ export function SecurityOverview() {
     lastScan: "2025-05-12T15:30:00Z",
     assessmentAge: "3 days",
     riskAreas: [
-      { name: "Access Control", score: 90, risk: "low" },
-      { name: "Reentrancy", score: 75, risk: "medium" },
-      { name: "Oracle Security", score: 80, risk: "low" },
-      { name: "Flash Loan Attack", score: 70, risk: "medium" },
-      { name: "Overflow/Underflow", score: 95, risk: "low" },
+      { name: "Access Control", score: 90, risk: "low" as const },
+      { name: "Reentrancy", score: 75, risk: "medium" as const },
+      { name: "Oracle Security", score: 80, risk: "low" as const },
+      { name: "Flash Loan Attack", score: 70, risk: "medium" as const },
+      { name: "Overflow/Underflow", score: 95, risk: "low" as const },
     ]
   };
 
