@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useTheme } from "next-themes";
 import {
@@ -31,6 +30,7 @@ import {
 import {
   Github,
   Twitter,
+  Discord,
   Menu,
   User,
   Settings,
