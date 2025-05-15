@@ -29,11 +29,11 @@ export const ApproveContract: React.FC<ApproveContractProps> = ({
       // Create an approval transaction
       const transactionId = await createTransaction({
         escrow_contract_id: contract.id,
-        type: 'approval',
+        type: 'deposit', // Using valid TransactionType from the enum
         amount: 0,
         sender_id: profile.id,
         recipient_id: contract.auditor?.id,
-        description: `Contract approval by ${profile.display_name || profile.email}`
+        description: `Contract approval by ${profile.full_name || profile.id}`
       });
       
       if (transactionId && onSuccess) {

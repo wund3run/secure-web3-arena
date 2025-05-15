@@ -37,11 +37,11 @@ export const ReleasePayment: React.FC<ReleasePaymentProps> = ({
       // Create a payment release transaction
       const transactionId = await createTransaction({
         escrow_contract_id: contract.id,
-        type: 'release',
+        type: 'milestone_payment', // Using valid TransactionType from the enum
         amount: milestoneId ? undefined : contract.total_amount, // If milestone specified, amount is handled by backend
         sender_id: profile.id,
         recipient_id: contract.auditor?.id,
-        description: `Payment release by ${profile.display_name || profile.email}`,
+        description: `Payment release by ${profile.full_name || profile.id}`,
         milestone_id: milestoneId
       });
       
@@ -58,8 +58,8 @@ export const ReleasePayment: React.FC<ReleasePaymentProps> = ({
     }
   };
 
-  // Only allow releasing payment for active contracts
-  const canReleasePayment = contract.status === 'active' && profile?.id === contract.client_id;
+  // Only allow releasing payment for active contracts (using the correct type)
+  const canReleasePayment = contract.status === 'in_progress' && profile?.id === contract.client_id;
 
   return (
     <Button 
