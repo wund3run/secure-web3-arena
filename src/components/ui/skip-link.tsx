@@ -5,9 +5,10 @@ import { cn } from "@/lib/utils";
 interface SkipLinkProps {
   targetId: string;
   className?: string;
+  label?: string;
 }
 
-export function SkipLink({ targetId, className }: SkipLinkProps) {
+export function SkipLink({ targetId, className, label = "Skip to main content" }: SkipLinkProps) {
   const [focused, setFocused] = useState(false);
   
   const handleClick = (e: React.MouseEvent) => {
@@ -29,6 +30,7 @@ export function SkipLink({ targetId, className }: SkipLinkProps) {
       // For screen readers, announce that focus has moved
       const announcer = document.createElement('div');
       announcer.setAttribute('aria-live', 'polite');
+      announcer.setAttribute('role', 'status');
       announcer.textContent = `Navigated to ${targetElement.tagName.toLowerCase()}`;
       document.body.appendChild(announcer);
       
@@ -43,15 +45,16 @@ export function SkipLink({ targetId, className }: SkipLinkProps) {
     <a 
       href={`#${targetId}`}
       className={cn(
-        "skip-link fixed z-50 left-4 top-4 bg-background p-2 border border-border rounded-md shadow-md transition-transform",
+        "skip-link fixed z-50 left-4 top-4 bg-background p-2 border border-border rounded-md shadow-md transition-transform focus-visible:ring-2 focus-visible:ring-primary",
         focused ? "translate-y-0" : "-translate-y-full",
         className
       )}
       onClick={handleClick}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
+      aria-label={label}
     >
-      Skip to main content
+      {label}
     </a>
   );
 }

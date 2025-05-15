@@ -1,51 +1,68 @@
 
-import * as React from "react"
+// Centralized toast hook implementation
 import { toast as sonnerToast } from "sonner";
+import { useState, useCallback } from "react";
 
-type ToastProps = {
-  title?: React.ReactNode
-  description?: React.ReactNode
-  action?: React.ReactElement
-  variant?: "default" | "destructive" | "success"
-}
-
-// Define our own toast options interface based on what sonner accepts
-interface CustomToastOptions {
+// Types for the toast API
+export type ToastProps = {
+  title?: string;
   description?: string;
-  action?: React.ReactElement;
-  className?: string;
-  duration?: number;
-}
-
-// This is a compatibility layer for shadcn toast system
-// It maps shadcn toast calls to sonner toast and adds accessibility features
-export function useToast() {
-  // Map states to sonner
-  const toast = (props: ToastProps) => {
-    const { title, description, variant = "default", action } = props;
-    
-    // Create accessible toast options
-    const accessibleOptions: CustomToastOptions = {
-      description: description as string,
-      action,
-      className: "accessible-toast", // Add class for styling and accessibility hooks
-    };
-    
-    // Handle different toast types
-    if (variant === "destructive") {
-      return sonnerToast.error(title as string, accessibleOptions);
-    } else if (variant === "success") {
-      return sonnerToast.success(title as string, accessibleOptions);
-    } else {
-      return sonnerToast(title as string, accessibleOptions);
-    }
+  action?: {
+    label: string;
+    onClick: () => void;
   };
+  duration?: number;
+  id?: string;
+};
 
-  // Return a simplified API that maps to sonner
+// Main toast function for direct usage
+export const toast = {
+  success: (title: string, props?: Omit<ToastProps, "title">) => 
+    sonnerToast.success(title, props),
+  
+  error: (title: string, props?: Omit<ToastProps, "title">) => 
+    sonnerToast.error(title, props),
+  
+  warning: (title: string, props?: Omit<ToastProps, "title">) => 
+    sonnerToast.warning(title, props),
+  
+  info: (title: string, props?: Omit<ToastProps, "title">) => 
+    sonnerToast.info(title, props),
+  
+  // Additional utility methods
+  dismiss: (toastId?: string) => sonnerToast.dismiss(toastId),
+  
+  custom: (props: ToastProps) => {
+    return sonnerToast(props.title || "", {
+      description: props.description,
+      action: props.action,
+      duration: props.duration,
+      id: props.id,
+    });
+  }
+};
+
+// Hook for component-based toast management
+export function useToast() {
+  const [isToastVisible, setIsToastVisible] = useState(false);
+  
+  const showToast = useCallback((props: ToastProps) => {
+    setIsToastVisible(true);
+    const id = toast.custom(props);
+    
+    return () => {
+      toast.dismiss(id);
+      setIsToastVisible(false);
+    };
+  }, []);
+  
   return {
     toast,
-    dismiss: sonnerToast.dismiss,
+    showToast,
+    isToastVisible,
+    dismissToast: (id?: string) => {
+      toast.dismiss(id);
+      setIsToastVisible(false);
+    }
   };
 }
-
-export { sonnerToast as toast };
