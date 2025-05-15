@@ -41,7 +41,6 @@ export const ReleasePayment: React.FC<ReleasePaymentProps> = ({
         amount: milestoneId ? undefined : contract.total_amount, // If milestone specified, amount is handled by backend
         sender_id: profile.id,
         recipient_id: contract.auditor?.id,
-        description: `Payment release by ${profile.full_name || profile.id}`,
         milestone_id: milestoneId
       });
       

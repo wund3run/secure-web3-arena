@@ -32,8 +32,7 @@ export const ApproveContract: React.FC<ApproveContractProps> = ({
         type: 'deposit', // Using valid TransactionType from the enum
         amount: 0,
         sender_id: profile.id,
-        recipient_id: contract.auditor?.id,
-        description: `Contract approval by ${profile.full_name || profile.id}`
+        recipient_id: contract.auditor?.id
       });
       
       if (transactionId && onSuccess) {
