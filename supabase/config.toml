@@ -1,1 +1,7 @@
+
+# Supabase project configuration
+# Project ID should not be changed after initial setup
 project_id = "divymuaksqdgjsrlptct"
+
+# Additional configuration options
+# For more information, see https://supabase.com/docs/reference/config
