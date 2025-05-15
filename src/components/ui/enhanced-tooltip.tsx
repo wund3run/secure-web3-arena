@@ -6,7 +6,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { InfoCircle } from "lucide-react";
+import { Info } from "lucide-react";
 
 interface EnhancedTooltipProps {
   content: React.ReactNode;
@@ -38,7 +38,7 @@ export function EnhancedTooltip({
           <div className="inline-flex items-center gap-1" tabIndex={0} role="button">
             {children}
             {showIcon && (
-              <InfoCircle 
+              <Info 
                 className={`text-muted-foreground cursor-help ${iconClassName}`} 
                 size={iconSize}
                 aria-hidden="true"
