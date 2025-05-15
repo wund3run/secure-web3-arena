@@ -29,6 +29,7 @@ const Escrow = lazy(() => import("@/pages/Escrow"));
 const SecurityInsights = lazy(() => import("@/pages/SecurityInsights"));
 const AuditGuidelines = lazy(() => import("@/pages/AuditGuidelines"));
 const SubmitService = lazy(() => import("@/pages/SubmitService"));
+const Community = lazy(() => import("@/pages/Community"));
 
 // Loading component for Suspense
 const PageLoading = () => <LoadingState message="Loading page..." fullPage={true} size="lg" />;
@@ -57,6 +58,7 @@ export function AppRoutes() {
         <Route path="/audit-guidelines" element={<AuditGuidelines />} />
         <Route path="/submit-service" element={<SubmitService />} />
         <Route path="/escrow" element={<Escrow />} />
+        <Route path="/community" element={<Community />} />
         
         {/* Enhanced pages */}
         <Route path="/enhanced-dashboard" element={<EnhancedDashboard />} />

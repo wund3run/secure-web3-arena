@@ -1,8 +1,9 @@
+
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageCircle, Users, Trophy, Calendar, Flag, Shield } from "lucide-react";
+import { MessageCircle, Users, Trophy, Calendar, Flag, Award } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { CommunityHeader } from "@/components/community/community-header";
@@ -222,7 +223,7 @@ export default function Community() {
           </div>
         </section>
         
-        {/* Add community footer instead of the existing simple section */}
+        {/* Add community footer */}
         <div className="container mx-auto px-4 max-w-7xl">
           <CommunityFooter />
         </div>
@@ -319,7 +320,7 @@ const communityGroups = [
   {
     id: 1,
     name: "Smart Contract Auditors",
-    icon: <Shield className="h-5 w-5 text-primary" />,
+    icon: <Award className="h-5 w-5 text-primary" />,
     type: "Public",
     members: 3240,
     description: "A group for professional smart contract auditors to discuss methodologies, tools, and best practices for auditing blockchain applications."
@@ -327,7 +328,7 @@ const communityGroups = [
   {
     id: 2,
     name: "DeFi Security Working Group",
-    icon: <Shield className="h-5 w-5 text-primary" />,
+    icon: <Award className="h-5 w-5 text-primary" />,
     type: "Private",
     members: 1875,
     description: "Focused on identifying and addressing security challenges specific to decentralized finance protocols and applications."
@@ -335,7 +336,7 @@ const communityGroups = [
   {
     id: 3,
     name: "ZK Security Research",
-    icon: <Shield className="h-5 w-5 text-primary" />,
+    icon: <Award className="h-5 w-5 text-primary" />,
     type: "Public",
     members: 942,
     description: "Researching security aspects of zero-knowledge proof systems and their implementations in blockchain protocols."
@@ -343,7 +344,7 @@ const communityGroups = [
   {
     id: 4,
     name: "Security Mentorship Network",
-    icon: <Shield className="h-5 w-5 text-primary" />,
+    icon: <Award className="h-5 w-5 text-primary" />,
     type: "Public",
     members: 2130,
     description: "Connecting security beginners with experienced mentors to foster growth and knowledge sharing in the Web3 security space."
@@ -351,7 +352,7 @@ const communityGroups = [
   {
     id: 5,
     name: "Exploit Analysis Team",
-    icon: <Shield className="h-5 w-5 text-primary" />,
+    icon: <Award className="h-5 w-5 text-primary" />,
     type: "Private",
     members: 768,
     description: "A specialized group focusing on analyzing recent exploits, creating educational content, and developing prevention strategies."
@@ -359,7 +360,7 @@ const communityGroups = [
   {
     id: 6,
     name: "Layer 2 Security Coalition",
-    icon: <Shield className="h-5 w-5 text-primary" />,
+    icon: <Award className="h-5 w-5 text-primary" />,
     type: "Public",
     members: 1453,
     description: "Focused on the unique security challenges of Layer 2 scaling solutions including rollups, state channels, and validiums."

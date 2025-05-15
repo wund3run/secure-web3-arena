@@ -66,6 +66,15 @@ export function Navbar() {
   };
 
   // Define nav items
+  const navigation = [
+    { name: "Home", href: "/" },
+    { name: "Marketplace", href: "/marketplace" },
+    { name: "Audits", href: "/audits" },
+    { name: "Guidelines", href: "/guidelines" },
+    { name: "Community", href: "/community" },  // Add this line
+    { name: "Pricing", href: "/pricing" },
+  ];
+
   const marketplaceItems = [
     {
       title: "Security Services",
