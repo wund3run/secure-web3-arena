@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useTheme } from "next-themes";
 import {
@@ -28,14 +29,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Github,
-  Twitter,
-  Discord,
   Menu,
   User,
   Settings,
   CreditCard,
-  ArrowRight,
   LifeBuoy,
   LogOut,
 } from "lucide-react";
@@ -49,7 +46,7 @@ export function Navbar() {
     { name: "Home", href: "/" },
     { name: "Marketplace", href: "/marketplace" },
     { name: "Audits", href: "/audits" },
-    { name: "Security Analytics", href: "/security-analytics" }, // Add this new link
+    { name: "Security Analytics", href: "/security-analytics" }, 
     { name: "Guidelines", href: "/guidelines" },
     { name: "Web3 Security", href: "/web3-security" },
   ];
