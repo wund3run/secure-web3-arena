@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
-import { Shield } from "lucide-react";
+import { Globe, Search } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface MarketplaceHeroProps {
   onShowOnboarding: () => void;
@@ -8,28 +9,85 @@ interface MarketplaceHeroProps {
 
 export function MarketplaceHero({ onShowOnboarding }: MarketplaceHeroProps) {
   return (
-    <div className="w-full rounded-xl overflow-hidden relative mb-6" role="banner">
-      <div className="bg-gradient-to-r from-primary/80 to-secondary/80 h-64 w-full relative">
-        <div 
-          className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?q=80&w=1600&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay"
-          aria-hidden="true"
-          role="presentation"
-        ></div>
-        <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-16">
-          <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4">Web3 Security Marketplace</h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-2xl mb-6">
-            Connect with expert security providers to protect your blockchain projects from vulnerabilities and attacks
-          </p>
+    <div className="w-full pt-16 pb-24 mb-8 text-center" role="banner">
+      <div className="max-w-4xl mx-auto px-6">
+        {/* Badge */}
+        <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 text-primary mb-6">
+          <Globe className="h-4 w-4 mr-2" />
+          <span className="text-sm font-medium">Web3 Security Made Simple</span>
+        </div>
+        
+        {/* Two-part heading with gradient */}
+        <h1 className="text-5xl md:text-6xl font-extrabold mb-6">
+          Connect With Expert
+          <br />
+          <span className="bg-gradient-to-r from-[#6E59A5] to-[#33C3F0] bg-clip-text text-transparent">
+            Security Auditors
+          </span>
+        </h1>
+        
+        {/* Subtitle */}
+        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+          The intelligent marketplace matching blockchain projects with verified
+          security experts. Secure your Web3 project with confidence.
+        </p>
+        
+        {/* Action buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button 
-            variant="default" 
-            className="bg-white text-primary hover:bg-white/90 w-fit focus:ring-2 focus:ring-white focus:outline-none"
+            className="bg-gradient-to-r from-[#6E59A5] to-[#33C3F0] text-white hover:opacity-90 h-12 px-6"
             onClick={onShowOnboarding}
-            aria-label="Start guided marketplace onboarding"
           >
-            <Shield className="mr-2 h-4 w-4" aria-hidden="true" />
-            Start Guided Onboarding
+            <Search className="mr-2 h-5 w-5" />
+            Find Security Services
+          </Button>
+          
+          <Button
+            variant="outline"
+            className="h-12 px-6 group"
+            onClick={onShowOnboarding}
+          >
+            <Globe className="mr-2 h-5 w-5" />
+            Try Enhanced Experience
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
+            >
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
           </Button>
         </div>
+        
+        {/* Link for auditors */}
+        <Link 
+          to="/service-provider-onboarding"
+          className="inline-flex items-center mt-8 text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <span>Are you an auditor?</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="ml-2 h-4 w-4"
+          >
+            <path d="m9 18 6-6-6-6" />
+          </svg>
+        </Link>
       </div>
     </div>
   );
