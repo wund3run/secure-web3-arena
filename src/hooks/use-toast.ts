@@ -12,7 +12,7 @@ export type ToastProps = {
     onClick: () => void;
   };
   duration?: number;
-  id?: string;
+  id?: string | number;
 };
 
 // Main toast function for direct usage
@@ -49,10 +49,12 @@ export function useToast() {
   
   const showToast = useCallback((props: ToastProps) => {
     setIsToastVisible(true);
-    const id = toast.custom(props);
+    // Convert the ID to string if it's a number to fix the type error
+    const id = props.id ? String(props.id) : undefined;
+    const dismissToast = toast.custom({...props, id});
     
     return () => {
-      toast.dismiss(id);
+      if (id) toast.dismiss(id);
       setIsToastVisible(false);
     };
   }, []);
@@ -61,8 +63,13 @@ export function useToast() {
     toast,
     showToast,
     isToastVisible,
-    dismissToast: (id?: string) => {
-      toast.dismiss(id);
+    dismissToast: (id?: string | number) => {
+      // Convert ID to string if it's provided
+      if (id !== undefined) {
+        toast.dismiss(String(id));
+      } else {
+        toast.dismiss();
+      }
       setIsToastVisible(false);
     }
   };
