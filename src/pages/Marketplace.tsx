@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { MarketplaceLayout } from "@/components/marketplace/layout/MarketplaceLayout";
 import { MarketplaceHeader } from "@/components/marketplace/layout/MarketplaceHeader";
@@ -13,6 +12,7 @@ import { toast } from "sonner";
 import { handleApiError } from "@/utils/apiErrorHandler";
 import { ServiceCardProps } from "@/types/marketplace-unified";
 import { MarketplaceLoadingState } from "@/components/marketplace/error-handling";
+import { MarketplaceHero } from "@/components/marketplace/sections/MarketplaceHero";
 
 // Define global interface for window to include SERVICES with correct type
 declare global {
@@ -92,6 +92,9 @@ function MarketplacePageContent() {
   return (
     <div className="flex flex-col gap-6">
       <MarketplaceErrorBoundary>
+        {/* Add the hero section at the top */}
+        <MarketplaceHero onShowOnboarding={() => handleOnboardingComplete()} />
+        
         <MarketplaceHeader 
           showFilters={showFilters}
           setShowFilters={setShowFilters}
