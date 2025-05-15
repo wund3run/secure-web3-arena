@@ -79,54 +79,6 @@ export const checkAccessibility = (element: HTMLElement): AccessibilityIssue[] =
       });
     }
   }
-
-  // Check for keyboard navigation
-  const interactiveElements = element.querySelectorAll('a, button, [role="button"]');
-  interactiveElements.forEach(el => {
-    const tabIndex = el.getAttribute('tabindex');
-    if (tabIndex === '-1' && !el.getAttribute('aria-hidden')) {
-      issues.push({
-        element: el.tagName.toLowerCase(),
-        issue: 'Interactive element not keyboard accessible',
-        impact: 'critical',
-        wcag: '2.1.1',
-        fix: 'Remove tabindex="-1" or provide alternative keyboard access'
-      });
-    }
-  });
-  
-  return issues;
-};
-
-// Implement form validation accessibility checks
-export const checkFormAccessibility = (form: HTMLFormElement): AccessibilityIssue[] => {
-  const issues: AccessibilityIssue[] = [];
-  
-  // Check for labels on form inputs
-  const inputs = form.querySelectorAll('input, select, textarea');
-  inputs.forEach(input => {
-    const inputId = input.getAttribute('id');
-    if (inputId) {
-      const label = form.querySelector(`label[for="${inputId}"]`);
-      if (!label) {
-        issues.push({
-          element: `Form input (${input.getAttribute('type') || input.tagName.toLowerCase()})`,
-          issue: 'Input missing associated label',
-          impact: 'serious',
-          wcag: '3.3.2',
-          fix: `Add a label with for="${inputId}"`
-        });
-      }
-    } else {
-      issues.push({
-        element: `Form input (${input.getAttribute('type') || input.tagName.toLowerCase()})`,
-        issue: 'Input missing ID for label association',
-        impact: 'serious',
-        wcag: '3.3.2',
-        fix: 'Add an id attribute to the input and associate a label'
-      });
-    }
-  });
   
   return issues;
 };

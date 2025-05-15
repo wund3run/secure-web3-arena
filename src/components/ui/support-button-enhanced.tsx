@@ -15,9 +15,7 @@ import {
 } from "lucide-react";
 import { AccessibilityMenu } from "./accessibility-menu";
 import { cn } from "@/lib/utils";
-import { SkipLink } from "./skip-link";
 
-// Enhanced support button with accessibility features
 export function SupportButtonEnhanced() {
   const [supportOpen, setSupportOpen] = useState(false);
   const [accessibilityOpen, setAccessibilityOpen] = useState(false);
@@ -45,12 +43,6 @@ export function SupportButtonEnhanced() {
           }
         }
       }
-
-      // Alt + H for help menu
-      if (e.altKey && e.key === 'h') {
-        e.preventDefault();
-        setSupportOpen(true);
-      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -59,15 +51,15 @@ export function SupportButtonEnhanced() {
 
   return (
     <>
-      {/* Skip to content links */}
-      <div className="skip-links">
-        <SkipLink targetId="main-content" />
-        <SkipLink 
-          targetId="navigation" 
-          label="Skip to navigation" 
-          className="left-4 top-16" 
-        />
-      </div>
+      {/* Skip to content link - visible only when focused */}
+      <a 
+        href="#main-content" 
+        className="skip-link" 
+        onFocus={(e) => e.currentTarget.classList.add('focus-visible')}
+        onBlur={(e) => e.currentTarget.classList.remove('focus-visible')}
+      >
+        Skip to main content
+      </a>
       
       <Popover open={supportOpen} onOpenChange={setSupportOpen}>
         <PopoverTrigger asChild>
@@ -78,13 +70,13 @@ export function SupportButtonEnhanced() {
               "fixed bottom-4 right-4 h-12 w-12 rounded-full shadow-lg transition-all hover:shadow-md",
               supportOpen ? "bg-primary text-primary-foreground" : "bg-card"
             )}
-            aria-label="Support and accessibility options (press Alt+H)"
+            aria-label="Support and accessibility options"
           >
             <HelpCircle className="h-6 w-6" />
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-64 p-2"
+          className="w-56 p-2"
           align="end"
           side="top"
           sideOffset={20}
@@ -117,7 +109,7 @@ export function SupportButtonEnhanced() {
                 setSupportOpen(false);
                 setAccessibilityOpen(true);
               }}
-              aria-label="Accessibility settings (press Alt+A)"
+              aria-label="Accessibility settings"
             >
               <Accessibility className="h-4 w-4" />
               Accessibility

@@ -1,63 +1,67 @@
 
-import { Link } from "react-router-dom";
+import { Trophy, Shield, Award, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { EnhancedTooltip } from "@/components/ui/enhanced-tooltip";
-import { Shield, User, ChevronRight, ArrowRight, Sparkles, Globe } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function EnhancedHeroHeader() {
   return (
-    <div className="relative flex flex-col items-center justify-center overflow-hidden py-16 md:py-24 lg:py-28">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-muted/30 z-0"></div>
+    <div className="relative overflow-hidden bg-gradient-to-br from-white via-primary/5 to-secondary/5 pt-16 pb-20">
+      {/* Decorative elements with reduced opacity */}
+      <div className="absolute top-20 right-10 opacity-10">
+        <Shield className="w-40 h-40 text-primary animate-float" />
+      </div>
       
-      {/* Blue blur effect */}
-      <div className="absolute -top-24 -left-24 w-80 h-80 bg-primary/30 rounded-full blur-3xl opacity-20"></div>
-      
-      {/* Purple blur effect */}
-      <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-secondary/30 rounded-full blur-3xl opacity-20"></div>
-      
-      <div className="relative z-10 container px-4 md:px-6">
-        <div className="flex flex-col items-center text-center space-y-4">
-          <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none border-primary/10 bg-primary/10 text-primary mb-2">
-            <Sparkles className="h-3.5 w-3.5 mr-1" />
-            Web3 Security Made Simple
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Platform headline - Large, bold headline that clearly communicates value */}
+        <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-center mb-6">
+          <span className="block text-foreground">Secure Your</span>
+          <span className="block text-gradient bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Web3 Projects</span>
+        </h1>
+        
+        <p className="mt-6 text-xl md:text-2xl text-center text-muted-foreground max-w-3xl mx-auto">
+          Connect with expert auditors to protect your blockchain applications from critical vulnerabilities
+        </p>
+        
+        {/* Primary CTA - Single, clear primary action with secondary alternative */}
+        <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+          <Link to="/request-audit">
+            <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-lg px-8 py-6 shadow-lg">
+              <Shield className="mr-2 h-6 w-6" />
+              Get Your Project Audited
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
+          <Link to="/marketplace">
+            <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10 text-lg px-8 py-6">
+              Browse Auditor Profiles
+            </Button>
+          </Link>
+        </div>
+
+        {/* Social proof - Compelling stats to build trust */}
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="bg-card/80 backdrop-blur-sm p-6 rounded-xl border border-border/30 shadow-sm text-center">
+            <div className="flex justify-center mb-3">
+              <Trophy className="h-10 w-10 text-web3-orange" />
+            </div>
+            <h3 className="text-3xl font-bold">500+</h3>
+            <p className="text-muted-foreground">Security Experts</p>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight max-w-3xl">
-            Connect With Expert{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-              Security Auditors
-            </span>
-          </h1>
-          <p className="max-w-[700px] text-muted-foreground md:text-xl">
-            The intelligent marketplace matching blockchain projects with verified security experts.
-            Secure your Web3 project with confidence.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
-            <Link to="/marketplace">
-              <Button className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 h-11 px-8">
-                <Shield className="mr-2 h-4 w-4" />
-                Find Security Services
-              </Button>
-            </Link>
-            <EnhancedTooltip content="Try our user-friendly experience" side="bottom">
-              <Link to="/enhanced-dashboard">
-                <Button variant="outline" className="h-11 px-8 border-primary/20 text-primary">
-                  <Globe className="mr-2 h-4 w-4" />
-                  Try Enhanced Experience
-                  <ArrowRight className="ml-1 h-4 w-4"/>
-                </Button>
-              </Link>
-            </EnhancedTooltip>
+          
+          <div className="bg-card/80 backdrop-blur-sm p-6 rounded-xl border border-border/30 shadow-sm text-center">
+            <div className="flex justify-center mb-3">
+              <Shield className="h-10 w-10 text-primary" />
+            </div>
+            <h3 className="text-3xl font-bold">$350M+</h3>
+            <p className="text-muted-foreground">Assets Protected</p>
           </div>
-          <div className="flex items-center justify-center mt-4">
-            <Link 
-              to="/request-audit" 
-              className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center"
-            >
-              <User className="mr-1 h-4 w-4" />
-              Are you an auditor?
-              <ChevronRight className="ml-1 h-4 w-4" />
-            </Link>
+          
+          <div className="bg-card/80 backdrop-blur-sm p-6 rounded-xl border border-border/30 shadow-sm text-center">
+            <div className="flex justify-center mb-3">
+              <Award className="h-10 w-10 text-web3-purple" />
+            </div>
+            <h3 className="text-3xl font-bold">12,800+</h3>
+            <p className="text-muted-foreground">Vulnerabilities Found</p>
           </div>
         </div>
       </div>

@@ -1,76 +1,51 @@
 
-// Centralized toast hook implementation
+import * as React from "react"
 import { toast as sonnerToast } from "sonner";
-import { useState, useCallback } from "react";
 
-// Types for the toast API
-export type ToastProps = {
-  title?: string;
+type ToastProps = {
+  title?: React.ReactNode
+  description?: React.ReactNode
+  action?: React.ReactElement
+  variant?: "default" | "destructive" | "success"
+}
+
+// Define our own toast options interface based on what sonner accepts
+interface CustomToastOptions {
   description?: string;
-  action?: {
-    label: string;
-    onClick: () => void;
-  };
+  action?: React.ReactElement;
+  className?: string;
   duration?: number;
-  id?: string | number;
-};
+}
 
-// Main toast function for direct usage
-export const toast = {
-  success: (title: string, props?: Omit<ToastProps, "title">) => 
-    sonnerToast.success(title, props),
-  
-  error: (title: string, props?: Omit<ToastProps, "title">) => 
-    sonnerToast.error(title, props),
-  
-  warning: (title: string, props?: Omit<ToastProps, "title">) => 
-    sonnerToast.warning(title, props),
-  
-  info: (title: string, props?: Omit<ToastProps, "title">) => 
-    sonnerToast.info(title, props),
-  
-  // Additional utility methods
-  dismiss: (toastId?: string) => sonnerToast.dismiss(toastId),
-  
-  custom: (props: ToastProps) => {
-    return sonnerToast(props.title || "", {
-      description: props.description,
-      action: props.action,
-      duration: props.duration,
-      // Convert number IDs to strings to match expected type
-      id: props.id ? String(props.id) : undefined,
-    });
-  }
-};
-
-// Hook for component-based toast management
+// This is a compatibility layer for shadcn toast system
+// It maps shadcn toast calls to sonner toast and adds accessibility features
 export function useToast() {
-  const [isToastVisible, setIsToastVisible] = useState(false);
-  
-  const showToast = useCallback((props: ToastProps) => {
-    setIsToastVisible(true);
-    // Convert the ID to string if it's a number to fix the type error
-    const id = props.id ? String(props.id) : undefined;
-    const dismissToast = toast.custom({...props, id});
+  // Map states to sonner
+  const toast = (props: ToastProps) => {
+    const { title, description, variant = "default", action } = props;
     
-    return () => {
-      if (id) toast.dismiss(id);
-      setIsToastVisible(false);
+    // Create accessible toast options
+    const accessibleOptions: CustomToastOptions = {
+      description: description as string,
+      action,
+      className: "accessible-toast", // Add class for styling and accessibility hooks
     };
-  }, []);
-  
-  return {
-    toast,
-    showToast,
-    isToastVisible,
-    dismissToast: (id?: string | number) => {
-      // Convert ID to string if it's provided
-      if (id !== undefined) {
-        toast.dismiss(String(id));
-      } else {
-        toast.dismiss();
-      }
-      setIsToastVisible(false);
+    
+    // Handle different toast types
+    if (variant === "destructive") {
+      return sonnerToast.error(title as string, accessibleOptions);
+    } else if (variant === "success") {
+      return sonnerToast.success(title as string, accessibleOptions);
+    } else {
+      return sonnerToast(title as string, accessibleOptions);
     }
   };
+
+  // Return a simplified API that maps to sonner
+  return {
+    toast,
+    dismiss: sonnerToast.dismiss,
+  };
 }
+
+export { sonnerToast as toast };

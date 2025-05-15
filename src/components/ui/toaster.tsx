@@ -11,15 +11,7 @@ export function Toaster() {
       toastOptions={{
         duration: 5000,
         className: "rounded-md border border-border bg-background text-foreground accessible-toast",
-        descriptionClassName: "text-muted-foreground text-sm",
-        actionButtonStyle: {
-          backgroundColor: "var(--primary)",
-          color: "var(--primary-foreground)"
-        },
-        cancelButtonStyle: {
-          backgroundColor: "var(--muted)",
-          color: "var(--muted-foreground)"
-        }
+        descriptionClassName: "text-muted-foreground text-sm"
       }}
     />
   );

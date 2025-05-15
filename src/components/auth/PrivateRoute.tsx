@@ -1,34 +1,31 @@
+import React from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from '@/contexts/auth';
 
-import React from "react";
-import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "@/contexts/auth";
-
-export interface PrivateRouteProps {
+interface PrivateRouteProps {
   children: React.ReactNode;
-  adminOnly?: boolean;
 }
 
-export function PrivateRoute({ children, adminOnly = false }: PrivateRouteProps) {
-  const { user, loading, userProfile } = useAuth();
+export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
+  const { user, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
+    // Show loading state
     return (
-      <div className="flex justify-center items-center h-40">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
   }
 
-  // If user is not authenticated, redirect to auth
   if (!user) {
+    // Redirect to login page but save the attempted location
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
-  // If route requires admin access but user is not admin, redirect to dashboard
-  if (adminOnly && (!userProfile || userProfile.role !== "admin")) {
-    return <Navigate to="/dashboard" />;
-  }
-
+  // Return children if authenticated
   return <>{children}</>;
-}
+};
+
+export default PrivateRoute;

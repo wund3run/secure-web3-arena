@@ -1,118 +1,190 @@
 
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import { Suspense, lazy } from "react";
 import LoadingState from "@/components/ui/loading-state";
-import { PrivateRoute } from "@/components/auth/PrivateRoute";
-import { ErrorBoundary } from "@/utils/error-handling";
+import ErrorBoundary from "@/components/ui/error-boundary";
 
-// Lazy-loaded pages for better performance
-const Index = lazy(() => import("@/pages/Index"));
-const Marketplace = lazy(() => import("@/pages/Marketplace"));
-const ServiceDetails = lazy(() => import("@/pages/ServiceDetails"));
-const Audits = lazy(() => import("@/pages/Audits"));
-const AuditDetail = lazy(() => import("@/pages/AuditDetail"));
-const AuditDetails = lazy(() => import("@/pages/AuditDetails"));
-const Guidelines = lazy(() => import("@/pages/Guidelines"));
-const AuditorOnboarding = lazy(() => import("@/pages/onboarding/AuditorOnboarding"));
-const Admin = lazy(() => import("@/pages/Admin"));
-const NotFound = lazy(() => import("@/pages/NotFound"));
-const LoginPage = lazy(() => import("@/pages/Login"));
-const RegisterPage = lazy(() => import("@/pages/Register"));
-const Dashboard = lazy(() => import("@/pages/Dashboard"));
-const RequestAudit = lazy(() => import("@/pages/RequestAudit"));
-const Pricing = lazy(() => import("@/pages/Pricing"));
-const EnhancedDashboard = lazy(() => import("@/pages/EnhancedDashboard"));
-const Auth = lazy(() => import("@/pages/Auth"));
-const AuthCallback = lazy(() => import("@/pages/AuthCallback"));
-const TwoFactorAuth = lazy(() => import("@/pages/TwoFactorAuth"));
-const Achievements = lazy(() => import("@/pages/Achievements"));
-const Escrow = lazy(() => import("@/pages/Escrow"));
-const SecurityInsights = lazy(() => import("@/pages/SecurityInsights"));
-const AuditGuidelines = lazy(() => import("@/pages/AuditGuidelines"));
-const SubmitService = lazy(() => import("@/pages/SubmitService"));
-const Community = lazy(() => import("@/pages/Community"));
+// Import PrivateRoute
+const PrivateRoute = lazy(() => import("@/components/auth/PrivateRoute").then(module => ({ default: module.PrivateRoute })));
 
-// Loading component for Suspense
-const PageLoading = () => <LoadingState message="Loading page..." fullPage={true} size="lg" />;
+// Lazy load pages with explicitly named chunks for better debugging
+const Index = lazy(() => import(/* webpackChunkName: "index-page" */ "@/pages/Index"));
+const Auth = lazy(() => import(/* webpackChunkName: "auth-page" */ "@/pages/Auth"));
+const AuthCallback = lazy(() => import(/* webpackChunkName: "auth-callback-page" */ "@/pages/AuthCallback"));
+const Marketplace = lazy(() => import(/* webpackChunkName: "marketplace-page" */ "@/pages/Marketplace"));
+const ServiceDetails = lazy(() => import(/* webpackChunkName: "service-details-page" */ "@/pages/ServiceDetails"));
+const Contact = lazy(() => import(/* webpackChunkName: "contact-page" */ "@/pages/Contact"));
+const Stats = lazy(() => import(/* webpackChunkName: "stats-page" */ "@/pages/Stats"));
+const Leaderboard = lazy(() => import(/* webpackChunkName: "leaderboard-page" */ "@/pages/Leaderboard"));
+const Community = lazy(() => import(/* webpackChunkName: "community-page" */ "@/pages/Community"));
+const SecurityInsights = lazy(() => import(/* webpackChunkName: "security-insights-page" */ "@/pages/SecurityInsights"));
+const TwoFactorAuth = lazy(() => import(/* webpackChunkName: "two-factor-auth-page" */ "@/pages/TwoFactorAuth"));
+const RequestAudit = lazy(() => import(/* webpackChunkName: "request-audit-page" */ "@/pages/RequestAudit"));
+const Audits = lazy(() => import(/* webpackChunkName: "audits-page" */ "@/pages/Audits"));
+const AuditDetails = lazy(() => import(/* webpackChunkName: "audit-details-page" */ "@/pages/AuditDetails"));
+const Achievements = lazy(() => import(/* webpackChunkName: "achievements-page" */ "@/pages/Achievements"));
+const Escrow = lazy(() => import(/* webpackChunkName: "escrow-page" */ "@/pages/Escrow"));
+const NotFound = lazy(() => import(/* webpackChunkName: "not-found-page" */ "@/pages/NotFound"));
+const AdminLogin = lazy(() => import(/* webpackChunkName: "admin-login-page" */ "@/pages/admin/AdminLogin"));
+const AdminDashboard = lazy(() => import(/* webpackChunkName: "admin-dashboard-page" */ "@/pages/admin/AdminDashboard"));
+const AuditRequestForService = lazy(() => import(/* webpackChunkName: "audit-request-service-page" */ "@/pages/AuditRequestForService"));
+const ContactProvider = lazy(() => import(/* webpackChunkName: "contact-provider-page" */ "@/pages/ContactProvider"));
+const SubmitService = lazy(() => import(/* webpackChunkName: "submit-service-page" */ "@/pages/SubmitService"));
+const AuditGuidelines = lazy(() => import(/* webpackChunkName: "audit-guidelines-page" */ "@/pages/AuditGuidelines"));
 
-// Error fallback component - correctly typed as React.ReactNode
-const PageError = ({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) => (
-  <div className="min-h-screen flex flex-col items-center justify-center p-4">
-    <h1 className="text-2xl font-bold text-destructive mb-4">Something went wrong</h1>
-    <p className="text-muted-foreground mb-6">{error.message || "An unexpected error occurred"}</p>
-    <div className="flex gap-4">
-      <button 
-        onClick={resetErrorBoundary} 
-        className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-      >
-        Try again
-      </button>
-      <a 
-        href="/"
-        className="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/90"
-      >
-        Go to homepage
-      </a>
-    </div>
-  </div>
-);
+// Import onboarding pages
+const ServiceProviderOnboarding = lazy(() => import(/* webpackChunkName: "service-provider-onboarding-page" */ "@/pages/onboarding/ServiceProviderOnboarding"));
+const AuditorOnboarding = lazy(() => import(/* webpackChunkName: "auditor-onboarding-page" */ "@/pages/onboarding/AuditorOnboarding"));
+const ApplicationSubmitted = lazy(() => import(/* webpackChunkName: "application-submitted-page" */ "@/pages/onboarding/ApplicationSubmitted"));
 
-export function AppRoutes() {
+// Custom loading component that's route-aware
+const RouteLoadingState: React.FC<{ route?: string }> = ({ route }) => {
+  const getMessage = () => {
+    if (route?.includes('audit')) return 'Loading audit information...';
+    if (route?.includes('marketplace')) return 'Loading marketplace...';
+    if (route?.includes('admin')) return 'Loading admin dashboard...';
+    if (route?.includes('escrow')) return 'Loading secure escrow system...';
+    return 'Loading page...';
+  };
+  
+  return <LoadingState fullPage message={getMessage()} />;
+};
+
+/**
+ * Application routes configuration with code splitting and performance optimization
+ */
+export const AppRoutes: React.FC = () => {
   return (
     <ErrorBoundary>
-      <Suspense fallback={<PageLoading />}>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<Index />} />
-          <Route path="/marketplace" element={<Marketplace />} />
-          <Route path="/marketplace/:id" element={<ServiceDetails />} />
-          <Route path="/audits" element={<Audits />} />
-          <Route path="/audits/:id" element={<AuditDetail />} />
-          <Route path="/audit-details/:auditId" element={<AuditDetails />} />
-          <Route path="/guidelines" element={<Guidelines />} />
-          <Route path="/service-provider-onboarding" element={<AuditorOnboarding />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/auth/callback" element={<AuthCallback />} />
-          <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
-          <Route path="/request-audit" element={<RequestAudit />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/achievements" element={<Achievements />} />
-          <Route path="/security-insights" element={<SecurityInsights />} />
-          <Route path="/audit-guidelines" element={<AuditGuidelines />} />
-          <Route path="/submit-service" element={<SubmitService />} />
-          <Route path="/escrow" element={<Escrow />} />
-          <Route path="/community" element={<Community />} />
-          
-          {/* Enhanced pages */}
-          <Route path="/enhanced-dashboard" element={<EnhancedDashboard />} />
-          
-          {/* Protected routes */}
-          <Route
-            path="/dashboard"
-            element={
+      <Suspense fallback={<RouteLoadingState />}>
+        <main id="main-content" tabIndex={-1} className="outline-none focus:ring-0">
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={
+              <Suspense fallback={<RouteLoadingState route="auth" />}>
+                <Auth />
+              </Suspense>
+            } />
+            <Route path="/auth-callback" element={<AuthCallback />} />
+            <Route path="/marketplace" element={
+              <Suspense fallback={<RouteLoadingState route="marketplace" />}>
+                <Marketplace />
+              </Suspense>
+            } />
+            <Route path="/service/:serviceId" element={
+              <Suspense fallback={<RouteLoadingState route="service" />}>
+                <ServiceDetails />
+              </Suspense>
+            } />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/stats" element={<Stats />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/security-insights" element={<SecurityInsights />} />
+            <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
+            <Route path="/submit-service" element={<SubmitService />} />
+            <Route path="/contact-provider/:providerId" element={<ContactProvider />} />
+            <Route path="/audit-guidelines" element={<AuditGuidelines />} />
+            
+            {/* Join Routes - both direct and redirect */}
+            <Route path="/join" element={<ServiceProviderOnboarding />} />
+            
+            {/* Protected Routes */}
+            <Route path="/request-audit" element={
               <PrivateRoute>
-                <Dashboard />
+                <Suspense fallback={<RouteLoadingState route="request-audit" />}>
+                  <RequestAudit />
+                </Suspense>
               </PrivateRoute>
-            }
-          />
-          
-          {/* Admin routes */}
-          <Route
-            path="/admin/*"
-            element={
-              <PrivateRoute adminOnly={true}>
-                <Admin />
+            } />
+            <Route path="/request-audit/:serviceId" element={
+              <PrivateRoute>
+                <Suspense fallback={<RouteLoadingState route="request-audit" />}>
+                  <AuditRequestForService />
+                </Suspense>
               </PrivateRoute>
-            }
-          />
-          
-          {/* 404 - Not found */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            } />
+            <Route path="/audits" element={
+              <PrivateRoute>
+                <Suspense fallback={<RouteLoadingState route="audits" />}>
+                  <Audits />
+                </Suspense>
+              </PrivateRoute>
+            } />
+            <Route path="/audit/:auditId" element={
+              <PrivateRoute>
+                <Suspense fallback={<RouteLoadingState route="audit" />}>
+                  <AuditDetails />
+                </Suspense>
+              </PrivateRoute>
+            } />
+            <Route path="/achievements" element={
+              <PrivateRoute>
+                <Achievements />
+              </PrivateRoute>
+            } />
+            <Route path="/escrow" element={
+              <PrivateRoute>
+                <Suspense fallback={<RouteLoadingState route="escrow" />}>
+                  <Escrow />
+                </Suspense>
+              </PrivateRoute>
+            } />
+            
+            {/* Provider Onboarding */}
+            <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
+            <Route path="/auditor-onboarding" element={<AuditorOnboarding />} />
+            <Route path="/application-submitted" element={<ApplicationSubmitted />} />
+            
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={
+              <Suspense fallback={<RouteLoadingState route="admin" />}>
+                <AdminDashboard section="dashboard" />
+              </Suspense>
+            } />
+            <Route path="/admin/users" element={
+              <Suspense fallback={<RouteLoadingState route="admin" />}>
+                <AdminDashboard section="users" />
+              </Suspense>
+            } />
+            <Route path="/admin/services" element={
+              <Suspense fallback={<RouteLoadingState route="admin" />}>
+                <AdminDashboard section="services" />
+              </Suspense>
+            } />
+            <Route path="/admin/approvals" element={
+              <Suspense fallback={<RouteLoadingState route="admin" />}>
+                <AdminDashboard section="approvals" />
+              </Suspense>
+            } />
+            <Route path="/admin/audits" element={
+              <Suspense fallback={<RouteLoadingState route="admin" />}>
+                <AdminDashboard section="audits" />
+              </Suspense>
+            } />
+            <Route path="/admin/providers" element={
+              <Suspense fallback={<RouteLoadingState route="admin" />}>
+                <AdminDashboard section="providers" />
+              </Suspense>
+            } />
+            <Route path="/admin/reports" element={
+              <Suspense fallback={<RouteLoadingState route="admin" />}>
+                <AdminDashboard section="reports" />
+              </Suspense>
+            } />
+            <Route path="/admin/settings" element={
+              <Suspense fallback={<RouteLoadingState route="admin" />}>
+                <AdminDashboard section="settings" />
+              </Suspense>
+            } />
+            
+            {/* 404 Page */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
       </Suspense>
     </ErrorBoundary>
   );
-}
+};
