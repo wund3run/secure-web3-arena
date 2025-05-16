@@ -1,3 +1,4 @@
+
 import React, { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import LoadingState from "@/components/ui/loading-state";
@@ -31,6 +32,8 @@ const AuditRequestForService = lazy(() => import(/* webpackChunkName: "audit-req
 const ContactProvider = lazy(() => import(/* webpackChunkName: "contact-provider-page" */ "@/pages/ContactProvider"));
 const SubmitService = lazy(() => import(/* webpackChunkName: "submit-service-page" */ "@/pages/SubmitService"));
 const AuditGuidelines = lazy(() => import(/* webpackChunkName: "audit-guidelines-page" */ "@/pages/AuditGuidelines"));
+const Pricing = lazy(() => import(/* webpackChunkName: "pricing-page" */ "@/pages/Pricing"));
+const Resources = lazy(() => import(/* webpackChunkName: "resources-page" */ "@/pages/Resources"));
 
 // Import onboarding pages
 const ServiceProviderOnboarding = lazy(() => import(/* webpackChunkName: "service-provider-onboarding-page" */ "@/pages/onboarding/ServiceProviderOnboarding"));
@@ -112,6 +115,8 @@ export const AppRoutes: React.FC = () => {
               </Suspense>
             } />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/pricing" element={<Pricing />} />
             <Route path="/stats" element={<Stats />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/community" element={<Community />} />
