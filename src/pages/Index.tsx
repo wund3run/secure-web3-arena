@@ -9,7 +9,8 @@ import { EnhancedFooter } from "@/components/home/enhanced-footer";
 import { SkipLink } from "@/components/ui/skip-link";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight, Shield, Code, CheckCircle } from "lucide-react";
+import { ArrowRight, Shield, Code, CheckCircle, Database, Key, Activity, MessageSquare, Layout } from "lucide-react";
+import { MarketplaceHero } from "@/components/marketplace/sections/MarketplaceHero";
 
 export default function Index() {
   return (
@@ -147,6 +148,179 @@ export default function Index() {
                     </Link>
                   </Button>
                 </div>
+              </div>
+            </div>
+          </section>
+          
+          {/* Comprehensive Web3 Security Services Section */}
+          <section className="py-20 border-t border-b">
+            <div className="container px-4 md:px-6">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">Comprehensive Web3 Security Services</h2>
+                <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                  Protect your blockchain applications with our end-to-end security solutions across all
+                  layers of Web3 architecture
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Smart Contract Security */}
+                <div className="bg-card border rounded-lg p-6 hover:shadow-md transition-all">
+                  <div className="flex items-center mb-4">
+                    <Code className="h-6 w-6 text-purple-600 mr-2" />
+                    <h3 className="text-xl font-semibold">Smart Contract Security</h3>
+                  </div>
+                  <p className="mb-4 text-muted-foreground">
+                    Comprehensive audits for Solidity, Rust, and Move smart contracts to prevent exploits and vulnerabilities
+                  </p>
+                  <ul className="space-y-2">
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-purple-600 mr-2"></div>
+                      <span className="text-sm">Reentrancy protection</span>
+                    </li>
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-purple-600 mr-2"></div>
+                      <span className="text-sm">Access control validation</span>
+                    </li>
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-purple-600 mr-2"></div>
+                      <span className="text-sm">Logic optimization</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                {/* Infrastructure Security */}
+                <div className="bg-card border rounded-lg p-6 hover:shadow-md transition-all">
+                  <div className="flex items-center mb-4">
+                    <Database className="h-6 w-6 text-cyan-600 mr-2" />
+                    <h3 className="text-xl font-semibold">Infrastructure Security</h3>
+                  </div>
+                  <p className="mb-4 text-muted-foreground">
+                    Secure blockchain nodes, RPC endpoints, indexers, and Web3 infrastructure components
+                  </p>
+                  <ul className="space-y-2">
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-cyan-600 mr-2"></div>
+                      <span className="text-sm">Node configuration hardening</span>
+                    </li>
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-cyan-600 mr-2"></div>
+                      <span className="text-sm">RPC endpoint protection</span>
+                    </li>
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-cyan-600 mr-2"></div>
+                      <span className="text-sm">DDoS mitigation strategies</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                {/* Key Management */}
+                <div className="bg-card border rounded-lg p-6 hover:shadow-md transition-all">
+                  <div className="flex items-center mb-4">
+                    <Key className="h-6 w-6 text-red-500 mr-2" />
+                    <h3 className="text-xl font-semibold">Key Management</h3>
+                  </div>
+                  <p className="mb-4 text-muted-foreground">
+                    Secure wallet key storage, private key handling, and multi-signature implementation
+                  </p>
+                  <ul className="space-y-2">
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-red-500 mr-2"></div>
+                      <span className="text-sm">Hardware security modules</span>
+                    </li>
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-red-500 mr-2"></div>
+                      <span className="text-sm">Multi-sig architecture</span>
+                    </li>
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-red-500 mr-2"></div>
+                      <span className="text-sm">Key rotation protocols</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                {/* Oracle Security */}
+                <div className="bg-card border rounded-lg p-6 hover:shadow-md transition-all">
+                  <div className="flex items-center mb-4">
+                    <Activity className="h-6 w-6 text-purple-600 mr-2" />
+                    <h3 className="text-xl font-semibold">Oracle Security</h3>
+                  </div>
+                  <p className="mb-4 text-muted-foreground">
+                    Protection against price manipulation, data source verification, and oracle failure safeguards
+                  </p>
+                  <ul className="space-y-2">
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-purple-600 mr-2"></div>
+                      <span className="text-sm">Price feed validation</span>
+                    </li>
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-purple-600 mr-2"></div>
+                      <span className="text-sm">Multiple data source integration</span>
+                    </li>
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-purple-600 mr-2"></div>
+                      <span className="text-sm">Heartbeat monitoring</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                {/* API Security */}
+                <div className="bg-card border rounded-lg p-6 hover:shadow-md transition-all">
+                  <div className="flex items-center mb-4">
+                    <MessageSquare className="h-6 w-6 text-cyan-600 mr-2" />
+                    <h3 className="text-xl font-semibold">API Security</h3>
+                  </div>
+                  <p className="mb-4 text-muted-foreground">
+                    Secure connection between Web2 backends and Web3 contracts with proper authentication
+                  </p>
+                  <ul className="space-y-2">
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-cyan-600 mr-2"></div>
+                      <span className="text-sm">Message signing verification</span>
+                    </li>
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-cyan-600 mr-2"></div>
+                      <span className="text-sm">Rate limiting implementation</span>
+                    </li>
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-cyan-600 mr-2"></div>
+                      <span className="text-sm">Authentication best practices</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                {/* Front-end DApp Security */}
+                <div className="bg-card border rounded-lg p-6 hover:shadow-md transition-all">
+                  <div className="flex items-center mb-4">
+                    <Layout className="h-6 w-6 text-red-500 mr-2" />
+                    <h3 className="text-xl font-semibold">Front-end DApp Security</h3>
+                  </div>
+                  <p className="mb-4 text-muted-foreground">
+                    Protection for web interfaces, wallet connections, and user interaction with contracts
+                  </p>
+                  <ul className="space-y-2">
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-red-500 mr-2"></div>
+                      <span className="text-sm">Wallet connection validation</span>
+                    </li>
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-red-500 mr-2"></div>
+                      <span className="text-sm">Transaction simulation</span>
+                    </li>
+                    <li className="flex items-center">
+                      <div className="h-2 w-2 rounded-full bg-red-500 mr-2"></div>
+                      <span className="text-sm">User interface safeguards</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="text-center mt-8">
+                <Button asChild variant="outline">
+                  <Link to="/web3-security" className="flex items-center justify-center">
+                    Explore our full range of specialized security services <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
               </div>
             </div>
           </section>
