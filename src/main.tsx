@@ -5,20 +5,6 @@ import App from "./App";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AccessibilityProvider } from "./contexts/AccessibilityContext";
-
-// Create a client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: 1,
-    },
-  },
-});
-
-const root = ReactDOM.createRoot(document.getElementById("root")!);
 
 // Initialize performance monitoring
 if (process.env.NODE_ENV === 'production') {
@@ -39,15 +25,13 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+const root = ReactDOM.createRoot(document.getElementById("root")!);
+
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <HelmetProvider>
-        <QueryClientProvider client={queryClient}>
-          <AccessibilityProvider>
-            <App />
-          </AccessibilityProvider>
-        </QueryClientProvider>
+        <App />
       </HelmetProvider>
     </BrowserRouter>
   </React.StrictMode>

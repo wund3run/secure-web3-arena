@@ -2,6 +2,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { GlobalComponents } from './components/app/GlobalComponents';
 import { Toaster } from './components/ui/toaster';
+import { AppProviders } from './components/app/AppProviders';
 
 // Pages
 import Index from './pages/Index';
@@ -50,7 +51,7 @@ import WebThreeSecurity from './pages/WebThreeSecurity';
 
 function App() {
   return (
-    <>
+    <AppProviders>
       <GlobalComponents />
       <Routes>
         <Route path="/" element={<Index />} />
@@ -100,7 +101,7 @@ function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />
-    </>
+    </AppProviders>
   );
 }
 
