@@ -98,7 +98,7 @@ export default function WebThreeSecurity() {
                           // Good practice<br />
                           function withdraw(uint amount) external &#123;<br />
                           &nbsp;&nbsp;// Checks<br />
-                          &nbsp;&nbsp;require(balances[msg.sender] >= amount);<br /><br />
+                          &nbsp;&nbsp;require(balances[msg.sender] &gt;= amount);<br /><br />
                           &nbsp;&nbsp;// Effects<br />
                           &nbsp;&nbsp;balances[msg.sender] -= amount;<br /><br />
                           &nbsp;&nbsp;// Interactions<br />
