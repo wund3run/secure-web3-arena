@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
@@ -12,8 +12,11 @@ import { MessageSquare, ChevronRight, Search, Users, Calendar, PlusCircle, Eye, 
 import { Link } from "react-router-dom";
 import { SecurityDiscussionCard } from "@/components/security/security-discussion-card";
 import { securityDiscussions } from "@/data/security-discussions";
+import { SkipToContent } from "@/components/layout/SkipToContent";
 
 export default function Forum() {
+  const [activeDiscussionTab, setActiveDiscussionTab] = useState("discussions");
+  
   return (
     <>
       <Helmet>
@@ -24,8 +27,9 @@ export default function Forum() {
         />
       </Helmet>
       <div className="min-h-screen bg-background flex flex-col">
+        <SkipToContent targetId="main-content" />
         <Navbar />
-        <main className="flex-grow container py-12">
+        <main className="flex-grow container py-12" id="main-content">
           <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-8">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold mb-2">Community Forum</h1>
@@ -117,7 +121,7 @@ export default function Forum() {
             
             {/* Main Content */}
             <div className="lg:col-span-3">
-              <Tabs defaultValue="discussions">
+              <Tabs value={activeDiscussionTab} onValueChange={setActiveDiscussionTab}>
                 <TabsList>
                   <TabsTrigger value="discussions" className="flex items-center gap-2">
                     <MessageCircle className="h-4 w-4" />
