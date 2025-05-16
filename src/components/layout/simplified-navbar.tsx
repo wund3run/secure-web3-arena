@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +11,7 @@ import {
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { HawklyLogo } from "./hawkly-logo";
 import { useAuth } from "@/contexts/auth";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -20,6 +20,19 @@ export function SimplifiedNavbar() {
   const { user, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (activeDropdown && 
+          !(event.target as Element).closest('.navigation-trigger')) {
+        setActiveDropdown(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [activeDropdown]);
   
   // Navigation links structure for consistency between desktop and mobile views
   const navigationLinks = {
@@ -51,7 +64,9 @@ export function SimplifiedNavbar() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center justify-between">
         <div className="flex items-center">
-          <HawklyLogo />
+          <Link to="/" className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded">
+            <HawklyLogo />
+          </Link>
           
           {/* Desktop Navigation */}
           <NavigationMenu className="mx-6 hidden md:flex">
@@ -59,16 +74,23 @@ export function SimplifiedNavbar() {
               <NavigationMenuItem>
                 <NavigationMenuTrigger 
                   onClick={() => handleDropdownToggle('marketplace')}
-                  className={activeDropdown === 'marketplace' ? 'bg-pink-100 text-foreground rounded-t-md rounded-b-none border-b-0' : ''}
+                  className={cn(
+                    'navigation-trigger group',
+                    activeDropdown === 'marketplace' ? 'bg-accent text-accent-foreground' : ''
+                  )}
+                  aria-expanded={activeDropdown === 'marketplace'}
                 >
                   Marketplace
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div className="bg-popover p-4 w-[400px] rounded-md shadow-md border mt-[1px]">
+                  <div className="w-[400px] p-4 rounded-md shadow-md border bg-popover">
                     <div className="grid gap-3">
                       {navigationLinks.marketplace.map((item) => (
                         <NavigationMenuLink key={item.href} asChild>
-                          <Link to={item.href} className="block p-2 hover:bg-accent rounded-md">
+                          <Link 
+                            to={item.href} 
+                            className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-primary"
+                          >
                             <div className="font-medium">{item.title}</div>
                             <div className="text-sm text-muted-foreground">{item.description}</div>
                           </Link>
@@ -82,16 +104,23 @@ export function SimplifiedNavbar() {
               <NavigationMenuItem>
                 <NavigationMenuTrigger 
                   onClick={() => handleDropdownToggle('audits')}
-                  className={activeDropdown === 'audits' ? 'bg-pink-100 text-foreground rounded-t-md rounded-b-none border-b-0' : ''}
+                  className={cn(
+                    'navigation-trigger group',
+                    activeDropdown === 'audits' ? 'bg-accent text-accent-foreground' : ''
+                  )}
+                  aria-expanded={activeDropdown === 'audits'}
                 >
                   Audits
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div className="bg-popover p-4 w-[400px] rounded-md shadow-md border mt-[1px]">
+                  <div className="w-[400px] p-4 rounded-md shadow-md border bg-popover">
                     <div className="grid gap-3">
                       {navigationLinks.audits.map((item) => (
                         <NavigationMenuLink key={item.href} asChild>
-                          <Link to={item.href} className="block p-2 hover:bg-accent rounded-md">
+                          <Link 
+                            to={item.href} 
+                            className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-primary"
+                          >
                             <div className="font-medium flex items-center">
                               {item.title}
                               {item.badge && (
@@ -112,16 +141,23 @@ export function SimplifiedNavbar() {
               <NavigationMenuItem>
                 <NavigationMenuTrigger 
                   onClick={() => handleDropdownToggle('resources')}
-                  className={activeDropdown === 'resources' ? 'bg-pink-100 text-foreground rounded-t-md rounded-b-none border-b-0' : ''}
+                  className={cn(
+                    'navigation-trigger group',
+                    activeDropdown === 'resources' ? 'bg-accent text-accent-foreground' : ''
+                  )}
+                  aria-expanded={activeDropdown === 'resources'}
                 >
                   Resources
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div className="bg-popover p-4 w-[400px] rounded-md shadow-md border mt-[1px]">
+                  <div className="w-[400px] p-4 rounded-md shadow-md border bg-popover">
                     <div className="grid gap-3">
                       {navigationLinks.resources.map((item) => (
                         <NavigationMenuLink key={item.href} asChild>
-                          <Link to={item.href} className="block p-2 hover:bg-accent rounded-md">
+                          <Link 
+                            to={item.href} 
+                            className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-primary"
+                          >
                             <div className="font-medium flex items-center">
                               {item.title}
                               {item.badge && (
@@ -179,8 +215,8 @@ export function SimplifiedNavbar() {
         <div className="flex md:hidden">
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Open menu">
-                <Menu className="h-5 w-5" />
+              <Button variant="ghost" size="icon" aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}>
+                {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px]">
@@ -194,7 +230,7 @@ export function SimplifiedNavbar() {
                         <Link 
                           key={item.href} 
                           to={item.href} 
-                          className="block py-2 text-sm" 
+                          className="block py-2 text-sm hover:text-primary transition-colors" 
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           {item.title}
@@ -210,7 +246,7 @@ export function SimplifiedNavbar() {
                         <Link 
                           key={item.href} 
                           to={item.href} 
-                          className="block py-2 text-sm" 
+                          className="block py-2 text-sm hover:text-primary transition-colors" 
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           <div className="flex items-center">
@@ -233,7 +269,7 @@ export function SimplifiedNavbar() {
                         <Link 
                           key={item.href} 
                           to={item.href} 
-                          className="block py-2 text-sm" 
+                          className="block py-2 text-sm hover:text-primary transition-colors" 
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           <div className="flex items-center">
@@ -252,7 +288,7 @@ export function SimplifiedNavbar() {
                   <div>
                     <Link 
                       to="/pricing" 
-                      className="block py-2 font-medium"
+                      className="block py-2 font-medium hover:text-primary transition-colors"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Pricing

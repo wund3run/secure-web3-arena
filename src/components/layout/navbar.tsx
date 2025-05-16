@@ -6,7 +6,7 @@ import { SkipToContent } from "./SkipToContent";
 export function Navbar() {
   return (
     <>
-      <SkipToContent />
+      <SkipToContent targetId="main-content" />
       <SimplifiedNavbar />
     </>
   );

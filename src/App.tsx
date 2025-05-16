@@ -11,7 +11,9 @@ function App() {
       <AppProviders>
         <div className="app">
           <GlobalComponents />
-          <AppRoutes />
+          <main id="main-content" tabIndex={-1} className="outline-none">
+            <AppRoutes />
+          </main>
         </div>
       </AppProviders>
     </AppInitializer>

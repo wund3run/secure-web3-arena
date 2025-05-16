@@ -33,13 +33,14 @@ export function SkipToContent({
     <a 
       href={`#${targetId}`}
       className={cn(
-        "fixed top-4 left-4 z-[100] bg-background p-3 rounded-md border shadow-md transition-transform",
+        "fixed top-4 left-4 z-[100] bg-background p-3 rounded-md border shadow-md transition-transform focus:outline-2 focus:outline-offset-2 focus:outline-primary",
         focused ? "translate-y-0" : "-translate-y-full",
         className
       )}
       onClick={handleClick}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
+      aria-label="Skip to main content"
     >
       Skip to main content
     </a>

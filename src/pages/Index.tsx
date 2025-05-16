@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { Footer } from "@/components/layout/footer";
@@ -6,7 +5,6 @@ import { Navbar } from "@/components/layout/navbar";
 import { GamificationSection } from "@/components/home/gamification-section";
 import { FaqSection } from "@/components/home/faq-section";
 import { EnhancedFooter } from "@/components/home/enhanced-footer";
-import { SkipLink } from "@/components/ui/skip-link";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, Shield, Code, CheckCircle, Database, Key, Activity, MessageSquare, Layout } from "lucide-react";
@@ -22,10 +20,9 @@ export default function Index() {
           content="Connect with top security auditors and protect your blockchain project. Smart contract audits, bug bounties, and continuous security services."
         />
       </Helmet>
-      <SkipLink targetId="main-content" />
       <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
-        <main id="main-content" className="flex-grow">
+        <div className="flex-grow"> {/* Wrapper to ensure main content gets focus */}
           {/* Hero Section */}
           <section className="py-16 md:py-24 border-b">
             <div className="container px-4 md:px-6">
@@ -82,6 +79,7 @@ export default function Index() {
             </div>
           </section>
           
+          {/* Rest of the content sections */}
           {/* Clear user paths section */}
           <section className="py-16 bg-muted/30">
             <div className="container px-4 md:px-6">
@@ -327,7 +325,7 @@ export default function Index() {
           
           <GamificationSection />
           <FaqSection />
-        </main>
+        </div>
         <EnhancedFooter />
       </div>
     </>
