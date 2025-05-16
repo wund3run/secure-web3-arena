@@ -1,402 +1,346 @@
 
-import React from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
-import { Shield, Lock, CheckCircle, AlertTriangle, ExternalLink, ArrowRight } from "lucide-react";
+import React from "react";
+import { ContentPage } from "@/components/content/content-page";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle2, AlertTriangle, Lock, Shield, ExternalLink, ArrowRight, Code, FileText } from "lucide-react";
 
-const WebThreeSecurity = () => {
+export default function WebThreeSecurity() {
   return (
-    <>
-      <Helmet>
-        <title>Web3 Security | Hawkly</title>
-        <meta name="description" content="Learn about Web3 security best practices, common vulnerabilities, and how Hawkly helps secure your blockchain applications" />
-      </Helmet>
-      <Navbar />
-      <main className="min-h-screen">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-br from-black to-primary/90 py-20 text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="mb-6 inline-flex items-center justify-center p-3 bg-white/10 rounded-full">
-              <Lock className="h-8 w-8" />
-            </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6">
-              Web3 Security, Reimagined
-            </h1>
-            <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto mb-10">
-              End-to-end protection for your blockchain projects with advanced security features designed for Web3
+    <ContentPage
+      title="Web3 Security Best Practices"
+      description="Comprehensive guide to Web3 security best practices, common vulnerabilities, and protection strategies."
+    >
+      <h1 className="text-3xl md:text-4xl font-bold mb-6 flex items-center">
+        <Shield className="mr-3 h-8 w-8 text-primary" />
+        Web3 Security Best Practices
+      </h1>
+      
+      <div className="prose prose-lg mb-10">
+        <p className="lead">
+          Security is paramount in Web3 development. This guide provides comprehensive security best practices for developers, auditors, and project owners to protect blockchain applications from common vulnerabilities and attacks.
+        </p>
+      </div>
+      
+      <Tabs defaultValue="smart-contracts" className="mb-12">
+        <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-8">
+          <TabsTrigger value="smart-contracts">Smart Contracts</TabsTrigger>
+          <TabsTrigger value="defi">DeFi Protocols</TabsTrigger>
+          <TabsTrigger value="nfts">NFTs</TabsTrigger>
+          <TabsTrigger value="infrastructure">Infrastructure</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="smart-contracts">
+          <Card>
+            <CardHeader>
+              <CardTitle>Smart Contract Security</CardTitle>
+              <CardDescription>
+                Best practices for securing smart contract code and logic
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <section>
+                <h3 className="text-xl font-semibold mb-4">Common Vulnerabilities</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex items-start space-x-3">
+                    <AlertTriangle className="h-5 w-5 text-amber-500 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium">Reentrancy Attacks</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Occurs when external contract calls allow attackers to recursively call back into the original function before the first execution completes.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <AlertTriangle className="h-5 w-5 text-amber-500 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium">Integer Overflow/Underflow</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Arithmetic operations that exceed the maximum or minimum size of a variable's type, causing wrap-around.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <AlertTriangle className="h-5 w-5 text-amber-500 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium">Access Control Issues</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Improper implementation of access controls allowing unauthorized users to execute restricted functions.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <AlertTriangle className="h-5 w-5 text-amber-500 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium">Front-Running</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Exploiting transaction ordering to gain advantage, particularly in decentralized exchanges and markets.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              
+              <section>
+                <h3 className="text-xl font-semibold mb-4">Best Practices</h3>
+                <div className="space-y-3">
+                  <div className="flex items-start space-x-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium">Follow the Checks-Effects-Interactions Pattern</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Always perform validations first, then update contract state, and finally interact with external contracts to prevent reentrancy vulnerabilities.
+                      </p>
+                      <div className="mt-2 p-3 bg-muted rounded-md text-xs">
+                        <pre><code>
+                          // Good practice<br />
+                          function withdraw(uint amount) external &#123;<br />
+                          &nbsp;&nbsp;// Checks<br />
+                          &nbsp;&nbsp;require(balances[msg.sender] >= amount);<br /><br />
+                          &nbsp;&nbsp;// Effects<br />
+                          &nbsp;&nbsp;balances[msg.sender] -= amount;<br /><br />
+                          &nbsp;&nbsp;// Interactions<br />
+                          &nbsp;&nbsp;(bool success, ) = msg.sender.call&#123;value: amount&#125;("");<br />
+                          &nbsp;&nbsp;require(success, "Transfer failed");<br />
+                          &#125;
+                        </code></pre>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start space-x-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium">Use Reentrancy Guards</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Implement mutex locks to prevent reentrant calls or use established libraries like OpenZeppelin's ReentrancyGuard.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start space-x-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium">Implement Proper Access Controls</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Use role-based access control systems for permission management. Consider OpenZeppelin's AccessControl contract for complex permission structures.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start space-x-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium">Use Safe Math Libraries</h4>
+                      <p className="text-sm text-muted-foreground">
+                        For Solidity versions before 0.8.0, use SafeMath or similar libraries to prevent integer overflows and underflows. Newer Solidity versions have built-in overflow checks.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              
+              <section>
+                <h3 className="text-xl font-semibold mb-4">Tools & Resources</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className="bg-background border-border/40">
+                    <CardContent className="p-4">
+                      <div className="flex items-center mb-2">
+                        <Code className="h-4 w-4 text-primary mr-2" />
+                        <h4 className="font-medium">Slither</h4>
+                      </div>
+                      <p className="text-xs text-muted-foreground mb-3">
+                        Static analysis framework for detecting common Solidity vulnerabilities.
+                      </p>
+                      <a href="https://github.com/crytic/slither" target="_blank" rel="noopener noreferrer" className="text-xs text-primary flex items-center hover:underline">
+                        View Tool <ExternalLink className="h-3 w-3 ml-1" />
+                      </a>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-background border-border/40">
+                    <CardContent className="p-4">
+                      <div className="flex items-center mb-2">
+                        <Code className="h-4 w-4 text-primary mr-2" />
+                        <h4 className="font-medium">MythX</h4>
+                      </div>
+                      <p className="text-xs text-muted-foreground mb-3">
+                        Security analysis platform for Ethereum smart contracts.
+                      </p>
+                      <a href="https://mythx.io" target="_blank" rel="noopener noreferrer" className="text-xs text-primary flex items-center hover:underline">
+                        View Tool <ExternalLink className="h-3 w-3 ml-1" />
+                      </a>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-background border-border/40">
+                    <CardContent className="p-4">
+                      <div className="flex items-center mb-2">
+                        <FileText className="h-4 w-4 text-primary mr-2" />
+                        <h4 className="font-medium">SWC Registry</h4>
+                      </div>
+                      <p className="text-xs text-muted-foreground mb-3">
+                        Smart contract weakness classification and test cases.
+                      </p>
+                      <a href="https://swcregistry.io" target="_blank" rel="noopener noreferrer" className="text-xs text-primary flex items-center hover:underline">
+                        View Resource <ExternalLink className="h-3 w-3 ml-1" />
+                      </a>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-background border-border/40">
+                    <CardContent className="p-4">
+                      <div className="flex items-center mb-2">
+                        <Code className="h-4 w-4 text-primary mr-2" />
+                        <h4 className="font-medium">Echidna</h4>
+                      </div>
+                      <p className="text-xs text-muted-foreground mb-3">
+                        Ethereum smart contract fuzzer for finding vulnerabilities.
+                      </p>
+                      <a href="https://github.com/crytic/echidna" target="_blank" rel="noopener noreferrer" className="text-xs text-primary flex items-center hover:underline">
+                        View Tool <ExternalLink className="h-3 w-3 ml-1" />
+                      </a>
+                    </CardContent>
+                  </Card>
+                </div>
+              </section>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="defi">
+          <div className="text-center p-12">
+            <Lock className="h-12 w-12 mx-auto mb-4 text-primary" />
+            <h3 className="text-xl font-semibold mb-2">DeFi Security Best Practices</h3>
+            <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
+              Comprehensive security guidelines for DeFi protocols including oracle security, economic attack vectors, and liquidity considerations.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90">
-                <a href="/request-audit">
-                  Secure Your Project
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </a>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                <a href="/security-insights">
-                  View Security Features
-                </a>
-              </Button>
-            </div>
+            <Button>
+              View DeFi Security Guidelines <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
           </div>
-        </section>
+        </TabsContent>
         
-        {/* Security Features Grid */}
-        <section className="py-20 bg-background">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold mb-4">Enterprise-Grade Web3 Security</h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                Comprehensive protection across the entire blockchain application lifecycle
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <Card className="border-border/50">
-                <CardHeader>
-                  <div className="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <Shield className="h-5 w-5 text-primary" />
-                  </div>
-                  <CardTitle>End-to-End Encryption</CardTitle>
-                  <CardDescription>
-                    All data is encrypted at rest and in transit using military-grade encryption
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>AES-256 encryption for all stored data</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>TLS 1.3 for secure communications</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>Zero-knowledge architecture</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-border/50">
-                <CardHeader>
-                  <div className="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <Lock className="h-5 w-5 text-primary" />
-                  </div>
-                  <CardTitle>Third-Party Audits</CardTitle>
-                  <CardDescription>
-                    Regular security assessments by independent security firms
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>Quarterly security assessments</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>Public disclosure of audit results</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>Bug bounty program for vulnerabilities</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-border/50">
-                <CardHeader>
-                  <div className="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <AlertTriangle className="h-5 w-5 text-primary" />
-                  </div>
-                  <CardTitle>Threat Monitoring</CardTitle>
-                  <CardDescription>
-                    24/7 monitoring for suspicious activities and potential threats
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>Real-time threat detection</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>Automated incident response</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>Security operations center</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-border/50">
-                <CardHeader>
-                  <div className="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 22s8-4 8-10V6a9 9 0 0 0-12-3A9 9 0 0 0 4 6v6c0 6 8 10 8 10" />
-                      <path d="m15 9-6 6" />
-                      <path d="m9 9 6 6" />
-                    </svg>
-                  </div>
-                  <CardTitle>Smart Contract Security</CardTitle>
-                  <CardDescription>
-                    Specialized tools for blockchain application security
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>Automated vulnerability scanning</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>Formal verification options</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>Gas optimization analysis</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-border/50">
-                <CardHeader>
-                  <div className="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M7 10v12" />
-                      <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56L19 19" />
-                      <path d="M2 8h14.1a.1.1 0 0 1 .09.13L15 14" />
-                    </svg>
-                  </div>
-                  <CardTitle>Access Controls</CardTitle>
-                  <CardDescription>
-                    Granular permissions and multi-factor authentication
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>Role-based access control</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>Hardware wallet integration</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>Biometric authentication options</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-border/50">
-                <CardHeader>
-                  <div className="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
-                    </svg>
-                  </div>
-                  <CardTitle>Compliance Standards</CardTitle>
-                  <CardDescription>
-                    Meeting industry regulations and security standards
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>SOC 2 Type II compliance</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>GDPR data protection</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-web3-teal mr-2 flex-shrink-0 mt-0.5" />
-                      <span>ISO 27001 certification</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-        
-        {/* Blockchain Security Best Practices */}
-        <section className="py-20 bg-muted/30">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Web3 Security Best Practices</h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                Learn how to secure your Web3 projects with our comprehensive guides
-              </p>
-            </div>
-            
-            <Tabs defaultValue="smart-contracts" className="max-w-4xl mx-auto">
-              <TabsList className="grid grid-cols-3 mb-8">
-                <TabsTrigger value="smart-contracts">Smart Contracts</TabsTrigger>
-                <TabsTrigger value="defi">DeFi Security</TabsTrigger>
-                <TabsTrigger value="wallets">Wallet Security</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="smart-contracts" className="p-6 bg-card rounded-lg border border-border">
-                <h3 className="text-2xl font-bold mb-4">Smart Contract Security</h3>
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="text-lg font-semibold mb-2">1. Code Audits</h4>
-                    <p className="text-muted-foreground">
-                      Always have your smart contracts audited by reputable security firms before deployment. 
-                      Multiple independent audits provide better coverage of potential vulnerabilities.
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-lg font-semibold mb-2">2. Formal Verification</h4>
-                    <p className="text-muted-foreground">
-                      Consider formal verification for high-value contracts to mathematically prove the 
-                      correctness of your smart contract against its specification.
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-lg font-semibold mb-2">3. Use Proven Libraries</h4>
-                    <p className="text-muted-foreground">
-                      Utilize established, well-tested libraries like OpenZeppelin instead of implementing 
-                      complex functionality from scratch.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="mt-6 flex justify-end">
-                  <Button asChild variant="outline" size="sm">
-                    <a href="/audit-guidelines" className="flex items-center">
-                      View Complete Guide
-                      <ExternalLink className="ml-2 h-4 w-4" />
-                    </a>
-                  </Button>
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="defi" className="p-6 bg-card rounded-lg border border-border">
-                <h3 className="text-2xl font-bold mb-4">DeFi Protocol Security</h3>
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="text-lg font-semibold mb-2">1. Oracle Security</h4>
-                    <p className="text-muted-foreground">
-                      Implement robust oracle designs to prevent price manipulation attacks. Consider using 
-                      time-weighted average prices and multiple oracles for critical price data.
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-lg font-semibold mb-2">2. Economic Attack Vectors</h4>
-                    <p className="text-muted-foreground">
-                      Model and simulate economic attack scenarios, including flash loans, to understand 
-                      how your protocol behaves under extreme market conditions.
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-lg font-semibold mb-2">3. Governance Security</h4>
-                    <p className="text-muted-foreground">
-                      Implement timelock delays for governance actions and emergency pause mechanisms to 
-                      prevent or mitigate damages from exploits.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="mt-6 flex justify-end">
-                  <Button asChild variant="outline" size="sm">
-                    <a href="/defi-security-guide" className="flex items-center">
-                      View Complete Guide
-                      <ExternalLink className="ml-2 h-4 w-4" />
-                    </a>
-                  </Button>
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="wallets" className="p-6 bg-card rounded-lg border border-border">
-                <h3 className="text-2xl font-bold mb-4">Wallet Security</h3>
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="text-lg font-semibold mb-2">1. Hardware Wallets</h4>
-                    <p className="text-muted-foreground">
-                      Use hardware wallets for storing significant assets. Hardware wallets keep private 
-                      keys offline, significantly reducing the risk of theft.
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-lg font-semibold mb-2">2. Multisig Security</h4>
-                    <p className="text-muted-foreground">
-                      Implement multisig wallets for organization funds requiring multiple signers to 
-                      approve transactions, preventing single points of failure.
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-lg font-semibold mb-2">3. Regular Security Reviews</h4>
-                    <p className="text-muted-foreground">
-                      Periodically review wallet permissions and connected applications. Revoke access for 
-                      dApps you no longer use to minimize potential attack surfaces.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="mt-6 flex justify-end">
-                  <Button asChild variant="outline" size="sm">
-                    <a href="/wallet-security-guide" className="flex items-center">
-                      View Complete Guide
-                      <ExternalLink className="ml-2 h-4 w-4" />
-                    </a>
-                  </Button>
-                </div>
-              </TabsContent>
-            </Tabs>
-          </div>
-        </section>
-        
-        {/* CTA Section */}
-        <section className="py-20 bg-gradient-to-br from-primary/10 to-secondary/10">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl font-bold mb-6">Ready to secure your blockchain project?</h2>
-            <p className="text-xl text-muted-foreground mb-10 max-w-3xl mx-auto">
-              Connect with top security experts and leverage advanced security tools to protect your Web3 investments
+        <TabsContent value="nfts">
+          <div className="text-center p-12">
+            <Lock className="h-12 w-12 mx-auto mb-4 text-primary" />
+            <h3 className="text-xl font-semibold mb-2">NFT Security Best Practices</h3>
+            <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
+              Best practices for securing NFT projects, including metadata security, marketplace integration, and royalty enforcement.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="bg-primary text-white hover:bg-primary/90">
-                <a href="/request-audit">
-                  Request Security Audit
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </a>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <a href="/ai-tools">
-                  Try AI Security Tools
-                </a>
-              </Button>
-            </div>
+            <Button>
+              View NFT Security Guidelines <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
           </div>
-        </section>
-      </main>
-      <Footer />
-    </>
+        </TabsContent>
+        
+        <TabsContent value="infrastructure">
+          <div className="text-center p-12">
+            <Lock className="h-12 w-12 mx-auto mb-4 text-primary" />
+            <h3 className="text-xl font-semibold mb-2">Web3 Infrastructure Security</h3>
+            <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
+              Guidelines for securing Web3 infrastructure, including RPC endpoints, wallets, private keys, and frontend security considerations.
+            </p>
+            <Button>
+              View Infrastructure Guidelines <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        </TabsContent>
+      </Tabs>
+      
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-6">Secure Development Lifecycle</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card>
+            <CardHeader>
+              <div className="p-2 bg-primary/10 rounded-full w-fit mb-3">
+                <FileText className="h-6 w-6 text-primary" />
+              </div>
+              <CardTitle>Planning & Design</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <div className="flex items-start">
+                <Badge className="mt-1 mr-2">1</Badge>
+                <p>Define security requirements and threat models</p>
+              </div>
+              <div className="flex items-start">
+                <Badge className="mt-1 mr-2">2</Badge>
+                <p>Design with security patterns and principles</p>
+              </div>
+              <div className="flex items-start">
+                <Badge className="mt-1 mr-2">3</Badge>
+                <p>Conduct architecture security review</p>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <div className="p-2 bg-primary/10 rounded-full w-fit mb-3">
+                <Code className="h-6 w-6 text-primary" />
+              </div>
+              <CardTitle>Implementation</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <div className="flex items-start">
+                <Badge className="mt-1 mr-2">1</Badge>
+                <p>Adhere to secure coding guidelines</p>
+              </div>
+              <div className="flex items-start">
+                <Badge className="mt-1 mr-2">2</Badge>
+                <p>Use established libraries and patterns</p>
+              </div>
+              <div className="flex items-start">
+                <Badge className="mt-1 mr-2">3</Badge>
+                <p>Implement comprehensive test coverage</p>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <div className="p-2 bg-primary/10 rounded-full w-fit mb-3">
+                <Shield className="h-6 w-6 text-primary" />
+              </div>
+              <CardTitle>Verification</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <div className="flex items-start">
+                <Badge className="mt-1 mr-2">1</Badge>
+                <p>Conduct internal security review</p>
+              </div>
+              <div className="flex items-start">
+                <Badge className="mt-1 mr-2">2</Badge>
+                <p>Perform automated analysis and testing</p>
+              </div>
+              <div className="flex items-start">
+                <Badge className="mt-1 mr-2">3</Badge>
+                <p>Engage third-party security audit</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+      
+      <section>
+        <div className="bg-card border border-border/40 rounded-lg p-6">
+          <h2 className="text-2xl font-bold mb-4">Need Professional Security Assistance?</h2>
+          <p className="text-muted-foreground mb-6">
+            Our platform connects you with vetted security experts who can help secure your blockchain project through audits, code reviews, and security assessments.
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <Button className="bg-gradient-to-r from-primary to-secondary hover:opacity-90">
+              Find Security Experts
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+            <Button variant="outline">
+              Browse Security Services
+            </Button>
+          </div>
+        </div>
+      </section>
+    </ContentPage>
   );
-};
-
-export default WebThreeSecurity;
+}

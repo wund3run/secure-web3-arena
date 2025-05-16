@@ -71,8 +71,8 @@ export function Footer() {
             <ul className="mt-4 space-y-2">
               <li><Link to="/marketplace" className="text-sm text-muted-foreground hover:text-primary">Browse Services</Link></li>
               <li><Link to="/auditors" className="text-sm text-muted-foreground hover:text-primary">Find Auditors</Link></li>
-              <li><Link to="/listings" className="text-sm text-muted-foreground hover:text-primary">Create Listing</Link></li>
-              <li><Link to="/requests" className="text-sm text-muted-foreground hover:text-primary">Security Requests</Link></li>
+              <li><Link to="/submit-service" className="text-sm text-muted-foreground hover:text-primary">Create Listing</Link></li>
+              <li><Link to="/request-audit" className="text-sm text-muted-foreground hover:text-primary">Security Requests</Link></li>
             </ul>
           </div>
           
@@ -83,7 +83,7 @@ export function Footer() {
               <li><Link to="/achievements" className="text-sm text-muted-foreground hover:text-primary">Achievements</Link></li>
               <li><Link to="/events" className="text-sm text-muted-foreground hover:text-primary">Security Events</Link></li>
               <li><Link to="/forum" className="text-sm text-muted-foreground hover:text-primary">Community Forum</Link></li>
-              <li><Link to="/stats" className="text-sm text-muted-foreground hover:text-primary">Platform Statistics</Link></li>
+              <li><Link to="/challenges" className="text-sm text-muted-foreground hover:text-primary">Security Challenges</Link></li>
             </ul>
           </div>
           
@@ -93,8 +93,8 @@ export function Footer() {
               <li><Link to="/docs" className="text-sm text-muted-foreground hover:text-primary">Documentation</Link></li>
               <li><Link to="/blog" className="text-sm text-muted-foreground hover:text-primary">Security Blog</Link></li>
               <li><Link to="/vulnerabilities" className="text-sm text-muted-foreground hover:text-primary">Vulnerability Database</Link></li>
-              <li><Link to="/faqs" className="text-sm text-muted-foreground hover:text-primary">FAQs</Link></li>
-              <li><Link to="/contact" className="text-sm text-muted-foreground hover:text-primary">Contact Support</Link></li>
+              <li><Link to="/web3-security" className="text-sm text-muted-foreground hover:text-primary">Security Guidelines</Link></li>
+              <li><Link to="/resources" className="text-sm text-muted-foreground hover:text-primary">Resource Center</Link></li>
             </ul>
           </div>
         </div>

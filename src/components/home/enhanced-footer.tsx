@@ -67,16 +67,16 @@ export function EnhancedFooter() {
               Protecting blockchain assets through expert audits and continuous security monitoring.
             </p>
             <div className="flex mt-4 space-x-4">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Twitter">
+              <a href="https://twitter.com" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Twitter">
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Github">
+              <a href="https://github.com" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Github">
                 <Github className="h-5 w-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Discord">
+              <a href="https://discord.com" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Discord">
                 <MessageSquare className="h-5 w-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Website">
+              <a href="https://hawkly.io" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Website">
                 <Globe className="h-5 w-5" />
               </a>
             </div>
@@ -137,8 +137,8 @@ export function EnhancedFooter() {
             <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Resources</h3>
             <ul className="mt-4 space-y-3">
               <li><Link to="/docs" className="text-sm text-muted-foreground hover:text-primary transition-colors">Documentation</Link></li>
-              <li><Link to="/audit-guidelines" className="text-sm text-muted-foreground hover:text-primary transition-colors">Audit Methodology</Link></li>
-              <li><Link to="/security-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Security Policy</Link></li>
+              <li><Link to="/web3-security" className="text-sm text-muted-foreground hover:text-primary transition-colors">Security Guidelines</Link></li>
+              <li><Link to="/vulnerabilities" className="text-sm text-muted-foreground hover:text-primary transition-colors">Vulnerability Database</Link></li>
               <li><Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link></li>
               <li><Link to="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact Us</Link></li>
             </ul>

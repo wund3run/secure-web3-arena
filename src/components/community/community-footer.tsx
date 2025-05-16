@@ -48,9 +48,11 @@ export function CommunityFooter() {
         <Separator className="my-8" />
         
         <div className="flex flex-wrap gap-4 justify-center">
-          <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-            Sign Up Now
-          </Button>
+          <Link to="/auth">
+            <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90">
+              Sign Up Now
+            </Button>
+          </Link>
           <Link to="/marketplace">
             <Button size="lg" variant="outline" className="group border-secondary">
               Browse Audit Services
