@@ -1,161 +1,78 @@
 
-import { Shield, Twitter, Github, MessageSquare, Globe, ArrowRight, Mail, Map, FileSearch } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { BetaWarning } from "@/components/ui/beta-warning";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { HawklyLogo } from "@/components/layout/hawkly-logo";
 
 export function EnhancedFooter() {
-  const currentYear = new Date().getFullYear();
-  
   return (
-    <footer className="bg-gradient-to-b from-card to-card/90 border-t border-border/40">
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        {/* Call-to-action section */}
-        <div className="mb-12 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div>
-              <h3 className="text-3xl font-bold mb-4">Ready to secure your Web3 project?</h3>
-              <p className="text-lg text-muted-foreground mb-2">
-                Our platform connects you with the top security experts in the Web3 space to protect your blockchain investments.
-              </p>
-              
-              {/* Security stats moved from dashboard to footer */}
-              <div className="mt-6 grid grid-cols-2 gap-3">
-                <div className="flex justify-between items-center p-2 bg-background/60 rounded-lg">
-                  <span className="text-muted-foreground text-sm">Security Experts</span>
-                  <span className="font-semibold text-foreground">500+</span>
-                </div>
-                <div className="flex justify-between items-center p-2 bg-background/60 rounded-lg">
-                  <span className="text-muted-foreground text-sm">Projects Protected</span>
-                  <span className="font-semibold text-foreground">2,500+</span>
-                </div>
-                <div className="flex justify-between items-center p-2 bg-background/60 rounded-lg">
-                  <span className="text-muted-foreground text-sm">Vulnerabilities Found</span>
-                  <span className="font-semibold text-foreground">12,800+</span>
-                </div>
-                <div className="flex justify-between items-center p-2 bg-background/60 rounded-lg">
-                  <span className="text-muted-foreground text-sm">Value Protected</span>
-                  <span className="font-semibold text-foreground">$350M+</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col space-y-4 items-center lg:items-end justify-center">
-              <Link to="/request-audit" className="w-full sm:w-auto">
-                <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 w-full">
-                  <FileSearch className="mr-2 h-5 w-5" />
-                  Get a Security Assessment
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Link to="/marketplace" className="w-full sm:w-auto">
-                <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10 w-full">
-                  Browse Security Services
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-          <div className="col-span-1">
-            <div className="flex items-center space-x-2 mb-4">
-              <Shield className="h-8 w-8 text-primary" />
-              <span className="font-bold text-xl">Hawkly</span>
-            </div>
-            <p className="text-sm text-muted-foreground mb-4">
-              The premier Web3 security marketplace connecting projects with top security experts.
-              Protecting blockchain assets through expert audits and continuous security monitoring.
-            </p>
-            <div className="flex mt-4 space-x-4">
-              <a href="https://twitter.com" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Twitter">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="https://github.com" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Github">
-                <Github className="h-5 w-5" />
-              </a>
-              <a href="https://discord.com" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Discord">
-                <MessageSquare className="h-5 w-5" />
-              </a>
-              <a href="https://hawkly.io" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Website">
-                <Globe className="h-5 w-5" />
-              </a>
-            </div>
-            
-            <div className="mt-6 space-y-2">
-              <div className="flex items-start">
-                <Mail className="h-5 w-5 text-muted-foreground mr-2 mt-0.5" />
-                <a 
-                  href="mailto:join@hawkly.com" 
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors underline"
-                >
-                  join@hawkly.com
-                </a>
-              </div>
-              <div className="flex items-start">
-                <Map className="h-5 w-5 text-muted-foreground mr-2 mt-0.5" />
-                <span className="text-sm text-muted-foreground">Global</span>
-              </div>
-            </div>
-            
-            <div className="mt-6">
-              <BetaWarning 
-                variant="subtle"
-                size="sm"
-                showIcon={true}
-                title="Platform Status"
-              >
-                <p className="text-xs">
-                  Hawkly is currently in beta. We welcome your feedback to improve the platform.
-                </p>
-              </BetaWarning>
-            </div>
-          </div>
-          
-          <div className="col-span-1">
-            <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Marketplace</h3>
-            <ul className="mt-4 space-y-3">
-              <li><Link to="/marketplace" className="text-sm text-muted-foreground hover:text-primary transition-colors">Security Services</Link></li>
-              <li><Link to="/audits" className="text-sm text-muted-foreground hover:text-primary transition-colors">Audit Reports</Link></li>
-              <li><Link to="/submit-service" className="text-sm text-muted-foreground hover:text-primary transition-colors">List Your Service</Link></li>
-              <li><Link to="/request-audit" className="text-sm text-muted-foreground hover:text-primary transition-colors">Request Security Review</Link></li>
-              <li><Link to="/stats" className="text-sm text-muted-foreground hover:text-primary transition-colors">Platform Statistics</Link></li>
-            </ul>
-          </div>
-          
-          <div className="col-span-1">
-            <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Community</h3>
-            <ul className="mt-4 space-y-3">
-              <li><Link to="/leaderboard" className="text-sm text-muted-foreground hover:text-primary transition-colors">Leaderboard</Link></li>
-              <li><Link to="/achievements" className="text-sm text-muted-foreground hover:text-primary transition-colors">Achievements</Link></li>
-              <li><Link to="/events" className="text-sm text-muted-foreground hover:text-primary transition-colors">Security Events</Link></li>
-              <li><Link to="/forum" className="text-sm text-muted-foreground hover:text-primary transition-colors">Community Forum</Link></li>
-              <li><Link to="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors">Security Blog</Link></li>
-            </ul>
-          </div>
-          
-          <div className="col-span-1">
-            <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">Resources</h3>
-            <ul className="mt-4 space-y-3">
-              <li><Link to="/docs" className="text-sm text-muted-foreground hover:text-primary transition-colors">Documentation</Link></li>
-              <li><Link to="/web3-security" className="text-sm text-muted-foreground hover:text-primary transition-colors">Security Guidelines</Link></li>
-              <li><Link to="/vulnerabilities" className="text-sm text-muted-foreground hover:text-primary transition-colors">Vulnerability Database</Link></li>
-              <li><Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link></li>
-              <li><Link to="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact Us</Link></li>
-            </ul>
-          </div>
+    <footer className="bg-background border-t py-12" role="contentinfo">
+      <div className="container grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+        <div className="col-span-2 md:col-span-1">
+          <Link to="/" aria-label="Home page" className="inline-block mb-4">
+            <HawklyLogo />
+          </Link>
+          <p className="text-muted-foreground text-sm mb-4">
+            The premier Web3 security marketplace connecting projects with expert auditors.
+          </p>
         </div>
         
-        <div className="mt-12 pt-8 border-t border-border/20">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-sm text-muted-foreground">
-              &copy; {currentYear} Hawkly Security Marketplace. All rights reserved.
-            </div>
-            <div className="mt-4 md:mt-0 flex flex-wrap gap-4 md:gap-6">
-              <Link to="/terms" className="text-xs text-muted-foreground hover:text-primary transition-colors">Terms</Link>
-              <Link to="/privacy" className="text-xs text-muted-foreground hover:text-primary transition-colors">Privacy</Link>
-              <Link to="/security-policy" className="text-xs text-muted-foreground hover:text-primary transition-colors">Security</Link>
-              <Link to="/contact" className="text-xs text-muted-foreground hover:text-primary transition-colors">Contact</Link>
-            </div>
+        <div>
+          <h3 className="font-medium mb-3">Marketplace</h3>
+          <ul className="space-y-2 text-sm">
+            <li><Link to="/marketplace" className="text-muted-foreground hover:text-foreground transition-colors">Browse Services</Link></li>
+            <li><Link to="/request-audit" className="text-muted-foreground hover:text-foreground transition-colors">Request Audit</Link></li>
+            <li><Link to="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">Pricing</Link></li>
+            <li><Link to="/service-provider-onboarding" className="text-muted-foreground hover:text-foreground transition-colors">Become a Provider</Link></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 className="font-medium mb-3">Resources</h3>
+          <ul className="space-y-2 text-sm">
+            <li><Link to="/audit-guidelines" className="text-muted-foreground hover:text-foreground transition-colors">Audit Guidelines</Link></li>
+            <li><Link to="/docs" className="text-muted-foreground hover:text-foreground transition-colors">Documentation</Link></li>
+            <li><Link to="/blog" className="text-muted-foreground hover:text-foreground transition-colors">Blog</Link></li>
+            <li><Link to="/vulnerabilities" className="text-muted-foreground hover:text-foreground transition-colors">Vulnerability Database</Link></li>
+            <li><Link to="/security-insights" className="text-muted-foreground hover:text-foreground transition-colors">Security Insights</Link></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 className="font-medium mb-3">Community</h3>
+          <ul className="space-y-2 text-sm">
+            <li><Link to="/forum" className="text-muted-foreground hover:text-foreground transition-colors">Forum</Link></li>
+            <li><Link to="/events" className="text-muted-foreground hover:text-foreground transition-colors">Events</Link></li>
+            <li><Link to="/challenges" className="text-muted-foreground hover:text-foreground transition-colors">Challenges</Link></li>
+            <li><Link to="/leaderboard" className="text-muted-foreground hover:text-foreground transition-colors">Leaderboard</Link></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 className="font-medium mb-3">Company</h3>
+          <ul className="space-y-2 text-sm">
+            <li><Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">Contact</Link></li>
+            <li><Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">Terms</Link></li>
+            <li><Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">Privacy</Link></li>
+            <li><Link to="/security-policy" className="text-muted-foreground hover:text-foreground transition-colors">Security Policy</Link></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div className="container mt-8 pt-8 border-t">
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <p className="text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear()} Hawkly. All rights reserved.
+          </p>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            <a href="https://twitter.com/hawkly" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
+              Twitter
+            </a>
+            <a href="https://github.com/hawkly" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
+              GitHub
+            </a>
+            <a href="https://discord.gg/hawkly" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
+              Discord
+            </a>
           </div>
         </div>
       </div>

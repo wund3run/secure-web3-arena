@@ -29,9 +29,10 @@ export const navigationLinks: NavigationLinksStructure = {
   ],
   resources: [
     { title: "Audit Guidelines", description: "Best practices for secure development", href: "/audit-guidelines" },
-    { title: "Documentation", description: "Comprehensive guides and tutorials", href: "/resources" },
+    { title: "Documentation", description: "Comprehensive guides and tutorials", href: "/docs" },
+    { title: "Security Insights", description: "Latest trends and vulnerabilities in Web3 security", href: "/security-insights" },
     { title: "Learning Center", description: "Educational resources on Web3 security", href: "/web3-security" },
-    { title: "Achievements", description: "Track your badges and auditor journey", href: "/achievements" },
-    { title: "Accessibility Tools", badge: "New", description: "Self-assessment and non-technical guides for Web3 security", href: "/resources" }
+    { title: "AI Security Tools", badge: "New", description: "AI-powered security assessment tools", href: "/ai-tools" },
+    { title: "Vulnerability Database", description: "Comprehensive database of known vulnerabilities", href: "/vulnerabilities" }
   ]
 };

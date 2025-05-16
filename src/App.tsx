@@ -32,6 +32,7 @@ import AuditGuidelines from './pages/AuditGuidelines';
 import ServiceProviderOnboarding from './pages/ServiceProviderOnboarding';
 import SubmitService from './pages/SubmitService';
 import Escrow from './pages/Escrow';
+import SecurityInsights from './pages/SecurityInsights';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -80,6 +81,7 @@ function App() {
         <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
         <Route path="/submit-service" element={<SubmitService />} />
         <Route path="/escrow" element={<Escrow />} />
+        <Route path="/security-insights" element={<SecurityInsights />} />
         
         {/* Admin Routes */}
         <Route path="/admin" element={<AdminDashboard />} />

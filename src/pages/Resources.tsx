@@ -20,7 +20,7 @@ export default function Resources() {
       </Helmet>
       <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
-        <main className="flex-grow container py-12">
+        <main className="flex-grow container py-12" id="main-content">
           <div className="text-center mb-10">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Security Resources</h1>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -148,6 +148,17 @@ export default function Resources() {
                 </Button>
               </CardFooter>
             </Card>
+          </div>
+          
+          <div className="mt-12 text-center">
+            <p className="text-muted-foreground mb-6">
+              Need personalized guidance on securing your blockchain project?
+            </p>
+            <Button asChild size="lg">
+              <Link to="/request-audit" className="flex items-center">
+                Request Security Consultation <ArrowRight className="h-4 w-4 ml-2" />
+              </Link>
+            </Button>
           </div>
         </main>
         <Footer />
