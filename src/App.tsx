@@ -1,5 +1,5 @@
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { GlobalComponents } from './components/app/GlobalComponents';
 import { Toaster } from './components/ui/toaster';
 
@@ -50,7 +50,7 @@ import WebThreeSecurity from './pages/WebThreeSecurity';
 
 function App() {
   return (
-    <BrowserRouter>
+    <>
       <GlobalComponents />
       <Routes>
         <Route path="/" element={<Index />} />
@@ -100,7 +100,7 @@ function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />
-    </BrowserRouter>
+    </>
   );
 }
 
