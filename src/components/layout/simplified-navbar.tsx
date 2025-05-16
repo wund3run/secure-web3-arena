@@ -11,7 +11,7 @@ import {
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-import { ChevronDown, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { HawklyLogo } from "./hawkly-logo";
 import { useAuth } from "@/contexts/auth";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -19,6 +19,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 export function SimplifiedNavbar() {
   const { user, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   
   // Navigation links structure for consistency between desktop and mobile views
   const navigationLinks = {
@@ -29,6 +30,7 @@ export function SimplifiedNavbar() {
     ],
     audits: [
       { title: "Security Audits", description: "Browse completed security audits and reports from our verified providers", href: "/audits" },
+      { title: "Audit Progress Tracking", badge: "New", description: "Monitor your audit progress in real-time", href: "/audits" },
       { title: "Request New Audit", description: "Start the process of getting your project audited", href: "/request-audit" },
       { title: "Audit Guidelines", description: "Best practices and standards for security audits", href: "/audit-guidelines" }
     ],
@@ -36,8 +38,13 @@ export function SimplifiedNavbar() {
       { title: "Audit Guidelines", description: "Best practices for secure development", href: "/audit-guidelines" },
       { title: "Documentation", description: "Comprehensive guides and tutorials", href: "/resources" },
       { title: "Learning Center", description: "Educational resources on Web3 security", href: "/web3-security" },
-      { title: "Achievements", description: "Track your badges and auditor journey", href: "/achievements" }
+      { title: "Achievements", description: "Track your badges and auditor journey", href: "/achievements" },
+      { title: "Accessibility Tools", badge: "New", description: "Self-assessment and non-technical guides for Web3 security", href: "/resources" }
     ]
+  };
+
+  const handleDropdownToggle = (dropdown: string) => {
+    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
   };
   
   return (
@@ -50,12 +57,17 @@ export function SimplifiedNavbar() {
           <NavigationMenu className="mx-6 hidden md:flex">
             <NavigationMenuList className="gap-1">
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Marketplace</NavigationMenuTrigger>
+                <NavigationMenuTrigger 
+                  onClick={() => handleDropdownToggle('marketplace')}
+                  className={activeDropdown === 'marketplace' ? 'bg-pink-100 text-foreground rounded-t-md rounded-b-none border-b-0' : ''}
+                >
+                  Marketplace
+                </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div className="bg-popover p-4 w-[240px] rounded-md shadow-md">
+                  <div className="bg-popover p-4 w-[400px] rounded-md shadow-md border mt-[1px]">
                     <div className="grid gap-3">
                       {navigationLinks.marketplace.map((item) => (
-                        <Link key={item.href} to={item.href} className="block">
+                        <Link key={item.href} to={item.href} className="block p-2 hover:bg-accent rounded-md">
                           <div className="font-medium">{item.title}</div>
                           <div className="text-sm text-muted-foreground">{item.description}</div>
                         </Link>
@@ -66,13 +78,25 @@ export function SimplifiedNavbar() {
               </NavigationMenuItem>
               
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Audits</NavigationMenuTrigger>
+                <NavigationMenuTrigger 
+                  onClick={() => handleDropdownToggle('audits')}
+                  className={activeDropdown === 'audits' ? 'bg-pink-100 text-foreground rounded-t-md rounded-b-none border-b-0' : ''}
+                >
+                  Audits
+                </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div className="bg-popover p-4 w-[240px] rounded-md shadow-md">
+                  <div className="bg-popover p-4 w-[400px] rounded-md shadow-md border mt-[1px]">
                     <div className="grid gap-3">
                       {navigationLinks.audits.map((item) => (
-                        <Link key={item.href} to={item.href} className="block">
-                          <div className="font-medium">{item.title}</div>
+                        <Link key={item.href} to={item.href} className="block p-2 hover:bg-accent rounded-md">
+                          <div className="font-medium flex items-center">
+                            {item.title}
+                            {item.badge && (
+                              <span className="ml-2 px-2 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full">
+                                {item.badge}
+                              </span>
+                            )}
+                          </div>
                           <div className="text-sm text-muted-foreground">{item.description}</div>
                         </Link>
                       ))}
@@ -82,13 +106,25 @@ export function SimplifiedNavbar() {
               </NavigationMenuItem>
               
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
+                <NavigationMenuTrigger 
+                  onClick={() => handleDropdownToggle('resources')}
+                  className={activeDropdown === 'resources' ? 'bg-pink-100 text-foreground rounded-t-md rounded-b-none border-b-0' : ''}
+                >
+                  Resources
+                </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div className="bg-popover p-4 w-[240px] rounded-md shadow-md">
+                  <div className="bg-popover p-4 w-[400px] rounded-md shadow-md border mt-[1px]">
                     <div className="grid gap-3">
                       {navigationLinks.resources.map((item) => (
-                        <Link key={item.href} to={item.href} className="block">
-                          <div className="font-medium">{item.title}</div>
+                        <Link key={item.href} to={item.href} className="block p-2 hover:bg-accent rounded-md">
+                          <div className="font-medium flex items-center">
+                            {item.title}
+                            {item.badge && (
+                              <span className="ml-2 px-2 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full">
+                                {item.badge}
+                              </span>
+                            )}
+                          </div>
                           <div className="text-sm text-muted-foreground">{item.description}</div>
                         </Link>
                       ))}
@@ -171,7 +207,14 @@ export function SimplifiedNavbar() {
                           className="block py-2 text-sm" 
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
-                          {item.title}
+                          <div className="flex items-center">
+                            {item.title}
+                            {item.badge && (
+                              <span className="ml-2 px-1.5 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full">
+                                {item.badge}
+                              </span>
+                            )}
+                          </div>
                         </Link>
                       ))}
                     </div>
@@ -187,7 +230,14 @@ export function SimplifiedNavbar() {
                           className="block py-2 text-sm" 
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
-                          {item.title}
+                          <div className="flex items-center">
+                            {item.title}
+                            {item.badge && (
+                              <span className="ml-2 px-1.5 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full">
+                                {item.badge}
+                              </span>
+                            )}
+                          </div>
                         </Link>
                       ))}
                     </div>
