@@ -22,8 +22,20 @@ export function SimplifiedNavbar() {
       }
     };
 
+    // Close dropdown when Escape key is pressed
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && activeDropdown) {
+        setActiveDropdown(null);
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [activeDropdown]);
   
   const handleDropdownToggle = (dropdown: string) => {
@@ -31,10 +43,17 @@ export function SimplifiedNavbar() {
   };
   
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header 
+      className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      role="banner"
+    >
       <div className="container flex h-14 items-center justify-between">
         <div className="flex items-center">
-          <Link to="/" className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded">
+          <Link 
+            to="/" 
+            className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded"
+            aria-label="Home page"
+          >
             <HawklyLogo />
           </Link>
           
