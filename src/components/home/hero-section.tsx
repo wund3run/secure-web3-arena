@@ -24,7 +24,7 @@ export function HeroSection() {
                 <Button asChild className="bg-white text-primary hover:bg-white/90 text-lg h-12 px-8 shadow-lg">
                   <Link to="/marketplace">
                     Browse Security Services
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                    <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
                   </Link>
                 </Button>
               </TooltipTrigger>
@@ -53,9 +53,9 @@ export function HeroSection() {
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-5xl mx-auto">
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-left shadow-md">
             <div className="bg-primary/20 rounded-full w-12 h-12 flex items-center justify-center mb-4">
-              <Shield className="h-6 w-6" />
+              <Shield className="h-6 w-6" aria-hidden="true" />
             </div>
-            <h3 className="text-xl font-bold mb-2">Advanced Security</h3>
+            <h2 className="text-xl font-bold mb-2">Advanced Security</h2>
             <p className="text-white/70">
               Industry-leading audits and continuous security monitoring for your Web3 projects.
             </p>
@@ -63,9 +63,9 @@ export function HeroSection() {
           
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-left shadow-md">
             <div className="bg-primary/20 rounded-full w-12 h-12 flex items-center justify-center mb-4">
-              <Code className="h-6 w-6" />
+              <Code className="h-6 w-6" aria-hidden="true" />
             </div>
-            <h3 className="text-xl font-bold mb-2">Verified Experts</h3>
+            <h2 className="text-xl font-bold mb-2">Verified Experts</h2>
             <p className="text-white/70">
               Thoroughly vetted security professionals with proven blockchain experience.
             </p>
@@ -73,20 +73,20 @@ export function HeroSection() {
           
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-left shadow-md">
             <div className="bg-primary/20 rounded-full w-12 h-12 flex items-center justify-center mb-4">
-              <Cpu className="h-6 w-6" />
+              <Cpu className="h-6 w-6" aria-hidden="true" />
             </div>
-            <h3 className="text-xl font-bold mb-2">
+            <h2 className="text-xl font-bold mb-2">
               <Link to="/security-insights" className="hover:underline inline-flex items-center">
                 AI Security Insights
                 <span className="ml-2 bg-white/20 text-xs px-2 py-0.5 rounded-full">New</span>
               </Link>
-            </h3>
+            </h2>
             <p className="text-white/70">
               Cutting-edge AI analysis to detect vulnerabilities in real-time.
             </p>
             <Link to="/security-insights" className="text-primary-foreground hover:underline inline-flex items-center mt-2 text-sm font-medium">
               Try it now
-              <ArrowRight className="ml-1 h-3 w-3" />
+              <ArrowRight className="ml-1 h-3 w-3" aria-hidden="true" />
             </Link>
           </div>
         </div>
@@ -96,9 +96,9 @@ export function HeroSection() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link to="/audit-guidelines" className="flex items-center gap-2 bg-white/10 hover:bg-white/20 transition-colors px-5 py-2 rounded-lg group shadow-md">
-                  <FileText className="h-5 w-5 text-white/90" />
+                  <FileText className="h-5 w-5 text-white/90" aria-hidden="true" />
                   <span className="text-white font-medium">View Security Audit Guidelines</span>
-                  <ArrowRight className="h-4 w-4 text-white/90 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="h-4 w-4 text-white/90 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                 </Link>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="bg-white text-primary">

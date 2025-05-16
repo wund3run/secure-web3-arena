@@ -23,7 +23,7 @@ export const navigationLinks: NavigationLinksStructure = {
   ],
   audits: [
     { title: "Security Audits", description: "Browse completed security audits and reports from our verified providers", href: "/audits" },
-    { title: "Audit Progress Tracking", badge: "New", description: "Monitor your audit progress in real-time", href: "/audits" },
+    { title: "Audit Progress Tracking", badge: "New", description: "Monitor your audit progress in real-time", href: "/audit/:id" },
     { title: "Request New Audit", description: "Start the process of getting your project audited", href: "/request-audit" },
     { title: "Audit Guidelines", description: "Best practices and standards for security audits", href: "/audit-guidelines" }
   ],

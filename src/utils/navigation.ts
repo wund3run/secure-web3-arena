@@ -58,7 +58,8 @@ const extractRoutesFromApp = (): string[] => {
     "/events",
     "/challenges",
     "/vulnerabilities",
-    "/web3-security"
+    "/web3-security",
+    "/security-insights"
   ];
 };
 

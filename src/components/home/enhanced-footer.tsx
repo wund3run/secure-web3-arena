@@ -5,14 +5,18 @@ import { HawklyLogo } from "@/components/layout/hawkly-logo";
 
 export function EnhancedFooter() {
   return (
-    <footer className="bg-background border-t py-12" role="contentinfo">
+    <footer className="bg-background border-t py-12" role="contentinfo" aria-labelledby="footer-heading">
+      <h2 id="footer-heading" className="sr-only">Footer</h2>
       <div className="container grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
         <div className="col-span-2 md:col-span-1">
-          <Link to="/" aria-label="Home page" className="inline-block mb-4">
+          <Link to="/" aria-label="Hawkly Home page" className="inline-block mb-4">
             <HawklyLogo />
           </Link>
           <p className="text-muted-foreground text-sm mb-4">
             The premier Web3 security marketplace connecting projects with expert auditors.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            <strong>500+</strong> verified security experts • <strong>$350M+</strong> protected
           </p>
         </div>
         
@@ -44,6 +48,7 @@ export function EnhancedFooter() {
             <li><Link to="/events" className="text-muted-foreground hover:text-foreground transition-colors">Events</Link></li>
             <li><Link to="/challenges" className="text-muted-foreground hover:text-foreground transition-colors">Challenges</Link></li>
             <li><Link to="/leaderboard" className="text-muted-foreground hover:text-foreground transition-colors">Leaderboard</Link></li>
+            <li><Link to="/achievements" className="text-muted-foreground hover:text-foreground transition-colors">Achievements</Link></li>
           </ul>
         </div>
         
@@ -64,13 +69,13 @@ export function EnhancedFooter() {
             &copy; {new Date().getFullYear()} Hawkly. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="https://twitter.com/hawkly" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
+            <a href="https://twitter.com/hawkly" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Hawkly Twitter">
               Twitter
             </a>
-            <a href="https://github.com/hawkly" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
+            <a href="https://github.com/hawkly" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Hawkly GitHub">
               GitHub
             </a>
-            <a href="https://discord.gg/hawkly" target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
+            <a href="https://discord.gg/hawkly" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Hawkly Discord">
               Discord
             </a>
           </div>

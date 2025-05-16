@@ -16,10 +16,14 @@ export function ContentPage({ title, description, children }: ContentPageProps) 
       <Helmet>
         <title>{title} | Hawkly Web3 Security Marketplace</title>
         <meta name="description" content={description} />
+        <meta property="og:title" content={`${title} | Hawkly`} />
+        <meta property="og:description" content={description} />
+        <meta name="twitter:title" content={`${title} | Hawkly`} />
+        <meta name="twitter:description" content={description} />
       </Helmet>
       <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
-        <main className="flex-grow container py-12">
+        <main className="flex-grow container py-12" id="main-content">
           <div className="prose prose-lg max-w-none">
             {children}
           </div>
