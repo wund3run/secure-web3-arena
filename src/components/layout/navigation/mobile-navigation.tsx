@@ -49,11 +49,14 @@ export function MobileNavigation({
                         <li key={item.href}>
                           <Link 
                             to={item.href} 
-                            className="block py-2 text-sm hover:text-primary transition-colors" 
+                            className="block py-2 text-sm hover:text-primary transition-colors relative group" 
                             onClick={() => setIsOpen(false)}
                             aria-label={item.title}
                           >
-                            {item.title}
+                            <span className="relative">
+                              {item.title}
+                              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                            </span>
                           </Link>
                         </li>
                       ))}
@@ -69,12 +72,12 @@ export function MobileNavigation({
                         <li key={item.href}>
                           <Link 
                             to={item.href} 
-                            className="block py-2 text-sm hover:text-primary transition-colors" 
+                            className="block py-2 text-sm hover:text-primary transition-colors relative group" 
                             onClick={() => setIsOpen(false)}
                             aria-label={item.badge ? `${item.title} (${item.badge})` : item.title}
                           >
-                            <div className="flex items-center">
-                              {item.title}
+                            <div className="flex items-center relative">
+                              <span>{item.title}</span>
                               {item.badge && (
                                 <span 
                                   className="ml-2 px-1.5 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full"
@@ -83,6 +86,7 @@ export function MobileNavigation({
                                   {item.badge}
                                 </span>
                               )}
+                              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                             </div>
                           </Link>
                         </li>
@@ -99,12 +103,12 @@ export function MobileNavigation({
                         <li key={item.href}>
                           <Link 
                             to={item.href} 
-                            className="block py-2 text-sm hover:text-primary transition-colors" 
+                            className="block py-2 text-sm hover:text-primary transition-colors relative group" 
                             onClick={() => setIsOpen(false)}
                             aria-label={item.badge ? `${item.title} (${item.badge})` : item.title}
                           >
-                            <div className="flex items-center">
-                              {item.title}
+                            <div className="flex items-center relative">
+                              <span>{item.title}</span>
                               {item.badge && (
                                 <span 
                                   className="ml-2 px-1.5 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full"
@@ -113,6 +117,7 @@ export function MobileNavigation({
                                   {item.badge}
                                 </span>
                               )}
+                              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                             </div>
                           </Link>
                         </li>
@@ -124,11 +129,14 @@ export function MobileNavigation({
                 <div>
                   <Link 
                     to="/pricing" 
-                    className="block py-2 font-medium hover:text-primary transition-colors"
+                    className="block py-2 font-medium hover:text-primary transition-colors relative group"
                     onClick={() => setIsOpen(false)}
                     aria-label="View pricing plans"
                   >
-                    Pricing
+                    <span className="relative">
+                      Pricing
+                      <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </span>
                   </Link>
                 </div>
               </div>
