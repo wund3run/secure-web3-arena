@@ -67,10 +67,12 @@ export function SimplifiedNavbar() {
                   <div className="bg-popover p-4 w-[400px] rounded-md shadow-md border mt-[1px]">
                     <div className="grid gap-3">
                       {navigationLinks.marketplace.map((item) => (
-                        <Link key={item.href} to={item.href} className="block p-2 hover:bg-accent rounded-md">
-                          <div className="font-medium">{item.title}</div>
-                          <div className="text-sm text-muted-foreground">{item.description}</div>
-                        </Link>
+                        <NavigationMenuLink key={item.href} asChild>
+                          <Link to={item.href} className="block p-2 hover:bg-accent rounded-md">
+                            <div className="font-medium">{item.title}</div>
+                            <div className="text-sm text-muted-foreground">{item.description}</div>
+                          </Link>
+                        </NavigationMenuLink>
                       ))}
                     </div>
                   </div>
@@ -88,17 +90,19 @@ export function SimplifiedNavbar() {
                   <div className="bg-popover p-4 w-[400px] rounded-md shadow-md border mt-[1px]">
                     <div className="grid gap-3">
                       {navigationLinks.audits.map((item) => (
-                        <Link key={item.href} to={item.href} className="block p-2 hover:bg-accent rounded-md">
-                          <div className="font-medium flex items-center">
-                            {item.title}
-                            {item.badge && (
-                              <span className="ml-2 px-2 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full">
-                                {item.badge}
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-sm text-muted-foreground">{item.description}</div>
-                        </Link>
+                        <NavigationMenuLink key={item.href} asChild>
+                          <Link to={item.href} className="block p-2 hover:bg-accent rounded-md">
+                            <div className="font-medium flex items-center">
+                              {item.title}
+                              {item.badge && (
+                                <span className="ml-2 px-2 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full">
+                                  {item.badge}
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-sm text-muted-foreground">{item.description}</div>
+                          </Link>
+                        </NavigationMenuLink>
                       ))}
                     </div>
                   </div>
@@ -116,17 +120,19 @@ export function SimplifiedNavbar() {
                   <div className="bg-popover p-4 w-[400px] rounded-md shadow-md border mt-[1px]">
                     <div className="grid gap-3">
                       {navigationLinks.resources.map((item) => (
-                        <Link key={item.href} to={item.href} className="block p-2 hover:bg-accent rounded-md">
-                          <div className="font-medium flex items-center">
-                            {item.title}
-                            {item.badge && (
-                              <span className="ml-2 px-2 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full">
-                                {item.badge}
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-sm text-muted-foreground">{item.description}</div>
-                        </Link>
+                        <NavigationMenuLink key={item.href} asChild>
+                          <Link to={item.href} className="block p-2 hover:bg-accent rounded-md">
+                            <div className="font-medium flex items-center">
+                              {item.title}
+                              {item.badge && (
+                                <span className="ml-2 px-2 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full">
+                                  {item.badge}
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-sm text-muted-foreground">{item.description}</div>
+                          </Link>
+                        </NavigationMenuLink>
                       ))}
                     </div>
                   </div>
