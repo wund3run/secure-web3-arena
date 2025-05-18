@@ -23,7 +23,7 @@ export function ContentPage({ title, description, children }: ContentPageProps) 
         <meta name="twitter:description" content={description} />
       </Helmet>
       <div className="min-h-screen bg-background flex flex-col">
-        <SkipToContent />
+        <SkipToContent targetId="main-content" />
         <Navbar />
         <main id="main-content" className="flex-grow container py-12">
           <div className="prose prose-lg max-w-none">
