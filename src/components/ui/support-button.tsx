@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useMediaQuery } from "@/hooks/use-mobile";
+import { routeExists, getFallbackRoute } from "@/utils/navigation";
 
 export function SupportButton() {
   const [isOpen, setIsOpen] = useState(false);

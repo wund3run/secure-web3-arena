@@ -2,6 +2,7 @@
 import { Shield, Twitter, Github, MessageSquare, Globe, AlertCircle, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { HawklyLogo } from "./hawkly-logo";
+import { routeExists, getFallbackRoute } from "@/utils/navigation";
 
 export function Footer() {
   return (
@@ -27,7 +28,7 @@ export function Footer() {
       </div>
       
       <div className="container">
-        <div className="grid grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Logo and description column */}
           <div className="col-span-1">
             <HawklyLogo variant="default" />
@@ -38,16 +39,16 @@ export function Footer() {
             
             {/* Social links */}
             <div className="flex items-center space-x-4 mt-6">
-              <a href="https://twitter.com/hawkly" aria-label="Twitter" className="text-muted-foreground hover:text-foreground">
+              <a href="https://twitter.com/hawkly" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="text-muted-foreground hover:text-foreground">
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="https://github.com/hawkly" aria-label="GitHub" className="text-muted-foreground hover:text-foreground">
+              <a href="https://github.com/hawkly" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="text-muted-foreground hover:text-foreground">
                 <Github className="h-5 w-5" />
               </a>
-              <a href="https://discord.gg/hawkly" aria-label="Discord" className="text-muted-foreground hover:text-foreground">
+              <a href="https://discord.gg/hawkly" target="_blank" rel="noopener noreferrer" aria-label="Discord" className="text-muted-foreground hover:text-foreground">
                 <MessageSquare className="h-5 w-5" />
               </a>
-              <a href="https://hawkly.com" aria-label="Website" className="text-muted-foreground hover:text-foreground">
+              <a href="https://hawkly.com" target="_blank" rel="noopener noreferrer" aria-label="Website" className="text-muted-foreground hover:text-foreground">
                 <Globe className="h-5 w-5" />
               </a>
             </div>
@@ -66,7 +67,7 @@ export function Footer() {
             <h3 className="font-medium mb-4 text-lg">MARKETPLACE</h3>
             <ul className="space-y-3">
               <li><Link to="/marketplace" className="text-muted-foreground hover:text-foreground">Browse Services</Link></li>
-              <li><Link to="/auditors" className="text-muted-foreground hover:text-foreground">Find Auditors</Link></li>
+              <li><Link to="/audits" className="text-muted-foreground hover:text-foreground">Find Auditors</Link></li>
               <li><Link to="/submit-service" className="text-muted-foreground hover:text-foreground">Create Listing</Link></li>
               <li><Link to="/request-audit" className="text-muted-foreground hover:text-foreground">Security Requests</Link></li>
             </ul>
@@ -98,11 +99,11 @@ export function Footer() {
         </div>
         
         <div className="mt-12 pt-6 border-t border-border/40">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-sm text-muted-foreground">
               &copy; {new Date().getFullYear()} Hawkly. All rights reserved.
             </div>
-            <div className="flex space-x-6">
+            <div className="flex flex-wrap justify-center gap-6">
               <Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground">
                 Terms
               </Link>

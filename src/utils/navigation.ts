@@ -47,6 +47,7 @@ const extractRoutesFromApp = (): string[] => {
     "/service-provider-onboarding",
     "/submit-service",
     "/escrow",
+    "/security-insights",
     "/admin",
     "/admin/login",
     "/terms",
@@ -58,8 +59,7 @@ const extractRoutesFromApp = (): string[] => {
     "/events",
     "/challenges",
     "/vulnerabilities",
-    "/web3-security",
-    "/security-insights"
+    "/web3-security"
   ];
 };
 

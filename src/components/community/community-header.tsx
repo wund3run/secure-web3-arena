@@ -26,7 +26,7 @@ export function CommunityHeader() {
 
         {/* Single, prominent CTA button - focused on community joining */}
         <div className="flex justify-center mb-12">
-          <Link to="/join">
+          <Link to="/auth">
             <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 group text-lg py-6 px-8 shadow-lg">
               <Users className="mr-2 h-6 w-6" />
               Join the Security Circle

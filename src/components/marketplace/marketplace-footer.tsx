@@ -12,7 +12,7 @@ export function MarketplaceFooter() {
           <div className="flex justify-center mb-4">
             <Shield className="h-10 w-10 text-primary" />
           </div>
-          <h3 className="section-heading">Ready to secure your blockchain project?</h3>
+          <h3 className="text-2xl font-bold mb-4">Ready to secure your blockchain project?</h3>
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
             Protect your smart contracts, DApps, and Web3 infrastructure with our verified security experts. 
             Get detailed vulnerability assessments and comprehensive remediation guidance.
@@ -64,7 +64,7 @@ export function MarketplaceFooter() {
       
       {/* Testimonials for social proof */}
       <div className="mt-12 mb-6">
-        <h3 className="section-heading text-center mb-6">Trusted by Leading Web3 Projects</h3>
+        <h3 className="text-2xl font-bold text-center mb-6">Trusted by Leading Web3 Projects</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-card/60 p-6 rounded-lg border border-border/30">
             <div className="flex items-start">
@@ -121,7 +121,7 @@ export function MarketplaceFooter() {
       
       {/* Consolidated Service Links - More Visually Distinguished */}
       <div className="mt-12 border-t border-border/30 pt-8">
-        <h4 className="subsection-heading text-center mb-4">Popular Security Services</h4>
+        <h4 className="text-xl font-semibold text-center mb-4">Popular Security Services</h4>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
           <Link to="/marketplace" className="flex items-center p-3 bg-primary/5 rounded-lg hover:bg-primary/10 transition-colors">
             <Check className="h-4 w-4 text-primary mr-2 flex-shrink-0" />

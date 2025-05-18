@@ -23,7 +23,7 @@ export const navigationLinks: NavigationLinksStructure = {
   ],
   audits: [
     { title: "Security Audits", description: "Browse completed security audits and reports from our verified providers", href: "/audits" },
-    { title: "Audit Progress Tracking", badge: "New", description: "Monitor your audit progress in real-time", href: "/audit/:id" },
+    { title: "Audit Progress Tracking", badge: "New", description: "Monitor your audit progress in real-time", href: "/audit/sample-audit" },
     { title: "Request New Audit", description: "Start the process of getting your project audited", href: "/request-audit" },
     { title: "Audit Guidelines", description: "Best practices and standards for security audits", href: "/audit-guidelines" },
     { title: "AI Security Tools", badge: "New", description: "AI-powered security assessment tools", href: "/ai-tools" }
@@ -36,4 +36,3 @@ export const navigationLinks: NavigationLinksStructure = {
     { title: "Vulnerability Database", description: "Comprehensive database of known vulnerabilities", href: "/vulnerabilities" }
   ]
 };
-
