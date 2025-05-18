@@ -73,14 +73,38 @@ export const getFallbackRoute = (path: string): string => {
     return path;
   }
   
-  // Simple mapping for common patterns
+  // Enhanced mapping for common patterns
   const fallbacks: Record<string, string> = {
     "/security-insights": "/web3-security",
     "/learning": "/resources",
     "/tutorials": "/blog",
     "/documentation": "/docs",
-    "/education": "/resources"
+    "/education": "/resources",
+    "/faq": "/support",
+    "/articles": "/blog",
+    "/guides": "/audit-guidelines",
+    "/providers": "/marketplace",
+    "/security": "/web3-security",
+    "/news": "/blog",
+    "/help": "/support",
+    "/learn": "/resources"
   };
   
-  return fallbacks[path] || "/resources";
+  return fallbacks[path] || "/";
+};
+
+/**
+ * Get the type/category of a route for analytics purposes
+ * @param path The path to analyze
+ * @returns The route category
+ */
+export const getRouteType = (path: string): string => {
+  if (path.includes('/admin')) return 'admin';
+  if (path.includes('/auth')) return 'auth';
+  if (path.includes('/marketplace') || path === '/') return 'marketplace';
+  if (path.includes('/audit')) return 'audit';
+  if (path.includes('/dashboard')) return 'dashboard';
+  if (['/resources', '/docs', '/blog', '/web3-security'].includes(path)) return 'educational';
+  
+  return 'general';
 };

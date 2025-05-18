@@ -1,12 +1,16 @@
-import { useLocation } from "react-router-dom";
+
+import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
-import { Shield, AlertTriangle } from "lucide-react";
+import { Shield, AlertTriangle, ArrowLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { getFallbackRoute } from "@/utils/navigation";
 
 const NotFound = () => {
   const location = useLocation();
+  const suggestedRoute = getFallbackRoute(location.pathname);
+  const hasSuggestion = suggestedRoute !== "/";
 
   useEffect(() => {
     console.error(
@@ -26,10 +30,13 @@ const NotFound = () => {
               <AlertTriangle className="h-10 w-10 text-web3-orange absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
             </div>
           </div>
+          
           <h1 className="text-6xl font-extrabold text-gradient mb-6">404</h1>
+          
           <p className="text-xl text-muted-foreground mb-8">
             This page is still being secured. Our security experts are working on it!
           </p>
+          
           <div className="bg-card border border-border/30 rounded-lg p-6 mb-8">
             <p className="text-sm text-muted-foreground mb-3">
               You tried to access:
@@ -38,9 +45,24 @@ const NotFound = () => {
               {location.pathname}
             </code>
           </div>
-          <Button asChild size="lg">
-            <a href="/">Return to Secure Homepage</a>
-          </Button>
+          
+          <div className="flex flex-col space-y-4">
+            <Button asChild size="lg">
+              <Link to="/">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Return to Homepage
+              </Link>
+            </Button>
+            
+            {hasSuggestion && (
+              <Button asChild variant="outline" size="lg">
+                <Link to={suggestedRoute}>
+                  <Search className="mr-2 h-4 w-4" />
+                  Did you mean: {suggestedRoute}?
+                </Link>
+              </Button>
+            )}
+          </div>
         </div>
       </main>
       <Footer />

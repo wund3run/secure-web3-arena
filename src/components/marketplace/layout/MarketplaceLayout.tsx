@@ -14,9 +14,13 @@ export function MarketplaceLayout({ children }: MarketplaceLayoutProps) {
       <SkipToContent targetId="marketplace-content" />
       <Navbar />
       <div className="flex-grow">
-        <div id="marketplace-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <main 
+          id="marketplace-content" 
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+          tabIndex={-1}
+        >
           {children}
-        </div>
+        </main>
       </div>
       <Footer />
     </div>

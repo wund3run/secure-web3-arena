@@ -5,8 +5,12 @@ import { HawklyLogo } from "./hawkly-logo";
 import { routeExists, getFallbackRoute } from "@/utils/navigation";
 
 export function Footer() {
+  const handleNavigation = (path: string) => {
+    return routeExists(path) ? path : getFallbackRoute(path);
+  };
+
   return (
-    <footer className="bg-background border-t border-border/40 pt-12 pb-6">
+    <footer className="bg-background border-t border-border/40 pt-12 pb-6" role="contentinfo">
       {/* Beta Platform Notice */}
       <div className="container mb-10">
         <div className="p-6 bg-amber-50 rounded-lg border border-amber-200">

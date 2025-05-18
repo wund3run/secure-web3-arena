@@ -25,7 +25,7 @@ export function ContentPage({ title, description, children }: ContentPageProps) 
       <div className="min-h-screen bg-background flex flex-col">
         <SkipToContent targetId="main-content" />
         <Navbar />
-        <main id="main-content" className="flex-grow container py-12">
+        <main id="main-content" className="flex-grow container py-12" tabIndex={-1}>
           <div className="prose prose-lg max-w-none">
             {children}
           </div>

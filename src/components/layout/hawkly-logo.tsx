@@ -1,13 +1,13 @@
 
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
 
 interface HawklyLogoProps {
   variant?: "default" | "large" | "compact" | "full";
   className?: string;
+  asLink?: boolean;
 }
 
-export function HawklyLogo({ variant = "default", className }: HawklyLogoProps) {
+export function HawklyLogo({ variant = "default", className, asLink = true }: HawklyLogoProps) {
   const sizes = {
     compact: {
       container: "h-8 w-8",
@@ -35,8 +35,8 @@ export function HawklyLogo({ variant = "default", className }: HawklyLogoProps) 
     }
   };
   
-  return (
-    <Link to="/" className={cn("flex items-center space-x-2 group", className)}>
+  const LogoContent = () => (
+    <>
       <div className="relative transition-all duration-300 group-hover:scale-105">
         {/* Shield SVG with gradient colors matching the screenshot */}
         <svg 
@@ -77,6 +77,20 @@ export function HawklyLogo({ variant = "default", className }: HawklyLogoProps) 
           </span>
         )}
       </div>
-    </Link>
+    </>
+  );
+  
+  if (asLink) {
+    return (
+      <a href="/" className={cn("flex items-center space-x-2 group", className)}>
+        <LogoContent />
+      </a>
+    );
+  }
+  
+  return (
+    <div className={cn("flex items-center space-x-2 group", className)}>
+      <LogoContent />
+    </div>
   );
 }
