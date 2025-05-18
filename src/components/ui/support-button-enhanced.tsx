@@ -96,7 +96,7 @@ export function SupportButtonEnhanced() {
               aria-label="View documentation"
               asChild
             >
-              <a href="/documentation" target="_blank" rel="noopener noreferrer">
+              <a href="/docs" target="_blank" rel="noopener noreferrer">
                 <FileQuestion className="h-4 w-4" />
                 Documentation
                 <ExternalLink className="ml-auto h-3 w-3 opacity-70" />
