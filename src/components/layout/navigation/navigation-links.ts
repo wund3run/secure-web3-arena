@@ -23,3 +23,6 @@ export const navigationLinks: NavigationLinksStructure = {
     { title: "Community", href: "/community", description: "Join our security community" },
   ],
 };
+
+// Also export the types here for convenience
+export type { NavigationLinksStructure, NavigationLinkItem };
