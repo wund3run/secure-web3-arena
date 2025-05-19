@@ -7,6 +7,7 @@ import { ProjectOwnerJourney } from "./journeys/ProjectOwnerJourney";
 import { AdminJourney } from "./journeys/AdminJourney";
 import { GeneralUserJourney } from "./journeys/GeneralUserJourney";
 import { RevenueInsights } from "./RevenueInsights";
+import { ConversionFunnelAnalysis } from "./ConversionFunnelAnalysis";
 
 export function UserJourney() {
   const [activeTab, setActiveTab] = React.useState("auditor");
@@ -55,6 +56,7 @@ export function UserJourney() {
         </CardContent>
       </Card>
       
+      <ConversionFunnelAnalysis />
       <RevenueInsights />
     </div>
   );
