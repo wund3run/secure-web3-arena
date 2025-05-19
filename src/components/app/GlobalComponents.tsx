@@ -6,7 +6,7 @@ import { CookieConsent } from "@/components/ui/cookie-consent";
 import { BetaBanner } from "@/components/ui/beta-banner";
 import { AccessibilityMenu } from "@/components/ui/accessibility-menu";
 import { KeyboardShortcuts } from "@/components/ui/keyboard-shortcuts";
-import { PerformanceMonitor } from "@/components/ui/performance-monitor";
+import { PerformanceMonitor } from "@/components/performance";
 
 export function GlobalComponents() {
   // Add state for accessibility menu

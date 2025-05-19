@@ -1,24 +1,29 @@
 
-import React, { useState, useEffect, useCallback, memo } from "react";
+import { useState, useEffect } from 'react';
 
-export const PerformanceMonitor = memo(function PerformanceMonitor() {
-  const [metrics, setMetrics] = useState({
+export type PerformanceMetrics = {
+  fps: number;
+  memory: number;
+  cpu: number;
+  loadTime: number;
+  fcp: number;    // First Contentful Paint
+  lcp: number;    // Largest Contentful Paint
+  cls: number;    // Cumulative Layout Shift
+  ttfb: number;   // Time to First Byte
+};
+
+export const usePerformanceMetrics = (visible: boolean) => {
+  const [metrics, setMetrics] = useState<PerformanceMetrics>({
     fps: 0,
     memory: 0,
     cpu: 0,
     loadTime: 0,
-    fcp: 0,    // First Contentful Paint
-    lcp: 0,    // Largest Contentful Paint
-    cls: 0,    // Cumulative Layout Shift
-    ttfb: 0    // Time to First Byte
+    fcp: 0,
+    lcp: 0,
+    cls: 0,
+    ttfb: 0
   });
-  const [visible, setVisible] = useState(false);
-  
-  // Toggle visibility callback - memoized for performance
-  const toggleVisibility = useCallback(() => {
-    setVisible(prev => !prev);
-  }, []);
-  
+
   useEffect(() => {
     // Only initialize monitoring when visible to save resources
     if (!visible) return;
@@ -155,93 +160,5 @@ export const PerformanceMonitor = memo(function PerformanceMonitor() {
     };
   }, [visible]); // Only re-run when visibility changes
   
-  // Keyboard shortcut handler - kept outside the main effect
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Only process if all keys match
-      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
-        e.preventDefault();
-        toggleVisibility();
-      }
-    };
-    
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [toggleVisibility]);
-  
-  // Don't render anything if not visible
-  if (!visible) return null;
-  
-  // Use classes directly for better performance than dynamic styles
-  return (
-    <div className="fixed bottom-20 right-4 bg-black/80 text-white p-3 rounded-lg text-xs z-50 min-w-[200px] shadow-lg">
-      <div className="flex justify-between items-center mb-2">
-        <span className="font-bold">Performance Monitor</span>
-        <button 
-          onClick={toggleVisibility}
-          className="text-white/60 hover:text-white"
-          aria-label="Close performance monitor"
-        >
-          ×
-        </button>
-      </div>
-      
-      <div className="space-y-1">
-        <div className="flex justify-between">
-          <span>FPS:</span>
-          <span className={metrics.fps < 30 ? "text-red-400" : "text-green-400"}>
-            {metrics.fps}
-          </span>
-        </div>
-        {metrics.memory > 0 && (
-          <div className="flex justify-between">
-            <span>Memory:</span>
-            <span>{metrics.memory} MB</span>
-          </div>
-        )}
-        <div className="flex justify-between">
-          <span>Load Time:</span>
-          <span className={metrics.loadTime > 2000 ? "text-red-400" : "text-green-400"}>
-            {metrics.loadTime} ms
-          </span>
-        </div>
-        {metrics.fcp > 0 && (
-          <div className="flex justify-between">
-            <span>FCP:</span>
-            <span className={metrics.fcp > 2000 ? "text-red-400" : "text-green-400"}>
-              {metrics.fcp} ms
-            </span>
-          </div>
-        )}
-        {metrics.lcp > 0 && (
-          <div className="flex justify-between">
-            <span>LCP:</span>
-            <span className={metrics.lcp > 2500 ? "text-red-400" : "text-green-400"}>
-              {metrics.lcp} ms
-            </span>
-          </div>
-        )}
-        {metrics.cls > 0 && (
-          <div className="flex justify-between">
-            <span>CLS:</span>
-            <span className={metrics.cls > 0.1 ? "text-red-400" : "text-green-400"}>
-              {metrics.cls}
-            </span>
-          </div>
-        )}
-        {metrics.ttfb > 0 && (
-          <div className="flex justify-between">
-            <span>TTFB:</span>
-            <span className={metrics.ttfb > 600 ? "text-red-400" : "text-green-400"}>
-              {metrics.ttfb} ms
-            </span>
-          </div>
-        )}
-      </div>
-      
-      <div className="mt-2 text-[10px] text-white/60">
-        Press Ctrl+Shift+P to toggle
-      </div>
-    </div>
-  );
-});
+  return metrics;
+};
