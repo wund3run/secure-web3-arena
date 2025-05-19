@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Code, Search, FileCheck, Shield, CheckCircle } from "lucide-react";
+import { Code, Search, FileCheck, Shield, CheckCircle, Users, Bookmark } from "lucide-react";
 import { JourneyStep } from "../JourneyStep";
 import { JourneyPath } from "../JourneyPath";
 
@@ -45,6 +45,16 @@ export function ProjectOwnerJourney() {
         
         <JourneyStep
           stepNumber={4}
+          title="Auditor Selection"
+          description="Reviewing auditor profiles and selecting based on expertise and reputation"
+          pages={["/marketplace", "/leaderboard", "/achievements"]}
+          conversionRate={70}
+          revenueImpact="medium"
+          icon={<Users className="h-5 w-5" />}
+        />
+        
+        <JourneyStep
+          stepNumber={5}
           title="Escrow & Contracting"
           description="Setting up escrow payment and finalizing audit agreement"
           pages={["/escrow", "/dashboard", "/contact-provider"]}
@@ -54,9 +64,19 @@ export function ProjectOwnerJourney() {
         />
         
         <JourneyStep
-          stepNumber={5}
-          title="Audit Process & Completion"
-          description="Monitoring audit progress and implementing fixes"
+          stepNumber={6}
+          title="Collaboration & Review"
+          description="Providing additional information and reviewing audit progress"
+          pages={["/audit/:id", "/dashboard", "/contact-provider/:id"]}
+          conversionRate={85}
+          revenueImpact="medium"
+          icon={<Bookmark className="h-5 w-5" />}
+        />
+        
+        <JourneyStep
+          stepNumber={7}
+          title="Audit Completion & Publication"
+          description="Reviewing final audit report and optionally publishing results"
           pages={["/dashboard", "/audit/:id", "/security-insights"]}
           conversionRate={95}
           revenueImpact="high"
@@ -65,13 +85,15 @@ export function ProjectOwnerJourney() {
       </JourneyPath>
       
       <div className="bg-muted/50 p-4 rounded-lg">
-        <h4 className="font-medium mb-2">Key Revenue Opportunities:</h4>
+        <h4 className="font-medium mb-2">Key Revenue & Engagement Opportunities:</h4>
         <ul className="list-disc pl-5 space-y-1 text-sm">
           <li>Platform fees on audit transactions (5-10%)</li>
           <li>Express audit request matching (premium fee)</li>
+          <li>Tiered service options (basic, comprehensive, ongoing)</li>
           <li>Continuous monitoring subscription services</li>
           <li>Urgent security assessment fast-tracking</li>
           <li>Escrow service fees for transaction protection</li>
+          <li>Premium report publishing and certification</li>
         </ul>
       </div>
     </div>

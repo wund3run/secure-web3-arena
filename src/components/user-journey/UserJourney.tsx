@@ -17,7 +17,7 @@ export function UserJourney() {
       <div className="flex flex-col space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">User Journey Mapping</h2>
         <p className="text-muted-foreground">
-          Define and visualize how different user types interact with the Hawkly platform
+          Optimized user paths for each stakeholder type to maximize engagement and revenue generation
         </p>
       </div>
       
@@ -25,7 +25,7 @@ export function UserJourney() {
         <CardHeader>
           <CardTitle>Platform User Journeys</CardTitle>
           <CardDescription>
-            Select a user type to view their typical journey through the platform
+            Select a user type to view their optimized journey through the Hawkly platform
           </CardDescription>
         </CardHeader>
         <CardContent>

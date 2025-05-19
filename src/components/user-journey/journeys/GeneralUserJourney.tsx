@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Info, Book, BookOpen, HelpCircle, MessageSquare } from "lucide-react";
+import { Info, Book, BookOpen, HelpCircle, MessageSquare, Award, Eye } from "lucide-react";
 import { JourneyStep } from "../JourneyStep";
 import { JourneyPath } from "../JourneyPath";
 
@@ -55,6 +55,16 @@ export function GeneralUserJourney() {
         
         <JourneyStep
           stepNumber={5}
+          title="Browsing Audited Projects"
+          description="Accessing and evaluating security reports of audited projects"
+          pages={["/audits", "/security-insights", "/marketplace"]}
+          conversionRate={7}
+          revenueImpact="medium"
+          icon={<Eye className="h-5 w-5" />}
+        />
+        
+        <JourneyStep
+          stepNumber={6}
           title="Support & Conversion"
           description="Seeking help or converting to project owner/auditor"
           pages={["/support", "/contact", "/auth", "/service-provider-onboarding"]}
@@ -65,13 +75,15 @@ export function GeneralUserJourney() {
       </JourneyPath>
       
       <div className="bg-muted/50 p-4 rounded-lg">
-        <h4 className="font-medium mb-2">Key Revenue Opportunities:</h4>
+        <h4 className="font-medium mb-2">Key Revenue & Engagement Opportunities:</h4>
         <ul className="list-disc pl-5 space-y-1 text-sm">
           <li>Educational content subscriptions</li>
           <li>Premium resource access</li>
           <li>Self-service security tools</li>
           <li>Conversion to active platform users</li>
           <li>Lead generation for security services</li>
+          <li>Sponsored educational content</li>
+          <li>Community membership tiers</li>
         </ul>
       </div>
     </div>

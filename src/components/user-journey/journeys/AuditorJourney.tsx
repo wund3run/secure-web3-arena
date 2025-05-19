@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Shield, FileCheck, Users, Scroll, Award } from "lucide-react";
+import { Shield, FileCheck, Users, Scroll, Award, BarChart3, Wallet } from "lucide-react";
 import { JourneyStep } from "../JourneyStep";
 import { JourneyPath } from "../JourneyPath";
 
@@ -55,22 +55,45 @@ export function AuditorJourney() {
         
         <JourneyStep
           stepNumber={5}
-          title="Active Participation & Growth"
-          description="Reviewing audit requests, executing audits, and building reputation"
-          pages={["/dashboard", "/audits", "/escrow", "/marketplace"]}
+          title="Browsing & Applying for Audits"
+          description="Reviewing available projects and submitting proposals or bids"
+          pages={["/marketplace", "/dashboard", "/audits"]}
+          conversionRate={75}
+          revenueImpact="medium"
+          icon={<BarChart3 className="h-5 w-5" />}
+        />
+        
+        <JourneyStep
+          stepNumber={6}
+          title="Performing Audits"
+          description="Using platform tools to identify vulnerabilities and assess security risks"
+          pages={["/audit/:id", "/security-insights", "/ai-tools"]}
           conversionRate={95}
           revenueImpact="high"
-          icon={<Award className="h-5 w-5" />}
+          icon={<FileCheck className="h-5 w-5" />}
+        />
+        
+        <JourneyStep
+          stepNumber={7}
+          title="Payment & Reputation Building"
+          description="Receiving payment and gaining reputation points based on performance"
+          pages={["/escrow", "/achievements", "/leaderboard"]}
+          conversionRate={98}
+          revenueImpact="high"
+          icon={<Wallet className="h-5 w-5" />}
         />
       </JourneyPath>
       
       <div className="bg-muted/50 p-4 rounded-lg">
-        <h4 className="font-medium mb-2">Key Revenue Opportunities:</h4>
+        <h4 className="font-medium mb-2">Key Revenue & Engagement Opportunities:</h4>
         <ul className="list-disc pl-5 space-y-1 text-sm">
           <li>Commission on completed audits (15-20% platform fee)</li>
           <li>Featured listing placement fees for enhanced visibility</li>
           <li>Premium badge verification for higher trust score</li>
           <li>Priority matching with high-value projects</li>
+          <li>Leaderboard visibility and reputation incentives</li>
+          <li>Advanced tool access for comprehensive audits</li>
+          <li>Performance-based bonuses and rewards</li>
         </ul>
       </div>
     </div>

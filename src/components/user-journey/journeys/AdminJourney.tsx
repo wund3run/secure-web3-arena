@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Settings, UserCheck, LineChart, AlertCircle, Gavel } from "lucide-react";
+import { Settings, UserCheck, LineChart, AlertCircle, Gavel, Shield, DollarSign } from "lucide-react";
 import { JourneyStep } from "../JourneyStep";
 import { JourneyPath } from "../JourneyPath";
 
@@ -33,6 +33,15 @@ export function AdminJourney() {
         
         <JourneyStep
           stepNumber={3}
+          title="Quality Control"
+          description="Reviewing audit reports for adherence to standards and maintaining platform integrity"
+          pages={["/admin/audits", "/admin/reports", "/admin/services"]}
+          revenueImpact="high"
+          icon={<Shield className="h-5 w-5" />}
+        />
+        
+        <JourneyStep
+          stepNumber={4}
           title="Dispute Resolution"
           description="Managing and resolving disputes between auditors and project owners"
           pages={["/admin/disputes", "/escrow"]}
@@ -41,7 +50,7 @@ export function AdminJourney() {
         />
         
         <JourneyStep
-          stepNumber={4}
+          stepNumber={5}
           title="Security Incident Response"
           description="Managing security incidents and platform vulnerabilities"
           pages={["/admin/security", "/admin/reports"]}
@@ -50,7 +59,16 @@ export function AdminJourney() {
         />
         
         <JourneyStep
-          stepNumber={5}
+          stepNumber={6}
+          title="Revenue Management"
+          description="Overseeing fee structures, payments, and financial operations"
+          pages={["/admin/finance", "/admin/settings"]}
+          revenueImpact="high"
+          icon={<DollarSign className="h-5 w-5" />}
+        />
+        
+        <JourneyStep
+          stepNumber={7}
           title="Platform Configuration"
           description="Managing settings, integrations, and feature flags"
           pages={["/admin/settings", "/admin/services"]}
@@ -66,7 +84,9 @@ export function AdminJourney() {
           <li>Auditor quality assurance</li>
           <li>Fraud prevention and detection</li>
           <li>Platform feature enablement based on user adoption</li>
+          <li>Fee structure management and financial operations</li>
           <li>Crisis management and security incident response</li>
+          <li>Performance tracking and platform health</li>
         </ul>
       </div>
     </div>

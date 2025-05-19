@@ -29,6 +29,7 @@ export function RevenueInsights() {
                   <li>12-20% fee from auditors</li>
                   <li>Escrow service fees (1-2%)</li>
                   <li>Dispute resolution fees</li>
+                  <li>Fast-track processing fees</li>
                 </ul>
               </div>
               
@@ -39,6 +40,7 @@ export function RevenueInsights() {
                   <li>Enhanced project visibility</li>
                   <li>Continuous security monitoring</li>
                   <li>Educational content access</li>
+                  <li>Advanced analytics dashboard</li>
                 </ul>
               </div>
               
@@ -49,6 +51,7 @@ export function RevenueInsights() {
                   <li>Priority audit matching</li>
                   <li>Featured marketplace listings</li>
                   <li>Advanced analytics & reports</li>
+                  <li>Certification & badge programs</li>
                 </ul>
               </div>
             </div>
@@ -63,6 +66,7 @@ export function RevenueInsights() {
                   <li>Conversion Rate: 3-5% for visitors to registered users</li>
                   <li>Auditor Approval Rate: 10-20% of applicants</li>
                   <li>Monthly Active Users (MAU): Growth target 15-20%</li>
+                  <li>Auditor Retention Rate: Target 85%+</li>
                 </ul>
               </div>
               
@@ -73,6 +77,7 @@ export function RevenueInsights() {
                   <li>Gross Transaction Value (GTV): $100K-500K monthly</li>
                   <li>Customer Lifetime Value (LTV): $2,000-10,000</li>
                   <li>LTV:CAC Ratio: Target greater than 3:1</li>
+                  <li>Platform Fee Collection Rate: Target 99%+</li>
                 </ul>
               </div>
             </div>
@@ -87,6 +92,7 @@ export function RevenueInsights() {
                   <li>Reduced fees for first 6 months</li>
                   <li>Free security consultations for projects</li>
                   <li>Referral bonuses for new users</li>
+                  <li>Partnerships with blockchain projects</li>
                 </ul>
               </div>
               
@@ -97,6 +103,7 @@ export function RevenueInsights() {
                   <li>Enterprise client acquisition</li>
                   <li>Partnership with blockchain platforms</li>
                   <li>Educational content monetization</li>
+                  <li>White-label solutions for partners</li>
                 </ul>
               </div>
               
@@ -107,6 +114,7 @@ export function RevenueInsights() {
                   <li>Reduced fees based on volume</li>
                   <li>Community reputation building</li>
                   <li>Continuous feature enhancement</li>
+                  <li>VIP program for top contributors</li>
                 </ul>
               </div>
             </div>
