@@ -80,10 +80,12 @@ export function usePlatformValidator() {
       }
     });
     
-    // Check for buttons without handlers
+    // Check for buttons without handlers - FIX: Use proper type casting for button elements
     const buttons = document.querySelectorAll('button:not([type="submit"])');
     buttons.forEach(button => {
-      if (!button.onClick && !button.getAttribute('data-test-has-handler')) {
+      // Type cast to HTMLButtonElement to access onClick property correctly
+      const buttonElement = button as HTMLButtonElement;
+      if (!buttonElement.onclick && !button.getAttribute('data-test-has-handler')) {
         pageIssues.push({
           type: 'interactive',
           severity: 'medium',
