@@ -7,7 +7,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-import { NavigationLinkItem } from "./navigation-links.ts";
+import { NavigationLinkItem } from "./navigation-links.tsx";
 
 interface NavigationDropdownItemProps {
   title: string;

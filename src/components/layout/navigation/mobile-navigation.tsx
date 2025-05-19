@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { NavigationLinksStructure } from "./navigation-links.ts";
+import { NavigationLinksStructure } from "./navigation-links.tsx";
 import { FocusTrap } from "@/components/ui/focus-trap";
 
 interface MobileNavigationProps {

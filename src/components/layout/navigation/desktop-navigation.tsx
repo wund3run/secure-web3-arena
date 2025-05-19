@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import {
@@ -9,7 +8,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import { NavigationDropdownItem } from "./navigation-dropdown-item";
-import { navigationLinks } from "./navigation-links";
+import { navigationLinks } from "./navigation-links.ts";
 
 interface DesktopNavigationProps {
   activeDropdown: string | null;

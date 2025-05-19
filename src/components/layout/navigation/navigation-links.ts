@@ -25,4 +25,4 @@ export const navigationLinks: NavigationLinksStructure = {
 };
 
 // Also export the types here for convenience
-export type { NavigationLinksStructure, NavigationLinkItem };
+export { NavigationLinksStructure, NavigationLinkItem };
