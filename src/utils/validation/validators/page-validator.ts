@@ -3,6 +3,8 @@ import { ValidationIssue } from "../types";
 
 /**
  * Validates the current page for common issues
+ * @param pathname Current page path
+ * @returns Array of validation issues
  */
 export const validateCurrentPage = (pathname: string): ValidationIssue[] => {
   const pageIssues: ValidationIssue[] = [];

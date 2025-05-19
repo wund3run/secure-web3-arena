@@ -3,6 +3,7 @@ import { ValidationIssue } from "../types";
 
 /**
  * Validates responsive design elements on the current page
+ * @returns Array of validation issues related to responsive design
  */
 export const validateResponsiveDesign = (): ValidationIssue[] => {
   const responsiveIssues: ValidationIssue[] = [];

@@ -1,67 +1,63 @@
 
 import { ValidationIssue } from "../types";
-import { routeExists, getFallbackRoute } from "../../navigation";
-import { navigationLinks } from "../../../components/layout/navigation/navigation-links";
+import { extractRoutesFromApp, routeExists } from "../../navigation";
+import { navigationLinks } from "@/components/layout/navigation/navigation-links.ts";
 
 /**
- * Validates routes and navigation links across the platform
+ * Validates all routes in the application
+ * @returns Array of validation issues related to routes
  */
 export const validateRoutes = (): ValidationIssue[] => {
   const routeIssues: ValidationIssue[] = [];
+  const availableRoutes = extractRoutesFromApp();
   
-  // Validate all navigation links in the platform header
-  Object.entries(navigationLinks).forEach(([section, links]) => {
+  // Helper function to check links from a navigation section
+  const checkNavigationLinks = (links: any[], section: string) => {
     links.forEach(link => {
-      if (!routeExists(link.href)) {
-        const fallback = getFallbackRoute(link.href);
-        
-        if (fallback !== link.href) {
-          routeIssues.push({
-            type: 'navigation',
-            severity: 'high',
-            description: `Navigation link "${link.title}" points to non-existent route: ${link.href}`,
-            location: `navigation-links.ts (${section})`,
-            suggestion: `Update href to a valid route like "${fallback}"`
-          });
-        }
+      const href = link.href;
+      if (!routeExists(href)) {
+        routeIssues.push({
+          type: 'navigation',
+          severity: 'high',
+          description: `Invalid route "${href}" in ${section} navigation`,
+          location: `${section}: ${link.title}`,
+          suggestion: `Create the page or update the link to an existing route`
+        });
       }
     });
-  });
+  };
   
-  // Check for duplicate routes with slightly different paths
-  const allRoutes = Object.values(navigationLinks).flat().map(link => link.href);
-  const normalizedRoutes = new Map();
+  // Check main navigation links
+  checkNavigationLinks(navigationLinks.marketplace, 'Marketplace');
+  checkNavigationLinks(navigationLinks.audits, 'Audits');
+  checkNavigationLinks(navigationLinks.resources, 'Resources');
   
-  allRoutes.forEach(route => {
-    const normalized = route.toLowerCase().replace(/\/$/, "");
-    if (normalizedRoutes.has(normalized) && normalizedRoutes.get(normalized) !== route) {
+  // Check for duplicate routes
+  const routeMap = new Map();
+  availableRoutes.forEach(route => {
+    if (routeMap.has(route)) {
       routeIssues.push({
         type: 'navigation',
         severity: 'medium',
-        description: `Duplicate routes with different casing or trailing slashes: "${route}" and "${normalizedRoutes.get(normalized)}"`,
-        location: 'navigation-links.ts',
-        suggestion: 'Standardize route paths to avoid confusion'
+        description: `Duplicate route "${route}" found in routing configuration`,
+        location: `App routing`,
+        suggestion: `Remove duplicate route entry`
       });
     } else {
-      normalizedRoutes.set(normalized, route);
+      routeMap.set(route, true);
     }
   });
   
-  // Check for missing important sections
-  const requiredSections = ['privacy', 'terms', 'contact', 'support'];
-  requiredSections.forEach(section => {
-    const hasSection = allRoutes.some(route => 
-      route.includes(`/${section}`) || 
-      route.includes(`-${section}`)
-    );
-    
-    if (!hasSection) {
+  // Check for missing content on pages
+  // This is a simplified check - would need to be expanded based on actual page structure
+  document.querySelectorAll('main').forEach(main => {
+    if (main.children.length === 0 || (main.children.length === 1 && main.textContent?.trim() === '')) {
       routeIssues.push({
         type: 'content',
-        severity: 'medium',
-        description: `Missing important section: ${section}`,
-        location: 'Site navigation',
-        suggestion: `Add a /${section} route or ensure it's accessible from navigation`
+        severity: 'high',
+        description: `Empty or nearly empty page content detected`,
+        location: `Current page`,
+        suggestion: `Add meaningful content to the page`
       });
     }
   });

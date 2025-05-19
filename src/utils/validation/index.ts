@@ -1,5 +1,5 @@
 
-import { ValidationIssue } from "./types";
+import { ValidationIssue, ValidationResult } from "./types";
 import { validateRoutes } from "./validators/route-validator";
 import { validateResponsiveDesign } from "./validators/responsive-validator"; 
 import { validateCurrentPage } from "./validators/page-validator";
@@ -14,5 +14,6 @@ export {
   validateResponsiveDesign,
   validateCurrentPage,
   validateConsistency,
-  type ValidationIssue
+  type ValidationIssue,
+  type ValidationResult
 };

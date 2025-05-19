@@ -19,11 +19,19 @@ interface AccessibilityErrorOptions {
 
 /**
  * Handle accessibility-related errors with specialized reporting
+ * @param error The error that was thrown
+ * @param options Additional options for handling the accessibility error
+ * @returns Object with information about the handled error
  */
 export const handleAccessibilityError = (
   error: unknown, 
   options: AccessibilityErrorOptions = {}
-) => {
+): {
+  message: string;
+  category: ErrorCategory;
+  wcagCriterion?: string;
+  element?: string;
+} => {
   console.error('Accessibility error detected:', error, 
     options.elementIdentifier ? `on element: ${options.elementIdentifier}` : '');
   
@@ -51,6 +59,9 @@ export const handleAccessibilityError = (
 
 /**
  * Attempt to automatically fix common accessibility issues
+ * @param element The element to attempt to fix
+ * @param errorMessage The error message describing the issue
+ * @returns Boolean indicating success of the fix attempt
  */
 function attemptAccessibilityFix(element?: HTMLElement, errorMessage?: string): boolean {
   if (!element) return false;
@@ -107,6 +118,7 @@ function attemptAccessibilityFix(element?: HTMLElement, errorMessage?: string): 
 
 /**
  * Register common accessibility checks to run periodically
+ * @returns Object with methods to control the checks
  */
 export const registerAccessibilityChecks = () => {
   // This would be implemented to run automated checks
