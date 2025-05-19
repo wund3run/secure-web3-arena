@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { SearchIcon, FileText, MessageSquare, Mail, HelpCircle, Book, ChevronRight, Phone } from "lucide-react";
@@ -22,42 +23,48 @@ const SupportCenter = () => {
       title: 'Getting Started with Security Audits',
       category: 'Audits',
       excerpt: 'Learn how to prepare your project for a comprehensive security audit.',
-      readTime: '5 min read'
+      readTime: '5 min read',
+      link: '/knowledge-base'
     },
     {
       id: 'article-2',
       title: 'Understanding Vulnerability Reports',
       category: 'Security',
       excerpt: 'How to interpret and prioritize findings in your security audit report.',
-      readTime: '8 min read'
+      readTime: '8 min read',
+      link: '/guides'
     },
     {
       id: 'article-3',
       title: 'Working with AI Security Tools',
       category: 'Tools',
       excerpt: 'Leverage our AI tools to improve your project security before audits.',
-      readTime: '6 min read'
+      readTime: '6 min read',
+      link: '/tutorials'
     },
     {
       id: 'article-4',
       title: 'Escrow System Guide',
       category: 'Payments',
       excerpt: 'Learn how our secure escrow system protects both auditors and projects.',
-      readTime: '7 min read'
+      readTime: '7 min read',
+      link: '/knowledge-base'
     },
     {
       id: 'article-5',
       title: 'Two-Factor Authentication Setup',
       category: 'Security',
       excerpt: 'How to enable and configure 2FA for your Hawkly account.',
-      readTime: '4 min read'
+      readTime: '4 min read',
+      link: '/tutorials'
     },
     {
       id: 'article-6',
       title: 'Service Provider Application Process',
       category: 'Auditors',
       excerpt: 'Guide for security experts applying to join the Hawkly platform.',
-      readTime: '6 min read'
+      readTime: '6 min read',
+      link: '/guides'
     }
   ];
   
@@ -159,9 +166,11 @@ const SupportCenter = () => {
                             </CardHeader>
                             <CardFooter className="pt-0 flex justify-between items-center">
                               <span className="text-xs text-muted-foreground">{article.readTime}</span>
-                              <Button variant="link" size="sm" className="flex items-center p-0">
-                                Read Article
-                                <ChevronRight className="ml-1 h-4 w-4" />
+                              <Button variant="link" size="sm" className="flex items-center p-0" asChild>
+                                <Link to={article.link}>
+                                  Read Article
+                                  <ChevronRight className="ml-1 h-4 w-4" />
+                                </Link>
                               </Button>
                             </CardFooter>
                           </Card>
@@ -170,10 +179,10 @@ const SupportCenter = () => {
                       
                       <div className="mt-8 flex justify-center">
                         <Button asChild variant="outline">
-                          <a href="/knowledge-base">
+                          <Link to="/knowledge-base">
                             View All Knowledge Base Articles
                             <ChevronRight className="ml-2 h-4 w-4" />
-                          </a>
+                          </Link>
                         </Button>
                       </div>
                     </div>
@@ -181,65 +190,75 @@ const SupportCenter = () => {
                     <div>
                       <h2 className="text-2xl font-bold mb-6">Support Categories</h2>
                       <div className="space-y-3">
-                        <Card className="hover:bg-muted/30 cursor-pointer transition-colors">
-                          <CardContent className="p-4 flex items-center">
-                            <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
-                              <Shield className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <h3 className="font-medium">Audits</h3>
-                              <p className="text-sm text-muted-foreground">Security audit process</p>
-                            </div>
-                          </CardContent>
-                        </Card>
+                        <Link to="/knowledge-base">
+                          <Card className="hover:bg-muted/30 cursor-pointer transition-colors">
+                            <CardContent className="p-4 flex items-center">
+                              <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                                <Shield className="h-5 w-5 text-primary" />
+                              </div>
+                              <div>
+                                <h3 className="font-medium">Audits</h3>
+                                <p className="text-sm text-muted-foreground">Security audit process</p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
                         
-                        <Card className="hover:bg-muted/30 cursor-pointer transition-colors">
-                          <CardContent className="p-4 flex items-center">
-                            <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
-                              <Wallet className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <h3 className="font-medium">Payments & Escrow</h3>
-                              <p className="text-sm text-muted-foreground">Managing transactions</p>
-                            </div>
-                          </CardContent>
-                        </Card>
+                        <Link to="/templates">
+                          <Card className="hover:bg-muted/30 cursor-pointer transition-colors">
+                            <CardContent className="p-4 flex items-center">
+                              <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                                <Wallet className="h-5 w-5 text-primary" />
+                              </div>
+                              <div>
+                                <h3 className="font-medium">Payments & Escrow</h3>
+                                <p className="text-sm text-muted-foreground">Managing transactions</p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
                         
-                        <Card className="hover:bg-muted/30 cursor-pointer transition-colors">
-                          <CardContent className="p-4 flex items-center">
-                            <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
-                              <Bot className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <h3 className="font-medium">AI Tools</h3>
-                              <p className="text-sm text-muted-foreground">Using security assistants</p>
-                            </div>
-                          </CardContent>
-                        </Card>
+                        <Link to="/tutorials">
+                          <Card className="hover:bg-muted/30 cursor-pointer transition-colors">
+                            <CardContent className="p-4 flex items-center">
+                              <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                                <Bot className="h-5 w-5 text-primary" />
+                              </div>
+                              <div>
+                                <h3 className="font-medium">AI Tools</h3>
+                                <p className="text-sm text-muted-foreground">Using security assistants</p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
                         
-                        <Card className="hover:bg-muted/30 cursor-pointer transition-colors">
-                          <CardContent className="p-4 flex items-center">
-                            <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
-                              <UserCog className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <h3 className="font-medium">Account Management</h3>
-                              <p className="text-sm text-muted-foreground">Profile and settings</p>
-                            </div>
-                          </CardContent>
-                        </Card>
+                        <Link to="/guides">
+                          <Card className="hover:bg-muted/30 cursor-pointer transition-colors">
+                            <CardContent className="p-4 flex items-center">
+                              <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                                <UserCog className="h-5 w-5 text-primary" />
+                              </div>
+                              <div>
+                                <h3 className="font-medium">Account Management</h3>
+                                <p className="text-sm text-muted-foreground">Profile and settings</p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
                         
-                        <Card className="hover:bg-muted/30 cursor-pointer transition-colors">
-                          <CardContent className="p-4 flex items-center">
-                            <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
-                              <BookOpen className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <h3 className="font-medium">Marketplace</h3>
-                              <p className="text-sm text-muted-foreground">Finding security services</p>
-                            </div>
-                          </CardContent>
-                        </Card>
+                        <Link to="/faq">
+                          <Card className="hover:bg-muted/30 cursor-pointer transition-colors">
+                            <CardContent className="p-4 flex items-center">
+                              <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                                <BookOpen className="h-5 w-5 text-primary" />
+                              </div>
+                              <div>
+                                <h3 className="font-medium">Marketplace</h3>
+                                <p className="text-sm text-muted-foreground">Finding security services</p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -264,7 +283,7 @@ const SupportCenter = () => {
                         Can't find what you're looking for?
                       </p>
                       <Button asChild>
-                        <a href="/contact">Contact Our Support Team</a>
+                        <Link to="/faq">View Complete FAQ</Link>
                       </Button>
                     </div>
                   </div>
@@ -397,10 +416,10 @@ const SupportCenter = () => {
                             Find detailed guides and resources in our documentation portal.
                           </p>
                           <Button asChild variant="outline" size="sm">
-                            <a href="/documentation" className="flex items-center">
+                            <Link to="/docs" className="flex items-center">
                               Browse Documentation
                               <ChevronRight className="ml-2 h-4 w-4" />
-                            </a>
+                            </Link>
                           </Button>
                         </div>
                         
@@ -457,7 +476,7 @@ const SupportCenter = () => {
                     Comprehensive guides on Web3 security best practices and vulnerability prevention
                   </p>
                   <Button asChild variant="outline" size="sm">
-                    <a href="/guides">View Guides</a>
+                    <Link to="/guides">View Guides</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -472,7 +491,7 @@ const SupportCenter = () => {
                     Sample templates for audit requests, security requirements, and verification checklists
                   </p>
                   <Button asChild variant="outline" size="sm">
-                    <a href="/templates">Download Templates</a>
+                    <Link to="/templates">Download Templates</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -487,7 +506,7 @@ const SupportCenter = () => {
                     Step-by-step tutorials on using the platform and implementing security recommendations
                   </p>
                   <Button asChild variant="outline" size="sm">
-                    <a href="/tutorials">Watch Tutorials</a>
+                    <Link to="/tutorials">Watch Tutorials</Link>
                   </Button>
                 </CardContent>
               </Card>

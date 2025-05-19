@@ -59,7 +59,12 @@ const extractRoutesFromApp = (): string[] => {
     "/events",
     "/challenges",
     "/vulnerabilities",
-    "/web3-security"
+    "/web3-security",
+    "/faq",
+    "/knowledge-base",
+    "/templates",
+    "/guides",
+    "/tutorials"
   ];
 };
 
@@ -77,17 +82,25 @@ export const getFallbackRoute = (path: string): string => {
   const fallbacks: Record<string, string> = {
     "/security-insights": "/web3-security",
     "/learning": "/resources",
-    "/tutorials": "/blog",
     "/documentation": "/docs",
     "/education": "/resources",
-    "/faq": "/support",
-    "/articles": "/blog",
-    "/guides": "/audit-guidelines",
+    "/help": "/support",
+    "/news": "/blog",
+    "/learn": "/resources",
     "/providers": "/marketplace",
     "/security": "/web3-security",
-    "/news": "/blog",
-    "/help": "/support",
-    "/learn": "/resources"
+    "/articles": "/blog",
+    "/guides": "/guides",
+    "/faq": "/faq",
+    "/knowledge-base": "/knowledge-base",
+    "/kb": "/knowledge-base",
+    "/knowledge": "/knowledge-base",
+    "/templates": "/templates",
+    "/template": "/templates",
+    "/tutorials": "/tutorials",
+    "/tutorial": "/tutorials",
+    "/video": "/tutorials",
+    "/videos": "/tutorials"
   };
   
   return fallbacks[path] || "/";
@@ -104,7 +117,8 @@ export const getRouteType = (path: string): string => {
   if (path.includes('/marketplace') || path === '/') return 'marketplace';
   if (path.includes('/audit')) return 'audit';
   if (path.includes('/dashboard')) return 'dashboard';
-  if (['/resources', '/docs', '/blog', '/web3-security'].includes(path)) return 'educational';
+  if (['/resources', '/docs', '/blog', '/web3-security', '/guides', '/tutorials', '/knowledge-base', '/faq', '/templates'].includes(path)) return 'educational';
   
   return 'general';
 };
+

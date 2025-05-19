@@ -50,6 +50,13 @@ import Challenges from './pages/Challenges';
 import Vulnerabilities from './pages/Vulnerabilities';
 import WebThreeSecurity from './pages/WebThreeSecurity';
 
+// New Support Pages
+import FAQ from './pages/FAQ';
+import KnowledgeBase from './pages/KnowledgeBase';
+import Templates from './pages/Templates';
+import Guides from './pages/Guides';
+import Tutorials from './pages/Tutorials';
+
 function App() {
   return (
     <AppProviders>
@@ -98,6 +105,13 @@ function App() {
         <Route path="/challenges" element={<Challenges />} />
         <Route path="/vulnerabilities" element={<Vulnerabilities />} />
         <Route path="/web3-security" element={<WebThreeSecurity />} />
+        
+        {/* Support Resource Routes */}
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/knowledge-base" element={<KnowledgeBase />} />
+        <Route path="/templates" element={<Templates />} />
+        <Route path="/guides" element={<Guides />} />
+        <Route path="/tutorials" element={<Tutorials />} />
         
         {/* 404 Page */}
         <Route path="*" element={<NotFound />} />
