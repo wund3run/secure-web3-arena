@@ -39,6 +39,7 @@ export function FeedbackForm() {
     // Simulate API call
     setTimeout(() => {
       toast({
+        title: "Feedback submitted",
         description: "Thank you for contributing to Hawkly's roadmap!",
       });
       setIsSubmitting(false);
