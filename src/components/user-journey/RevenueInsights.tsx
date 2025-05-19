@@ -59,7 +59,7 @@ export function RevenueInsights() {
               <div className="bg-muted p-4 rounded-lg space-y-2">
                 <h3 className="font-medium">User Acquisition Metrics</h3>
                 <ul className="text-sm space-y-1 list-disc pl-4">
-                  <li>Customer Acquisition Cost (CAC): Target <$200 per paying user</li>
+                  <li>Customer Acquisition Cost (CAC): Target less than $200 per paying user</li>
                   <li>Conversion Rate: 3-5% for visitors to registered users</li>
                   <li>Auditor Approval Rate: 10-20% of applicants</li>
                   <li>Monthly Active Users (MAU): Growth target 15-20%</li>
@@ -72,7 +72,7 @@ export function RevenueInsights() {
                   <li>Average Revenue Per User (ARPU): $120-300 monthly</li>
                   <li>Gross Transaction Value (GTV): $100K-500K monthly</li>
                   <li>Customer Lifetime Value (LTV): $2,000-10,000</li>
-                  <li>LTV:CAC Ratio: Target >3:1</li>
+                  <li>LTV:CAC Ratio: Target greater than 3:1</li>
                 </ul>
               </div>
             </div>
