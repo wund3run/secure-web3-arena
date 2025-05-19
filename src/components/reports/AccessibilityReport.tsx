@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { usePlatformValidator } from "@/utils/validation";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -89,7 +90,7 @@ export function AccessibilityReport() {
               Location: {issue.location}
             </p>
             {issue.suggestion && (
-              <Alert variant="outline" className="mt-2">
+              <Alert variant="secondary" className="mt-2">
                 <AlertTitle className="text-sm font-medium">Recommendation</AlertTitle>
                 <AlertDescription className="text-sm">
                   {issue.suggestion}
