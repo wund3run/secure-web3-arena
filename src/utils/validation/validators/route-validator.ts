@@ -1,64 +1,120 @@
 
 import { ValidationIssue } from "../types";
-import { extractRoutesFromApp, routeExists } from "../../navigation";
-import { navigationLinks } from "@/components/layout/navigation/navigation-links.ts";
 
 /**
- * Validates all routes in the application
- * @returns Array of validation issues related to routes
+ * Validates route structure and navigation elements across the application
+ * @returns Array of validation issues related to routing and navigation
  */
 export const validateRoutes = (): ValidationIssue[] => {
   const routeIssues: ValidationIssue[] = [];
-  const availableRoutes = extractRoutesFromApp();
   
-  // Helper function to check links from a navigation section
-  const checkNavigationLinks = (links: any[], section: string) => {
-    links.forEach(link => {
-      const href = link.href;
-      if (!routeExists(href)) {
-        routeIssues.push({
-          type: 'navigation',
-          severity: 'high',
-          description: `Invalid route "${href}" in ${section} navigation`,
-          location: `${section}: ${link.title}`,
-          suggestion: `Create the page or update the link to an existing route`
-        });
-      }
-    });
-  };
+  // Check for potential 404 links (links that point to non-existent routes)
+  const links = document.querySelectorAll('a');
+  const routePatterns = [
+    '/dashboard',
+    '/marketplace',
+    '/audit',
+    '/audits',
+    '/service',
+    '/auth',
+    '/contact',
+    '/pricing',
+    '/resources',
+    '/ai-tools',
+    '/support',
+    '/community',
+    '/escrow',
+    '/security-insights'
+  ];
   
-  // Check main navigation links
-  checkNavigationLinks(navigationLinks.marketplace, 'Marketplace');
-  checkNavigationLinks(navigationLinks.audits, 'Audits');
-  checkNavigationLinks(navigationLinks.resources, 'Resources');
-  
-  // Check for duplicate routes
-  const routeMap = new Map();
-  availableRoutes.forEach(route => {
-    if (routeMap.has(route)) {
+  links.forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href || href === '#' || href.startsWith('http')) {
+      return; // Skip empty, placeholder or external links
+    }
+    
+    // Check if the link matches any known route pattern
+    const isKnownRoute = routePatterns.some(pattern => 
+      href === pattern || href.startsWith(`${pattern}/`)
+    );
+    
+    if (!isKnownRoute && !href.includes('?') && !href.includes('#')) {
       routeIssues.push({
         type: 'navigation',
         severity: 'medium',
-        description: `Duplicate route "${route}" found in routing configuration`,
-        location: `App routing`,
-        suggestion: `Remove duplicate route entry`
+        description: 'Link may lead to non-existent route',
+        location: `${href}: ${link.textContent || 'unnamed link'}`,
+        suggestion: 'Verify this route exists or update the href attribute',
+        affectedStakeholders: ['general']
       });
-    } else {
-      routeMap.set(route, true);
     }
   });
   
-  // Check for missing content on pages
-  // This is a simplified check - would need to be expanded based on actual page structure
-  document.querySelectorAll('main').forEach(main => {
-    if (main.children.length === 0 || (main.children.length === 1 && main.textContent?.trim() === '')) {
+  // Check for link visibility and accessibility
+  const mainNavLinks = document.querySelectorAll('nav a, header a');
+  mainNavLinks.forEach(link => {
+    const style = window.getComputedStyle(link);
+    if (parseInt(style.fontSize) < 12) {
+      routeIssues.push({
+        type: 'navigation',
+        severity: 'medium',
+        description: 'Navigation link font size too small',
+        location: `${link.getAttribute('href')}: ${link.textContent || 'unnamed link'}`,
+        suggestion: 'Increase font size to at least 14px for better readability',
+        affectedStakeholders: ['general']
+      });
+    }
+    
+    // Check link text for clarity
+    const linkText = link.textContent?.trim().toLowerCase();
+    if (linkText === 'click here' || linkText === 'here' || linkText === 'link') {
       routeIssues.push({
         type: 'content',
-        severity: 'high',
-        description: `Empty or nearly empty page content detected`,
-        location: `Current page`,
-        suggestion: `Add meaningful content to the page`
+        severity: 'low',
+        description: 'Non-descriptive link text',
+        location: `${link.getAttribute('href')}: ${link.textContent || 'unnamed link'}`,
+        suggestion: 'Use descriptive link text that explains where the link leads',
+        affectedStakeholders: ['general', 'auditor', 'project-owner']
       });
+    }
+  });
+  
+  // Check for duplicate links to the same destination in close proximity
+  const linkMap = new Map();
+  mainNavLinks.forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href) return;
+    
+    if (!linkMap.has(href)) {
+      linkMap.set(href, [link]);
+    } else {
+      linkMap.get(href).push(link);
+    }
+  });
+  
+  // Report duplicates that are close to each other
+  linkMap.forEach((links, href) => {
+    if (links.length > 1) {
+      for (let i = 0; i < links.length - 1; i++) {
+        const rect1 = links[i].getBoundingClientRect();
+        const rect2 = links[i+1].getBoundingClientRect();
+        
+        // Check if links are within close proximity
+        const closeProximity = Math.abs(rect1.left - rect2.left) < 100 && 
+                              Math.abs(rect1.top - rect2.top) < 100;
+                              
+        if (closeProximity && links[i].textContent === links[i+1].textContent) {
+          routeIssues.push({
+            type: 'navigation',
+            severity: 'low',
+            description: 'Duplicate navigation links to the same destination',
+            location: `${href}: ${links[i].textContent || 'unnamed link'}`,
+            suggestion: 'Remove duplicate links or differentiate their context',
+            affectedStakeholders: ['general']
+          });
+          break; // Only report once per group
+        }
+      }
     }
   });
   

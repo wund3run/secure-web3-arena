@@ -19,7 +19,8 @@ export const validateCurrentPage = (pathname: string): ValidationIssue[] => {
         severity: 'medium',
         description: 'Link with no destination or placeholder href="#"',
         location: `${pathname}: ${link.textContent || 'unnamed link'}`,
-        suggestion: 'Update with valid href or add onClick handler'
+        suggestion: 'Update with valid href or add onClick handler',
+        affectedStakeholders: ['general']
       });
     }
     
@@ -30,7 +31,8 @@ export const validateCurrentPage = (pathname: string): ValidationIssue[] => {
         severity: 'low',
         description: 'External link without target="_blank" and rel="noopener noreferrer"',
         location: `${pathname}: ${link.textContent || 'external link'}`,
-        suggestion: 'Add target="_blank" and rel="noopener noreferrer" for external links'
+        suggestion: 'Add target="_blank" and rel="noopener noreferrer" for external links',
+        affectedStakeholders: ['general']
       });
     }
   });
@@ -46,7 +48,8 @@ export const validateCurrentPage = (pathname: string): ValidationIssue[] => {
         severity: 'medium',
         description: 'Button may be missing click handler',
         location: `${pathname}: ${button.textContent || 'unnamed button'}`,
-        suggestion: 'Add onClick handler or verify button functionality'
+        suggestion: 'Add onClick handler or verify button functionality',
+        affectedStakeholders: ['general']
       });
     }
   });
@@ -60,7 +63,8 @@ export const validateCurrentPage = (pathname: string): ValidationIssue[] => {
         severity: 'medium',
         description: 'Image missing alt text',
         location: `${pathname}: ${img.getAttribute('src') || 'unnamed image'}`,
-        suggestion: 'Add descriptive alt text for accessibility'
+        suggestion: 'Add descriptive alt text for accessibility',
+        affectedStakeholders: ['general']
       });
     }
   });
@@ -75,10 +79,46 @@ export const validateCurrentPage = (pathname: string): ValidationIssue[] => {
         severity: 'medium',
         description: 'Form element missing associated label',
         location: `${pathname}: ${element.getAttribute('name') || id || 'unnamed form element'}`,
-        suggestion: 'Add label element with matching "for" attribute'
+        suggestion: 'Add label element with matching "for" attribute',
+        affectedStakeholders: ['general', 'project-owner', 'auditor']
       });
     }
   });
+  
+  // Check for color contrast issues (basic check)
+  const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, button, label');
+  textElements.forEach(element => {
+    const style = window.getComputedStyle(element);
+    const color = style.color;
+    const bgColor = style.backgroundColor;
+    
+    // Simple check - this is not a complete contrast check
+    if (color === bgColor || 
+        (color === 'rgb(0, 0, 0)' && bgColor === 'rgba(0, 0, 0, 0)') || 
+        (color === 'rgb(255, 255, 255)' && bgColor === 'rgba(0, 0, 0, 0)')) {
+      pageIssues.push({
+        type: 'accessibility',
+        severity: 'medium',
+        description: 'Potential text contrast issue detected',
+        location: `${pathname}: ${element.textContent?.substring(0, 20) || 'text element'}`,
+        suggestion: 'Verify text contrast meets WCAG AA standard (4.5:1 for normal text)',
+        affectedStakeholders: ['general']
+      });
+    }
+  });
+  
+  // Check for proper page title
+  const pageTitle = document.title;
+  if (!pageTitle || pageTitle.length < 5) {
+    pageIssues.push({
+      type: 'seo',
+      severity: 'high',
+      description: 'Page has missing or very short title',
+      location: pathname,
+      suggestion: 'Add a descriptive page title (50-60 characters)',
+      affectedStakeholders: ['general']
+    });
+  }
   
   return pageIssues;
 };

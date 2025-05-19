@@ -21,7 +21,8 @@ export const validateResponsiveDesign = (): ValidationIssue[] => {
         severity: 'medium',
         description: `Element with fixed width (${width}px) may cause overflow on mobile`,
         location: `${element.tagName.toLowerCase()}${element.id ? '#'+element.id : ''}${element.className ? '.'+element.className.split(' ').join('.') : ''}`,
-        suggestion: 'Use relative units (%, rem) or max-width instead of fixed width'
+        suggestion: 'Use relative units (%, rem) or max-width instead of fixed width',
+        affectedStakeholders: ['general']
       });
     }
     
@@ -40,7 +41,8 @@ export const validateResponsiveDesign = (): ValidationIssue[] => {
           severity: 'medium',
           description: 'Interactive element may be too small for touch targets',
           location: `${element.tagName.toLowerCase()}${element.id ? '#'+element.id : ''}${element.className ? '.'+element.className.split(' ').join('.') : ''}`,
-          suggestion: 'Ensure touch targets are at least 44x44px for mobile usability'
+          suggestion: 'Ensure touch targets are at least 44x44px for mobile usability',
+          affectedStakeholders: ['general', 'auditor', 'project-owner']
         });
       }
     }
@@ -74,7 +76,36 @@ export const validateResponsiveDesign = (): ValidationIssue[] => {
       severity: 'high',
       description: 'No media queries detected in stylesheets',
       location: 'global CSS',
-      suggestion: 'Implement responsive design with media queries for different screen sizes'
+      suggestion: 'Implement responsive design with media queries for different screen sizes',
+      affectedStakeholders: ['general', 'auditor', 'project-owner', 'admin']
+    });
+  }
+  
+  // Check for viewport meta tag
+  const viewportMeta = document.querySelector('meta[name="viewport"]');
+  if (!viewportMeta) {
+    responsiveIssues.push({
+      type: 'responsive',
+      severity: 'high',
+      description: 'Viewport meta tag is missing',
+      location: 'document head',
+      suggestion: 'Add <meta name="viewport" content="width=device-width, initial-scale=1.0"> to the head',
+      affectedStakeholders: ['general']
+    });
+  }
+  
+  // Check for overflow issues
+  const bodyWidth = document.body.clientWidth;
+  const windowWidth = window.innerWidth;
+  
+  if (bodyWidth > windowWidth) {
+    responsiveIssues.push({
+      type: 'responsive',
+      severity: 'high',
+      description: 'Page content causes horizontal overflow',
+      location: 'body',
+      suggestion: 'Check for elements with fixed widths or negative margins causing overflow',
+      affectedStakeholders: ['general']
     });
   }
   
