@@ -1,12 +1,15 @@
 
-// Export types
-export * from "./types";
+import { ValidationIssue } from "./types";
+import { validateRoutes, validateResponsiveDesign, validateCurrentPage, validateConsistency } from "./validators";
+import { usePlatformValidator } from "./hooks/usePlatformValidator";
+import { PlatformValidatorWidget } from "./components/PlatformValidatorWidget";
 
-// Export validators
-export * from "./validators";
-
-// Export hooks
-export * from "./hooks/usePlatformValidator";
-
-// Export components
-export { default as PlatformValidatorWidget } from "./components/PlatformValidatorWidget";
+export {
+  usePlatformValidator,
+  PlatformValidatorWidget,
+  validateRoutes,
+  validateResponsiveDesign,
+  validateCurrentPage,
+  validateConsistency,
+  type ValidationIssue
+};

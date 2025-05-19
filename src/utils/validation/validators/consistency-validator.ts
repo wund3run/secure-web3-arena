@@ -2,29 +2,65 @@
 import { ValidationIssue } from "../types";
 
 /**
- * Validates UI consistency across the page
+ * Validates the consistency of UI elements across the platform
  */
 export const validateConsistency = (pathname: string): ValidationIssue[] => {
   const consistencyIssues: ValidationIssue[] = [];
   
-  // Check for inconsistent heading hierarchy
-  const h1Count = document.querySelectorAll('h1').length;
+  // Check for consistent heading hierarchy
+  const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+  const headingLevels = new Set();
+  headings.forEach(heading => {
+    const level = parseInt(heading.tagName.substring(1));
+    headingLevels.add(level);
+  });
   
-  if (h1Count === 0) {
+  // Check if there are gaps in heading levels (e.g., h1 -> h3 without h2)
+  const levels = Array.from(headingLevels).sort();
+  for (let i = 1; i < levels.length; i++) {
+    if (levels[i] - levels[i-1] > 1) {
+      consistencyIssues.push({
+        type: 'accessibility',
+        severity: 'medium',
+        description: `Heading hierarchy has gaps (h${levels[i-1]} -> h${levels[i]})`,
+        location: pathname,
+        suggestion: 'Ensure heading levels are sequential for proper document structure'
+      });
+      break;
+    }
+  }
+  
+  // Check for mixing different button styles in similar contexts
+  const primaryButtons = document.querySelectorAll('.btn-primary, .bg-primary, [class*="bg-primary"]');
+  const primaryButtonStyles = new Set();
+  primaryButtons.forEach(button => {
+    primaryButtonStyles.add(button.getAttribute('class'));
+  });
+  
+  if (primaryButtonStyles.size > 3) {
     consistencyIssues.push({
-      type: 'styling',
-      severity: 'medium',
-      description: 'Page missing main heading (h1)',
-      location: pathname,
-      suggestion: 'Add a primary h1 heading for accessibility and SEO'
-    });
-  } else if (h1Count > 1) {
-    consistencyIssues.push({
-      type: 'styling',
+      type: 'design',
       severity: 'low',
-      description: 'Multiple h1 headings on page',
+      description: 'Multiple different primary button styles detected',
       location: pathname,
-      suggestion: 'Use only one h1 per page for proper document structure'
+      suggestion: 'Standardize button styles for visual consistency'
+    });
+  }
+  
+  // Check for consistent text formatting
+  const paragraphs = document.querySelectorAll('p');
+  const paragraphClasses = new Set();
+  paragraphs.forEach(p => {
+    paragraphClasses.add(p.getAttribute('class'));
+  });
+  
+  if (paragraphClasses.size > 5) {
+    consistencyIssues.push({
+      type: 'design',
+      severity: 'low',
+      description: 'Many different paragraph styling patterns detected',
+      location: pathname,
+      suggestion: 'Standardize typography using consistent text classes'
     });
   }
   
