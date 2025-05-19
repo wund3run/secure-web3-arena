@@ -22,7 +22,9 @@ export const MetricItem: React.FC<MetricItemProps> = ({
   const isGoodValue = isGood !== undefined 
     ? isGood 
     : threshold !== undefined 
-      ? typeof value === 'number' && threshold ? value <= threshold : value >= threshold
+      ? typeof value === 'number' && value !== null
+        ? (threshold ? value <= threshold : value >= threshold)
+        : true
       : true;
   
   const textColorClass = !showColor 
