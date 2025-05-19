@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import PlatformValidatorWidget from '@/utils/validation/platform-validator';
+import { PlatformValidatorWidget } from '@/utils/validation';
 import RouteCheckerPanel from '@/utils/validation/route-checker';
 import { Button } from '@/components/ui/button';
 import { Check, Gauge, LayoutGrid, List, Ruler, X } from 'lucide-react';
