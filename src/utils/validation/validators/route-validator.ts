@@ -1,64 +1,67 @@
 
 import { ValidationIssue } from "../types";
-import { navigationLinks } from '@/components/layout/navigation/navigation-links';
+import { routeExists, getFallbackRoute } from "../../navigation";
+import { navigationLinks } from "../../../components/layout/navigation/navigation-links";
 
 /**
- * Validates routes and navigation across the platform
+ * Validates routes and navigation links across the platform
  */
 export const validateRoutes = (): ValidationIssue[] => {
   const routeIssues: ValidationIssue[] = [];
   
-  // Get all routes defined in navigation links
-  const allRoutes = [
-    ...navigationLinks.marketplace.map(item => item.href),
-    ...navigationLinks.audits.map(item => item.href),
-    ...navigationLinks.resources.map(item => item.href)
-  ];
-  
-  // Check for duplicate routes
-  const uniqueRoutes = new Set(allRoutes);
-  if (uniqueRoutes.size !== allRoutes.length) {
-    // Find the duplicates
-    const seen = new Set();
-    const duplicates = allRoutes.filter(route => {
-      if (seen.has(route)) return true;
-      seen.add(route);
-      return false;
+  // Validate all navigation links in the platform header
+  Object.entries(navigationLinks).forEach(([section, links]) => {
+    links.forEach(link => {
+      if (!routeExists(link.href)) {
+        const fallback = getFallbackRoute(link.href);
+        
+        if (fallback !== link.href) {
+          routeIssues.push({
+            type: 'navigation',
+            severity: 'high',
+            description: `Navigation link "${link.title}" points to non-existent route: ${link.href}`,
+            location: `navigation-links.ts (${section})`,
+            suggestion: `Update href to a valid route like "${fallback}"`
+          });
+        }
+      }
     });
-    
-    duplicates.forEach(route => {
+  });
+  
+  // Check for duplicate routes with slightly different paths
+  const allRoutes = Object.values(navigationLinks).flat().map(link => link.href);
+  const normalizedRoutes = new Map();
+  
+  allRoutes.forEach(route => {
+    const normalized = route.toLowerCase().replace(/\/$/, "");
+    if (normalizedRoutes.has(normalized) && normalizedRoutes.get(normalized) !== route) {
       routeIssues.push({
         type: 'navigation',
         severity: 'medium',
-        description: 'Duplicate route found in navigation',
-        location: route,
-        suggestion: 'Consolidate duplicate routes or use consistent naming'
+        description: `Duplicate routes with different casing or trailing slashes: "${route}" and "${normalizedRoutes.get(normalized)}"`,
+        location: 'navigation-links.ts',
+        suggestion: 'Standardize route paths to avoid confusion'
       });
-    });
-  }
-  
-  // Check for query parameters in primary navigation (except for specific cases)
-  allRoutes.forEach(route => {
-    if (route.includes('?') && !route.endsWith('compare=true')) {
-      routeIssues.push({
-        type: 'navigation',
-        severity: 'low',
-        description: 'Query parameter in main navigation link',
-        location: route,
-        suggestion: 'Consider using clean URLs for primary navigation'
-      });
+    } else {
+      normalizedRoutes.set(normalized, route);
     }
   });
   
-  // Check descriptions length (should be concise)
-  [...navigationLinks.marketplace, ...navigationLinks.audits, ...navigationLinks.resources].forEach(item => {
-    if (item.description && item.description.length > 60) {
+  // Check for missing important sections
+  const requiredSections = ['privacy', 'terms', 'contact', 'support'];
+  requiredSections.forEach(section => {
+    const hasSection = allRoutes.some(route => 
+      route.includes(`/${section}`) || 
+      route.includes(`-${section}`)
+    );
+    
+    if (!hasSection) {
       routeIssues.push({
         type: 'content',
-        severity: 'low',
-        description: 'Navigation description may be too long',
-        location: `${item.title}: ${item.description}`,
-        suggestion: 'Keep navigation descriptions concise (under 60 characters)'
+        severity: 'medium',
+        description: `Missing important section: ${section}`,
+        location: 'Site navigation',
+        suggestion: `Add a /${section} route or ensure it's accessible from navigation`
       });
     }
   });

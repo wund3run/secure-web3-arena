@@ -36,7 +36,7 @@ export const validateCurrentPage = (pathname: string): ValidationIssue[] => {
   // Check for buttons without handlers
   const buttons = document.querySelectorAll('button:not([type="submit"])');
   buttons.forEach(button => {
-    // Type cast to HTMLButtonElement to access onClick property correctly
+    // Type cast to HTMLButtonElement to access onclick property correctly
     const buttonElement = button as HTMLButtonElement;
     if (!buttonElement.onclick && !button.getAttribute('data-test-has-handler')) {
       pageIssues.push({
