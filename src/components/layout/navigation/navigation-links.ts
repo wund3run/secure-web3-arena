@@ -1,5 +1,5 @@
 
-import { NavigationLinksStructure } from "./navigation-links";
+import { NavigationLinksStructure, NavigationLinkItem } from "./navigation-links";
 
 export const navigationLinks: NavigationLinksStructure = {
   marketplace: [
@@ -23,4 +23,3 @@ export const navigationLinks: NavigationLinksStructure = {
     { title: "Community", href: "/community", description: "Join our security community" },
   ],
 };
-
