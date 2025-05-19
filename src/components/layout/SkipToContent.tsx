@@ -1,12 +1,12 @@
 
-import React from 'react';
+import React, { useCallback } from 'react';
 
 interface SkipToContentProps {
   targetId: string;
 }
 
 export function SkipToContent({ targetId }: SkipToContentProps) {
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     
     const targetElement = document.getElementById(targetId);
@@ -15,7 +15,7 @@ export function SkipToContent({ targetId }: SkipToContentProps) {
       targetElement.focus();
       targetElement.scrollIntoView({ behavior: 'smooth' });
     }
-  };
+  }, [targetId]);
   
   return (
     <a

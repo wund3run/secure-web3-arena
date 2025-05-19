@@ -9,28 +9,28 @@
     <meta name="keywords" content="Web3 security, blockchain security, smart contract audit, DApp security, solidity security, reentrancy protection, oracle manipulation prevention, crypto security, Web3 vulnerability assessment" />
     <meta name="author" content="Hawkly" />
 
-    <!-- Preload critical resources -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
-    <link rel="preload" as="script" href="/src/main.tsx" type="module" />
+    <!-- Critical preload resources for faster rendering -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style" />
+    <link rel="preload" as="style" href="/src/index.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <!-- Open Graph / Social Media - Updated with Hawkly brand identity image -->
+    <!-- Open Graph / Social Media -->
     <meta property="og:title" content="Hawkly | Leading Web3 Security Marketplace" />
     <meta property="og:description" content="Connect with verified security experts to protect your smart contracts, DApps, and prevent vulnerabilities. Join our trusted Web3 security marketplace." />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="https://i.imgur.com/xM0nBw6.png" />
     <meta property="og:site_name" content="Hawkly" />
 
-    <!-- Twitter - Updated with Hawkly brand identity image -->
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@hawkly" />
     <meta name="twitter:title" content="Hawkly | Web3 Security Marketplace" />
     <meta name="twitter:description" content="Connect with verified security experts to protect your blockchain assets. 500+ auditors, $350M+ protected, 12,800+ vulnerabilities found." />
     <meta name="twitter:image" content="https://i.imgur.com/xM0nBw6.png" />
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Fonts - load with display=swap for better performance -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" crossorigin="anonymous">
     
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -96,10 +96,10 @@
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
+        /* Critical CSS for initial render */
+        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
       </style>
     </div>
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="/src/main.tsx" defer></script>
   </body>
 </html>

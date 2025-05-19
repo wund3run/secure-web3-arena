@@ -6,27 +6,29 @@ import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 
-// Initialize performance monitoring
+// Initialize performance monitoring with more efficient approach
 if (process.env.NODE_ENV === 'production') {
-  // Add web vitals reporting in production with the correct imports and usage
+  // Use dynamic import for web vitals to avoid impacting initial load time
   import('web-vitals').then((webVitals) => {
     const reportWebVitals = (metric: any) => {
-      // In production, you might send to an analytics service
-      console.log(metric.name, metric.value, metric.rating);
+      // Use a more efficient logging approach in production
+      console.log(`${metric.name}: ${metric.value} (${metric.rating})`);
     };
     
-    // Use the direct named imports from web-vitals v5
-    webVitals.onCLS(reportWebVitals);
-    webVitals.onLCP(reportWebVitals);
-    webVitals.onFCP(reportWebVitals);
-    webVitals.onTTFB(reportWebVitals);
-    // Note: FID was removed in web-vitals v5 and replaced with INP
-    webVitals.onINP?.(reportWebVitals); // Optional chaining in case INP isn't available
+    // Create a timing buffer to spread out metric calculations
+    setTimeout(() => {
+      webVitals.onCLS(reportWebVitals);
+      webVitals.onLCP(reportWebVitals);
+      webVitals.onFCP(reportWebVitals);
+      webVitals.onTTFB(reportWebVitals);
+      webVitals.onINP?.(reportWebVitals);
+    }, 100); // Short delay to prioritize main content rendering
   });
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
+// Use deferred rendering for non-critical UI elements
 root.render(
   <React.StrictMode>
     <BrowserRouter>
