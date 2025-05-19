@@ -1,19 +1,26 @@
 
-import React, { useCallback } from 'react';
+import React, { useCallback, memo } from 'react';
 
 interface SkipToContentProps {
   targetId: string;
 }
 
-export function SkipToContent({ targetId }: SkipToContentProps) {
+export const SkipToContent = memo(function SkipToContent({ targetId }: SkipToContentProps) {
   const handleClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     
     const targetElement = document.getElementById(targetId);
     if (targetElement) {
-      targetElement.tabIndex = -1;
-      targetElement.focus();
-      targetElement.scrollIntoView({ behavior: 'smooth' });
+      // Make the element focusable but don't change tabIndex if it already has one
+      if (!targetElement.hasAttribute('tabindex')) {
+        targetElement.tabIndex = -1;
+      }
+      
+      // Focus and scroll in one operation for better performance
+      requestAnimationFrame(() => {
+        targetElement.focus();
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
     }
   }, [targetId]);
   
@@ -27,4 +34,4 @@ export function SkipToContent({ targetId }: SkipToContentProps) {
       Skip to content
     </a>
   );
-}
+});

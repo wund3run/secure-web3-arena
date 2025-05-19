@@ -1,7 +1,7 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, memo } from "react";
 
-export function PerformanceMonitor() {
+export const PerformanceMonitor = memo(function PerformanceMonitor() {
   const [metrics, setMetrics] = useState({
     fps: 0,
     memory: 0,
@@ -14,35 +14,41 @@ export function PerformanceMonitor() {
   });
   const [visible, setVisible] = useState(false);
   
+  // Toggle visibility callback - memoized for performance
+  const toggleVisibility = useCallback(() => {
+    setVisible(prev => !prev);
+  }, []);
+  
   useEffect(() => {
     // Only initialize monitoring when visible to save resources
     if (!visible) return;
     
+    // Monitor variables
     let frameCount = 0;
     let lastTime = performance.now();
-    let frameId: number;
-    let metricsCollected = false;
+    let rafId: number | null = null;
+    let metricsInitialized = false;
     
-    // Function to calculate FPS
-    const calculateFps = () => {
+    // More efficient FPS tracking
+    const calculateMetrics = () => {
       frameCount++;
       const now = performance.now();
       
-      // Update every second
+      // Update metrics less frequently (once per second) to reduce overhead
       if (now - lastTime > 1000) {
         const fps = Math.round((frameCount * 1000) / (now - lastTime));
         
+        // Use function updater to avoid closure issues
         setMetrics(prev => {
-          // Access memory if available (Chrome only feature)
+          // Get memory info if available (Chrome only)
           let memoryUsage = 0;
           try {
-            // Use a type assertion for memory access
-            const performanceMemory = (performance as any).memory;
-            if (performanceMemory && performanceMemory.usedJSHeapSize) {
-              memoryUsage = Math.round(performanceMemory.usedJSHeapSize / 1048576);
+            const perfMemory = (performance as any).memory;
+            if (perfMemory?.usedJSHeapSize) {
+              memoryUsage = Math.round(perfMemory.usedJSHeapSize / 1048576);
             }
           } catch (e) {
-            // Memory API not available (non-Chrome browsers)
+            // Memory API not available, continue silently
           }
           
           return {
@@ -56,106 +62,123 @@ export function PerformanceMonitor() {
         lastTime = now;
       }
       
-      frameId = requestAnimationFrame(calculateFps);
+      // Continue monitoring if still visible
+      if (visible) {
+        rafId = requestAnimationFrame(calculateMetrics);
+      }
     };
     
-    // Collect web vitals data - runs only once per session
-    if (!metricsCollected) {
-      metricsCollected = true;
+    // Collect web vitals data - once per session
+    if (!metricsInitialized) {
+      metricsInitialized = true;
       
-      // Calculate page load time using Navigation Timing API
-      const loadTime = window.performance.timing ? 
-        window.performance.timing.domContentLoadedEventEnd - 
-        window.performance.timing.navigationStart : 0;
+      // Calculate page load time
+      const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      const loadTime = navigationEntry ? 
+        Math.round(navigationEntry.domContentLoadedEventEnd - navigationEntry.startTime) : 
+        performance.timing ? 
+          Math.round(performance.timing.domContentLoadedEventEnd - performance.timing.navigationStart) : 0;
       
       setMetrics(prev => ({...prev, loadTime}));
       
-      // Use Performance Observer API for web vitals
+      // Use Performance Observer API for web vitals where available
       if ('PerformanceObserver' in window) {
-        // Observe First Contentful Paint
+        // Batch observe performance entries to reduce overhead
         try {
-          const fcpObserver = new PerformanceObserver((entryList) => {
+          // Observe paint metrics (FCP)
+          const paintObserver = new PerformanceObserver((entryList) => {
             const entries = entryList.getEntries();
-            if (entries.length > 0) {
-              const fcp = Math.round(entries[0].startTime);
-              setMetrics(prev => ({...prev, fcp}));
-              fcpObserver.disconnect();
+            for (const entry of entries) {
+              if (entry.name === 'first-contentful-paint') {
+                const fcp = Math.round(entry.startTime);
+                setMetrics(prev => ({...prev, fcp}));
+              }
             }
+            paintObserver.disconnect();
           });
-          fcpObserver.observe({ type: 'paint', buffered: true });
+          paintObserver.observe({ type: 'paint', buffered: true });
           
-          // Observe Largest Contentful Paint
+          // Observe LCP in one go
           const lcpObserver = new PerformanceObserver((entryList) => {
             const entries = entryList.getEntries();
             if (entries.length > 0) {
               const lcp = Math.round(entries[entries.length - 1].startTime);
               setMetrics(prev => ({...prev, lcp}));
             }
+            // LCP can update multiple times, so we don't disconnect
           });
           lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
           
-          // Observe Layout Shifts
+          // More efficient CLS tracking - only report final value
+          let clsValue = 0;
+          let clsEntries = 0;
           const clsObserver = new PerformanceObserver((entryList) => {
-            let clsValue = 0;
-            entryList.getEntries().forEach(entry => {
+            const entries = entryList.getEntries();
+            for (const entry of entries) {
               if (!(entry as any).hadRecentInput) {
                 clsValue += (entry as any).value;
+                clsEntries++;
+                
+                // Only update every 5 entries to reduce state updates
+                if (clsEntries % 5 === 0) {
+                  setMetrics(prev => ({...prev, cls: Number(clsValue.toFixed(3))}));
+                }
               }
-            });
-            setMetrics(prev => ({...prev, cls: Number(clsValue.toFixed(3))}));
+            }
           });
           clsObserver.observe({ type: 'layout-shift', buffered: true });
           
-          // Observe Time to First Byte
+          // Observe TTFB
           const navigationObserver = new PerformanceObserver((entryList) => {
-            const entries = entryList.getEntries();
-            if (entries.length > 0) {
-              const navEntry = entries[0] as PerformanceNavigationTiming;
-              const ttfb = Math.round(navEntry.responseStart - navEntry.requestStart);
+            const navEntry = entryList.getEntries()[0] as PerformanceNavigationTiming;
+            if (navEntry) {
+              const ttfb = Math.round(navEntry.responseStart);
               setMetrics(prev => ({...prev, ttfb}));
               navigationObserver.disconnect();
             }
           });
           navigationObserver.observe({ type: 'navigation', buffered: true });
         } catch (e) {
-          console.error('Performance monitoring error:', e);
+          console.debug('Performance monitoring error:', e);
         }
       }
     }
     
-    // Start monitoring if visible
-    if (visible) {
-      frameId = requestAnimationFrame(calculateFps);
-    }
+    // Start metrics loop
+    rafId = requestAnimationFrame(calculateMetrics);
     
+    // Clean up function - critical to prevent memory leaks
     return () => {
-      if (frameId) {
-        cancelAnimationFrame(frameId);
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
       }
     };
-  }, [visible]);
+  }, [visible]); // Only re-run when visibility changes
   
-  // Toggle visibility with keyboard shortcut (Ctrl+Shift+P)
+  // Keyboard shortcut handler - kept outside the main effect
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Only process if all keys match
       if (e.ctrlKey && e.shiftKey && e.key === 'P') {
         e.preventDefault();
-        setVisible(prev => !prev);
+        toggleVisibility();
       }
     };
     
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [toggleVisibility]);
   
+  // Don't render anything if not visible
   if (!visible) return null;
   
+  // Use classes directly for better performance than dynamic styles
   return (
     <div className="fixed bottom-20 right-4 bg-black/80 text-white p-3 rounded-lg text-xs z-50 min-w-[200px] shadow-lg">
       <div className="flex justify-between items-center mb-2">
         <span className="font-bold">Performance Monitor</span>
         <button 
-          onClick={() => setVisible(false)}
+          onClick={toggleVisibility}
           className="text-white/60 hover:text-white"
           aria-label="Close performance monitor"
         >
@@ -221,4 +244,4 @@ export function PerformanceMonitor() {
       </div>
     </div>
   );
-}
+});

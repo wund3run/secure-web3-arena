@@ -9,11 +9,16 @@
     <meta name="keywords" content="Web3 security, blockchain security, smart contract audit, DApp security, solidity security, reentrancy protection, oracle manipulation prevention, crypto security, Web3 vulnerability assessment" />
     <meta name="author" content="Hawkly" />
 
+    <!-- Performance optimizations: Critical resource hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    
     <!-- Critical preload resources for faster rendering -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style" />
     <link rel="preload" as="style" href="/src/index.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="script" href="/src/main.tsx" />
     
     <!-- Open Graph / Social Media -->
     <meta property="og:title" content="Hawkly | Leading Web3 Security Marketplace" />
@@ -30,7 +35,10 @@
     <meta name="twitter:image" content="https://i.imgur.com/xM0nBw6.png" />
     
     <!-- Fonts - load with display=swap for better performance -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" crossorigin="anonymous" media="print" onload="this.media='all'">
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    </noscript>
     
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -75,31 +83,33 @@
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#5E35B1">
     
-    <!-- Favicon -->
+    <!-- Critical CSS inline for faster paint -->
+    <style>
+      /* Minimal critical CSS for initial render */
+      body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background: #ffffff; }
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      .initial-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+      .initial-loader__spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid rgba(94, 53, 177, 0.1); border-radius: 50%; border-top-color: #5E35B1; animation: spin 1s linear infinite; }
+      .initial-loader__text { margin-top: 16px; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #64748b; }
+    </style>
+    
+    <!-- Favicon with SVG for clearer rendering on all devices -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235E35B1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s8-4 8-10V4H4v8c0 6 8 10 8 10z'%3E%3C/path%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   </head>
 
   <body>
     <div id="root">
-      <!-- Initial loading indicator -->
-      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #ffffff;">
-        <div style="text-align: center; padding: 20px;">
-          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#5E35B1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V4H4v8c0 6 8 10 8 10z"></path>
-          </svg>
-          <div style="margin-top: 20px; display: inline-block; width: 40px; height: 40px; border: 4px solid rgba(94, 53, 177, 0.1); border-radius: 50%; border-top-color: #5E35B1; animation: spin 1s linear infinite;"></div>
-          <p style="margin-top: 16px; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #64748b;">Loading Hawkly...</p>
-        </div>
+      <!-- Initial loading indicator - optimized for all browsers -->
+      <div class="initial-loader">
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#5E35B1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V4H4v8c0 6 8 10 8 10z"></path>
+        </svg>
+        <div class="initial-loader__spinner"></div>
+        <p class="initial-loader__text">Loading Hawkly...</p>
       </div>
-      <style>
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        /* Critical CSS for initial render */
-        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-      </style>
     </div>
+    <!-- Defer non-critical scripts -->
     <script type="module" src="/src/main.tsx" defer></script>
   </body>
 </html>

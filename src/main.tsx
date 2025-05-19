@@ -1,39 +1,59 @@
 
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
-import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import "./index.css";
 
-// Initialize performance monitoring with more efficient approach
+// Lazy load the App component for faster initial rendering
+const App = lazy(() => import("./App"));
+
+// Optimized lightweight loading fallback
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+  </div>
+);
+
+// Initialize performance monitoring without blocking the main thread
 if (process.env.NODE_ENV === 'production') {
-  // Use dynamic import for web vitals to avoid impacting initial load time
-  import('web-vitals').then((webVitals) => {
-    const reportWebVitals = (metric: any) => {
-      // Use a more efficient logging approach in production
-      console.log(`${metric.name}: ${metric.value} (${metric.rating})`);
-    };
-    
-    // Create a timing buffer to spread out metric calculations
-    setTimeout(() => {
-      webVitals.onCLS(reportWebVitals);
-      webVitals.onLCP(reportWebVitals);
-      webVitals.onFCP(reportWebVitals);
-      webVitals.onTTFB(reportWebVitals);
-      webVitals.onINP?.(reportWebVitals);
-    }, 100); // Short delay to prioritize main content rendering
+  // Use requestIdleCallback to defer non-critical operations
+  (window.requestIdleCallback || ((cb) => setTimeout(cb, 50)))(async () => {
+    try {
+      const webVitals = await import('web-vitals');
+      const reportWebVitals = (metric) => {
+        // Group similar metrics to reduce console noise
+        const metricName = metric.name.toUpperCase();
+        const value = Math.round(metric.value);
+        console.debug(`[Perf] ${metricName}: ${value}ms`);
+        
+        // Send to analytics in production (commented for future implementation)
+        // sendToAnalytics({ name: metric.name, value, rating: metric.rating });
+      };
+      
+      // Spread out metric calculations to avoid layout thrashing
+      setTimeout(() => webVitals.onFCP(reportWebVitals), 0);
+      setTimeout(() => webVitals.onLCP(reportWebVitals), 500);
+      setTimeout(() => webVitals.onCLS(reportWebVitals), 1000);
+      setTimeout(() => webVitals.onTTFB(reportWebVitals), 1500);
+      setTimeout(() => webVitals.onINP?.(reportWebVitals), 2000);
+    } catch (err) {
+      console.warn('Web Vitals reporting failed:', err);
+    }
   });
 }
 
+// Create root with concurrent mode for better performance
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
-// Use deferred rendering for non-critical UI elements
+// Use concurrent mode rendering
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <HelmetProvider>
-        <App />
+        <Suspense fallback={<LoadingFallback />}>
+          <App />
+        </Suspense>
       </HelmetProvider>
     </BrowserRouter>
   </React.StrictMode>

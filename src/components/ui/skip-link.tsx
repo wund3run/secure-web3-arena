@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useCallback, memo } from "react";
 import { cn } from "@/lib/utils";
 
 interface SkipLinkProps {
@@ -7,37 +7,45 @@ interface SkipLinkProps {
   className?: string;
 }
 
-export function SkipLink({ targetId, className }: SkipLinkProps) {
+export const SkipLink = memo(function SkipLink({ targetId, className }: SkipLinkProps) {
   const [focused, setFocused] = useState(false);
   
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     const targetElement = document.getElementById(targetId);
     
     if (targetElement) {
-      // If the element isn't normally focusable, we need to make it so
+      // Make element focusable if needed
       if (!targetElement.hasAttribute('tabindex')) {
         targetElement.setAttribute('tabindex', '-1');
       }
       
-      // Focus the element
-      targetElement.focus();
-      
-      // Scroll into view if needed
-      targetElement.scrollIntoView({ behavior: 'smooth' });
+      // Use requestAnimationFrame for better performance
+      requestAnimationFrame(() => {
+        // Focus the element
+        targetElement.focus();
+        
+        // Smooth scroll
+        targetElement.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      });
       
       // For screen readers, announce that focus has moved
       const announcer = document.createElement('div');
       announcer.setAttribute('aria-live', 'polite');
-      announcer.textContent = `Navigated to ${targetElement.tagName.toLowerCase()}`;
+      announcer.textContent = `Navigated to ${targetElement.getAttribute('aria-label') || targetElement.tagName.toLowerCase()}`;
       document.body.appendChild(announcer);
       
-      // Clean up
+      // Clean up announcer after announcement is likely complete
       setTimeout(() => {
-        document.body.removeChild(announcer);
+        if (document.body.contains(announcer)) {
+          document.body.removeChild(announcer);
+        }
       }, 1000);
     }
-  };
+  }, [targetId]);
   
   return (
     <a 
@@ -54,4 +62,4 @@ export function SkipLink({ targetId, className }: SkipLinkProps) {
       Skip to main content
     </a>
   );
-}
+});
