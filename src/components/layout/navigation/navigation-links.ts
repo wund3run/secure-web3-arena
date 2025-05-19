@@ -1,5 +1,5 @@
 
-import { NavigationLinksStructure, NavigationLinkItem } from "./navigation-links";
+import { NavigationLinksStructure, NavigationLinkItem } from "./navigation-links.tsx";
 
 export const navigationLinks: NavigationLinksStructure = {
   marketplace: [

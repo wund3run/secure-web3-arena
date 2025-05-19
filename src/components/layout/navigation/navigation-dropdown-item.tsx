@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import {
@@ -8,7 +7,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-import { NavigationLinkItem } from "./navigation-links";
+import { NavigationLinkItem } from "./navigation-links.tsx";
 
 interface NavigationDropdownItemProps {
   title: string;
