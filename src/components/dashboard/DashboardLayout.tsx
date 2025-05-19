@@ -8,6 +8,9 @@ import LoadingState from '@/components/ui/loading-state';
 import { AuditorDashboardConfig } from './configs/AuditorDashboardConfig';
 import { ProjectOwnerDashboardConfig } from './configs/ProjectOwnerDashboardConfig';
 import { UserStats } from './stats/UserStats';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Activity } from 'lucide-react';
 
 export function DashboardLayout() {
   const { user, loading, userProfile } = useAuth();
@@ -37,7 +40,15 @@ export function DashboardLayout() {
                 : 'Manage your projects, track audit progress and security metrics.'}
             </p>
           </div>
-          <UserStats userType={userType} />
+          <div className="flex items-center gap-3">
+            <Link to="/user-journey-mapping">
+              <Button variant="outline" size="sm" className="flex items-center gap-1">
+                <Activity className="h-4 w-4" />
+                User Journey Map
+              </Button>
+            </Link>
+            <UserStats userType={userType} />
+          </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>

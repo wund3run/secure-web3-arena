@@ -64,7 +64,8 @@ const extractRoutesFromApp = (): string[] => {
     "/knowledge-base",
     "/templates",
     "/guides",
-    "/tutorials"
+    "/tutorials",
+    "/user-journey-mapping"
   ];
 };
 
@@ -100,7 +101,11 @@ export const getFallbackRoute = (path: string): string => {
     "/tutorials": "/tutorials",
     "/tutorial": "/tutorials",
     "/video": "/tutorials",
-    "/videos": "/tutorials"
+    "/videos": "/tutorials",
+    "/user-journey": "/user-journey-mapping",
+    "/journey": "/user-journey-mapping",
+    "/journey-map": "/user-journey-mapping",
+    "/user-path": "/user-journey-mapping"
   };
   
   return fallbacks[path] || "/";
@@ -117,8 +122,8 @@ export const getRouteType = (path: string): string => {
   if (path.includes('/marketplace') || path === '/') return 'marketplace';
   if (path.includes('/audit')) return 'audit';
   if (path.includes('/dashboard')) return 'dashboard';
+  if (path.includes('/user-journey')) return 'planning';
   if (['/resources', '/docs', '/blog', '/web3-security', '/guides', '/tutorials', '/knowledge-base', '/faq', '/templates'].includes(path)) return 'educational';
   
   return 'general';
 };
-

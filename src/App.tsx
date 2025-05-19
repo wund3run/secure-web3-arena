@@ -33,6 +33,7 @@ import ServiceProviderOnboarding from './pages/ServiceProviderOnboarding';
 import SubmitService from './pages/SubmitService';
 import Escrow from './pages/Escrow';
 import SecurityInsights from './pages/SecurityInsights';
+import UserJourneyMapping from './pages/UserJourneyMapping';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -89,6 +90,7 @@ function App() {
         <Route path="/submit-service" element={<SubmitService />} />
         <Route path="/escrow" element={<Escrow />} />
         <Route path="/security-insights" element={<SecurityInsights />} />
+        <Route path="/user-journey-mapping" element={<UserJourneyMapping />} />
         
         {/* Admin Routes */}
         <Route path="/admin" element={<AdminDashboard />} />
