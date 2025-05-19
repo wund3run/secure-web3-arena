@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { usePlatformValidator } from "@/utils/validation";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -206,25 +205,25 @@ export function AccessibilityReport() {
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-center">
                 <span className="text-sm">Accessibility</span>
-                <Badge variant={accessibilityIssues.length > 0 ? "destructive" : "outline"}>
+                <Badge variant={accessibilityIssues.length > 0 ? "destructive" : "secondary"}>
                   {accessibilityIssues.length}
                 </Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">Performance</span>
-                <Badge variant={performanceIssues.length > 0 ? "destructive" : "outline"}>
+                <Badge variant={performanceIssues.length > 0 ? "destructive" : "secondary"}>
                   {performanceIssues.length}
                 </Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">Design & UI</span>
-                <Badge variant={designIssues.length > 0 ? "destructive" : "outline"}>
+                <Badge variant={designIssues.length > 0 ? "destructive" : "secondary"}>
                   {designIssues.length}
                 </Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">Content & Navigation</span>
-                <Badge variant={contentIssues.length > 0 ? "destructive" : "outline"}>
+                <Badge variant={contentIssues.length > 0 ? "destructive" : "secondary"}>
                   {contentIssues.length}
                 </Badge>
               </div>
