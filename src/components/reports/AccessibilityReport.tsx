@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { usePlatformValidator } from "@/utils/validation";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -65,7 +64,7 @@ export function AccessibilityReport() {
     }, 1500);
   };
   
-  // Generate issue list component for a tab
+  // Get issue list component for a tab
   const IssueList = ({ issues }: { issues: ValidationIssue[] }) => {
     if (issues.length === 0) {
       return (
@@ -90,7 +89,7 @@ export function AccessibilityReport() {
               Location: {issue.location}
             </p>
             {issue.suggestion && (
-              <Alert variant="secondary" className="mt-2">
+              <Alert variant="default" className="mt-2">
                 <AlertTitle className="text-sm font-medium">Recommendation</AlertTitle>
                 <AlertDescription className="text-sm">
                   {issue.suggestion}
