@@ -10,6 +10,7 @@ export type ValidationIssue = {
   location: string;
   suggestion?: string;
   affectedStakeholders?: ('auditor' | 'project-owner' | 'admin' | 'general')[];
+  wcagCriterion?: string; // Added this property for accessibility validation
 };
 
 export type ValidationResult = {

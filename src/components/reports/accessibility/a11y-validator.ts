@@ -80,7 +80,7 @@ export const reportAccessibilityIssues = (issues: ValidationIssue[]): void => {
  */
 export const createValidationIssue = (
   description: string,
-  type: string,
+  type: 'route' | 'link' | 'ui' | 'responsive' | 'styling' | 'interactive' | 'accessibility' | 'design' | 'navigation' | 'content' | 'performance' | 'seo',
   severity: "high" | "medium" | "low",
   location: string,
   suggestion?: string,
