@@ -22,7 +22,7 @@ export const MetricItem: React.FC<MetricItemProps> = ({
   const isGoodValue = isGood !== undefined 
     ? isGood 
     : threshold !== undefined 
-      ? typeof value === 'number' && value !== null
+      ? typeof value === 'number'
         ? (threshold ? value <= threshold : value >= threshold)
         : true
       : true;
