@@ -1,12 +1,10 @@
 
-import React, { lazy, Suspense } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import "./index.css";
-
-// Lazy load the App component for faster initial rendering
-const App = lazy(() => import("./App"));
+import App from "./App"; // Direct import instead of lazy loading
 
 // Optimized lightweight loading fallback
 const LoadingFallback = () => (
@@ -26,9 +24,6 @@ if (process.env.NODE_ENV === 'production') {
         const metricName = metric.name.toUpperCase();
         const value = Math.round(metric.value);
         console.debug(`[Perf] ${metricName}: ${value}ms`);
-        
-        // Send to analytics in production (commented for future implementation)
-        // sendToAnalytics({ name: metric.name, value, rating: metric.rating });
       };
       
       // Spread out metric calculations to avoid layout thrashing
@@ -51,9 +46,7 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <HelmetProvider>
-        <Suspense fallback={<LoadingFallback />}>
-          <App />
-        </Suspense>
+        <App />
       </HelmetProvider>
     </BrowserRouter>
   </React.StrictMode>
