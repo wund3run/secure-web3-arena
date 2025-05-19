@@ -3,9 +3,16 @@ import React, { useState } from "react";
 import { roadmapPhases } from "./roadmapData";
 import { PhaseCard } from "./PhaseCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowRight, CheckCircle, Clock } from "lucide-react";
 
 export function RoadmapTimeline() {
   const [activePhase, setActivePhase] = useState("1");
+
+  const getPhaseIcon = (progress: number) => {
+    if (progress === 100) return <CheckCircle className="h-4 w-4 text-green-500" />;
+    if (progress > 0) return <Clock className="h-4 w-4 text-blue-500" />;
+    return <ArrowRight className="h-4 w-4 text-gray-500" />;
+  };
 
   return (
     <div className="mb-16">
@@ -17,15 +24,18 @@ export function RoadmapTimeline() {
           onValueChange={setActivePhase}
           className="w-full"
         >
-          <TabsList className="grid grid-cols-4 mb-8">
+          <TabsList className="grid grid-cols-2 lg:grid-cols-4 mb-8">
             {roadmapPhases.map((phase) => (
               <TabsTrigger 
                 key={phase.id} 
                 value={phase.id.toString()}
                 className="flex flex-col gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               >
-                <span className="hidden md:block">{phase.title}</span>
-                <span className="md:hidden">Phase {phase.id}</span>
+                <div className="flex items-center gap-2">
+                  <span className="hidden md:inline-flex">{phase.title.split(":")[0]}</span>
+                  <span className="md:hidden">Phase {phase.id}</span>
+                  {getPhaseIcon(phase.progress)}
+                </div>
                 <span className="text-xs text-muted-foreground data-[state=active]:text-primary-foreground">
                   {phase.progress}% Complete
                 </span>
