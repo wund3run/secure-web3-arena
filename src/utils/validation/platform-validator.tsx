@@ -83,7 +83,7 @@ export function usePlatformValidator() {
     // Check for buttons without handlers
     const buttons = document.querySelectorAll('button:not([type="submit"])');
     buttons.forEach(button => {
-      if (!button.onclick && !button.getAttribute('data-test-has-handler')) {
+      if (!button.onClick && !button.getAttribute('data-test-has-handler')) {
         pageIssues.push({
           type: 'interactive',
           severity: 'medium',

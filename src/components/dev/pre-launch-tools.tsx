@@ -121,7 +121,8 @@ export function PreLaunchTools() {
 
       {/* CSS for responsive preview */}
       {showTools && (
-        <style jsx>{`
+        <style>
+          {`
           .responsive-preview-mobile {
             max-width: 480px;
             margin: 0 auto;
@@ -136,7 +137,8 @@ export function PreLaunchTools() {
             border-right: 24px solid #333;
             border-radius: 16px;
           }
-        `}</style>
+          `}
+        </style>
       )}
     </>
   );

@@ -17,7 +17,7 @@ export const routeExists = (path: string): boolean => {
  * Extract all available routes from App component
  * @returns Array of route paths
  */
-const extractRoutesFromApp = (): string[] => {
+export const extractRoutesFromApp = (): string[] => {
   // This is a static list of all available routes in the application
   // Extracted from App.tsx
   return [
