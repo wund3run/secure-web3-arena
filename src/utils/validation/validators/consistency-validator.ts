@@ -9,14 +9,14 @@ export const validateConsistency = (pathname: string): ValidationIssue[] => {
   
   // Check for consistent heading hierarchy
   const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
-  const headingLevels = new Set();
+  const headingLevels = new Set<number>();
   headings.forEach(heading => {
     const level = parseInt(heading.tagName.substring(1));
     headingLevels.add(level);
   });
   
   // Check if there are gaps in heading levels (e.g., h1 -> h3 without h2)
-  const levels = Array.from(headingLevels).sort();
+  const levels = Array.from(headingLevels).sort((a, b) => a - b);
   for (let i = 1; i < levels.length; i++) {
     if (levels[i] - levels[i-1] > 1) {
       consistencyIssues.push({

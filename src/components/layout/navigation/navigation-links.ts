@@ -1,6 +1,9 @@
 
 import { NavigationLinksStructure, NavigationLinkItem } from "./navigation-links.tsx";
 
+/**
+ * Navigation links for the platform header
+ */
 export const navigationLinks: NavigationLinksStructure = {
   marketplace: [
     { title: "Browse Services", href: "/marketplace", description: "Find security services for your project" },
