@@ -1,129 +1,92 @@
 
-import { Route } from "react-router-dom";
-import App from "@/App";
-
 /**
- * Utility to check if a route exists in the application
- * @param path The path to check
- * @returns boolean indicating if the route exists
+ * Navigation utility functions
  */
-export const routeExists = (path: string): boolean => {
-  // Extract all routes from App.tsx
-  const routes = extractRoutesFromApp();
-  return routes.includes(path);
-};
 
 /**
- * Extract all available routes from App component
- * @returns Array of route paths
+ * Extract routes from the application
+ * This would ideally be generated from your router configuration
+ * For now, we'll just return a static array of known routes
  */
 export const extractRoutesFromApp = (): string[] => {
-  // This is a static list of all available routes in the application
-  // Extracted from App.tsx
   return [
     "/",
-    "/marketplace",
-    "/service/:id",
     "/auth",
-    "/auth/callback",
-    "/auth/2fa",
     "/dashboard",
+    "/dashboard/auditor",
+    "/dashboard/project",
+    "/dashboard/settings",
+    "/dashboard/analytics",
+    "/marketplace",
+    "/services/new",
+    "/audits/find",
+    "/audits/types",
+    "/audits/reports",
     "/request-audit",
-    "/request-audit/:serviceId",
-    "/contact",
-    "/audit/:id",
-    "/audits",
-    "/contact-provider/:id",
     "/pricing",
-    "/stats",
-    "/resources",
-    "/ai-tools",
-    "/support",
-    "/leaderboard",
-    "/achievements",
-    "/community",
-    "/application-submitted",
-    "/audit-guidelines",
-    "/service-provider-onboarding",
-    "/submit-service",
-    "/escrow",
-    "/security-insights",
-    "/admin",
-    "/admin/login",
-    "/terms",
-    "/privacy",
-    "/security-policy",
     "/docs",
     "/blog",
+    "/platform-report",
     "/forum",
-    "/events",
-    "/challenges",
-    "/vulnerabilities",
-    "/web3-security",
-    "/faq",
-    "/knowledge-base",
-    "/templates",
-    "/guides",
-    "/tutorials",
-    "/roadmap" 
+    "/resources",
+    "/terms",
+    "/privacy",
+    "/audit-guidelines",
+    "/security-policy",
+    "/contact"
   ];
 };
 
 /**
- * Get a fallback route if the provided route doesn't exist
- * @param path The path to check
- * @returns A valid route path
+ * Check if a route exists in the application
  */
-export const getFallbackRoute = (path: string): string => {
-  if (routeExists(path)) {
-    return path;
+export const routeExists = (path: string): boolean => {
+  const validRoutes = extractRoutesFromApp();
+  
+  // Direct match
+  if (validRoutes.includes(path)) {
+    return true;
   }
   
-  // Enhanced mapping for common patterns
-  const fallbacks: Record<string, string> = {
-    "/security-insights": "/web3-security",
-    "/learning": "/resources",
-    "/documentation": "/docs",
-    "/education": "/resources",
-    "/help": "/support",
-    "/news": "/blog",
-    "/learn": "/resources",
-    "/providers": "/marketplace",
-    "/security": "/web3-security",
-    "/articles": "/blog",
-    "/guides": "/guides",
-    "/faq": "/faq",
-    "/knowledge-base": "/knowledge-base",
-    "/kb": "/knowledge-base",
-    "/knowledge": "/knowledge-base",
-    "/templates": "/templates",
-    "/template": "/templates",
-    "/tutorials": "/tutorials",
-    "/tutorial": "/tutorials",
-    "/video": "/tutorials",
-    "/videos": "/tutorials",
-    "/product-roadmap": "/roadmap",
-    "/future": "/roadmap",
-    "/upcoming": "/roadmap",
-    "/plan": "/roadmap"
-  };
-  
-  return fallbacks[path] || "/";
+  // Check for dynamic routes
+  return validRoutes.some(route => {
+    if (!route.includes(':')) return false;
+    
+    const routeParts = route.split('/');
+    const pathParts = path.split('/');
+    
+    if (routeParts.length !== pathParts.length) return false;
+    
+    return routeParts.every((part, index) => {
+      if (part.startsWith(':')) return true; // Dynamic part
+      return part === pathParts[index];
+    });
+  });
 };
 
 /**
- * Get the type/category of a route for analytics purposes
- * @param path The path to analyze
- * @returns The route category
+ * Get a fallback route if a route doesn't exist
  */
-export const getRouteType = (path: string): string => {
-  if (path.includes('/admin')) return 'admin';
-  if (path.includes('/auth')) return 'auth';
-  if (path.includes('/marketplace') || path === '/') return 'marketplace';
-  if (path.includes('/audit')) return 'audit';
-  if (path.includes('/dashboard')) return 'dashboard';
-  if (path.includes('/roadmap')) return 'planning';
-  if (['/resources', '/docs', '/blog', '/web3-security', '/guides', '/tutorials', '/knowledge-base', '/faq', '/templates'].includes(path)) return 'educational';
+export const getFallbackRoute = (path: string): string => {
+  // Try to find a similar route - strip trailing slashes
+  const normalizedPath = path.endsWith('/') ? path.slice(0, -1) : path;
+  const routes = extractRoutesFromApp();
   
-  return 'general';
+  // Check if normalized path exists
+  if (routes.includes(normalizedPath)) {
+    return normalizedPath;
+  }
+  
+  // Try to find a parent path
+  const pathParts = normalizedPath.split('/');
+  while (pathParts.length > 1) {
+    pathParts.pop();
+    const parentPath = pathParts.join('/') || '/';
+    if (routes.includes(parentPath)) {
+      return parentPath;
+    }
+  }
+  
+  // Default fallback is home
+  return '/';
 };

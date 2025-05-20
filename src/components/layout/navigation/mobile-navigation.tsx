@@ -1,11 +1,11 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { type NavigationLinksStructure } from "./navigation-links.tsx";
-import { FocusTrap } from "@/components/ui/focus-trap";
+import { Link } from "react-router-dom";
+import { NavigationLinksStructure } from "./navigation-links";
+import { useAccessibility } from "@/contexts/AccessibilityContext";
 
 interface MobileNavigationProps {
   navigationLinks: NavigationLinksStructure;
@@ -18,179 +18,130 @@ interface MobileNavigationProps {
 export function MobileNavigation({ 
   navigationLinks, 
   isOpen, 
-  setIsOpen, 
-  isAuthenticated, 
-  onSignOut 
+  setIsOpen,
+  isAuthenticated,
+  onSignOut
 }: MobileNavigationProps) {
+  const { largeText, reducedMotion } = useAccessibility();
+  
+  // Set up keyboard shortcut for mobile menu
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Alt+M to toggle mobile menu
+      if (e.altKey && e.key === 'm') {
+        e.preventDefault();
+        setIsOpen(!isOpen);
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, setIsOpen]);
+  
+  const textSizeClass = largeText ? "text-lg" : "text-base";
+  const headingClass = largeText ? "text-xl mb-2" : "text-lg mb-1";
+  
+  const renderLinkSection = (title: string, links: typeof navigationLinks.marketplace) => (
+    <div className="py-4">
+      <h3 className={`font-medium ${headingClass}`}>{title}</h3>
+      <div className="grid grid-cols-1 gap-2">
+        {links.map((item) => (
+          <Link 
+            key={item.href}
+            to={item.href}
+            className={`p-2 hover:bg-accent rounded-md ${textSizeClass}`}
+            onClick={() => setIsOpen(false)}
+          >
+            <div className="flex justify-between items-center">
+              <span>{item.title}</span>
+              {item.badge && (
+                <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary text-primary-foreground">
+                  {item.badge}
+                </span>
+              )}
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+  
   return (
-    <div className="flex md:hidden">
+    <div className="md:hidden">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
           <Button 
             variant="ghost" 
-            size="icon" 
-            aria-label={isOpen ? "Close menu" : "Open menu"}
-            aria-expanded={isOpen}
-            aria-controls="mobile-menu"
+            size="icon"
+            aria-label="Menu"
+            className="md:hidden"
           >
-            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            <Menu className="h-5 w-5" />
+            <span className="sr-only">Toggle menu</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="right" className="w-[300px]" id="mobile-menu">
-          <FocusTrap active={isOpen} onEscape={() => setIsOpen(false)}>
-            <div className="flex flex-col gap-6 py-6">
-              {/* Mobile Menu Content */}
-              <div className="space-y-4">
-                <div className="border-b pb-2">
-                  <h3 className="font-medium mb-2" id="mobile-marketplace-heading">Marketplace</h3>
-                  <nav aria-labelledby="mobile-marketplace-heading">
-                    <ul className="space-y-2">
-                      {navigationLinks.marketplace.map((item) => (
-                        <li key={item.href}>
-                          <Link 
-                            to={item.href} 
-                            className="block py-2 text-sm hover:text-primary transition-colors relative group" 
-                            onClick={() => setIsOpen(false)}
-                            aria-label={item.title}
-                          >
-                            <span className="relative">
-                              {item.title}
-                              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                            </span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </nav>
-                </div>
-                
-                <div className="border-b pb-2">
-                  <h3 className="font-medium mb-2" id="mobile-audits-heading">Audits</h3>
-                  <nav aria-labelledby="mobile-audits-heading">
-                    <ul className="space-y-2">
-                      {navigationLinks.audits.map((item) => (
-                        <li key={item.href}>
-                          <Link 
-                            to={item.href} 
-                            className="block py-2 text-sm hover:text-primary transition-colors relative group" 
-                            onClick={() => setIsOpen(false)}
-                            aria-label={item.badge ? `${item.title} (${item.badge})` : item.title}
-                          >
-                            <div className="flex items-center relative">
-                              <span>{item.title}</span>
-                              {item.badge && (
-                                <span 
-                                  className="ml-2 px-1.5 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full"
-                                  aria-hidden="true"
-                                >
-                                  {item.badge}
-                                </span>
-                              )}
-                              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                            </div>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </nav>
-                </div>
-                
-                <div className="border-b pb-2">
-                  <h3 className="font-medium mb-2" id="mobile-resources-heading">Resources</h3>
-                  <nav aria-labelledby="mobile-resources-heading">
-                    <ul className="space-y-2">
-                      {navigationLinks.resources.map((item) => (
-                        <li key={item.href}>
-                          <Link 
-                            to={item.href} 
-                            className="block py-2 text-sm hover:text-primary transition-colors relative group" 
-                            onClick={() => setIsOpen(false)}
-                            aria-label={item.badge ? `${item.title} (${item.badge})` : item.title}
-                          >
-                            <div className="flex items-center relative">
-                              <span>{item.title}</span>
-                              {item.badge && (
-                                <span 
-                                  className="ml-2 px-1.5 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full"
-                                  aria-hidden="true"
-                                >
-                                  {item.badge}
-                                </span>
-                              )}
-                              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                            </div>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </nav>
-                </div>
-                
-                <div>
-                  <Link 
-                    to="/pricing" 
-                    className="block py-2 font-medium hover:text-primary transition-colors relative group"
-                    onClick={() => setIsOpen(false)}
-                    aria-label="View pricing plans"
+        <SheetContent 
+          side="left" 
+          className="w-[85vw] max-w-sm overflow-y-auto"
+          style={{
+            transition: reducedMotion ? 'none' : undefined
+          }}
+        >
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-bold">Menu</h2>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => setIsOpen(false)}
+              aria-label="Close menu"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+          
+          <div className="mt-8 flex flex-col gap-6">
+            {renderLinkSection("Marketplace", navigationLinks.marketplace)}
+            {renderLinkSection("Audits", navigationLinks.audits)}
+            {renderLinkSection("Resources", navigationLinks.resources)}
+            
+            {isAuthenticated && (
+              <>
+                {renderLinkSection("Dashboard", navigationLinks.dashboards)}
+                <div className="pt-4 border-t">
+                  <Button 
+                    className="w-full" 
+                    variant="destructive"
+                    onClick={() => {
+                      onSignOut();
+                      setIsOpen(false);
+                    }}
                   >
-                    <span className="relative">
-                      Pricing
-                      <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                    </span>
-                  </Link>
+                    Sign Out
+                  </Button>
                 </div>
+              </>
+            )}
+            
+            {!isAuthenticated && (
+              <div className="pt-4 border-t space-y-4">
+                <Button 
+                  className="w-full" 
+                  variant="outline"
+                  asChild
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Link to="/auth?mode=login">Sign In</Link>
+                </Button>
+                <Button 
+                  className="w-full" 
+                  asChild
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Link to="/auth?mode=signup">Sign Up</Link>
+                </Button>
               </div>
-              
-              {/* Mobile Auth Buttons */}
-              <div className="space-y-2 pt-4 border-t" role="navigation" aria-label="Authentication">
-                {!isAuthenticated ? (
-                  <>
-                    <Button variant="outline" className="w-full" asChild>
-                      <Link 
-                        to="/auth" 
-                        onClick={() => setIsOpen(false)}
-                        aria-label="Sign in to your account"
-                      >
-                        Sign In
-                      </Link>
-                    </Button>
-                    <Button className="w-full" asChild>
-                      <Link 
-                        to="/service-provider-onboarding" 
-                        onClick={() => setIsOpen(false)}
-                        aria-label="Join as an auditor"
-                      >
-                        Join as Auditor
-                      </Link>
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button variant="outline" className="w-full" asChild>
-                      <Link 
-                        to="/dashboard" 
-                        onClick={() => setIsOpen(false)}
-                        aria-label="Go to your dashboard"
-                      >
-                        Dashboard
-                      </Link>
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      className="w-full"
-                      onClick={() => {
-                        onSignOut();
-                        setIsOpen(false);
-                      }}
-                      aria-label="Sign out of your account"
-                    >
-                      Sign Out
-                    </Button>
-                  </>
-                )}
-              </div>
-            </div>
-          </FocusTrap>
+            )}
+          </div>
         </SheetContent>
       </Sheet>
     </div>

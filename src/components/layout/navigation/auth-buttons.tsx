@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogIn, User, LogOut } from "lucide-react";
+import { useAccessibility } from "@/contexts/AccessibilityContext";
 
 interface AuthButtonsProps {
   isAuthenticated: boolean;
@@ -10,48 +10,45 @@ interface AuthButtonsProps {
 }
 
 export function AuthButtons({ isAuthenticated, onSignOut }: AuthButtonsProps) {
+  const { reducedMotion, keyboardMode } = useAccessibility();
+  
+  const buttonStyles = {
+    transition: reducedMotion ? 'none' : undefined,
+    ...(keyboardMode ? { outline: 'none' } : {})
+  };
+  
+  if (isAuthenticated) {
+    return (
+      <div className="hidden md:flex items-center space-x-4">
+        <Button asChild variant="outline" style={buttonStyles}>
+          <Link to="/dashboard" aria-label="Access your dashboard">
+            Dashboard
+          </Link>
+        </Button>
+        <Button 
+          variant="destructive" 
+          onClick={onSignOut}
+          style={buttonStyles}
+          aria-label="Sign out from your account"
+        >
+          Sign Out
+        </Button>
+      </div>
+    );
+  }
+  
   return (
-    <div className="hidden md:flex items-center justify-end space-x-2" role="navigation" aria-label="Authentication">
-      {!isAuthenticated ? (
-        <>
-          <Button variant="outline" asChild className="relative group">
-            <Link to="/auth" aria-label="Sign in to your account" className="relative">
-              <LogIn className="mr-2 h-4 w-4" />
-              Sign In
-              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full rounded-full"></span>
-            </Link>
-          </Button>
-          <Button asChild className="relative overflow-hidden">
-            <Link to="/service-provider-onboarding" aria-label="Join as an auditor" className="relative">
-              <User className="mr-2 h-4 w-4" />
-              Join as Auditor
-              <span className="absolute inset-0 bg-white/20 opacity-0 transition-opacity duration-300 hover:opacity-100"></span>
-            </Link>
-          </Button>
-        </>
-      ) : (
-        <>
-          <Button variant="outline" asChild className="relative group">
-            <Link to="/dashboard" aria-label="Go to your dashboard" className="relative">
-              <User className="mr-2 h-4 w-4" />
-              Dashboard
-              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full rounded-full"></span>
-            </Link>
-          </Button>
-          <Button 
-            variant="ghost" 
-            onClick={onSignOut}
-            aria-label="Sign out of your account"
-            className="relative group"
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            <span className="relative">
-              Sign Out
-              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full rounded-full"></span>
-            </span>
-          </Button>
-        </>
-      )}
+    <div className="hidden md:flex items-center space-x-4">
+      <Button asChild variant="outline" style={buttonStyles}>
+        <Link to="/auth?mode=login" aria-label="Sign in to your account">
+          Sign In
+        </Link>
+      </Button>
+      <Button asChild style={buttonStyles}>
+        <Link to="/auth?mode=signup" aria-label="Create a new account">
+          Sign Up
+        </Link>
+      </Button>
     </div>
   );
 }
