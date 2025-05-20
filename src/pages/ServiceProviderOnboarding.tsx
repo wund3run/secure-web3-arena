@@ -22,6 +22,7 @@ const ServiceProviderOnboarding = () => {
           name="description"
           content="Join Hawkly's elite network of security service providers and auditors. Get matched with ideal projects and grow your Web3 security business."
         />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Helmet>
       <Navbar />
       <main className="min-h-screen bg-gradient-to-br from-white via-primary/5 to-secondary/5 pt-10 pb-16">
@@ -37,12 +38,12 @@ const ServiceProviderOnboarding = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
-            <div className="lg:col-span-5">
+            <div className="lg:col-span-5 order-2 lg:order-1">
               <OnboardingBenefits />
             </div>
             
-            <div className="lg:col-span-7">
-              <div className="bg-white/80 backdrop-blur-md rounded-xl shadow-xl border border-border/40 p-6">
+            <div className="lg:col-span-7 order-1 lg:order-2">
+              <div className="bg-white/80 backdrop-blur-md rounded-xl shadow-xl border border-border/40 p-4 sm:p-6">
                 <Tabs defaultValue={activeTab} onValueChange={handleTabChange} className="mb-8">
                   <TabsList className="grid grid-cols-2 w-full">
                     <TabsTrigger value="auditor">Independent Auditor</TabsTrigger>
@@ -62,7 +63,7 @@ const ServiceProviderOnboarding = () => {
                   </TabsContent>
                 </Tabs>
 
-                <ServiceProviderOnboardingForm />
+                <ServiceProviderOnboardingForm providerType={activeTab} />
               </div>
             </div>
           </div>

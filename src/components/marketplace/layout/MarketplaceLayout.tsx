@@ -16,7 +16,7 @@ export function MarketplaceLayout({ children }: MarketplaceLayoutProps) {
       <div className="flex-grow">
         <main 
           id="marketplace-content" 
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8"
           tabIndex={-1}
         >
           {children}

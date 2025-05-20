@@ -50,7 +50,7 @@ export function MobileFriendlyCard({
   
   return (
     <Card 
-      className="overflow-hidden h-full flex flex-col interactive-card border-border/30 hover:border-primary/20 transition-all duration-300 group"
+      className="overflow-hidden h-full flex flex-col interactive-card border-border/30 hover:border-primary/20 transition-all duration-300 group relative"
       id={cardId}
     >
       <MobileCardImage 
@@ -71,7 +71,7 @@ export function MobileFriendlyCard({
         />
       </CardContent>
       
-      <CardFooter className="p-4 pt-0 flex-shrink-0 justify-between items-center">
+      <CardFooter className="p-4 pt-0 flex-shrink-0 justify-between items-center border-t border-border/10 mt-auto">
         <MobileCardFooter 
           pricing={pricing} 
           completedJobs={completedJobs} 

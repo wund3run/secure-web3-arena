@@ -48,24 +48,29 @@ export function MobileNavigation({
             aria-label={isOpen ? "Close menu" : "Open menu"}
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
+            className="relative focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
           >
             {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
         </SheetTrigger>
-        <SheetContent side="right" className="w-[300px]" id="mobile-menu">
+        <SheetContent 
+          side="right" 
+          className="w-[85vw] max-w-[300px] sm:max-w-sm p-0" 
+          id="mobile-menu"
+        >
           <FocusTrap active={isOpen} onEscape={() => setIsOpen(false)}>
-            <div className="flex flex-col gap-6 py-6">
+            <div className="flex flex-col gap-4 py-6 h-full overflow-y-auto">
               {/* Mobile Menu Content */}
-              <div className="space-y-4">
+              <div className="space-y-2 px-4">
                 <div className="border-b pb-2">
                   <h3 className="font-medium mb-2" id="mobile-marketplace-heading">Marketplace</h3>
                   <nav aria-labelledby="mobile-marketplace-heading">
-                    <ul className="space-y-2">
+                    <ul className="space-y-1">
                       {navigationLinks.marketplace.map((item) => (
                         <li key={item.href}>
                           <Link 
                             to={item.href} 
-                            className="block py-2 text-sm hover:text-primary transition-colors relative group" 
+                            className="block py-2 text-sm hover:text-primary transition-colors relative group w-full text-left px-2 rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30" 
                             onClick={() => setIsOpen(false)}
                             aria-label={item.title}
                           >
@@ -80,29 +85,28 @@ export function MobileNavigation({
                   </nav>
                 </div>
                 
-                <div className="border-b pb-2">
+                <div className="border-b pb-2 pt-2">
                   <h3 className="font-medium mb-2" id="mobile-audits-heading">Audits</h3>
                   <nav aria-labelledby="mobile-audits-heading">
-                    <ul className="space-y-2">
+                    <ul className="space-y-1">
                       {navigationLinks.audits.map((item) => (
                         <li key={item.href}>
                           <Link 
                             to={item.href} 
-                            className="block py-2 text-sm hover:text-primary transition-colors relative group" 
+                            className="block py-2 text-sm hover:text-primary transition-colors relative group w-full text-left px-2 rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
                             onClick={() => setIsOpen(false)}
                             aria-label={item.badge ? `${item.title} (${item.badge})` : item.title}
                           >
-                            <div className="flex items-center relative">
+                            <div className="flex items-center justify-between relative">
                               <span>{item.title}</span>
                               {item.badge && (
                                 <span 
-                                  className="ml-2 px-1.5 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full"
+                                  className="px-1.5 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full"
                                   aria-hidden="true"
                                 >
                                   {item.badge}
                                 </span>
                               )}
-                              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                             </div>
                           </Link>
                         </li>
@@ -111,29 +115,28 @@ export function MobileNavigation({
                   </nav>
                 </div>
                 
-                <div className="border-b pb-2">
+                <div className="border-b pb-2 pt-2">
                   <h3 className="font-medium mb-2" id="mobile-resources-heading">Resources</h3>
                   <nav aria-labelledby="mobile-resources-heading">
-                    <ul className="space-y-2">
+                    <ul className="space-y-1">
                       {navigationLinks.resources.map((item) => (
                         <li key={item.href}>
                           <Link 
                             to={item.href} 
-                            className="block py-2 text-sm hover:text-primary transition-colors relative group" 
+                            className="block py-2 text-sm hover:text-primary transition-colors relative group w-full text-left px-2 rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
                             onClick={() => setIsOpen(false)}
                             aria-label={item.badge ? `${item.title} (${item.badge})` : item.title}
                           >
-                            <div className="flex items-center relative">
+                            <div className="flex items-center justify-between relative">
                               <span>{item.title}</span>
                               {item.badge && (
                                 <span 
-                                  className="ml-2 px-1.5 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full"
+                                  className="px-1.5 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full"
                                   aria-hidden="true"
                                 >
                                   {item.badge}
                                 </span>
                               )}
-                              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                             </div>
                           </Link>
                         </li>
@@ -143,31 +146,30 @@ export function MobileNavigation({
                 </div>
 
                 {isAuthenticated && dashboardLinks.length > 0 && (
-                  <div className="border-b pb-2">
+                  <div className="border-b pb-2 pt-2">
                     <h3 className="font-medium mb-2" id="mobile-dashboard-heading">
                       {isAuditor ? "Auditor Hub" : "Project Hub"}
                     </h3>
                     <nav aria-labelledby="mobile-dashboard-heading">
-                      <ul className="space-y-2">
+                      <ul className="space-y-1">
                         {dashboardLinks.map((item) => (
                           <li key={item.href}>
                             <Link 
                               to={item.href} 
-                              className="block py-2 text-sm hover:text-primary transition-colors relative group" 
+                              className="block py-2 text-sm hover:text-primary transition-colors relative group w-full text-left px-2 rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
                               onClick={() => setIsOpen(false)}
                               aria-label={item.badge ? `${item.title} (${item.badge})` : item.title}
                             >
-                              <div className="flex items-center relative">
+                              <div className="flex items-center justify-between relative">
                                 <span>{item.title}</span>
                                 {item.badge && (
                                   <span 
-                                    className="ml-2 px-1.5 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full"
+                                    className="px-1.5 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full"
                                     aria-hidden="true"
                                   >
                                     {item.badge}
                                   </span>
                                 )}
-                                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                               </div>
                             </Link>
                           </li>
@@ -177,10 +179,10 @@ export function MobileNavigation({
                   </div>
                 )}
                 
-                <div>
+                <div className="pt-2">
                   <Link 
                     to="/pricing" 
-                    className="block py-2 font-medium hover:text-primary transition-colors relative group"
+                    className="block py-2 font-medium hover:text-primary transition-colors relative group px-2 rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
                     onClick={() => setIsOpen(false)}
                     aria-label="View pricing plans"
                   >
@@ -193,10 +195,10 @@ export function MobileNavigation({
               </div>
               
               {/* Mobile Auth Buttons */}
-              <div className="space-y-2 pt-4 border-t" role="navigation" aria-label="Authentication">
+              <div className="mt-auto space-y-2 pt-4 px-4 border-t" role="navigation" aria-label="Authentication">
                 {!isAuthenticated ? (
                   <>
-                    <Button variant="outline" className="w-full" asChild>
+                    <Button variant="outline" className="w-full justify-center h-10" asChild>
                       <Link 
                         to="/auth" 
                         onClick={() => setIsOpen(false)}
@@ -205,7 +207,7 @@ export function MobileNavigation({
                         Sign In
                       </Link>
                     </Button>
-                    <Button className="w-full" asChild>
+                    <Button className="w-full justify-center h-10" asChild>
                       <Link 
                         to="/service-provider-onboarding" 
                         onClick={() => setIsOpen(false)}
@@ -217,7 +219,7 @@ export function MobileNavigation({
                   </>
                 ) : (
                   <>
-                    <Button variant="outline" className="w-full" asChild>
+                    <Button variant="outline" className="w-full justify-center h-10" asChild>
                       <Link 
                         to={isAuditor ? "/dashboard/auditor" : "/dashboard/project"}
                         onClick={() => setIsOpen(false)}
@@ -228,7 +230,7 @@ export function MobileNavigation({
                     </Button>
                     <Button 
                       variant="ghost" 
-                      className="w-full"
+                      className="w-full justify-center h-10"
                       onClick={() => {
                         onSignOut();
                         setIsOpen(false);

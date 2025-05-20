@@ -15,23 +15,25 @@ export const AuditTabs: React.FC<AuditTabsProps> = ({
 }) => {
   return (
     <Tabs defaultValue="all" className="w-full mt-6">
-      <TabsList className="w-full md:w-auto inline-flex mb-6">
+      <TabsList className="w-full md:w-auto inline-flex mb-6 overflow-x-auto pb-1 no-scrollbar">
         <TabsTrigger value="all">All Audits</TabsTrigger>
         <TabsTrigger value="completed">Completed</TabsTrigger>
         <TabsTrigger value="in-progress">In Progress</TabsTrigger>
         <TabsTrigger value="requests">Requests</TabsTrigger>
       </TabsList>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col lg:flex-row gap-6">
         {/* Filters Panel - Conditionally Shown */}
         {showFilters && (
-          <div className="w-64 shrink-0">
+          <div className="w-full lg:w-64 lg:shrink-0 order-1 lg:order-none">
             <AuditFilters />
           </div>
         )}
 
         {/* Audit Results */}
-        <AuditTabContent viewMode={viewMode} />
+        <div className="flex-1 order-2 lg:order-none">
+          <AuditTabContent viewMode={viewMode} />
+        </div>
       </div>
     </Tabs>
   );

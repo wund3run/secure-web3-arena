@@ -13,7 +13,7 @@ interface AuditSearchControlsProps {
 export const AuditSearchControls: React.FC<AuditSearchControlsProps> = (props) => {
   return (
     <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-      <div className="flex flex-1 max-w-md">
+      <div className="flex flex-1 w-full md:max-w-md">
         <AuditSearchBar />
       </div>
       <AuditViewControls {...props} />

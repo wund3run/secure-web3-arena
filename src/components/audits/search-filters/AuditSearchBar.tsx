@@ -11,6 +11,7 @@ export const AuditSearchBar: React.FC = () => {
         type="text" 
         placeholder="Search audits by project, auditor or type..." 
         className="pl-10 w-full"
+        aria-label="Search audits"
       />
     </div>
   );

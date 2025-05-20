@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useAuth } from "@/contexts/auth";
 import {
@@ -35,13 +36,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { TermsOfService } from "@/components/layout/TermsOfService";
 import { CodeOfConduct } from "@/components/layout/CodeOfConduct";
 
-export function ServiceProviderOnboardingForm() {
+interface ServiceProviderOnboardingFormProps {
+  providerType: "auditor" | "service";
+}
+
+export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderOnboardingFormProps) {
   const { signUp } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [isCodeOfConductOpen, setIsCodeOfConductOpen] = useState(false);
-
+  
   const form = useForm({
     resolver: zodResolver(providerFormSchema),
     defaultValues: {
@@ -66,17 +71,25 @@ export function ServiceProviderOnboardingForm() {
       agreesToCodeOfConduct: false
     }
   });
-
+  
   const { register, handleSubmit, formState: { errors } } = form;
-
+  
   const onSubmit = async (data: any) => {
     try {
-      const userType = "auditor";
-      await signUp(data.email, data.email, data.name, userType);
+      // Use the providerType prop to set the user type
+      const userType = providerType === "auditor" ? "auditor" : "project_owner";
+      
+      // Pass metadata object with full_name and user_type
+      await signUp(data.email, data.email, { 
+        full_name: data.name,
+        user_type: userType 
+      });
+      
       toast({
         title: "Application Submitted",
         description: "Your application has been submitted successfully."
       });
+      
       navigate("/application-submitted");
     } catch (error) {
       toast({
@@ -86,7 +99,7 @@ export function ServiceProviderOnboardingForm() {
       });
     }
   };
-
+  
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
@@ -103,327 +116,178 @@ export function ServiceProviderOnboardingForm() {
               <Label htmlFor="name">Full Name</Label>
               <Input id="name" type="text" placeholder="John Doe" {...register("name")} />
               {errors.name && (
-                <p className="text-sm text-red-500">{errors.name.message}</p>
+              <p className="text-sm text-red-500">{errors.name.message as string}</p>
               )}
             </div>
+            
             <div>
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" placeholder="johndoe@example.com" {...register("email")} />
               {errors.email && (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
+              <p className="text-sm text-red-500">{errors.email.message as string}</p>
               )}
             </div>
           </div>
-
+          
           <div>
             <Label htmlFor="walletAddress">Wallet Address</Label>
-            <Input
-              id="walletAddress"
-              type="text"
-              placeholder="0x..."
-              {...register("walletAddress")}
+            <Input 
+              id="walletAddress" 
+              type="text" 
+              placeholder="0x..." 
+              {...register("walletAddress")} 
             />
             {errors.walletAddress && (
-              <p className="text-sm text-red-500">{errors.walletAddress.message}</p>
+            <p className="text-sm text-red-500">{errors.walletAddress.message as string}</p>
             )}
           </div>
-
+          
           <div>
-            <Label htmlFor="website">Website</Label>
-            <Input
-              id="website"
-              type="url"
-              placeholder="https://example.com"
-              {...register("website")}
-            />
+            <Label htmlFor="website">Website URL (optional)</Label>
+            <Input id="website" type="url" placeholder="https://" {...register("website")} />
             {errors.website && (
-              <p className="text-sm text-red-500">{errors.website.message}</p>
+            <p className="text-sm text-red-500">{errors.website.message as string}</p>
             )}
           </div>
-
+          
           <div>
-            <Label htmlFor="githubProfile">GitHub Profile</Label>
-            <Input
-              id="githubProfile"
-              type="url"
-              placeholder="https://github.com/johndoe"
-              {...register("githubProfile")}
-            />
+            <Label htmlFor="githubProfile">GitHub Profile URL (optional)</Label>
+            <Input id="githubProfile" type="url" placeholder="https://github.com/" {...register("githubProfile")} />
             {errors.githubProfile && (
-              <p className="text-sm text-red-500">
-                {errors.githubProfile.message}
-              </p>
+            <p className="text-sm text-red-500">{errors.githubProfile.message as string}</p>
             )}
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="organization">Organization</Label>
-              <Input
-                id="organization"
-                type="text"
-                placeholder="Acme Corp"
-                {...register("organization")}
-              />
-              {errors.organization && (
-                <p className="text-sm text-red-500">
-                  {errors.organization.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Label htmlFor="teamSize">Team Size</Label>
-              <Select>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select team size" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1-5">1-5</SelectItem>
-                  <SelectItem value="6-10">6-10</SelectItem>
-                  <SelectItem value="11-20">11-20</SelectItem>
-                  <SelectItem value="21-50">21-50</SelectItem>
-                  <SelectItem value="50+">50+</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.teamSize && (
-                <p className="text-sm text-red-500">{errors.teamSize.message}</p>
-              )}
-            </div>
-          </div>
-
+          
+          {providerType === "service" && (
+            <>
+              <div>
+                <Label htmlFor="organization">Organization Name</Label>
+                <Input id="organization" type="text" placeholder="Security Firm Inc." {...register("organization")} />
+                {errors.organization && (
+                <p className="text-sm text-red-500">{errors.organization.message as string}</p>
+                )}
+              </div>
+              
+              <div>
+                <Label htmlFor="teamSize">Team Size</Label>
+                <Select>
+                  <SelectTrigger id="teamSize">
+                    <SelectValue placeholder="Select team size" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1-5">1-5 members</SelectItem>
+                    <SelectItem value="6-15">6-15 members</SelectItem>
+                    <SelectItem value="16-50">16-50 members</SelectItem>
+                    <SelectItem value="50+">50+ members</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.teamSize && (
+                <p className="text-sm text-red-500">{errors.teamSize.message as string}</p>
+                )}
+              </div>
+            </>
+          )}
+          
           <div>
-            <Label htmlFor="primaryExpertise">Primary Expertise</Label>
-            <Select>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select primary expertise" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Smart Contract Audits">
-                  Smart Contract Audits
-                </SelectItem>
-                <SelectItem value="Web3 Security">Web3 Security</SelectItem>
-                <SelectItem value="Penetration Testing">
-                  Penetration Testing
-                </SelectItem>
-                <SelectItem value="Security Consulting">
-                  Security Consulting
-                </SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.primaryExpertise && (
-              <p className="text-sm text-red-500">
-                {errors.primaryExpertise.message}
-              </p>
+            <Label htmlFor="experience">Years of Experience</Label>
+            <Input id="experience" type="number" min="0" max="50" {...register("yearsSince")} />
+            {errors.yearsSince && (
+            <p className="text-sm text-red-500">{errors.yearsSince.message as string}</p>
             )}
           </div>
-
+          
           <div>
-            <Label htmlFor="blockchainExpertise">Blockchain Expertise</Label>
-            <Select>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select blockchain expertise" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Ethereum">Ethereum</SelectItem>
-                <SelectItem value="Solana">Solana</SelectItem>
-                <SelectItem value="Cosmos">Cosmos</SelectItem>
-                <SelectItem value="Polkadot">Polkadot</SelectItem>
-                <SelectItem value="Avalanche">Avalanche</SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.blockchainExpertise && (
-              <p className="text-sm text-red-500">
-                {errors.blockchainExpertise.message}
-              </p>
+            <Label htmlFor="completedProjects">Completed Security Projects</Label>
+            <Input id="completedProjects" type="number" min="0" {...register("completedProjects")} />
+            {errors.completedProjects && (
+            <p className="text-sm text-red-500">{errors.completedProjects.message as string}</p>
             )}
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="yearsSince">Years Since Active</Label>
-              <Input
-                id="yearsSince"
-                type="number"
-                placeholder="5"
-                {...register("yearsSince")}
-              />
-              {errors.yearsSince && (
-                <p className="text-sm text-red-500">
-                  {errors.yearsSince.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Label htmlFor="completedProjects">Completed Projects</Label>
-              <Input
-                id="completedProjects"
-                type="number"
-                placeholder="100"
-                {...register("completedProjects")}
-              />
-              {errors.completedProjects && (
-                <p className="text-sm text-red-500">
-                  {errors.completedProjects.message}
-                </p>
-              )}
-            </div>
-          </div>
-
+          
           <div>
-            <Label htmlFor="notableClients">Notable Clients</Label>
-            <Textarea
-              id="notableClients"
-              placeholder="List notable clients"
-              {...register("notableClients")}
-            />
-            {errors.notableClients && (
-              <p className="text-sm text-red-500">
-                {errors.notableClients.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="publicFindings">Public Findings</Label>
-            <Textarea
-              id="publicFindings"
-              placeholder="List public findings"
-              {...register("publicFindings")}
-            />
-            {errors.publicFindings && (
-              <p className="text-sm text-red-500">
-                {errors.publicFindings.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="servicesOffered">Services Offered</Label>
-            <Textarea
-              id="servicesOffered"
-              placeholder="List services offered"
-              {...register("servicesOffered")}
-            />
-            {errors.servicesOffered && (
-              <p className="text-sm text-red-500">
-                {errors.servicesOffered.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="methodologies">Methodologies</Label>
-            <Textarea
-              id="methodologies"
-              placeholder="List methodologies"
-              {...register("methodologies")}
-            />
-            {errors.methodologies && (
-              <p className="text-sm text-red-500">
-                {errors.methodologies.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="customTools">Custom Tools</Label>
-            <Textarea
-              id="customTools"
-              placeholder="List custom tools"
-              {...register("customTools")}
-            />
-            {errors.customTools && (
-              <p className="text-sm text-red-500">
-                {errors.customTools.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="certifications">Certifications</Label>
-            <Textarea
-              id="certifications"
-              placeholder="List certifications"
-              {...register("certifications")}
+            <Label htmlFor="certifications">Relevant Certifications (optional)</Label>
+            <Textarea 
+              id="certifications" 
+              placeholder="List any relevant security certifications" 
+              className="min-h-[80px]"
+              {...register("certifications")} 
             />
             {errors.certifications && (
-              <p className="text-sm text-red-500">
-                {errors.certifications.message}
-              </p>
+            <p className="text-sm text-red-500">{errors.certifications.message as string}</p>
             )}
           </div>
 
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="terms" 
-                {...register("agreesToTerms")} 
-              />
-              <div className="grid gap-1.5 leading-none">
-                <div className="text-sm text-gray-500 flex items-center">
-                  I agree to the 
-                  <Dialog open={isTermsOpen} onOpenChange={setIsTermsOpen}>
-                    <DialogTrigger asChild>
-                      <Button variant="link" className="h-auto p-0 mx-1">
-                        Terms of Service
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Terms of Service</DialogTitle>
-                        <DialogDescription>
-                          Please review our Terms of Service carefully.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <TermsOfService onAccept={() => {
-                        form.setValue("agreesToTerms", true);
-                        setIsTermsOpen(false);
-                      }} />
-                    </DialogContent>
-                  </Dialog>
+          <div className="space-y-4">
+            <div className="flex flex-col space-y-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="termsAccepted" 
+                  {...register("agreesToTerms")} 
+                />
+                <div className="grid gap-1.5 leading-none">
+                  <label
+                    htmlFor="termsAccepted"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center"
+                  >
+                    I agree to the 
+                    <Dialog open={isTermsOpen} onOpenChange={setIsTermsOpen}>
+                      <DialogTrigger asChild>
+                        <Button variant="link" className="h-auto p-0 px-1">Terms of Service</Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[600px] max-h-[80vh]">
+                        <DialogHeader>
+                          <DialogTitle>Terms of Service</DialogTitle>
+                          <DialogDescription>
+                            Please read our terms of service carefully
+                          </DialogDescription>
+                        </DialogHeader>
+                        <TermsOfService />
+                      </DialogContent>
+                    </Dialog>
+                  </label>
                 </div>
               </div>
+              {errors.agreesToTerms && (
+                <p className="text-sm text-red-500">{errors.agreesToTerms.message as string}</p>
+              )}
             </div>
-            {errors.agreesToTerms && (
-              <p className="text-sm text-red-500">{errors.agreesToTerms.message}</p>
-            )}
-
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="codeOfConduct" 
-                {...register("agreesToCodeOfConduct")} 
-              />
-              <div className="grid gap-1.5 leading-none">
-                <div className="text-sm text-gray-500 flex items-center">
-                  I agree to the 
-                  <Dialog open={isCodeOfConductOpen} onOpenChange={setIsCodeOfConductOpen}>
-                    <DialogTrigger asChild>
-                      <Button variant="link" className="h-auto p-0 mx-1">
-                        Code of Conduct
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Code of Conduct</DialogTitle>
-                        <DialogDescription>
-                          Please review our Code of Conduct carefully.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <CodeOfConduct onAccept={() => {
-                        form.setValue("agreesToCodeOfConduct", true);
-                        setIsCodeOfConductOpen(false);
-                      }} />
-                    </DialogContent>
-                  </Dialog>
+            
+            <div className="flex flex-col space-y-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="conductAccepted" 
+                  {...register("agreesToCodeOfConduct")} 
+                />
+                <div className="grid gap-1.5 leading-none">
+                  <label
+                    htmlFor="conductAccepted"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center"
+                  >
+                    I agree to the 
+                    <Dialog open={isCodeOfConductOpen} onOpenChange={setIsCodeOfConductOpen}>
+                      <DialogTrigger asChild>
+                        <Button variant="link" className="h-auto p-0 px-1">Code of Conduct</Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[600px] max-h-[80vh]">
+                        <DialogHeader>
+                          <DialogTitle>Code of Conduct</DialogTitle>
+                          <DialogDescription>
+                            Please review our code of conduct before proceeding
+                          </DialogDescription>
+                        </DialogHeader>
+                        <CodeOfConduct />
+                      </DialogContent>
+                    </Dialog>
+                  </label>
                 </div>
               </div>
+              {errors.agreesToCodeOfConduct && (
+                <p className="text-sm text-red-500">{errors.agreesToCodeOfConduct.message as string}</p>
+              )}
             </div>
-            {errors.agreesToCodeOfConduct && (
-              <p className="text-sm text-red-500">{errors.agreesToCodeOfConduct.message}</p>
-            )}
           </div>
-
-          <Button type="submit" className="w-full mt-4">Submit Application</Button>
+          
+          <Button type="submit" className="mt-4">Submit Application</Button>
         </form>
       </CardContent>
     </Card>
