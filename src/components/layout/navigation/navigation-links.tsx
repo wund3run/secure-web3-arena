@@ -1,18 +1,11 @@
 
-import { ReactNode } from "react";
+import { NavigationLinkItem } from "@/components/ui/navigation-menu";
 
-export type NavigationLinkItem = {
-  title: string;
-  description: string;
-  href: string;
-  badge?: string;
-};
-
-export type NavigationLinksStructure = {
+export interface NavigationLinksStructure {
   marketplace: NavigationLinkItem[];
   audits: NavigationLinkItem[];
   resources: NavigationLinkItem[];
-  dashboards: NavigationLinkItem[]; // Add dashboards to the type definition
-};
+  dashboards: NavigationLinkItem[];
+}
 
-// The navigationLinks content has been moved to navigation-links.ts for better organization
+export type { NavigationLinkItem };

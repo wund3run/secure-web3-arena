@@ -24,7 +24,8 @@ export function DesktopNavigation({
   const { user, userProfile } = useAuth();
   
   // Determine if the user is an auditor or project owner
-  const isAuditor = userProfile?.user_type === 'auditor';
+  const userType = userProfile?.user_type || user?.user_metadata?.user_type;
+  const isAuditor = userType === 'auditor';
   
   return (
     <NavigationMenu className="mx-6 hidden md:flex" aria-label="Main Navigation">
@@ -54,7 +55,9 @@ export function DesktopNavigation({
           <NavigationDropdownItem 
             title={isAuditor ? "Auditor Hub" : "Project Hub"}
             items={navigationLinks.dashboards.filter(item => 
-              !isAuditor ? !item.href.includes('auditor') || item.href.includes('project') : true
+              isAuditor 
+                ? !item.href.includes('/dashboard/project')
+                : !item.href.includes('/dashboard/auditor')
             )}
             isActive={activeDropdown === 'dashboards'}
             onToggle={() => handleDropdownToggle('dashboards')}
@@ -62,7 +65,6 @@ export function DesktopNavigation({
         )}
         
         <NavigationMenuItem>
-          {/* Fix: Changed from Link wrapping NavigationMenuLink to using NavigationMenuLink with asChild */}
           <NavigationMenuLink asChild className={cn(
             "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors relative",
             "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",

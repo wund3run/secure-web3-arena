@@ -73,23 +73,37 @@ export function useAuthProvider() {
       const { error } = await supabase.auth.signInWithPassword({ 
         email, 
         password,
-        // Use auto-verification token or skip captcha altogether as it's disabled in config
-        options: {
-          captchaToken
-        }
+        options: { captchaToken }
       });
       
       if (error) throw error;
 
       // If MFA is required, redirect to 2FA page
       if (requireMFA) {
-        // In a real implementation, you'd check if the user has MFA enabled
         navigate('/two-factor-auth', { state: { email } });
         return;
       }
       
-      // If no MFA required, continue as normal
-      navigate('/dashboard');
+      // Navigate user to their appropriate dashboard based on role
+      const { data } = await supabase.auth.getSession();
+      const userData = data.session?.user;
+      if (userData) {
+        const { data: profileData } = await supabase
+          .from('extended_profiles')
+          .select('user_type')
+          .eq('id', userData.id)
+          .single();
+          
+        const userType = profileData?.user_type || userData?.user_metadata?.user_type;
+        
+        if (userType === 'auditor') {
+          navigate('/dashboard/auditor');
+        } else {
+          navigate('/dashboard/project');
+        }
+      } else {
+        navigate('/dashboard');
+      }
     } catch (error: any) {
       toast.error("Error signing in", {
         description: error.message,

@@ -9,26 +9,6 @@ import { useAuth } from '@/contexts/auth';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
-// Function to determine user role - in a real app, this would come from your user data
-const getUserRole = (user: any): 'auditor' | 'project_owner' => {
-  // Check user_type from profile if it exists
-  if (user?.user_metadata?.user_type) {
-    return user.user_metadata.user_type === 'auditor' ? 'auditor' : 'project_owner';
-  }
-
-  // For users with a profile, check the user_type field
-  if (user?.userProfile?.user_type) {
-    return user.userProfile.user_type === 'auditor' ? 'auditor' : 'project_owner';
-  }
-  
-  // Fallback to email domain check (for demo purposes)
-  const email = user?.email || '';
-  if (email.includes('auditor') || email.includes('security')) {
-    return 'auditor';
-  }
-  return 'project_owner';
-};
-
 export default function Dashboard() {
   const { user, userProfile } = useAuth();
   const navigate = useNavigate();
@@ -37,15 +17,14 @@ export default function Dashboard() {
   
   useEffect(() => {
     if (user) {
-      // Determine user role
-      const userRole = getUserRole(user);
-      
-      // Redirect based on role and current URL
+      // Determine user role from profile
+      const userType = userProfile?.user_type || user?.user_metadata?.user_type || 'project_owner';
+      const isAuditor = userType === 'auditor';
       const currentPath = window.location.pathname;
       
-      // If user is on generic dashboard, redirect to role-specific one
+      // Redirect based on role and current URL
       if (currentPath === '/dashboard') {
-        if (userRole === 'auditor') {
+        if (isAuditor) {
           toast.info("Redirecting to your Auditor Dashboard");
           navigate('/dashboard/auditor');
         } else {
@@ -53,22 +32,22 @@ export default function Dashboard() {
           navigate('/dashboard/project');
         }
       }
-      // If user is trying to access a dashboard they shouldn't
+      // Strict access control: prevent accessing dashboard they shouldn't
       else if (
-        (currentPath === '/dashboard/auditor' && userRole !== 'auditor') ||
-        (currentPath === '/dashboard/project' && userRole !== 'project_owner')
+        (currentPath === '/dashboard/auditor' && !isAuditor) ||
+        (currentPath === '/dashboard/project' && isAuditor)
       ) {
-        toast.error("You don't have access to this dashboard");
+        toast.error("Access denied: You don't have permission for this dashboard");
         
         // Redirect to the appropriate dashboard
-        if (userRole === 'auditor') {
+        if (isAuditor) {
           navigate('/dashboard/auditor');
         } else {
           navigate('/dashboard/project');
         }
       }
     }
-  }, [user, navigate, dashboardType]);
+  }, [user, userProfile, navigate, dashboardType]);
 
   return (
     <PrivateRoute>
