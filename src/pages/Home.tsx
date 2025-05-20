@@ -19,7 +19,7 @@ export default function Home() {
         />
       </Helmet>
       <div className="min-h-screen bg-background flex flex-col">
-        <SkipToContent />
+        <SkipToContent targetId="main-content" />
         <Navbar />
         <div className="flex-grow">
           <main id="main-content" tabIndex={-1}>
