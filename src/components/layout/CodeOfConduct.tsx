@@ -1,90 +1,93 @@
 
 import React from "react";
+import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function CodeOfConduct() {
   return (
-    <ScrollArea className="h-[400px] w-full rounded-md border p-4">
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium">Security Provider Code of Conduct</h3>
-        
-        <h4 className="text-md font-medium">1. Ethical Standards</h4>
-        <p>
-          All security providers on the Hawkly platform must adhere to the highest ethical standards:
-        </p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Act with integrity and honesty in all professional activities</li>
-          <li>Avoid conflicts of interest or disclose them when unavoidable</li>
-          <li>Respect the confidentiality of client information</li>
-          <li>Provide honest assessments regardless of financial implications</li>
-          <li>Never exploit vulnerabilities discovered during security assessments</li>
-        </ul>
-        
-        <h4 className="text-md font-medium">2. Professional Conduct</h4>
-        <p>
-          Maintain professional behavior at all times:
-        </p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Communicate respectfully with clients and other providers</li>
-          <li>Provide realistic timelines and deliver accordingly</li>
-          <li>Acknowledge limitations in expertise and decline projects beyond your capabilities</li>
-          <li>Continuously develop professional knowledge and skills</li>
-          <li>Collaborate constructively with other security professionals</li>
-        </ul>
-        
-        <h4 className="text-md font-medium">3. Responsible Disclosure</h4>
-        <p>
-          Follow responsible disclosure practices:
-        </p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Report vulnerabilities directly to clients through secure channels</li>
-          <li>Provide reasonable time for remediation before any public disclosure</li>
-          <li>Respect client's disclosure policies</li>
-          <li>Never disclose confidential findings without explicit permission</li>
-        </ul>
-        
-        <h4 className="text-md font-medium">4. Quality of Service</h4>
-        <p>
-          Deliver the highest quality security services:
-        </p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Use industry-standard methodologies and best practices</li>
-          <li>Provide clear, comprehensive, and actionable reports</li>
-          <li>Validate findings to minimize false positives</li>
-          <li>Offer practical and effective remediation guidance</li>
-          <li>Maintain detailed documentation of all security assessment activities</li>
-        </ul>
-        
-        <h4 className="text-md font-medium">5. Continuous Improvement</h4>
-        <p>
-          Commit to ongoing professional development:
-        </p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Stay current with evolving security threats and technologies</li>
-          <li>Participate in relevant professional communities</li>
-          <li>Learn from peer reviews and client feedback</li>
-          <li>Share knowledge to advance the security community (while respecting confidentiality)</li>
-        </ul>
-        
-        <h4 className="text-md font-medium">6. Compliance</h4>
-        <p>
-          Adhere to all applicable laws and regulations:
-        </p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Obtain proper authorization before conducting security assessments</li>
-          <li>Respect legal boundaries and scope limitations</li>
-          <li>Maintain required licenses and certifications</li>
-          <li>Report illegal activities to appropriate authorities</li>
-        </ul>
-        
-        <p className="pt-4 text-sm text-muted-foreground">
-          By joining Hawkly as a security provider, you commit to upholding this Code of Conduct. Violations may result in removal from the platform.
-        </p>
-        
-        <p className="text-sm text-muted-foreground">
-          Last updated: May 20, 2025
-        </p>
-      </div>
-    </ScrollArea>
+    <div className="rounded-lg border bg-card p-6">
+      <h2 className="text-2xl font-bold mb-4">Code of Conduct</h2>
+      <Separator className="mb-4" />
+      <ScrollArea className="h-[300px]">
+        <div className="space-y-4 pr-4">
+          <section>
+            <h3 className="text-lg font-semibold">1. Purpose</h3>
+            <p className="text-muted-foreground">
+              This Code of Conduct outlines our expectations for participants within the Hawkly community, as well as the consequences for unacceptable behavior.
+            </p>
+          </section>
+          
+          <section>
+            <h3 className="text-lg font-semibold">2. Expected Behavior</h3>
+            <ul className="list-disc pl-5 text-muted-foreground">
+              <li>Participate in an authentic and active way.</li>
+              <li>Exercise consideration and respect in your speech and actions.</li>
+              <li>Attempt collaboration before conflict.</li>
+              <li>Refrain from demeaning, discriminatory, or harassing behavior and speech.</li>
+              <li>Be mindful of your surroundings and of your fellow participants.</li>
+            </ul>
+          </section>
+          
+          <section>
+            <h3 className="text-lg font-semibold">3. Professional Conduct</h3>
+            <p className="text-muted-foreground">
+              Auditors must conduct audits with the highest standards of integrity and professionalism. This includes:
+            </p>
+            <ul className="list-disc pl-5 text-muted-foreground">
+              <li>Delivering audits on time as promised.</li>
+              <li>Maintaining confidentiality of project details.</li>
+              <li>Providing objective and thorough analysis.</li>
+              <li>Declaring any conflicts of interest.</li>
+              <li>Being responsive to client communications.</li>
+              <li>Adhering to the agreed scope of work.</li>
+            </ul>
+          </section>
+          
+          <section>
+            <h3 className="text-lg font-semibold">4. Unacceptable Behavior</h3>
+            <p className="text-muted-foreground">
+              Unacceptable behaviors include:
+            </p>
+            <ul className="list-disc pl-5 text-muted-foreground">
+              <li>Intimidating, harassing, abusive, discriminatory, or derogatory conduct.</li>
+              <li>Making false claims about one's expertise or experience.</li>
+              <li>Deliberate misrepresentation of audit findings.</li>
+              <li>Sharing confidential information without authorization.</li>
+              <li>Engaging in any form of unprofessional behavior.</li>
+              <li>Violating the terms of any non-disclosure agreements.</li>
+            </ul>
+          </section>
+          
+          <section>
+            <h3 className="text-lg font-semibold">5. Consequences of Unacceptable Behavior</h3>
+            <p className="text-muted-foreground">
+              Unacceptable behavior will not be tolerated. Consequences for violations may include:
+            </p>
+            <ul className="list-disc pl-5 text-muted-foreground">
+              <li>Removal from the platform.</li>
+              <li>Loss of reputation score.</li>
+              <li>Withholding of payment.</li>
+              <li>Legal action when applicable.</li>
+            </ul>
+          </section>
+          
+          <section>
+            <h3 className="text-lg font-semibold">6. Reporting Guidelines</h3>
+            <p className="text-muted-foreground">
+              If you experience or witness unacceptable behavior, or have any concerns, please report it by contacting us at conduct@hawkly.io.
+            </p>
+          </section>
+          
+          <section>
+            <h3 className="text-lg font-semibold">7. Addressing Grievances</h3>
+            <p className="text-muted-foreground">
+              The Hawkly team will review and investigate all complaints and respond in a way that is deemed appropriate to the circumstances. We are committed to maintaining confidentiality with regard to reporting incidents.
+            </p>
+          </section>
+        </div>
+      </ScrollArea>
+    </div>
   );
 }
+
+export default CodeOfConduct;

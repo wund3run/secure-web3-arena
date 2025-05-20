@@ -1,95 +1,98 @@
 
 import React from "react";
+import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function TermsOfService() {
   return (
-    <ScrollArea className="h-[400px] w-full rounded-md border p-4">
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium">Terms of Service</h3>
-        
-        <h4 className="text-md font-medium">1. Acceptance of Terms</h4>
-        <p>
-          By accessing or using the Hawkly platform (the "Service"), you agree to be bound by these Terms of Service. If you do not agree to all the terms and conditions of this agreement, you may not access or use the Service.
-        </p>
-        
-        <h4 className="text-md font-medium">2. Security Provider Responsibilities</h4>
-        <p>
-          As a security provider on our platform, you are responsible for:
-        </p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Maintaining the confidentiality of all client data and code</li>
-          <li>Providing accurate information about your skills and experience</li>
-          <li>Delivering services as described and within agreed timeframes</li>
-          <li>Following all security best practices and disclosure policies</li>
-          <li>Maintaining professional conduct with all platform users</li>
-        </ul>
-        
-        <h4 className="text-md font-medium">3. Quality Standards</h4>
-        <p>
-          All security providers must maintain high quality standards:
-        </p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Thorough audit methodologies following industry standards</li>
-          <li>Clear and comprehensive documentation</li>
-          <li>Responsive communication within agreed SLA timeframes</li>
-          <li>Professional remediation guidance</li>
-        </ul>
-        
-        <h4 className="text-md font-medium">4. Payment Terms</h4>
-        <p>
-          Hawkly facilitates payments between clients and security providers. Fees are calculated based on:
-        </p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Service type and scope</li>
-          <li>Timeline and urgency</li>
-          <li>Provider expertise level</li>
-        </ul>
-        <p>
-          Hawkly retains a platform fee from each transaction. Detailed payment breakdowns will be provided for each project.
-        </p>
-        
-        <h4 className="text-md font-medium">5. Dispute Resolution</h4>
-        <p>
-          In case of disputes between providers and clients, Hawkly will:
-        </p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Review all communications and deliverables</li>
-          <li>Assess compliance with agreed terms</li>
-          <li>Provide a fair resolution</li>
-          <li>Retain final decision authority on all platform disputes</li>
-        </ul>
-        
-        <h4 className="text-md font-medium">6. Account Termination</h4>
-        <p>
-          Hawkly reserves the right to suspend or terminate provider accounts for:
-        </p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Violation of these terms</li>
-          <li>Consistent low-quality service</li>
-          <li>Fraudulent activity</li>
-          <li>Inappropriate conduct</li>
-        </ul>
-        
-        <h4 className="text-md font-medium">7. Modifications to Terms</h4>
-        <p>
-          Hawkly may modify these terms at any time. Providers will be notified of significant changes, and continued use of the platform constitutes acceptance of modified terms.
-        </p>
-        
-        <h4 className="text-md font-medium">8. Limitation of Liability</h4>
-        <p>
-          Hawkly is not liable for:
-        </p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Security issues not identified during audits</li>
-          <li>Damages resulting from client implementation of recommendations</li>
-          <li>Disputes between providers and clients outside our platform</li>
-        </ul>
-        
-        <p className="pt-4 text-sm text-muted-foreground">
-          Last updated: May 20, 2025
-        </p>
-      </div>
-    </ScrollArea>
+    <div className="rounded-lg border bg-card p-6">
+      <h2 className="text-2xl font-bold mb-4">Terms of Service</h2>
+      <Separator className="mb-4" />
+      <ScrollArea className="h-[300px]">
+        <div className="space-y-4 pr-4">
+          <section>
+            <h3 className="text-lg font-semibold">1. Introduction</h3>
+            <p className="text-muted-foreground">
+              Welcome to Hawkly, a platform connecting blockchain projects with security auditors. These Terms of Service govern your use of our platform and services.
+            </p>
+          </section>
+          
+          <section>
+            <h3 className="text-lg font-semibold">2. Acceptance of Terms</h3>
+            <p className="text-muted-foreground">
+              By using the Hawkly platform, you agree to these Terms of Service and our Privacy Policy. If you do not agree, please do not use our platform.
+            </p>
+          </section>
+          
+          <section>
+            <h3 className="text-lg font-semibold">3. Definitions</h3>
+            <p className="text-muted-foreground">
+              "Service" refers to the Hawkly platform.<br />
+              "User" refers to individuals who register for and use our platform.<br />
+              "Project Owner" refers to users who submit projects for audit.<br />
+              "Auditor" refers to users who provide audit services through our platform.
+            </p>
+          </section>
+          
+          <section>
+            <h3 className="text-lg font-semibold">4. Service Usage</h3>
+            <p className="text-muted-foreground">
+              Users may only use the Service for lawful purposes and in accordance with these Terms. Users are responsible for maintaining the confidentiality of their account credentials.
+            </p>
+          </section>
+          
+          <section>
+            <h3 className="text-lg font-semibold">5. Content Guidelines</h3>
+            <p className="text-muted-foreground">
+              Users must not post content that is illegal, harmful, threatening, abusive, defamatory, or otherwise objectionable. We reserve the right to remove content that violates these guidelines.
+            </p>
+          </section>
+          
+          <section>
+            <h3 className="text-lg font-semibold">6. Intellectual Property</h3>
+            <p className="text-muted-foreground">
+              The Service and its original content, features, and functionality are owned by Hawkly and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.
+            </p>
+          </section>
+          
+          <section>
+            <h3 className="text-lg font-semibold">7. Privacy</h3>
+            <p className="text-muted-foreground">
+              Your use of the Service is also governed by our Privacy Policy, which is incorporated into these Terms of Service.
+            </p>
+          </section>
+          
+          <section>
+            <h3 className="text-lg font-semibold">8. Payment and Fees</h3>
+            <p className="text-muted-foreground">
+              Project Owners agree to pay the fees associated with audit services. Hawkly will collect and distribute payments in accordance with our payment policies.
+            </p>
+          </section>
+          
+          <section>
+            <h3 className="text-lg font-semibold">9. Termination</h3>
+            <p className="text-muted-foreground">
+              We reserve the right to terminate or suspend access to our Service immediately, without prior notice or liability, for any reason whatsoever, including a breach of the Terms.
+            </p>
+          </section>
+          
+          <section>
+            <h3 className="text-lg font-semibold">10. Changes to Terms</h3>
+            <p className="text-muted-foreground">
+              We reserve the right to modify or replace these Terms at any time. We will notify users of material changes to the Terms.
+            </p>
+          </section>
+          
+          <section>
+            <h3 className="text-lg font-semibold">11. Contact Us</h3>
+            <p className="text-muted-foreground">
+              If you have any questions about these Terms, please contact us at terms@hawkly.io.
+            </p>
+          </section>
+        </div>
+      </ScrollArea>
+    </div>
   );
 }
+
+export default TermsOfService;

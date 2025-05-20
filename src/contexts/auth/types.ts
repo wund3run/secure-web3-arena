@@ -13,7 +13,8 @@ export interface AuthContextProps {
   signUp: (
     email: string, 
     password: string, 
-    metadata?: { full_name?: string; user_type?: UserType }, 
+    fullName?: string,
+    userType?: UserType, 
     captchaToken?: string
   ) => Promise<void>;
   signOut: () => Promise<void>;

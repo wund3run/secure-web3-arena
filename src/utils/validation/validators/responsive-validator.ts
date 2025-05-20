@@ -120,7 +120,7 @@ export const validateResponsiveDesign = (): ValidationIssue[] => {
   if (!viewportMeta) {
     responsiveIssues.push({
       type: 'responsive',
-      severity: 'critical',
+      severity: 'high', // Changed from 'critical' to 'high'
       description: 'Viewport meta tag is missing',
       location: 'document head',
       suggestion: 'Add <meta name="viewport" content="width=device-width, initial-scale=1.0"> to the head',

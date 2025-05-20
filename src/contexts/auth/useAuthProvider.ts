@@ -4,6 +4,7 @@ import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { UserType } from "./types";
 
 export function useAuthProvider() {
   const [user, setUser] = useState<User | null>(null);
@@ -67,6 +68,9 @@ export function useAuthProvider() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Error state
+  const [error, setError] = useState<string | null>(null);
+
   const signIn = async (email: string, password: string, captchaToken: string = "auto-verified-token") => {
     try {
       setLoading(true);
@@ -112,7 +116,7 @@ export function useAuthProvider() {
     }
   };
 
-  const signUp = async (email: string, password: string, fullName: string, userType: "auditor" | "project_owner" = "project_owner", captchaToken: string = "auto-verified-token") => {
+  const signUp = async (email: string, password: string, fullName: string, userType: UserType = "project_owner", captchaToken: string = "auto-verified-token") => {
     try {
       setLoading(true);
       setError(null);
@@ -187,9 +191,6 @@ export function useAuthProvider() {
     }
   };
 
-  // State for error handling
-  const [error, setError] = useState<string | null>(null);
-
   // New OTP verification function
   const verifyOTP = async (otp: string) => {
     try {
@@ -255,6 +256,54 @@ export function useAuthProvider() {
     return (user.user_metadata?.user_type as "auditor" | "project_owner") || "project_owner";
   };
 
+  // Add the missing functions
+  const forgotPassword = async (email: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      
+      if (error) throw error;
+      
+      toast.success("Password reset email sent", {
+        description: "Please check your email for reset instructions.",
+      });
+    } catch (error: any) {
+      toast.error("Error sending reset email", {
+        description: error.message,
+      });
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const resetPassword = async (newPassword: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+      
+      if (error) throw error;
+      
+      toast.success("Password updated successfully");
+      navigate('/auth');
+    } catch (error: any) {
+      toast.error("Error updating password", {
+        description: error.message,
+      });
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     user,
     session,
@@ -268,6 +317,8 @@ export function useAuthProvider() {
     verifyOTP,
     resendOTP,
     requireMFA,
-    getUserType
+    getUserType,
+    forgotPassword,
+    resetPassword
   };
 }
