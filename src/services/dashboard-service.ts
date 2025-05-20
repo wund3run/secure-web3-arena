@@ -1,72 +1,48 @@
 
-import { User } from "@supabase/supabase-js";
-import { toast } from "sonner";
 import { NavigateFunction } from "react-router-dom";
 
+interface User {
+  id: string;
+  email?: string;
+  user_metadata?: {
+    user_type?: 'auditor' | 'project_owner';
+  };
+}
+
 interface UserProfile {
-  user_type?: string;
-  [key: string]: any;
+  id: string;
+  user_id: string;
+  user_type?: 'auditor' | 'project_owner';
+  display_name?: string;
 }
 
 export class DashboardService {
   /**
-   * Gets the appropriate dashboard route based on user role
-   */
-  static getDashboardRouteForUser(user: User | null, userProfile: UserProfile | null): string {
-    if (!user) return '/auth';
-    
-    // Determine user type from profile or metadata
-    const userType = userProfile?.user_type || user?.user_metadata?.user_type || 'project_owner';
-    
-    // Return the appropriate dashboard route
-    return userType === 'auditor' ? '/dashboard/auditor' : '/dashboard/project';
-  }
-  
-  /**
-   * Checks if user has access to the specified dashboard type
-   */
-  static canAccessDashboard(dashboardType: string, user: User | null, userProfile: UserProfile | null): boolean {
-    if (!user) return false;
-    
-    const userType = userProfile?.user_type || user?.user_metadata?.user_type || 'project_owner';
-    
-    if (dashboardType === 'auditor' && userType !== 'auditor') {
-      return false;
-    }
-    
-    if (dashboardType === 'project' && userType !== 'project_owner') {
-      return false;
-    }
-    
-    return true;
-  }
-  
-  /**
-   * Handle redirect based on user role and current path
+   * Handles redirecting users to the appropriate dashboard based on their type and requested view
    */
   static handleDashboardRedirect(
-    dashboardType: string, 
-    user: User | null, 
+    dashboardType: string,
+    user: User,
     userProfile: UserProfile | null,
     navigate: NavigateFunction
-  ): void {
-    if (!user) {
-      toast.error("Authentication required");
-      navigate('/auth');
-      return;
-    }
+  ) {
+    const userType = userProfile?.user_type || user?.user_metadata?.user_type;
     
-    // For base dashboard path, redirect to appropriate dashboard
-    if (!dashboardType || dashboardType === '') {
-      const redirectPath = this.getDashboardRouteForUser(user, userProfile);
-      navigate(redirectPath);
-      return;
-    }
-    
-    // Check access and redirect if necessary
-    if (!this.canAccessDashboard(dashboardType, user, userProfile)) {
-      toast.error("Access denied: You don't have permission for this dashboard");
-      navigate(this.getDashboardRouteForUser(user, userProfile));
+    // If dashboard type is specified but doesn't match user type, redirect to the correct one
+    if (dashboardType) {
+      // If auditor trying to access project dashboard or vice versa, redirect
+      if (
+        (dashboardType === 'auditor' && userType === 'project_owner') ||
+        (dashboardType === 'project' && userType === 'auditor')
+      ) {
+        const correctDashboard = userType === 'auditor' ? 'auditor' : 'project';
+        navigate(`/dashboard/${correctDashboard}`, { replace: true });
+        return;
+      }
+    } else {
+      // No dashboard type specified, redirect based on user type
+      const correctDashboard = userType === 'auditor' ? 'auditor' : 'project';
+      navigate(`/dashboard/${correctDashboard}`, { replace: true });
     }
   }
 }

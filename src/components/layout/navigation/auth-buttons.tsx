@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useAccessibility } from "@/contexts/AccessibilityContext";
+import { LogOut } from "lucide-react";
 
 interface AuthButtonsProps {
   isAuthenticated: boolean;
@@ -10,45 +10,33 @@ interface AuthButtonsProps {
 }
 
 export function AuthButtons({ isAuthenticated, onSignOut }: AuthButtonsProps) {
-  const { reducedMotion, keyboardMode } = useAccessibility();
-  
-  const buttonStyles = {
-    transition: reducedMotion ? 'none' : undefined,
-    ...(keyboardMode ? { outline: 'none' } : {})
-  };
-  
-  if (isAuthenticated) {
-    return (
-      <div className="hidden md:flex items-center space-x-4">
-        <Button asChild variant="outline" style={buttonStyles}>
-          <Link to="/dashboard" aria-label="Access your dashboard">
-            Dashboard
-          </Link>
-        </Button>
-        <Button 
-          variant="destructive" 
-          onClick={onSignOut}
-          style={buttonStyles}
-          aria-label="Sign out from your account"
-        >
-          Sign Out
-        </Button>
-      </div>
-    );
-  }
-  
   return (
-    <div className="hidden md:flex items-center space-x-4">
-      <Button asChild variant="outline" style={buttonStyles}>
-        <Link to="/auth?mode=login" aria-label="Sign in to your account">
-          Sign In
-        </Link>
-      </Button>
-      <Button asChild style={buttonStyles}>
-        <Link to="/auth?mode=signup" aria-label="Create a new account">
-          Sign Up
-        </Link>
-      </Button>
+    <div className="hidden md:flex items-center gap-4">
+      {isAuthenticated ? (
+        <>
+          <Button asChild variant="outline" size="sm">
+            <Link to="/dashboard">Dashboard</Link>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onSignOut}
+            className="flex items-center gap-2"
+          >
+            <LogOut className="h-4 w-4" />
+            <span>Sign Out</span>
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button asChild variant="outline" size="sm">
+            <Link to="/auth?mode=login">Sign In</Link>
+          </Button>
+          <Button asChild size="sm">
+            <Link to="/auth?mode=signup">Sign Up</Link>
+          </Button>
+        </>
+      )}
     </div>
   );
 }
