@@ -1,6 +1,6 @@
 
 import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { HelmetProvider } from 'react-helmet-async';
 import { AccessibilityProvider } from '@/contexts/AccessibilityContext';
@@ -13,6 +13,7 @@ const Auth = React.lazy(() => import('@/pages/Auth'));
 const Dashboard = React.lazy(() => import('@/pages/Dashboard'));
 const PlatformReport = React.lazy(() => import('@/pages/PlatformReport'));
 const NotFound = React.lazy(() => import('@/pages/NotFound'));
+const Docs = React.lazy(() => import('@/pages/Docs'));
 
 // Loading component
 const PageLoader = () => (
@@ -26,20 +27,20 @@ function App() {
     <ErrorBoundary>
       <HelmetProvider>
         <AccessibilityProvider>
-          <Router>
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/dashboard/:type" element={<Dashboard />} />
-                <Route path="/platform-report" element={<PlatformReport />} />
-                <Route path="/404" element={<NotFound />} />
-                <Route path="*" element={<Navigate to="/404" replace />} />
-              </Routes>
-            </Suspense>
-            <Toaster position="top-center" richColors closeButton />
-          </Router>
+          {/* Router removed from here as it's already in main.tsx */}
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard/:type" element={<Dashboard />} />
+              <Route path="/platform-report" element={<PlatformReport />} />
+              <Route path="/docs" element={<Docs />} />
+              <Route path="/404" element={<NotFound />} />
+              <Route path="*" element={<Navigate to="/404" replace />} />
+            </Routes>
+          </Suspense>
+          <Toaster position="top-center" richColors closeButton />
         </AccessibilityProvider>
       </HelmetProvider>
     </ErrorBoundary>
