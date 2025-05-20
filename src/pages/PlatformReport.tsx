@@ -4,8 +4,6 @@ import { Helmet } from "react-helmet-async";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { UXAuditReportView } from "@/components/reports/UXAuditReport";
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { Home } from "lucide-react";
 
 export default function PlatformReport() {
   return (
@@ -19,27 +17,7 @@ export default function PlatformReport() {
       </Helmet>
       <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
-        <main id="main-content" className="flex-grow py-8 container max-w-7xl" tabIndex={-1}>
-          {/* Breadcrumb navigation */}
-          <Breadcrumb className="mb-4">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/">
-                  <Home className="h-4 w-4 mr-1" />
-                  Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/resources">Resources</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink aria-current="page">Platform Audit</BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-          
+        <main className="flex-grow py-8 container max-w-7xl">
           <h1 className="text-3xl font-bold mb-8">Platform UI/UX Audit Report</h1>
           
           <div className="mb-6">

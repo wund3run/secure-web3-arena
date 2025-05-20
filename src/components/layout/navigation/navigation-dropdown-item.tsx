@@ -1,82 +1,73 @@
 
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 import {
-  NavigationMenuItem,
   NavigationMenuContent,
-  NavigationMenuTrigger,
+  NavigationMenuItem,
   NavigationMenuLink,
-} from '@/components/ui/navigation-menu';
-import { cn } from '@/lib/utils';
-import { NavigationLinkItem } from './navigation-links';
-import { useAccessibility } from '@/contexts/AccessibilityContext';
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
+import { type NavigationLinkItem } from "./navigation-links.tsx";
 
 interface NavigationDropdownItemProps {
   title: string;
   items: NavigationLinkItem[];
   isActive: boolean;
   onToggle: () => void;
-  ariaLabel?: string;
 }
 
-export function NavigationDropdownItem({
-  title,
-  items,
-  isActive,
-  onToggle,
-  ariaLabel,
+export function NavigationDropdownItem({ 
+  title, 
+  items, 
+  isActive, 
+  onToggle 
 }: NavigationDropdownItemProps) {
-  const { largeText, reducedMotion } = useAccessibility();
-
-  const linkClasses = "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground";
-
   return (
-    <NavigationMenuItem className="navigation-trigger">
-      <NavigationMenuTrigger
+    <NavigationMenuItem>
+      <NavigationMenuTrigger 
         onClick={onToggle}
-        className={isActive ? 'bg-accent/50' : ''}
-        aria-label={ariaLabel || `${title} navigation menu`}
+        className={cn(
+          'navigation-trigger group relative',
+          isActive ? 'bg-accent text-accent-foreground' : '',
+          "after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:-bottom-1 after:left-0",
+          "after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300",
+          "hover:after:scale-x-100 hover:after:origin-bottom-left"
+        )}
         aria-expanded={isActive}
+        aria-controls={`${title.toLowerCase()}-dropdown`}
+        aria-label={`${title} menu`}
       >
         {title}
       </NavigationMenuTrigger>
-      <NavigationMenuContent>
-        <ul className={cn(
-          "grid gap-3 p-4 min-w-[400px]",
-          items.length > 3 ? "grid-cols-2 w-[500px]" : "w-[400px]"
-        )}>
-          {items.map((item) => (
-            <li key={item.href} className="row-span-1">
-              <NavigationMenuLink asChild>
-                <Link
-                  className={linkClasses}
-                  to={item.href}
-                  aria-label={item.description || item.title}
-                  style={{
-                    transition: reducedMotion ? 'none' : undefined
-                  }}
+      <NavigationMenuContent id={`${title.toLowerCase()}-dropdown`}>
+        <div className="w-[400px] p-4 rounded-md shadow-md border bg-popover">
+          <div className="grid gap-3">
+            {items.map((item) => (
+              <NavigationMenuLink key={item.href} asChild>
+                <Link 
+                  to={item.href} 
+                  className="block p-2 hover:bg-accent hover:text-accent-foreground rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-primary relative group"
+                  aria-label={item.badge ? `${item.title} (${item.badge})` : item.title}
                 >
-                  <div className={largeText ? 'text-base' : 'text-sm'}>
-                    <div className="font-medium">{item.title}</div>
-                    {item.description && (
-                      <p className={cn(
-                        "line-clamp-2 text-muted-foreground",
-                        largeText ? 'text-sm' : 'text-xs'
-                      )}>
-                        {item.description}
-                      </p>
+                  <div className="font-medium flex items-center">
+                    {item.title}
+                    {item.badge && (
+                      <span 
+                        className="ml-2 px-2 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full"
+                        aria-label={item.badge}
+                      >
+                        {item.badge}
+                      </span>
                     )}
                   </div>
-                  {item.badge && (
-                    <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary text-primary-foreground">
-                      {item.badge}
-                    </span>
-                  )}
+                  <div className="text-sm text-muted-foreground">{item.description}</div>
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </Link>
               </NavigationMenuLink>
-            </li>
-          ))}
-        </ul>
+            ))}
+          </div>
+        </div>
       </NavigationMenuContent>
     </NavigationMenuItem>
   );

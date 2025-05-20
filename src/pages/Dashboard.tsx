@@ -7,8 +7,7 @@ import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { PrivateRoute } from '@/components/auth/PrivateRoute';
 import { useAuth } from '@/contexts/auth';
 import { useNavigate, useParams } from 'react-router-dom';
-import { DashboardService } from '@/services/dashboard-service';
-import { SkipToContent } from '@/components/layout/SkipToContent';
+import { toast } from 'sonner';
 
 export default function Dashboard() {
   const { user, userProfile } = useAuth();
@@ -18,32 +17,48 @@ export default function Dashboard() {
   
   useEffect(() => {
     if (user) {
-      DashboardService.handleDashboardRedirect(
-        dashboardType, 
-        user, 
-        userProfile, 
-        navigate
-      );
+      // Determine user role from profile
+      const userType = userProfile?.user_type || user?.user_metadata?.user_type || 'project_owner';
+      const isAuditor = userType === 'auditor';
+      const currentPath = window.location.pathname;
+      
+      // Redirect based on role and current URL
+      if (currentPath === '/dashboard') {
+        if (isAuditor) {
+          toast.info("Redirecting to your Auditor Dashboard");
+          navigate('/dashboard/auditor');
+        } else {
+          toast.info("Redirecting to your Project Dashboard");
+          navigate('/dashboard/project');
+        }
+      }
+      // Strict access control: prevent accessing dashboard they shouldn't
+      else if (
+        (currentPath === '/dashboard/auditor' && !isAuditor) ||
+        (currentPath === '/dashboard/project' && isAuditor)
+      ) {
+        toast.error("Access denied: You don't have permission for this dashboard");
+        
+        // Redirect to the appropriate dashboard
+        if (isAuditor) {
+          navigate('/dashboard/auditor');
+        } else {
+          navigate('/dashboard/project');
+        }
+      }
     }
   }, [user, userProfile, navigate, dashboardType]);
-
-  const dashboardTitle = 
-    dashboardType === 'auditor' ? 'Auditor Dashboard' : 
-    dashboardType === 'project' ? 'Project Dashboard' : 
-    'Dashboard';
 
   return (
     <PrivateRoute>
       <Helmet>
-        <title>{dashboardTitle} | Hawkly</title>
+        <title>{dashboardType === 'auditor' ? 'Auditor' : 'Project'} Dashboard | Hawkly</title>
         <meta name="description" content="View your personalized security dashboard on Hawkly" />
       </Helmet>
       <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
         <div className="flex-grow pt-6 pb-12">
-          <main id="main-content" tabIndex={-1}>
-            <DashboardLayout dashboardType={dashboardType} />
-          </main>
+          <DashboardLayout dashboardType={dashboardType} />
         </div>
         <Footer />
       </div>

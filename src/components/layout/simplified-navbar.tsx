@@ -3,28 +3,15 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { HawklyLogo } from "./hawkly-logo";
 import { useAuth } from "@/contexts/auth";
-import { navigationLinks } from "./navigation/navigation-links";
+import { navigationLinks } from "./navigation/navigation-links.ts";
 import { DesktopNavigation } from "./navigation/desktop-navigation";
 import { MobileNavigation } from "./navigation/mobile-navigation";
 import { AuthButtons } from "./navigation/auth-buttons";
-import { useAccessibility } from "@/contexts/AccessibilityContext";
 
 export function SimplifiedNavbar() {
   const { user, signOut } = useAuth();
-  const { keyboardMode } = useAccessibility();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [isScrolled, setIsScrolled] = useState(false);
-  
-  // Handle scrolling effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
   
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -57,15 +44,15 @@ export function SimplifiedNavbar() {
   
   return (
     <header 
-      className={`sticky top-0 z-40 w-full border-b transition-shadow duration-200 ${isScrolled ? 'shadow-md' : ''} bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60`}
+      className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
       role="banner"
     >
-      <div className="container flex h-14 md:h-16 items-center justify-between">
+      <div className="container flex h-14 items-center justify-between">
         <div className="flex items-center">
           <Link 
             to="/" 
-            className={`focus-outline-none rounded ${keyboardMode ? 'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2' : ''}`}
-            aria-label="Hawkly Home page"
+            className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded"
+            aria-label="Home page"
           >
             <HawklyLogo asLink={false} />
           </Link>

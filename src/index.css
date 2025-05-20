@@ -2,141 +2,333 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 224 71.4% 4.1%;
-
+    --background: 0 0% 100%; /* Pure white background */
+    --foreground: 222 47% 11%; /* Dark text for contrast */
+    
+    --primary: 262 57% 45%; /* Main purple #8A73E2 */
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 187 100% 42%; /* Teal #33C3F0 */
+    --secondary-foreground: 0 0% 100%;
+    
+    --accent: 14 100% 57%; /* Bright orange */
+    --accent-foreground: 0 0% 100%;
+    
     --card: 0 0% 100%;
-    --card-foreground: 224 71.4% 4.1%;
- 
+    --card-foreground: 222 47% 11%;
+    
     --popover: 0 0% 100%;
-    --popover-foreground: 224 71.4% 4.1%;
- 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
- 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
- 
-    --muted: 220 14.3% 95.9%;
-    --muted-foreground: 220 8.9% 46.1%;
- 
-    --accent: 220 14.3% 95.9%;
-    --accent-foreground: 222.2 47.4% 11.2%;
- 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 224 71.4% 4.1%;
- 
-    --radius: 0.5rem;
-
-    --web3-orange: 21 100% 50%;
+    --popover-foreground: 222 47% 11%;
+    
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 36.9%; /* Improved contrast from 46.9% */
+    
+    --border: 214.3 31.8% 81.4%; /* Improved contrast from 91.4% */
+    --input: 214.3 31.8% 81.4%;
+    --ring: 262 57% 45%;
+    
+    --radius: 0.75rem;
+    
+    --web3-purple: 262 57% 45%; /* Main purple #8A73E2 */
+    --web3-purple-dark: 252 28% 45%; /* Darker purple #5c46a1 - improved contrast */
+    --web3-teal: 187 100% 40%; /* Teal #28a7d3 - slightly darker for contrast */
+    --web3-orange: 14 100% 57%;
+    --web3-gray: 220 14% 45%; /* Gray for tagline - improved contrast */
   }
- 
+  
+  /* Dark theme root colors */
   .dark {
-    --background: 224 71.4% 4.1%;
+    --background: 222 47% 11%;
     --foreground: 210 40% 98%;
- 
-    --card: 224 71.4% 4.1%;
+    
+    --card: 222 47% 14%;
     --card-foreground: 210 40% 98%;
- 
-    --popover: 224 71.4% 4.1%;
+    
+    --popover: 222 47% 14%;
     --popover-foreground: 210 40% 98%;
- 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
- 
-    --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 210 40% 98%;
- 
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 217.9 10.6% 64.9%;
- 
-    --accent: 215 27.9% 16.9%;
-    --accent-foreground: 210 40% 98%;
- 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
- 
-    --border: 215 27.9% 16.9%;
-    --input: 215 27.9% 16.9%;
-    --ring: 216 12.2% 83.9%;
+    
+    --primary: 262 57% 65%; /* Lighter purple for dark mode */
+    --primary-foreground: 222 47% 11%;
+    
+    --secondary: 187 90% 50%; /* Brighter teal for dark mode */
+    --secondary-foreground: 222 47% 11%;
+    
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    --accent: 14 100% 67%; /* Brighter orange for dark mode */
+    --accent-foreground: 222 47% 11%;
+    
+    --border: 217.2 32.6% 30%; /* Higher contrast border for dark mode */
+    --input: 217.2 32.6% 30%;
+    --ring: 262 57% 65%;
   }
-}
- 
-@layer base {
-  * {
-    @apply border-border;
+  
+  /* Enhanced Standardized headings with improved visual hierarchy */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium leading-tight mb-4;
   }
-  body {
-    @apply bg-background text-foreground;
+  
+  h1 {
+    @apply text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight;
   }
-}
+  
+  h2 {
+    @apply text-2xl md:text-3xl font-bold tracking-tight;
+  }
+  
+  h3 {
+    @apply text-xl md:text-2xl font-semibold;
+  }
+  
+  h4 {
+    @apply text-lg md:text-xl font-medium;
+  }
+  
+  /* Standardized section containers for consistent spacing */
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20;
+  }
+  
+  /* Section headings with consistent styling */
+  .section-heading {
+    @apply text-2xl md:text-3xl font-bold mb-6 text-center;
+  }
+  
+  .subsection-heading {
+    @apply text-xl md:text-2xl font-semibold mb-4;
+  }
+  
+  /* Enhanced list styles */
+  .standardized-list {
+    @apply space-y-3 my-3;
+  }
+  
+  .standardized-list-item {
+    @apply flex gap-2;
+  }
+  
+  .standardized-list-item:before {
+    content: "";
+    @apply block h-2 w-2 rounded-full bg-primary mt-2 flex-shrink-0;
+  }
+  
+  /* Feature card consistent styling */
+  .feature-card {
+    @apply bg-card p-6 rounded-lg border border-border/30 shadow-sm hover:shadow-md transition-all duration-300;
+  }
+  
+  /* CTA button styles */
+  .cta-primary {
+    @apply bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white font-medium px-6 py-3 rounded-md shadow-md focus:ring-2 focus:ring-primary/50 focus:outline-none;
+  }
+  
+  .cta-secondary {
+    @apply border-primary text-primary hover:bg-primary/10 px-6 py-3 rounded-md focus:ring-2 focus:ring-primary/50 focus:outline-none;
+  }
+  
+  /* Stats display */
+  .stat-card {
+    @apply p-4 bg-card rounded-lg border border-border/30 flex flex-col;
+  }
+  
+  .stat-value {
+    @apply text-2xl font-bold;
+  }
+  
+  .stat-label {
+    @apply text-sm text-muted-foreground;
+  }
+  
+  /* Badge styles */
+  .feature-badge {
+    @apply inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-medium;
+  }
+  
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-md;
+  }
 
-/* Accessibility styles */
-.high-contrast {
-  --primary: 240 100% 50%;
-  --background: 0 0% 100%;
-  --foreground: 0 0% 0%;
-  --muted: 0 0% 96%;
-  --muted-foreground: 0 0% 40%;
-  --card: 0 0% 97%;
-  --border: 0 0% 40%;
-}
+  /* Service card specific styles to match screenshot */
+  .service-card {
+    @apply border border-border/30 hover:border-primary/50 transition-all duration-300 rounded-lg overflow-hidden;
+  }
+  
+  .service-provider {
+    @apply flex items-center gap-1 text-sm;
+  }
+  
+  .service-tag {
+    @apply bg-primary/5 border border-primary/20 px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .response-time {
+    @apply bg-sky-100/80 text-sky-700 backdrop-blur-sm px-2 py-0.5 rounded-full text-xs;
+  }
+  
+  .view-details-btn {
+    @apply bg-indigo-600 hover:bg-indigo-700 text-white text-sm py-1.5 px-3 rounded flex items-center gap-1;
+  }
 
-.high-contrast .text-muted-foreground {
-  @apply text-gray-800;
-}
+  /* Accessibility improvements */
+  .sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+  }
 
-.large-text {
-  font-size: 110%;
-}
+  /* Skip to content link for keyboard users */
+  .skip-link {
+    @apply bg-white text-primary font-medium py-2 px-4 rounded-md absolute top-0 left-0 -translate-y-full focus:translate-y-0 z-50 focus:outline-none focus:ring-2 focus:ring-primary/50;
+  }
 
-.large-text h1 {
-  font-size: 2.5rem;
-}
-
-.large-text h2 {
-  font-size: 2rem;
-}
-
-.large-text button, .large-text .btn {
-  font-size: 1.1rem;
-}
-
-.large-text input, .large-text select, .large-text textarea {
-  font-size: 1.1rem;
-  height: auto;
-}
-
-.keyboard-mode :focus-visible {
-  @apply outline-none ring-2 ring-primary ring-offset-2;
-}
-
-.reduced-motion * {
-  transition-duration: 0.05s !important;
-  animation-duration: 0.05s !important;
-}
-
-/* Skip to content link styles - visible only when focused */
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  padding: 8px;
-  background: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
-  z-index: 100;
-  transition: top 0.3s;
-}
-
-.skip-link.focus-visible {
-  top: 0;
-  outline: none;
-  box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--primary));
+  /* Table accessibility */
+  table {
+    @apply border-collapse;
+  }
+  
+  /* Interactive elements - new */
+  .interactive-element {
+    @apply transition-all duration-200 cursor-pointer;
+  }
+  
+  /* Hover lift effect for cards */
+  .hover-lift {
+    @apply transition-all duration-300 ease-in-out hover:-translate-y-1;
+  }
+  
+  /* Button with pulse effect */
+  .pulse-button {
+    @apply relative overflow-hidden;
+  }
+  
+  .pulse-button::after {
+    @apply content-[''] absolute inset-0 bg-white opacity-0 rounded-md;
+    animation: pulse 2s ease-out 0.5s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(0.95); opacity: 0; }
+    5% { opacity: 0.1; }
+    30% { opacity: 0; transform: scale(1.5); }
+    100% { transform: scale(2.5); opacity: 0; }
+  }
+  
+  /* Enhanced card with hover feedback */
+  .interactive-card {
+    @apply transition-all duration-300 hover:shadow-md hover:border-primary/30 rounded-lg;
+  }
+  
+  /* ========== ACCESSIBILITY STYLES ========== */
+  
+  /* High contrast mode */
+  .high-contrast {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --muted: 0 0% 90%;
+    --muted-foreground: 0 0% 0%;
+    --border: 0 0% 0%;
+    --primary: 240 100% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 200 100% 40%;
+    --secondary-foreground: 0 0% 100%;
+  }
+  
+  .high-contrast a {
+    @apply underline;
+  }
+  
+  .high-contrast button:focus,
+  .high-contrast a:focus,
+  .high-contrast input:focus,
+  .high-contrast select:focus,
+  .high-contrast textarea:focus {
+    @apply outline-black outline-2 outline-offset-4 ring-0;
+  }
+  
+  /* Large text mode */
+  .large-text {
+    font-size: 120% !important;
+    line-height: 1.5 !important;
+  }
+  
+  /* Keyboard mode for better focus visibility */
+  .keyboard-mode :focus {
+    @apply outline-none ring-2 ring-primary/70 ring-offset-2;
+  }
+  
+  .keyboard-mode :focus-visible {
+    @apply outline-none ring-2 ring-primary/70 ring-offset-2;
+  }
+  
+  /* Reduced motion */
+  .reduced-motion * {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Screen reader friendly mode */
+  .screen-reader-friendly [aria-hidden="true"] {
+    @apply hidden;
+  }
+  
+  .screen-reader-friendly button,
+  .screen-reader-friendly a {
+    @apply relative;
+  }
+  
+  .screen-reader-friendly button:focus::after,
+  .screen-reader-friendly a:focus::after {
+    content: attr(aria-label);
+    @apply sr-only;
+  }
+  
+  /* Focus visible mode - always show focus rings */
+  .focus-visible-mode :focus {
+    @apply outline-none ring-2 ring-primary/50 ring-offset-2;
+  }
+  
+  /* === Input & Control Accessibility === */
+  
+  /* Ensure inputs have sufficient padding */
+  input, 
+  select, 
+  textarea {
+    @apply px-3 py-2;
+  }
+  
+  /* Make sure checkboxes and radio buttons have appropriate size */
+  input[type="checkbox"],
+  input[type="radio"] {
+    @apply h-4 w-4;
+  }
+  
+  /* Larger touch targets on mobile */
+  @media (max-width: 640px) {
+    button, 
+    a, 
+    [role="button"],
+    input[type="submit"],
+    input[type="reset"],
+    input[type="button"] {
+      @apply min-h-[44px] min-w-[44px];
+    }
+    
+    input, 
+    select, 
+    textarea {
+      @apply py-3;
+    }
+  }
+  
+  /* Dark mode adjustments for better contrast */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --muted-foreground: 215.4 16.3% 75%; /* Even better contrast in dark mode */
+    }
+  }
 }

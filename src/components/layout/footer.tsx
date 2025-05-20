@@ -1,133 +1,126 @@
 
-import React from "react";
-import { HawklyLogo } from "./hawkly-logo";
+import { Shield, Twitter, Github, MessageSquare, Globe, AlertCircle, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Shield } from "lucide-react";
+import { HawklyLogo } from "./hawkly-logo";
+import { routeExists, getFallbackRoute } from "@/utils/navigation";
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
-  
+  const handleNavigation = (path: string) => {
+    return routeExists(path) ? path : getFallbackRoute(path);
+  };
+
   return (
-    <footer className="bg-background border-t py-8 md:py-12">
-      <div className="container px-4 md:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="md:col-span-1">
-            <HawklyLogo />
-            <p className="mt-2 text-sm text-muted-foreground max-w-xs">
-              Securing Web3 projects with expert audits and comprehensive security solutions
+    <footer className="bg-background border-t border-border/40 pt-12 pb-6" role="contentinfo">
+      {/* Beta Platform Notice */}
+      <div className="container mb-10">
+        <div className="p-6 bg-amber-50 rounded-lg border border-amber-200">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="h-6 w-6 text-amber-500 flex-shrink-0 mt-1" />
+            <div>
+              <h2 className="text-lg font-medium text-amber-800">Beta Platform Notice</h2>
+              <p className="mt-1 text-amber-700">
+                Hawkly is currently in beta. While we continuously improve the platform, some features may not be fully operational or may contain bugs. 
+                We appreciate your feedback during this phase. Please review our {" "}
+                <Link to="/terms" className="text-primary underline hover:text-primary/80">Terms of Service</Link>{" "}
+                and {" "}
+                <Link to="/security-policy" className="text-primary underline hover:text-primary/80">Security Policy</Link>{" "}
+                for limitations and capabilities.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div className="container">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+          {/* Logo and description column */}
+          <div className="col-span-1">
+            <HawklyLogo variant="default" />
+            <p className="mt-4 text-muted-foreground">
+              The leading Web3 security marketplace connecting projects with top security experts. 
+              Protecting blockchain assets through expert audits and continuous security monitoring.
             </p>
+            
+            {/* Social links */}
+            <div className="flex items-center space-x-4 mt-6">
+              <a href="https://twitter.com/hawkly" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="text-muted-foreground hover:text-foreground">
+                <Twitter className="h-5 w-5" />
+              </a>
+              <a href="https://github.com/hawkly" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="text-muted-foreground hover:text-foreground">
+                <Github className="h-5 w-5" />
+              </a>
+              <a href="https://discord.gg/hawkly" target="_blank" rel="noopener noreferrer" aria-label="Discord" className="text-muted-foreground hover:text-foreground">
+                <MessageSquare className="h-5 w-5" />
+              </a>
+              <a href="https://hawkly.com" target="_blank" rel="noopener noreferrer" aria-label="Website" className="text-muted-foreground hover:text-foreground">
+                <Globe className="h-5 w-5" />
+              </a>
+            </div>
+            
+            {/* Email */}
+            <div className="mt-6 flex items-center">
+              <Mail className="h-5 w-5 text-muted-foreground mr-2" />
+              <a href="mailto:join@hawkly.com" className="text-muted-foreground hover:text-foreground">
+                join@hawkly.com
+              </a>
+            </div>
           </div>
           
-          <div>
-            <h3 className="font-medium mb-3">Platform</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link to="/marketplace" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Marketplace
-                </Link>
-              </li>
-              <li>
-                <Link to="/audits/find" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Find Auditors
-                </Link>
-              </li>
-              <li>
-                <Link to="/request-audit" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Request Audit
-                </Link>
-              </li>
-              <li>
-                <Link to="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Pricing
-                </Link>
-              </li>
+          {/* Marketplace column */}
+          <div className="col-span-1">
+            <h3 className="font-medium mb-4 text-lg">MARKETPLACE</h3>
+            <ul className="space-y-3">
+              <li><Link to="/marketplace" className="text-muted-foreground hover:text-foreground">Browse Services</Link></li>
+              <li><Link to="/audits" className="text-muted-foreground hover:text-foreground">Find Auditors</Link></li>
+              <li><Link to="/submit-service" className="text-muted-foreground hover:text-foreground">Create Listing</Link></li>
+              <li><Link to="/request-audit" className="text-muted-foreground hover:text-foreground">Security Requests</Link></li>
             </ul>
           </div>
           
-          <div>
-            <h3 className="font-medium mb-3">Resources</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link to="/docs" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Documentation
-                </Link>
-              </li>
-              <li>
-                <Link to="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Security Blog
-                </Link>
-              </li>
-              <li>
-                <Link to="/templates" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Audit Templates
-                </Link>
-              </li>
-              <li>
-                <Link to="/forum" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Community Forum
-                </Link>
-              </li>
+          {/* Community column */}
+          <div className="col-span-1">
+            <h3 className="font-medium mb-4 text-lg">COMMUNITY</h3>
+            <ul className="space-y-3">
+              <li><Link to="/leaderboard" className="text-muted-foreground hover:text-foreground">Leaderboard</Link></li>
+              <li><Link to="/achievements" className="text-muted-foreground hover:text-foreground">Achievements</Link></li>
+              <li><Link to="/events" className="text-muted-foreground hover:text-foreground">Security Events</Link></li>
+              <li><Link to="/forum" className="text-muted-foreground hover:text-foreground">Community Forum</Link></li>
+              <li><Link to="/challenges" className="text-muted-foreground hover:text-foreground">Security Challenges</Link></li>
             </ul>
           </div>
           
-          <div>
-            <h3 className="font-medium mb-3">Company</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">
-                  About Hawkly
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Terms of Service
-                </Link>
-              </li>
-              <li>
-                <Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
+          {/* Resources column */}
+          <div className="col-span-1">
+            <h3 className="font-medium mb-4 text-lg">RESOURCES</h3>
+            <ul className="space-y-3">
+              <li><Link to="/docs" className="text-muted-foreground hover:text-foreground">Documentation</Link></li>
+              <li><Link to="/blog" className="text-muted-foreground hover:text-foreground">Security Blog</Link></li>
+              <li><Link to="/vulnerabilities" className="text-muted-foreground hover:text-foreground">Vulnerability Database</Link></li>
+              <li><Link to="/audit-guidelines" className="text-muted-foreground hover:text-foreground">Security Guidelines</Link></li>
+              <li><Link to="/resources" className="text-muted-foreground hover:text-foreground">Resource Center</Link></li>
             </ul>
           </div>
         </div>
         
-        <div className="mt-8 pt-6 border-t flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center text-sm text-muted-foreground">
-            <Shield className="h-4 w-4 mr-2" />
-            <span>&copy; {currentYear} Hawkly Security. All rights reserved.</span>
-          </div>
-          
-          <div className="flex space-x-6">
-            <a href="https://twitter.com/hawklysecurity" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Twitter">
-              <span className="sr-only">Twitter</span>
-              {/* Twitter Icon */}
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-twitter">
-                <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
-              </svg>
-            </a>
-            <a href="https://github.com/hawklysecurity" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="GitHub">
-              <span className="sr-only">GitHub</span>
-              {/* GitHub Icon */}
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-github">
-                <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-                <path d="M9 18c-4.51 2-5-2-7-2" />
-              </svg>
-            </a>
-            <a href="https://linkedin.com/company/hawklysecurity" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="LinkedIn">
-              <span className="sr-only">LinkedIn</span>
-              {/* LinkedIn Icon */}
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-linkedin">
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                <rect width="4" height="12" x="2" y="9" />
-                <circle cx="4" cy="4" r="2" />
-              </svg>
-            </a>
+        <div className="mt-12 pt-6 border-t border-border/40">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div className="text-sm text-muted-foreground">
+              &copy; {new Date().getFullYear()} Hawkly. All rights reserved.
+            </div>
+            <div className="flex flex-wrap justify-center gap-6">
+              <Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground">
+                Terms
+              </Link>
+              <Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground">
+                Privacy
+              </Link>
+              <Link to="/security-policy" className="text-sm text-muted-foreground hover:text-foreground">
+                Security Policy
+              </Link>
+              <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground">
+                Contact
+              </Link>
+            </div>
           </div>
         </div>
       </div>

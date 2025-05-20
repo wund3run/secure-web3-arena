@@ -1,41 +1,35 @@
 
-import React from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Navbar } from '@/components/layout/navbar';
-import { Footer } from '@/components/layout/footer';
-import { SkipToContent } from '@/components/layout/SkipToContent';
+import React from "react";
+import { Helmet } from "react-helmet-async";
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
+import { SkipToContent } from "@/components/layout/SkipToContent";
 
 interface ContentPageProps {
   title: string;
   description: string;
   children: React.ReactNode;
-  wide?: boolean;
 }
 
-export function ContentPage({ 
-  title, 
-  description, 
-  children,
-  wide = false
-}: ContentPageProps) {
+export function ContentPage({ title, description, children }: ContentPageProps) {
   return (
     <>
       <Helmet>
-        <title>{title} | Hawkly</title>
+        <title>{title} | Hawkly Web3 Security Marketplace</title>
         <meta name="description" content={description} />
+        <meta property="og:title" content={`${title} | Hawkly`} />
+        <meta property="og:description" content={description} />
+        <meta name="twitter:title" content={`${title} | Hawkly`} />
+        <meta name="twitter:description" content={description} />
       </Helmet>
       <div className="min-h-screen bg-background flex flex-col">
         <SkipToContent targetId="main-content" />
         <Navbar />
-        <div className="flex-grow py-8 md:py-12">
-          <main 
-            id="main-content" 
-            tabIndex={-1}
-            className={`container px-4 md:px-6 ${wide ? '' : 'max-w-4xl'} mx-auto`}
-          >
+        <main id="main-content" className="flex-grow container py-12" tabIndex={-1}>
+          <div className="prose prose-lg max-w-none">
             {children}
-          </main>
-        </div>
+          </div>
+        </main>
         <Footer />
       </div>
     </>
