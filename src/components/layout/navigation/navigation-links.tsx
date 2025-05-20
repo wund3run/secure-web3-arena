@@ -1,5 +1,5 @@
 
-// Define the NavigationLinkItem interface directly instead of importing it
+// Define the NavigationLinkItem interface and export it
 export interface NavigationLinkItem {
   title: string;
   href: string;
@@ -7,6 +7,7 @@ export interface NavigationLinkItem {
   badge?: string;
 }
 
+// Export the navigation structure interface
 export interface NavigationLinksStructure {
   marketplace: NavigationLinkItem[];
   audits: NavigationLinkItem[];
