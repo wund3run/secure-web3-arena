@@ -35,7 +35,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { TermsOfService } from "@/components/layout/TermsOfService";
 import { CodeOfConduct } from "@/components/layout/CodeOfConduct";
 
-export function ServiceProviderOnboardingForm() {
+interface ServiceProviderOnboardingFormProps {
+  providerType: "auditor" | "service";
+}
+
+export function ServiceProviderOnboardingForm({ providerType = "auditor" }: ServiceProviderOnboardingFormProps) {
   const { signUp } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -94,9 +98,9 @@ export function ServiceProviderOnboardingForm() {
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
-        <CardTitle>Service Provider Onboarding</CardTitle>
+        <CardTitle>{providerType === "auditor" ? "Auditor" : "Service Provider"} Onboarding</CardTitle>
         <CardDescription>
-          Fill out the form below to apply as a service provider on our
+          Fill out the form below to apply as a {providerType === "auditor" ? "security auditor" : "service provider"} on our
           platform.
         </CardDescription>
       </CardHeader>
@@ -367,7 +371,7 @@ export function ServiceProviderOnboardingForm() {
             <div className="grid gap-1.5 leading-none">
               <Label htmlFor="terms">
                 I agree to the{" "}
-                <Dialog>
+                <Dialog open={isTermsOpen} onOpenChange={setIsTermsOpen}>
                   <DialogTrigger asChild>
                     <Button variant="link" className="px-0 font-normal">
                       Terms of Service
@@ -380,7 +384,10 @@ export function ServiceProviderOnboardingForm() {
                         Please read our terms of service carefully.
                       </DialogDescription>
                     </DialogHeader>
-                    <TermsOfService />
+                    <TermsOfService onAccept={() => {
+                      form.setValue("agreesToTerms", true);
+                      setIsTermsOpen(false);
+                    }} />
                   </DialogContent>
                 </Dialog>
               </Label>
@@ -398,7 +405,7 @@ export function ServiceProviderOnboardingForm() {
             <div className="grid gap-1.5 leading-none">
               <Label htmlFor="codeOfConduct">
                 I agree to the{" "}
-                <Dialog>
+                <Dialog open={isCodeOfConductOpen} onOpenChange={setIsCodeOfConductOpen}>
                   <DialogTrigger asChild>
                     <Button variant="link" className="px-0 font-normal">
                       Code of Conduct
@@ -411,7 +418,10 @@ export function ServiceProviderOnboardingForm() {
                         Please read our code of conduct carefully.
                       </DialogDescription>
                     </DialogHeader>
-                    <CodeOfConduct />
+                    <CodeOfConduct onAccept={() => {
+                      form.setValue("agreesToCodeOfConduct", true);
+                      setIsCodeOfConductOpen(false);
+                    }} />
                   </DialogContent>
                 </Dialog>
               </Label>

@@ -1,22 +1,22 @@
 
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  BoldIcon,
-  MoonIcon,
-  SunIcon,
-  ZoomInIcon,
-  ZoomOutIcon,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { BoldIcon, Type, Sun, Moon, PanelLeft } from "lucide-react"; // Fixed FontBoldIcon to BoldIcon
 
 interface AccessibilityMenuProps {
   open?: boolean;
@@ -24,155 +24,98 @@ interface AccessibilityMenuProps {
 }
 
 export function AccessibilityMenu({ open, onOpenChange }: AccessibilityMenuProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [fontSize, setFontSize] = useState(100);
   const [highContrast, setHighContrast] = useState(false);
-  const [largeText, setLargeText] = useState(false);
-  const [reduceMotion, setReduceMotion] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [dyslexiaFont, setDyslexiaFont] = useState(false);
 
-  // Use controlled or uncontrolled state
-  const isDialogOpen = open !== undefined ? open : isOpen;
-  const handleOpenChange = onOpenChange || setIsOpen;
+  const handleFontSizeChange = (value: number[]) => {
+    setFontSize(value[0]);
+    document.documentElement.style.fontSize = `${value[0]}%`;
+  };
 
   const toggleHighContrast = () => {
     setHighContrast(!highContrast);
-    document.documentElement.classList.toggle("high-contrast");
+    document.documentElement.classList.toggle("high-contrast-mode");
   };
 
-  const toggleLargeText = () => {
-    setLargeText(!largeText);
-    document.documentElement.classList.toggle("large-text");
-  };
-
-  const toggleReduceMotion = () => {
-    setReduceMotion(!reduceMotion);
-    document.documentElement.classList.toggle("reduce-motion");
-  };
-
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    document.documentElement.classList.remove("light", "dark");
-    document.documentElement.classList.add(newTheme);
+  const toggleDyslexiaFont = () => {
+    setDyslexiaFont(!dyslexiaFont);
+    document.documentElement.classList.toggle("dyslexia-friendly");
   };
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Accessibility Settings</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            <PanelLeft className="h-5 w-5" />
+            Accessibility Options
+          </DialogTitle>
           <DialogDescription>
-            Customize your experience to make the site more accessible for your needs.
+            Customize the website to improve your experience
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <h3 className="font-medium">High Contrast</h3>
-              <p className="text-sm text-muted-foreground">
-                Increase contrast for better text visibility
-              </p>
+          <div>
+            <h3 className="mb-3 text-sm font-medium">Text Size</h3>
+            <div className="flex items-center gap-4">
+              <Type className="h-4 w-4" />
+              <Slider
+                value={[fontSize]}
+                min={75}
+                max={150}
+                step={5}
+                onValueChange={handleFontSizeChange}
+                className="flex-1"
+              />
+              <Type className="h-6 w-6" />
             </div>
-            <Button
-              variant={highContrast ? "default" : "outline"}
-              size="sm"
-              onClick={toggleHighContrast}
-              className={cn(
-                "w-14",
-                highContrast && "bg-primary text-primary-foreground"
-              )}
-            >
-              {highContrast ? "On" : "Off"}
-            </Button>
+            <span className="text-xs text-muted-foreground mt-1 block">
+              Current: {fontSize}%
+            </span>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <h3 className="font-medium">Large Text</h3>
-              <p className="text-sm text-muted-foreground">
-                Increase font size throughout the site
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => {
-                  if (largeText) {
-                    toggleLargeText();
-                  }
-                }}
-                disabled={!largeText}
-                className="w-8 h-8 text-xs"
-              >
-                <ZoomOutIcon className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => {
-                  if (!largeText) {
-                    toggleLargeText();
-                  }
-                }}
-                disabled={largeText}
-                className="w-8 h-8 text-xs"
-              >
-                <ZoomInIcon className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+          <div className="flex gap-2 flex-wrap">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={highContrast ? "default" : "outline"}
+                    size="sm"
+                    onClick={toggleHighContrast}
+                    className="flex-1"
+                  >
+                    {highContrast ? <Sun /> : <Moon />}
+                    <span className="ml-2">High Contrast</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Increase color contrast for better readability</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <h3 className="font-medium">Reduce Motion</h3>
-              <p className="text-sm text-muted-foreground">
-                Minimize animations throughout the site
-              </p>
-            </div>
-            <Button
-              variant={reduceMotion ? "default" : "outline"}
-              size="sm"
-              onClick={toggleReduceMotion}
-              className={cn(
-                "w-14",
-                reduceMotion && "bg-primary text-primary-foreground"
-              )}
-            >
-              {reduceMotion ? "On" : "Off"}
-            </Button>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <h3 className="font-medium">Theme</h3>
-              <p className="text-sm text-muted-foreground">
-                Switch between light and dark theme
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleTheme}
-              className="w-20"
-            >
-              {theme === "light" ? (
-                <>
-                  <MoonIcon className="mr-2 h-4 w-4" /> Dark
-                </>
-              ) : (
-                <>
-                  <SunIcon className="mr-2 h-4 w-4" /> Light
-                </>
-              )}
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={dyslexiaFont ? "default" : "outline"}
+                    size="sm"
+                    onClick={toggleDyslexiaFont}
+                    className="flex-1"
+                  >
+                    <BoldIcon />
+                    <span className="ml-2">Dyslexia Font</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Use a font that's easier to read for people with dyslexia</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
-
-        <DialogFooter>
-          <Button onClick={() => handleOpenChange(false)}>Save Settings</Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

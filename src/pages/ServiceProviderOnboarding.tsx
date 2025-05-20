@@ -8,10 +8,10 @@ import { OnboardingBenefits } from "@/components/service-provider/OnboardingBene
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ServiceProviderOnboarding = () => {
-  const [activeTab, setActiveTab] = useState<string>("auditor");
+  const [activeTab, setActiveTab] = useState<"auditor" | "service">("auditor");
 
   const handleTabChange = (value: string) => {
-    setActiveTab(value);
+    setActiveTab(value as "auditor" | "service");
   };
 
   return (
@@ -62,7 +62,7 @@ const ServiceProviderOnboarding = () => {
                   </TabsContent>
                 </Tabs>
 
-                <ServiceProviderOnboardingForm providerType={activeTab as "auditor" | "service"} />
+                <ServiceProviderOnboardingForm providerType={activeTab} />
               </div>
             </div>
           </div>

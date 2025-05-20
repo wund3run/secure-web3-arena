@@ -8,7 +8,7 @@ import { OnboardingBenefits } from "@/components/service-provider/OnboardingBene
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ServiceProviderOnboarding = () => {
-  const [activeTab, setActiveTab] = useState<string>("auditor");
+  const [activeTab, setActiveTab] = useState<"auditor" | "service">("auditor");
 
   return (
     <>
@@ -39,7 +39,7 @@ const ServiceProviderOnboarding = () => {
             
             <div className="lg:col-span-7">
               <div className="bg-white/80 backdrop-blur-md rounded-xl shadow-xl border border-border/40 p-6">
-                <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="mb-8">
+                <Tabs defaultValue={activeTab} onValueChange={(value) => setActiveTab(value as "auditor" | "service")} className="mb-8">
                   <TabsList className="grid grid-cols-2 w-full">
                     <TabsTrigger value="auditor">Independent Auditor</TabsTrigger>
                     <TabsTrigger value="service">Security Service Provider</TabsTrigger>
@@ -58,7 +58,7 @@ const ServiceProviderOnboarding = () => {
                   </TabsContent>
                 </Tabs>
 
-                <ServiceProviderOnboardingForm providerType={activeTab as "auditor" | "service"} />
+                <ServiceProviderOnboardingForm providerType={activeTab} />
               </div>
             </div>
           </div>
