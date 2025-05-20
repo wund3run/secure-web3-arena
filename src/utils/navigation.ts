@@ -65,8 +65,7 @@ export const extractRoutesFromApp = (): string[] => {
     "/templates",
     "/guides",
     "/tutorials",
-    "/user-journey-mapping",
-    "/roadmap" // Added new route
+    "/roadmap" 
   ];
 };
 
@@ -103,10 +102,6 @@ export const getFallbackRoute = (path: string): string => {
     "/tutorial": "/tutorials",
     "/video": "/tutorials",
     "/videos": "/tutorials",
-    "/user-journey": "/user-journey-mapping",
-    "/journey": "/user-journey-mapping",
-    "/journey-map": "/user-journey-mapping",
-    "/user-path": "/user-journey-mapping",
     "/product-roadmap": "/roadmap",
     "/future": "/roadmap",
     "/upcoming": "/roadmap",
@@ -127,7 +122,6 @@ export const getRouteType = (path: string): string => {
   if (path.includes('/marketplace') || path === '/') return 'marketplace';
   if (path.includes('/audit')) return 'audit';
   if (path.includes('/dashboard')) return 'dashboard';
-  if (path.includes('/user-journey')) return 'planning';
   if (path.includes('/roadmap')) return 'planning';
   if (['/resources', '/docs', '/blog', '/web3-security', '/guides', '/tutorials', '/knowledge-base', '/faq', '/templates'].includes(path)) return 'educational';
   

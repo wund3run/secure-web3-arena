@@ -1,5 +1,5 @@
 
-import { ValidationIssue } from "@/utils/validation/types";
+import { ValidationIssue, StakeholderType } from "@/utils/validation/types";
 import { handleAccessibilityError } from "@/utils/error-handling/accessibilityErrorHandler";
 
 /**
@@ -58,6 +58,18 @@ export const getIssueSummary = (issues: ValidationIssue[]): string => {
   }
   
   return `Found ${high} high, ${medium} medium, and ${low} low severity issues.`;
+};
+
+/**
+ * Filter issues by affected stakeholder type
+ */
+export const filterIssuesByStakeholder = (
+  issues: ValidationIssue[],
+  stakeholderType: StakeholderType
+): ValidationIssue[] => {
+  return issues.filter(issue => 
+    issue.affectedStakeholders?.includes(stakeholderType)
+  );
 };
 
 /**

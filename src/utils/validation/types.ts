@@ -9,8 +9,8 @@ export type ValidationIssue = {
   description: string;
   location: string;
   suggestion?: string;
-  affectedStakeholders?: ('auditor' | 'project-owner' | 'admin' | 'general')[];
-  wcagCriterion?: string; // Added this property for accessibility validation
+  affectedStakeholders?: StakeholderType[];
+  wcagCriterion?: string; // Accessibility validation property
 };
 
 export type ValidationResult = {
@@ -19,3 +19,12 @@ export type ValidationResult = {
 };
 
 export type StakeholderType = 'auditor' | 'project-owner' | 'admin' | 'general';
+
+// Add stakeholder-specific needs and preferences
+export type StakeholderProfile = {
+  type: StakeholderType;
+  primaryGoals: string[];
+  keyMetrics: string[];
+  preferredFeatures: string[];
+  commonJourney: string[];
+};

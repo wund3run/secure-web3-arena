@@ -9,6 +9,35 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          action: string
+          audit_request_id: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          action: string
+          audit_request_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          action?: string
+          audit_request_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_log_audit_request_id_fkey"
+            columns: ["audit_request_id"]
+            isOneToOne: false
+            referencedRelation: "audit_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_requests: {
         Row: {
           audit_scope: string | null
@@ -574,7 +603,54 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      add_audit_request: {
+        Args: {
+          client_id: string
+          project_name: string
+          project_description: string
+          blockchain: string
+          repository_url: string
+          contract_count: number
+          lines_of_code: number
+          deadline: string
+          budget: number
+          audit_scope: string
+          previous_audits: boolean
+          specific_concerns: string
+        }
+        Returns: string
+      }
+      add_dispute_comment: {
+        Args: { dispute_id: string; user_id: string; comment: string }
+        Returns: string
+      }
+      get_all_services: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          provider_id: string
+          title: string
+          description: string
+          category: string
+          price_range: Json
+          delivery_time: number
+          blockchain_ecosystems: string[]
+          tags: string[]
+          featured: boolean
+          average_rating: number
+          review_count: number
+          created_at: string
+          updated_at: string
+        }[]
+      }
+      get_user_profile: {
+        Args: Record<PropertyKey, never> | { user_id: number }
+        Returns: undefined
+      }
+      update_dispute_status: {
+        Args: { dispute_id: string; new_status: string }
+        Returns: undefined
+      }
     }
     Enums: {
       dispute_status: "opened" | "in_review" | "resolved" | "closed"
