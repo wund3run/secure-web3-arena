@@ -10,6 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 import { NavigationDropdownItem } from "./navigation-dropdown-item";
 import { navigationLinks } from "./navigation-links.ts";
+import { useAuth } from "@/contexts/auth";
 
 interface DesktopNavigationProps {
   activeDropdown: string | null;
@@ -20,6 +21,8 @@ export function DesktopNavigation({
   activeDropdown, 
   handleDropdownToggle 
 }: DesktopNavigationProps) {
+  const { user } = useAuth();
+  
   return (
     <NavigationMenu className="mx-6 hidden md:flex" aria-label="Main Navigation">
       <NavigationMenuList className="gap-1">
@@ -43,6 +46,15 @@ export function DesktopNavigation({
           isActive={activeDropdown === 'resources'}
           onToggle={() => handleDropdownToggle('resources')}
         />
+        
+        {user && (
+          <NavigationDropdownItem 
+            title="Dashboard"
+            items={navigationLinks.dashboards}
+            isActive={activeDropdown === 'dashboards'}
+            onToggle={() => handleDropdownToggle('dashboards')}
+          />
+        )}
         
         <NavigationMenuItem>
           {/* Fix: Changed from Link wrapping NavigationMenuLink to using NavigationMenuLink with asChild */}

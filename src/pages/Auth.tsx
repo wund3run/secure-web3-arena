@@ -8,6 +8,7 @@ import { AuthLayout } from '@/components/auth/AuthLayout';
 import { SignInForm, SignUpForm } from '@/components/auth/AuthForms';
 import { SocialLoginOptions } from '@/components/auth/SocialLoginOptions';
 import { CaptchaVerification } from '@/components/auth/CaptchaVerification';
+import { UserTypeSelection } from '@/components/onboarding/components/UserTypeSelection';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -17,16 +18,18 @@ const Auth = () => {
   const [error, setError] = useState<string | null>(null);
   const [captchaToken, setCaptchaToken] = useState<string | null>("auto-verified-token");
   const [captchaError, setCaptchaError] = useState<string | null>(null);
+  const [showUserTypeSelection, setShowUserTypeSelection] = useState(false);
 
   // Form states
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [userType, setUserType] = useState<string>("");
 
   useEffect(() => {
     // Redirect to home if user is already authenticated
     if (user) {
-      navigate('/');
+      navigate('/dashboard');
     }
   }, [user, navigate]);
 
@@ -66,12 +69,21 @@ const Auth = () => {
     e.preventDefault();
     setError(null);
     
+    // If user hasn't selected a type yet, show the selection
+    if (!userType) {
+      setShowUserTypeSelection(true);
+      return;
+    }
+    
     if (!validateCaptcha()) return;
     
     setIsLoading(true);
 
     try {
-      await signUp(email, password, { full_name: fullName }, captchaToken as string);
+      await signUp(email, password, { 
+        full_name: fullName,
+        user_type: userType 
+      }, captchaToken as string);
       setActiveTab("signin");
     } catch (error) {
       // Error is already handled in the auth context
@@ -79,6 +91,41 @@ const Auth = () => {
       setIsLoading(false);
     }
   };
+
+  const handleUserTypeSelect = (type: "provider" | "buyer") => {
+    setUserType(type === "provider" ? "auditor" : "project_owner");
+    setShowUserTypeSelection(false);
+    // Continue with signup after selection
+    handleSignUp({ preventDefault: () => {} } as React.FormEvent);
+  };
+
+  const handleSkipUserType = () => {
+    setUserType("project_owner"); // Default to project owner
+    setShowUserTypeSelection(false);
+    handleSignUp({ preventDefault: () => {} } as React.FormEvent);
+  };
+
+  // If showing user type selection
+  if (showUserTypeSelection) {
+    return (
+      <AuthLayout>
+        <Card className="border border-border/40 shadow-sm backdrop-blur-sm bg-white/80">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-center">Select Your Role</CardTitle>
+            <CardDescription className="text-center">
+              Choose how you want to use Hawkly
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <UserTypeSelection 
+              onSelect={handleUserTypeSelect} 
+              onSkip={handleSkipUserType} 
+            />
+          </CardContent>
+        </Card>
+      </AuthLayout>
+    );
+  }
 
   return (
     <AuthLayout>

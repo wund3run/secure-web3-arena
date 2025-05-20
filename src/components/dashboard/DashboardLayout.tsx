@@ -9,7 +9,11 @@ import { AuditorDashboardConfig } from './configs/AuditorDashboardConfig';
 import { ProjectOwnerDashboardConfig } from './configs/ProjectOwnerDashboardConfig';
 import { UserStats } from './stats/UserStats';
 
-export function DashboardLayout() {
+interface DashboardLayoutProps {
+  dashboardType?: string;
+}
+
+export function DashboardLayout({ dashboardType = '' }: DashboardLayoutProps) {
   const { user, loading, userProfile } = useAuth();
   const [activeTab, setActiveTab] = React.useState('overview');
   
@@ -21,8 +25,12 @@ export function DashboardLayout() {
     return <div>Please log in to view your dashboard.</div>;
   }
 
-  // Determine user type from profile
-  const userType = userProfile?.user_type || 'project_owner';
+  // Determine user type from dashboardType prop, userProfile, or fallback
+  const userType = dashboardType === 'auditor' 
+    ? 'auditor' 
+    : dashboardType === 'project' 
+      ? 'project_owner' 
+      : userProfile?.user_type || 'project_owner';
   const isAuditor = userType === 'auditor';
   
   return (

@@ -89,7 +89,7 @@ export function useAuthProvider() {
       }
       
       // If no MFA required, continue as normal
-      navigate('/');
+      navigate('/dashboard');
     } catch (error: any) {
       toast.error("Error signing in", {
         description: error.message,
@@ -100,7 +100,7 @@ export function useAuthProvider() {
     }
   };
 
-  const signUp = async (email: string, password: string, metadata?: { full_name?: string }, captchaToken: string = "auto-verified-token") => {
+  const signUp = async (email: string, password: string, metadata?: { full_name?: string, user_type?: string }, captchaToken: string = "auto-verified-token") => {
     try {
       setLoading(true);
       const { error } = await supabase.auth.signUp({ 
@@ -167,7 +167,7 @@ export function useAuthProvider() {
       // to verify the OTP. For now, we'll simulate success with a fixed code.
       if (otp === '123456') {
         toast.success("OTP verified successfully");
-        navigate('/');
+        navigate('/dashboard');
         return;
       }
       

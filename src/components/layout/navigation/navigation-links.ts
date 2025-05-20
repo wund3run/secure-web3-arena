@@ -26,6 +26,10 @@ export const navigationLinks: NavigationLinksStructure = {
     { title: "Blog", href: "/blog", description: "Articles and updates" },
     { title: "Community", href: "/community", description: "Join our security community" },
   ],
+  dashboards: [
+    { title: "Auditor Dashboard", href: "/dashboard/auditor", description: "Access your auditor workspace" },
+    { title: "Project Dashboard", href: "/dashboard/project", description: "Manage your project security" },
+  ],
 };
 
 // Export the types directly
