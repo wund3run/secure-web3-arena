@@ -21,7 +21,10 @@ export function DesktopNavigation({
   activeDropdown, 
   handleDropdownToggle 
 }: DesktopNavigationProps) {
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
+  
+  // Determine if the user is an auditor or project owner
+  const isAuditor = userProfile?.user_type === 'auditor';
   
   return (
     <NavigationMenu className="mx-6 hidden md:flex" aria-label="Main Navigation">
@@ -49,8 +52,10 @@ export function DesktopNavigation({
         
         {user && (
           <NavigationDropdownItem 
-            title="Dashboard"
-            items={navigationLinks.dashboards}
+            title={isAuditor ? "Auditor Hub" : "Project Hub"}
+            items={navigationLinks.dashboards.filter(item => 
+              !isAuditor ? !item.href.includes('auditor') || item.href.includes('project') : true
+            )}
             isActive={activeDropdown === 'dashboards'}
             onToggle={() => handleDropdownToggle('dashboards')}
           />

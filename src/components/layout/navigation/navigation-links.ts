@@ -27,8 +27,12 @@ export const navigationLinks: NavigationLinksStructure = {
     { title: "Community", href: "/community", description: "Join our security community" },
   ],
   dashboards: [
+    // Enhanced dashboard links with specific role-based options
     { title: "Auditor Dashboard", href: "/dashboard/auditor", description: "Access your auditor workspace" },
     { title: "Project Dashboard", href: "/dashboard/project", description: "Manage your project security" },
+    { title: "Audit Analytics", href: "/dashboard/analytics", description: "View performance metrics and insights" },
+    { title: "Escrow Management", href: "/escrow", description: "Manage secure payment transactions" },
+    { title: "Reputation Center", href: "/leaderboard", description: "Track your platform reputation" },
   ],
 };
 

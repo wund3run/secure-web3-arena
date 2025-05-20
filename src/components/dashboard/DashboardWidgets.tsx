@@ -1,12 +1,12 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Book, CheckSquare, Shield, Award, FileSpreadsheet, ChartPie, LineChart } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface DashboardWidgetsProps {
   userType: string;
-  section: 'overview' | 'analytics' | 'projects' | 'reports';
+  section: 'overview' | 'analytics' | 'projects' | 'reports' | 'skills' | 'security';
 }
 
 export function DashboardWidgets({ userType, section }: DashboardWidgetsProps) {
@@ -26,6 +26,10 @@ export function DashboardWidgets({ userType, section }: DashboardWidgetsProps) {
         return isAuditor 
           ? <AuditorReports /> 
           : <ProjectOwnerReports />;
+      case 'skills':
+        return <AuditorSkills />;
+      case 'security':
+        return <ProjectOwnerSecurity />;
       default:
         return <div>Section content not available</div>;
     }
@@ -47,15 +51,23 @@ function AuditorAnalytics() {
           <CardTitle>Performance Metrics</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>Auditor performance metrics will be displayed here.</p>
+          <div className="flex items-center gap-2 mb-4">
+            <ChartPie className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Audit Efficiency Trends</h3>
+          </div>
+          <p>Track your audit completion times, issue discovery rates, and overall efficiency compared to platform averages.</p>
         </CardContent>
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Audit Efficiency</CardTitle>
+          <CardTitle>Revenue Analytics</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>Metrics on audit completion time and efficiency.</p>
+          <div className="flex items-center gap-2 mb-4">
+            <LineChart className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Income Tracking</h3>
+          </div>
+          <p>View your earnings over time, upcoming payments, and projected income based on current workload.</p>
         </CardContent>
       </Card>
     </div>
@@ -70,7 +82,23 @@ function AuditorProjects() {
           <CardTitle>Active Audits</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>Currently active audit projects will be displayed here.</p>
+          <div className="flex items-center gap-2 mb-4">
+            <Shield className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Current Assignments</h3>
+          </div>
+          <p>View and manage your active audit projects, including deadlines, progress tracking, and client communications.</p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Audit Opportunities</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2 mb-4">
+            <CheckSquare className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Available Projects</h3>
+          </div>
+          <p>Browse new audit requests matching your skills and expertise profile that you can apply for.</p>
         </CardContent>
       </Card>
     </div>
@@ -85,7 +113,54 @@ function AuditorReports() {
           <CardTitle>Recent Reports</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>Your recent audit reports will be displayed here.</p>
+          <div className="flex items-center gap-2 mb-4">
+            <FileSpreadsheet className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Published Findings</h3>
+          </div>
+          <p>Access your recently completed audit reports, findings summaries, and client responses.</p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Report Templates</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2 mb-4">
+            <Book className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Standardized Formats</h3>
+          </div>
+          <p>Use professionally designed report templates to create consistent, high-quality audit documents.</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function AuditorSkills() {
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Skills & Certifications</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2 mb-4">
+            <Award className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Professional Development</h3>
+          </div>
+          <p>Manage your security certifications, technical skills, and professional credentials displayed to clients.</p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Learning Resources</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2 mb-4">
+            <Book className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Skill Enhancement</h3>
+          </div>
+          <p>Access specialized training materials, courses, and resources to expand your security expertise.</p>
         </CardContent>
       </Card>
     </div>
@@ -101,7 +176,11 @@ function ProjectOwnerAnalytics() {
           <CardTitle>Security Posture</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>Security metrics and risk analysis for your projects.</p>
+          <div className="flex items-center gap-2 mb-4">
+            <Shield className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Risk Assessment</h3>
+          </div>
+          <p>Comprehensive security metrics and risk analysis for all your projects, with historical trends and comparisons.</p>
         </CardContent>
       </Card>
       <Card>
@@ -109,7 +188,11 @@ function ProjectOwnerAnalytics() {
           <CardTitle>Vulnerability Trends</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>Trending vulnerabilities in your codebase over time.</p>
+          <div className="flex items-center gap-2 mb-4">
+            <ChartPie className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Issue Tracking</h3>
+          </div>
+          <p>Monitor discovered vulnerabilities across your codebase over time, with severity distributions and remediation status.</p>
         </CardContent>
       </Card>
     </div>
@@ -124,7 +207,23 @@ function ProjectOwnerProjects() {
           <CardTitle>Current Projects</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>Your projects under audit will be displayed here.</p>
+          <div className="flex items-center gap-2 mb-4">
+            <FileSpreadsheet className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Project Management</h3>
+          </div>
+          <p>Overview of all your active projects under audit, with status indicators, recent updates, and action items.</p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Audit Planning</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2 mb-4">
+            <CheckSquare className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Future Audits</h3>
+          </div>
+          <p>Plan upcoming security audits with budget estimates, scope definition tools, and auditor selection guidance.</p>
         </CardContent>
       </Card>
     </div>
@@ -138,7 +237,7 @@ function ProjectOwnerReports() {
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Audit Reports</AlertTitle>
         <AlertDescription>
-          Your audit reports and findings will appear here once audits are completed.
+          Access comprehensive audit reports and findings to improve your project's security posture.
         </AlertDescription>
       </Alert>
       <Card>
@@ -146,7 +245,54 @@ function ProjectOwnerReports() {
           <CardTitle>Recent Reports</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>Audit reports for your projects will be displayed here.</p>
+          <div className="flex items-center gap-2 mb-4">
+            <FileSpreadsheet className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Audit Findings</h3>
+          </div>
+          <p>View detailed security reports for your projects, with vulnerability explanations and remediation recommendations.</p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Compliance Documentation</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2 mb-4">
+            <Book className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Security Verification</h3>
+          </div>
+          <p>Access audit certificates, compliance documentation, and security verification proof for partners and users.</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function ProjectOwnerSecurity() {
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Security Monitoring</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2 mb-4">
+            <Shield className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Continuous Assessment</h3>
+          </div>
+          <p>Real-time security monitoring of your projects, with alerts for new vulnerabilities and emerging threats.</p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Security Best Practices</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2 mb-4">
+            <Book className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Educational Resources</h3>
+          </div>
+          <p>Access blockchain security guidelines, best practices, and educational materials specific to your project types.</p>
         </CardContent>
       </Card>
     </div>

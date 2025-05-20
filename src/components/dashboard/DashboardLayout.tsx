@@ -8,6 +8,9 @@ import LoadingState from '@/components/ui/loading-state';
 import { AuditorDashboardConfig } from './configs/AuditorDashboardConfig';
 import { ProjectOwnerDashboardConfig } from './configs/ProjectOwnerDashboardConfig';
 import { UserStats } from './stats/UserStats';
+import { Button } from '@/components/ui/button';
+import { CalendarDays, FileText, ClipboardCheck, ShieldCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface DashboardLayoutProps {
   dashboardType?: string;
@@ -47,6 +50,40 @@ export function DashboardLayout({ dashboardType = '' }: DashboardLayoutProps) {
           </div>
           <div className="flex items-center gap-3">
             <UserStats userType={userType} />
+            
+            <div className="flex flex-wrap gap-2">
+              {isAuditor ? (
+                <>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/audits">
+                      <ClipboardCheck className="mr-2 h-4 w-4" />
+                      Active Audits
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/dashboard/analytics">
+                      <FileText className="mr-2 h-4 w-4" />
+                      Reports
+                    </Link>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/request-audit">
+                      <ShieldCheck className="mr-2 h-4 w-4" />
+                      Request Audit
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/calendar">
+                      <CalendarDays className="mr-2 h-4 w-4" />
+                      Schedule
+                    </Link>
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
@@ -54,8 +91,10 @@ export function DashboardLayout({ dashboardType = '' }: DashboardLayoutProps) {
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="projects">Projects</TabsTrigger>
+            <TabsTrigger value="projects">{isAuditor ? 'Audits' : 'Projects'}</TabsTrigger>
             <TabsTrigger value="reports">Reports</TabsTrigger>
+            {isAuditor && <TabsTrigger value="skills">Skills & Certs</TabsTrigger>}
+            {!isAuditor && <TabsTrigger value="security">Security</TabsTrigger>}
           </TabsList>
           <TabsContent value="overview">
             <CustomizableDashboard
@@ -74,6 +113,16 @@ export function DashboardLayout({ dashboardType = '' }: DashboardLayoutProps) {
           <TabsContent value="reports">
             <DashboardWidgets userType={userType} section="reports" />
           </TabsContent>
+          {isAuditor && (
+            <TabsContent value="skills">
+              <DashboardWidgets userType={userType} section="skills" />
+            </TabsContent>
+          )}
+          {!isAuditor && (
+            <TabsContent value="security">
+              <DashboardWidgets userType={userType} section="security" />
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     </div>
