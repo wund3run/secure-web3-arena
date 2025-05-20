@@ -1,3 +1,4 @@
+
 // Import the correct type for user_type at the top
 import { useState } from 'react';
 import { useAuth } from '@/contexts/auth';
@@ -65,7 +66,7 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
       // Use the providerType from props as the user_type
       await signUp(data.email, data.email, { 
         full_name: data.name,
-        user_type: providerType
+        user_type: providerType === "service" ? "project_owner" : "auditor"
       });
       
       toast({
