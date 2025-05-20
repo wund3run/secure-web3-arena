@@ -1,5 +1,6 @@
 
 import { ValidationIssue } from "../types";
+import { extractRoutesFromApp } from "@/utils/navigation";
 
 /**
  * Validates route structure and navigation elements across the application
@@ -8,24 +9,11 @@ import { ValidationIssue } from "../types";
 export const validateRoutes = (): ValidationIssue[] => {
   const routeIssues: ValidationIssue[] = [];
   
+  // Get all valid routes from the application
+  const validRoutes = extractRoutesFromApp();
+  
   // Check for potential 404 links (links that point to non-existent routes)
   const links = document.querySelectorAll('a');
-  const routePatterns = [
-    '/dashboard',
-    '/marketplace',
-    '/audit',
-    '/audits',
-    '/service',
-    '/auth',
-    '/contact',
-    '/pricing',
-    '/resources',
-    '/ai-tools',
-    '/support',
-    '/community',
-    '/escrow',
-    '/security-insights'
-  ];
   
   links.forEach(link => {
     const href = link.getAttribute('href');
@@ -33,19 +21,37 @@ export const validateRoutes = (): ValidationIssue[] => {
       return; // Skip empty, placeholder or external links
     }
     
-    // Check if the link matches any known route pattern
-    const isKnownRoute = routePatterns.some(pattern => 
-      href === pattern || href.startsWith(`${pattern}/`)
-    );
+    // Extract the base route without query parameters or hash
+    const baseRoute = href.split('?')[0].split('#')[0];
     
-    if (!isKnownRoute && !href.includes('?') && !href.includes('#')) {
+    // Check if the link matches any known route pattern
+    const isValidRoute = validRoutes.some(validRoute => {
+      if (validRoute === baseRoute) return true;
+      
+      // Handle dynamic route patterns (e.g., /audit/:id)
+      if (validRoute.includes(':')) {
+        const routeParts = validRoute.split('/');
+        const hrefParts = baseRoute.split('/');
+        
+        if (routeParts.length !== hrefParts.length) return false;
+        
+        return routeParts.every((part, index) => {
+          if (part.startsWith(':')) return true; // Dynamic part
+          return part === hrefParts[index];
+        });
+      }
+      
+      return false;
+    });
+    
+    if (!isValidRoute) {
       routeIssues.push({
         type: 'navigation',
         severity: 'medium',
         description: 'Link may lead to non-existent route',
         location: `${href}: ${link.textContent || 'unnamed link'}`,
         suggestion: 'Verify this route exists or update the href attribute',
-        affectedStakeholders: ['general']
+        affectedStakeholders: ['general', 'project-owner', 'auditor', 'admin']
       });
     }
   });
@@ -61,7 +67,7 @@ export const validateRoutes = (): ValidationIssue[] => {
         description: 'Navigation link font size too small',
         location: `${link.getAttribute('href')}: ${link.textContent || 'unnamed link'}`,
         suggestion: 'Increase font size to at least 14px for better readability',
-        affectedStakeholders: ['general']
+        affectedStakeholders: ['general', 'auditor', 'project-owner', 'admin']
       });
     }
     
@@ -70,11 +76,11 @@ export const validateRoutes = (): ValidationIssue[] => {
     if (linkText === 'click here' || linkText === 'here' || linkText === 'link') {
       routeIssues.push({
         type: 'content',
-        severity: 'low',
+        severity: 'medium',
         description: 'Non-descriptive link text',
         location: `${link.getAttribute('href')}: ${link.textContent || 'unnamed link'}`,
         suggestion: 'Use descriptive link text that explains where the link leads',
-        affectedStakeholders: ['general', 'auditor', 'project-owner']
+        affectedStakeholders: ['general', 'auditor', 'project-owner', 'admin']
       });
     }
   });
@@ -110,7 +116,7 @@ export const validateRoutes = (): ValidationIssue[] => {
             description: 'Duplicate navigation links to the same destination',
             location: `${href}: ${links[i].textContent || 'unnamed link'}`,
             suggestion: 'Remove duplicate links or differentiate their context',
-            affectedStakeholders: ['general']
+            affectedStakeholders: ['general', 'auditor', 'project-owner', 'admin']
           });
           break; // Only report once per group
         }
