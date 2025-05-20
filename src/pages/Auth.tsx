@@ -1,189 +1,73 @@
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from '@/contexts/auth';
-import { AuthLayout } from '@/components/auth/AuthLayout';
-import { SignInForm, SignUpForm } from '@/components/auth/AuthForms';
-import { SocialLoginOptions } from '@/components/auth/SocialLoginOptions';
-import { CaptchaVerification } from '@/components/auth/CaptchaVerification';
-import { UserTypeSelection } from '@/components/onboarding/components/UserTypeSelection';
+import React, { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useLocation, useNavigate } from "react-router-dom";
+import { AuthLayout } from "@/components/auth/AuthLayout";
+import { AuthForms } from "@/components/auth/AuthForms";
+import { useAuth } from "@/contexts/auth";
 
 const Auth = () => {
+  const { user } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
-  const { user, signIn, signUp } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<string>("signin");
-  const [error, setError] = useState<string | null>(null);
-  const [captchaToken, setCaptchaToken] = useState<string | null>("auto-verified-token");
-  const [captchaError, setCaptchaError] = useState<string | null>(null);
-  const [showUserTypeSelection, setShowUserTypeSelection] = useState(false);
-
-  // Form states
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [userType, setUserType] = useState<string>("");
-
-  useEffect(() => {
-    // Redirect to home if user is already authenticated
+  const returnUrl = location.state?.returnUrl || '/dashboard';
+  const message = location.state?.message || '';
+  
+  // If user is already authenticated, redirect to dashboard or return URL
+  React.useEffect(() => {
     if (user) {
-      navigate('/dashboard');
+      navigate(returnUrl, { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, navigate, returnUrl]);
 
-  const handleCaptchaVerify = (token: string) => {
-    setCaptchaToken(token);
-    setCaptchaError(null);
+  // State for toggling between sign in and sign up
+  const [isSignIn, setIsSignIn] = useState(true);
+  const [userType, setUserType] = useState<"auditor" | "project_owner">("project_owner");
+
+  const toggleForm = () => {
+    setIsSignIn(!isSignIn);
   };
 
-  const handleCaptchaExpire = () => {
-    setCaptchaToken(null);
-    setCaptchaError(null); // Don't show error as we're auto-verifying
-  };
-
-  const validateCaptcha = () => {
-    // Always return true as we're auto-verifying in development
-    return true;
-  };
-
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    
-    if (!validateCaptcha()) return;
-    
-    setIsLoading(true);
-
+  const handleSignIn = async (email: string, password: string, captchaToken?: string) => {
+    // Authentication logic would go here
     try {
-      await signIn(email, password, captchaToken as string);
-      // Redirect will happen automatically due to the useEffect
-    } catch (error: any) {
-      // Error is already handled in the auth context
-      setIsLoading(false);
-    }
-  };
-
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    
-    // If user hasn't selected a type yet, show the selection
-    if (!userType) {
-      setShowUserTypeSelection(true);
-      return;
-    }
-    
-    if (!validateCaptcha()) return;
-    
-    setIsLoading(true);
-
-    try {
-      await signUp(email, password, { 
-        full_name: fullName,
-        user_type: userType 
-      }, captchaToken as string);
-      setActiveTab("signin");
+      // Your sign in logic
     } catch (error) {
-      // Error is already handled in the auth context
-    } finally {
-      setIsLoading(false);
+      console.error("Sign in error:", error);
     }
   };
 
-  const handleUserTypeSelect = (type: "provider" | "buyer") => {
-    setUserType(type === "provider" ? "auditor" : "project_owner");
-    setShowUserTypeSelection(false);
-    // Continue with signup after selection
-    handleSignUp({ preventDefault: () => {} } as React.FormEvent);
+  const handleSignUp = async (email: string, password: string, name: string, captchaToken?: string) => {
+    // Registration logic would go here
+    try {
+      // Your sign up logic
+    } catch (error) {
+      console.error("Sign up error:", error);
+    }
   };
-
-  const handleSkipUserType = () => {
-    setUserType("project_owner"); // Default to project owner
-    setShowUserTypeSelection(false);
-    handleSignUp({ preventDefault: () => {} } as React.FormEvent);
-  };
-
-  // If showing user type selection
-  if (showUserTypeSelection) {
-    return (
-      <AuthLayout>
-        <Card className="border border-border/40 shadow-sm backdrop-blur-sm bg-white/80">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-center">Select Your Role</CardTitle>
-            <CardDescription className="text-center">
-              Choose how you want to use Hawkly
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <UserTypeSelection 
-              onSelect={handleUserTypeSelect} 
-              onSkip={handleSkipUserType} 
-            />
-          </CardContent>
-        </Card>
-      </AuthLayout>
-    );
-  }
 
   return (
-    <AuthLayout>
-      <Card className="border border-border/40 shadow-sm backdrop-blur-sm bg-white/80">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Welcome to Hawkly</CardTitle>
-          <CardDescription className="text-center">
-            The premier Web3 security marketplace
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="signin">
-              <SignInForm
-                email={email}
-                setEmail={setEmail}
-                password={password}
-                setPassword={setPassword}
-                onSubmit={handleSignIn}
-                isLoading={isLoading}
-                error={error}
-              />
-            </TabsContent>
-            
-            <TabsContent value="signup">
-              <SignUpForm
-                email={email}
-                setEmail={setEmail}
-                password={password}
-                setPassword={setPassword}
-                fullName={fullName}
-                setFullName={setFullName}
-                onSubmit={handleSignUp}
-                isLoading={isLoading}
-                error={error}
-              />
-            </TabsContent>
-          </Tabs>
-          
-          {/* Include the CaptchaVerification component but it will auto-verify */}
-          <CaptchaVerification 
-            onVerify={handleCaptchaVerify} 
-            onExpire={handleCaptchaExpire} 
-            error={captchaError}
-          />
-          
-          <SocialLoginOptions />
-        </CardContent>
-        <CardFooter className="flex flex-col space-y-2">
-          {/* Footer content is moved to SocialLoginOptions */}
-        </CardFooter>
-      </Card>
-    </AuthLayout>
+    <>
+      <Helmet>
+        <title>{isSignIn ? "Sign In" : "Sign Up"} | Hawkly</title>
+        <meta 
+          name="description" 
+          content={isSignIn ? "Sign in to your Hawkly account" : "Create a new account on Hawkly"} 
+        />
+      </Helmet>
+      
+      <AuthLayout>
+        <AuthForms 
+          isSignIn={isSignIn} 
+          onToggle={toggleForm}
+          returnMessage={message}
+          onSignIn={handleSignIn}
+          onSignUp={handleSignUp}
+          userType={userType}
+          setUserType={setUserType}
+        />
+      </AuthLayout>
+    </>
   );
 };
 

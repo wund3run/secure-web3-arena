@@ -11,8 +11,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
 import { useToast } from "@/components/ui/use-toast"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,10 +22,14 @@ import { CodeOfConduct } from "@/components/terms/code-of-conduct";
 // Add a user_type utility type for proper typing
 type UserType = "auditor" | "project_owner";
 
-export function ServiceProviderOnboardingForm() {
+interface ServiceProviderOnboardingFormProps {
+  providerType: "auditor" | "service";
+}
+
+export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderOnboardingFormProps) {
   const { signUp } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast()
+  const { toast } = useToast();
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [isCodeOfConductOpen, setIsCodeOfConductOpen] = useState(false);
 
@@ -59,12 +62,10 @@ export function ServiceProviderOnboardingForm() {
 
   const onSubmit = async (data: ProviderFormValues) => {
     try {
-      // Convert the string user type to the proper enum type
-      const userType: UserType = "auditor"; // or "project_owner" depending on form
-      
+      // Use the providerType from props as the user_type
       await signUp(data.email, data.email, { 
         full_name: data.name,
-        user_type: userType
+        user_type: providerType
       });
       
       toast({
@@ -554,6 +555,7 @@ export function ServiceProviderOnboardingForm() {
           </Button>
         </form>
       </CardContent>
+      
       <TermsOfService open={isTermsOpen} onOpenChange={setIsTermsOpen} />
       <CodeOfConduct open={isCodeOfConductOpen} onOpenChange={setIsCodeOfConductOpen} />
     </Card>

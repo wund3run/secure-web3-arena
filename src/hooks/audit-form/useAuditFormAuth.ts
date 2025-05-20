@@ -16,12 +16,12 @@ export const useAuditFormAuth = (
   setFormData: (data: AuditFormData | ((prevData: AuditFormData) => AuditFormData)) => void,
   prefilledData?: PrefilledData
 ) => {
-  const { user, loading, userProfile } = useAuth();
+  const { user, userProfile } = useAuth();
   const navigate = useNavigate();
 
   // Redirect unauthenticated users to the login page
   useEffect(() => {
-    if (!loading && !user) {
+    if (user === null && typeof user !== 'undefined') {
       navigate("/auth", { 
         state: { 
           returnUrl: "/request-audit",
@@ -29,7 +29,7 @@ export const useAuditFormAuth = (
         } 
       });
     }
-  }, [user, loading, navigate]);
+  }, [user, navigate]);
 
   // Prefill form with user profile data if available
   useEffect(() => {
@@ -37,7 +37,7 @@ export const useAuditFormAuth = (
       // Prepare the initial form data with user profile information
       setFormData((prevData: AuditFormData) => ({
         ...prevData,
-        contactName: userProfile.full_name || userProfile.display_name || prevData.contactName || '',
+        contactName: userProfile.display_name || prevData.contactName || '',
         contactEmail: user?.email || prevData.contactEmail || '',
       }));
     }

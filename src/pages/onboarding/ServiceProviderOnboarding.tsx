@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
@@ -8,7 +8,7 @@ import { OnboardingBenefits } from "@/components/service-provider/OnboardingBene
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const ServiceProviderOnboarding = () => {
-  const [activeTab, setActiveTab] = React.useState<string>("auditor");
+  const [activeTab, setActiveTab] = useState<string>("auditor");
 
   return (
     <>

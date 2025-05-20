@@ -13,9 +13,10 @@ import LoadingState from "@/components/ui/loading-state";
 
 const RequestAudit = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isLoading, setIsLoading] = useState(true);
   
   // Check if we have pre-filled data from a specific service
   const prefilledData = location.state?.serviceInfo ? {
@@ -25,7 +26,16 @@ const RequestAudit = () => {
     providerName: location.state.serviceInfo.provider
   } : undefined;
 
-  if (loading) {
+  React.useEffect(() => {
+    // Simulate loading state
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
     return (
       <>
         <Navbar />
