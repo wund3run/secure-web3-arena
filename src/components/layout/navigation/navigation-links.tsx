@@ -1,5 +1,11 @@
 
-import { NavigationLinkItem } from "@/components/ui/navigation-menu";
+// Define the NavigationLinkItem interface directly instead of importing it
+export interface NavigationLinkItem {
+  title: string;
+  href: string;
+  description?: string;
+  badge?: string;
+}
 
 export interface NavigationLinksStructure {
   marketplace: NavigationLinkItem[];
@@ -7,5 +13,3 @@ export interface NavigationLinksStructure {
   resources: NavigationLinkItem[];
   dashboards: NavigationLinkItem[];
 }
-
-export type { NavigationLinkItem };
