@@ -4,7 +4,7 @@
  */
 
 export type ValidationIssue = {
-  type: 'route' | 'link' | 'ui' | 'responsive' | 'styling' | 'interactive' | 'accessibility' | 'design' | 'navigation' | 'content' | 'performance' | 'seo';
+  type: 'route' | 'link' | 'ui' | 'responsive' | 'styling' | 'interactive' | 'accessibility' | 'design' | 'navigation' | 'content' | 'performance' | 'seo' | 'functionality';
   severity: 'high' | 'medium' | 'low';
   description: string;
   location: string;
