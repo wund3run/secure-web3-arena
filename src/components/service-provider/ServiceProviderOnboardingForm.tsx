@@ -1,421 +1,561 @@
-
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/auth";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+// Import the correct type for user_type at the top
+import { useState } from 'react';
+import { useAuth } from '@/contexts/auth';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { toast } from "sonner";
-import { zodResolver } from "@hookform/resolvers/zod";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast"
 import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Loader2 } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { providerFormSchema, ProviderFormValues } from './providerTypes';
+import { TermsOfService } from "@/components/terms/terms-of-service";
+import { CodeOfConduct } from "@/components/terms/code-of-conduct";
 
-// Define form schema with Zod
-const formSchema = z.object({
-  fullName: z.string().min(2, "Full name must be at least 2 characters."),
-  email: z.string().email("Please enter a valid email address."),
-  companyName: z.string().optional(),
-  website: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
-  experienceYears: z.string().min(1, "Please select your experience level."),
-  blockchainExpertise: z.string().array().min(1, "Please select at least one blockchain."),
-  specializations: z.string().min(10, "Please describe your specializations."),
-  linkedinProfile: z.string().url("Please enter a valid LinkedIn URL").optional().or(z.literal("")),
-  githubProfile: z.string().url("Please enter a valid GitHub URL").optional().or(z.literal("")),
-  bio: z.string().min(20, "Bio must be at least 20 characters."),
-  referral: z.string().optional(),
-});
+// Add a user_type utility type for proper typing
+type UserType = "auditor" | "project_owner";
 
-type FormValues = z.infer<typeof formSchema>;
-
-interface ServiceProviderOnboardingFormProps {
-  providerType: "auditor" | "service";
-}
-
-export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderOnboardingFormProps) {
-  const { user, signUp } = useAuth();
+export function ServiceProviderOnboardingForm() {
+  const { signUp } = useAuth();
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const { toast } = useToast()
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
+  const [isCodeOfConductOpen, setIsCodeOfConductOpen] = useState(false);
+
+  const form = useForm<ProviderFormValues>({
+    resolver: zodResolver(providerFormSchema),
     defaultValues: {
-      fullName: "",
+      name: "",
       email: "",
-      companyName: "",
+      walletAddress: "",
       website: "",
-      experienceYears: "",
-      blockchainExpertise: [],
-      specializations: "",
-      linkedinProfile: "",
       githubProfile: "",
-      bio: "",
-      referral: "",
+      organization: "",
+      teamSize: "",
+      primaryExpertise: [],
+      blockchainExpertise: [],
+      yearsSince: "",
+      completedProjects: 0,
+      notableClients: "",
+      publicFindings: "",
+      servicesOffered: [],
+      methodologies: [],
+      customTools: "",
+      certifications: "",
+      agreesToTerms: false,
+      agreesToCodeOfConduct: false,
     },
   });
 
-  useEffect(() => {
-    // Pre-fill form with user data if available
-    if (user) {
-      supabase
-        .from('extended_profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single()
-        .then(({ data }) => {
-          if (data) {
-            form.setValue("fullName", data.full_name || "");
-            if (user.email) {
-              form.setValue("email", user.email);
-            }
-          }
-        });
-    }
-  }, [user, form]);
+  const { register, handleSubmit, formState: { errors } } = form;
 
-  const onSubmit = async (values: FormValues) => {
-    setIsSubmitting(true);
-    
+  const onSubmit = async (data: ProviderFormValues) => {
     try {
-      if (!user) {
-        // If not logged in, create a new user
-        await signUp(values.email, "tempPassword123", {
-          full_name: values.fullName,
-        });
-        
-        toast.info("Account created", {
-          description: "Please check your email to confirm your account before proceeding.",
-        });
-      } else {
-        // User is already logged in, update profile
-        const userType = providerType === "auditor" ? "auditor" : "service_provider";
-        
-        const { error } = await supabase
-          .from('extended_profiles')
-          .update({
-            full_name: values.fullName,
-            display_name: values.fullName,
-            bio: values.bio,
-            website: values.website,
-            user_type: userType,
-            skills: values.blockchainExpertise,
-            specializations: [values.specializations],
-            years_of_experience: parseInt(values.experienceYears),
-            social_links: {
-              linkedin: values.linkedinProfile,
-              github: values.githubProfile
-            }
-          })
-          .eq('id', user.id);
-        
-        if (error) throw error;
-        
-        navigate('/application-submitted');
-      }
-    } catch (error: any) {
-      console.error("Error submitting form:", error);
-      toast.error("Error submitting application", {
-        description: error.message || "Please try again later",
+      // Convert the string user type to the proper enum type
+      const userType: UserType = "auditor"; // or "project_owner" depending on form
+      
+      await signUp(data.email, data.email, { 
+        full_name: data.name,
+        user_type: userType
       });
-    } finally {
-      setIsSubmitting(false);
+      
+      toast({
+        title: "Application Submitted",
+        description: "Your application has been submitted successfully.",
+      })
+      navigate('/application-submitted');
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your submission. Please try again.",
+      })
     }
   };
-
-  // Blockchain options
-  const blockchains = [
-    "Ethereum",
-    "Solana",
-    "Polygon",
-    "Avalanche",
-    "BNB Chain",
-    "Arbitrum",
-    "Optimism",
-    "Aptos",
-    "Sui",
-    "Other",
-  ];
-
-  // Experience levels
-  const experienceLevels = [
-    { value: "1-2", label: "1-2 years" },
-    { value: "3-5", label: "3-5 years" },
-    { value: "6-10", label: "6-10 years" },
-    { value: "10+", label: "More than 10 years" },
-  ];
-
+  
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* Personal Information */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium">Personal Information</h3>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="fullName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name *</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+    <Card className="border border-border/40 shadow-sm backdrop-blur-sm bg-white/80">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-center">
+          Security Expert Application
+        </CardTitle>
+        <CardDescription className="text-center">
+          Fill out the form below to apply as a security expert.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Basic Information */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="name">Full Name</Label>
+              <Input id="name" placeholder="John Doe" {...register("name")} />
+              {errors.name && (
+                <p className="text-sm text-red-500">{errors.name.message}</p>
               )}
-            />
-
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email *</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="email" 
-                      placeholder="you@example.com" 
-                      {...field} 
-                      disabled={!!user}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+            </div>
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                placeholder="john.doe@example.com"
+                {...register("email")}
+              />
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email.message}</p>
               )}
-            />
+            </div>
           </div>
 
-          {providerType === "service" && (
-            <FormField
-              control={form.control}
-              name="companyName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Company/Organization Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Your company name" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Leave blank if you're applying as an individual
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="walletAddress">Wallet Address</Label>
+              <Input
+                id="walletAddress"
+                placeholder="0x..."
+                {...register("walletAddress")}
+              />
+              {errors.walletAddress && (
+                <p className="text-sm text-red-500">
+                  {errors.walletAddress.message}
+                </p>
               )}
-            />
-          )}
-
-          <FormField
-            control={form.control}
-            name="website"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Website</FormLabel>
-                <FormControl>
-                  <Input placeholder="https://yourwebsite.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* Professional Information */}
-        <div className="space-y-4 pt-4">
-          <h3 className="text-lg font-medium">Professional Background</h3>
-
-          <FormField
-            control={form.control}
-            name="experienceYears"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Years of Experience in Web3 Security *</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your experience level" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {experienceLevels.map((level) => (
-                      <SelectItem key={level.value} value={level.value}>
-                        {level.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Blockchain Expertise */}
-          <div>
-            <Label>Blockchain Expertise *</Label>
-            <div className="mt-2 grid grid-cols-2 md:grid-cols-3 gap-2">
-              {blockchains.map((blockchain) => (
-                <div key={blockchain} className="flex items-start">
-                  <input
-                    id={`blockchain-${blockchain}`}
-                    type="checkbox"
-                    className="h-4 w-4 mt-1 rounded border-gray-300 text-primary focus:ring-primary"
-                    value={blockchain}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      const current = form.getValues("blockchainExpertise") || [];
-                      
-                      if (e.target.checked) {
-                        form.setValue("blockchainExpertise", [...current, value]);
-                      } else {
-                        form.setValue(
-                          "blockchainExpertise",
-                          current.filter((item) => item !== value)
-                        );
-                      }
-                    }}
-                  />
-                  <label
-                    htmlFor={`blockchain-${blockchain}`}
-                    className="ml-2 block text-sm"
-                  >
-                    {blockchain}
-                  </label>
-                </div>
-              ))}
             </div>
-            {form.formState.errors.blockchainExpertise && (
-              <p className="text-sm font-medium text-destructive mt-1">
-                {form.formState.errors.blockchainExpertise.message}
+            <div>
+              <Label htmlFor="website">Website (Optional)</Label>
+              <Input
+                id="website"
+                placeholder="https://example.com"
+                {...register("website")}
+              />
+              {errors.website && (
+                <p className="text-sm text-red-500">{errors.website.message}</p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="githubProfile">GitHub Profile (Optional)</Label>
+            <Input
+              id="githubProfile"
+              placeholder="https://github.com/johndoe"
+              {...register("githubProfile")}
+            />
+            {errors.githubProfile && (
+              <p className="text-sm text-red-500">
+                {errors.githubProfile.message}
               </p>
             )}
           </div>
 
-          <FormField
-            control={form.control}
-            name="specializations"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Specializations & Areas of Expertise *</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Describe your specializations in Web3 security (e.g., Smart contract auditing, DeFi protocols, ZK proofs, formal verification, etc.)"
-                    className="h-24"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* Online Profiles */}
-        <div className="space-y-4 pt-4">
-          <h3 className="text-lg font-medium">Online Profiles</h3>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="linkedinProfile"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>LinkedIn Profile</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://linkedin.com/in/username" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+          {/* Service Provider Specific Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="organization">Organization</Label>
+              <Input
+                id="organization"
+                placeholder="Acme Corp"
+                {...register("organization")}
+              />
+              {errors.organization && (
+                <p className="text-sm text-red-500">
+                  {errors.organization.message}
+                </p>
               )}
-            />
-
-            <FormField
-              control={form.control}
-              name="githubProfile"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>GitHub Profile</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://github.com/username" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+            </div>
+            <div>
+              <Label htmlFor="teamSize">Team Size (Optional)</Label>
+              <Input
+                id="teamSize"
+                placeholder="e.g., 1-10, 11-50"
+                {...register("teamSize")}
+              />
+              {errors.teamSize && (
+                <p className="text-sm text-red-500">{errors.teamSize.message}</p>
               )}
-            />
+            </div>
           </div>
-        </div>
 
-        {/* Bio & Additional Info */}
-        <div className="space-y-4 pt-4">
-          <FormField
-            control={form.control}
-            name="bio"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Professional Bio *</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Tell us about yourself, your background, and why you're interested in joining the Hawkly security network..."
-                    className="h-32"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+          {/* Expertise */}
+          <div>
+            <Label htmlFor="primaryExpertise">Areas of Expertise</Label>
+            <div className="flex flex-wrap gap-2">
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="smartContractAudit"
+                  value="smart-contract-audit"
+                  {...register("primaryExpertise")}
+                />
+                <Label htmlFor="smartContractAudit">Smart Contract Audit</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="protocolAudit"
+                  value="protocol-audit"
+                  {...register("primaryExpertise")}
+                />
+                <Label htmlFor="protocolAudit">Protocol Audit</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="penetrationTesting"
+                  value="penetration-testing"
+                  {...register("primaryExpertise")}
+                />
+                <Label htmlFor="penetrationTesting">Penetration Testing</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="codeReview"
+                  value="code-review"
+                  {...register("primaryExpertise")}
+                />
+                <Label htmlFor="codeReview">Code Review</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="architectureReview"
+                  value="architecture-review"
+                  {...register("primaryExpertise")}
+                />
+                <Label htmlFor="architectureReview">Architecture Review</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="securityConsulting"
+                  value="security-consulting"
+                  {...register("primaryExpertise")}
+                />
+                <Label htmlFor="securityConsulting">Security Consulting</Label>
+              </div>
+            </div>
+            {errors.primaryExpertise && (
+              <p className="text-sm text-red-500">
+                {errors.primaryExpertise.message}
+              </p>
             )}
-          />
+          </div>
 
-          <FormField
-            control={form.control}
-            name="referral"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Referral Code</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter referral code if you have one" {...field} />
-                </FormControl>
-                <FormDescription>
-                  Optional: Enter a referral code if you were invited by another member
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
+          <div>
+            <Label htmlFor="blockchainExpertise">Blockchain Expertise</Label>
+            <div className="flex flex-wrap gap-2">
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="ethereum"
+                  value="ethereum"
+                  {...register("blockchainExpertise")}
+                />
+                <Label htmlFor="ethereum">Ethereum</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="polygon"
+                  value="polygon"
+                  {...register("blockchainExpertise")}
+                />
+                <Label htmlFor="polygon">Polygon</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="binanceSmartChain"
+                  value="binance-smart-chain"
+                  {...register("blockchainExpertise")}
+                />
+                <Label htmlFor="binanceSmartChain">Binance Smart Chain</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="solana"
+                  value="solana"
+                  {...register("blockchainExpertise")}
+                />
+                <Label htmlFor="solana">Solana</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="avalanche"
+                  value="avalanche"
+                  {...register("blockchainExpertise")}
+                />
+                <Label htmlFor="avalanche">Avalanche</Label>
+              </div>
+            </div>
+            {errors.blockchainExpertise && (
+              <p className="text-sm text-red-500">
+                {errors.blockchainExpertise.message}
+              </p>
             )}
-          />
-        </div>
+          </div>
 
-        <div className="flex justify-between pt-4">
-          <Button type="button" variant="outline" onClick={() => navigate("/")}>
-            Cancel
+          <div>
+            <Label htmlFor="yearsSince">Years of Experience</Label>
+            <Input
+              id="yearsSince"
+              placeholder="e.g., 3+, 5+"
+              {...register("yearsSince")}
+            />
+            {errors.yearsSince && (
+              <p className="text-sm text-red-500">{errors.yearsSince.message}</p>
+            )}
+          </div>
+
+          {/* Experience */}
+          <div>
+            <Label htmlFor="completedProjects">Completed Projects</Label>
+            <Input
+              id="completedProjects"
+              type="number"
+              placeholder="e.g., 10, 50"
+              {...register("completedProjects", { valueAsNumber: true })}
+            />
+            {errors.completedProjects && (
+              <p className="text-sm text-red-500">
+                {errors.completedProjects.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="notableClients">Notable Clients (Optional)</Label>
+            <Input
+              id="notableClients"
+              placeholder="e.g., Company A, Project B"
+              {...register("notableClients")}
+            />
+            {errors.notableClients && (
+              <p className="text-sm text-red-500">
+                {errors.notableClients.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="publicFindings">
+              Links to Public Findings/Audits (Optional)
+            </Label>
+            <Input
+              id="publicFindings"
+              placeholder="e.g., link1, link2"
+              {...register("publicFindings")}
+            />
+            {errors.publicFindings && (
+              <p className="text-sm text-red-500">
+                {errors.publicFindings.message}
+              </p>
+            )}
+          </div>
+
+          {/* Services Offered */}
+          <div>
+            <Label htmlFor="servicesOffered">Services Offered</Label>
+            <div className="flex flex-wrap gap-2">
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="smartContractAuditService"
+                  value="smart-contract-audit"
+                  {...register("servicesOffered")}
+                />
+                <Label htmlFor="smartContractAuditService">
+                  Smart Contract Audit
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="protocolAuditService"
+                  value="protocol-audit"
+                  {...register("servicesOffered")}
+                />
+                <Label htmlFor="protocolAuditService">Protocol Audit</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="penetrationTestingService"
+                  value="penetration-testing"
+                  {...register("servicesOffered")}
+                />
+                <Label htmlFor="penetrationTestingService">
+                  Penetration Testing
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="codeReviewService"
+                  value="code-review"
+                  {...register("servicesOffered")}
+                />
+                <Label htmlFor="codeReviewService">Code Review</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="architectureReviewService"
+                  value="architecture-review"
+                  {...register("servicesOffered")}
+                />
+                <Label htmlFor="architectureReviewService">
+                  Architecture Review
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="securityConsultingService"
+                  value="security-consulting"
+                  {...register("servicesOffered")}
+                />
+                <Label htmlFor="securityConsultingService">
+                  Security Consulting
+                </Label>
+              </div>
+            </div>
+            {errors.servicesOffered && (
+              <p className="text-sm text-red-500">
+                {errors.servicesOffered.message}
+              </p>
+            )}
+          </div>
+
+          {/* Methodologies */}
+          <div>
+            <Label htmlFor="methodologies">Methodologies Used</Label>
+            <div className="flex flex-wrap gap-2">
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="staticAnalysis"
+                  value="static-analysis"
+                  {...register("methodologies")}
+                />
+                <Label htmlFor="staticAnalysis">Static Analysis</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="dynamicAnalysis"
+                  value="dynamic-analysis"
+                  {...register("methodologies")}
+                />
+                <Label htmlFor="dynamicAnalysis">Dynamic Analysis</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="manualReview"
+                  value="manual-review"
+                  {...register("methodologies")}
+                />
+                <Label htmlFor="manualReview">Manual Review</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  id="fuzzing"
+                  value="fuzzing"
+                  {...register("methodologies")}
+                />
+                <Label htmlFor="fuzzing">Fuzzing</Label>
+              </div>
+            </div>
+            {errors.methodologies && (
+              <p className="text-sm text-red-500">
+                {errors.methodologies.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="customTools">Custom Tools (Optional)</Label>
+            <Input
+              id="customTools"
+              placeholder="e.g., Tool A, Tool B"
+              {...register("customTools")}
+            />
+            {errors.customTools && (
+              <p className="text-sm text-red-500">{errors.customTools.message}</p>
+            )}
+          </div>
+
+          {/* Verification */}
+          <div>
+            <Label htmlFor="certifications">Certifications (Optional)</Label>
+            <Input
+              id="certifications"
+              placeholder="e.g., Cert A, Cert B"
+              {...register("certifications")}
+            />
+            {errors.certifications && (
+              <p className="text-sm text-red-500">
+                {errors.certifications.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <div className="flex items-center space-x-2">
+              <Input
+                type="checkbox"
+                id="agreesToTerms"
+                {...register("agreesToTerms")}
+              />
+              <Label htmlFor="agreesToTerms" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed">
+                I agree to the <Button variant="link" onClick={() => setIsTermsOpen(true)}>Terms of Service</Button>
+              </Label>
+            </div>
+            {errors.agreesToTerms && (
+              <p className="text-sm text-red-500">
+                {errors.agreesToTerms.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <div className="flex items-center space-x-2">
+              <Input
+                type="checkbox"
+                id="agreesToCodeOfConduct"
+                {...register("agreesToCodeOfConduct")}
+              />
+              <Label htmlFor="agreesToCodeOfConduct" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed">
+                I agree to the <Button variant="link" onClick={() => setIsCodeOfConductOpen(true)}>Code of Conduct</Button>
+              </Label>
+            </div>
+            {errors.agreesToCodeOfConduct && (
+              <p className="text-sm text-red-500">
+                {errors.agreesToCodeOfConduct.message}
+              </p>
+            )}
+          </div>
+
+          <Button className="w-full" type="submit">
+            Submit Application
           </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Submitting...
-              </>
-            ) : (
-              "Submit Application"
-            )}
-          </Button>
-        </div>
-      </form>
-    </Form>
+        </form>
+      </CardContent>
+      <TermsOfService open={isTermsOpen} onOpenChange={setIsTermsOpen} />
+      <CodeOfConduct open={isCodeOfConductOpen} onOpenChange={setIsCodeOfConductOpen} />
+    </Card>
   );
 }

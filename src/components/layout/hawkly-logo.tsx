@@ -1,7 +1,7 @@
 
 import { cn } from "@/lib/utils";
 
-interface HawklyLogoProps {
+export interface HawklyLogoProps {
   variant?: "default" | "large" | "compact" | "full";
   className?: string;
   asLink?: boolean;

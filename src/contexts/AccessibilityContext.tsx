@@ -1,207 +1,95 @@
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
-interface AccessibilityContextState {
+export interface AccessibilityContextType {
   highContrast: boolean;
   largeText: boolean;
-  reducedMotion: boolean;
-  screenReaderFriendly: boolean;
-  keyboardMode: boolean;
   focusVisible: boolean;
+  reducedMotion: boolean;
+  screenReaderFriendly: boolean; // Added missing property
   toggleHighContrast: () => void;
   toggleLargeText: () => void;
-  toggleReducedMotion: () => void;
-  toggleScreenReaderFriendly: () => void;
-  toggleKeyboardMode: () => void;
   toggleFocusVisible: () => void;
+  toggleReducedMotion: () => void;
+  toggleScreenReaderFriendly: () => void; // Added missing function
 }
 
-const defaultState: AccessibilityContextState = {
+const defaultContext: AccessibilityContextType = {
   highContrast: false,
   largeText: false,
+  focusVisible: false,
   reducedMotion: false,
-  screenReaderFriendly: false,
-  keyboardMode: false,
-  focusVisible: true,
+  screenReaderFriendly: false, // Added default value
   toggleHighContrast: () => {},
   toggleLargeText: () => {},
-  toggleReducedMotion: () => {},
-  toggleScreenReaderFriendly: () => {},
-  toggleKeyboardMode: () => {},
   toggleFocusVisible: () => {},
+  toggleReducedMotion: () => {},
+  toggleScreenReaderFriendly: () => {}, // Added empty function
 };
 
-const AccessibilityContext = createContext<AccessibilityContextState>(defaultState);
-
-export const useAccessibility = () => useContext(AccessibilityContext);
+export const AccessibilityContext = createContext<AccessibilityContextType>(defaultContext);
 
 export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [highContrast, setHighContrast] = useState(false);
   const [largeText, setLargeText] = useState(false);
+  const [focusVisible, setFocusVisible] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [screenReaderFriendly, setScreenReaderFriendly] = useState(false);
-  const [keyboardMode, setKeyboardMode] = useState(false);
-  const [focusVisible, setFocusVisible] = useState(true);
+  const [screenReaderFriendly, setScreenReaderFriendly] = useState(false); // Added state
 
-  // Check for user preferences from system
+  // Load settings from localStorage on mount
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) {
-      setReducedMotion(true);
-    }
-    
-    // Check for stored preferences
-    const storedPreferences = localStorage.getItem("accessibility-preferences");
-    if (storedPreferences) {
-      try {
-        const preferences = JSON.parse(storedPreferences);
-        setHighContrast(preferences.highContrast ?? false);
-        setLargeText(preferences.largeText ?? false);
-        setReducedMotion(preferences.reducedMotion ?? prefersReducedMotion);
-        setScreenReaderFriendly(preferences.screenReaderFriendly ?? false);
-        setKeyboardMode(preferences.keyboardMode ?? false);
-        setFocusVisible(preferences.focusVisible ?? true);
-      } catch (e) {
-        console.error("Failed to parse accessibility preferences:", e);
-      }
-    }
-    
-    // Setup keyboard detection
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Tab') {
-        setKeyboardMode(true);
-        document.body.classList.add('keyboard-mode');
-      }
+    const loadSetting = (key: string): boolean => {
+      const value = localStorage.getItem(`accessibility_${key}`);
+      return value === 'true';
     };
-    
-    const handleMouseDown = () => {
-      setKeyboardMode(false);
-      document.body.classList.remove('keyboard-mode');
-    };
-    
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('mousedown', handleMouseDown);
-    
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('mousedown', handleMouseDown);
-    };
+
+    setHighContrast(loadSetting('highContrast'));
+    setLargeText(loadSetting('largeText'));
+    setFocusVisible(loadSetting('focusVisible'));
+    setReducedMotion(loadSetting('reducedMotion'));
+    setScreenReaderFriendly(loadSetting('screenReaderFriendly')); // Load screenReaderFriendly
   }, []);
 
-  // Apply preferences to document
+  // Save settings to localStorage when they change
   useEffect(() => {
-    // Store preferences
-    localStorage.setItem(
-      "accessibility-preferences",
-      JSON.stringify({ 
-        highContrast, 
-        largeText, 
-        reducedMotion, 
-        screenReaderFriendly,
-        keyboardMode,
-        focusVisible
-      })
-    );
+    localStorage.setItem('accessibility_highContrast', String(highContrast));
+    localStorage.setItem('accessibility_largeText', String(largeText));
+    localStorage.setItem('accessibility_focusVisible', String(focusVisible));
+    localStorage.setItem('accessibility_reducedMotion', String(reducedMotion));
+    localStorage.setItem('accessibility_screenReaderFriendly', String(screenReaderFriendly)); // Save screenReaderFriendly
+    
+    // Apply CSS classes to the document
+    document.documentElement.classList.toggle('high-contrast-mode', highContrast);
+    document.documentElement.classList.toggle('large-text-mode', largeText);
+    document.documentElement.classList.toggle('focus-visible-mode', focusVisible);
+    document.documentElement.classList.toggle('reduced-motion-mode', reducedMotion);
+    document.documentElement.classList.toggle('screen-reader-friendly', screenReaderFriendly); // Apply screenReaderFriendly
+  }, [highContrast, largeText, focusVisible, reducedMotion, screenReaderFriendly]);
 
-    // Apply classes to body
-    const body = document.body;
-    
-    if (highContrast) {
-      body.classList.add("high-contrast");
-    } else {
-      body.classList.remove("high-contrast");
-    }
+  const toggleHighContrast = () => setHighContrast(prev => !prev);
+  const toggleLargeText = () => setLargeText(prev => !prev);
+  const toggleFocusVisible = () => setFocusVisible(prev => !prev);
+  const toggleReducedMotion = () => setReducedMotion(prev => !prev);
+  const toggleScreenReaderFriendly = () => setScreenReaderFriendly(prev => !prev); // Added toggle function
 
-    if (largeText) {
-      body.classList.add("large-text");
-    } else {
-      body.classList.remove("large-text");
-    }
-
-    if (reducedMotion) {
-      body.classList.add("reduced-motion");
-    } else {
-      body.classList.remove("reduced-motion");
-    }
-
-    if (screenReaderFriendly) {
-      body.classList.add("screen-reader-friendly");
-    } else {
-      body.classList.remove("screen-reader-friendly");
-    }
-    
-    if (keyboardMode) {
-      body.classList.add("keyboard-mode");
-    } else {
-      body.classList.remove("keyboard-mode");
-    }
-    
-    if (focusVisible) {
-      body.classList.add("focus-visible-mode");
-    } else {
-      body.classList.remove("focus-visible-mode");
-    }
-    
-    // Add some global CSS for accessibility
-    const styleId = "accessibility-styles";
-    let styleEl = document.getElementById(styleId) as HTMLStyleElement;
-    
-    if (!styleEl) {
-      styleEl = document.createElement("style");
-      styleEl.id = styleId;
-      document.head.appendChild(styleEl);
-    }
-    
-    styleEl.textContent = `
-      .keyboard-mode :focus {
-        outline: 2px solid hsl(var(--primary));
-        outline-offset: 2px;
-      }
-      
-      .high-contrast {
-        --primary: 240 100% 50%;
-        --contrast-ratio: 7;
-      }
-      
-      .large-text {
-        font-size: 1.2rem;
-      }
-      
-      .reduced-motion *,
-      .reduced-motion *::before,
-      .reduced-motion *::after {
-        animation-duration: 0.0001s !important;
-        transition-duration: 0.0001s !important;
-      }
-    `;
-    
-  }, [highContrast, largeText, reducedMotion, screenReaderFriendly, keyboardMode, focusVisible]);
-
-  const toggleHighContrast = () => setHighContrast((prev) => !prev);
-  const toggleLargeText = () => setLargeText((prev) => !prev);
-  const toggleReducedMotion = () => setReducedMotion((prev) => !prev);
-  const toggleScreenReaderFriendly = () => setScreenReaderFriendly((prev) => !prev);
-  const toggleKeyboardMode = () => setKeyboardMode((prev) => !prev);
-  const toggleFocusVisible = () => setFocusVisible((prev) => !prev);
+  const value = {
+    highContrast,
+    largeText,
+    focusVisible,
+    reducedMotion,
+    screenReaderFriendly, // Added to value
+    toggleHighContrast,
+    toggleLargeText,
+    toggleFocusVisible,
+    toggleReducedMotion,
+    toggleScreenReaderFriendly, // Added to value
+  };
 
   return (
-    <AccessibilityContext.Provider
-      value={{
-        highContrast,
-        largeText,
-        reducedMotion,
-        screenReaderFriendly,
-        keyboardMode,
-        focusVisible,
-        toggleHighContrast,
-        toggleLargeText,
-        toggleReducedMotion,
-        toggleScreenReaderFriendly,
-        toggleKeyboardMode,
-        toggleFocusVisible
-      }}
-    >
+    <AccessibilityContext.Provider value={value}>
       {children}
     </AccessibilityContext.Provider>
   );
 };
+
+export const useAccessibility = () => useContext(AccessibilityContext);

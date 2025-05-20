@@ -37,7 +37,7 @@ export const useAuditFormAuth = (
       // Prepare the initial form data with user profile information
       setFormData((prevData: AuditFormData) => ({
         ...prevData,
-        contactName: userProfile.full_name || prevData.contactName || '',
+        contactName: userProfile.full_name || userProfile.display_name || prevData.contactName || '',
         contactEmail: user?.email || prevData.contactEmail || '',
       }));
     }

@@ -48,15 +48,7 @@ const RequestAudit = () => {
             <RequestSuccessMessage />
           ) : (
             <div className="container px-4 sm:px-6 lg:px-8">
-              {/* Header - simplified for wizard approach */}
-              <div className="text-center mb-8">
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
-                  Request Your Security Audit
-                </h1>
-                <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-                  Tell us about your project and we'll match you with the perfect security experts.
-                </p>
-              </div>
+              <AuditRequestHeader />
               
               {/* Wizard Form */}
               <WizardRequestForm 
