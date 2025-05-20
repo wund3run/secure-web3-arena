@@ -32,5 +32,4 @@ export const navigationLinks: NavigationLinksStructure = {
   ],
 };
 
-// Export the types directly
-export type { NavigationLinkItem, NavigationLinksStructure };
+// Remove the duplicate type exports since we're importing them
