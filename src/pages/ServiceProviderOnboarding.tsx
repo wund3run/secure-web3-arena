@@ -62,7 +62,7 @@ const ServiceProviderOnboarding = () => {
                   </TabsContent>
                 </Tabs>
 
-                <ServiceProviderOnboardingForm providerType={activeTab} />
+                <ServiceProviderOnboardingForm />
               </div>
             </div>
           </div>

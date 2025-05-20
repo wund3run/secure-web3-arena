@@ -21,7 +21,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -29,17 +29,13 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { TermsOfService } from "@/components/layout/TermsOfService";
 import { CodeOfConduct } from "@/components/layout/CodeOfConduct";
 
-interface ServiceProviderOnboardingFormProps {
-  providerType: "auditor" | "service";
-}
-
-export function ServiceProviderOnboardingForm({ providerType = "auditor" }: ServiceProviderOnboardingFormProps) {
+export function ServiceProviderOnboardingForm() {
   const { signUp } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -75,16 +71,12 @@ export function ServiceProviderOnboardingForm({ providerType = "auditor" }: Serv
 
   const onSubmit = async (data: any) => {
     try {
-      // Always set user type to "auditor" for service provider onboarding
       const userType = "auditor";
-      
       await signUp(data.email, data.email, data.name, userType);
-      
       toast({
         title: "Application Submitted",
         description: "Your application has been submitted successfully."
       });
-      
       navigate("/application-submitted");
     } catch (error) {
       toast({
@@ -98,12 +90,12 @@ export function ServiceProviderOnboardingForm({ providerType = "auditor" }: Serv
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
-        <CardTitle>{providerType === "auditor" ? "Auditor" : "Service Provider"} Onboarding</CardTitle>
+        <CardTitle>Service Provider Onboarding</CardTitle>
         <CardDescription>
-          Fill out the form below to apply as a {providerType === "auditor" ? "security auditor" : "service provider"} on our
-          platform.
+          Fill out the form below to apply as a service provider on our platform.
         </CardDescription>
       </CardHeader>
+      
       <CardContent className="grid gap-6">
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -132,9 +124,7 @@ export function ServiceProviderOnboardingForm({ providerType = "auditor" }: Serv
               {...register("walletAddress")}
             />
             {errors.walletAddress && (
-              <p className="text-sm text-red-500">
-                {errors.walletAddress.message}
-              </p>
+              <p className="text-sm text-red-500">{errors.walletAddress.message}</p>
             )}
           </div>
 
@@ -363,77 +353,77 @@ export function ServiceProviderOnboardingForm({ providerType = "auditor" }: Serv
             )}
           </div>
 
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="terms"
-              {...register("agreesToTerms")}
-            />
-            <div className="grid gap-1.5 leading-none">
-              <Label htmlFor="terms">
-                I agree to the{" "}
-                <Dialog open={isTermsOpen} onOpenChange={setIsTermsOpen}>
-                  <DialogTrigger asChild>
-                    <Button variant="link" className="px-0 font-normal">
-                      Terms of Service
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-5xl">
-                    <DialogHeader>
-                      <DialogTitle>Terms of Service</DialogTitle>
-                      <DialogDescription>
-                        Please read our terms of service carefully.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <TermsOfService onAccept={() => {
-                      form.setValue("agreesToTerms", true);
-                      setIsTermsOpen(false);
-                    }} />
-                  </DialogContent>
-                </Dialog>
-              </Label>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="terms" 
+                {...register("agreesToTerms")} 
+              />
+              <div className="grid gap-1.5 leading-none">
+                <div className="text-sm text-gray-500 flex items-center">
+                  I agree to the 
+                  <Dialog open={isTermsOpen} onOpenChange={setIsTermsOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="link" className="h-auto p-0 mx-1">
+                        Terms of Service
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Terms of Service</DialogTitle>
+                        <DialogDescription>
+                          Please review our Terms of Service carefully.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <TermsOfService onAccept={() => {
+                        form.setValue("agreesToTerms", true);
+                        setIsTermsOpen(false);
+                      }} />
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
             </div>
-          </div>
-          {errors.agreesToTerms && (
-            <p className="text-sm text-red-500">{errors.agreesToTerms.message}</p>
-          )}
+            {errors.agreesToTerms && (
+              <p className="text-sm text-red-500">{errors.agreesToTerms.message}</p>
+            )}
 
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="codeOfConduct"
-              {...register("agreesToCodeOfConduct")}
-            />
-            <div className="grid gap-1.5 leading-none">
-              <Label htmlFor="codeOfConduct">
-                I agree to the{" "}
-                <Dialog open={isCodeOfConductOpen} onOpenChange={setIsCodeOfConductOpen}>
-                  <DialogTrigger asChild>
-                    <Button variant="link" className="px-0 font-normal">
-                      Code of Conduct
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-5xl">
-                    <DialogHeader>
-                      <DialogTitle>Code of Conduct</DialogTitle>
-                      <DialogDescription>
-                        Please read our code of conduct carefully.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <CodeOfConduct onAccept={() => {
-                      form.setValue("agreesToCodeOfConduct", true);
-                      setIsCodeOfConductOpen(false);
-                    }} />
-                  </DialogContent>
-                </Dialog>
-              </Label>
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="codeOfConduct" 
+                {...register("agreesToCodeOfConduct")} 
+              />
+              <div className="grid gap-1.5 leading-none">
+                <div className="text-sm text-gray-500 flex items-center">
+                  I agree to the 
+                  <Dialog open={isCodeOfConductOpen} onOpenChange={setIsCodeOfConductOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="link" className="h-auto p-0 mx-1">
+                        Code of Conduct
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Code of Conduct</DialogTitle>
+                        <DialogDescription>
+                          Please review our Code of Conduct carefully.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <CodeOfConduct onAccept={() => {
+                        form.setValue("agreesToCodeOfConduct", true);
+                        setIsCodeOfConductOpen(false);
+                      }} />
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
             </div>
+            {errors.agreesToCodeOfConduct && (
+              <p className="text-sm text-red-500">{errors.agreesToCodeOfConduct.message}</p>
+            )}
           </div>
-          {errors.agreesToCodeOfConduct && (
-            <p className="text-sm text-red-500">
-              {errors.agreesToCodeOfConduct.message}
-            </p>
-          )}
 
-          <Button type="submit">Submit Application</Button>
+          <Button type="submit" className="w-full mt-4">Submit Application</Button>
         </form>
       </CardContent>
     </Card>

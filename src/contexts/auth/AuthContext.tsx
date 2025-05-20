@@ -6,7 +6,7 @@ import { AuthContextProps } from "./types";
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const auth = useAuthProvider();
+  const auth = useAuthProvider() as AuthContextProps;
 
   return (
     <AuthContext.Provider value={auth}>
