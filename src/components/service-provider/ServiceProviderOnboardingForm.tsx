@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAuth } from "@/contexts/auth";
 import {
@@ -79,11 +78,8 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
       // Use the providerType prop to set the user type
       const userType = providerType === "auditor" ? "auditor" : "project_owner";
       
-      // Pass metadata object with full_name and user_type
-      await signUp(data.email, data.email, { 
-        full_name: data.name,
-        user_type: userType 
-      });
+      // Fixed: Pass parameters properly according to the function signature
+      await signUp(data.email, data.email, data.name, userType);
       
       toast({
         title: "Application Submitted",
