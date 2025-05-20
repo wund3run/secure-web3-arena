@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  FontBoldIcon,
+  BoldIcon,
   MoonIcon,
   SunIcon,
   ZoomInIcon,

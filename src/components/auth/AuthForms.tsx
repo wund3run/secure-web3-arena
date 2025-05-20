@@ -1,6 +1,5 @@
 
 import React, { useState } from "react";
-import { SignInForm, SignUpForm } from "@/components/auth/AuthForms";
 
 interface AuthFormsProps {
   isSignIn: boolean;
@@ -137,5 +136,147 @@ export function AuthForms({
         </p>
       </div>
     </div>
+  );
+}
+
+// SignInForm and SignUpForm components need to be defined in this file
+// since they were previously causing circular imports
+
+interface SignInFormProps {
+  email: string;
+  setEmail: (email: string) => void;
+  password: string;
+  setPassword: (password: string) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export function SignInForm({
+  email,
+  setEmail,
+  password,
+  setPassword,
+  onSubmit,
+  isLoading,
+  error,
+}: SignInFormProps) {
+  return (
+    <form onSubmit={onSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <label htmlFor="email" className="block text-sm font-medium">
+          Email
+        </label>
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full px-3 py-2 border border-border rounded-md"
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <label htmlFor="password" className="block text-sm font-medium">
+          Password
+        </label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full px-3 py-2 border border-border rounded-md"
+          required
+        />
+      </div>
+      
+      {error && <p className="text-sm text-red-500">{error}</p>}
+      
+      <button
+        type="submit"
+        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md"
+        disabled={isLoading}
+      >
+        {isLoading ? "Signing in..." : "Sign In"}
+      </button>
+    </form>
+  );
+}
+
+interface SignUpFormProps {
+  email: string;
+  setEmail: (email: string) => void;
+  password: string;
+  setPassword: (password: string) => void;
+  fullName: string;
+  setFullName: (name: string) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export function SignUpForm({
+  email,
+  setEmail,
+  password,
+  setPassword,
+  fullName,
+  setFullName,
+  onSubmit,
+  isLoading,
+  error,
+}: SignUpFormProps) {
+  return (
+    <form onSubmit={onSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <label htmlFor="fullName" className="block text-sm font-medium">
+          Full Name
+        </label>
+        <input
+          id="fullName"
+          type="text"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          className="w-full px-3 py-2 border border-border rounded-md"
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <label htmlFor="email" className="block text-sm font-medium">
+          Email
+        </label>
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full px-3 py-2 border border-border rounded-md"
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <label htmlFor="password" className="block text-sm font-medium">
+          Password
+        </label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full px-3 py-2 border border-border rounded-md"
+          required
+        />
+      </div>
+      
+      {error && <p className="text-sm text-red-500">{error}</p>}
+      
+      <button
+        type="submit"
+        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md"
+        disabled={isLoading}
+      >
+        {isLoading ? "Creating account..." : "Create Account"}
+      </button>
+    </form>
   );
 }
