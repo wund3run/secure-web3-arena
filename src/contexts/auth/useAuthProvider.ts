@@ -70,6 +70,8 @@ export function useAuthProvider() {
   const signIn = async (email: string, password: string, captchaToken: string = "auto-verified-token") => {
     try {
       setLoading(true);
+      setError(null);
+
       const { error } = await supabase.auth.signInWithPassword({ 
         email, 
         password,
@@ -80,13 +82,14 @@ export function useAuthProvider() {
 
       // If MFA is required, redirect to 2FA page
       if (requireMFA) {
-        navigate('/two-factor-auth', { state: { email } });
+        navigate('/auth/2fa', { state: { email } });
         return;
       }
       
       // Navigate user to their appropriate dashboard based on role
       const { data } = await supabase.auth.getSession();
       const userData = data.session?.user;
+      
       if (userData) {
         const { data: profileData } = await supabase
           .from('extended_profiles')
@@ -95,12 +98,7 @@ export function useAuthProvider() {
           .single();
           
         const userType = profileData?.user_type || userData?.user_metadata?.user_type;
-        
-        if (userType === 'auditor') {
-          navigate('/dashboard/auditor');
-        } else {
-          navigate('/dashboard/project');
-        }
+        redirectUserBasedOnRole(userType);
       } else {
         navigate('/dashboard');
       }
@@ -114,14 +112,19 @@ export function useAuthProvider() {
     }
   };
 
-  const signUp = async (email: string, password: string, metadata?: { full_name?: string, user_type?: string }, captchaToken: string = "auto-verified-token") => {
+  const signUp = async (email: string, password: string, fullName: string, userType: "auditor" | "project_owner" = "project_owner", captchaToken: string = "auto-verified-token") => {
     try {
       setLoading(true);
+      setError(null);
+
       const { error } = await supabase.auth.signUp({ 
         email, 
         password,
         options: {
-          data: metadata,
+          data: {
+            full_name: fullName,
+            user_type: userType
+          },
           captchaToken
         },
       });
@@ -153,6 +156,16 @@ export function useAuthProvider() {
       throw error;
     }
   };
+  
+  const redirectUserBasedOnRole = (userType?: string) => {
+    if (userType === 'auditor') {
+      toast.info("Redirecting to your Auditor Dashboard");
+      navigate('/dashboard/auditor');
+    } else {
+      toast.info("Redirecting to your Project Dashboard");
+      navigate('/dashboard/project');
+    }
+  };
 
   const updateProfile = async (data: any) => {
     try {
@@ -174,6 +187,9 @@ export function useAuthProvider() {
     }
   };
 
+  // State for error handling
+  const [error, setError] = useState<string | null>(null);
+
   // New OTP verification function
   const verifyOTP = async (otp: string) => {
     try {
@@ -181,7 +197,24 @@ export function useAuthProvider() {
       // to verify the OTP. For now, we'll simulate success with a fixed code.
       if (otp === '123456') {
         toast.success("OTP verified successfully");
-        navigate('/dashboard');
+        
+        // Get user type and redirect accordingly
+        const { data } = await supabase.auth.getSession();
+        const userData = data.session?.user;
+        
+        if (userData) {
+          const { data: profileData } = await supabase
+            .from('extended_profiles')
+            .select('user_type')
+            .eq('id', userData.id)
+            .single();
+            
+          const userType = profileData?.user_type || userData?.user_metadata?.user_type;
+          redirectUserBasedOnRole(userType);
+        } else {
+          navigate('/dashboard');
+        }
+        
         return;
       }
       
@@ -210,17 +243,31 @@ export function useAuthProvider() {
     }
   };
 
+  const getUserType = (): "auditor" | "project_owner" => {
+    if (!user) return "project_owner";
+    
+    // First try to get from userProfile (which comes from extended_profiles table)
+    if (userProfile?.user_type) {
+      return userProfile.user_type as "auditor" | "project_owner";
+    }
+    
+    // Fall back to user metadata
+    return (user.user_metadata?.user_type as "auditor" | "project_owner") || "project_owner";
+  };
+
   return {
     user,
     session,
     loading,
     userProfile,
+    error,
     signIn,
     signUp,
     signOut,
     updateProfile,
     verifyOTP,
     resendOTP,
-    requireMFA
+    requireMFA,
+    getUserType
   };
 }

@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { type NavigationLinksStructure } from "./navigation-links.tsx";
 import { FocusTrap } from "@/components/ui/focus-trap";
+import { useAuth } from "@/contexts/auth";
 
 interface MobileNavigationProps {
   navigationLinks: NavigationLinksStructure;
@@ -22,6 +23,21 @@ export function MobileNavigation({
   isAuthenticated, 
   onSignOut 
 }: MobileNavigationProps) {
+  const { getUserType } = useAuth();
+  
+  // Determine if the user is an auditor or project owner
+  const userType = isAuthenticated ? getUserType() : null;
+  const isAuditor = userType === 'auditor';
+  
+  // Filter dashboard links based on user type
+  const dashboardLinks = isAuthenticated
+    ? navigationLinks.dashboards.filter(item => 
+        isAuditor 
+          ? !item.href.includes('/dashboard/project')
+          : !item.href.includes('/dashboard/auditor')
+      )
+    : [];
+  
   return (
     <div className="flex md:hidden">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -125,6 +141,41 @@ export function MobileNavigation({
                     </ul>
                   </nav>
                 </div>
+
+                {isAuthenticated && dashboardLinks.length > 0 && (
+                  <div className="border-b pb-2">
+                    <h3 className="font-medium mb-2" id="mobile-dashboard-heading">
+                      {isAuditor ? "Auditor Hub" : "Project Hub"}
+                    </h3>
+                    <nav aria-labelledby="mobile-dashboard-heading">
+                      <ul className="space-y-2">
+                        {dashboardLinks.map((item) => (
+                          <li key={item.href}>
+                            <Link 
+                              to={item.href} 
+                              className="block py-2 text-sm hover:text-primary transition-colors relative group" 
+                              onClick={() => setIsOpen(false)}
+                              aria-label={item.badge ? `${item.title} (${item.badge})` : item.title}
+                            >
+                              <div className="flex items-center relative">
+                                <span>{item.title}</span>
+                                {item.badge && (
+                                  <span 
+                                    className="ml-2 px-1.5 py-0.5 text-xs font-medium bg-purple-600 text-white rounded-full"
+                                    aria-hidden="true"
+                                  >
+                                    {item.badge}
+                                  </span>
+                                )}
+                                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                              </div>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </nav>
+                  </div>
+                )}
                 
                 <div>
                   <Link 
@@ -168,7 +219,7 @@ export function MobileNavigation({
                   <>
                     <Button variant="outline" className="w-full" asChild>
                       <Link 
-                        to="/dashboard" 
+                        to={isAuditor ? "/dashboard/auditor" : "/dashboard/project"}
                         onClick={() => setIsOpen(false)}
                         aria-label="Go to your dashboard"
                       >

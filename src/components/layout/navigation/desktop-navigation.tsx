@@ -21,10 +21,10 @@ export function DesktopNavigation({
   activeDropdown, 
   handleDropdownToggle 
 }: DesktopNavigationProps) {
-  const { user, userProfile } = useAuth();
+  const { user, getUserType } = useAuth();
   
   // Determine if the user is an auditor or project owner
-  const userType = userProfile?.user_type || user?.user_metadata?.user_type;
+  const userType = user ? getUserType() : null;
   const isAuditor = userType === 'auditor';
   
   return (

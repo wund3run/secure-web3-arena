@@ -10,15 +10,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 export default function Dashboard() {
-  const { user, userProfile } = useAuth();
+  const { user, getUserType } = useAuth();
   const navigate = useNavigate();
   const params = useParams();
   const dashboardType = params.type || '';
   
   useEffect(() => {
     if (user) {
-      // Determine user role from profile
-      const userType = userProfile?.user_type || user?.user_metadata?.user_type || 'project_owner';
+      // Determine user role
+      const userType = getUserType();
       const isAuditor = userType === 'auditor';
       const currentPath = window.location.pathname;
       
@@ -47,10 +47,13 @@ export default function Dashboard() {
         }
       }
     }
-  }, [user, userProfile, navigate, dashboardType]);
+  }, [user, navigate, dashboardType, getUserType]);
+
+  // Determine required user type based on dashboard type
+  const requiredUserType = dashboardType === 'auditor' ? 'auditor' : 'project_owner';
 
   return (
-    <PrivateRoute>
+    <PrivateRoute requiredUserType={requiredUserType as "auditor" | "project_owner"}>
       <Helmet>
         <title>{dashboardType === 'auditor' ? 'Auditor' : 'Project'} Dashboard | Hawkly</title>
         <meta name="description" content="View your personalized security dashboard on Hawkly" />

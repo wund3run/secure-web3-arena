@@ -6,7 +6,7 @@ interface AuthFormsProps {
   onToggle: () => void;
   returnMessage?: string;
   onSignIn: (email: string, password: string, captchaToken?: string) => Promise<void>;
-  onSignUp: (email: string, password: string, name: string, captchaToken?: string) => Promise<void>;
+  onSignUp: (email: string, password: string, name: string, userType: "auditor" | "project_owner", captchaToken?: string) => Promise<void>;
   userType: "auditor" | "project_owner";
   setUserType: (type: "auditor" | "project_owner") => void;
 }
@@ -46,7 +46,7 @@ export function AuthForms({
     setError(null);
 
     try {
-      await onSignUp(email, password, fullName);
+      await onSignUp(email, password, fullName, userType);
     } catch (err) {
       setError("Failed to create an account. Please try again.");
     } finally {
@@ -75,25 +75,35 @@ export function AuthForms({
 
       {/* User type selection for sign up */}
       {!isSignIn && (
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => setUserType("project_owner")}
-            className={`flex-1 py-2 px-4 text-sm rounded-md border ${
-              userType === "project_owner" ? "bg-primary text-primary-foreground" : "bg-muted/20"
-            }`}
-          >
-            Project Owner
-          </button>
-          <button
-            type="button"
-            onClick={() => setUserType("auditor")}
-            className={`flex-1 py-2 px-4 text-sm rounded-md border ${
-              userType === "auditor" ? "bg-primary text-primary-foreground" : "bg-muted/20"
-            }`}
-          >
-            Security Auditor
-          </button>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium">Select Account Type</label>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setUserType("project_owner")}
+              className={`flex-1 py-2 px-4 text-sm rounded-md border ${
+                userType === "project_owner" ? "bg-primary text-primary-foreground" : "bg-muted/20"
+              }`}
+              aria-pressed={userType === "project_owner"}
+            >
+              Project Owner
+            </button>
+            <button
+              type="button"
+              onClick={() => setUserType("auditor")}
+              className={`flex-1 py-2 px-4 text-sm rounded-md border ${
+                userType === "auditor" ? "bg-primary text-primary-foreground" : "bg-muted/20"
+              }`}
+              aria-pressed={userType === "auditor"}
+            >
+              Security Auditor
+            </button>
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            {userType === "auditor" 
+              ? "Register as an auditor to offer your security expertise" 
+              : "Register as a project owner to request security audits"}
+          </p>
         </div>
       )}
 
@@ -119,6 +129,7 @@ export function AuthForms({
           onSubmit={handleSignUp}
           isLoading={isLoading}
           error={error}
+          userType={userType}
         />
       )}
 
@@ -213,6 +224,7 @@ interface SignUpFormProps {
   onSubmit: (e: React.FormEvent) => void;
   isLoading: boolean;
   error: string | null;
+  userType: "auditor" | "project_owner";
 }
 
 export function SignUpForm({
@@ -225,6 +237,7 @@ export function SignUpForm({
   onSubmit,
   isLoading,
   error,
+  userType,
 }: SignUpFormProps) {
   return (
     <form onSubmit={onSubmit} className="space-y-4">

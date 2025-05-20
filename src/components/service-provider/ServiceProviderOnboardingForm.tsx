@@ -1,40 +1,48 @@
-
-// Import the correct type for user_type at the top
-import { useState } from 'react';
-import { useAuth } from '@/contexts/auth';
+import { useState } from "react";
+import { useAuth } from "@/contexts/auth";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { useNavigate } from 'react-router-dom';
-import { useToast } from "@/components/ui/use-toast"
+  CardTitle
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { providerFormSchema, ProviderFormValues } from './providerTypes';
-import { TermsOfService } from "@/components/terms/terms-of-service";
-import { CodeOfConduct } from "@/components/terms/code-of-conduct";
+import { providerFormSchema } from "./providerTypes";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { TermsOfService } from "@/components/layout/TermsOfService";
+import { CodeOfConduct } from "@/components/layout/CodeOfConduct";
 
-// Add a user_type utility type for proper typing
-type UserType = "auditor" | "project_owner";
-
-interface ServiceProviderOnboardingFormProps {
-  providerType: "auditor" | "service";
-}
-
-export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderOnboardingFormProps) {
+export function ServiceProviderOnboardingForm() {
   const { signUp } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [isCodeOfConductOpen, setIsCodeOfConductOpen] = useState(false);
 
-  const form = useForm<ProviderFormValues>({
+  const form = useForm({
     resolver: zodResolver(providerFormSchema),
     defaultValues: {
       name: "",
@@ -55,99 +63,95 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
       customTools: "",
       certifications: "",
       agreesToTerms: false,
-      agreesToCodeOfConduct: false,
-    },
+      agreesToCodeOfConduct: false
+    }
   });
 
   const { register, handleSubmit, formState: { errors } } = form;
 
-  const onSubmit = async (data: ProviderFormValues) => {
+  const onSubmit = async (data: any) => {
     try {
-      // Use the providerType from props as the user_type
-      await signUp(data.email, data.email, { 
-        full_name: data.name,
-        user_type: providerType === "service" ? "project_owner" : "auditor"
-      });
+      // Always set user type to "auditor" for service provider onboarding
+      const userType = "auditor";
+      
+      await signUp(data.email, data.email, data.name, userType);
       
       toast({
         title: "Application Submitted",
-        description: "Your application has been submitted successfully.",
-      })
-      navigate('/application-submitted');
+        description: "Your application has been submitted successfully."
+      });
+      
+      navigate("/application-submitted");
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your submission. Please try again.",
-      })
+        description: "There was a problem with your submission. Please try again."
+      });
     }
   };
-  
+
   return (
-    <Card className="border border-border/40 shadow-sm backdrop-blur-sm bg-white/80">
+    <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center">
-          Security Expert Application
-        </CardTitle>
-        <CardDescription className="text-center">
-          Fill out the form below to apply as a security expert.
+        <CardTitle>Service Provider Onboarding</CardTitle>
+        <CardDescription>
+          Fill out the form below to apply as a service provider on our
+          platform.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Basic Information */}
+      <CardContent className="grid gap-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="name">Full Name</Label>
-              <Input id="name" placeholder="John Doe" {...register("name")} />
+              <Input id="name" type="text" placeholder="John Doe" {...register("name")} />
               {errors.name && (
                 <p className="text-sm text-red-500">{errors.name.message}</p>
               )}
             </div>
             <div>
               <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                placeholder="john.doe@example.com"
-                {...register("email")}
-              />
+              <Input id="email" type="email" placeholder="johndoe@example.com" {...register("email")} />
               {errors.email && (
                 <p className="text-sm text-red-500">{errors.email.message}</p>
               )}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="walletAddress">Wallet Address</Label>
-              <Input
-                id="walletAddress"
-                placeholder="0x..."
-                {...register("walletAddress")}
-              />
-              {errors.walletAddress && (
-                <p className="text-sm text-red-500">
-                  {errors.walletAddress.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Label htmlFor="website">Website (Optional)</Label>
-              <Input
-                id="website"
-                placeholder="https://example.com"
-                {...register("website")}
-              />
-              {errors.website && (
-                <p className="text-sm text-red-500">{errors.website.message}</p>
-              )}
-            </div>
+          <div>
+            <Label htmlFor="walletAddress">Wallet Address</Label>
+            <Input
+              id="walletAddress"
+              type="text"
+              placeholder="0x..."
+              {...register("walletAddress")}
+            />
+            {errors.walletAddress && (
+              <p className="text-sm text-red-500">
+                {errors.walletAddress.message}
+              </p>
+            )}
           </div>
 
           <div>
-            <Label htmlFor="githubProfile">GitHub Profile (Optional)</Label>
+            <Label htmlFor="website">Website</Label>
+            <Input
+              id="website"
+              type="url"
+              placeholder="https://example.com"
+              {...register("website")}
+            />
+            {errors.website && (
+              <p className="text-sm text-red-500">{errors.website.message}</p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="githubProfile">GitHub Profile</Label>
             <Input
               id="githubProfile"
+              type="url"
               placeholder="https://github.com/johndoe"
               {...register("githubProfile")}
             />
@@ -158,12 +162,12 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
             )}
           </div>
 
-          {/* Service Provider Specific Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="organization">Organization</Label>
               <Input
                 id="organization"
+                type="text"
                 placeholder="Acme Corp"
                 {...register("organization")}
               />
@@ -174,77 +178,44 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
               )}
             </div>
             <div>
-              <Label htmlFor="teamSize">Team Size (Optional)</Label>
-              <Input
-                id="teamSize"
-                placeholder="e.g., 1-10, 11-50"
-                {...register("teamSize")}
-              />
+              <Label htmlFor="teamSize">Team Size</Label>
+              <Select>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select team size" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1-5">1-5</SelectItem>
+                  <SelectItem value="6-10">6-10</SelectItem>
+                  <SelectItem value="11-20">11-20</SelectItem>
+                  <SelectItem value="21-50">21-50</SelectItem>
+                  <SelectItem value="50+">50+</SelectItem>
+                </SelectContent>
+              </Select>
               {errors.teamSize && (
                 <p className="text-sm text-red-500">{errors.teamSize.message}</p>
               )}
             </div>
           </div>
 
-          {/* Expertise */}
           <div>
-            <Label htmlFor="primaryExpertise">Areas of Expertise</Label>
-            <div className="flex flex-wrap gap-2">
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="smartContractAudit"
-                  value="smart-contract-audit"
-                  {...register("primaryExpertise")}
-                />
-                <Label htmlFor="smartContractAudit">Smart Contract Audit</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="protocolAudit"
-                  value="protocol-audit"
-                  {...register("primaryExpertise")}
-                />
-                <Label htmlFor="protocolAudit">Protocol Audit</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="penetrationTesting"
-                  value="penetration-testing"
-                  {...register("primaryExpertise")}
-                />
-                <Label htmlFor="penetrationTesting">Penetration Testing</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="codeReview"
-                  value="code-review"
-                  {...register("primaryExpertise")}
-                />
-                <Label htmlFor="codeReview">Code Review</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="architectureReview"
-                  value="architecture-review"
-                  {...register("primaryExpertise")}
-                />
-                <Label htmlFor="architectureReview">Architecture Review</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="securityConsulting"
-                  value="security-consulting"
-                  {...register("primaryExpertise")}
-                />
-                <Label htmlFor="securityConsulting">Security Consulting</Label>
-              </div>
-            </div>
+            <Label htmlFor="primaryExpertise">Primary Expertise</Label>
+            <Select>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select primary expertise" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Smart Contract Audits">
+                  Smart Contract Audits
+                </SelectItem>
+                <SelectItem value="Web3 Security">Web3 Security</SelectItem>
+                <SelectItem value="Penetration Testing">
+                  Penetration Testing
+                </SelectItem>
+                <SelectItem value="Security Consulting">
+                  Security Consulting
+                </SelectItem>
+              </SelectContent>
+            </Select>
             {errors.primaryExpertise && (
               <p className="text-sm text-red-500">
                 {errors.primaryExpertise.message}
@@ -254,53 +225,18 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
 
           <div>
             <Label htmlFor="blockchainExpertise">Blockchain Expertise</Label>
-            <div className="flex flex-wrap gap-2">
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="ethereum"
-                  value="ethereum"
-                  {...register("blockchainExpertise")}
-                />
-                <Label htmlFor="ethereum">Ethereum</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="polygon"
-                  value="polygon"
-                  {...register("blockchainExpertise")}
-                />
-                <Label htmlFor="polygon">Polygon</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="binanceSmartChain"
-                  value="binance-smart-chain"
-                  {...register("blockchainExpertise")}
-                />
-                <Label htmlFor="binanceSmartChain">Binance Smart Chain</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="solana"
-                  value="solana"
-                  {...register("blockchainExpertise")}
-                />
-                <Label htmlFor="solana">Solana</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="avalanche"
-                  value="avalanche"
-                  {...register("blockchainExpertise")}
-                />
-                <Label htmlFor="avalanche">Avalanche</Label>
-              </div>
-            </div>
+            <Select>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select blockchain expertise" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Ethereum">Ethereum</SelectItem>
+                <SelectItem value="Solana">Solana</SelectItem>
+                <SelectItem value="Cosmos">Cosmos</SelectItem>
+                <SelectItem value="Polkadot">Polkadot</SelectItem>
+                <SelectItem value="Avalanche">Avalanche</SelectItem>
+              </SelectContent>
+            </Select>
             {errors.blockchainExpertise && (
               <p className="text-sm text-red-500">
                 {errors.blockchainExpertise.message}
@@ -308,39 +244,42 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
             )}
           </div>
 
-          <div>
-            <Label htmlFor="yearsSince">Years of Experience</Label>
-            <Input
-              id="yearsSince"
-              placeholder="e.g., 3+, 5+"
-              {...register("yearsSince")}
-            />
-            {errors.yearsSince && (
-              <p className="text-sm text-red-500">{errors.yearsSince.message}</p>
-            )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="yearsSince">Years Since Active</Label>
+              <Input
+                id="yearsSince"
+                type="number"
+                placeholder="5"
+                {...register("yearsSince")}
+              />
+              {errors.yearsSince && (
+                <p className="text-sm text-red-500">
+                  {errors.yearsSince.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <Label htmlFor="completedProjects">Completed Projects</Label>
+              <Input
+                id="completedProjects"
+                type="number"
+                placeholder="100"
+                {...register("completedProjects")}
+              />
+              {errors.completedProjects && (
+                <p className="text-sm text-red-500">
+                  {errors.completedProjects.message}
+                </p>
+              )}
+            </div>
           </div>
 
-          {/* Experience */}
           <div>
-            <Label htmlFor="completedProjects">Completed Projects</Label>
-            <Input
-              id="completedProjects"
-              type="number"
-              placeholder="e.g., 10, 50"
-              {...register("completedProjects", { valueAsNumber: true })}
-            />
-            {errors.completedProjects && (
-              <p className="text-sm text-red-500">
-                {errors.completedProjects.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="notableClients">Notable Clients (Optional)</Label>
-            <Input
+            <Label htmlFor="notableClients">Notable Clients</Label>
+            <Textarea
               id="notableClients"
-              placeholder="e.g., Company A, Project B"
+              placeholder="List notable clients"
               {...register("notableClients")}
             />
             {errors.notableClients && (
@@ -351,12 +290,10 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
           </div>
 
           <div>
-            <Label htmlFor="publicFindings">
-              Links to Public Findings/Audits (Optional)
-            </Label>
-            <Input
+            <Label htmlFor="publicFindings">Public Findings</Label>
+            <Textarea
               id="publicFindings"
-              placeholder="e.g., link1, link2"
+              placeholder="List public findings"
               {...register("publicFindings")}
             />
             {errors.publicFindings && (
@@ -366,73 +303,13 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
             )}
           </div>
 
-          {/* Services Offered */}
           <div>
             <Label htmlFor="servicesOffered">Services Offered</Label>
-            <div className="flex flex-wrap gap-2">
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="smartContractAuditService"
-                  value="smart-contract-audit"
-                  {...register("servicesOffered")}
-                />
-                <Label htmlFor="smartContractAuditService">
-                  Smart Contract Audit
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="protocolAuditService"
-                  value="protocol-audit"
-                  {...register("servicesOffered")}
-                />
-                <Label htmlFor="protocolAuditService">Protocol Audit</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="penetrationTestingService"
-                  value="penetration-testing"
-                  {...register("servicesOffered")}
-                />
-                <Label htmlFor="penetrationTestingService">
-                  Penetration Testing
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="codeReviewService"
-                  value="code-review"
-                  {...register("servicesOffered")}
-                />
-                <Label htmlFor="codeReviewService">Code Review</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="architectureReviewService"
-                  value="architecture-review"
-                  {...register("servicesOffered")}
-                />
-                <Label htmlFor="architectureReviewService">
-                  Architecture Review
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="securityConsultingService"
-                  value="security-consulting"
-                  {...register("servicesOffered")}
-                />
-                <Label htmlFor="securityConsultingService">
-                  Security Consulting
-                </Label>
-              </div>
-            </div>
+            <Textarea
+              id="servicesOffered"
+              placeholder="List services offered"
+              {...register("servicesOffered")}
+            />
             {errors.servicesOffered && (
               <p className="text-sm text-red-500">
                 {errors.servicesOffered.message}
@@ -440,47 +317,13 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
             )}
           </div>
 
-          {/* Methodologies */}
           <div>
-            <Label htmlFor="methodologies">Methodologies Used</Label>
-            <div className="flex flex-wrap gap-2">
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="staticAnalysis"
-                  value="static-analysis"
-                  {...register("methodologies")}
-                />
-                <Label htmlFor="staticAnalysis">Static Analysis</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="dynamicAnalysis"
-                  value="dynamic-analysis"
-                  {...register("methodologies")}
-                />
-                <Label htmlFor="dynamicAnalysis">Dynamic Analysis</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="manualReview"
-                  value="manual-review"
-                  {...register("methodologies")}
-                />
-                <Label htmlFor="manualReview">Manual Review</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="checkbox"
-                  id="fuzzing"
-                  value="fuzzing"
-                  {...register("methodologies")}
-                />
-                <Label htmlFor="fuzzing">Fuzzing</Label>
-              </div>
-            </div>
+            <Label htmlFor="methodologies">Methodologies</Label>
+            <Textarea
+              id="methodologies"
+              placeholder="List methodologies"
+              {...register("methodologies")}
+            />
             {errors.methodologies && (
               <p className="text-sm text-red-500">
                 {errors.methodologies.message}
@@ -489,23 +332,24 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
           </div>
 
           <div>
-            <Label htmlFor="customTools">Custom Tools (Optional)</Label>
-            <Input
+            <Label htmlFor="customTools">Custom Tools</Label>
+            <Textarea
               id="customTools"
-              placeholder="e.g., Tool A, Tool B"
+              placeholder="List custom tools"
               {...register("customTools")}
             />
             {errors.customTools && (
-              <p className="text-sm text-red-500">{errors.customTools.message}</p>
+              <p className="text-sm text-red-500">
+                {errors.customTools.message}
+              </p>
             )}
           </div>
 
-          {/* Verification */}
           <div>
-            <Label htmlFor="certifications">Certifications (Optional)</Label>
-            <Input
+            <Label htmlFor="certifications">Certifications</Label>
+            <Textarea
               id="certifications"
-              placeholder="e.g., Cert A, Cert B"
+              placeholder="List certifications"
               {...register("certifications")}
             />
             {errors.certifications && (
@@ -515,50 +359,73 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
             )}
           </div>
 
-          <div>
-            <div className="flex items-center space-x-2">
-              <Input
-                type="checkbox"
-                id="agreesToTerms"
-                {...register("agreesToTerms")}
-              />
-              <Label htmlFor="agreesToTerms" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed">
-                I agree to the <Button variant="link" onClick={() => setIsTermsOpen(true)}>Terms of Service</Button>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="terms"
+              {...register("agreesToTerms")}
+            />
+            <div className="grid gap-1.5 leading-none">
+              <Label htmlFor="terms">
+                I agree to the{" "}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="link" className="px-0 font-normal">
+                      Terms of Service
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-5xl">
+                    <DialogHeader>
+                      <DialogTitle>Terms of Service</DialogTitle>
+                      <DialogDescription>
+                        Please read our terms of service carefully.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <TermsOfService />
+                  </DialogContent>
+                </Dialog>
               </Label>
             </div>
-            {errors.agreesToTerms && (
-              <p className="text-sm text-red-500">
-                {errors.agreesToTerms.message}
-              </p>
-            )}
           </div>
+          {errors.agreesToTerms && (
+            <p className="text-sm text-red-500">{errors.agreesToTerms.message}</p>
+          )}
 
-          <div>
-            <div className="flex items-center space-x-2">
-              <Input
-                type="checkbox"
-                id="agreesToCodeOfConduct"
-                {...register("agreesToCodeOfConduct")}
-              />
-              <Label htmlFor="agreesToCodeOfConduct" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed">
-                I agree to the <Button variant="link" onClick={() => setIsCodeOfConductOpen(true)}>Code of Conduct</Button>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="codeOfConduct"
+              {...register("agreesToCodeOfConduct")}
+            />
+            <div className="grid gap-1.5 leading-none">
+              <Label htmlFor="codeOfConduct">
+                I agree to the{" "}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="link" className="px-0 font-normal">
+                      Code of Conduct
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-5xl">
+                    <DialogHeader>
+                      <DialogTitle>Code of Conduct</DialogTitle>
+                      <DialogDescription>
+                        Please read our code of conduct carefully.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <CodeOfConduct />
+                  </DialogContent>
+                </Dialog>
               </Label>
             </div>
-            {errors.agreesToCodeOfConduct && (
-              <p className="text-sm text-red-500">
-                {errors.agreesToCodeOfConduct.message}
-              </p>
-            )}
           </div>
+          {errors.agreesToCodeOfConduct && (
+            <p className="text-sm text-red-500">
+              {errors.agreesToCodeOfConduct.message}
+            </p>
+          )}
 
-          <Button className="w-full" type="submit">
-            Submit Application
-          </Button>
+          <Button type="submit">Submit Application</Button>
         </form>
       </CardContent>
-      
-      <TermsOfService open={isTermsOpen} onOpenChange={setIsTermsOpen} />
-      <CodeOfConduct open={isCodeOfConductOpen} onOpenChange={setIsCodeOfConductOpen} />
     </Card>
   );
 }
