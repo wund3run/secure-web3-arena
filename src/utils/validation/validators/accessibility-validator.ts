@@ -11,7 +11,7 @@ export const validateAccessibility = (): ValidationIssue[] => {
   // Check for images without alt text
   const images = document.querySelectorAll('img');
   images.forEach(img => {
-    if (!img.alt && !img.getAttribute('role') === 'presentation') {
+    if (!img.alt && img.getAttribute('role') !== 'presentation') {
       accessibilityIssues.push({
         type: 'accessibility',
         severity: 'high',
@@ -26,7 +26,7 @@ export const validateAccessibility = (): ValidationIssue[] => {
   
   // Check for form inputs without labels
   const inputs = document.querySelectorAll('input, select, textarea');
-  inputs.forEach(input => {
+  inputs.forEach((input: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) => {
     const id = input.id;
     if (id) {
       const hasLabel = document.querySelector(`label[for="${id}"]`);
@@ -119,3 +119,10 @@ export const validateAccessibility = (): ValidationIssue[] => {
   
   return accessibilityIssues;
 };
+
+// Create an exported class to match the expected export in generate-ux-report.ts
+export class AccessibilityValidator {
+  static validate(): ValidationIssue[] {
+    return validateAccessibility();
+  }
+}

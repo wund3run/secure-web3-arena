@@ -10,3 +10,9 @@ export type ValidationIssue = {
 };
 
 export type StakeholderType = 'auditor' | 'project-owner' | 'admin' | 'general';
+
+// Add the ValidationResult type that's being referenced in index.ts
+export interface ValidationResult {
+  issues: ValidationIssue[];
+  isValidating: boolean;
+}

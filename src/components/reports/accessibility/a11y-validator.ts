@@ -92,7 +92,7 @@ export const reportAccessibilityIssues = (issues: ValidationIssue[]): void => {
  */
 export const createValidationIssue = (
   description: string,
-  type: 'route' | 'link' | 'ui' | 'responsive' | 'styling' | 'interactive' | 'accessibility' | 'design' | 'navigation' | 'content' | 'performance' | 'seo',
+  type: 'ui' | 'functionality' | 'navigation' | 'responsive' | 'content' | 'accessibility' | 'interactive' | 'link' | 'seo' | 'performance',
   severity: "high" | "medium" | "low",
   location: string,
   suggestion?: string,
@@ -103,7 +103,7 @@ export const createValidationIssue = (
     type,
     severity,
     location,
-    suggestion,
+    suggestion: suggestion || "",
     wcagCriterion,
   };
 };
