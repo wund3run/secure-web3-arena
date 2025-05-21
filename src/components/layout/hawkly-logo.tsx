@@ -5,11 +5,13 @@ import { Link } from "react-router-dom";
 interface HawklyLogoProps {
   size?: "small" | "default" | "large";
   asLink?: boolean;
+  variant?: "default" | "full" | "large";  // Added variant prop
+  className?: string;  // Added className prop
 }
 
-export function HawklyLogo({ size = "default", asLink = true }: HawklyLogoProps) {
+export function HawklyLogo({ size = "default", asLink = true, variant = "default", className = "" }: HawklyLogoProps) {
   const logoContent = (
-    <div className="flex items-center">
+    <div className={`flex items-center ${className}`}>
       <div className="mr-2">
         <svg
           width={size === "small" ? "24" : size === "large" ? "32" : "28"}

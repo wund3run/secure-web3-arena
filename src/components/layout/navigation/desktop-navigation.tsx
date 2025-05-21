@@ -66,7 +66,8 @@ export function DesktopNavigation({
             tabIndex={0}
             >
               <span>{isAuditor ? "Auditor Hub" : "Project Hub"}</span>
-              {user.isNew && <Badge className="ml-2 bg-primary" variant="outline">New</Badge>}
+              {/* Modified this line to safely check for isNew property */}
+              {user && ('isNew' in user) && user.isNew && <Badge className="ml-2 bg-primary" variant="outline">New</Badge>}
             </NavigationMenuLink>
             
             {activeDropdown === 'dashboards' && (
