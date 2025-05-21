@@ -1,7 +1,6 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import "./index.css";
 import App from "./App"; // Direct import instead of lazy loading
@@ -41,13 +40,9 @@ if (process.env.NODE_ENV === 'production') {
 // Create root with concurrent mode for better performance
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
-// Use concurrent mode rendering
+// Use concurrent mode rendering, but without BrowserRouter
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <HelmetProvider>
-        <App />
-      </HelmetProvider>
-    </BrowserRouter>
+    <App />
   </React.StrictMode>
 );
