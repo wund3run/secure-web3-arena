@@ -1,324 +1,65 @@
 
 import { useState, useEffect } from "react";
-import { Session, User } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
-import { UserType } from "./types";
+import { AuthContextProps } from "./types";
 
-export function useAuthProvider() {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+// This is a simple mock implementation for auth provider
+export function useAuthProvider(): AuthContextProps {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const [userProfile, setUserProfile] = useState<any>(null);
-  // Set this to true to enable MFA/2FA
-  const [requireMFA, setRequireMFA] = useState(false);
-  const navigate = useNavigate();
-
-  // Fetch user profile when user changes
+  
+  // Simulate auth loading
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (user) {
-        try {
-          const { data, error } = await supabase
-            .from('extended_profiles')
-            .select('*')
-            .eq('id', user.id)
-            .single();
-            
-          if (error) {
-            console.error('Error fetching user profile:', error);
-            return;
-          }
-          
-          setUserProfile(data);
-        } catch (error) {
-          console.error('Error in user profile fetch:', error);
-        }
-      } else {
-        setUserProfile(null);
-      }
-    };
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
     
-    fetchUserProfile();
-  }, [user]);
-
-  useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (event === 'SIGNED_IN') {
-          toast.success("Successfully signed in");
-        } else if (event === 'SIGNED_OUT') {
-          toast.info("Signed out");
-        }
-      }
-    );
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    return () => clearTimeout(timer);
   }, []);
-
-  // Error state
-  const [error, setError] = useState<string | null>(null);
-
-  const signIn = async (email: string, password: string, captchaToken: string = "auto-verified-token") => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const { error } = await supabase.auth.signInWithPassword({ 
-        email, 
-        password,
-        options: { captchaToken }
-      });
-      
-      if (error) throw error;
-
-      // If MFA is required, redirect to 2FA page
-      if (requireMFA) {
-        navigate('/auth/2fa', { state: { email } });
-        return;
-      }
-      
-      // Navigate user to their appropriate dashboard based on role
-      const { data } = await supabase.auth.getSession();
-      const userData = data.session?.user;
-      
-      if (userData) {
-        const { data: profileData } = await supabase
-          .from('extended_profiles')
-          .select('user_type')
-          .eq('id', userData.id)
-          .single();
-          
-        const userType = profileData?.user_type || userData?.user_metadata?.user_type;
-        redirectUserBasedOnRole(userType);
-      } else {
-        navigate('/dashboard');
-      }
-    } catch (error: any) {
-      toast.error("Error signing in", {
-        description: error.message,
-      });
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const signUp = async (email: string, password: string, fullName: string, userType: UserType = "project_owner", captchaToken: string = "auto-verified-token") => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const { error } = await supabase.auth.signUp({ 
-        email, 
-        password,
-        options: {
-          data: {
-            full_name: fullName,
-            user_type: userType
-          },
-          captchaToken
-        },
-      });
-      
-      if (error) throw error;
-      
-      toast.success("Registration successful", {
-        description: "Please check your email to confirm your account.",
-      });
-    } catch (error: any) {
-      toast.error("Error signing up", {
-        description: error.message,
-      });
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const signOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      navigate('/auth');
-    } catch (error: any) {
-      toast.error("Error signing out", {
-        description: error.message,
-      });
-      throw error;
-    }
+  
+  const signIn = async (email: string, password: string, captchaToken?: string) => {
+    console.log("Sign in attempt", { email, captchaToken });
+    // Implementation would go here in a real app
+    return Promise.resolve();
   };
   
-  const redirectUserBasedOnRole = (userType?: string) => {
-    if (userType === 'auditor') {
-      toast.info("Redirecting to your Auditor Dashboard");
-      navigate('/dashboard/auditor');
-    } else {
-      toast.info("Redirecting to your Project Dashboard");
-      navigate('/dashboard/project');
-    }
+  const signUp = async (email: string, password: string, name: string, userType: "auditor" | "project_owner", captchaToken?: string) => {
+    console.log("Sign up attempt", { email, name, userType, captchaToken });
+    // Implementation would go here in a real app
+    return Promise.resolve();
   };
-
-  const updateProfile = async (data: any) => {
-    try {
-      if (!user) throw new Error("User not authenticated");
-      
-      const { error } = await supabase
-        .from('extended_profiles')
-        .update(data)
-        .eq('id', user.id);
-      
-      if (error) throw error;
-      
-      toast.success("Profile updated successfully");
-    } catch (error: any) {
-      toast.error("Error updating profile", {
-        description: error.message,
-      });
-      throw error;
-    }
+  
+  const signOut = async () => {
+    console.log("Sign out attempt");
+    // Implementation would go here in a real app
+    return Promise.resolve();
   };
-
-  // New OTP verification function
-  const verifyOTP = async (otp: string) => {
-    try {
-      // In a real implementation, this would call an API endpoint or Supabase function
-      // to verify the OTP. For now, we'll simulate success with a fixed code.
-      if (otp === '123456') {
-        toast.success("OTP verified successfully");
-        
-        // Get user type and redirect accordingly
-        const { data } = await supabase.auth.getSession();
-        const userData = data.session?.user;
-        
-        if (userData) {
-          const { data: profileData } = await supabase
-            .from('extended_profiles')
-            .select('user_type')
-            .eq('id', userData.id)
-            .single();
-            
-          const userType = profileData?.user_type || userData?.user_metadata?.user_type;
-          redirectUserBasedOnRole(userType);
-        } else {
-          navigate('/dashboard');
-        }
-        
-        return;
-      }
-      
-      throw new Error("Invalid verification code");
-    } catch (error: any) {
-      toast.error("OTP Verification failed", {
-        description: error.message,
-      });
-      throw error;
-    }
-  };
-
-  // Function to resend OTP
-  const resendOTP = async (email: string) => {
-    try {
-      // In a real implementation, this would call an API endpoint to resend the OTP
-      // For now, we'll just simulate success
-      toast.success("Verification code sent", {
-        description: `A new code has been sent to ${email}`,
-      });
-    } catch (error: any) {
-      toast.error("Failed to send code", {
-        description: error.message,
-      });
-      throw error;
-    }
-  };
-
-  const getUserType = (): "auditor" | "project_owner" => {
-    if (!user) return "project_owner";
-    
-    // First try to get from userProfile (which comes from extended_profiles table)
-    if (userProfile?.user_type) {
-      return userProfile.user_type as "auditor" | "project_owner";
-    }
-    
-    // Fall back to user metadata
-    return (user.user_metadata?.user_type as "auditor" | "project_owner") || "project_owner";
-  };
-
-  // Add the missing functions
+  
   const forgotPassword = async (email: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
-      });
-      
-      if (error) throw error;
-      
-      toast.success("Password reset email sent", {
-        description: "Please check your email for reset instructions.",
-      });
-    } catch (error: any) {
-      toast.error("Error sending reset email", {
-        description: error.message,
-      });
-      throw error;
-    } finally {
-      setLoading(false);
-    }
+    console.log("Forgot password attempt", { email });
+    // Implementation would go here in a real app
+    return Promise.resolve();
   };
   
   const resetPassword = async (newPassword: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const { error } = await supabase.auth.updateUser({
-        password: newPassword
-      });
-      
-      if (error) throw error;
-      
-      toast.success("Password updated successfully");
-      navigate('/auth');
-    } catch (error: any) {
-      toast.error("Error updating password", {
-        description: error.message,
-      });
-      throw error;
-    } finally {
-      setLoading(false);
-    }
+    console.log("Reset password attempt");
+    // Implementation would go here in a real app
+    return Promise.resolve();
   };
-
+  
+  const getUserType = () => {
+    return userProfile?.user_type || "project_owner";
+  };
+  
   return {
     user,
-    session,
     loading,
     userProfile,
-    error,
     signIn,
     signUp,
     signOut,
-    updateProfile,
-    verifyOTP,
-    resendOTP,
-    requireMFA,
-    getUserType,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    getUserType
   };
 }

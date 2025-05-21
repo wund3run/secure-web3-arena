@@ -1,9 +1,8 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { HelmetProvider } from "react-helmet-async";
 import "./index.css";
-import App from "./App"; // Direct import instead of lazy loading
+import App from "./App";
 
 // Optimized lightweight loading fallback
 const LoadingFallback = () => (
@@ -40,7 +39,7 @@ if (process.env.NODE_ENV === 'production') {
 // Create root with concurrent mode for better performance
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
-// Use concurrent mode rendering, but without BrowserRouter
+// Use concurrent mode rendering without any providers (they're now in AppProviders)
 root.render(
   <React.StrictMode>
     <App />
