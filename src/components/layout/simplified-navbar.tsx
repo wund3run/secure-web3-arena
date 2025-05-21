@@ -7,11 +7,14 @@ import { navigationLinks } from "./navigation/navigation-links.ts";
 import { DesktopNavigation } from "./navigation/desktop-navigation";
 import { MobileNavigation } from "./navigation/mobile-navigation";
 import { AuthButtons } from "./navigation/auth-buttons";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { X } from "lucide-react";
 
 export function SimplifiedNavbar() {
   const { user, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [showAlert, setShowAlert] = useState(true);
   
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -47,6 +50,22 @@ export function SimplifiedNavbar() {
       className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
       role="banner"
     >
+      {showAlert && (
+        <Alert className="rounded-none border-t-0 border-l-0 border-r-0 border-b bg-primary text-primary-foreground">
+          <div className="container flex items-center justify-between py-1">
+            <AlertDescription>
+              <span className="text-sm">
+                <strong>Platform Status:</strong> This is a development version. You may encounter some incomplete features.
+              </span>
+            </AlertDescription>
+            <button onClick={() => setShowAlert(false)} className="text-primary-foreground/80 hover:text-primary-foreground">
+              <X size={18} />
+              <span className="sr-only">Close</span>
+            </button>
+          </div>
+        </Alert>
+      )}
+      
       <div className="container flex h-14 items-center justify-between">
         <div className="flex items-center">
           <Link 

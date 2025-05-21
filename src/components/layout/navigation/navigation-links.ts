@@ -1,3 +1,4 @@
+
 import { NavigationLinksStructure, NavigationLinkItem } from "./navigation-links.tsx";
 
 /**
@@ -22,6 +23,7 @@ export const navigationLinks: NavigationLinksStructure = {
     { title: "AI Tools", href: "/ai-tools", description: "AI-powered security tools", badge: "Beta" },
     { title: "Roadmap", href: "/roadmap", description: "Our platform development plans" },
     { title: "Blog", href: "/blog", description: "Articles and updates" },
+    { title: "FAQ", href: "/faq", description: "Frequently asked questions" },
     { title: "Community", href: "/community", description: "Join our security community" },
   ],
   dashboards: [
@@ -33,5 +35,3 @@ export const navigationLinks: NavigationLinksStructure = {
     { title: "Reputation Center", href: "/leaderboard", description: "Track your platform reputation" },
   ],
 };
-
-// Remove the duplicate type exports since we're importing them
