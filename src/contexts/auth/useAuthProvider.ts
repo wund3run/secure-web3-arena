@@ -1,12 +1,15 @@
 
 import { useState, useEffect } from "react";
 import { AuthContextProps } from "./types";
+import { User, Session } from "@supabase/supabase-js";
 
 // This is a simple mock implementation for auth provider
 export function useAuthProvider(): AuthContextProps {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null); // Added missing session
   const [loading, setLoading] = useState<boolean>(true);
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [error, setError] = useState<string>(""); // Added missing error property
   
   // Simulate auth loading
   useEffect(() => {
@@ -53,8 +56,10 @@ export function useAuthProvider(): AuthContextProps {
   
   return {
     user,
+    session, // Added missing property
     loading,
     userProfile,
+    error, // Added missing property
     signIn,
     signUp,
     signOut,
