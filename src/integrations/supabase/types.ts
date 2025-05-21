@@ -624,25 +624,6 @@ export type Database = {
         Args: { dispute_id: string; user_id: string; comment: string }
         Returns: string
       }
-      get_all_services: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          id: string
-          provider_id: string
-          title: string
-          description: string
-          category: string
-          price_range: Json
-          delivery_time: number
-          blockchain_ecosystems: string[]
-          tags: string[]
-          featured: boolean
-          average_rating: number
-          review_count: number
-          created_at: string
-          updated_at: string
-        }[]
-      }
       get_user_profile: {
         Args: Record<PropertyKey, never> | { user_id: number }
         Returns: undefined

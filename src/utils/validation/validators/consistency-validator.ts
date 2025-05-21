@@ -2,106 +2,122 @@
 import { ValidationIssue } from "../types";
 
 /**
- * Validates design and content consistency across the application
- * @param pathname Current page path for location context
- * @returns Array of validation issues related to consistency
+ * Validates design consistency across the application
+ * @param currentPath The current page path
+ * @returns Array of validation issues related to design and UX consistency
  */
-export const validateConsistency = (pathname: string): ValidationIssue[] => {
+export const validateConsistency = (currentPath: string): ValidationIssue[] => {
   const consistencyIssues: ValidationIssue[] = [];
-
-  // Check for heading hierarchy consistency
-  const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));
   
-  // Ensure there's only one h1 per page
-  const h1Elements = headings.filter(h => h.tagName === 'H1');
-  if (h1Elements.length === 0) {
+  // Check for color scheme consistency
+  const allTextElements = document.querySelectorAll('button, a, h1, h2, h3, h4, h5, h6, p, span, label');
+  const colorMap = new Map<string, number>();
+  
+  allTextElements.forEach(el => {
+    const style = window.getComputedStyle(el);
+    const color = style.color;
+    
+    if (!colorMap.has(color)) {
+      colorMap.set(color, 1);
+    } else {
+      colorMap.set(color, colorMap.get(color)! + 1);
+    }
+  });
+  
+  // If there are too many different text colors (more than 8), it could indicate inconsistency
+  if (colorMap.size > 8) {
     consistencyIssues.push({
-      type: 'accessibility',
-      severity: 'high',
-      description: 'Page is missing an H1 heading',
-      location: pathname,
-      suggestion: 'Add a primary H1 heading to improve accessibility and SEO',
-      affectedStakeholders: ['general']
-    });
-  } else if (h1Elements.length > 1) {
-    consistencyIssues.push({
-      type: 'accessibility',
+      type: 'ui',
       severity: 'medium',
-      description: `Multiple H1 headings found (${h1Elements.length})`,
-      location: pathname,
-      suggestion: 'Use only one H1 per page for proper document structure',
+      description: `Page uses ${colorMap.size} different text colors, which may indicate inconsistent styling`,
+      location: currentPath,
+      suggestion: 'Standardize text colors according to design system guidelines',
       affectedStakeholders: ['general']
     });
   }
   
-  // Check heading hierarchy (no skipped levels)
-  let previousLevel = 0;
-  for (const heading of headings) {
-    const currentLevel = parseInt(heading.tagName.substring(1));
+  // Check for font family consistency
+  const fontMap = new Map<string, number>();
+  allTextElements.forEach(el => {
+    const style = window.getComputedStyle(el);
+    const fontFamily = style.fontFamily;
     
-    // Check for skipped heading levels (e.g. h1 to h3 without h2)
-    if (currentLevel > previousLevel + 1 && previousLevel !== 0) {
+    if (!fontMap.has(fontFamily)) {
+      fontMap.set(fontFamily, 1);
+    } else {
+      fontMap.set(fontFamily, fontMap.get(fontFamily)! + 1);
+    }
+  });
+  
+  // If there are more than 3 font families, it could indicate inconsistency
+  if (fontMap.size > 3) {
+    consistencyIssues.push({
+      type: 'ui',
+      severity: 'medium',
+      description: `Page uses ${fontMap.size} different font families, which may affect visual consistency`,
+      location: currentPath,
+      suggestion: 'Limit font families to those defined in the design system',
+      affectedStakeholders: ['general']
+    });
+  }
+  
+  // Check for spacing consistency
+  const spacingPatterns = [
+    { selector: 'div > div', property: 'marginBottom' },
+    { selector: 'section > div', property: 'marginTop' },
+  ];
+  
+  spacingPatterns.forEach(({ selector, property }) => {
+    const elements = document.querySelectorAll(selector);
+    const spacingValues = new Set();
+    
+    elements.forEach(el => {
+      const style = window.getComputedStyle(el);
+      const value = style[property as any];
+      if (value && value !== '0px') {
+        spacingValues.add(value);
+      }
+    });
+    
+    // If there are too many different spacing values, it might indicate inconsistent spacing
+    if (spacingValues.size > 5) {
       consistencyIssues.push({
-        type: 'design',
-        severity: 'medium',
-        description: `Heading hierarchy skipped from H${previousLevel} to H${currentLevel}`,
-        location: `${pathname}: ${heading.textContent || 'unnamed heading'}`,
-        suggestion: `Add an H${previousLevel + 1} heading before this H${currentLevel}`,
+        type: 'ui',
+        severity: 'low',
+        description: `Multiple inconsistent ${property} values detected in ${selector} elements`,
+        location: currentPath,
+        suggestion: 'Use consistent spacing based on the design system spacing scale',
         affectedStakeholders: ['general']
       });
     }
-    
-    previousLevel = currentLevel;
-  }
+  });
   
-  // Check for consistent button styles
+  // Check for button styling consistency
   const buttons = document.querySelectorAll('button');
-  const buttonStyles = new Map();
+  const buttonStyleMap = new Map<string, number>();
   
   buttons.forEach(button => {
-    const purpose = button.textContent?.trim().toLowerCase() || 'unnamed';
     const style = window.getComputedStyle(button);
-    const styleSignature = `${style.backgroundColor}-${style.color}-${style.borderRadius}`;
+    const buttonStyleKey = `${style.backgroundColor}-${style.color}-${style.borderRadius}-${style.padding}`;
     
-    if (!buttonStyles.has(purpose)) {
-      buttonStyles.set(purpose, { signature: styleSignature, count: 1, element: button });
+    if (!buttonStyleMap.has(buttonStyleKey)) {
+      buttonStyleMap.set(buttonStyleKey, 1);
     } else {
-      const existing = buttonStyles.get(purpose);
-      if (existing.signature !== styleSignature) {
-        consistencyIssues.push({
-          type: 'design',
-          severity: 'low',
-          description: `Inconsistent styling for "${purpose}" buttons`,
-          location: `${pathname}: ${button.textContent || 'unnamed button'}`,
-          suggestion: 'Standardize button styling for the same action types',
-          affectedStakeholders: ['general']
-        });
-      }
-      existing.count++;
+      buttonStyleMap.set(buttonStyleKey, buttonStyleMap.get(buttonStyleKey)! + 1);
     }
   });
-
-  // Check for consistent spacing
-  const contentContainers = document.querySelectorAll('.container, main > div, section');
-  const spacingPatterns = new Set();
   
-  contentContainers.forEach(container => {
-    const style = window.getComputedStyle(container);
-    const spacingPattern = `${style.padding}-${style.margin}`;
-    spacingPatterns.add(spacingPattern);
-  });
-  
-  // Flag if there are too many different spacing patterns (potential inconsistency)
-  if (spacingPatterns.size > 3 && contentContainers.length > 5) {
+  // If there are too many different button styles, it might indicate inconsistency
+  if (buttonStyleMap.size > 5 && buttons.length > 5) {
     consistencyIssues.push({
-      type: 'design',
-      severity: 'low',
-      description: 'Multiple inconsistent spacing patterns detected',
-      location: pathname,
-      suggestion: 'Standardize padding and margin values across similar containers',
+      type: 'ui',
+      severity: 'medium',
+      description: 'Multiple inconsistent button styles detected on the page',
+      location: currentPath,
+      suggestion: 'Standardize button variants according to the design system',
       affectedStakeholders: ['general']
     });
   }
-
+  
   return consistencyIssues;
 };

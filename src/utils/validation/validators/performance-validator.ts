@@ -2,110 +2,100 @@
 import { ValidationIssue } from "../types";
 
 /**
- * Validates performance aspects of the current page
+ * Validates performance aspects of the application
  * @returns Array of validation issues related to performance
  */
 export const validatePerformance = (): ValidationIssue[] => {
   const performanceIssues: ValidationIssue[] = [];
   
-  // Check for large images that should be optimized
+  // Check for large images without proper optimization
   const images = document.querySelectorAll('img');
   images.forEach(img => {
-    // Check if image dimensions are available
-    if (img.naturalWidth > 0 && img.naturalHeight > 0) {
-      // Check for images being scaled down significantly (wasting bandwidth)
-      const displayRatio = img.width * img.height;
-      const naturalRatio = img.naturalWidth * img.naturalHeight;
+    // Check if image is larger than it needs to be
+    if (img.naturalWidth > 0) {
+      const displayWidth = img.width;
+      const naturalWidth = img.naturalWidth;
       
-      if (naturalRatio > 0 && displayRatio > 0) {
-        const scalingFactor = naturalRatio / displayRatio;
-        
-        if (scalingFactor > 4) {
-          performanceIssues.push({
-            type: 'performance',
-            severity: 'medium',
-            description: `Image is significantly larger (${Math.round(scalingFactor)}x) than its display size`,
-            location: `${img.getAttribute('src') || 'unnamed image'} (${img.naturalWidth}x${img.naturalHeight} → ${img.width}x${img.height})`,
-            suggestion: 'Resize image to appropriate dimensions before serving',
-            affectedStakeholders: ['general', 'project-owner']
-          });
-        }
+      // If image's natural size is more than 2x its display size, it may be unoptimized
+      if (naturalWidth > displayWidth * 2 && naturalWidth > 1000) {
+        performanceIssues.push({
+          type: 'performance',
+          severity: 'medium',
+          description: 'Image is significantly larger than its display size',
+          location: `Image: ${img.src}`,
+          suggestion: 'Resize and optimize image to match its display dimensions',
+          affectedStakeholders: ['general']
+        });
       }
-    }
-    
-    // Check for missing width/height attributes (causes layout shifts)
-    if (!img.hasAttribute('width') && !img.hasAttribute('height')) {
-      performanceIssues.push({
-        type: 'performance',
-        severity: 'low',
-        description: 'Image missing width/height attributes may cause layout shifts',
-        location: img.getAttribute('src') || 'unnamed image',
-        suggestion: 'Add explicit width and height attributes to images',
-        affectedStakeholders: ['general']
-      });
-    }
-  });
-  
-  // Check for render-blocking resources
-  const scripts = document.querySelectorAll('script');
-  let nonDeferredScripts = 0;
-  
-  scripts.forEach(script => {
-    const src = script.getAttribute('src');
-    if (src && !script.hasAttribute('defer') && !script.hasAttribute('async')) {
-      nonDeferredScripts++;
-    }
-  });
-  
-  if (nonDeferredScripts > 3) {
-    performanceIssues.push({
-      type: 'performance',
-      severity: 'medium',
-      description: `Multiple non-deferred scripts (${nonDeferredScripts}) may block rendering`,
-      location: 'document head',
-      suggestion: 'Add defer attribute to non-critical scripts',
-      affectedStakeholders: ['general']
-    });
-  }
-  
-  // Check large DOM size (approximate check)
-  const domElements = document.querySelectorAll('*').length;
-  if (domElements > 1500) {
-    performanceIssues.push({
-      type: 'performance',
-      severity: 'medium',
-      description: `Large DOM size (${domElements} elements)`,
-      location: 'entire document',
-      suggestion: 'Reduce DOM complexity by removing unnecessary elements or implementing virtualization',
-      affectedStakeholders: ['general']
-    });
-  }
-  
-  // Check custom font usage
-  const fontFaces = document.querySelectorAll('style');
-  let fontFaceCount = 0;
-  
-  fontFaces.forEach(styleElement => {
-    if (styleElement.textContent?.includes('@font-face')) {
-      const matches = styleElement.textContent.match(/@font-face/g);
-      if (matches) {
-        fontFaceCount += matches.length;
+      
+      // Check if image has a srcset for responsive loading
+      if (!img.srcset && img.width > 300) {
+        performanceIssues.push({
+          type: 'performance',
+          severity: 'low',
+          description: 'Large image without srcset for responsive loading',
+          location: `Image: ${img.src}`,
+          suggestion: 'Add srcset attribute for responsive image loading',
+          affectedStakeholders: ['general']
+        });
       }
     }
   });
   
-  if (fontFaceCount > 4) {
+  // Check for excessive DOM nodes (potential performance issue)
+  const domCount = document.querySelectorAll('*').length;
+  if (domCount > 1000) {
+    performanceIssues.push({
+      type: 'performance',
+      severity: 'medium',
+      description: `Page has ${domCount} DOM elements, which may affect performance`,
+      location: 'Current page',
+      suggestion: 'Consider virtualizing lists or optimizing component rendering',
+      affectedStakeholders: ['general']
+    });
+  }
+  
+  // Check for potential memory leaks from event listeners
+  // This is a simplified check - real memory leak detection requires more sophisticated tools
+  const eventElements = document.querySelectorAll('[onclick], [onchange], [onsubmit]');
+  if (eventElements.length > 50) {
     performanceIssues.push({
       type: 'performance',
       severity: 'low',
-      description: `Multiple font faces (${fontFaceCount}) may impact performance`,
-      location: 'document styles',
-      suggestion: 'Limit custom fonts and consider system fonts where appropriate',
+      description: 'High number of inline event handlers may impact performance',
+      location: 'Current page',
+      suggestion: 'Consider using event delegation where appropriate',
       affectedStakeholders: ['general']
     });
   }
   
-  // Add more performance checks as needed
+  // Check if the page is using too many web fonts (impacts loading performance)
+  const stylesheets = document.styleSheets;
+  let fontFaceCount = 0;
+  
+  for (let i = 0; i < stylesheets.length; i++) {
+    try {
+      const cssRules = stylesheets[i].cssRules;
+      for (let j = 0; j < cssRules.length; j++) {
+        if (cssRules[j].type === CSSRule.FONT_FACE_RULE) {
+          fontFaceCount++;
+        }
+      }
+    } catch (e) {
+      // CORS restrictions prevent reading some external stylesheets
+    }
+  }
+  
+  if (fontFaceCount > 5) {
+    performanceIssues.push({
+      type: 'performance',
+      severity: 'low',
+      description: `Page uses ${fontFaceCount} font faces, which may slow initial loading`,
+      location: 'CSS resources',
+      suggestion: 'Limit the number of web fonts and consider system fonts where appropriate',
+      affectedStakeholders: ['general']
+    });
+  }
   
   return performanceIssues;
 };

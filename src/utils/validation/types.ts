@@ -1,30 +1,12 @@
 
-/**
- * Common types for platform validation
- */
-
 export type ValidationIssue = {
-  type: 'route' | 'link' | 'ui' | 'responsive' | 'styling' | 'interactive' | 'accessibility' | 'design' | 'navigation' | 'content' | 'performance' | 'seo' | 'functionality';
+  type: 'ui' | 'functionality' | 'navigation' | 'responsive' | 'content' | 'accessibility' | 'interactive' | 'link' | 'seo' | 'performance';
   severity: 'high' | 'medium' | 'low';
   description: string;
   location: string;
-  suggestion?: string;
+  suggestion: string;
   affectedStakeholders?: StakeholderType[];
-  wcagCriterion?: string; // Accessibility validation property
-};
-
-export type ValidationResult = {
-  issues: ValidationIssue[];
-  isValidating: boolean;
+  wcagCriterion?: string;
 };
 
 export type StakeholderType = 'auditor' | 'project-owner' | 'admin' | 'general';
-
-// Add stakeholder-specific needs and preferences
-export type StakeholderProfile = {
-  type: StakeholderType;
-  primaryGoals: string[];
-  keyMetrics: string[];
-  preferredFeatures: string[];
-  commonJourney: string[];
-};

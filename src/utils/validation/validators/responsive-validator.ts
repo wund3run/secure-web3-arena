@@ -2,163 +2,135 @@
 import { ValidationIssue } from "../types";
 
 /**
- * Validates responsive design elements on the current page
+ * Validates responsive design aspects of the application
  * @returns Array of validation issues related to responsive design
  */
 export const validateResponsiveDesign = (): ValidationIssue[] => {
   const responsiveIssues: ValidationIssue[] = [];
   
-  // Check for fixed width elements that might cause horizontal overflow
+  // Check for fixed width elements that might cause horizontal scrolling
   const allElements = document.querySelectorAll('*');
-  allElements.forEach(element => {
-    const style = window.getComputedStyle(element);
-    const width = parseInt(style.width);
+  const viewportWidth = window.innerWidth;
+  
+  allElements.forEach((el) => {
+    const rect = el.getBoundingClientRect();
     
-    // Check for elements with fixed width over viewport width
-    const viewportWidth = window.innerWidth;
-    if (width > viewportWidth && !style.width.includes('%') && !style.width.includes('vw') && !style.width.includes('calc')) {
+    // Check for elements wider than viewport that are not the body or html
+    if (rect.width > viewportWidth && 
+        el.tagName !== 'BODY' && 
+        el.tagName !== 'HTML' &&
+        !el.tagName.includes('svg')) {
+      
       responsiveIssues.push({
         type: 'responsive',
         severity: 'high',
-        description: `Element with fixed width (${width}px) is causing overflow on current viewport (${viewportWidth}px)`,
-        location: `${element.tagName.toLowerCase()}${element.id ? '#'+element.id : ''}${element.className ? '.'+element.className.split(' ').join('.') : ''}`,
-        suggestion: 'Use responsive units (%, rem, vw) or add max-width: 100% to prevent overflow',
-        affectedStakeholders: ['general', 'auditor', 'project-owner']
+        description: `Element wider than viewport causes horizontal scrolling`,
+        location: `Element: ${el.tagName.toLowerCase()}${el.id ? `#${el.id}` : ''}`,
+        suggestion: 'Apply max-width: 100% or use responsive width units',
+        affectedStakeholders: ['general']
       });
     }
+  });
+  
+  // Check for touch target sizes on mobile
+  if (viewportWidth < 768) { // Mobile viewport detection
+    const smallTouchTargets = [];
+    const interactiveElements = document.querySelectorAll('button, a, input, select, textarea');
     
-    // Check for small touch targets
-    const isInteractive = element.tagName === 'BUTTON' || 
-                           element.tagName === 'A' || 
-                           element.hasAttribute('onclick') ||
-                           element.getAttribute('role') === 'button';
-    
-    if (isInteractive) {
-      const height = parseInt(style.height);
-      const width = parseInt(style.width);
+    interactiveElements.forEach(el => {
+      const rect = el.getBoundingClientRect();
       
-      // WCAG recommends touch targets to be at least 44x44px
-      if ((height > 0 && height < 44) || (width > 0 && width < 44)) {
-        responsiveIssues.push({
-          type: 'accessibility',
-          severity: 'medium',
-          description: 'Interactive element is too small for touch targets',
-          location: `${element.tagName.toLowerCase()}${element.id ? '#'+element.id : ''}${element.className ? '.'+element.className.split(' ').join('.') : ''}`,
-          suggestion: 'Ensure touch targets are at least 44x44px for mobile usability',
-          affectedStakeholders: ['general', 'auditor', 'project-owner']
-        });
+      // Touch targets should be at least 44x44px according to WCAG
+      if ((rect.width < 44 || rect.height < 44) && 
+          rect.width > 0 && rect.height > 0 && // Exclude hidden elements
+          window.getComputedStyle(el).display !== 'none') {
+        
+        smallTouchTargets.push(el);
       }
-    }
+    });
     
-    // Check for font-size that's too small on mobile
-    if (element instanceof HTMLElement && element.innerText && element.innerText.trim().length > 0) {
-      const fontSize = parseFloat(style.fontSize);
-      if (fontSize < 14 && window.innerWidth <= 768) {
+    // Only report if there are multiple small touch targets
+    if (smallTouchTargets.length > 3) {
+      responsiveIssues.push({
+        type: 'responsive',
+        severity: 'medium',
+        description: `${smallTouchTargets.length} interactive elements have touch targets smaller than 44x44px`,
+        location: 'Multiple interactive elements',
+        suggestion: 'Increase touch target size for better mobile usability',
+        affectedStakeholders: ['general']
+      });
+    }
+  }
+  
+  // Check for font size issues on mobile
+  if (viewportWidth < 768) {
+    const textElements = document.querySelectorAll('p, span, li, td, th, dd, dt, button, a, input, label, select');
+    const smallTextCount = Array.from(textElements).filter(el => {
+      const fontSize = parseInt(window.getComputedStyle(el).fontSize);
+      return fontSize < 14 && fontSize > 0; // Text smaller than 14px is hard to read on mobile
+    }).length;
+    
+    if (smallTextCount > 5) {
+      responsiveIssues.push({
+        type: 'responsive',
+        severity: 'medium',
+        description: `${smallTextCount} text elements have font size smaller than 14px on mobile`,
+        location: 'Text elements across page',
+        suggestion: 'Increase minimum font size to at least 14px for mobile viewports',
+        affectedStakeholders: ['general']
+      });
+    }
+  }
+  
+  // Check for tables without responsive handling
+  const tables = document.querySelectorAll('table');
+  tables.forEach(table => {
+    const parent = table.parentElement;
+    if (parent && !parent.style.overflowX && !parent.classList.contains('overflow-auto')) {
+      responsiveIssues.push({
+        type: 'responsive',
+        severity: 'medium',
+        description: 'Table may cause horizontal scrolling on mobile devices',
+        location: `Table element`,
+        suggestion: 'Wrap table in a container with overflow-x: auto',
+        affectedStakeholders: ['general']
+      });
+    }
+  });
+  
+  // Check for forms without responsive layout
+  const forms = document.querySelectorAll('form');
+  forms.forEach(form => {
+    // Check for side-by-side inputs that might not work well on mobile
+    const formGroups = form.querySelectorAll('.form-group, .input-group');
+    if (formGroups.length > 0) {
+      const horizontalGroups = Array.from(formGroups).filter(group => {
+        const inputs = group.querySelectorAll('input, select, textarea');
+        return inputs.length > 1;
+      });
+      
+      if (horizontalGroups.length > 0 && viewportWidth < 768) {
         responsiveIssues.push({
-          type: 'accessibility',
-          severity: 'medium',
-          description: `Text with font-size ${fontSize}px is too small for mobile viewing`,
-          location: `${element.tagName.toLowerCase()}${element.id ? '#'+element.id : ''}${element.className ? '.'+element.className.split(' ').join('.') : ''}`,
-          suggestion: 'Use at least 14px font size for body text on mobile devices',
+          type: 'responsive',
+          severity: 'low',
+          description: 'Form has horizontal input groups that may not display well on mobile',
+          location: 'Form element',
+          suggestion: 'Stack form inputs vertically on mobile screens',
           affectedStakeholders: ['general']
         });
       }
     }
   });
   
-  // Check for media queries usage
-  const styleSheets = document.styleSheets;
-  let hasMediaQueries = false;
-  let mobileMediaQueries = false;
-  
-  try {
-    for (let i = 0; i < styleSheets.length; i++) {
-      const rules = styleSheets[i].cssRules || styleSheets[i].rules;
-      if (!rules) continue;
-      
-      for (let j = 0; j < rules.length; j++) {
-        if (rules[j].type === CSSRule.MEDIA_RULE) {
-          hasMediaQueries = true;
-          
-          // Check if there are mobile-specific media queries
-          const mediaText = (rules[j] as CSSMediaRule).conditionText || (rules[j] as any).media?.mediaText;
-          if (mediaText && (mediaText.includes('max-width') || mediaText.includes('min-width'))) {
-            mobileMediaQueries = true;
-          }
-        }
-      }
-      
-      if (mobileMediaQueries) break;
-    }
-  } catch (e) {
-    // CORS issues with some stylesheets can cause errors
-    console.warn('Could not check all stylesheets for media queries due to CORS restrictions');
-  }
-  
-  if (!hasMediaQueries) {
-    responsiveIssues.push({
-      type: 'responsive',
-      severity: 'high',
-      description: 'No media queries detected in stylesheets',
-      location: 'global CSS',
-      suggestion: 'Implement responsive design with media queries for different screen sizes',
-      affectedStakeholders: ['general', 'auditor', 'project-owner', 'admin']
-    });
-  } else if (!mobileMediaQueries) {
-    responsiveIssues.push({
-      type: 'responsive',
-      severity: 'medium',
-      description: 'No mobile-specific media queries detected',
-      location: 'global CSS',
-      suggestion: 'Add media queries targeting mobile viewports (e.g. max-width: 768px)',
-      affectedStakeholders: ['general']
-    });
-  }
-  
-  // Check for viewport meta tag
+  // Check for proper viewport meta tag
   const viewportMeta = document.querySelector('meta[name="viewport"]');
   if (!viewportMeta) {
     responsiveIssues.push({
       type: 'responsive',
-      severity: 'high', // Changed from 'critical' to 'high'
-      description: 'Viewport meta tag is missing',
-      location: 'document head',
-      suggestion: 'Add <meta name="viewport" content="width=device-width, initial-scale=1.0"> to the head',
-      affectedStakeholders: ['general']
-    });
-  } else {
-    const content = viewportMeta.getAttribute('content') || '';
-    if (!content.includes('width=device-width') || !content.includes('initial-scale=1')) {
-      responsiveIssues.push({
-        type: 'responsive',
-        severity: 'high',
-        description: 'Viewport meta tag is missing essential properties',
-        location: 'document head',
-        suggestion: 'Update the viewport meta tag to include width=device-width and initial-scale=1.0',
-        affectedStakeholders: ['general']
-      });
-    }
-  }
-  
-  // Check for overflow issues
-  const documentWidth = Math.max(
-    document.body.scrollWidth,
-    document.documentElement.scrollWidth,
-    document.body.offsetWidth,
-    document.documentElement.offsetWidth,
-    document.body.clientWidth,
-    document.documentElement.clientWidth
-  );
-  
-  const windowWidth = window.innerWidth;
-  
-  if (documentWidth > windowWidth + 5) { // 5px buffer for potential rounding errors
-    responsiveIssues.push({
-      type: 'responsive',
       severity: 'high',
-      description: `Page content causes horizontal overflow (document width: ${documentWidth}px, viewport width: ${windowWidth}px)`,
-      location: 'document body',
-      suggestion: 'Check for elements with fixed widths, negative margins, or overflowing content causing horizontal scrollbars',
+      description: 'Missing viewport meta tag, which is essential for responsive design',
+      location: 'Document head',
+      suggestion: 'Add viewport meta tag: <meta name="viewport" content="width=device-width, initial-scale=1">',
       affectedStakeholders: ['general']
     });
   }

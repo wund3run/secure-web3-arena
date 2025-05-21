@@ -1,93 +1,82 @@
 
 import React from "react";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function CodeOfConduct() {
   return (
-    <div className="rounded-lg border bg-card p-6">
-      <h2 className="text-2xl font-bold mb-4">Code of Conduct</h2>
-      <Separator className="mb-4" />
-      <ScrollArea className="h-[300px]">
-        <div className="space-y-4 pr-4">
-          <section>
-            <h3 className="text-lg font-semibold">1. Purpose</h3>
-            <p className="text-muted-foreground">
-              This Code of Conduct outlines our expectations for participants within the Hawkly community, as well as the consequences for unacceptable behavior.
-            </p>
-          </section>
-          
-          <section>
-            <h3 className="text-lg font-semibold">2. Expected Behavior</h3>
-            <ul className="list-disc pl-5 text-muted-foreground">
-              <li>Participate in an authentic and active way.</li>
-              <li>Exercise consideration and respect in your speech and actions.</li>
-              <li>Attempt collaboration before conflict.</li>
-              <li>Refrain from demeaning, discriminatory, or harassing behavior and speech.</li>
-              <li>Be mindful of your surroundings and of your fellow participants.</li>
-            </ul>
-          </section>
-          
-          <section>
-            <h3 className="text-lg font-semibold">3. Professional Conduct</h3>
-            <p className="text-muted-foreground">
-              Auditors must conduct audits with the highest standards of integrity and professionalism. This includes:
-            </p>
-            <ul className="list-disc pl-5 text-muted-foreground">
-              <li>Delivering audits on time as promised.</li>
-              <li>Maintaining confidentiality of project details.</li>
-              <li>Providing objective and thorough analysis.</li>
-              <li>Declaring any conflicts of interest.</li>
-              <li>Being responsive to client communications.</li>
-              <li>Adhering to the agreed scope of work.</li>
-            </ul>
-          </section>
-          
-          <section>
-            <h3 className="text-lg font-semibold">4. Unacceptable Behavior</h3>
-            <p className="text-muted-foreground">
-              Unacceptable behaviors include:
-            </p>
-            <ul className="list-disc pl-5 text-muted-foreground">
-              <li>Intimidating, harassing, abusive, discriminatory, or derogatory conduct.</li>
-              <li>Making false claims about one's expertise or experience.</li>
-              <li>Deliberate misrepresentation of audit findings.</li>
-              <li>Sharing confidential information without authorization.</li>
-              <li>Engaging in any form of unprofessional behavior.</li>
-              <li>Violating the terms of any non-disclosure agreements.</li>
-            </ul>
-          </section>
-          
-          <section>
-            <h3 className="text-lg font-semibold">5. Consequences of Unacceptable Behavior</h3>
-            <p className="text-muted-foreground">
-              Unacceptable behavior will not be tolerated. Consequences for violations may include:
-            </p>
-            <ul className="list-disc pl-5 text-muted-foreground">
-              <li>Removal from the platform.</li>
-              <li>Loss of reputation score.</li>
-              <li>Withholding of payment.</li>
-              <li>Legal action when applicable.</li>
-            </ul>
-          </section>
-          
-          <section>
-            <h3 className="text-lg font-semibold">6. Reporting Guidelines</h3>
-            <p className="text-muted-foreground">
-              If you experience or witness unacceptable behavior, or have any concerns, please report it by contacting us at conduct@hawkly.io.
-            </p>
-          </section>
-          
-          <section>
-            <h3 className="text-lg font-semibold">7. Addressing Grievances</h3>
-            <p className="text-muted-foreground">
-              The Hawkly team will review and investigate all complaints and respond in a way that is deemed appropriate to the circumstances. We are committed to maintaining confidentiality with regard to reporting incidents.
-            </p>
-          </section>
-        </div>
-      </ScrollArea>
+    <div className="prose prose-sm max-w-none">
+      <p>Last Updated: May 15, 2025</p>
+      
+      <h3>1. Purpose</h3>
+      <p>
+        This Code of Conduct outlines our expectations for participants within 
+        the Hawkly community, as well as the consequences for unacceptable behavior. 
+        We are committed to providing a welcoming and inspiring community for all.
+      </p>
+      
+      <h3>2. Expected Behavior</h3>
+      <p>
+        All community participants are expected to:
+        <ul>
+          <li>Be professional, considerate, respectful, and collaborative</li>
+          <li>Refrain from demeaning, discriminatory, or harassing behavior</li>
+          <li>Be mindful of your surroundings and fellow participants</li>
+          <li>Maintain confidentiality as appropriate</li>
+          <li>Alert community leaders if you notice violations of this Code of Conduct</li>
+        </ul>
+      </p>
+      
+      <h3>3. Professional Standards for Security Auditors</h3>
+      <p>
+        Security auditors on our platform commit to:
+        <ul>
+          <li>Conducting thorough and diligent security assessments</li>
+          <li>Providing honest, unbiased evaluations</li>
+          <li>Maintaining confidentiality of client information</li>
+          <li>Accurately representing their qualifications and capabilities</li>
+          <li>Following responsible disclosure practices for vulnerabilities</li>
+          <li>Continuously improving their knowledge and skills</li>
+        </ul>
+      </p>
+      
+      <h3>4. Professional Standards for Project Owners</h3>
+      <p>
+        Project owners on our platform commit to:
+        <ul>
+          <li>Providing accurate and complete information about their projects</li>
+          <li>Being responsive to auditor inquiries and recommendations</li>
+          <li>Respecting auditor findings and professional opinions</li>
+          <li>Implementing reasonable security improvements based on audit findings</li>
+          <li>Not misrepresenting audit results or scope</li>
+        </ul>
+      </p>
+      
+      <h3>5. Unacceptable Behavior</h3>
+      <p>
+        Unacceptable behaviors include:
+        <ul>
+          <li>Harassment, intimidation, or discrimination</li>
+          <li>Deceptive, fraudulent, or misleading activities</li>
+          <li>Publishing others' private information without permission</li>
+          <li>Unprofessional conduct or language</li>
+          <li>Other conduct which could reasonably be considered inappropriate</li>
+        </ul>
+      </p>
+      
+      <h3>6. Consequences of Unacceptable Behavior</h3>
+      <p>
+        Unacceptable behavior may result in:
+        <ul>
+          <li>Removal from the platform</li>
+          <li>Termination of services without refund</li>
+          <li>Legal action in cases of severe violations</li>
+        </ul>
+      </p>
+      
+      <h3>7. Reporting Concerns</h3>
+      <p>
+        If you experience or witness unacceptable behavior, or have any concerns, 
+        please notify us as soon as possible by emailing conduct@hawkly.com.
+      </p>
     </div>
   );
 }
-
-export default CodeOfConduct;
