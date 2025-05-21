@@ -1,7 +1,13 @@
 
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { FileSearch, Shield, Filter } from "lucide-react";
+import { FileSearch, Shield, Filter, Info, HelpCircle } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from "@/components/ui/tooltip";
 
 interface MarketplaceHeaderProps {
   showFilters: boolean;
@@ -14,9 +20,44 @@ export function MarketplaceHeader({
 }: MarketplaceHeaderProps) {
   return (
     <div className="flex flex-col gap-3 items-center justify-between mb-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground text-center">Security Services</h1>
-        <p className="text-base text-muted-foreground text-center">
+      <div className="w-full">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-2">
+          <h1 className="text-3xl font-bold text-foreground text-center md:text-left">Security Services</h1>
+          <div className="flex items-center mt-2 md:mt-0 gap-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="sm" className="text-muted-foreground" asChild>
+                    <Link to="/docs/marketplace-guide">
+                      <Info className="h-4 w-4 mr-1" />
+                      Guide
+                    </Link>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Learn how to navigate the marketplace</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="sm" className="text-muted-foreground" asChild>
+                    <Link to="/faq">
+                      <HelpCircle className="h-4 w-4 mr-1" />
+                      FAQ
+                    </Link>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Frequently asked questions</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        </div>
+        <p className="text-base text-muted-foreground text-center md:text-left">
           Find and connect with top security experts for your Web3 project
         </p>
       </div>

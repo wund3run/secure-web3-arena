@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Search, Filter, GridIcon, LayoutList, X, Shield, FileText } from "lucide-react";
+import { Search, Filter, GridIcon, LayoutList, X, Shield, FileText, Info } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -12,6 +12,12 @@ import {
   TooltipProvider,
   TooltipTrigger 
 } from "@/components/ui/tooltip";
+import { 
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger
+} from "@/components/ui/tabs";
 
 interface MarketplaceHeaderProps {
   viewMode: "grid" | "list";
@@ -28,6 +34,7 @@ export function MarketplaceHeader({
 }: MarketplaceHeaderProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
+  const [selectedTab, setSelectedTab] = useState<string>("all");
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,15 +54,47 @@ export function MarketplaceHeader({
   return (
     <div className="flex flex-col gap-4 mb-6">
       <div className="flex flex-col gap-2">
-        <div className="flex items-center">
-          <h1 className="text-3xl font-bold text-foreground">Security Service Directory</h1>
-          <Badge variant="outline" className="ml-3 bg-primary/5 text-primary border-primary/20">
-            Web3 Security
-          </Badge>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Security Marketplace</h1>
+            <p className="text-base text-muted-foreground mt-1">
+              Find and connect with trusted security experts for your Web3 project
+            </p>
+          </div>
+          <div className="hidden md:flex space-x-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link to="/docs/marketplace-guide" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <Info className="h-4 w-4 mr-1" />
+                    <span>Guide</span>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>
+                  Learn how to navigate the marketplace
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
-        <p className="text-base text-muted-foreground">
-          Find and connect with top security experts for your Web3 project
-        </p>
+        
+        <div className="mt-2 bg-muted/30 p-2 rounded-lg border border-border/40">
+          <Tabs defaultValue="all" value={selectedTab} onValueChange={setSelectedTab} className="w-full">
+            <div className="flex items-center justify-between pb-2">
+              <TabsList className="bg-background/60">
+                <TabsTrigger value="all">All Services</TabsTrigger>
+                <TabsTrigger value="audits">Audits</TabsTrigger>
+                <TabsTrigger value="consulting">Consulting</TabsTrigger>
+                <TabsTrigger value="training">Training</TabsTrigger>
+              </TabsList>
+              <div className="hidden sm:block">
+                <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20">
+                  Web3 Security
+                </Badge>
+              </div>
+            </div>
+          </Tabs>
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">

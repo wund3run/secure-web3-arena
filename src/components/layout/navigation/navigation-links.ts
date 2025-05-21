@@ -1,4 +1,3 @@
-
 import { NavigationLinksStructure, NavigationLinkItem } from "./navigation-links.tsx";
 
 /**
@@ -8,7 +7,6 @@ export const navigationLinks: NavigationLinksStructure = {
   marketplace: [
     { title: "Browse Services", href: "/marketplace", description: "Find security services for your project" },
     { title: "Request Audit", href: "/request-audit", description: "Get your project audited by experts" },
-    { title: "Service Comparison", href: "/marketplace?compare=true", description: "Compare different security services" },
     { title: "Security Insights", href: "/security-insights", description: "Learn about Web3 security trends" },
   ],
   audits: [

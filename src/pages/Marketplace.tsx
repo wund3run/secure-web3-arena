@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { MarketplaceLayout } from "@/components/marketplace/layout/MarketplaceLayout";
 import { MarketplaceHeader } from "@/components/marketplace/layout/MarketplaceHeader";
@@ -13,6 +14,7 @@ import { handleApiError } from "@/utils/apiErrorHandler";
 import { ServiceCardProps } from "@/types/marketplace-unified";
 import { MarketplaceLoadingState } from "@/components/marketplace/error-handling";
 import { MarketplaceHero } from "@/components/marketplace/sections/MarketplaceHero";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 // Define global interface for window to include SERVICES with correct type
 declare global {
@@ -22,6 +24,10 @@ declare global {
 }
 
 function MarketplacePageContent() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const compareParam = searchParams.get('compare');
+  
   const {
     state,
     setViewMode,
@@ -51,6 +57,18 @@ function MarketplacePageContent() {
     servicesForComparison,
     showComparison
   } = state;
+
+  // Redirect from /marketplace?compare=true to /marketplace (since we removed the comparison option)
+  useEffect(() => {
+    if (compareParam === 'true') {
+      // Use replace to avoid adding to browser history
+      navigate('/marketplace', { replace: true });
+      // Optional: Show a toast to inform users about the change
+      toast.info("The service comparison feature has been integrated directly into the marketplace.", {
+        description: "Select services to compare them using the compare button."
+      });
+    }
+  }, [compareParam, navigate]);
 
   // Filter services based on active filters and category
   const filteredServices = servicesQuery.data ? filterServices(servicesQuery.data) : [];
