@@ -1,18 +1,17 @@
+
 import { useState, useEffect } from "react";
-import { useSupabaseClient, useSessionContext } from "@supabase/auth-helpers-react";
-import { useRouter } from "next/navigation";
-import { AuthContextProps, UserType } from "./types";
-import { Database } from "@/types/supabase";
+import { useNavigate } from "react-router-dom";
+import { UserType, AuthContextProps } from "./types";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export const useAuthProvider = (): AuthContextProps => {
-  const [user, setUser] = useState(null);
-  const [session, setSession] = useState(null);
+  const [user, setUser] = useState<any>(null);
+  const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [error, setError] = useState("");
-  const supabase = useSupabaseClient<Database>();
-  const { isLoading, supabaseClient } = useSessionContext();
-  const router = useRouter();
+  const navigate = useNavigate();
   
   useEffect(() => {
     const getSession = async () => {
@@ -54,7 +53,7 @@ export const useAuthProvider = (): AuthContextProps => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [supabase, supabaseClient]);
+  }, []);
   
   const fetchUserProfile = async (userId: string) => {
     try {
@@ -115,7 +114,7 @@ export const useAuthProvider = (): AuthContextProps => {
           await fetchUserProfile(data.user.id);
         }
         
-        router.push("/dashboard");
+        navigate("/dashboard");
       }
     } catch (err: any) {
       setError(err.message);
@@ -175,7 +174,7 @@ export const useAuthProvider = (): AuthContextProps => {
           await createUserProfile(data.user.id, email, fullName, userType);
         }
         
-        router.push("/dashboard");
+        navigate("/dashboard");
       }
     } catch (err: any) {
       setError(err.message);
@@ -231,7 +230,7 @@ export const useAuthProvider = (): AuthContextProps => {
         setUser(null);
         setSession(null);
         setUserProfile(null);
-        router.push("/");
+        navigate("/");
       }
     } catch (err: any) {
       setError(err.message);
@@ -274,7 +273,7 @@ export const useAuthProvider = (): AuthContextProps => {
         setError(error.message);
       } else {
         toast.success("Password updated successfully.");
-        router.push("/dashboard");
+        navigate("/dashboard");
       }
     } catch (err: any) {
       setError(err.message);
@@ -286,16 +285,16 @@ export const useAuthProvider = (): AuthContextProps => {
   /**
    * Get the user's type from the user object
    */
-  const getUserType = (): "auditor" | "project_owner" | "visitor" => {
-    if (!user) return "visitor";
+  const getUserType = (): UserType => {
+    if (!user) return "visitor" as UserType;
     
     // First check userProfile if available
     if (userProfile?.user_type) {
-      return userProfile.user_type as "auditor" | "project_owner";
+      return userProfile.user_type as UserType;
     }
     
     // Fall back to user_metadata
-    return (user.user_metadata?.user_type as "auditor" | "project_owner") || "project_owner";
+    return (user.user_metadata?.user_type as UserType) || "project_owner";
   };
 
   return {
