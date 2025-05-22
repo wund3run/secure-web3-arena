@@ -1,6 +1,5 @@
 
-import { Button } from "@/components/ui/button";
-import { Globe, Search } from "lucide-react";
+import { Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface MarketplaceHeroProps {
@@ -31,41 +30,6 @@ export function MarketplaceHero({ onShowOnboarding }: MarketplaceHeroProps) {
           The intelligent marketplace matching blockchain projects with verified
           security experts. Secure your Web3 project with confidence.
         </p>
-        
-        {/* Action buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button 
-            className="bg-gradient-to-r from-[#6E59A5] to-[#33C3F0] text-white hover:opacity-90 h-12 px-6"
-            onClick={onShowOnboarding}
-          >
-            <Search className="mr-2 h-5 w-5" />
-            Find Security Services
-          </Button>
-          
-          <Button
-            variant="outline"
-            className="h-12 px-6 group"
-            onClick={onShowOnboarding}
-          >
-            <Globe className="mr-2 h-5 w-5" />
-            Try Enhanced Experience
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
-            >
-              <path d="M5 12h14" />
-              <path d="m12 5 7 7-7 7" />
-            </svg>
-          </Button>
-        </div>
         
         {/* Link for auditors */}
         <Link 

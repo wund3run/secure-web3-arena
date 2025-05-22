@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/sonner";
-import { SupportButton } from "@/components/ui/support-button";
 import { CookieConsent } from "@/components/ui/cookie-consent";
 import { BetaBanner } from "@/components/ui/beta-banner";
 import { AccessibilityMenu } from "@/components/ui/accessibility-menu";
@@ -71,7 +70,6 @@ export function GlobalComponents({ removeDevTools = false }: GlobalComponentsPro
   return (
     <>
       <Toaster position="top-right" richColors closeButton />
-      <SupportButton />
       <CookieConsent />
       <BetaBanner />
       <AccessibilityMenu 

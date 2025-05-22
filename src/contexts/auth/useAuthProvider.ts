@@ -204,7 +204,7 @@ export const useAuthProvider = (): AuthContextProps => {
             avatar_url: null,
             is_arbitrator: false,
             updated_at: new Date().toISOString()
-          },
+          }
         ]);
       
       if (error) {
@@ -216,10 +216,10 @@ export const useAuthProvider = (): AuthContextProps => {
           .from('extended_profiles')
           .insert([
             { 
-              id: userId, 
+              id: userId,
               full_name: fullName,
               user_type: userType
-            },
+            }
           ]);
         
         if (extendedError) {
