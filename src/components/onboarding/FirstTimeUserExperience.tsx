@@ -97,8 +97,9 @@ export function FirstTimeUserExperience({ onClose }: { onClose: () => void }) {
   ];
   
   // Select appropriate steps based on user type
+  // Fixed the comparison here to match the correct type
   const steps = userType === 'auditor' ? auditorSteps : 
-                userType === 'project' ? projectOwnerSteps : 
+                userType === 'project_owner' ? projectOwnerSteps : 
                 visitorSteps;
   
   const handleNext = () => {
