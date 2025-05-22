@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import { Navigate, useSearchParams } from "react-router-dom";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { DashboardTabs, DashboardTabValue } from "@/components/admin/dashboard/DashboardTabs";
+import { DashboardTabs } from "@/components/admin/dashboard/DashboardTabs";
+import { DashboardTabValue } from "@/components/admin/dashboard/types";
 import { DashboardLoader } from "@/components/admin/dashboard/DashboardLoader";
 import { SupabaseConnectionCheck } from "@/components/admin/SupabaseConnectionCheck";
 import { AdminPlatformValidator } from "@/components/dev/AdminPlatformValidator";
