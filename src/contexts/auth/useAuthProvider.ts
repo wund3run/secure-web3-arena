@@ -193,6 +193,7 @@ export const useAuthProvider = (): AuthContextProps => {
     userType?: UserType
   ) => {
     try {
+      // First, create the main profile record
       const { error } = await supabase
         .from('profiles')
         .insert([
@@ -210,7 +211,7 @@ export const useAuthProvider = (): AuthContextProps => {
         console.error("Error creating user profile:", error);
         setError(error.message);
       } else {
-        // After creating the profile, also create an extended profile with user type
+        // Then create the extended profile with user type
         const { error: extendedError } = await supabase
           .from('extended_profiles')
           .insert([
