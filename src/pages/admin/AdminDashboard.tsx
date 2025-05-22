@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { DashboardTabs, DashboardTabValue } from "@/components/admin/dashboard/DashboardTabs";
 import { DashboardLoader } from "@/components/admin/dashboard/DashboardLoader";
@@ -15,6 +15,7 @@ interface AdminDashboardProps {
 }
 
 const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
+  const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<DashboardTabValue>(section);
   const [showSystemChecks, setShowSystemChecks] = useState(true);
@@ -37,11 +38,17 @@ const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
       setIsLoading(false);
     }, 800);
 
-    // Update active tab when section prop changes
-    setActiveTab(section);
+    // Check for platform report query param
+    const showPlatformReport = searchParams.get("showPlatformReport") === "true";
+    if (showPlatformReport) {
+      setActiveTab("reports");
+    } else {
+      // Update active tab when section prop changes
+      setActiveTab(section);
+    }
 
     return () => clearTimeout(timer);
-  }, [section, isAuthenticated, adminUser]);
+  }, [section, isAuthenticated, adminUser, searchParams]);
 
   if (!isAuthenticated) {
     return <Navigate to="/admin/login" replace />;

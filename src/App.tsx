@@ -1,5 +1,4 @@
-
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { GlobalComponents } from './components/app/GlobalComponents';
 import { Toaster } from './components/ui/toaster';
 import { AppProviders } from './components/app/AppProviders';
@@ -93,11 +92,13 @@ function App() {
         <Route path="/escrow" element={<Escrow />} />
         <Route path="/security-insights" element={<SecurityInsights />} />
         <Route path="/roadmap" element={<Roadmap />} />
-        <Route path="/platform-report" element={<PlatformReport />} />
+        {/* Redirect platform report to admin dashboard */}
+        <Route path="/platform-report" element={<Navigate to="/admin/dashboard?showPlatformReport=true" replace />} />
         
         {/* Admin Routes */}
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
         
         {/* New Routes */}
         <Route path="/terms" element={<Terms />} />

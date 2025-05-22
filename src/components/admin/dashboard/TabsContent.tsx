@@ -8,6 +8,7 @@ import { ProviderApplications } from "@/components/admin/ProviderApplications";
 import { AdminServiceApproval } from "@/components/admin/AdminServiceApproval";
 import { ReportManagement } from "@/components/admin/ReportManagement";
 import SettingsManagement from "@/components/admin/SettingsManagement";
+import { AdminPlatformReport } from "@/components/admin/PlatformReport";
 import { DashboardTabValue } from "./types";
 
 interface TabsContentProps {
@@ -42,7 +43,10 @@ export function TabsContent({ activeTab }: TabsContentProps) {
       </UITabsContent>
       
       <UITabsContent value="reports" className="space-y-6 mt-4">
-        <ReportManagement />
+        <div className="space-y-6">
+          <AdminPlatformReport />
+          <ReportManagement />
+        </div>
       </UITabsContent>
       
       <UITabsContent value="settings" className="space-y-6 mt-4">
