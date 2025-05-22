@@ -8,3 +8,8 @@ export type DashboardTabValue =
   | "approvals" 
   | "reports" 
   | "settings";
+
+export interface DashboardTabsProps {
+  activeTab: DashboardTabValue;
+  onTabChange: (tab: DashboardTabValue) => void;
+}
