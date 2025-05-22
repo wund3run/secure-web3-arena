@@ -1,3 +1,4 @@
+
 import { NavigationLinksStructure, NavigationLinkItem } from "./navigation-links.tsx";
 
 /**
@@ -8,6 +9,7 @@ export const navigationLinks: NavigationLinksStructure = {
     { title: "Browse Services", href: "/marketplace", description: "Find security services for your project" },
     { title: "Request Audit", href: "/request-audit", description: "Get your project audited by experts" },
     { title: "Security Insights", href: "/security-insights", description: "Learn about Web3 security trends" },
+    { title: "Pricing", href: "/pricing", description: "View our pricing plans" },
   ],
   audits: [
     { title: "Request Audit", href: "/request-audit", description: "Submit your project for security review" },
@@ -19,10 +21,10 @@ export const navigationLinks: NavigationLinksStructure = {
     { title: "Documentation", href: "/docs", description: "Reference materials and guides" },
     { title: "Security Resources", href: "/web3-security", description: "Learn about Web3 security" },
     { title: "AI Tools", href: "/ai-tools", description: "AI-powered security tools", badge: "Beta" },
-    { title: "Roadmap", href: "/roadmap", description: "Our platform development plans" },
     { title: "Blog", href: "/blog", description: "Articles and updates" },
     { title: "FAQ", href: "/faq", description: "Frequently asked questions" },
     { title: "Community", href: "/community", description: "Join our security community" },
+    { title: "Roadmap", href: "/roadmap", description: "Our platform development plans" },
   ],
   dashboards: [
     // Enhanced dashboard links with specific role-based options

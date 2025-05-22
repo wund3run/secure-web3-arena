@@ -11,6 +11,8 @@ import { RouteValidator } from "@/components/dev/RouteValidator";
 import { useLocation } from "react-router-dom";
 import { FileCheck } from "lucide-react";
 import { toast } from "sonner";
+import { FirstTimeUserExperience } from "@/components/onboarding/FirstTimeUserExperience";
+import { FeedbackCollector } from "@/components/ui/feedback-collector";
 
 interface GlobalComponentsProps {
   removeDevTools?: boolean;
@@ -20,7 +22,24 @@ export function GlobalComponents({ removeDevTools = false }: GlobalComponentsPro
   // Add state for accessibility menu
   const [accessibilityOpen, setAccessibilityOpen] = useState(false);
   const [showDevTools, setShowDevTools] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const location = useLocation();
+  
+  // Check if first-time user
+  useEffect(() => {
+    const onboardingCompleted = localStorage.getItem('hawkly-onboarding-completed') === 'true';
+    const onboardingSkipped = localStorage.getItem('hawkly-onboarding-skipped') === 'true';
+    
+    // Only show onboarding on homepage for first-time visitors
+    if (!onboardingCompleted && !onboardingSkipped && location.pathname === '/') {
+      // Slight delay to ensure page is loaded first
+      const timer = setTimeout(() => {
+        setShowOnboarding(true);
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [location.pathname]);
   
   // Detect keyboard shortcut for route validator
   useEffect(() => {
@@ -61,6 +80,12 @@ export function GlobalComponents({ removeDevTools = false }: GlobalComponentsPro
       />
       <KeyboardShortcuts />
       <PerformanceMonitor />
+      <FeedbackCollector />
+      
+      {/* First-time user experience */}
+      {showOnboarding && (
+        <FirstTimeUserExperience onClose={() => setShowOnboarding(false)} />
+      )}
       
       {/* Developer Tools Float Button - Only show if removeDevTools is false */}
       {!removeDevTools && !showDevTools && (

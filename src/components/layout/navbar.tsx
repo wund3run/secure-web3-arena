@@ -1,9 +1,9 @@
 
 import React from "react";
-import { SimplifiedNavbar } from "./simplified-navbar";
+import { EnhancedNavbar } from "./enhanced-navbar";
 
 export function Navbar() {
   return (
-    <SimplifiedNavbar />
+    <EnhancedNavbar />
   );
 }
