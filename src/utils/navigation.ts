@@ -65,7 +65,8 @@ export const extractRoutesFromApp = (): string[] => {
     "/templates",
     "/guides",
     "/tutorials",
-    "/roadmap" 
+    "/roadmap",
+    "/platform-report"
   ];
 };
 

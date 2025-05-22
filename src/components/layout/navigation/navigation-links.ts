@@ -15,6 +15,7 @@ export const navigationLinks: NavigationLinksStructure = {
     { title: "Audit Process", href: "/audit-guidelines", description: "Learn about our audit methodology" },
     { title: "Past Audits", href: "/audits", description: "Browse completed security audits", badge: "New" },
     { title: "Vulnerabilities Database", href: "/vulnerabilities", description: "Learn about common security issues" },
+    { title: "Platform Report", href: "/platform-report", description: "View UI/UX audit report of the platform", badge: "New" },
   ],
   resources: [
     { title: "Documentation", href: "/docs", description: "Reference materials and guides" },
