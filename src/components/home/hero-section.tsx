@@ -38,19 +38,19 @@ export function HeroSection() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button asChild variant="outline" className="border-white text-white hover:bg-white/10 text-lg h-12 px-8">
-                  <Link to="/request-audit">
-                    Request a Security Audit
+                  <Link to="/resources">
+                    Security Resources
                   </Link>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="bg-white text-primary">
-                Submit your project for a comprehensive security review
+                Access security guidelines and best practices
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </div>
         
-        <div className="mt-16 grid grid-cols-1 sm:grid-cols-4 gap-8 max-w-5xl mx-auto">
+        <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-5xl mx-auto">
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-left shadow-md">
             <div className="bg-primary/20 rounded-full w-12 h-12 flex items-center justify-center mb-4">
               <Shield className="h-6 w-6" aria-hidden="true" />
@@ -86,25 +86,6 @@ export function HeroSection() {
             </p>
             <Link to="/security-insights" className="text-primary-foreground hover:underline inline-flex items-center mt-2 text-sm font-medium">
               Try it now
-              <ArrowRight className="ml-1 h-3 w-3" aria-hidden="true" />
-            </Link>
-          </div>
-          
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-left shadow-md">
-            <div className="bg-primary/20 rounded-full w-12 h-12 flex items-center justify-center mb-4">
-              <FileText className="h-6 w-6" aria-hidden="true" />
-            </div>
-            <h2 className="text-xl font-bold mb-2">
-              <Link to="/platform-report" className="hover:underline inline-flex items-center">
-                Platform Status
-                <span className="ml-2 bg-purple-500/70 text-xs px-2 py-0.5 rounded-full">Beta</span>
-              </Link>
-            </h2>
-            <p className="text-white/70">
-              View real-time platform status, performance metrics and accessibility reports.
-            </p>
-            <Link to="/platform-report" className="text-primary-foreground hover:underline inline-flex items-center mt-2 text-sm font-medium">
-              Check status
               <ArrowRight className="ml-1 h-3 w-3" aria-hidden="true" />
             </Link>
           </div>

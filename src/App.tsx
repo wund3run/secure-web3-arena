@@ -1,3 +1,4 @@
+
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { GlobalComponents } from './components/app/GlobalComponents';
 import { Toaster } from './components/ui/toaster';
@@ -33,7 +34,6 @@ import SubmitService from './pages/SubmitService';
 import Escrow from './pages/Escrow';
 import SecurityInsights from './pages/SecurityInsights';
 import Roadmap from './pages/Roadmap';
-import PlatformReport from './pages/PlatformReport';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';

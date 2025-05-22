@@ -9,19 +9,9 @@ import { toast } from "sonner";
 
 export function MarketplaceCallToAction() {
   const { user } = useAuth();
-
-  const handleAuditClick = (e: React.MouseEvent) => {
-    if (!user) {
-      e.preventDefault();
-      toast.info("Authentication required", {
-        description: "Please sign in to request an audit",
-        action: {
-          label: "Sign In",
-          onClick: () => window.location.href = "/auth"
-        }
-      });
-    }
-  };
+  
+  // Check if user is admin (this is a simplified check - implement according to your auth logic)
+  const isAdmin = user && user.role === 'admin';
 
   return (
     <Card 
@@ -53,11 +43,10 @@ export function MarketplaceCallToAction() {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link 
-                    to="/request-audit" 
+                    to="/contact" 
                     className="w-full sm:w-auto" 
-                    onClick={handleAuditClick}
                     role="button"
-                    aria-label="Submit your project for security audit"
+                    aria-label="Contact us about security services"
                   >
                     <Button 
                       size="lg" 
@@ -66,13 +55,13 @@ export function MarketplaceCallToAction() {
                       type="button" 
                     >
                       <Shield className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" aria-hidden="true" />
-                      <span>Start Your Security Assessment</span>
+                      <span>Contact Security Experts</span>
                       <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                     </Button>
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
-                  <p>Get a comprehensive security assessment for your project</p>
+                  <p>Get in touch with our security team</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
