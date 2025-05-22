@@ -1,21 +1,35 @@
 
-import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, Lock } from "lucide-react";
+import { Shield, Lock, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const AdminLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get redirect path from location state or default to dashboard
+  const from = location.state?.from?.pathname || "/admin/dashboard";
 
   // Simple check for if admin is already logged in
   const isAuthenticated = localStorage.getItem("adminAuthenticated") === "true";
+  
+  useEffect(() => {
+    // Check if redirected here due to auth issues
+    if (location.state?.message) {
+      setError(location.state.message);
+    }
+  }, [location.state]);
+
   if (isAuthenticated) {
     return <Navigate to="/admin/dashboard" replace />;
   }
@@ -23,6 +37,7 @@ const AdminLogin = () => {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
 
     // For demo purposes, using a hardcoded admin/admin123 credential
     // In a real app, this would be authenticated against a secure backend
@@ -33,8 +48,9 @@ const AdminLogin = () => {
         toast.success("Login successful", {
           description: "Welcome to the admin dashboard",
         });
-        navigate("/admin/dashboard");
+        navigate(from, { replace: true });
       } else {
+        setError("Invalid credentials. Please check your username and password.");
         toast.error("Invalid credentials", {
           description: "Please check your username and password",
         });
@@ -55,6 +71,16 @@ const AdminLogin = () => {
             Secure login to the Hawkly platform administration
           </CardDescription>
         </CardHeader>
+        
+        {error && (
+          <div className="px-6 py-0">
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          </div>
+        )}
+        
         <form onSubmit={handleLogin}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -65,6 +91,8 @@ const AdminLogin = () => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
+                autoComplete="username"
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -81,7 +109,13 @@ const AdminLogin = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                autoComplete="current-password"
+                disabled={isLoading}
               />
+            </div>
+            
+            <div className="text-xs text-muted-foreground">
+              <p>For demo purposes: Username: <code>admin</code>, Password: <code>admin123</code></p>
             </div>
           </CardContent>
           <CardFooter>

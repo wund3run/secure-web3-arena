@@ -1,5 +1,5 @@
 
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,11 +12,14 @@ import {
   Home,
   LogOut,
   PanelLeft,
-  AlertCircle
+  AlertCircle,
+  ActivitySquare
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { BetaWarning } from "@/components/ui/beta-warning";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { PlatformStatusMonitor } from "./PlatformStatusMonitor";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -26,15 +29,45 @@ interface AdminLayoutProps {
 const AdminLayout = ({ children, title }: AdminLayoutProps) => {
   const [collapsed, setCollapsed] = useState(false);
   const [showBetaNotice, setShowBetaNotice] = useState(true);
+  const [statusDialogOpen, setStatusDialogOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
 
+  // Check time since login
+  useEffect(() => {
+    const loginTime = localStorage.getItem("adminLoginTime");
+    
+    if (!loginTime) {
+      // Set login time if not already set
+      localStorage.setItem("adminLoginTime", Date.now().toString());
+    } else {
+      // Check session duration (24 hour expiry for demo)
+      const sessionDuration = Date.now() - parseInt(loginTime);
+      const sessionHours = sessionDuration / (1000 * 60 * 60);
+      
+      if (sessionHours > 24) {
+        toast.warning("Session expired", {
+          description: "Your admin session has expired. Please login again."
+        });
+        handleLogout();
+      }
+    }
+  }, []);
+
   const handleLogout = () => {
     localStorage.removeItem("adminAuthenticated");
     localStorage.removeItem("adminUser");
+    localStorage.removeItem("adminLoginTime");
     toast.success("Logged out successfully");
-    navigate("/admin");
+    navigate("/admin/login");
+  };
+
+  // Confirm logout dialog
+  const confirmLogout = () => {
+    if (confirm("Are you sure you want to log out?")) {
+      handleLogout();
+    }
   };
 
   const menuItems = [
@@ -115,6 +148,21 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
           <Separator className="my-4" />
           
           <div className="px-2">
+            <Dialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
+              <DialogTrigger asChild>
+                <div className={`flex items-center px-2 py-2 text-sm rounded-md hover:bg-accent transition-colors cursor-pointer`}>
+                  <span className="mr-3"><ActivitySquare className="h-4 w-4" /></span>
+                  {!collapsed && <span>Platform Status</span>}
+                </div>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Platform Status</DialogTitle>
+                </DialogHeader>
+                <PlatformStatusMonitor />
+              </DialogContent>
+            </Dialog>
+            
             <Link to="/">
               <div className="flex items-center px-2 py-2 text-sm rounded-md hover:bg-accent transition-colors">
                 <span className="mr-3"><Home className="h-4 w-4" /></span>
@@ -124,8 +172,8 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
             
             <Button
               variant="ghost"
-              className="w-full justify-start px-2 py-2 text-sm"
-              onClick={handleLogout}
+              className="w-full justify-start px-2 py-2 text-sm hover:bg-red-100 hover:text-red-700 transition-colors"
+              onClick={confirmLogout}
             >
               <LogOut className="h-4 w-4 mr-3" />
               {!collapsed && <span>Log out</span>}
@@ -157,7 +205,14 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
               <span className="text-sm text-muted-foreground">
                 Admin: {localStorage.getItem("adminUser")}
               </span>
-              <AlertCircle className="h-4 w-4 text-amber-500" />
+              <Button 
+                variant="destructive" 
+                size="sm"
+                onClick={confirmLogout}
+                className="h-8"
+              >
+                <LogOut className="h-3.5 w-3.5 mr-1" /> Logout
+              </Button>
             </div>
           </div>
         </header>

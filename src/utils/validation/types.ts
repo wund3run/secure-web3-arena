@@ -27,7 +27,7 @@ export interface ValidationIssue {
   location: string;
   suggestion?: string;
   affectedStakeholders?: StakeholderType[];
-  wcagCriterion?: string; // Added this missing property
+  wcagCriterion?: string;
 }
 
 export interface ValidationResult {
