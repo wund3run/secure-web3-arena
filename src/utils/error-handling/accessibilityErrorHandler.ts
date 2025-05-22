@@ -1,138 +1,87 @@
 
 /**
- * Enhanced error handling specifically for accessibility issues
+ * Interface for accessibility error options
  */
-
-import { toast } from "sonner";
-import { ErrorCategory } from "../error-handling";
-
 interface AccessibilityErrorOptions {
-  /** The element causing the accessibility issue */
-  element?: HTMLElement;
-  /** The WCAG criterion being violated */
-  wcagCriterion?: string;
-  /** Whether to attempt automatic fixing */
-  attemptAutoFix?: boolean;
-  /** Element identifier (for logging) */
   elementIdentifier?: string;
+  wcagCriterion?: string;
+  attemptAutoFix?: boolean;
 }
 
 /**
- * Handle accessibility-related errors with specialized reporting
- * @param error The error that was thrown
- * @param options Additional options for handling the accessibility error
- * @returns Object with information about the handled error
+ * Handles errors related to accessibility issues
+ * @param error Error object
+ * @param options Options for handling the error
  */
 export const handleAccessibilityError = (
-  error: unknown, 
+  error: Error,
   options: AccessibilityErrorOptions = {}
-): {
-  message: string;
-  category: ErrorCategory;
-  wcagCriterion?: string;
-  element?: string;
-} => {
-  console.error('Accessibility error detected:', error, 
-    options.elementIdentifier ? `on element: ${options.elementIdentifier}` : '');
-  
-  const errorMessage = error instanceof Error ? error.message : String(error);
-  
-  // Show a more detailed toast for accessibility errors
-  toast.error("Accessibility Issue Detected", {
-    description: errorMessage.substring(0, 100),
-    action: options.attemptAutoFix ? {
-      label: "Attempt Fix",
-      onClick: () => attemptAccessibilityFix(options.element, errorMessage)
-    } : undefined,
-    // Use a unique ID to prevent duplicate toasts
-    id: `a11y-error-${options.elementIdentifier || Date.now()}`,
-    duration: 6000,
+): void => {
+  // Log the error with accessibility context
+  console.error(`Accessibility Error: ${error.message}`, {
+    ...options,
+    timestamp: new Date().toISOString()
   });
   
-  return {
-    message: errorMessage,
-    category: ErrorCategory.Validation,
-    wcagCriterion: options.wcagCriterion,
-    element: options.elementIdentifier
-  };
+  // Attempt automatic fixes if enabled
+  if (options.attemptAutoFix) {
+    try {
+      applyAccessibilityFix(options.elementIdentifier, options.wcagCriterion);
+    } catch (fixError) {
+      console.warn('Failed to auto-fix accessibility issue', fixError);
+    }
+  }
 };
 
 /**
- * Attempt to automatically fix common accessibility issues
- * @param element The element to attempt to fix
- * @param errorMessage The error message describing the issue
- * @returns Boolean indicating success of the fix attempt
+ * Attempts to apply automatic fixes for common accessibility issues
  */
-function attemptAccessibilityFix(element?: HTMLElement, errorMessage?: string): boolean {
-  if (!element) return false;
+const applyAccessibilityFix = (
+  elementIdentifier?: string,
+  wcagCriterion?: string
+): void => {
+  if (!elementIdentifier) return;
   
-  try {
-    // Example fixes for common accessibility issues
-    if (errorMessage?.includes('missing alt text')) {
-      element.setAttribute('alt', 'Image description - please update');
-      toast.success("Added placeholder alt text - please update with appropriate description");
-      return true;
+  // Attempt to find the element
+  const elements = document.querySelectorAll(elementIdentifier);
+  if (!elements || elements.length === 0) {
+    const altElements = document.querySelectorAll(`[src="${elementIdentifier}"], [href="${elementIdentifier}"]`);
+    if (!altElements || altElements.length === 0) {
+      console.warn(`Cannot find element to fix: ${elementIdentifier}`);
+      return;
     }
     
-    if (errorMessage?.includes('missing label')) {
-      const id = `auto-label-${Date.now()}`;
-      element.setAttribute('id', id);
-      
-      const label = document.createElement('label');
-      label.setAttribute('for', id);
-      label.textContent = 'Label - please update';
-      
-      element.parentNode?.insertBefore(label, element);
-      toast.success("Added placeholder label - please update with appropriate text");
-      return true;
-    }
-    
-    if (errorMessage?.includes('contrast ratio')) {
-      // This is just an example - real implementation would need more logic
-      const originalColor = element.style.color;
-      const originalBg = element.style.backgroundColor;
-      
-      element.style.color = '#000000';
-      element.style.backgroundColor = '#ffffff';
-      
-      toast.success("Adjusted contrast - original colors stored for reference", {
-        description: `Original: color: ${originalColor}, bg: ${originalBg}`
-      });
-      return true;
-    }
-    
-    if (errorMessage?.includes('focus')) {
-      element.setAttribute('tabindex', '0');
-      toast.success("Made element focusable");
-      return true;
-    }
-    
-    toast.error("No automatic fix available for this issue");
-    return false;
-  } catch (e) {
-    console.error("Error attempting to fix accessibility issue:", e);
-    toast.error("Failed to apply accessibility fix");
-    return false;
+    // Apply fixes to alternative elements
+    altElements.forEach(fixElement);
+    return;
   }
-}
+  
+  // Apply fixes to found elements
+  elements.forEach(element => fixElement(element, wcagCriterion));
+};
 
 /**
- * Register common accessibility checks to run periodically
- * @returns Object with methods to control the checks
+ * Applies fixes to individual elements based on their type and issues
  */
-export const registerAccessibilityChecks = () => {
-  // This would be implemented to run automated checks
-  // Not implementing full functionality here as it would be complex
-  console.log("Accessibility checks registered");
+const fixElement = (element: Element, wcagCriterion?: string): void => {
+  // Image missing alt text
+  if (element.tagName === 'IMG' && !element.hasAttribute('alt')) {
+    (element as HTMLImageElement).alt = 'Image description - please update';
+    console.log(`Added placeholder alt text to image: ${(element as HTMLImageElement).src}`);
+  }
   
-  return {
-    runChecks: () => {
-      console.log("Running accessibility checks");
-      // Would implement checks here
-    },
-    clearChecks: () => {
-      console.log("Clearing accessibility checks");
-      // Would clear any intervals or observers here
+  // Link missing accessible name
+  if (element.tagName === 'A' && !(element.textContent?.trim())) {
+    if (element.querySelector('img')) {
+      // Link contains an image but no text
+      const img = element.querySelector('img');
+      if (img && !img.hasAttribute('alt')) {
+        (img as HTMLImageElement).alt = 'Link description - please update';
+      }
+    } else {
+      // Empty link with no content
+      element.setAttribute('aria-label', 'Link description - please update');
     }
-  };
+    console.log(`Added placeholder accessible name to link: ${(element as HTMLAnchorElement).href}`);
+  }
 };

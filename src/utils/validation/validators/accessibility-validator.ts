@@ -120,3 +120,8 @@ export const validateAccessibility = (): ValidationIssue[] => {
   
   return accessibilityIssues;
 };
+
+// Add an exported object with the validation function to fix the import issue
+export const AccessibilityValidator = {
+  validate: validateAccessibility
+};

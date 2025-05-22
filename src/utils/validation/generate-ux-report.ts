@@ -4,7 +4,7 @@ import { validateAllStakeholderExperiences } from "./validators/stakeholder-vali
 import { validateRoutes } from "./validators/route-validator";
 import { validateResponsiveDesign } from "./validators/responsive-validator";
 import { validateCurrentPage } from "./validators/page-validator";
-import { AccessibilityValidator } from "./validators/accessibility-validator";
+import { validateAccessibility } from "./validators/accessibility-validator";
 
 /**
  * Interface for the full UI/UX audit report
@@ -32,7 +32,7 @@ export interface UXAuditReport {
 export const generateUXAuditReport = (pathname: string): UXAuditReport => {
   // Collect issues from all validators
   const routeIssues = validateRoutes();
-  const accessibilityIssues = AccessibilityValidator.validate();
+  const accessibilityIssues = validateAccessibility();
   const responsiveIssues = validateResponsiveDesign();
   const stakeholderIssues = validateAllStakeholderExperiences();
   const generalIssues = validateCurrentPage(pathname);

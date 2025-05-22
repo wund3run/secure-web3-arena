@@ -19,10 +19,12 @@ import { StakeholderType, ValidationIssue, ValidationSeverity } from "../types";
 
 interface PlatformValidatorWidgetProps {
   stakeholder?: StakeholderType;
+  onClose?: () => void; // Added the onClose prop
 }
 
 export function PlatformValidatorWidget({
   stakeholder = "general",
+  onClose,
 }: PlatformValidatorWidgetProps) {
   const [showAll, setShowAll] = useState(false);
   const { issues, isValidating, lastValidated, runValidation } =
@@ -96,18 +98,25 @@ export function PlatformValidatorWidget({
         >
           {showAll ? "Show Summary" : "Show All Issues"}
         </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={runValidation}
-          disabled={isValidating}
-          className="flex items-center gap-1"
-        >
-          <RefreshCw
-            className={`h-3 w-3 ${isValidating ? "animate-spin" : ""}`}
-          />
-          Refresh
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={runValidation}
+            disabled={isValidating}
+            className="flex items-center gap-1"
+          >
+            <RefreshCw
+              className={`h-3 w-3 ${isValidating ? "animate-spin" : ""}`}
+            />
+            Refresh
+          </Button>
+          {onClose && (
+            <Button size="sm" variant="ghost" onClick={onClose}>
+              Close
+            </Button>
+          )}
+        </div>
       </div>
 
       {issues.length === 0 ? (

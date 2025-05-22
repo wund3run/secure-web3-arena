@@ -1,145 +1,279 @@
-
 import { ValidationIssue, StakeholderType } from "../types";
 
 /**
- * Validates UI/UX elements based on stakeholder type
- * @param stakeholderType The type of stakeholder to validate for
- * @returns Array of validation issues specific to the stakeholder type
+ * Validates the platform experience for different stakeholders
+ * @returns Array of validation issues affecting stakeholder experiences
  */
 export const validateStakeholderExperience = (stakeholderType: StakeholderType): ValidationIssue[] => {
-  const issues: ValidationIssue[] = [];
+  const stakeholderIssues: ValidationIssue[] = [];
   
+  // Common issues for all stakeholders
+  const commonIssues = validateCommonStakeholderIssues();
+  
+  // Specific issues based on stakeholder type
   switch (stakeholderType) {
     case 'auditor':
-      // Auditor-specific validations
-      const auditTools = document.querySelectorAll('[data-audit-tool]');
-      if (auditTools.length === 0) {
-        issues.push({
-          type: 'ui',
-          severity: 'medium',
-          description: 'No audit tools found on the page for auditors',
-          location: 'Current page',
-          suggestion: 'Add audit-specific tools and controls for auditor stakeholders',
-          affectedStakeholders: ['auditor'],
-          wcagCriterion: 'WCAG 3.2.1 (On Focus)'
-        });
-      }
-      
-      // Check for audit report generation functionality
-      const reportButtons = document.querySelectorAll('button, a').length;
-      const reportRelatedElements = Array.from(document.querySelectorAll('button, a')).filter(
-        el => el.textContent?.toLowerCase().includes('report') || 
-              el.textContent?.toLowerCase().includes('audit') ||
-              el.getAttribute('href')?.includes('report') ||
-              el.getAttribute('href')?.includes('audit')
-      );
-      
-      if (reportRelatedElements.length === 0 && window.location.pathname.includes('/dashboard')) {
-        issues.push({
-          type: 'functionality',
-          severity: 'high',
-          description: 'No report generation functionality visible for auditors',
-          location: 'Dashboard',
-          suggestion: 'Add clear access points to report generation tools',
-          affectedStakeholders: ['auditor'],
-          wcagCriterion: 'WCAG 2.4.6 (Headings and Labels)'
-        });
-      }
+      stakeholderIssues.push(...validateAuditorExperience());
       break;
-      
     case 'project-owner':
-      // Project owner specific validations
-      const projectStatusElements = document.querySelectorAll('[data-project-status]');
-      if (projectStatusElements.length === 0 && window.location.pathname.includes('/dashboard')) {
-        issues.push({
-          type: 'ui',
-          severity: 'high',
-          description: 'Project status information missing for project owners',
-          location: 'Dashboard',
-          suggestion: 'Add project status indicators with clear visibility for project owners',
-          affectedStakeholders: ['project-owner'],
-          wcagCriterion: 'WCAG 1.3.1 (Info and Relationships)'
-        });
-      }
-      
-      // Check for request audit functionality
-      const requestAuditLinks = Array.from(document.querySelectorAll('a')).filter(
-        a => a.textContent?.toLowerCase().includes('request audit') || 
-             a.getAttribute('href')?.includes('request-audit')
-      );
-      
-      if (requestAuditLinks.length === 0 && 
-          (window.location.pathname === '/' || window.location.pathname.includes('/dashboard'))) {
-        issues.push({
-          type: 'navigation',
-          severity: 'high',
-          description: 'No clear path to request audit functionality for project owners',
-          location: 'Home or Dashboard',
-          suggestion: 'Add prominent request audit button/link for project owners',
-          affectedStakeholders: ['project-owner'],
-          wcagCriterion: 'WCAG 2.4.2 (Page Titled)'
-        });
-      }
+      stakeholderIssues.push(...validateProjectOwnerExperience());
       break;
-      
     case 'admin':
-      // Admin specific validations
-      const adminControls = document.querySelectorAll('[data-admin-control]');
-      if (adminControls.length === 0 && window.location.pathname.includes('/admin')) {
-        issues.push({
-          type: 'ui',
-          severity: 'medium',
-          description: 'Limited administrative controls for platform management',
-          location: 'Admin section',
-          suggestion: 'Add comprehensive admin controls with data-admin-control attribute',
-          affectedStakeholders: ['admin'],
-          wcagCriterion: 'WCAG 3.3.2 (Labels or Instructions)'
-        });
-      }
+      stakeholderIssues.push(...validateAdminExperience());
       break;
-      
     case 'general':
     default:
-      // General user validations
-      const mainContent = document.querySelector('main');
-      if (mainContent && window.getComputedStyle(mainContent).maxWidth === 'none') {
-        issues.push({
-          type: 'responsive',
-          severity: 'medium',
-          description: 'Main content area has no max-width, may cause readability issues on large screens',
-          location: 'Main content area',
-          suggestion: 'Add max-width constraint to main content for better readability',
-          affectedStakeholders: ['general', 'auditor', 'project-owner', 'admin'],
-          wcagCriterion: 'WCAG 1.4.8 (Visual Presentation)'
-        });
-      }
+      // Common issues are sufficient for general users
+      break;
+  }
+  
+  return [...commonIssues, ...stakeholderIssues];
+};
+
+/**
+ * Validates issues common to all stakeholders
+ */
+const validateCommonStakeholderIssues = (): ValidationIssue[] => {
+  const issues: ValidationIssue[] = [];
+  
+  // Check for navigation consistency
+  const navItems = document.querySelectorAll('nav a, nav button');
+  const inconsistentStyles = Array.from(navItems).some((item, i, arr) => {
+    if (i === 0) return false;
+    const prevStyle = window.getComputedStyle(arr[i-1]);
+    const currStyle = window.getComputedStyle(item);
+    return prevStyle.fontSize !== currStyle.fontSize || 
+           prevStyle.fontWeight !== currStyle.fontWeight;
+  });
+  
+  if (inconsistentStyles) {
+    issues.push({
+      type: 'ui',
+      severity: 'low',
+      description: 'Navigation has inconsistent styling',
+      location: 'Navigation menu',
+      suggestion: 'Standardize font sizes and weights in navigation elements',
+      affectedStakeholders: ['general', 'auditor', 'project-owner', 'admin'],
+      wcagCriterion: 'WCAG 3.2.3 Consistent Navigation'
+    });
+  }
+  
+  // Check for keyboard focus indicators
+  const focusableElements = document.querySelectorAll('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])');
+  let missingFocusStyles = false;
+  
+  focusableElements.forEach(element => {
+    const style = window.getComputedStyle(element);
+    if (style.outlineStyle === 'none' || style.outlineWidth === '0px') {
+      // Check if there are alternative focus indicators
+      const hasCustomFocus = element.classList.contains('focus-visible') || 
+                            element.classList.contains('focus') ||
+                            element.hasAttribute('data-focus-visible-added');
       
-      // Check for consistent navigation across pages
-      const navItems = document.querySelectorAll('nav a').length;
-      if (navItems === 0 && !window.location.pathname.includes('/auth')) {
-        issues.push({
-          type: 'navigation',
-          severity: 'high',
-          description: 'Page lacks navigation elements',
-          location: 'Current page',
-          suggestion: 'Add consistent navigation to improve user orientation',
-          affectedStakeholders: ['general', 'auditor', 'project-owner'],
-          wcagCriterion: 'WCAG 3.2.3 (Consistent Navigation)'
-        });
+      if (!hasCustomFocus) {
+        missingFocusStyles = true;
       }
+    }
+  });
+  
+  if (missingFocusStyles) {
+    issues.push({
+      type: 'accessibility',
+      severity: 'medium',
+      description: 'Some interactive elements may lack visible focus indicators',
+      location: 'Multiple interactive elements',
+      suggestion: 'Ensure all interactive elements have visible focus indicators for keyboard users',
+      affectedStakeholders: ['general', 'auditor', 'project-owner', 'admin'],
+      wcagCriterion: 'WCAG 2.4.7 Focus Visible'
+    });
+  }
+  
+  // Check for consistent heading hierarchy
+  const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+  let previousLevel = 0;
+  let skippedHeadingLevel = false;
+  
+  headings.forEach(heading => {
+    const currentLevel = parseInt(heading.tagName.substring(1));
+    
+    if (previousLevel > 0 && currentLevel > previousLevel + 1) {
+      skippedHeadingLevel = true;
+    }
+    
+    previousLevel = currentLevel;
+  });
+  
+  if (skippedHeadingLevel) {
+    issues.push({
+      type: 'accessibility',
+      severity: 'medium',
+      description: 'Heading levels are skipped in the document',
+      location: 'Document structure',
+      suggestion: 'Maintain a proper heading hierarchy without skipping levels',
+      affectedStakeholders: ['general', 'auditor', 'project-owner', 'admin'],
+      wcagCriterion: 'WCAG 1.3.1 Info and Relationships'
+    });
   }
   
   return issues;
 };
 
 /**
- * Run validation for all stakeholder types
+ * Validates the auditor experience
+ */
+const validateAuditorExperience = (): ValidationIssue[] => {
+  const issues: ValidationIssue[] = [];
+  
+  // Check for technical information presentation
+  const codeBlocks = document.querySelectorAll('pre, code');
+  if (codeBlocks.length > 0) {
+    let missingSemantics = false;
+    
+    codeBlocks.forEach(block => {
+      if (!block.hasAttribute('lang') && !block.parentElement?.hasAttribute('lang')) {
+        missingSemantics = true;
+      }
+    });
+    
+    if (missingSemantics) {
+      issues.push({
+        type: 'accessibility',
+        severity: 'low',
+        description: 'Code blocks missing language specification',
+        location: 'Technical content sections',
+        suggestion: 'Add language attributes to code blocks for better syntax highlighting and screen reader support',
+        affectedStakeholders: ['auditor'],
+        wcagCriterion: 'WCAG 3.1.1 Language of Parts'
+      });
+    }
+  }
+  
+  // Check for data tables
+  const tables = document.querySelectorAll('table');
+  tables.forEach(table => {
+    if (!table.querySelector('th')) {
+      issues.push({
+        type: 'accessibility',
+        severity: 'medium',
+        description: 'Data table missing header cells',
+        location: 'Data table',
+        suggestion: 'Add proper <th> elements to identify column and row headers',
+        affectedStakeholders: ['auditor', 'admin'],
+        wcagCriterion: 'WCAG 1.3.1 Info and Relationships'
+      });
+    }
+  });
+  
+  return issues;
+};
+
+/**
+ * Validates the project owner experience
+ */
+const validateProjectOwnerExperience = (): ValidationIssue[] => {
+  const issues: ValidationIssue[] = [];
+  
+  // Check for dashboard elements
+  const dashboardElements = document.querySelectorAll('[data-dashboard], .dashboard, #dashboard');
+  if (dashboardElements.length > 0) {
+    // Check for data visualization accessibility
+    const charts = document.querySelectorAll('[data-chart], .chart, canvas');
+    charts.forEach(chart => {
+      if (!chart.getAttribute('aria-label') && !chart.getAttribute('aria-labelledby')) {
+        issues.push({
+          type: 'accessibility',
+          severity: 'medium',
+          description: 'Data visualization missing accessible name or description',
+          location: 'Dashboard chart or graph',
+          suggestion: 'Add aria-label or aria-labelledby to provide accessible names for charts',
+          affectedStakeholders: ['project-owner', 'admin'],
+          wcagCriterion: 'WCAG 1.1.1 Non-text Content'
+        });
+      }
+    });
+    
+    // Check for responsive layout on dashboard
+    const dashboardGrid = document.querySelector('.dashboard-grid, .dashboard-layout');
+    if (dashboardGrid) {
+      const style = window.getComputedStyle(dashboardGrid);
+      if (!style.display.includes('grid') && !style.display.includes('flex')) {
+        issues.push({
+          type: 'responsive',
+          severity: 'low',
+          description: 'Dashboard layout may not be fully responsive',
+          location: 'Project dashboard',
+          suggestion: 'Use CSS Grid or Flexbox for responsive dashboard layouts',
+          affectedStakeholders: ['project-owner', 'admin']
+        });
+      }
+    }
+  }
+  
+  return issues;
+};
+
+/**
+ * Validates the admin experience
+ */
+const validateAdminExperience = (): ValidationIssue[] => {
+  const issues: ValidationIssue[] = [];
+  
+  // Check for admin-specific controls
+  const adminControls = document.querySelectorAll('[data-admin], .admin-control, #admin-panel');
+  if (adminControls.length > 0) {
+    // Check for bulk action accessibility
+    const bulkActions = document.querySelectorAll('[data-bulk-action], .bulk-action');
+    bulkActions.forEach(action => {
+      const hasLabel = action.hasAttribute('aria-label') || 
+                      action.hasAttribute('aria-labelledby') ||
+                      action.textContent?.trim().length > 0;
+      
+      if (!hasLabel) {
+        issues.push({
+          type: 'accessibility',
+          severity: 'high',
+          description: 'Bulk action control missing accessible name',
+          location: 'Admin interface',
+          suggestion: 'Add clear labels to all bulk action controls',
+          affectedStakeholders: ['admin'],
+          wcagCriterion: 'WCAG 2.4.6 Headings and Labels'
+        });
+      }
+    });
+    
+    // Check for status indicators
+    const statusIndicators = document.querySelectorAll('[data-status], .status-indicator');
+    statusIndicators.forEach(indicator => {
+      if (!indicator.hasAttribute('aria-label') && !indicator.hasAttribute('title')) {
+        issues.push({
+          type: 'accessibility',
+          severity: 'medium',
+          description: 'Status indicator missing accessible name',
+          location: 'Admin interface',
+          suggestion: 'Add aria-label or title to status indicators',
+          affectedStakeholders: ['admin'],
+          wcagCriterion: 'WCAG 1.4.1 Use of Color'
+        });
+      }
+    });
+  }
+  
+  return issues;
+};
+
+/**
+ * Validates experiences for all stakeholder types
  */
 export const validateAllStakeholderExperiences = (): ValidationIssue[] => {
-  return [
-    ...validateStakeholderExperience('auditor'),
-    ...validateStakeholderExperience('project-owner'),
-    ...validateStakeholderExperience('admin'),
-    ...validateStakeholderExperience('general')
-  ];
+  const stakeholderTypes: StakeholderType[] = ['general', 'auditor', 'project-owner', 'admin'];
+  
+  // Get issues specific to each stakeholder type
+  const allIssues = stakeholderTypes.flatMap(type => validateStakeholderExperience(type));
+  
+  // Remove duplicates based on description + location
+  const uniqueIssues = allIssues.filter((issue, index, self) => 
+    index === self.findIndex(i => i.description === issue.description && i.location === issue.location)
+  );
+  
+  return uniqueIssues;
 };

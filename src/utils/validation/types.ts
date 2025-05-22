@@ -8,7 +8,11 @@ export type ValidationType =
   | 'security' 
   | 'accessibility' 
   | 'content'
-  | 'navigation';
+  | 'navigation'
+  | 'responsive'
+  | 'link'
+  | 'interactive'
+  | 'seo';
 
 export type StakeholderType = 
   | 'general' 
@@ -23,6 +27,7 @@ export interface ValidationIssue {
   location: string;
   suggestion?: string;
   affectedStakeholders?: StakeholderType[];
+  wcagCriterion?: string; // Added this missing property
 }
 
 export interface ValidationResult {

@@ -1,5 +1,5 @@
 
-import { ValidationIssue, StakeholderType } from "@/utils/validation/types";
+import { ValidationIssue, StakeholderType, ValidationType } from "@/utils/validation/types";
 import { handleAccessibilityError } from "@/utils/error-handling/accessibilityErrorHandler";
 
 /**
@@ -92,7 +92,7 @@ export const reportAccessibilityIssues = (issues: ValidationIssue[]): void => {
  */
 export const createValidationIssue = (
   description: string,
-  type: 'ui' | 'functionality' | 'navigation' | 'responsive' | 'content' | 'accessibility' | 'interactive' | 'link' | 'seo' | 'performance',
+  type: ValidationType,
   severity: "high" | "medium" | "low",
   location: string,
   suggestion?: string,
@@ -104,6 +104,6 @@ export const createValidationIssue = (
     severity,
     location,
     suggestion: suggestion || "",
-    wcagCriterion,
+    wcagCriterion
   };
 };
