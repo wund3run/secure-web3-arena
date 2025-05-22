@@ -1,277 +1,204 @@
 
-import React, { useState, useEffect } from "react";
-import { usePlatformValidator } from "../hooks/usePlatformValidator";
-import { AlertTriangle, CheckCircle, AlertCircle, RefreshCw, X, Filter, List } from "lucide-react";
-import { ValidationIssue } from "../types";
+import React, { useState } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuCheckboxItem,
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import {
+  AlertTriangle,
+  CheckCircle,
+  XCircle,
+  RefreshCw,
+} from "lucide-react";
+import { usePlatformValidator } from "../hooks/usePlatformValidator";
+import { StakeholderType, ValidationIssue, ValidationSeverity } from "../types";
 
-export interface PlatformValidatorWidgetProps {
-  onClose?: () => void;
-  stakeholderType?: 'auditor' | 'project-owner' | 'admin' | 'general';
-  showAllTypes?: boolean;
+interface PlatformValidatorWidgetProps {
+  stakeholder?: StakeholderType;
 }
 
-export function PlatformValidatorWidget({ 
-  onClose, 
-  stakeholderType = 'general',
-  showAllTypes = false 
+export function PlatformValidatorWidget({
+  stakeholder = "general",
 }: PlatformValidatorWidgetProps) {
-  const [isOpen, setIsOpen] = useState(true);
-  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
-  const [filterSeverity, setFilterSeverity] = useState<('high' | 'medium' | 'low')[]>([
-    'high', 'medium', 'low'
-  ]);
-  const [filterType, setFilterType] = useState<string[]>([]);
-  const [showFixSuggestions, setShowFixSuggestions] = useState(true);
+  const [showAll, setShowAll] = useState(false);
+  const { issues, isValidating, lastValidated, runValidation } =
+    usePlatformValidator({
+      stakeholderType: stakeholder,
+      runOnMount: true,
+      includePerformance: true,
+    });
 
-  // Use the enhanced validator hook
-  const { issues, isValidating, lastValidated, runValidation } = usePlatformValidator({
-    stakeholderType,
-    filterBySeverity: filterSeverity
-  });
-  
-  // Handle closing the widget
-  const handleClose = () => {
-    setIsOpen(false);
-    onClose?.();
-  };
-  
-  // Initialize filter types based on available issues
-  useEffect(() => {
-    if (issues.length > 0) {
-      const types = [...new Set(issues.map(issue => issue.type))];
-      if (filterType.length === 0) {
-        setFilterType(types);
-      }
-    }
-  }, [issues]);
-  
-  // Apply filters to issues
-  const filteredIssues = issues.filter(issue => 
-    filterSeverity.includes(issue.severity) && 
-    filterType.includes(issue.type)
-  );
-  
-  if (!isOpen) return null;
-  
   // Group issues by type
-  const issuesByType = filteredIssues.reduce((acc, issue) => {
-    if (!acc[issue.type]) {
-      acc[issue.type] = [];
-    }
-    acc[issue.type].push(issue);
-    return acc;
-  }, {} as Record<string, ValidationIssue[]>);
-  
-  const getSeverityIcon = (severity: string) => {
-    switch (severity) {
-      case 'high':
-        return <AlertCircle className="h-4 w-4 text-red-500" />;
-      case 'medium':
-        return <AlertTriangle className="h-4 w-4 text-orange-500" />;
-      case 'low':
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-      default:
-        return null;
-    }
-  };
+  const issuesByType = issues.reduce<Record<string, ValidationIssue[]>>(
+    (acc, issue) => {
+      if (!acc[issue.type]) {
+        acc[issue.type] = [];
+      }
+      acc[issue.type].push(issue);
+      return acc;
+    },
+    {}
+  );
 
-  const typeCounts = issues.reduce((acc, issue) => {
-    acc[issue.type] = (acc[issue.type] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-  
-  const formatTimestamp = (date: Date | null) => {
-    if (!date) return 'Not yet validated';
-    
-    // Format to something like "2 minutes ago" or the actual time if longer
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.round(diffMs / 60000);
-    
-    if (diffMins < 1) return 'Just now';
-    if (diffMins === 1) return '1 minute ago';
-    if (diffMins < 60) return `${diffMins} minutes ago`;
-    
-    return date.toLocaleTimeString();
-  };
-  
+  // Count issues by severity
+  const highCount = issues.filter((issue) => issue.severity === "high").length;
+  const mediumCount = issues.filter(
+    (issue) => issue.severity === "medium"
+  ).length;
+  const lowCount = issues.filter((issue) => issue.severity === "low").length;
+
   return (
-    <div className="fixed bottom-4 right-4 z-50 w-96 bg-card border shadow-lg rounded-lg overflow-hidden max-h-[80vh]">
-      <div className="p-4 bg-muted flex justify-between items-center border-b">
-        <h3 className="font-medium">Platform Validator</h3>
+    <div className="space-y-4 rounded-md border p-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+        <div>
+          <h2 className="text-lg font-semibold">Platform Validation</h2>
+          <p className="text-sm text-muted-foreground">
+            {lastValidated
+              ? `Last checked: ${lastValidated.toLocaleTimeString()}`
+              : "Not validated yet"}
+          </p>
+        </div>
+
         <div className="flex items-center gap-2">
-          <button 
-            onClick={() => runValidation()} 
-            disabled={isValidating}
-            className="text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="Re-run validation"
+          <Badge
+            variant={highCount > 0 ? "destructive" : "outline"}
+            className="flex items-center gap-1"
           >
-            <RefreshCw size={16} className={isValidating ? 'animate-spin' : ''} />
-          </button>
-          <button 
-            onClick={handleClose} 
-            className="text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="Close validator"
+            <XCircle className="h-3 w-3" />
+            {highCount} High
+          </Badge>
+          <Badge
+            variant={mediumCount > 0 ? "default" : "outline"}
+            className="flex items-center gap-1 bg-amber-500"
           >
-            <X size={16} />
-          </button>
+            <AlertTriangle className="h-3 w-3" />
+            {mediumCount} Medium
+          </Badge>
+          <Badge
+            variant={lowCount > 0 ? "secondary" : "outline"}
+            className="flex items-center gap-1"
+          >
+            <CheckCircle className="h-3 w-3" />
+            {lowCount} Low
+          </Badge>
         </div>
       </div>
-      
-      <div className="p-4 overflow-y-auto max-h-[calc(80vh-4rem)]">
-        <div className="flex justify-between mb-4">
-          <div>
-            <span className="font-medium">Issues found: </span>
-            <span className={filteredIssues.length > 0 ? 'text-red-500' : 'text-green-500'}>
-              {filteredIssues.length}
-            </span>
-            <p className="text-xs text-muted-foreground">
-              Last scan: {formatTimestamp(lastValidated)}
-            </p>
-          </div>
-          
-          <div className="flex gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                  <Filter size={16} />
-                  <span className="sr-only">Filter</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <div className="p-2">
-                  <p className="text-xs font-medium mb-1">Severity</p>
-                  {['high', 'medium', 'low'].map((severity) => (
-                    <DropdownMenuCheckboxItem
-                      key={severity}
-                      checked={filterSeverity.includes(severity as any)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setFilterSeverity([...filterSeverity, severity as any]);
-                        } else {
-                          setFilterSeverity(filterSeverity.filter(s => s !== severity));
-                        }
-                      }}
-                    >
-                      <span className="capitalize">{severity}</span>
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                  
-                  {showAllTypes && (
-                    <>
-                      <p className="text-xs font-medium mt-2 mb-1">Type</p>
-                      {Object.keys(typeCounts).map((type) => (
-                        <DropdownMenuCheckboxItem
-                          key={type}
-                          checked={filterType.includes(type)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setFilterType([...filterType, type]);
-                            } else {
-                              setFilterType(filterType.filter(t => t !== type));
-                            }
-                          }}
-                        >
-                          <span className="capitalize">{type} ({typeCounts[type]})</span>
-                        </DropdownMenuCheckboxItem>
-                      ))}
-                    </>
-                  )}
-                  
-                  <div className="mt-2">
-                    <DropdownMenuCheckboxItem
-                      checked={showFixSuggestions}
-                      onCheckedChange={setShowFixSuggestions}
-                    >
-                      Show suggestions
-                    </DropdownMenuCheckboxItem>
-                  </div>
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            
-            <Button
-              onClick={runValidation}
-              disabled={isValidating}
-              className="text-xs"
-              size="sm"
-              variant="outline"
-            >
-              {isValidating ? 'Scanning...' : 'Scan Again'}
-            </Button>
-          </div>
+
+      <div className="flex items-center justify-between">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => setShowAll(!showAll)}
+        >
+          {showAll ? "Show Summary" : "Show All Issues"}
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={runValidation}
+          disabled={isValidating}
+          className="flex items-center gap-1"
+        >
+          <RefreshCw
+            className={`h-3 w-3 ${isValidating ? "animate-spin" : ""}`}
+          />
+          Refresh
+        </Button>
+      </div>
+
+      {issues.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-8">
+          <CheckCircle className="h-8 w-8 text-green-500 mb-2" />
+          <p className="text-muted-foreground">No issues detected</p>
         </div>
-        
-        {filteredIssues.length > 0 ? (
-          <div className="space-y-4">
-            {Object.entries(issuesByType).map(([type, typeIssues]) => (
-              <div key={type} className="border rounded-md overflow-hidden">
-                <button 
-                  onClick={() => setExpandedCategory(expandedCategory === type ? null : type)}
-                  className="w-full flex justify-between items-center p-2 text-left bg-muted hover:bg-muted/80"
-                  aria-expanded={expandedCategory === type}
-                >
-                  <div className="flex items-center">
-                    <span className="capitalize font-medium">{type}</span>
-                    <span className="ml-2 text-xs text-muted-foreground">
-                      ({typeIssues.length} {typeIssues.length === 1 ? 'issue' : 'issues'})
-                    </span>
-                  </div>
-                  <span>{expandedCategory === type ? '−' : '+'}</span>
-                </button>
-                
-                {expandedCategory === type && (
-                  <ul className="divide-y">
-                    {typeIssues.map((issue, i) => (
-                      <li key={i} className="p-3 text-sm">
-                        <div className="flex items-center gap-1 font-medium">
-                          {getSeverityIcon(issue.severity)}
-                          {issue.description}
+      ) : (
+        <Accordion
+          type="single"
+          collapsible
+          className="w-full"
+          defaultValue="issue-0"
+        >
+          {Object.entries(issuesByType).map(([type, typeIssues], idx) => (
+            <AccordionItem key={type} value={`issue-${idx}`}>
+              <AccordionTrigger className="hover:no-underline">
+                <div className="flex items-center gap-2">
+                  <span className="capitalize">{type}</span>
+                  <Badge variant="outline">{typeIssues.length}</Badge>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-2">
+                  {typeIssues
+                    .slice(0, showAll ? undefined : 3)
+                    .map((issue, issueIdx) => (
+                      <div
+                        key={issueIdx}
+                        className="border rounded-md p-3 text-sm space-y-1"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="font-medium">{issue.description}</div>
+                          {getSeverityBadge(issue.severity)}
                         </div>
-                        <div className="text-muted-foreground mt-1 text-xs">
+                        <div className="text-xs text-muted-foreground">
                           Location: {issue.location}
                         </div>
-                        {showFixSuggestions && issue.suggestion && (
-                          <div className="mt-2 text-blue-500 text-xs flex items-start">
-                            <span className="font-medium mr-1">Tip:</span> 
+                        {issue.suggestion && (
+                          <div className="text-xs mt-2 p-2 bg-muted rounded">
+                            <span className="font-medium">Suggestion:</span>{" "}
                             {issue.suggestion}
                           </div>
                         )}
-                        {issue.affectedStakeholders && issue.affectedStakeholders.length > 0 && (
-                          <div className="mt-2 text-xs flex flex-wrap gap-1">
-                            {issue.affectedStakeholders.map(s => (
-                              <span 
-                                key={s}
-                                className="px-1.5 py-0.5 rounded-full bg-muted text-xs"
-                              >
-                                {s}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </li>
+                      </div>
                     ))}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center gap-2 text-center py-4">
-            <CheckCircle className="h-6 w-6 text-green-500" />
-            <p className="text-green-500">No issues detected on this page! 🎉</p>
-          </div>
-        )}
-      </div>
+
+                  {!showAll && typeIssues.length > 3 && (
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="px-0"
+                      onClick={() => setShowAll(true)}
+                    >
+                      Show {typeIssues.length - 3} more issues
+                    </Button>
+                  )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      )}
     </div>
   );
+}
+
+function getSeverityBadge(severity: ValidationSeverity) {
+  switch (severity) {
+    case "high":
+      return (
+        <Badge variant="destructive" className="flex items-center gap-1">
+          <XCircle className="h-3 w-3" />
+          High
+        </Badge>
+      );
+    case "medium":
+      return (
+        <Badge variant="default" className="flex items-center gap-1 bg-amber-500">
+          <AlertTriangle className="h-3 w-3" />
+          Medium
+        </Badge>
+      );
+    case "low":
+      return (
+        <Badge variant="secondary" className="flex items-center gap-1">
+          <CheckCircle className="h-3 w-3" />
+          Low
+        </Badge>
+      );
+  }
 }
 
 export default PlatformValidatorWidget;

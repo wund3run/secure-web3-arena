@@ -11,118 +11,112 @@ export const validateAccessibility = (): ValidationIssue[] => {
   // Check for images without alt text
   const images = document.querySelectorAll('img');
   images.forEach(img => {
-    if (!img.alt && img.getAttribute('role') !== 'presentation') {
+    if (!img.alt && !img.getAttribute('role') === 'presentation') {
       accessibilityIssues.push({
         type: 'accessibility',
-        severity: 'high',
-        description: 'Image without alt text',
-        location: `Image: ${img.src || 'unknown source'}`,
-        suggestion: 'Add descriptive alt text to all images or mark as decorative',
-        affectedStakeholders: ['general'],
-        wcagCriterion: 'WCAG 1.1.1 (Non-text Content)'
+        severity: 'medium',
+        description: 'Image missing alt text',
+        location: img.src,
+        suggestion: 'Add descriptive alt text to the image for screen readers',
+        affectedStakeholders: ['general']
       });
     }
   });
   
   // Check for form inputs without labels
-  const inputs = document.querySelectorAll('input, select, textarea');
-  inputs.forEach((input: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) => {
-    const id = input.id;
-    if (id) {
-      const hasLabel = document.querySelector(`label[for="${id}"]`);
-      if (!hasLabel && input.type !== 'hidden' && input.type !== 'submit' && input.type !== 'button') {
+  const inputs = document.querySelectorAll('input, textarea, select');
+  inputs.forEach(input => {
+    const inputId = input.getAttribute('id');
+    if (inputId) {
+      const hasLabel = document.querySelector(`label[for="${inputId}"]`);
+      const hasAriaLabel = input.getAttribute('aria-label');
+      const hasAriaLabelledBy = input.getAttribute('aria-labelledby');
+      
+      if (!hasLabel && !hasAriaLabel && !hasAriaLabelledBy) {
         accessibilityIssues.push({
           type: 'accessibility',
-          severity: 'high',
-          description: 'Form input without associated label',
-          location: `Input: ${id || input.name || 'unnamed input'}`,
-          suggestion: 'Add a label element with a matching "for" attribute',
-          affectedStakeholders: ['general'],
-          wcagCriterion: 'WCAG 1.3.1 (Info and Relationships)'
+          severity: 'medium',
+          description: 'Form control without an associated label',
+          location: `Input with id: ${inputId}`,
+          suggestion: 'Add a label element with a matching "for" attribute, or use aria-label/aria-labelledby',
+          affectedStakeholders: ['general', 'auditor', 'project-owner', 'admin']
         });
       }
-    } else if (input.type !== 'hidden' && input.type !== 'submit' && input.type !== 'button') {
-      // Input without ID can't have a properly associated label
-      accessibilityIssues.push({
-        type: 'accessibility',
-        severity: 'high',
-        description: 'Form input without ID, preventing label association',
-        location: `Input: ${input.name || 'unnamed input'}`,
-        suggestion: 'Add unique ID to input and create an associated label',
-        affectedStakeholders: ['general'],
-        wcagCriterion: 'WCAG 1.3.1 (Info and Relationships)'
-      });
-    }
-  });
-  
-  // Check for color contrast issues (simplified check)
-  const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, a, button, label, span');
-  let contrastIssuesCount = 0;
-  
-  textElements.forEach(el => {
-    const style = window.getComputedStyle(el);
-    const color = style.color;
-    const bgColor = style.backgroundColor;
-    
-    // This is a simplified check - proper contrast checking requires more complex calculations
-    if ((color === 'rgb(255, 255, 255)' && bgColor === 'rgb(255, 255, 255)') ||
-        (color === 'rgb(0, 0, 0)' && bgColor === 'rgb(0, 0, 0)')) {
-      contrastIssuesCount++;
-    }
-  });
-  
-  if (contrastIssuesCount > 0) {
-    accessibilityIssues.push({
-      type: 'accessibility',
-      severity: 'high',
-      description: `${contrastIssuesCount} elements may have insufficient color contrast`,
-      location: 'Text elements across page',
-      suggestion: 'Ensure color contrast meets WCAG AA standard (4.5:1 for normal text)',
-      affectedStakeholders: ['general'],
-      wcagCriterion: 'WCAG 1.4.3 (Contrast)'
-    });
-  }
-  
-  // Check for proper heading structure
-  const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
-  const headingLevels = Array.from(headings).map(h => parseInt(h.tagName.substring(1)));
-  
-  // Check if there's more than one h1
-  const h1Count = headingLevels.filter(level => level === 1).length;
-  if (h1Count > 1) {
-    accessibilityIssues.push({
-      type: 'accessibility',
-      severity: 'medium',
-      description: `Page has ${h1Count} h1 elements; should have only one`,
-      location: 'Page heading structure',
-      suggestion: 'Use only one h1 element as the main page heading',
-      affectedStakeholders: ['general'],
-      wcagCriterion: 'WCAG 2.4.6 (Headings and Labels)'
-    });
-  }
-  
-  // Check for skipped heading levels
-  for (let i = 0; i < headingLevels.length - 1; i++) {
-    if (headingLevels[i + 1] > headingLevels[i] + 1) {
+    } else if (!input.getAttribute('aria-label') && 
+              !input.getAttribute('aria-labelledby')) {
       accessibilityIssues.push({
         type: 'accessibility',
         severity: 'medium',
-        description: `Heading structure skips from h${headingLevels[i]} to h${headingLevels[i+1]}`,
-        location: 'Page heading structure',
-        suggestion: 'Use sequential heading levels (e.g., h1 followed by h2)',
-        affectedStakeholders: ['general'],
-        wcagCriterion: 'WCAG 1.3.1 (Info and Relationships)'
+        description: 'Form control without an ID or label',
+        location: 'Form control without identification',
+        suggestion: 'Add an id attribute and an associated label, or use aria-label/aria-labelledby',
+        affectedStakeholders: ['general', 'auditor', 'project-owner', 'admin']
       });
-      break; // Report only first instance
+    }
+  });
+  
+  // Check for buttons without accessible names
+  const buttons = document.querySelectorAll('button');
+  buttons.forEach(button => {
+    if (!button.textContent?.trim() && 
+        !button.getAttribute('aria-label') && 
+        !button.getAttribute('aria-labelledby')) {
+      
+      accessibilityIssues.push({
+        type: 'accessibility',
+        severity: 'medium',
+        description: 'Button without accessible name',
+        location: button.outerHTML.substring(0, 80) + '...',
+        suggestion: 'Add text content to the button or use aria-label/aria-labelledby',
+        affectedStakeholders: ['general', 'auditor', 'project-owner', 'admin']
+      });
+    }
+  });
+  
+  // Check for color contrast (simplified check)
+  const elements = document.querySelectorAll('*');
+  const lowContrastElements = [];
+  
+  for (let i = 0; i < elements.length; i++) {
+    const style = window.getComputedStyle(elements[i]);
+    const backgroundColor = style.backgroundColor;
+    const color = style.color;
+    
+    // This is a very simplified check - in production you'd use more sophisticated algorithms
+    if (backgroundColor === 'rgba(0, 0, 0, 0)' || color === 'rgba(0, 0, 0, 0)') {
+      continue; // Skip elements with transparent colors
+    }
+    
+    if (backgroundColor.includes('rgb(255, 255, 255)') && color.includes('rgb(200, 200, 200)')) {
+      lowContrastElements.push(elements[i]);
     }
   }
   
+  if (lowContrastElements.length > 0) {
+    accessibilityIssues.push({
+      type: 'accessibility',
+      severity: 'medium',
+      description: `${lowContrastElements.length} elements may have insufficient color contrast`,
+      location: 'Various elements',
+      suggestion: 'Ensure text has sufficient contrast with its background (4.5:1 for normal text)',
+      affectedStakeholders: ['general', 'auditor', 'project-owner', 'admin']
+    });
+  }
+  
+  // Check for keyboard accessibility
+  const interactiveElements = document.querySelectorAll('a, button, [role="button"]');
+  interactiveElements.forEach(element => {
+    if (element.getAttribute('tabindex') === '-1' && !element.getAttribute('aria-hidden')) {
+      accessibilityIssues.push({
+        type: 'accessibility',
+        severity: 'high',
+        description: 'Interactive element not keyboard accessible',
+        location: element.outerHTML.substring(0, 80) + '...',
+        suggestion: 'Remove tabindex="-1" or ensure the element is not intended for user interaction',
+        affectedStakeholders: ['general', 'auditor', 'project-owner', 'admin']
+      });
+    }
+  });
+  
   return accessibilityIssues;
 };
-
-// Create an exported class to match the expected export in generate-ux-report.ts
-export class AccessibilityValidator {
-  static validate(): ValidationIssue[] {
-    return validateAccessibility();
-  }
-}
