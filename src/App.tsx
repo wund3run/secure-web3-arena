@@ -61,7 +61,7 @@ import Tutorials from './pages/Tutorials';
 function App() {
   return (
     <AppProviders>
-      <GlobalComponents />
+      <GlobalComponents removeDevTools={true} />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/marketplace" element={<Marketplace />} />
