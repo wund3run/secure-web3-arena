@@ -12,7 +12,11 @@ import { useLocation } from "react-router-dom";
 import { FileCheck } from "lucide-react";
 import { toast } from "sonner";
 
-export function GlobalComponents() {
+interface GlobalComponentsProps {
+  removeDevTools?: boolean;
+}
+
+export function GlobalComponents({ removeDevTools = false }: GlobalComponentsProps) {
   // Add state for accessibility menu
   const [accessibilityOpen, setAccessibilityOpen] = useState(false);
   const [showDevTools, setShowDevTools] = useState(false);
@@ -58,8 +62,8 @@ export function GlobalComponents() {
       <KeyboardShortcuts />
       <PerformanceMonitor />
       
-      {/* Developer Tools Float Button */}
-      {!showDevTools && (
+      {/* Developer Tools Float Button - Only show if removeDevTools is false */}
+      {!removeDevTools && !showDevTools && (
         <div className="fixed bottom-4 right-4 z-50">
           <button
             onClick={() => setShowDevTools(true)}
@@ -72,7 +76,7 @@ export function GlobalComponents() {
         </div>
       )}
       
-      {showDevTools && (
+      {!removeDevTools && showDevTools && (
         <div className="fixed bottom-4 right-4 z-50 w-[calc(100%-2rem)] sm:w-[450px] bg-background shadow-lg rounded-lg border">
           <div className="p-3 flex justify-between items-center border-b">
             <h3 className="text-sm font-medium">Platform Development Tools</h3>
