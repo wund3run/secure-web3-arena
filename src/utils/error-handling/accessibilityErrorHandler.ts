@@ -51,13 +51,17 @@ const applyAccessibilityFix = (
       return;
     }
     
-    // Apply fixes to alternative elements
-    altElements.forEach(fixElement);
+    // Apply fixes to alternative elements - Fix the type issue here
+    altElements.forEach((element) => {
+      fixElement(element);
+    });
     return;
   }
   
-  // Apply fixes to found elements
-  elements.forEach(element => fixElement(element, wcagCriterion));
+  // Apply fixes to found elements - Fix the type issue here as well
+  elements.forEach((element) => {
+    fixElement(element, wcagCriterion);
+  });
 };
 
 /**

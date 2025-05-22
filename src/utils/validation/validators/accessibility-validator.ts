@@ -1,4 +1,3 @@
-
 import { ValidationIssue } from "../types";
 
 /**
@@ -11,7 +10,8 @@ export const validateAccessibility = (): ValidationIssue[] => {
   // Check for images without alt text
   const images = document.querySelectorAll('img');
   images.forEach(img => {
-    if (!img.alt && !img.getAttribute('role') === 'presentation') {
+    // Fix the boolean/string comparison issue
+    if (!img.alt && img.getAttribute('role') !== 'presentation') {
       accessibilityIssues.push({
         type: 'accessibility',
         severity: 'medium',
