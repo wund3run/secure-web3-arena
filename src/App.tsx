@@ -34,7 +34,6 @@ import SubmitService from './pages/SubmitService';
 import Escrow from './pages/Escrow';
 import SecurityInsights from './pages/SecurityInsights';
 import Roadmap from './pages/Roadmap';
-import PlatformReport from './pages/PlatformReport';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -93,7 +92,6 @@ function App() {
         <Route path="/escrow" element={<Escrow />} />
         <Route path="/security-insights" element={<SecurityInsights />} />
         <Route path="/roadmap" element={<Roadmap />} />
-        <Route path="/platform-report" element={<PlatformReport />} />
         
         {/* Admin Routes */}
         <Route path="/admin" element={<AdminDashboard />} />
