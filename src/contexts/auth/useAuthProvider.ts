@@ -198,10 +198,11 @@ export const useAuthProvider = (): AuthContextProps => {
         .insert([
           { 
             id: userId, 
-            email: email, 
             full_name: fullName,
-            user_type: userType,
-            updated_at: new Date()
+            wallet_address: null,
+            avatar_url: null,
+            is_arbitrator: false,
+            updated_at: new Date().toISOString()
           },
         ]);
       
@@ -209,6 +210,22 @@ export const useAuthProvider = (): AuthContextProps => {
         console.error("Error creating user profile:", error);
         setError(error.message);
       } else {
+        // After creating the profile, also create an extended profile with user type
+        const { error: extendedError } = await supabase
+          .from('extended_profiles')
+          .insert([
+            { 
+              id: userId, 
+              full_name: fullName,
+              user_type: userType
+            },
+          ]);
+        
+        if (extendedError) {
+          console.error("Error creating extended user profile:", extendedError);
+          setError(extendedError.message);
+        }
+        
         await fetchUserProfile(userId);
       }
     } catch (err: any) {
