@@ -7,6 +7,7 @@ import { DashboardTabValue } from "@/components/admin/dashboard/types";
 import { DashboardLoader } from "@/components/admin/dashboard/DashboardLoader";
 import { SupabaseConnectionCheck } from "@/components/admin/SupabaseConnectionCheck";
 import { AdminPlatformValidator } from "@/components/dev/AdminPlatformValidator";
+import { RealtimeStatusIndicator } from "@/components/realtime/RealtimeStatusIndicator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
@@ -29,7 +30,7 @@ const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
     // Welcome message for admin
     if (isAuthenticated && adminUser) {
       toast.success(`Welcome back, ${adminUser}`, {
-        description: "Admin dashboard loaded successfully",
+        description: "Admin dashboard with real-time sync loaded successfully",
         duration: 3000
       });
     }
@@ -65,7 +66,10 @@ const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
             <Card className="mb-6">
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg flex justify-between">
-                  <span>System Health Checks</span>
+                  <span className="flex items-center gap-3">
+                    System Health Checks
+                    <RealtimeStatusIndicator />
+                  </span>
                   <button 
                     onClick={() => setShowSystemChecks(false)} 
                     className="text-muted-foreground text-sm font-normal hover:text-foreground"

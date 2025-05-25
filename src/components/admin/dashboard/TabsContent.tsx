@@ -9,6 +9,8 @@ import { AdminServiceApproval } from "@/components/admin/AdminServiceApproval";
 import { ReportManagement } from "@/components/admin/ReportManagement";
 import SettingsManagement from "@/components/admin/SettingsManagement";
 import { AdminPlatformReport } from "@/components/admin/PlatformReport";
+import { RealtimeAuditQueue } from "./RealtimeAuditQueue";
+import { RealtimeNotifications } from "@/components/realtime/RealtimeNotifications";
 import { DashboardTabValue } from "./types";
 
 interface TabsContentProps {
@@ -19,7 +21,15 @@ export function TabsContent({ activeTab }: TabsContentProps) {
   return (
     <>
       <UITabsContent value="dashboard" className="space-y-6 mt-4">
-        <DashboardOverview />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <DashboardOverview />
+          </div>
+          <div className="space-y-6">
+            <RealtimeNotifications />
+            <RealtimeAuditQueue />
+          </div>
+        </div>
       </UITabsContent>
       
       <UITabsContent value="users" className="space-y-6 mt-4">
@@ -31,7 +41,10 @@ export function TabsContent({ activeTab }: TabsContentProps) {
       </UITabsContent>
       
       <UITabsContent value="audits" className="space-y-6 mt-4">
-        <AuditManagement />
+        <div className="space-y-6">
+          <RealtimeAuditQueue />
+          <AuditManagement />
+        </div>
       </UITabsContent>
       
       <UITabsContent value="providers" className="space-y-6 mt-4">

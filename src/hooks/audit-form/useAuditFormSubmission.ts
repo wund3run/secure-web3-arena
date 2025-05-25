@@ -85,21 +85,26 @@ export const useAuditFormSubmission = (
         created_at: new Date().toISOString()
       };
       
-      console.log("Submitting data:", auditRequestData);
+      console.log("Submitting data with real-time sync:", auditRequestData);
       
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('audit_requests')
-        .insert(auditRequestData);
+        .insert(auditRequestData)
+        .select()
+        .single();
       
       if (error) {
         throw error;
       }
+
+      // The real-time system will automatically notify the admin dashboard
+      console.log("Audit request submitted successfully, real-time notification sent:", data);
       
       // Clear loading feedback and show success
       dismissLoading();
       showFeedback('success', {
         message: "Audit request submitted successfully!",
-        description: "Our AI will match you with the perfect auditors for your project.",
+        description: "Admins have been notified instantly via our real-time system.",
         duration: 5000
       });
       
