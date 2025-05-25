@@ -5,15 +5,15 @@ import { navigationLinks } from "./navigation-links";
 import { NavigationDropdownItem } from "./navigation-dropdown-item";
 import { ChevronDown } from "lucide-react";
 
-interface DesktopNavigationProps {
+interface EnhancedDesktopNavigationProps {
   activeDropdown: string | null;
   handleDropdownToggle: (dropdown: string) => void;
 }
 
-export function DesktopNavigation({ 
+export function EnhancedDesktopNavigation({ 
   activeDropdown, 
   handleDropdownToggle 
-}: DesktopNavigationProps) {
+}: EnhancedDesktopNavigationProps) {
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   // Enhanced click outside detection

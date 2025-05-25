@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-interface NavigationDropdownItemProps {
+interface EnhancedNavigationDropdownItemProps {
   href: string;
   title: string;
   description?: string;
@@ -11,14 +11,14 @@ interface NavigationDropdownItemProps {
   isLast?: boolean;
 }
 
-export function NavigationDropdownItem({ 
+export function EnhancedNavigationDropdownItem({ 
   href, 
   title, 
   description, 
   onNavigate,
   isFirst,
   isLast 
-}: NavigationDropdownItemProps) {
+}: EnhancedNavigationDropdownItemProps) {
   return (
     <Link
       to={href}
@@ -33,7 +33,7 @@ export function NavigationDropdownItem({
         ${isLast ? 'rounded-b-lg' : ''}
       `}
       style={{ 
-        backgroundColor: 'white',
+        backgroundColor: 'transparent',
         color: '#374151'
       }}
       role="menuitem"
