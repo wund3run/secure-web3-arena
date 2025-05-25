@@ -77,7 +77,7 @@ const Index = () => {
         </script>
       </Helmet>
       
-      <main id="main-content" className="min-h-screen" role="main">
+      <main id="main-content" className="min-h-screen bg-background" role="main">
         <HeroSection />
         <MarketplaceSection />
         <FeaturesSection />

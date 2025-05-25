@@ -1,10 +1,12 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 import { Star, Shield, Clock, CheckCircle } from 'lucide-react';
+import { ResponsiveLayout } from '@/components/layout/responsive-layout';
+import { ResponsiveGrid } from '@/components/ui/responsive-grid';
+import { EnhancedCard } from '@/components/ui/enhanced-card';
 
 export function MarketplaceSection() {
   const featuredServices = [
@@ -47,81 +49,73 @@ export function MarketplaceSection() {
   ];
 
   return (
-    <section className="py-16 bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-4">
+    <section className="py-12 md:py-16 lg:py-20 bg-background">
+      <ResponsiveLayout>
+        <div className="text-center mb-8 md:mb-12">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-foreground mb-4">
             Featured Security Services
           </h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">
             Discover top-rated security experts ready to audit your smart contracts and protect your Web3 project.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <ResponsiveGrid 
+          cols={{ default: 1, md: 2, lg: 3 }} 
+          gap="lg" 
+          className="mb-8 md:mb-12"
+        >
           {featuredServices.map((service) => (
-            <Card key={service.id} className="relative overflow-hidden hover:shadow-lg transition-shadow">
-              {service.featured && (
-                <Badge className="absolute top-4 right-4 bg-primary">
-                  Featured
-                </Badge>
-              )}
-              
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg mb-2">{service.title}</CardTitle>
-                    <CardDescription className="text-sm">
-                      {service.description}
-                    </CardDescription>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-2 mt-3">
+            <EnhancedCard
+              key={service.id}
+              title={service.title}
+              description={service.description}
+              featured={service.featured}
+              badge={service.featured ? "Featured" : undefined}
+              variant="interactive"
+            >
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
                   <span className="text-sm font-medium">{service.provider}</span>
                   {service.verified && (
                     <CheckCircle className="h-4 w-4 text-green-500" />
                   )}
                 </div>
-              </CardHeader>
 
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                      <span className="text-sm font-medium">{service.rating}</span>
-                      <span className="text-sm text-muted-foreground">({service.reviews})</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">{service.duration}</span>
-                    </div>
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-1">
+                    <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                    <span className="font-medium">{service.rating}</span>
+                    <span className="text-muted-foreground">({service.reviews})</span>
                   </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-semibold">{service.price}</span>
-                    <Button size="sm" asChild>
-                      <Link to={`/marketplace/${service.id}`}>
-                        View Details
-                      </Link>
-                    </Button>
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">{service.duration}</span>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+                
+                <div className="flex items-center justify-between pt-2">
+                  <span className="text-lg font-semibold">{service.price}</span>
+                  <Button size="sm" asChild>
+                    <Link to={`/marketplace/${service.id}`}>
+                      View Details
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </EnhancedCard>
           ))}
-        </div>
+        </ResponsiveGrid>
 
         <div className="text-center">
-          <Button asChild size="lg" variant="outline">
+          <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
             <Link to="/marketplace">
               <Shield className="mr-2 h-5 w-5" />
               Browse All Services
             </Link>
           </Button>
         </div>
-      </div>
+      </ResponsiveLayout>
     </section>
   );
 }

@@ -3,15 +3,16 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { HawklyLogo } from "./hawkly-logo";
 import { useAuth } from "@/contexts/auth";
-import { MobileNavigation } from "@/components/ui/mobile-navigation";
+import { MobileFirstNavigation } from "@/components/ui/mobile-first-navigation";
 import { AuthButtons } from "./navigation/auth-buttons";
 import { NavigationMenuEnhanced } from "./navigation/navigation-menu-enhanced";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { X } from "lucide-react";
 
 export function EnhancedNavbar() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, getUserType } = useAuth();
   const [showAlert, setShowAlert] = useState(true);
+  const userType = user ? getUserType() : null;
   
   return (
     <>
@@ -62,14 +63,15 @@ export function EnhancedNavbar() {
           </div>
           
           {/* Desktop Auth Buttons */}
-          <div className="hidden lg:flex">
+          <div className="hidden md:flex">
             <AuthButtons isAuthenticated={!!user} onSignOut={signOut} />
           </div>
           
           {/* Mobile Menu */}
-          <MobileNavigation 
+          <MobileFirstNavigation 
             isAuthenticated={!!user}
             onSignOut={signOut}
+            userType={userType}
           />
         </div>
       </header>
