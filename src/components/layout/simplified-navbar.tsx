@@ -16,29 +16,32 @@ export function SimplifiedNavbar() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(true);
   
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside or pressing Escape
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
       if (activeDropdown && 
-          !(event.target as Element).closest('.navigation-trigger')) {
+          !target.closest('.navigation-trigger') &&
+          !target.closest('[role="menu"]')) {
         setActiveDropdown(null);
       }
     };
 
-    // Close dropdown when Escape key is pressed
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && activeDropdown) {
         setActiveDropdown(null);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleKeyDown);
-    
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
+    if (activeDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+      
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener('keydown', handleKeyDown);
+      };
+    }
   }, [activeDropdown]);
   
   const handleDropdownToggle = (dropdown: string) => {

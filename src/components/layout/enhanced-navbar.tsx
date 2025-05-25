@@ -18,16 +18,17 @@ export function EnhancedNavbar() {
   const [showAlert, setShowAlert] = useState(true);
   const location = useLocation();
   
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside, pressing Escape, or route changes
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
       if (activeDropdown && 
-          !(event.target as Element).closest('.navigation-trigger')) {
+          !target.closest('.navigation-trigger') &&
+          !target.closest('[role="menu"]')) {
         setActiveDropdown(null);
       }
     };
 
-    // Close dropdown when Escape key is pressed
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && activeDropdown) {
         setActiveDropdown(null);
@@ -37,13 +38,15 @@ export function EnhancedNavbar() {
     // Close dropdown when route changes
     setActiveDropdown(null);
 
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleKeyDown);
-    
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
+    if (activeDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+      
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener('keydown', handleKeyDown);
+      };
+    }
   }, [activeDropdown, location.pathname]);
   
   const handleDropdownToggle = (dropdown: string) => {
