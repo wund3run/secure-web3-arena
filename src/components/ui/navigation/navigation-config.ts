@@ -101,3 +101,62 @@ export const mainNavigation: NavigationItem[] = [
     ]
   }
 ];
+
+export interface FooterNavigationSection {
+  title: string;
+  items: Array<{
+    title: string;
+    href: string;
+    external?: boolean;
+  }>;
+}
+
+export const footerNavigation: FooterNavigationSection[] = [
+  {
+    title: "Platform",
+    items: [
+      { title: "Marketplace", href: "/marketplace" },
+      { title: "Request Audit", href: "/request-audit" },
+      { title: "Become an Auditor", href: "/service-provider-onboarding" },
+      { title: "Pricing", href: "/pricing" },
+      { title: "Stats", href: "/stats" }
+    ]
+  },
+  {
+    title: "Resources",
+    items: [
+      { title: "Documentation", href: "/docs" },
+      { title: "Security Guidelines", href: "/audit-guidelines" },
+      { title: "Knowledge Base", href: "/knowledge-base" },
+      { title: "Templates", href: "/templates" },
+      { title: "Tutorials", href: "/tutorials" }
+    ]
+  },
+  {
+    title: "Community",
+    items: [
+      { title: "Forum", href: "/forum" },
+      { title: "Blog", href: "/blog" },
+      { title: "Events", href: "/events" },
+      { title: "Leaderboard", href: "/leaderboard" },
+      { title: "Discord", href: "https://discord.gg/hawkly", external: true }
+    ]
+  },
+  {
+    title: "Support",
+    items: [
+      { title: "Help Center", href: "/support" },
+      { title: "FAQ", href: "/faq" },
+      { title: "Contact", href: "/contact" },
+      { title: "Status", href: "/platform-report" }
+    ]
+  },
+  {
+    title: "Legal",
+    items: [
+      { title: "Terms of Service", href: "/terms" },
+      { title: "Privacy Policy", href: "/privacy" },
+      { title: "Security Policy", href: "/security-policy" }
+    ]
+  }
+];

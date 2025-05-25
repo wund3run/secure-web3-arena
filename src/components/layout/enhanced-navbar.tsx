@@ -14,6 +14,12 @@ export function EnhancedNavbar() {
   const [showAlert, setShowAlert] = useState(true);
   const userType = user ? getUserType() : null;
   
+  // Convert userType to expected format for MobileFirstNavigation
+  const getMobileUserType = (): "auditor" | "project_owner" | null => {
+    if (!userType || userType === "visitor") return null;
+    return userType as "auditor" | "project_owner";
+  };
+  
   return (
     <>
       {/* Skip to main content link for accessibility */}
@@ -71,7 +77,7 @@ export function EnhancedNavbar() {
           <MobileFirstNavigation 
             isAuthenticated={!!user}
             onSignOut={signOut}
-            userType={userType}
+            userType={getMobileUserType()}
           />
         </div>
       </header>
