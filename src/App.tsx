@@ -72,7 +72,7 @@ function App() {
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/auth/2fa" element={<TwoFactorAuth />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/:type" element={<Dashboard />} />
+          {/* Removed duplicate /dashboard/:type route */}
           <Route path="/request-audit" element={<RequestAudit />} />
           <Route path="/request-audit/:serviceId" element={<AuditRequestForService />} />
           <Route path="/contact" element={<Contact />} />

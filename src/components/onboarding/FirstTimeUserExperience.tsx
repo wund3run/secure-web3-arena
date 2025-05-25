@@ -1,12 +1,12 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, FileCheck, Users, ArrowRight, X, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/auth";
 
 interface Step {
@@ -22,89 +22,90 @@ export function FirstTimeUserExperience({ onClose }: { onClose: () => void }) {
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const { user, getUserType } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   
-  // Different steps for different user types
-  const userType = user ? getUserType() : 'visitor';
+  // Memoize user type to prevent unnecessary recalculations
+  const userType = useMemo(() => user ? getUserType() : 'visitor', [user, getUserType]);
   
-  const visitorSteps: Step[] = [
-    {
-      icon: <Shield className="h-10 w-10 text-primary" />,
-      title: "Welcome to Hawkly",
-      description: "The leading Web3 security marketplace connecting projects with expert auditors.",
-      action: "Start Tour"
-    },
-    {
-      icon: <FileCheck className="h-10 w-10 text-secondary" />,
-      title: "Browse Security Services",
-      description: "Discover top-rated security auditors and services, verified and ranked by reputation.",
-      action: "Visit Marketplace",
-      actionLink: "/marketplace"
-    },
-    {
-      icon: <Users className="h-10 w-10 text-web3-orange" />,
-      title: "Join Our Community",
-      description: "Create an account to access personalized features and connect with security experts.",
-      action: "Sign Up",
-      actionLink: "/auth"
-    }
-  ];
-  
-  const auditorSteps: Step[] = [
-    {
-      icon: <Shield className="h-10 w-10 text-primary" />,
-      title: "Welcome, Security Expert",
-      description: "Your dedicated auditor dashboard helps you manage security reviews and client relationships.",
-      action: "Continue"
-    },
-    {
-      icon: <FileCheck className="h-10 w-10 text-secondary" />,
-      title: "Complete Your Profile",
-      description: "Showcase your expertise and experience to attract more audit requests.",
-      action: "Update Profile",
-      actionLink: "/dashboard/auditor"
-    },
-    {
-      icon: <Users className="h-10 w-10 text-web3-orange" />,
-      title: "Accept Your First Audit",
-      description: "Browse open audit requests and start building your reputation on the platform.",
-      action: "View Requests",
-      actionLink: "/dashboard/auditor/requests"
-    }
-  ];
-  
-  const projectOwnerSteps: Step[] = [
-    {
-      icon: <Shield className="h-10 w-10 text-primary" />,
-      title: "Welcome, Project Owner",
-      description: "Let's secure your Web3 project with top security experts.",
-      action: "Continue"
-    },
-    {
-      icon: <FileCheck className="h-10 w-10 text-secondary" />,
-      title: "Request Your First Audit",
-      description: "Submit your project details to get matched with the perfect security experts.",
-      action: "Request Audit",
-      actionLink: "/request-audit"
-    },
-    {
-      icon: <Users className="h-10 w-10 text-web3-orange" />,
-      title: "Explore Security Resources",
-      description: "Access guides and best practices to better prepare your project for security review.",
-      action: "View Resources",
-      actionLink: "/resources"
-    }
-  ];
-  
-  // Select appropriate steps based on user type
-  const steps = userType === 'auditor' ? auditorSteps : 
-                userType === 'project_owner' ? projectOwnerSteps : 
-                visitorSteps;
+  // Memoize steps to prevent unnecessary re-creation
+  const steps = useMemo(() => {
+    const visitorSteps: Step[] = [
+      {
+        icon: <Shield className="h-10 w-10 text-primary" />,
+        title: "Welcome to Hawkly",
+        description: "The leading Web3 security marketplace connecting projects with expert auditors.",
+        action: "Start Tour"
+      },
+      {
+        icon: <FileCheck className="h-10 w-10 text-secondary" />,
+        title: "Browse Security Services",
+        description: "Discover top-rated security auditors and services, verified and ranked by reputation.",
+        action: "Visit Marketplace",
+        actionLink: "/marketplace"
+      },
+      {
+        icon: <Users className="h-10 w-10 text-web3-orange" />,
+        title: "Join Our Community",
+        description: "Create an account to access personalized features and connect with security experts.",
+        action: "Sign Up",
+        actionLink: "/auth"
+      }
+    ];
+    
+    const auditorSteps: Step[] = [
+      {
+        icon: <Shield className="h-10 w-10 text-primary" />,
+        title: "Welcome, Security Expert",
+        description: "Your dedicated auditor dashboard helps you manage security reviews and client relationships.",
+        action: "Continue"
+      },
+      {
+        icon: <FileCheck className="h-10 w-10 text-secondary" />,
+        title: "Complete Your Profile",
+        description: "Showcase your expertise and experience to attract more audit requests.",
+        action: "Update Profile",
+        actionLink: "/dashboard/auditor"
+      },
+      {
+        icon: <Users className="h-10 w-10 text-web3-orange" />,
+        title: "Accept Your First Audit",
+        description: "Browse open audit requests and start building your reputation on the platform.",
+        action: "View Requests",
+        actionLink: "/dashboard/auditor/requests"
+      }
+    ];
+    
+    const projectOwnerSteps: Step[] = [
+      {
+        icon: <Shield className="h-10 w-10 text-primary" />,
+        title: "Welcome, Project Owner",
+        description: "Let's secure your Web3 project with top security experts.",
+        action: "Continue"
+      },
+      {
+        icon: <FileCheck className="h-10 w-10 text-secondary" />,
+        title: "Request Your First Audit",
+        description: "Submit your project details to get matched with the perfect security experts.",
+        action: "Request Audit",
+        actionLink: "/request-audit"
+      },
+      {
+        icon: <Users className="h-10 w-10 text-web3-orange" />,
+        title: "Explore Security Resources",
+        description: "Access guides and best practices to better prepare your project for security review.",
+        action: "View Resources",
+        actionLink: "/resources"
+      }
+    ];
+    
+    return userType === 'auditor' ? auditorSteps : 
+           userType === 'project_owner' ? projectOwnerSteps : 
+           visitorSteps;
+  }, [userType]);
   
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
-      setCompletedSteps([...completedSteps, currentStep]);
+      setCompletedSteps(prev => [...prev, currentStep]);
     } else {
       // Mark onboarding as completed
       localStorage.setItem('hawkly-onboarding-completed', 'true');
@@ -128,6 +129,10 @@ export function FirstTimeUserExperience({ onClose }: { onClose: () => void }) {
     localStorage.setItem('hawkly-onboarding-skipped', 'true');
     onClose();
   };
+
+  // Memoize calculated values
+  const totalRoutes = steps.length;
+  const progressValue = (currentStep / (steps.length - 1)) * 100;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
@@ -159,10 +164,10 @@ export function FirstTimeUserExperience({ onClose }: { onClose: () => void }) {
         <CardContent>
           {/* Progress indicator */}
           <div className="mb-6">
-            <Progress value={(currentStep / (steps.length - 1)) * 100} className="h-1" />
+            <Progress value={progressValue} className="h-1" />
             <div className="flex justify-between mt-2 text-xs text-muted-foreground">
               <span>Getting started</span>
-              <span>{currentStep + 1} of {steps.length}</span>
+              <span>{currentStep + 1} of {totalRoutes}</span>
             </div>
           </div>
           

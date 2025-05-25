@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserType, AuthContextProps } from "./types";
 import { toast } from "sonner";
@@ -13,49 +13,8 @@ export const useAuthProvider = (): AuthContextProps => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   
-  useEffect(() => {
-    const getSession = async () => {
-      try {
-        setLoading(true);
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          await fetchUserProfile(session.user.id);
-        }
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    getSession();
-    
-    // Subscribe to auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          await fetchUserProfile(session.user.id);
-        } else {
-          setUserProfile(null);
-        }
-      }
-    );
-    
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
-  
-  const fetchUserProfile = async (userId: string) => {
+  // Memoize fetchUserProfile to prevent unnecessary re-renders
+  const fetchUserProfile = useCallback(async (userId: string) => {
     try {
       const { data: userProfile, error } = await supabase
         .from('profiles')
@@ -63,7 +22,7 @@ export const useAuthProvider = (): AuthContextProps => {
         .eq('id', userId)
         .single();
       
-      if (error) {
+      if (error && error.code !== 'PGRST116') { // PGRST116 is "not found" error
         console.error("Error fetching user profile:", error);
         setError(error.message);
       } else {
@@ -73,7 +32,60 @@ export const useAuthProvider = (): AuthContextProps => {
       console.error("Unexpected error fetching user profile:", err);
       setError(err.message);
     }
-  };
+  }, []);
+  
+  useEffect(() => {
+    let mounted = true;
+    
+    const getSession = async () => {
+      try {
+        setLoading(true);
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        
+        if (mounted) {
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          if (session?.user) {
+            await fetchUserProfile(session.user.id);
+          }
+        }
+      } catch (err: any) {
+        if (mounted) {
+          setError(err.message);
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+    
+    getSession();
+    
+    // Subscribe to auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        if (mounted) {
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          if (session?.user) {
+            await fetchUserProfile(session.user.id);
+          } else {
+            setUserProfile(null);
+          }
+        }
+      }
+    );
+    
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [fetchUserProfile]);
 
   /**
    * Sign in with email and password

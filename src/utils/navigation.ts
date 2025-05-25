@@ -18,8 +18,7 @@ export const routeExists = (path: string): boolean => {
  * @returns Array of route paths
  */
 export const extractRoutesFromApp = (): string[] => {
-  // This is a static list of all available routes in the application
-  // Extracted from App.tsx
+  // Updated list with duplicate /dashboard/:type removed
   return [
     "/",
     "/marketplace",
@@ -50,6 +49,7 @@ export const extractRoutesFromApp = (): string[] => {
     "/security-insights",
     "/admin",
     "/admin/login",
+    "/admin/dashboard",
     "/terms",
     "/privacy",
     "/security-policy",
