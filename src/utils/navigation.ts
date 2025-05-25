@@ -18,7 +18,7 @@ export const routeExists = (path: string): boolean => {
  * @returns Array of route paths
  */
 export const extractRoutesFromApp = (): string[] => {
-  // Updated list with duplicate /dashboard/:type removed
+  // Updated comprehensive list of all implemented routes
   return [
     "/",
     "/marketplace",

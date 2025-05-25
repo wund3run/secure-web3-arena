@@ -14,7 +14,7 @@ export interface NavigationLinksStructure {
   dashboards: NavigationLinkItem[];
 }
 
-// Create the actual structured navigation data
+// Create the actual structured navigation data - ensuring all routes exist in App.tsx
 export const navigationLinksStructure: NavigationLinksStructure = {
   marketplace: [
     {
@@ -57,14 +57,14 @@ export const navigationLinksStructure: NavigationLinksStructure = {
   ],
   resources: [
     {
-      title: "Web3 Security",
-      href: "/web3-security",
-      description: "Learn about blockchain and smart contract security"
-    },
-    {
       title: "Documentation",
       href: "/docs",
       description: "Platform guides and API documentation"
+    },
+    {
+      title: "Web3 Security",
+      href: "/web3-security",
+      description: "Learn about blockchain and smart contract security"
     },
     {
       title: "Security Guides",
@@ -85,11 +85,6 @@ export const navigationLinksStructure: NavigationLinksStructure = {
       title: "FAQ",
       href: "/faq",
       description: "Frequently asked questions"
-    },
-    {
-      title: "Blog",
-      href: "/blog",
-      description: "Latest insights and security updates"
     }
   ],
   dashboards: [
