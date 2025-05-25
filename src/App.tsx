@@ -24,15 +24,15 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <EscrowProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Helmet
-              titleTemplate="%s | Hawkly"
-              defaultTitle="Hawkly - Web3 Security Marketplace"
-            />
-            <BrowserRouter>
+      <BrowserRouter>
+        <AuthProvider>
+          <EscrowProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Helmet
+                titleTemplate="%s | Hawkly"
+                defaultTitle="Hawkly - Web3 Security Marketplace"
+              />
               <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={
@@ -106,10 +106,10 @@ function App() {
                   </RoleBasedRoute>
                 } />
               </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </EscrowProvider>
-      </AuthProvider>
+            </TooltipProvider>
+          </EscrowProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 }

@@ -55,14 +55,14 @@ export function RoleBasedAuthButtons() {
       </Button>
       
       {/* Admin-specific quick access */}
-      <ActionGuard action="access_admin_panel">
+      {userType === 'admin' && (
         <Button variant="ghost" size="sm" asChild>
           <Link to="/admin">
             <Shield className="mr-2 h-4 w-4" />
             Admin
           </Link>
         </Button>
-      </ActionGuard>
+      )}
 
       <Button 
         variant="ghost" 

@@ -1,7 +1,6 @@
-
 import { User, Session } from "@supabase/supabase-js";
 
-export type UserType = "auditor" | "project_owner" | "visitor";
+export type UserType = "visitor" | "general" | "auditor" | "project_owner" | "admin";
 
 export interface AuthContextProps {
   user: User | null;

@@ -15,9 +15,11 @@ interface DashboardLayoutProps {
   dashboardType?: string;
 }
 
+type DashboardTab = "overview" | "analytics" | "projects" | "reports" | "skills" | "security" | "management";
+
 export function DashboardLayout({ dashboardType = '' }: DashboardLayoutProps) {
   const { user, loading, userProfile, getUserType } = useAuth();
-  const [activeTab, setActiveTab] = React.useState('overview');
+  const [activeTab, setActiveTab] = React.useState<DashboardTab>('overview');
   
   if (loading) {
     return <LoadingState message="Loading dashboard..." />;
@@ -86,7 +88,7 @@ export function DashboardLayout({ dashboardType = '' }: DashboardLayoutProps) {
           </div>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as DashboardTab)}>
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
