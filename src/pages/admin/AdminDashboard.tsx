@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Navigate, useSearchParams } from "react-router-dom";
 import AdminLayout from "@/components/admin/AdminLayout";
@@ -11,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { RealtimeConnectionStatus } from "@/components/realtime/RealtimeConnectionStatus";
 
 interface AdminDashboardProps {
   section?: DashboardTabValue;
@@ -75,12 +75,15 @@ const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
                       Real-time
                     </Badge>
                   </span>
-                  <button 
-                    onClick={() => setShowSystemChecks(false)} 
-                    className="text-muted-foreground text-sm font-normal hover:text-foreground"
-                  >
-                    Dismiss
-                  </button>
+                  <div className="flex items-center gap-4">
+                    <RealtimeConnectionStatus />
+                    <button 
+                      onClick={() => setShowSystemChecks(false)} 
+                      className="text-muted-foreground text-sm font-normal hover:text-foreground"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">

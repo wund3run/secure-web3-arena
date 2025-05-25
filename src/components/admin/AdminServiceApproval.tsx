@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +7,8 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useRealtimeServiceApprovals } from "@/hooks/useRealtimeServiceApprovals";
+import { RealtimeNotificationBadge } from "@/components/realtime/RealtimeNotificationBadge";
 
 // Define the service type
 interface ServiceSubmission {
@@ -82,55 +83,36 @@ const MOCK_PENDING_SERVICES: ServiceSubmission[] = [
   }
 ];
 
+// Update AdminServiceApproval to use real-time hook
 export function AdminServiceApproval() {
-  const [pendingServices, setPendingServices] = useState<ServiceSubmission[]>([]);
-  const [approvedServices, setApprovedServices] = useState<ServiceSubmission[]>([]);
-  const [rejectedServices, setRejectedServices] = useState<ServiceSubmission[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const {
+    pendingServices,
+    approvedServices,
+    rejectedServices,
+    isLoading,
+    newSubmissionCount,
+    markAsViewed,
+    approveService,
+    rejectService
+  } = useRealtimeServiceApprovals();
+  
   const [activeTab, setActiveTab] = useState<string>("pending");
   
   useEffect(() => {
-    // Simulate API fetch
-    setTimeout(() => {
-      setPendingServices(MOCK_PENDING_SERVICES);
-      setApprovedServices([]);
-      setRejectedServices([]);
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+    // Mark new submissions as viewed when admin opens the approvals tab
+    if (activeTab === "pending" && newSubmissionCount > 0) {
+      markAsViewed();
+    }
+  }, [activeTab, newSubmissionCount, markAsViewed]);
   
-  const handleApprove = (serviceId: string) => {
-    const service = pendingServices.find(s => s.id === serviceId);
-    if (!service) return;
-    
-    // Update service status
-    const updatedService = { ...service, status: "approved" as const };
-    
-    // Update lists
-    setPendingServices(pendingServices.filter(s => s.id !== serviceId));
-    setApprovedServices([updatedService, ...approvedServices]);
-    
-    toast.success(`Service "${service.title}" approved`, {
-      description: "The service is now live on the marketplace."
-    });
+  const handleApprove = async (serviceId: string) => {
+    await approveService(serviceId);
   };
   
-  const handleReject = (serviceId: string) => {
-    const service = pendingServices.find(s => s.id === serviceId);
-    if (!service) return;
-    
-    // Update service status
-    const updatedService = { ...service, status: "rejected" as const };
-    
-    // Update lists
-    setPendingServices(pendingServices.filter(s => s.id !== serviceId));
-    setRejectedServices([updatedService, ...rejectedServices]);
-    
-    toast.success(`Service "${service.title}" rejected`, {
-      description: "The provider has been notified."
-    });
+  const handleReject = async (serviceId: string) => {
+    await rejectService(serviceId);
   };
-  
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -142,7 +124,10 @@ export function AdminServiceApproval() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-2xl">Service Approval Queue</CardTitle>
+        <CardTitle className="text-2xl flex items-center justify-between">
+          <span>Service Approval Queue</span>
+          <RealtimeNotificationBadge count={newSubmissionCount} />
+        </CardTitle>
         <CardDescription>
           Review and approve service submissions from security providers
         </CardDescription>
@@ -201,11 +186,11 @@ export function AdminServiceApproval() {
                     {pendingServices.map((service) => (
                       <TableRow key={service.id}>
                         <TableCell className="font-medium">{service.title}</TableCell>
-                        <TableCell>{service.provider_name}</TableCell>
-                        <TableCell>{formatDate(service.submission_date)}</TableCell>
+                        <TableCell>{service.provider_name || 'Unknown Provider'}</TableCell>
+                        <TableCell>{new Date(service.created_at).toLocaleDateString()}</TableCell>
                         <TableCell>
                           <Badge variant="outline">
-                            {service.category.replace(/-/g, ' ')}
+                            {service.category?.replace(/-/g, ' ') || 'General'}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
@@ -215,7 +200,7 @@ export function AdminServiceApproval() {
                               variant="outline"
                               className="h-8 w-8 p-0"
                               onClick={() => toast.info("Service details", {
-                                description: service.description
+                                description: service.description || 'No description available'
                               })}
                             >
                               <Eye className="h-4 w-4" />

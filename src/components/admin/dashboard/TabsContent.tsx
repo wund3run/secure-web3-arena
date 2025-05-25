@@ -1,4 +1,3 @@
-
 import { TabsContent as UITabsContent } from "@/components/ui/tabs";
 import { DashboardOverview } from "./DashboardOverview";
 import { UserManagement } from "@/components/admin/UserManagement";
@@ -10,6 +9,7 @@ import { ReportManagement } from "@/components/admin/ReportManagement";
 import SettingsManagement from "@/components/admin/SettingsManagement";
 import { AdminPlatformReport } from "@/components/admin/PlatformReport";
 import { DashboardTabValue } from "./types";
+import { RealtimeAuditManagement } from "@/components/admin/RealtimeAuditManagement";
 
 interface TabsContentProps {
   activeTab: DashboardTabValue;
@@ -31,7 +31,7 @@ export function TabsContent({ activeTab }: TabsContentProps) {
       </UITabsContent>
       
       <UITabsContent value="audits" className="space-y-6 mt-4">
-        <AuditManagement />
+        <AdminAuditsTabContent />
       </UITabsContent>
       
       <UITabsContent value="providers" className="space-y-6 mt-4">
@@ -53,5 +53,14 @@ export function TabsContent({ activeTab }: TabsContentProps) {
         <SettingsManagement />
       </UITabsContent>
     </>
+  );
+}
+
+export function AdminAuditsTabContent() {
+  return (
+    <div className="space-y-6">
+      <RealtimeAuditManagement />
+      <AuditManagement />
+    </div>
   );
 }
