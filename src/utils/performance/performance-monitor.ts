@@ -1,3 +1,4 @@
+
 // Performance monitoring and optimization utilities
 
 export class PerformanceMonitor {
@@ -67,14 +68,16 @@ export class PerformanceMonitor {
   }
 
   logWebVitals() {
-    // Core Web Vitals monitoring
-    if ('web-vitals' in window) {
-      import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-        getCLS(console.log);
-        getFID(console.log);
-        getFCP(console.log);
-        getLCP(console.log);
-        getTTFB(console.log);
+    // Core Web Vitals monitoring with correct v5 function names
+    if (typeof window !== 'undefined') {
+      import('web-vitals').then(({ onCLS, onINP, onFCP, onLCP, onTTFB }) => {
+        onCLS(console.log);
+        onINP(console.log);
+        onFCP(console.log);
+        onLCP(console.log);
+        onTTFB(console.log);
+      }).catch(() => {
+        // Silently fail if web-vitals is not available
       });
     }
   }

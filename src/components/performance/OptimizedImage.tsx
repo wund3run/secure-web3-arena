@@ -24,7 +24,7 @@ export function OptimizedImage({
 }: OptimizedImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const { targetRef, isIntersecting, hasIntersected } = useIntersectionObserver({
+  const { targetRef, isIntersecting, hasIntersected } = useIntersectionObserver<HTMLDivElement>({
     triggerOnce: true
   });
 
