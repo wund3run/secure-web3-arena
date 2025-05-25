@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,80 +11,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useRealtimeServiceApprovals } from "@/hooks/useRealtimeServiceApprovals";
 import { RealtimeNotificationBadge } from "@/components/realtime/RealtimeNotificationBadge";
 
-// Define the service type
-interface ServiceSubmission {
-  id: string;
-  title: string;
-  category: string;
-  provider_name: string;
-  provider_id: string;
-  submission_date: string;
-  status: "pending" | "approved" | "rejected";
-  blockchain_ecosystems: string[];
-  description: string;
-  delivery_time: number;
-  price_range: {
-    min: number;
-    max: number;
-  };
-  portfolio_link?: string;
-}
-
-// Mock data for pending services
-const MOCK_PENDING_SERVICES: ServiceSubmission[] = [
-  {
-    id: "serv-1",
-    title: "Smart Contract Security Audit",
-    category: "smart-contract-audit",
-    provider_name: "SecureChain Audits",
-    provider_id: "prov-123",
-    submission_date: "2025-04-01T10:30:00Z",
-    status: "pending",
-    blockchain_ecosystems: ["ethereum", "polygon"],
-    description: "Comprehensive audit of smart contracts to identify vulnerabilities and ensure security best practices.",
-    delivery_time: 7,
-    price_range: {
-      min: 3000,
-      max: 8000
-    },
-    portfolio_link: "https://securechain.example.com/portfolio"
-  },
-  {
-    id: "serv-2",
-    title: "Protocol Security Assessment",
-    category: "protocol-audit",
-    provider_name: "BlockSafe Security",
-    provider_id: "prov-456",
-    submission_date: "2025-04-02T14:15:00Z",
-    status: "pending",
-    blockchain_ecosystems: ["ethereum", "arbitrum", "optimism"],
-    description: "In-depth assessment of protocol security including architecture review, code audit, and threat modeling.",
-    delivery_time: 14,
-    price_range: {
-      min: 8000,
-      max: 25000
-    }
-  },
-  {
-    id: "serv-3",
-    title: "DApp Penetration Testing",
-    category: "penetration-testing",
-    provider_name: "CryptoDefense",
-    provider_id: "prov-789",
-    submission_date: "2025-04-03T09:45:00Z",
-    status: "pending",
-    blockchain_ecosystems: ["solana", "near"],
-    description: "Comprehensive penetration testing for decentralized applications to identify and exploit security weaknesses.",
-    delivery_time: 10,
-    price_range: {
-      min: 5000,
-      max: 12000
-    },
-    portfolio_link: "https://cryptodefense.example.com/projects"
-  }
-];
-
-// Update AdminServiceApproval to use real-time hook
 export function AdminServiceApproval() {
   const {
     pendingServices,
@@ -176,7 +103,7 @@ export function AdminServiceApproval() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Service</TableHead>
-                      <TableHead>Provider</TableHead>
+                      <TableHead>Provider ID</TableHead>
                       <TableHead>Submission Date</TableHead>
                       <TableHead>Category</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
@@ -186,8 +113,8 @@ export function AdminServiceApproval() {
                     {pendingServices.map((service) => (
                       <TableRow key={service.id}>
                         <TableCell className="font-medium">{service.title}</TableCell>
-                        <TableCell>{service.provider_name || 'Unknown Provider'}</TableCell>
-                        <TableCell>{new Date(service.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell>{service.provider_id}</TableCell>
+                        <TableCell>{formatDate(service.created_at)}</TableCell>
                         <TableCell>
                           <Badge variant="outline">
                             {service.category?.replace(/-/g, ' ') || 'General'}
@@ -241,12 +168,11 @@ export function AdminServiceApproval() {
               </div>
             ) : (
               <div className="rounded-md border">
-                {/* Approved services table - similar structure to pending */}
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Service</TableHead>
-                      <TableHead>Provider</TableHead>
+                      <TableHead>Provider ID</TableHead>
                       <TableHead>Submission Date</TableHead>
                       <TableHead>Category</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
@@ -256,11 +182,11 @@ export function AdminServiceApproval() {
                     {approvedServices.map((service) => (
                       <TableRow key={service.id}>
                         <TableCell className="font-medium">{service.title}</TableCell>
-                        <TableCell>{service.provider_name}</TableCell>
-                        <TableCell>{formatDate(service.submission_date)}</TableCell>
+                        <TableCell>{service.provider_id}</TableCell>
+                        <TableCell>{formatDate(service.created_at)}</TableCell>
                         <TableCell>
                           <Badge variant="outline">
-                            {service.category.replace(/-/g, ' ')}
+                            {service.category?.replace(/-/g, ' ') || 'General'}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
@@ -268,6 +194,9 @@ export function AdminServiceApproval() {
                             size="sm"
                             variant="outline"
                             className="h-8 w-8 p-0"
+                            onClick={() => toast.info("Service details", {
+                              description: service.description || 'No description available'
+                            })}
                           >
                             <Eye className="h-4 w-4" />
                             <span className="sr-only">View</span>
@@ -288,12 +217,11 @@ export function AdminServiceApproval() {
               </div>
             ) : (
               <div className="rounded-md border">
-                {/* Rejected services table - similar structure to pending */}
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Service</TableHead>
-                      <TableHead>Provider</TableHead>
+                      <TableHead>Provider ID</TableHead>
                       <TableHead>Submission Date</TableHead>
                       <TableHead>Category</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
@@ -303,11 +231,11 @@ export function AdminServiceApproval() {
                     {rejectedServices.map((service) => (
                       <TableRow key={service.id}>
                         <TableCell className="font-medium">{service.title}</TableCell>
-                        <TableCell>{service.provider_name}</TableCell>
-                        <TableCell>{formatDate(service.submission_date)}</TableCell>
+                        <TableCell>{service.provider_id}</TableCell>
+                        <TableCell>{formatDate(service.created_at)}</TableCell>
                         <TableCell>
                           <Badge variant="outline">
-                            {service.category.replace(/-/g, ' ')}
+                            {service.category?.replace(/-/g, ' ') || 'General'}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
@@ -315,6 +243,9 @@ export function AdminServiceApproval() {
                             size="sm"
                             variant="outline"
                             className="h-8 w-8 p-0"
+                            onClick={() => toast.info("Service details", {
+                              description: service.description || 'No description available'
+                            })}
                           >
                             <Eye className="h-4 w-4" />
                             <span className="sr-only">View</span>

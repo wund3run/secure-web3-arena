@@ -6,12 +6,18 @@ import { toast } from 'sonner';
 interface ServiceSubmission {
   id: string;
   title: string;
-  category: string;
-  provider_name: string;
-  provider_id: string;
-  submission_date: string;
-  status: 'pending' | 'approved' | 'rejected';
   description: string;
+  category: string;
+  provider_id: string;
+  created_at: string;
+  updated_at: string;
+  featured: boolean;
+  blockchain_ecosystems: string[] | null;
+  delivery_time: number | null;
+  price_range: any;
+  average_rating: number | null;
+  review_count: number | null;
+  tags: string[] | null;
 }
 
 interface RealtimeServiceApprovalsHook {
@@ -42,7 +48,7 @@ export function useRealtimeServiceApprovals(): RealtimeServiceApprovalsHook {
       
       if (error) throw error;
       
-      // Separate services by status (assuming we add a status column to services table)
+      // Separate services by featured status
       const pending = data?.filter(s => !s.featured) || [];
       const approved = data?.filter(s => s.featured) || [];
       
