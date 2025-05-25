@@ -18,6 +18,7 @@ import RequestAudit from "./pages/RequestAudit";
 import SubmitService from "./pages/SubmitService";
 import Escrow from "./pages/Escrow";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import SystemHealth from "./pages/SystemHealth";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,12 @@ function App() {
                   <Route path="/community" element={
                     <RoleBasedRoute>
                       <Community />
+                    </RoleBasedRoute>
+                  } />
+                  
+                  <Route path="/system-health" element={
+                    <RoleBasedRoute>
+                      <SystemHealth />
                     </RoleBasedRoute>
                   } />
                   
