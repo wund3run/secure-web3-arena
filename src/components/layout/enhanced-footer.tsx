@@ -1,10 +1,9 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { HawklyLogo } from './hawkly-logo';
-import { footerNavigation } from '../ui/navigation/navigation-config';
+import { footerNavigation } from '@/components/ui/navigation/navigation-config';
 import { Github, Twitter, Linkedin, Mail, ExternalLink } from 'lucide-react';
 
 export function EnhancedFooter() {
