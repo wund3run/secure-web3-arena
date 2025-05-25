@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Menu, X, ChevronRight } from 'lucide-react';
-import { mainNavigation } from './navigation/navigation-config';
+import { mainNavigation } from '@/components/ui/navigation/navigation-config';
 import { cn } from '@/lib/utils';
 
 interface MobileNavigationProps {
