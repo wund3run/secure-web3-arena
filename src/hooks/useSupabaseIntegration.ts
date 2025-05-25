@@ -46,11 +46,17 @@ export function useSupabaseIntegration() {
     const healthChecks = [
       {
         name: 'Database Connection',
-        check: () => supabase.from('profiles').select('count(*)', { count: 'exact', head: true })
+        check: async () => {
+          const { error } = await supabase.from('profiles').select('count(*)', { count: 'exact', head: true });
+          if (error) throw error;
+        }
       },
       {
         name: 'Authentication Service',
-        check: () => supabase.auth.getSession()
+        check: async () => {
+          const { error } = await supabase.auth.getSession();
+          if (error) throw error;
+        }
       },
       {
         name: 'Real-time Subscriptions',
@@ -70,15 +76,24 @@ export function useSupabaseIntegration() {
       },
       {
         name: 'Extended Profiles Table',
-        check: () => supabase.from('extended_profiles').select('count(*)', { count: 'exact', head: true })
+        check: async () => {
+          const { error } = await supabase.from('extended_profiles').select('count(*)', { count: 'exact', head: true });
+          if (error) throw error;
+        }
       },
       {
         name: 'Services Table',
-        check: () => supabase.from('services').select('count(*)', { count: 'exact', head: true })
+        check: async () => {
+          const { error } = await supabase.from('services').select('count(*)', { count: 'exact', head: true });
+          if (error) throw error;
+        }
       },
       {
         name: 'Audit Requests Table',
-        check: () => supabase.from('audit_requests').select('count(*)', { count: 'exact', head: true })
+        check: async () => {
+          const { error } = await supabase.from('audit_requests').select('count(*)', { count: 'exact', head: true });
+          if (error) throw error;
+        }
       }
     ];
 
