@@ -1,5 +1,5 @@
 
-import { Helmet } from "react-helmet-async";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -23,94 +23,96 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AuthProvider>
-          <EscrowProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Helmet
-                titleTemplate="%s | Hawkly"
-                defaultTitle="Hawkly - Web3 Security Marketplace"
-              />
-              <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={
-                  <RoleBasedRoute>
-                    <Index />
-                  </RoleBasedRoute>
-                } />
-                
-                <Route path="/auth" element={
-                  <RoleBasedRoute>
-                    <Auth />
-                  </RoleBasedRoute>
-                } />
-                
-                <Route path="/marketplace" element={
-                  <RoleBasedRoute>
-                    <Marketplace />
-                  </RoleBasedRoute>
-                } />
-                
-                <Route path="/audits" element={
-                  <RoleBasedRoute>
-                    <Audits />
-                  </RoleBasedRoute>
-                } />
-                
-                <Route path="/community" element={
-                  <RoleBasedRoute>
-                    <Community />
-                  </RoleBasedRoute>
-                } />
-                
-                {/* General User Routes */}
-                <Route path="/service-provider-onboarding" element={
-                  <RoleBasedRoute>
-                    <ServiceProviderOnboarding />
-                  </RoleBasedRoute>
-                } />
-                
-                {/* Project Owner Routes */}
-                <Route path="/request-audit" element={
-                  <RoleBasedRoute>
-                    <RequestAudit />
-                  </RoleBasedRoute>
-                } />
-                
-                {/* Auditor Routes */}
-                <Route path="/submit-service" element={
-                  <RoleBasedRoute>
-                    <SubmitService />
-                  </RoleBasedRoute>
-                } />
-                
-                {/* Authenticated User Routes */}
-                <Route path="/dashboard/*" element={
-                  <RoleBasedRoute>
-                    <Dashboard />
-                  </RoleBasedRoute>
-                } />
-                
-                <Route path="/escrow" element={
-                  <RoleBasedRoute>
-                    <Escrow />
-                  </RoleBasedRoute>
-                } />
-                
-                {/* Admin Routes */}
-                <Route path="/admin/*" element={
-                  <RoleBasedRoute>
-                    <AdminDashboard />
-                  </RoleBasedRoute>
-                } />
-              </Routes>
-            </TooltipProvider>
-          </EscrowProvider>
-        </AuthProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <AuthProvider>
+            <EscrowProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Helmet
+                  titleTemplate="%s | Hawkly"
+                  defaultTitle="Hawkly - Web3 Security Marketplace"
+                />
+                <Routes>
+                  {/* Public Routes */}
+                  <Route path="/" element={
+                    <RoleBasedRoute>
+                      <Index />
+                    </RoleBasedRoute>
+                  } />
+                  
+                  <Route path="/auth" element={
+                    <RoleBasedRoute>
+                      <Auth />
+                    </RoleBasedRoute>
+                  } />
+                  
+                  <Route path="/marketplace" element={
+                    <RoleBasedRoute>
+                      <Marketplace />
+                    </RoleBasedRoute>
+                  } />
+                  
+                  <Route path="/audits" element={
+                    <RoleBasedRoute>
+                      <Audits />
+                    </RoleBasedRoute>
+                  } />
+                  
+                  <Route path="/community" element={
+                    <RoleBasedRoute>
+                      <Community />
+                    </RoleBasedRoute>
+                  } />
+                  
+                  {/* General User Routes */}
+                  <Route path="/service-provider-onboarding" element={
+                    <RoleBasedRoute>
+                      <ServiceProviderOnboarding />
+                    </RoleBasedRoute>
+                  } />
+                  
+                  {/* Project Owner Routes */}
+                  <Route path="/request-audit" element={
+                    <RoleBasedRoute>
+                      <RequestAudit />
+                    </RoleBasedRoute>
+                  } />
+                  
+                  {/* Auditor Routes */}
+                  <Route path="/submit-service" element={
+                    <RoleBasedRoute>
+                      <SubmitService />
+                    </RoleBasedRoute>
+                  } />
+                  
+                  {/* Authenticated User Routes */}
+                  <Route path="/dashboard/*" element={
+                    <RoleBasedRoute>
+                      <Dashboard />
+                    </RoleBasedRoute>
+                  } />
+                  
+                  <Route path="/escrow" element={
+                    <RoleBasedRoute>
+                      <Escrow />
+                    </RoleBasedRoute>
+                  } />
+                  
+                  {/* Admin Routes */}
+                  <Route path="/admin/*" element={
+                    <RoleBasedRoute>
+                      <AdminDashboard />
+                    </RoleBasedRoute>
+                  } />
+                </Routes>
+              </TooltipProvider>
+            </EscrowProvider>
+          </AuthProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 
