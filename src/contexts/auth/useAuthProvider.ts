@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserType, AuthContextProps } from "./types";
@@ -134,7 +133,7 @@ export const useAuthProvider = (): AuthContextProps => {
     };
   }, [fetchUserProfile]);
 
-  // Enhanced sign in with better error handling
+  // Enhanced sign in with better error handling and navigation
   const signIn = async (email: string, password: string, captchaToken?: string) => {
     try {
       setLoading(true);
@@ -156,7 +155,15 @@ export const useAuthProvider = (): AuthContextProps => {
       if (data.user && data.session) {
         console.log("Sign in successful");
         toast.success("Successfully signed in");
-        navigate("/dashboard");
+        
+        // Navigate safely with error handling
+        try {
+          navigate("/dashboard", { replace: true });
+        } catch (navError) {
+          console.error("Navigation error after sign in:", navError);
+          // Fallback navigation
+          window.location.href = "/dashboard";
+        }
       }
     } catch (err: any) {
       console.error("Unexpected sign in error:", err);
@@ -168,7 +175,7 @@ export const useAuthProvider = (): AuthContextProps => {
     }
   };
 
-  // Enhanced sign up with comprehensive profile creation
+  // Enhanced sign up with comprehensive profile creation and navigation
   const signUp = async (
     email: string, 
     password: string, 
@@ -206,7 +213,15 @@ export const useAuthProvider = (): AuthContextProps => {
         await createUserProfiles(data.user.id, email, fullName, userType);
         
         toast.success("Account created successfully");
-        navigate("/dashboard");
+        
+        // Navigate safely with error handling
+        try {
+          navigate("/dashboard", { replace: true });
+        } catch (navError) {
+          console.error("Navigation error after sign up:", navError);
+          // Fallback navigation
+          window.location.href = "/dashboard";
+        }
       }
     } catch (err: any) {
       console.error("Unexpected sign up error:", err);
@@ -269,7 +284,7 @@ export const useAuthProvider = (): AuthContextProps => {
     }
   };
 
-  // Enhanced sign out
+  // Enhanced sign out with safe navigation
   const signOut = async () => {
     try {
       setLoading(true);
@@ -288,7 +303,15 @@ export const useAuthProvider = (): AuthContextProps => {
       setUserProfile(null);
       setError("");
       toast.success("Successfully signed out");
-      navigate("/");
+      
+      // Navigate safely with error handling
+      try {
+        navigate("/", { replace: true });
+      } catch (navError) {
+        console.error("Navigation error after sign out:", navError);
+        // Fallback navigation
+        window.location.href = "/";
+      }
     } catch (err: any) {
       console.error("Unexpected sign out error:", err);
       setError(err.message);
@@ -343,7 +366,15 @@ export const useAuthProvider = (): AuthContextProps => {
       }
       
       toast.success("Password updated successfully");
-      navigate("/dashboard");
+      
+      // Navigate safely with error handling
+      try {
+        navigate("/dashboard", { replace: true });
+      } catch (navError) {
+        console.error("Navigation error after password reset:", navError);
+        // Fallback navigation
+        window.location.href = "/dashboard";
+      }
     } catch (err: any) {
       console.error("Unexpected password update error:", err);
       setError(err.message);
