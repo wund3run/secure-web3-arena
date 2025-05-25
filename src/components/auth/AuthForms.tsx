@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { useAuth } from "@/contexts/auth";
 
 interface AuthFormsProps {
   isSignIn: boolean;
@@ -24,17 +25,19 @@ export function AuthForms({
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { error } = useAuth();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email || !password) {
+      return;
+    }
+    
     setIsLoading(true);
-    setError(null);
-
     try {
       await onSignIn(email, password);
     } catch (err) {
-      setError("Failed to sign in. Please check your credentials and try again.");
+      // Error handling is done in the auth provider
     } finally {
       setIsLoading(false);
     }
@@ -42,13 +45,15 @@ export function AuthForms({
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email || !password || !fullName) {
+      return;
+    }
+    
     setIsLoading(true);
-    setError(null);
-
     try {
       await onSignUp(email, password, fullName, userType);
     } catch (err) {
-      setError("Failed to create an account. Please try again.");
+      // Error handling is done in the auth provider
     } finally {
       setIsLoading(false);
     }
@@ -81,8 +86,8 @@ export function AuthForms({
             <button
               type="button"
               onClick={() => setUserType("project_owner")}
-              className={`flex-1 py-2 px-4 text-sm rounded-md border ${
-                userType === "project_owner" ? "bg-primary text-primary-foreground" : "bg-muted/20"
+              className={`flex-1 py-2 px-4 text-sm rounded-md border transition-colors ${
+                userType === "project_owner" ? "bg-primary text-primary-foreground" : "bg-muted/20 hover:bg-muted/30"
               }`}
               aria-pressed={userType === "project_owner"}
             >
@@ -91,8 +96,8 @@ export function AuthForms({
             <button
               type="button"
               onClick={() => setUserType("auditor")}
-              className={`flex-1 py-2 px-4 text-sm rounded-md border ${
-                userType === "auditor" ? "bg-primary text-primary-foreground" : "bg-muted/20"
+              className={`flex-1 py-2 px-4 text-sm rounded-md border transition-colors ${
+                userType === "auditor" ? "bg-primary text-primary-foreground" : "bg-muted/20 hover:bg-muted/30"
               }`}
               aria-pressed={userType === "auditor"}
             >
@@ -183,8 +188,9 @@ export function SignInForm({
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-3 py-2 border border-border rounded-md"
+          className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           required
+          disabled={isLoading}
         />
       </div>
       <div className="space-y-2">
@@ -196,8 +202,9 @@ export function SignInForm({
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-3 py-2 border border-border rounded-md"
+          className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           required
+          disabled={isLoading}
         />
       </div>
       
@@ -205,8 +212,8 @@ export function SignInForm({
       
       <button
         type="submit"
-        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md"
-        disabled={isLoading}
+        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        disabled={isLoading || !email || !password}
       >
         {isLoading ? "Signing in..." : "Sign In"}
       </button>
@@ -250,8 +257,9 @@ export function SignUpForm({
           type="text"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
-          className="w-full px-3 py-2 border border-border rounded-md"
+          className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           required
+          disabled={isLoading}
         />
       </div>
       <div className="space-y-2">
@@ -263,8 +271,9 @@ export function SignUpForm({
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-3 py-2 border border-border rounded-md"
+          className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           required
+          disabled={isLoading}
         />
       </div>
       <div className="space-y-2">
@@ -276,8 +285,10 @@ export function SignUpForm({
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-3 py-2 border border-border rounded-md"
+          className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+          minLength={6}
           required
+          disabled={isLoading}
         />
       </div>
       
@@ -285,8 +296,8 @@ export function SignUpForm({
       
       <button
         type="submit"
-        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md"
-        disabled={isLoading}
+        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        disabled={isLoading || !email || !password || !fullName}
       >
         {isLoading ? "Creating account..." : "Create Account"}
       </button>

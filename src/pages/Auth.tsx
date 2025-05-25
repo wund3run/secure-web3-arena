@@ -7,7 +7,7 @@ import { AuthForms } from "@/components/auth/AuthForms";
 import { useAuth } from "@/contexts/auth";
 
 const Auth = () => {
-  const { user, signIn, signUp } = useAuth();
+  const { user, signIn, signUp, loading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const returnUrl = location.state?.returnUrl || '/dashboard';
@@ -15,10 +15,10 @@ const Auth = () => {
   
   // If user is already authenticated, redirect to dashboard or return URL
   useEffect(() => {
-    if (user) {
+    if (user && !loading) {
       navigate(returnUrl, { replace: true });
     }
-  }, [user, navigate, returnUrl]);
+  }, [user, loading, navigate, returnUrl]);
 
   // State for toggling between sign in and sign up
   const [isSignIn, setIsSignIn] = useState(true);
@@ -29,22 +29,33 @@ const Auth = () => {
   };
 
   const handleSignIn = async (email: string, password: string, captchaToken?: string) => {
-    try {
-      await signIn(email, password, captchaToken || 'auto-verified-token');
-    } catch (error) {
-      console.error("Sign in error:", error);
-      // Error is handled within signIn function and displayed in the form
-    }
+    await signIn(email, password, captchaToken);
   };
 
   const handleSignUp = async (email: string, password: string, name: string, selectedUserType: "auditor" | "project_owner", captchaToken?: string) => {
-    try {
-      await signUp(email, password, name, selectedUserType, captchaToken);
-    } catch (error) {
-      console.error("Sign up error:", error);
-      // Error is handled within signUp function and displayed in the form
-    }
+    await signUp(email, password, name, selectedUserType, captchaToken);
   };
+
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <>
+        <Helmet>
+          <title>Loading | Hawkly</title>
+        </Helmet>
+        <AuthLayout>
+          <div className="flex justify-center items-center p-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+          </div>
+        </AuthLayout>
+      </>
+    );
+  }
+
+  // Don't render the form if user is already authenticated
+  if (user) {
+    return null;
+  }
 
   return (
     <>
