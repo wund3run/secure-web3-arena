@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Navigate, useSearchParams } from "react-router-dom";
 import AdminLayout from "@/components/admin/AdminLayout";
@@ -11,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { RealtimeConnectionStatus } from "@/components/realtime/RealtimeConnectionStatus";
+import { adminAuth } from "@/utils/admin/adminAuth";
 
 interface AdminDashboardProps {
   section?: DashboardTabValue;
@@ -22,15 +24,24 @@ const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
   const [activeTab, setActiveTab] = useState<DashboardTabValue>(section);
   const [showSystemChecks, setShowSystemChecks] = useState(true);
 
-  // Check if admin is authenticated
-  const isAuthenticated = localStorage.getItem("adminAuthenticated") === "true";
-  const adminUser = localStorage.getItem("adminUser");
+  // Enhanced admin authentication check
+  const isAuthenticated = adminAuth.hasAdminAccess();
+  const adminUser = adminAuth.getAdminUser();
 
   useEffect(() => {
+    // Check session validity
+    if (isAuthenticated && !adminAuth.isSessionValid()) {
+      toast.error("Admin session expired", {
+        description: "Please log in again for security",
+      });
+      adminAuth.logout();
+      return;
+    }
+
     // Welcome message for admin
     if (isAuthenticated && adminUser) {
       toast.success(`Welcome back, ${adminUser}`, {
-        description: "Admin dashboard loaded successfully",
+        description: "Secure admin dashboard loaded",
         duration: 3000
       });
     }
@@ -55,6 +66,7 @@ const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
     return () => clearTimeout(timer);
   }, [section, isAuthenticated, adminUser, searchParams]);
 
+  // Redirect non-admin users to login
   if (!isAuthenticated) {
     return <Navigate to="/admin/login" replace />;
   }

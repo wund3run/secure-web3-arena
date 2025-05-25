@@ -7,6 +7,7 @@ import { EnhancedErrorBoundary } from './components/error/enhanced-error-boundar
 import { RouterErrorBoundary } from './components/error/RouterErrorBoundary';
 import { BreadcrumbEnhanced } from './components/ui/breadcrumb-enhanced';
 import { AccessibilityControls } from './components/ui/accessibility-controls';
+import { AdminRoute } from './components/auth/AdminRoute';
 
 // Import CSS for accessibility enhancements
 import './styles/accessibility.css';
@@ -42,7 +43,7 @@ import Escrow from './pages/Escrow';
 import SecurityInsights from './pages/SecurityInsights';
 import Roadmap from './pages/Roadmap';
 
-// Admin Pages
+// Protected Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminLogin from './pages/admin/AdminLogin';
 
@@ -57,8 +58,6 @@ import Events from './pages/Events';
 import Challenges from './pages/Challenges';
 import Vulnerabilities from './pages/Vulnerabilities';
 import WebThreeSecurity from './pages/WebThreeSecurity';
-
-// New Support Pages
 import FAQ from './pages/FAQ';
 import KnowledgeBase from './pages/KnowledgeBase';
 import Templates from './pages/Templates';
@@ -120,13 +119,18 @@ function App() {
                 <Route path="/security-insights" element={<SecurityInsights />} />
                 <Route path="/roadmap" element={<Roadmap />} />
                 
-                {/* Redirect platform report to admin dashboard */}
-                <Route path="/platform-report" element={<Navigate to="/admin/dashboard?showPlatformReport=true" replace />} />
-                
-                {/* Admin Routes */}
-                <Route path="/admin" element={<AdminDashboard />} />
+                {/* Protected Admin Routes - Completely separate from user app */}
                 <Route path="/admin/login" element={<AdminLogin />} />
-                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/admin" element={
+                  <AdminRoute>
+                    <AdminDashboard />
+                  </AdminRoute>
+                } />
+                <Route path="/admin/dashboard" element={
+                  <AdminRoute>
+                    <AdminDashboard />
+                  </AdminRoute>
+                } />
                 
                 {/* Legal and Policy Pages */}
                 <Route path="/terms" element={<Terms />} />
