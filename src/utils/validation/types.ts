@@ -18,7 +18,10 @@ export type StakeholderType =
   | 'general' 
   | 'auditor' 
   | 'project-owner' 
-  | 'admin';
+  | 'admin'
+  | 'developer'
+  | 'end-users'
+  | 'compliance';
 
 export interface ValidationIssue {
   type: ValidationType;

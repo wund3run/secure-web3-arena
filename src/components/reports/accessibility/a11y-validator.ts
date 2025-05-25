@@ -78,11 +78,13 @@ export const filterIssuesByStakeholder = (
 export const reportAccessibilityIssues = (issues: ValidationIssue[]): void => {
   issues.forEach(issue => {
     if (issue.severity === "high") {
-      handleAccessibilityError(new Error(issue.description), {
-        elementIdentifier: issue.location,
-        wcagCriterion: issue.wcagCriterion,
-        attemptAutoFix: true
-      });
+      handleAccessibilityError(
+        'aria',
+        issue.description,
+        undefined,
+        'high',
+        issue.suggestion
+      );
     }
   });
 };

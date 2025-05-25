@@ -43,6 +43,15 @@ export class EnhancedToastSystem {
     });
   }
 
+  static formValidationError() {
+    return toast.error("Form Validation Error", {
+      description: "Please check the form fields and try again",
+      icon: <AlertCircle className="h-4 w-4" />,
+      duration: 5000,
+      className: "border-red-200 bg-red-50 text-red-900"
+    });
+  }
+
   static networkError(retryAction?: () => void) {
     return toast.error("Network Error", {
       description: "Please check your connection and try again",
