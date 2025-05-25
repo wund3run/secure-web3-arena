@@ -94,13 +94,10 @@ export async function withErrorHandling<T>(
 }
 
 // Create a utility to help standardize error boundary usage
-export const createBoundary = (component: React.ReactNode, fallback?: React.ReactNode): React.ReactElement => {
+export const createBoundary = (component: React.ReactNode): React.ReactElement => {
   return React.createElement(
     ComprehensiveErrorBoundary,
-    { 
-      fallback,
-      children: component
-    }
+    { children: component }
   );
 };
 

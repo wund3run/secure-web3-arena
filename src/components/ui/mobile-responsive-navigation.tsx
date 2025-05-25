@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { MobileDrawer } from './mobile-responsive-container';
-import { navigationLinksStructure } from '@/components/layout/navigation/navigation-links';
+import { navigationLinksStructure } from '@/components/layout/navigation/navigation-links.tsx';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 

@@ -97,8 +97,7 @@ export function ComprehensiveErrorBoundary({
   return (
     <EnhancedErrorBoundary
       fallback={CustomFallback ? 
-        (error, resetError, errorInfo) => 
-          <CustomFallback error={error} resetError={resetError} errorInfo={errorInfo} /> 
+        <CustomFallback error={new Error("Custom fallback")} resetError={() => {}} /> 
         : undefined
       }
       onReset={() => {
