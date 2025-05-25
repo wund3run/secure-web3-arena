@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { navigationLinks } from '@/components/layout/navigation/navigation-links';
+import { navigationLinksStructure } from '@/components/layout/navigation/navigation-links';
 import { getFallbackRoute, routeExists } from '@/utils/navigation';
 
 type RouteStatus = 'valid' | 'invalid' | 'checking';
@@ -24,8 +24,8 @@ export function useRouteChecker() {
     const allResults: RouteCheckResult[] = [];
     const invalid: string[] = [];
     
-    // Check all navigation links
-    const processLinks = (links: typeof navigationLinks.marketplace, section: string) => {
+    // Check all navigation links using the structured object
+    const processLinks = (links: typeof navigationLinksStructure.marketplace, section: string) => {
       links.forEach(link => {
         const route = link.href;
         const isValid = routeExists(route);
@@ -42,9 +42,10 @@ export function useRouteChecker() {
       });
     };
     
-    processLinks(navigationLinks.marketplace, 'Marketplace');
-    processLinks(navigationLinks.audits, 'Audits');
-    processLinks(navigationLinks.resources, 'Resources');
+    processLinks(navigationLinksStructure.marketplace, 'Marketplace');
+    processLinks(navigationLinksStructure.audits, 'Audits');
+    processLinks(navigationLinksStructure.resources, 'Resources');
+    processLinks(navigationLinksStructure.dashboards, 'Dashboards');
     
     setResults(allResults);
     setInvalidRoutes(invalid);
