@@ -1,126 +1,120 @@
 
-import React, { useState } from 'react';
-import { Menu, X, ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { MobileDrawer } from './mobile-responsive-container';
-import { navigationLinksStructure } from '@/components/layout/navigation/navigation-links.tsx';
-import { Link } from 'react-router-dom';
-import { cn } from '@/lib/utils';
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, Home, Shield, FileText, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 
-interface MobileNavigationProps {
+interface NavigationItem {
+  title: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  description?: string;
+}
+
+const navigationItems: NavigationItem[] = [
+  {
+    title: "Home",
+    href: "/",
+    icon: Home,
+    description: "Return to homepage"
+  },
+  {
+    title: "Marketplace",
+    href: "/marketplace",
+    icon: Shield,
+    description: "Browse security services"
+  },
+  {
+    title: "Audits",
+    href: "/audits",
+    icon: FileText,
+    description: "View audit reports"
+  },
+  {
+    title: "Community",
+    href: "/community",
+    icon: Users,
+    description: "Join the community"
+  }
+];
+
+interface MobileResponsiveNavigationProps {
   className?: string;
 }
 
-export function MobileNavigation({ className }: MobileNavigationProps) {
+export function MobileResponsiveNavigation({ className }: MobileResponsiveNavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<string[]>([]);
+  const location = useLocation();
 
-  const toggleSection = (section: string) => {
-    setExpandedSections(prev => 
-      prev.includes(section) 
-        ? prev.filter(s => s !== section)
-        : [...prev, section]
-    );
-  };
-
-  const NavSection = ({ title, items, sectionKey }: { 
-    title: string; 
-    items: any[]; 
-    sectionKey: string;
-  }) => {
-    const isExpanded = expandedSections.includes(sectionKey);
-    
-    return (
-      <div className="border-b border-border">
-        <button
-          onClick={() => toggleSection(sectionKey)}
-          className="w-full flex items-center justify-between p-4 text-left hover:bg-muted/50 transition-colors"
-        >
-          <span className="font-medium">{title}</span>
-          <ChevronDown 
-            className={cn(
-              "h-4 w-4 transition-transform", 
-              isExpanded && "rotate-180"
-            )} 
-          />
-        </button>
-        
-        {isExpanded && (
-          <div className="pb-4 px-4 space-y-2">
-            {items.map((item, index) => (
-              <Link
-                key={index}
-                to={item.href}
-                onClick={() => setIsOpen(false)}
-                className="block py-2 px-3 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md transition-colors"
-              >
-                <div className="font-medium">{item.title}</div>
-                {item.description && (
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {item.description}
-                  </div>
-                )}
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-    );
+  const handleNavigation = () => {
+    setIsOpen(false);
   };
 
   return (
-    <>
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => setIsOpen(true)}
-        className={cn("md:hidden", className)}
-        aria-label="Open navigation menu"
-      >
-        <Menu className="h-5 w-5" />
-      </Button>
-
-      <MobileDrawer 
-        isOpen={isOpen} 
-        onClose={() => setIsOpen(false)}
-        title="Navigation"
-      >
-        <div className="space-y-0">
-          <NavSection 
-            title="Marketplace" 
-            items={navigationLinksStructure.marketplace}
-            sectionKey="marketplace"
-          />
-          <NavSection 
-            title="Audits" 
-            items={navigationLinksStructure.audits}
-            sectionKey="audits"
-          />
-          <NavSection 
-            title="Resources" 
-            items={navigationLinksStructure.resources}
-            sectionKey="resources"
-          />
-          <NavSection 
-            title="Dashboards" 
-            items={navigationLinksStructure.dashboards}
-            sectionKey="dashboards"
-          />
-          
-          <div className="p-4 space-y-2 border-t border-border">
-            <Button asChild className="w-full">
-              <Link to="/auth" onClick={() => setIsOpen(false)}>
-                Sign In
-              </Link>
-            </Button>
-            <Button variant="outline" asChild className="w-full">
-              <Link to="/request-audit" onClick={() => setIsOpen(false)}>
-                Request Audit
-              </Link>
-            </Button>
+    <div className={cn("md:hidden", className)}>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetTrigger asChild>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            aria-label="Open navigation menu"
+            className="relative"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-80 p-0">
+          <div className="flex flex-col h-full">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="text-lg font-semibold">Navigation</h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsOpen(false)}
+                aria-label="Close navigation menu"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <nav className="flex-1 overflow-y-auto">
+              <div className="p-4 space-y-2">
+                {navigationItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = location.pathname === item.href;
+                  
+                  return (
+                    <Link
+                      key={item.href}
+                      to={item.href}
+                      onClick={handleNavigation}
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+                        "hover:bg-accent hover:text-accent-foreground",
+                        "focus:bg-accent focus:text-accent-foreground focus:outline-none",
+                        isActive && "bg-accent text-accent-foreground font-medium"
+                      )}
+                      aria-current={isActive ? "page" : undefined}
+                    >
+                      <Icon className="h-4 w-4 flex-shrink-0" />
+                      <div className="flex flex-col">
+                        <span>{item.title}</span>
+                        {item.description && (
+                          <span className="text-xs text-muted-foreground">
+                            {item.description}
+                          </span>
+                        )}
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </nav>
           </div>
-        </div>
-      </MobileDrawer>
-    </>
+        </SheetContent>
+      </Sheet>
+    </div>
   );
 }

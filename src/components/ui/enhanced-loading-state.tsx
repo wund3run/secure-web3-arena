@@ -1,52 +1,56 @@
 
-import React from 'react';
-import { Loader2, Wifi, WifiOff } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import { cn } from "@/lib/utils";
+import { Loader2, Wifi, WifiOff } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface EnhancedLoadingStateProps {
   message?: string;
-  showRetry?: boolean;
-  onRetry?: () => void;
-  isOffline?: boolean;
+  variant?: 'spinner' | 'skeleton' | 'pulse' | 'dots';
   size?: 'sm' | 'md' | 'lg';
-  variant?: 'spinner' | 'skeleton' | 'pulse';
+  className?: string;
+  showIcon?: boolean;
+  isError?: boolean;
+  retry?: () => void;
 }
 
 export function EnhancedLoadingState({
-  message = 'Loading...',
-  showRetry = false,
-  onRetry,
-  isOffline = false,
+  message = "Loading...",
+  variant = 'spinner',
   size = 'md',
-  variant = 'spinner'
+  className,
+  showIcon = true,
+  isError = false,
+  retry
 }: EnhancedLoadingStateProps) {
   const sizeClasses = {
     sm: 'h-4 w-4',
-    md: 'h-8 w-8',
-    lg: 'h-12 w-12'
+    md: 'h-6 w-6',
+    lg: 'h-8 w-8'
   };
 
-  const containerClasses = {
+  const containerSizeClasses = {
     sm: 'p-4',
-    md: 'p-8',
-    lg: 'p-12'
+    md: 'p-6',
+    lg: 'p-8'
   };
 
-  if (isOffline) {
+  if (isError) {
     return (
-      <div className={`flex flex-col items-center justify-center ${containerClasses[size]} text-center space-y-4`}>
-        <WifiOff className={`${sizeClasses[size]} text-muted-foreground`} />
-        <div className="space-y-2">
-          <p className="text-sm font-medium">You're offline</p>
-          <p className="text-xs text-muted-foreground">
-            Check your internet connection and try again
-          </p>
-        </div>
-        {showRetry && onRetry && (
-          <Button onClick={onRetry} variant="outline" size="sm">
-            <Wifi className="mr-2 h-4 w-4" />
-            Retry
-          </Button>
+      <div className={cn(
+        "flex flex-col items-center justify-center text-center",
+        containerSizeClasses[size],
+        className
+      )}>
+        <WifiOff className={cn("text-muted-foreground mb-2", sizeClasses[size])} />
+        <p className="text-sm text-muted-foreground mb-2">Connection failed</p>
+        {retry && (
+          <button 
+            onClick={retry}
+            className="text-sm text-primary hover:underline"
+          >
+            Try again
+          </button>
         )}
       </div>
     );
@@ -54,39 +58,81 @@ export function EnhancedLoadingState({
 
   if (variant === 'skeleton') {
     return (
-      <div className={`${containerClasses[size]} space-y-4`}>
-        <div className="animate-pulse space-y-3">
-          <div className="h-4 bg-muted rounded w-3/4"></div>
-          <div className="h-4 bg-muted rounded w-1/2"></div>
-          <div className="h-4 bg-muted rounded w-5/6"></div>
-        </div>
+      <div className={cn("space-y-3", containerSizeClasses[size], className)}>
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-4 w-1/2" />
       </div>
     );
   }
 
   if (variant === 'pulse') {
     return (
-      <div className={`flex items-center justify-center ${containerClasses[size]}`}>
-        <div className="flex space-x-2">
-          <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-          <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.1s' }}></div>
-          <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-        </div>
+      <div className={cn(
+        "flex items-center justify-center",
+        containerSizeClasses[size],
+        className
+      )}>
+        <div className={cn(
+          "rounded-full bg-primary animate-pulse",
+          sizeClasses[size]
+        )} />
+        {message && (
+          <span className="ml-2 text-sm text-muted-foreground animate-pulse">
+            {message}
+          </span>
+        )}
       </div>
     );
   }
 
-  return (
-    <div className={`flex flex-col items-center justify-center ${containerClasses[size]} text-center space-y-4`}>
-      <Loader2 className={`${sizeClasses[size]} animate-spin text-primary`} />
-      <div className="space-y-2">
-        <p className="text-sm font-medium">{message}</p>
-        {showRetry && onRetry && (
-          <Button onClick={onRetry} variant="outline" size="sm">
-            Retry
-          </Button>
+  if (variant === 'dots') {
+    return (
+      <div className={cn(
+        "flex items-center justify-center space-x-1",
+        containerSizeClasses[size],
+        className
+      )}>
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            className={cn(
+              "rounded-full bg-primary animate-bounce",
+              size === 'sm' ? 'h-1 w-1' : size === 'md' ? 'h-2 w-2' : 'h-3 w-3'
+            )}
+            style={{
+              animationDelay: `${i * 0.1}s`,
+              animationDuration: '0.6s'
+            }}
+          />
+        ))}
+        {message && (
+          <span className="ml-3 text-sm text-muted-foreground">
+            {message}
+          </span>
         )}
       </div>
+    );
+  }
+
+  // Default spinner variant
+  return (
+    <div className={cn(
+      "flex items-center justify-center",
+      containerSizeClasses[size],
+      className
+    )}>
+      {showIcon && (
+        <Loader2 className={cn("animate-spin", sizeClasses[size])} />
+      )}
+      {message && (
+        <span className={cn(
+          "text-sm text-muted-foreground",
+          showIcon && "ml-2"
+        )}>
+          {message}
+        </span>
+      )}
     </div>
   );
 }
