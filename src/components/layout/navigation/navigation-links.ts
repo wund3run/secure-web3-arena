@@ -2,9 +2,9 @@
 import { NavigationLinksStructure, NavigationLinkItem } from "./navigation-links.tsx";
 
 /**
- * Navigation links for the platform header
+ * Navigation links for the platform header organized by category
  */
-export const navigationLinks: NavigationLinksStructure = {
+export const navigationLinksStructure: NavigationLinksStructure = {
   marketplace: [
     { title: "Browse Services", href: "/marketplace", description: "Find security services for your project" },
     { title: "Request Audit", href: "/request-audit", description: "Get your project audited by experts" },
@@ -27,7 +27,6 @@ export const navigationLinks: NavigationLinksStructure = {
     { title: "Roadmap", href: "/roadmap", description: "Our platform development plans" },
   ],
   dashboards: [
-    // Enhanced dashboard links with specific role-based options
     { title: "Auditor Dashboard", href: "/dashboard/auditor", description: "Access your auditor workspace" },
     { title: "Project Dashboard", href: "/dashboard/project", description: "Manage your project security" },
     { title: "Audit Analytics", href: "/dashboard/analytics", description: "View performance metrics and insights" },
@@ -35,3 +34,37 @@ export const navigationLinks: NavigationLinksStructure = {
     { title: "Reputation Center", href: "/leaderboard", description: "Track your platform reputation" },
   ],
 };
+
+/**
+ * Flattened navigation links structure for components that need to map over an array
+ */
+export interface NavigationLink {
+  title: string;
+  href: string;
+  description?: string;
+  badge?: string;
+  children?: NavigationLinkItem[];
+}
+
+export const navigationLinks: NavigationLink[] = [
+  {
+    title: "Marketplace",
+    href: "/marketplace",
+    children: navigationLinksStructure.marketplace,
+  },
+  {
+    title: "Audits",
+    href: "/audits", 
+    children: navigationLinksStructure.audits,
+  },
+  {
+    title: "Resources",
+    href: "/resources",
+    children: navigationLinksStructure.resources,
+  },
+  {
+    title: "Dashboard",
+    href: "/dashboard",
+    children: navigationLinksStructure.dashboards,
+  },
+];

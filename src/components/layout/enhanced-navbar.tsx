@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { HawklyLogo } from "./hawkly-logo";
 import { useAuth } from "@/contexts/auth";
-import { navigationLinks } from "./navigation/navigation-links.ts";
+import { navigationLinks } from "./navigation/navigation-links";
 import { DesktopNavigation } from "./navigation/desktop-navigation";
 import { MobileNavigation } from "./navigation/mobile-navigation";
 import { AuthButtons } from "./navigation/auth-buttons";
