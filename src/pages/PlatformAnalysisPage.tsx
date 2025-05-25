@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PlatformAnalyzer } from '@/components/analysis/PlatformAnalyzer';
 import { AccessibilityValidator } from '@/components/accessibility/AccessibilityValidator';
 import { PlatformHealthMonitor } from '@/components/platform/platform-health-monitor';
+import { PlatformAuditSystem } from '@/components/platform/platform-audit-system';
 import { EnhancedLoadingState } from '@/components/ui/enhanced-loading-state';
 import { ProductionErrorBoundary } from '@/components/error/production-error-boundary';
 
@@ -18,13 +19,18 @@ export default function PlatformAnalysisPage() {
           </p>
         </div>
 
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs defaultValue="launch-readiness" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="launch-readiness">Launch Readiness</TabsTrigger>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="accessibility">Accessibility</TabsTrigger>
             <TabsTrigger value="health">Health Monitor</TabsTrigger>
             <TabsTrigger value="performance">Performance</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="launch-readiness">
+            <PlatformAuditSystem />
+          </TabsContent>
 
           <TabsContent value="overview">
             <PlatformAnalyzer />
