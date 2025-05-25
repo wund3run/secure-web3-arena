@@ -1,16 +1,16 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertCircle, Book, CheckSquare, Shield, Award, FileSpreadsheet, ChartPie, LineChart } from "lucide-react";
+import { AlertCircle, Book, CheckSquare, Shield, Award, FileSpreadsheet, ChartPie, LineChart, Users, Settings } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface DashboardWidgetsProps {
   userType: string;
-  section: 'overview' | 'analytics' | 'projects' | 'reports' | 'skills' | 'security';
+  section: 'overview' | 'analytics' | 'projects' | 'reports' | 'skills' | 'security' | 'management';
 }
 
 export function DashboardWidgets({ userType, section }: DashboardWidgetsProps) {
   const isAuditor = userType === 'auditor';
+  const isAdmin = userType === 'admin';
   
   const renderContent = () => {
     switch (section) {
@@ -30,6 +30,8 @@ export function DashboardWidgets({ userType, section }: DashboardWidgetsProps) {
         return <AuditorSkills />;
       case 'security':
         return <ProjectOwnerSecurity />;
+      case 'management':
+        return <AdminManagement />;
       default:
         return <div>Section content not available</div>;
     }
@@ -293,6 +295,38 @@ function ProjectOwnerSecurity() {
             <h3 className="text-lg font-medium">Educational Resources</h3>
           </div>
           <p>Access blockchain security guidelines, best practices, and educational materials specific to your project types.</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// Add the new AdminManagement component
+function AdminManagement() {
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Platform Management</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2 mb-4">
+            <Users className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">User Management</h3>
+          </div>
+          <p>Manage platform users, roles, permissions, and account status across all user types.</p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>System Configuration</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2 mb-4">
+            <Settings className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-medium">Platform Settings</h3>
+          </div>
+          <p>Configure platform-wide settings, security policies, and operational parameters.</p>
         </CardContent>
       </Card>
     </div>

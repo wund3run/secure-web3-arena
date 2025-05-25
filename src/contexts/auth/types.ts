@@ -1,3 +1,4 @@
+
 import { User, Session } from "@supabase/supabase-js";
 
 export type UserType = "visitor" | "general" | "auditor" | "project_owner" | "admin";
