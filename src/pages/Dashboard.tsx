@@ -6,35 +6,30 @@ import { Footer } from "@/components/layout/footer";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { PrivateRoute } from '@/components/auth/PrivateRoute';
 import { useAuth } from '@/contexts/auth';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 export default function Dashboard() {
   const { user, getUserType } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  
-  // Extract dashboard type from pathname
-  const pathSegments = location.pathname.split('/');
-  const dashboardType = pathSegments[2] || ''; // Gets 'project' or 'auditor' from /dashboard/project or /dashboard/auditor
+  const params = useParams();
+  const dashboardType = params.type || '';
   
   useEffect(() => {
     if (user) {
       // Determine user role
       const userType = getUserType();
       const isAuditor = userType === 'auditor';
-      const currentPath = location.pathname;
-      
-      console.log('Dashboard routing:', { currentPath, userType, isAuditor });
+      const currentPath = window.location.pathname;
       
       // Redirect based on role and current URL
       if (currentPath === '/dashboard') {
         if (isAuditor) {
-          console.log('Redirecting auditor to /dashboard/auditor');
-          navigate('/dashboard/auditor', { replace: true });
+          toast.info("Redirecting to your Auditor Dashboard");
+          navigate('/dashboard/auditor');
         } else {
-          console.log('Redirecting project owner to /dashboard/project');
-          navigate('/dashboard/project', { replace: true });
+          toast.info("Redirecting to your Project Dashboard");
+          navigate('/dashboard/project');
         }
       }
       // Strict access control: prevent accessing dashboard they shouldn't
@@ -46,13 +41,13 @@ export default function Dashboard() {
         
         // Redirect to the appropriate dashboard
         if (isAuditor) {
-          navigate('/dashboard/auditor', { replace: true });
+          navigate('/dashboard/auditor');
         } else {
-          navigate('/dashboard/project', { replace: true });
+          navigate('/dashboard/project');
         }
       }
     }
-  }, [user, navigate, location.pathname, getUserType]);
+  }, [user, navigate, dashboardType, getUserType]);
 
   // Determine required user type based on dashboard type
   const requiredUserType = dashboardType === 'auditor' ? 'auditor' : 'project_owner';

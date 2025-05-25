@@ -8,38 +8,129 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useRealtimeServiceApprovals } from "@/hooks/useRealtimeServiceApprovals";
-import { RealtimeNotificationBadge } from "@/components/realtime/RealtimeNotificationBadge";
+
+// Define the service type
+interface ServiceSubmission {
+  id: string;
+  title: string;
+  category: string;
+  provider_name: string;
+  provider_id: string;
+  submission_date: string;
+  status: "pending" | "approved" | "rejected";
+  blockchain_ecosystems: string[];
+  description: string;
+  delivery_time: number;
+  price_range: {
+    min: number;
+    max: number;
+  };
+  portfolio_link?: string;
+}
+
+// Mock data for pending services
+const MOCK_PENDING_SERVICES: ServiceSubmission[] = [
+  {
+    id: "serv-1",
+    title: "Smart Contract Security Audit",
+    category: "smart-contract-audit",
+    provider_name: "SecureChain Audits",
+    provider_id: "prov-123",
+    submission_date: "2025-04-01T10:30:00Z",
+    status: "pending",
+    blockchain_ecosystems: ["ethereum", "polygon"],
+    description: "Comprehensive audit of smart contracts to identify vulnerabilities and ensure security best practices.",
+    delivery_time: 7,
+    price_range: {
+      min: 3000,
+      max: 8000
+    },
+    portfolio_link: "https://securechain.example.com/portfolio"
+  },
+  {
+    id: "serv-2",
+    title: "Protocol Security Assessment",
+    category: "protocol-audit",
+    provider_name: "BlockSafe Security",
+    provider_id: "prov-456",
+    submission_date: "2025-04-02T14:15:00Z",
+    status: "pending",
+    blockchain_ecosystems: ["ethereum", "arbitrum", "optimism"],
+    description: "In-depth assessment of protocol security including architecture review, code audit, and threat modeling.",
+    delivery_time: 14,
+    price_range: {
+      min: 8000,
+      max: 25000
+    }
+  },
+  {
+    id: "serv-3",
+    title: "DApp Penetration Testing",
+    category: "penetration-testing",
+    provider_name: "CryptoDefense",
+    provider_id: "prov-789",
+    submission_date: "2025-04-03T09:45:00Z",
+    status: "pending",
+    blockchain_ecosystems: ["solana", "near"],
+    description: "Comprehensive penetration testing for decentralized applications to identify and exploit security weaknesses.",
+    delivery_time: 10,
+    price_range: {
+      min: 5000,
+      max: 12000
+    },
+    portfolio_link: "https://cryptodefense.example.com/projects"
+  }
+];
 
 export function AdminServiceApproval() {
-  const {
-    pendingServices,
-    approvedServices,
-    rejectedServices,
-    isLoading,
-    newSubmissionCount,
-    markAsViewed,
-    approveService,
-    rejectService
-  } = useRealtimeServiceApprovals();
-  
+  const [pendingServices, setPendingServices] = useState<ServiceSubmission[]>([]);
+  const [approvedServices, setApprovedServices] = useState<ServiceSubmission[]>([]);
+  const [rejectedServices, setRejectedServices] = useState<ServiceSubmission[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<string>("pending");
   
   useEffect(() => {
-    // Mark new submissions as viewed when admin opens the approvals tab
-    if (activeTab === "pending" && newSubmissionCount > 0) {
-      markAsViewed();
-    }
-  }, [activeTab, newSubmissionCount, markAsViewed]);
+    // Simulate API fetch
+    setTimeout(() => {
+      setPendingServices(MOCK_PENDING_SERVICES);
+      setApprovedServices([]);
+      setRejectedServices([]);
+      setIsLoading(false);
+    }, 1000);
+  }, []);
   
-  const handleApprove = async (serviceId: string) => {
-    await approveService(serviceId);
+  const handleApprove = (serviceId: string) => {
+    const service = pendingServices.find(s => s.id === serviceId);
+    if (!service) return;
+    
+    // Update service status
+    const updatedService = { ...service, status: "approved" as const };
+    
+    // Update lists
+    setPendingServices(pendingServices.filter(s => s.id !== serviceId));
+    setApprovedServices([updatedService, ...approvedServices]);
+    
+    toast.success(`Service "${service.title}" approved`, {
+      description: "The service is now live on the marketplace."
+    });
   };
   
-  const handleReject = async (serviceId: string) => {
-    await rejectService(serviceId);
+  const handleReject = (serviceId: string) => {
+    const service = pendingServices.find(s => s.id === serviceId);
+    if (!service) return;
+    
+    // Update service status
+    const updatedService = { ...service, status: "rejected" as const };
+    
+    // Update lists
+    setPendingServices(pendingServices.filter(s => s.id !== serviceId));
+    setRejectedServices([updatedService, ...rejectedServices]);
+    
+    toast.success(`Service "${service.title}" rejected`, {
+      description: "The provider has been notified."
+    });
   };
-
+  
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -51,10 +142,7 @@ export function AdminServiceApproval() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-2xl flex items-center justify-between">
-          <span>Service Approval Queue</span>
-          <RealtimeNotificationBadge count={newSubmissionCount} />
-        </CardTitle>
+        <CardTitle className="text-2xl">Service Approval Queue</CardTitle>
         <CardDescription>
           Review and approve service submissions from security providers
         </CardDescription>
@@ -103,7 +191,7 @@ export function AdminServiceApproval() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Service</TableHead>
-                      <TableHead>Provider ID</TableHead>
+                      <TableHead>Provider</TableHead>
                       <TableHead>Submission Date</TableHead>
                       <TableHead>Category</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
@@ -113,11 +201,11 @@ export function AdminServiceApproval() {
                     {pendingServices.map((service) => (
                       <TableRow key={service.id}>
                         <TableCell className="font-medium">{service.title}</TableCell>
-                        <TableCell>{service.provider_id}</TableCell>
-                        <TableCell>{formatDate(service.created_at)}</TableCell>
+                        <TableCell>{service.provider_name}</TableCell>
+                        <TableCell>{formatDate(service.submission_date)}</TableCell>
                         <TableCell>
                           <Badge variant="outline">
-                            {service.category?.replace(/-/g, ' ') || 'General'}
+                            {service.category.replace(/-/g, ' ')}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
@@ -127,7 +215,7 @@ export function AdminServiceApproval() {
                               variant="outline"
                               className="h-8 w-8 p-0"
                               onClick={() => toast.info("Service details", {
-                                description: service.description || 'No description available'
+                                description: service.description
                               })}
                             >
                               <Eye className="h-4 w-4" />
@@ -168,11 +256,12 @@ export function AdminServiceApproval() {
               </div>
             ) : (
               <div className="rounded-md border">
+                {/* Approved services table - similar structure to pending */}
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Service</TableHead>
-                      <TableHead>Provider ID</TableHead>
+                      <TableHead>Provider</TableHead>
                       <TableHead>Submission Date</TableHead>
                       <TableHead>Category</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
@@ -182,11 +271,11 @@ export function AdminServiceApproval() {
                     {approvedServices.map((service) => (
                       <TableRow key={service.id}>
                         <TableCell className="font-medium">{service.title}</TableCell>
-                        <TableCell>{service.provider_id}</TableCell>
-                        <TableCell>{formatDate(service.created_at)}</TableCell>
+                        <TableCell>{service.provider_name}</TableCell>
+                        <TableCell>{formatDate(service.submission_date)}</TableCell>
                         <TableCell>
                           <Badge variant="outline">
-                            {service.category?.replace(/-/g, ' ') || 'General'}
+                            {service.category.replace(/-/g, ' ')}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
@@ -194,9 +283,6 @@ export function AdminServiceApproval() {
                             size="sm"
                             variant="outline"
                             className="h-8 w-8 p-0"
-                            onClick={() => toast.info("Service details", {
-                              description: service.description || 'No description available'
-                            })}
                           >
                             <Eye className="h-4 w-4" />
                             <span className="sr-only">View</span>
@@ -217,11 +303,12 @@ export function AdminServiceApproval() {
               </div>
             ) : (
               <div className="rounded-md border">
+                {/* Rejected services table - similar structure to pending */}
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Service</TableHead>
-                      <TableHead>Provider ID</TableHead>
+                      <TableHead>Provider</TableHead>
                       <TableHead>Submission Date</TableHead>
                       <TableHead>Category</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
@@ -231,11 +318,11 @@ export function AdminServiceApproval() {
                     {rejectedServices.map((service) => (
                       <TableRow key={service.id}>
                         <TableCell className="font-medium">{service.title}</TableCell>
-                        <TableCell>{service.provider_id}</TableCell>
-                        <TableCell>{formatDate(service.created_at)}</TableCell>
+                        <TableCell>{service.provider_name}</TableCell>
+                        <TableCell>{formatDate(service.submission_date)}</TableCell>
                         <TableCell>
                           <Badge variant="outline">
-                            {service.category?.replace(/-/g, ' ') || 'General'}
+                            {service.category.replace(/-/g, ' ')}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
@@ -243,9 +330,6 @@ export function AdminServiceApproval() {
                             size="sm"
                             variant="outline"
                             className="h-8 w-8 p-0"
-                            onClick={() => toast.info("Service details", {
-                              description: service.description || 'No description available'
-                            })}
                           >
                             <Eye className="h-4 w-4" />
                             <span className="sr-only">View</span>

@@ -10,9 +10,6 @@ import { AdminPlatformValidator } from "@/components/dev/AdminPlatformValidator"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
-import { RealtimeConnectionStatus } from "@/components/realtime/RealtimeConnectionStatus";
-import { adminAuth } from "@/utils/admin/adminAuth";
 
 interface AdminDashboardProps {
   section?: DashboardTabValue;
@@ -24,24 +21,15 @@ const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
   const [activeTab, setActiveTab] = useState<DashboardTabValue>(section);
   const [showSystemChecks, setShowSystemChecks] = useState(true);
 
-  // Enhanced admin authentication check
-  const isAuthenticated = adminAuth.hasAdminAccess();
-  const adminUser = adminAuth.getAdminUser();
+  // Check if admin is authenticated
+  const isAuthenticated = localStorage.getItem("adminAuthenticated") === "true";
+  const adminUser = localStorage.getItem("adminUser");
 
   useEffect(() => {
-    // Check session validity
-    if (isAuthenticated && !adminAuth.isSessionValid()) {
-      toast.error("Admin session expired", {
-        description: "Please log in again for security",
-      });
-      adminAuth.logout();
-      return;
-    }
-
     // Welcome message for admin
     if (isAuthenticated && adminUser) {
       toast.success(`Welcome back, ${adminUser}`, {
-        description: "Secure admin dashboard loaded",
+        description: "Admin dashboard loaded successfully",
         duration: 3000
       });
     }
@@ -51,22 +39,18 @@ const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
       setIsLoading(false);
     }, 800);
 
-    // Handle URL parameters for tab switching
-    const urlTab = searchParams.get("tab");
+    // Check for platform report query param
     const showPlatformReport = searchParams.get("showPlatformReport") === "true";
-    
     if (showPlatformReport) {
       setActiveTab("reports");
-    } else if (urlTab && ["dashboard", "users", "services", "audits", "providers", "approvals", "reports", "settings"].includes(urlTab)) {
-      setActiveTab(urlTab as DashboardTabValue);
     } else {
+      // Update active tab when section prop changes
       setActiveTab(section);
     }
 
     return () => clearTimeout(timer);
   }, [section, isAuthenticated, adminUser, searchParams]);
 
-  // Redirect non-admin users to login
   if (!isAuthenticated) {
     return <Navigate to="/admin/login" replace />;
   }
@@ -80,22 +64,14 @@ const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
           {showSystemChecks && (
             <Card className="mb-6">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex justify-between items-center">
-                  <span className="flex items-center gap-2">
-                    System Health Checks
-                    <Badge variant="outline" className="text-xs">
-                      Real-time
-                    </Badge>
-                  </span>
-                  <div className="flex items-center gap-4">
-                    <RealtimeConnectionStatus />
-                    <button 
-                      onClick={() => setShowSystemChecks(false)} 
-                      className="text-muted-foreground text-sm font-normal hover:text-foreground"
-                    >
-                      Dismiss
-                    </button>
-                  </div>
+                <CardTitle className="text-lg flex justify-between">
+                  <span>System Health Checks</span>
+                  <button 
+                    onClick={() => setShowSystemChecks(false)} 
+                    className="text-muted-foreground text-sm font-normal hover:text-foreground"
+                  >
+                    Dismiss
+                  </button>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">

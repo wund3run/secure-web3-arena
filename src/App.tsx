@@ -5,12 +5,6 @@ import { Toaster } from './components/ui/toaster';
 import { AppProviders } from './components/app/AppProviders';
 import { EnhancedErrorBoundary } from './components/error/enhanced-error-boundary';
 import { RouterErrorBoundary } from './components/error/RouterErrorBoundary';
-import { BreadcrumbEnhanced } from './components/ui/breadcrumb-enhanced';
-import { AccessibilityControls } from './components/ui/accessibility-controls';
-import { AdminRoute } from './components/auth/AdminRoute';
-
-// Import CSS for accessibility enhancements
-import './styles/accessibility.css';
 
 // Pages
 import Index from './pages/Index';
@@ -43,7 +37,7 @@ import Escrow from './pages/Escrow';
 import SecurityInsights from './pages/SecurityInsights';
 import Roadmap from './pages/Roadmap';
 
-// Protected Admin Pages
+// Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminLogin from './pages/admin/AdminLogin';
 
@@ -58,6 +52,8 @@ import Events from './pages/Events';
 import Challenges from './pages/Challenges';
 import Vulnerabilities from './pages/Vulnerabilities';
 import WebThreeSecurity from './pages/WebThreeSecurity';
+
+// New Support Pages
 import FAQ from './pages/FAQ';
 import KnowledgeBase from './pages/KnowledgeBase';
 import Templates from './pages/Templates';
@@ -69,105 +65,67 @@ function App() {
     <EnhancedErrorBoundary routeFallback={true}>
       <AppProviders>
         <RouterErrorBoundary>
-          <div className="min-h-screen flex flex-col w-full">
-            {/* Skip to main content link for accessibility */}
-            <a 
-              href="#main-content" 
-              className="skip-link"
-            >
-              Skip to main content
-            </a>
-
-            <GlobalComponents removeDevTools={true} />
+          <GlobalComponents removeDevTools={true} />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/service/:id" element={<ServiceDetails />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/auth/2fa" element={<TwoFactorAuth />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/request-audit" element={<RequestAudit />} />
+            <Route path="/request-audit/:serviceId" element={<AuditRequestForService />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/audit/:id" element={<AuditDetails />} />
+            <Route path="/audits" element={<Audits />} />
+            <Route path="/contact-provider/:id" element={<ContactProvider />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/stats" element={<Stats />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/ai-tools" element={<EnhancedAITools />} />
+            <Route path="/support" element={<SupportCenter />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/achievements" element={<Achievements />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/application-submitted" element={<ApplicationSubmitted />} />
+            <Route path="/audit-guidelines" element={<AuditGuidelines />} />
+            <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
+            <Route path="/submit-service" element={<SubmitService />} />
+            <Route path="/escrow" element={<Escrow />} />
+            <Route path="/security-insights" element={<SecurityInsights />} />
+            <Route path="/roadmap" element={<Roadmap />} />
+            {/* Redirect platform report to admin dashboard */}
+            <Route path="/platform-report" element={<Navigate to="/admin/dashboard?showPlatformReport=true" replace />} />
             
-            {/* Breadcrumb navigation for better UX */}
-            <BreadcrumbEnhanced />
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
             
-            <main 
-              id="main-content" 
-              className="flex-1"
-              role="main"
-              tabIndex={-1}
-            >
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/marketplace" element={<Marketplace />} />
-                <Route path="/service/:id" element={<ServiceDetails />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/auth/callback" element={<AuthCallback />} />
-                <Route path="/auth/2fa" element={<TwoFactorAuth />} />
-                
-                {/* Fixed Dashboard Routes */}
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/dashboard/project" element={<Dashboard />} />
-                <Route path="/dashboard/auditor" element={<Dashboard />} />
-                
-                <Route path="/request-audit" element={<RequestAudit />} />
-                <Route path="/request-audit/:serviceId" element={<AuditRequestForService />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/audit/:id" element={<AuditDetails />} />
-                <Route path="/audits" element={<Audits />} />
-                <Route path="/contact-provider/:id" element={<ContactProvider />} />
-                <Route path="/pricing" element={<Pricing />} />
-                <Route path="/stats" element={<Stats />} />
-                <Route path="/resources" element={<Resources />} />
-                <Route path="/ai-tools" element={<EnhancedAITools />} />
-                <Route path="/support" element={<SupportCenter />} />
-                <Route path="/leaderboard" element={<Leaderboard />} />
-                <Route path="/achievements" element={<Achievements />} />
-                <Route path="/community" element={<Community />} />
-                <Route path="/application-submitted" element={<ApplicationSubmitted />} />
-                <Route path="/audit-guidelines" element={<AuditGuidelines />} />
-                <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
-                <Route path="/submit-service" element={<SubmitService />} />
-                <Route path="/escrow" element={<Escrow />} />
-                <Route path="/security-insights" element={<SecurityInsights />} />
-                <Route path="/roadmap" element={<Roadmap />} />
-                
-                {/* Protected Admin Routes - Completely separate from user app */}
-                <Route path="/admin/login" element={<AdminLogin />} />
-                <Route path="/admin" element={
-                  <AdminRoute>
-                    <AdminDashboard />
-                  </AdminRoute>
-                } />
-                <Route path="/admin/dashboard" element={
-                  <AdminRoute>
-                    <AdminDashboard />
-                  </AdminRoute>
-                } />
-                
-                {/* Legal and Policy Pages */}
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/privacy" element={<Privacy />} />
-                <Route path="/security-policy" element={<SecurityPolicy />} />
-                
-                {/* Documentation and Learning */}
-                <Route path="/docs" element={<Docs />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/forum" element={<Forum />} />
-                <Route path="/events" element={<Events />} />
-                <Route path="/challenges" element={<Challenges />} />
-                <Route path="/vulnerabilities" element={<Vulnerabilities />} />
-                <Route path="/web3-security" element={<WebThreeSecurity />} />
-                
-                {/* Support Resource Routes */}
-                <Route path="/faq" element={<FAQ />} />
-                <Route path="/knowledge-base" element={<KnowledgeBase />} />
-                <Route path="/templates" element={<Templates />} />
-                <Route path="/guides" element={<Guides />} />
-                <Route path="/tutorials" element={<Tutorials />} />
-                
-                {/* 404 Page */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </main>
+            {/* New Routes */}
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/security-policy" element={<SecurityPolicy />} />
+            <Route path="/docs" element={<Docs />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/forum" element={<Forum />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/challenges" element={<Challenges />} />
+            <Route path="/vulnerabilities" element={<Vulnerabilities />} />
+            <Route path="/web3-security" element={<WebThreeSecurity />} />
             
-            {/* Enhanced Accessibility Controls */}
-            <AccessibilityControls />
+            {/* Support Resource Routes */}
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/knowledge-base" element={<KnowledgeBase />} />
+            <Route path="/templates" element={<Templates />} />
+            <Route path="/guides" element={<Guides />} />
+            <Route path="/tutorials" element={<Tutorials />} />
             
-            <Toaster />
-          </div>
+            {/* 404 Page */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <Toaster />
         </RouterErrorBoundary>
       </AppProviders>
     </EnhancedErrorBoundary>

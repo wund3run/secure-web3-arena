@@ -7,11 +7,12 @@ import { MarketplaceDialogs } from "@/components/marketplace/layout/MarketplaceD
 import { ComparisonFloatingIndicator } from "@/components/marketplace/sections/ComparisonFloatingIndicator";
 import { SERVICES } from "@/data/marketplace-data";
 import { MarketplaceProvider, useMarketplace } from "@/contexts/marketplace/MarketplaceContext";
-import { EnhancedErrorBoundary } from "@/components/ui/enhanced-error-boundary";
-import { PageLoading } from "@/components/ui/enhanced-loading";
+import { MarketplaceErrorBoundary, ErrorBoundary } from "@/utils/error-handling";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { handleApiError } from "@/utils/apiErrorHandler";
 import { ServiceCardProps } from "@/types/marketplace-unified";
+import { MarketplaceLoadingState } from "@/components/marketplace/error-handling";
 import { MarketplaceHero } from "@/components/marketplace/sections/MarketplaceHero";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -29,6 +30,7 @@ function MarketplacePageContent() {
   
   const {
     state,
+    setViewMode,
     setShowFilters,
     setActiveCategory,
     setSelectedService,
@@ -56,7 +58,7 @@ function MarketplacePageContent() {
     showComparison
   } = state;
 
-  // Redirect from /marketplace?compare=true to /marketplace 
+  // Redirect from /marketplace?compare=true to /marketplace (since we removed the comparison option)
   useEffect(() => {
     if (compareParam === 'true') {
       // Use replace to avoid adding to browser history
@@ -92,24 +94,22 @@ function MarketplacePageContent() {
 
   if (servicesQuery.error) {
     return (
-      <EnhancedErrorBoundary>
-        <div className="flex flex-col items-center justify-center p-8 text-center">
-          <div className="bg-destructive/10 p-4 rounded-lg mb-4">
-            <p className="text-destructive font-medium">Failed to load marketplace services</p>
-          </div>
-          <p className="text-muted-foreground">Please try again later or contact support if the issue persists.</p>
+      <div className="flex flex-col items-center justify-center p-8 text-center">
+        <div className="bg-destructive/10 p-4 rounded-lg mb-4">
+          <p className="text-destructive font-medium">Failed to load marketplace services</p>
         </div>
-      </EnhancedErrorBoundary>
+        <p className="text-muted-foreground">Please try again later or contact support if the issue persists.</p>
+      </div>
     );
   }
 
   if (isLoading || servicesQuery.isLoading) {
-    return <PageLoading message="Loading marketplace..." />;
+    return <MarketplaceLoadingState count={8} />;
   }
 
   return (
-    <EnhancedErrorBoundary>
-      <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6">
+      <MarketplaceErrorBoundary>
         {/* Add the hero section at the top */}
         <MarketplaceHero onShowOnboarding={() => handleOnboardingComplete()} />
         
@@ -154,8 +154,8 @@ function MarketplacePageContent() {
             handleOpenComparison={handleOpenComparison}
           />
         )}
-      </div>
-    </EnhancedErrorBoundary>
+      </MarketplaceErrorBoundary>
+    </div>
   );
 }
 
@@ -166,12 +166,14 @@ export default function Marketplace() {
   }, []);
 
   return (
-    <EnhancedErrorBoundary>
+    <ErrorBoundary>
       <MarketplaceProvider services={SERVICES}>
         <MarketplaceLayout>
-          <MarketplacePageContent />
+          <MarketplaceErrorBoundary>
+            <MarketplacePageContent />
+          </MarketplaceErrorBoundary>
         </MarketplaceLayout>
       </MarketplaceProvider>
-    </EnhancedErrorBoundary>
+    </ErrorBoundary>
   );
 }

@@ -26,9 +26,9 @@ export function useSupabaseHealth() {
     try {
       console.log("Performing Supabase health check...");
       
-      // Test database connection using existing table
+      // Test database connection
       const { error: dbError } = await supabase
-        .from('extended_profiles')
+        .from('profiles')
         .select('count(*)', { count: 'exact', head: true });
       
       const responseTime = Date.now() - startTime;

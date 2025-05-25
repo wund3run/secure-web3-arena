@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Shield, Lock, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { adminAuth } from "@/utils/admin/adminAuth";
 
 const AdminLogin = () => {
   const [username, setUsername] = useState("");
@@ -21,19 +20,13 @@ const AdminLogin = () => {
   // Get redirect path from location state or default to dashboard
   const from = location.state?.from?.pathname || "/admin/dashboard";
 
-  // Enhanced authentication check
-  const isAuthenticated = adminAuth.hasAdminAccess();
+  // Simple check for if admin is already logged in
+  const isAuthenticated = localStorage.getItem("adminAuthenticated") === "true";
   
   useEffect(() => {
     // Check if redirected here due to auth issues
     if (location.state?.message) {
       setError(location.state.message);
-    }
-
-    // Auto-logout if session expired
-    if (adminAuth.isAdminAuthenticated() && !adminAuth.isSessionValid()) {
-      adminAuth.logout();
-      toast.warning("Session expired for security");
     }
   }, [location.state]);
 
@@ -46,39 +39,36 @@ const AdminLogin = () => {
     setIsLoading(true);
     setError(null);
 
-    // Enhanced security check with rate limiting simulation
+    // For demo purposes, using a hardcoded admin/admin123 credential
+    // In a real app, this would be authenticated against a secure backend
     setTimeout(() => {
       if (username === "admin" && password === "admin123") {
         localStorage.setItem("adminAuthenticated", "true");
         localStorage.setItem("adminUser", username);
-        localStorage.setItem("adminLoginTime", Date.now().toString());
-        
-        toast.success("Secure admin login successful", {
-          description: "Welcome to the protected admin dashboard",
+        toast.success("Login successful", {
+          description: "Welcome to the admin dashboard",
         });
         navigate(from, { replace: true });
       } else {
-        setError("Invalid admin credentials. Access denied.");
-        toast.error("Authentication failed", {
-          description: "Invalid admin credentials provided",
+        setError("Invalid credentials. Please check your username and password.");
+        toast.error("Invalid credentials", {
+          description: "Please check your username and password",
         });
       }
       setIsLoading(false);
-    }, 1000); // Increased delay for security
+    }, 800);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/30 p-4">
-      <Card className="w-full max-w-md shadow-lg border-2">
+      <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1 flex flex-col items-center text-center">
-          <div className="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center mb-2">
-            <Shield className="h-6 w-6 text-red-500" />
+          <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+            <Shield className="h-6 w-6 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-bold text-red-600">
-            RESTRICTED ACCESS
-          </CardTitle>
-          <CardDescription className="text-center">
-            Authorized personnel only. All access attempts are logged.
+          <CardTitle className="text-2xl font-bold">Admin Access</CardTitle>
+          <CardDescription>
+            Secure login to the Hawkly platform administration
           </CardDescription>
         </CardHeader>
         
@@ -94,10 +84,10 @@ const AdminLogin = () => {
         <form onSubmit={handleLogin}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Admin Username</Label>
+              <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
-                placeholder="Enter admin username"
+                placeholder="admin"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -106,11 +96,16 @@ const AdminLogin = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Admin Password</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Password</Label>
+                <a href="#" className="text-xs text-primary hover:underline">
+                  Forgot password?
+                </a>
+              </div>
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter admin password"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -119,15 +114,14 @@ const AdminLogin = () => {
               />
             </div>
             
-            <div className="text-xs text-muted-foreground bg-yellow-50 p-2 rounded border">
-              <p className="font-medium text-yellow-800">Security Notice:</p>
-              <p className="text-yellow-700">This is a restricted administrative area. Unauthorized access is prohibited.</p>
+            <div className="text-xs text-muted-foreground">
+              <p>For demo purposes: Username: <code>admin</code>, Password: <code>admin123</code></p>
             </div>
           </CardContent>
           <CardFooter>
             <Button 
               type="submit" 
-              className="w-full bg-red-600 hover:bg-red-700" 
+              className="w-full" 
               disabled={isLoading}
             >
               {isLoading ? (
@@ -138,7 +132,7 @@ const AdminLogin = () => {
               ) : (
                 <>
                   <Lock className="mr-2 h-4 w-4" />
-                  Admin Login
+                  Login to Dashboard
                 </>
               )}
             </Button>

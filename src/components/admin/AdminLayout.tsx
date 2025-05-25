@@ -13,9 +13,7 @@ import {
   LogOut,
   PanelLeft,
   AlertCircle,
-  ActivitySquare,
-  ShoppingCart,
-  BookOpen
+  ActivitySquare
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
@@ -41,8 +39,10 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
     const loginTime = localStorage.getItem("adminLoginTime");
     
     if (!loginTime) {
+      // Set login time if not already set
       localStorage.setItem("adminLoginTime", Date.now().toString());
     } else {
+      // Check session duration (24 hour expiry for demo)
       const sessionDuration = Date.now() - parseInt(loginTime);
       const sessionHours = sessionDuration / (1000 * 60 * 60);
       
@@ -63,6 +63,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
     navigate("/admin/login");
   };
 
+  // Confirm logout dialog
   const confirmLogout = () => {
     if (confirm("Are you sure you want to log out?")) {
       handleLogout();
@@ -76,48 +77,29 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
       href: "/admin/dashboard",
     },
     {
-      icon: <Users className="h-4 w-4" />,
-      label: "Users",
-      href: "/admin/dashboard?tab=users",
-    },
-    {
       icon: <Package className="h-4 w-4" />,
       label: "Services",
-      href: "/admin/dashboard?tab=services",
+      href: "/admin/services",
+    },
+    {
+      icon: <Users className="h-4 w-4" />,
+      label: "Users",
+      href: "/admin/users",
     },
     {
       icon: <Shield className="h-4 w-4" />,
       label: "Audits",
-      href: "/admin/dashboard?tab=audits",
+      href: "/admin/audits",
     },
     {
       icon: <FileText className="h-4 w-4" />,
       label: "Reports",
-      href: "/admin/dashboard?tab=reports",
+      href: "/admin/reports",
     },
     {
       icon: <Settings className="h-4 w-4" />,
       label: "Settings",
-      href: "/admin/dashboard?tab=settings",
-    },
-  ];
-
-  // App integration menu items
-  const appIntegrationItems = [
-    {
-      icon: <ShoppingCart className="h-4 w-4" />,
-      label: "Marketplace",
-      href: "/marketplace",
-    },
-    {
-      icon: <BookOpen className="h-4 w-4" />,
-      label: "Resources",
-      href: "/resources",
-    },
-    {
-      icon: <Shield className="h-4 w-4" />,
-      label: "Guidelines",
-      href: "/audit-guidelines",
+      href: "/admin/settings",
     },
   ];
 
@@ -146,43 +128,22 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
         </div>
 
         <div className="py-4">
-          {/* Admin Functions */}
-          <div className="px-2 mb-4">
-            {!collapsed && <p className="text-xs font-medium text-muted-foreground mb-2 px-2">ADMIN FUNCTIONS</p>}
-            <nav className="space-y-1">
-              {menuItems.map((item) => (
-                <Link key={item.href} to={item.href}>
-                  <div
-                    className={`flex items-center px-2 py-2 text-sm rounded-md transition-colors ${
-                      currentPath === item.href || (item.href.includes('?tab=') && location.search.includes(item.href.split('?tab=')[1]))
-                        ? "bg-primary text-primary-foreground"
-                        : "hover:bg-accent hover:text-accent-foreground"
-                    }`}
-                  >
-                    <span className="mr-3">{item.icon}</span>
-                    {!collapsed && <span>{item.label}</span>}
-                  </div>
-                </Link>
-              ))}
-            </nav>
-          </div>
-          
-          <Separator className="my-4" />
-          
-          {/* App Integration */}
-          <div className="px-2 mb-4">
-            {!collapsed && <p className="text-xs font-medium text-muted-foreground mb-2 px-2">APP FEATURES</p>}
-            <nav className="space-y-1">
-              {appIntegrationItems.map((item) => (
-                <Link key={item.href} to={item.href} target="_blank" rel="noopener noreferrer">
-                  <div className="flex items-center px-2 py-2 text-sm rounded-md hover:bg-accent transition-colors">
-                    <span className="mr-3">{item.icon}</span>
-                    {!collapsed && <span>{item.label}</span>}
-                  </div>
-                </Link>
-              ))}
-            </nav>
-          </div>
+          <nav className="space-y-1 px-2">
+            {menuItems.map((item) => (
+              <Link key={item.href} to={item.href}>
+                <div
+                  className={`flex items-center px-2 py-2 text-sm rounded-md transition-colors ${
+                    currentPath === item.href
+                      ? "bg-primary text-primary-foreground"
+                      : "hover:bg-accent hover:text-accent-foreground"
+                  }`}
+                >
+                  <span className="mr-3">{item.icon}</span>
+                  {!collapsed && <span>{item.label}</span>}
+                </div>
+              </Link>
+            ))}
+          </nav>
           
           <Separator className="my-4" />
           
@@ -266,7 +227,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
               title="Admin Panel (Beta)"
             >
               <p className="text-sm">
-                The admin panel is currently in beta. All links now connect to proper app features.
+                The admin panel is currently in beta. Some features may be limited or contain bugs.
                 Use with caution and report any issues to the development team.
               </p>
             </BetaWarning>
