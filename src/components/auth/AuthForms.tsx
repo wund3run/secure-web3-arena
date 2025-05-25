@@ -37,7 +37,7 @@ export function AuthForms({
     try {
       await onSignIn(email, password);
     } catch (err) {
-      // Error handling is done in the auth provider
+      console.error("Sign in error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -53,7 +53,7 @@ export function AuthForms({
     try {
       await onSignUp(email, password, fullName, userType);
     } catch (err) {
-      // Error handling is done in the auth provider
+      console.error("Sign up error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -61,7 +61,6 @@ export function AuthForms({
 
   return (
     <div className="w-full max-w-md space-y-6">
-      {/* Logo and Header */}
       <div className="text-center">
         <h1 className="text-2xl font-bold">{isSignIn ? "Sign In to Hawkly" : "Create a Hawkly Account"}</h1>
         <p className="text-sm text-muted-foreground mt-2">
@@ -71,14 +70,12 @@ export function AuthForms({
         </p>
       </div>
       
-      {/* Return message (if any) */}
       {returnMessage && (
         <div className="bg-muted/50 px-4 py-3 rounded-md text-sm">
           {returnMessage}
         </div>
       )}
 
-      {/* User type selection for sign up */}
       {!isSignIn && (
         <div className="space-y-2">
           <label className="block text-sm font-medium">Select Account Type</label>
@@ -112,7 +109,6 @@ export function AuthForms({
         </div>
       )}
 
-      {/* Auth Form */}
       <div className="space-y-4">
         <form onSubmit={isSignIn ? handleSignIn : handleSignUp} className="space-y-4">
           {!isSignIn && (
@@ -175,7 +171,6 @@ export function AuthForms({
         </form>
       </div>
 
-      {/* Toggle between sign in and sign up */}
       <div className="text-center mt-6">
         <p className="text-sm">
           {isSignIn ? "Don't have an account? " : "Already have an account? "}
