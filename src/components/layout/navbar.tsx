@@ -1,9 +1,9 @@
 
 import React from "react";
-import { EnhancedNavbar } from "./enhanced-navbar";
+import { ProductionNavbar } from "./production-navbar";
 
 export function Navbar() {
   return (
-    <EnhancedNavbar />
+    <ProductionNavbar />
   );
 }
