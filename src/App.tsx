@@ -96,7 +96,12 @@ function App() {
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/auth/callback" element={<AuthCallback />} />
                 <Route path="/auth/2fa" element={<TwoFactorAuth />} />
+                
+                {/* Fixed Dashboard Routes */}
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard/project" element={<Dashboard />} />
+                <Route path="/dashboard/auditor" element={<Dashboard />} />
+                
                 <Route path="/request-audit" element={<RequestAudit />} />
                 <Route path="/request-audit/:serviceId" element={<AuditRequestForService />} />
                 <Route path="/contact" element={<Contact />} />

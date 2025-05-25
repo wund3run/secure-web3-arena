@@ -10,7 +10,28 @@ import App from "@/App";
 export const routeExists = (path: string): boolean => {
   // Extract all routes from App.tsx
   const routes = extractRoutesFromApp();
-  return routes.includes(path);
+  return routes.includes(path) || isDynamicRouteMatch(path, routes);
+};
+
+/**
+ * Check if a path matches any dynamic route patterns
+ * @param path The path to check
+ * @param routes Array of route patterns
+ * @returns boolean indicating if path matches a dynamic route
+ */
+export const isDynamicRouteMatch = (path: string, routes: string[]): boolean => {
+  return routes.some(route => {
+    if (!route.includes(':')) return false;
+    
+    const routeParts = route.split('/');
+    const pathParts = path.split('/');
+    
+    if (routeParts.length !== pathParts.length) return false;
+    
+    return routeParts.every((part, index) => {
+      return part.startsWith(':') || part === pathParts[index];
+    });
+  });
 };
 
 /**
@@ -18,7 +39,7 @@ export const routeExists = (path: string): boolean => {
  * @returns Array of route paths
  */
 export const extractRoutesFromApp = (): string[] => {
-  // Updated list with duplicate /dashboard/:type removed
+  // Updated list with fixed dashboard routes
   return [
     "/",
     "/marketplace",
@@ -27,6 +48,8 @@ export const extractRoutesFromApp = (): string[] => {
     "/auth/callback",
     "/auth/2fa",
     "/dashboard",
+    "/dashboard/project",
+    "/dashboard/auditor",
     "/request-audit",
     "/request-audit/:serviceId",
     "/contact",
@@ -65,8 +88,7 @@ export const extractRoutesFromApp = (): string[] => {
     "/templates",
     "/guides",
     "/tutorials",
-    "/roadmap",
-    "/platform-report"
+    "/roadmap"
   ];
 };
 
@@ -82,6 +104,8 @@ export const getFallbackRoute = (path: string): string => {
   
   // Enhanced mapping for common patterns
   const fallbacks: Record<string, string> = {
+    "/dashboard/project": "/dashboard",
+    "/dashboard/auditor": "/dashboard",
     "/security-insights": "/web3-security",
     "/learning": "/resources",
     "/documentation": "/docs",
