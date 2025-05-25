@@ -6,6 +6,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/co
 import { Menu, LogIn, User, LogOut } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
+import { useAuth } from "@/contexts/auth";
 
 interface NavigationLink {
   title: string;
@@ -29,6 +30,8 @@ export function MobileNavigation({
   isAuthenticated, 
   onSignOut 
 }: MobileNavigationProps) {
+  const { getUserType } = useAuth();
+  
   const handleLinkClick = () => {
     setIsOpen(false);
   };
@@ -36,6 +39,18 @@ export function MobileNavigation({
   const handleSignOut = () => {
     onSignOut();
     setIsOpen(false);
+  };
+
+  const getDashboardPath = () => {
+    if (!isAuthenticated) return "/dashboard";
+    
+    try {
+      const userType = getUserType();
+      return userType === 'auditor' ? '/dashboard/auditor' : '/dashboard/project';
+    } catch (error) {
+      console.error('Error determining user type:', error);
+      return '/dashboard';
+    }
   };
 
   return (
@@ -113,7 +128,7 @@ export function MobileNavigation({
               ) : (
                 <>
                   <Button variant="outline" asChild className="w-full justify-start">
-                    <Link to="/dashboard" onClick={handleLinkClick}>
+                    <Link to={getDashboardPath()} onClick={handleLinkClick}>
                       <User className="mr-2 h-4 w-4" />
                       Dashboard
                     </Link>

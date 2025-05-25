@@ -31,8 +31,8 @@ export function DesktopNavigation({ activeDropdown, handleDropdownToggle }: Desk
               </button>
               
               {activeDropdown === item.title && (
-                <div className="absolute top-full left-0 mt-1 w-64 bg-background border border-border rounded-md shadow-lg z-50">
-                  <div className="py-2">
+                <div className="absolute top-full left-0 mt-1 w-64 bg-background border border-border rounded-md shadow-lg z-50 backdrop-blur-sm">
+                  <div className="py-2 bg-background rounded-md">
                     {item.children.map((child) => (
                       <NavigationDropdownItem
                         key={child.href}

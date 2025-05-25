@@ -27,8 +27,6 @@ export const navigationLinksStructure: NavigationLinksStructure = {
     { title: "Roadmap", href: "/roadmap", description: "Our platform development plans" },
   ],
   dashboards: [
-    { title: "Auditor Dashboard", href: "/dashboard/auditor", description: "Access your auditor workspace" },
-    { title: "Project Dashboard", href: "/dashboard/project", description: "Manage your project security" },
     { title: "Audit Analytics", href: "/dashboard/analytics", description: "View performance metrics and insights" },
     { title: "Escrow Management", href: "/escrow", description: "Manage secure payment transactions" },
     { title: "Reputation Center", href: "/leaderboard", description: "Track your platform reputation" },
@@ -61,10 +59,5 @@ export const navigationLinks: NavigationLink[] = [
     title: "Resources",
     href: "/resources",
     children: navigationLinksStructure.resources,
-  },
-  {
-    title: "Dashboard",
-    href: "/dashboard",
-    children: navigationLinksStructure.dashboards,
   },
 ];

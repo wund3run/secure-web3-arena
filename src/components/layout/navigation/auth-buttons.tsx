@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogIn, User, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/auth";
 
 interface AuthButtonsProps {
   isAuthenticated: boolean;
@@ -10,8 +11,22 @@ interface AuthButtonsProps {
 }
 
 export function AuthButtons({ isAuthenticated, onSignOut }: AuthButtonsProps) {
+  const { getUserType } = useAuth();
+  
   const handleSignOut = () => {
     onSignOut();
+  };
+
+  const getDashboardPath = () => {
+    if (!isAuthenticated) return "/dashboard";
+    
+    try {
+      const userType = getUserType();
+      return userType === 'auditor' ? '/dashboard/auditor' : '/dashboard/project';
+    } catch (error) {
+      console.error('Error determining user type:', error);
+      return '/dashboard';
+    }
   };
 
   return (
@@ -36,7 +51,7 @@ export function AuthButtons({ isAuthenticated, onSignOut }: AuthButtonsProps) {
       ) : (
         <>
           <Button variant="outline" asChild className="relative group">
-            <Link to="/dashboard" aria-label="Go to your dashboard">
+            <Link to={getDashboardPath()} aria-label="Go to your dashboard">
               <User className="mr-2 h-4 w-4" />
               Dashboard
               <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full rounded-full"></span>
