@@ -14,6 +14,8 @@ interface HealthCheckResult {
   details?: string;
 }
 
+type TableName = 'profiles' | 'extended_profiles' | 'services' | 'audit_requests' | 'escrow_contracts';
+
 export function SupabaseHealthCheck() {
   const [checking, setChecking] = useState(false);
   const [results, setResults] = useState<HealthCheckResult[]>([]);
@@ -69,18 +71,18 @@ export function SupabaseHealthCheck() {
 
       // Test 3: Table accessibility
       console.log("Testing table accessibility...");
-      const tables = ['profiles', 'extended_profiles', 'services', 'audit_requests', 'escrow_contracts'];
+      const tables: TableName[] = ['profiles', 'extended_profiles', 'services', 'audit_requests', 'escrow_contracts'];
       let accessibleTables = 0;
       
-      for (const table of tables) {
+      for (const tableName of tables) {
         try {
           const { error } = await supabase
-            .from(table)
+            .from(tableName)
             .select('count(*)', { count: 'exact', head: true });
           
           if (!error) accessibleTables++;
         } catch (err) {
-          console.warn(`Table ${table} not accessible:`, err);
+          console.warn(`Table ${tableName} not accessible:`, err);
         }
       }
       

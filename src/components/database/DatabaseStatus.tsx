@@ -14,12 +14,14 @@ interface TableStatus {
   error?: string;
 }
 
+type TableName = 'profiles' | 'extended_profiles' | 'services' | 'audit_requests' | 'escrow_contracts' | 'reviews' | 'transactions' | 'milestones' | 'disputes';
+
 export function DatabaseStatus() {
   const [tableStatuses, setTableStatuses] = useState<TableStatus[]>([]);
   const [loading, setLoading] = useState(false);
   const [lastChecked, setLastChecked] = useState<Date | null>(null);
 
-  const tables = [
+  const tables: TableName[] = [
     'profiles',
     'extended_profiles', 
     'services',
