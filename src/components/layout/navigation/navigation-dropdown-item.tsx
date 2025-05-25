@@ -13,6 +13,10 @@ export function NavigationDropdownItem({ href, title, description }: NavigationD
     <Link
       to={href}
       className="block px-4 py-3 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-l-4 border-transparent hover:border-primary focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-primary"
+      style={{ 
+        backgroundColor: 'transparent',
+        color: '#374151'
+      }}
     >
       <div className="font-medium text-gray-900 dark:text-gray-100">{title}</div>
       {description && (

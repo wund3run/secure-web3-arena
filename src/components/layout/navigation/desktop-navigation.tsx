@@ -31,8 +31,16 @@ export function DesktopNavigation({ activeDropdown, handleDropdownToggle }: Desk
               </button>
               
               {activeDropdown === item.title && (
-                <div className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-[100] animate-in fade-in-0 zoom-in-95 duration-200">
-                  <div className="py-2 bg-white dark:bg-gray-800 rounded-lg">
+                <div 
+                  className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-[9999] animate-in fade-in-0 zoom-in-95 duration-200"
+                  role="menu"
+                  style={{ 
+                    backgroundColor: 'white',
+                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                    border: '1px solid #e5e7eb'
+                  }}
+                >
+                  <div className="py-2">
                     {item.children.map((child) => (
                       <NavigationDropdownItem
                         key={child.href}
