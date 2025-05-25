@@ -13,7 +13,11 @@ import {
   LogOut,
   PanelLeft,
   AlertCircle,
-  ActivitySquare
+  ActivitySquare,
+  ExternalLink,
+  Globe,
+  ShoppingCart,
+  UserCheck
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
@@ -39,10 +43,8 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
     const loginTime = localStorage.getItem("adminLoginTime");
     
     if (!loginTime) {
-      // Set login time if not already set
       localStorage.setItem("adminLoginTime", Date.now().toString());
     } else {
-      // Check session duration (24 hour expiry for demo)
       const sessionDuration = Date.now() - parseInt(loginTime);
       const sessionHours = sessionDuration / (1000 * 60 * 60);
       
@@ -63,7 +65,6 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
     navigate("/admin/login");
   };
 
-  // Confirm logout dialog
   const confirmLogout = () => {
     if (confirm("Are you sure you want to log out?")) {
       handleLogout();
@@ -101,6 +102,33 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
       label: "Settings",
       href: "/admin/settings",
     },
+  ];
+
+  const appNavigationItems = [
+    {
+      icon: <Globe className="h-4 w-4" />,
+      label: "Main Site",
+      href: "/",
+      external: false
+    },
+    {
+      icon: <ShoppingCart className="h-4 w-4" />,
+      label: "Marketplace",
+      href: "/marketplace",
+      external: false
+    },
+    {
+      icon: <Shield className="h-4 w-4" />,
+      label: "Audits Page",
+      href: "/audits",
+      external: false
+    },
+    {
+      icon: <UserCheck className="h-4 w-4" />,
+      label: "Request Audit",
+      href: "/request-audit",
+      external: false
+    }
   ];
 
   return (
@@ -147,6 +175,32 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
           
           <Separator className="my-4" />
           
+          {/* App Navigation Section */}
+          <div className="px-2">
+            {!collapsed && (
+              <h3 className="mb-2 px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                App Features
+              </h3>
+            )}
+            <nav className="space-y-1">
+              {appNavigationItems.map((item) => (
+                <Link key={item.href} to={item.href}>
+                  <div className="flex items-center px-2 py-2 text-sm rounded-md hover:bg-accent transition-colors">
+                    <span className="mr-3">{item.icon}</span>
+                    {!collapsed && (
+                      <span className="flex items-center gap-1">
+                        {item.label}
+                        <ExternalLink className="h-3 w-3 opacity-50" />
+                      </span>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </nav>
+          </div>
+          
+          <Separator className="my-4" />
+          
           <div className="px-2">
             <Dialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
               <DialogTrigger asChild>
@@ -162,13 +216,6 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
                 <PlatformStatusMonitor />
               </DialogContent>
             </Dialog>
-            
-            <Link to="/">
-              <div className="flex items-center px-2 py-2 text-sm rounded-md hover:bg-accent transition-colors">
-                <span className="mr-3"><Home className="h-4 w-4" /></span>
-                {!collapsed && <span>Main Site</span>}
-              </div>
-            </Link>
             
             <Button
               variant="ghost"
@@ -227,8 +274,8 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
               title="Admin Panel (Beta)"
             >
               <p className="text-sm">
-                The admin panel is currently in beta. Some features may be limited or contain bugs.
-                Use with caution and report any issues to the development team.
+                The admin panel is currently in beta. All connections to app features are active.
+                Use the navigation sidebar to access different sections of both admin and app features.
               </p>
             </BetaWarning>
           )}

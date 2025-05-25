@@ -20,6 +20,7 @@ interface NotificationData {
 export function useRealtimeSync() {
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [isConnected, setIsConnected] = useState(false);
+  const [connectionAttempts, setConnectionAttempts] = useState(0);
 
   const addNotification = useCallback((notification: Omit<NotificationData, 'id' | 'timestamp'>) => {
     const newNotification: NotificationData = {
@@ -36,83 +37,148 @@ export function useRealtimeSync() {
     });
   }, []);
 
+  const checkConnectionHealth = useCallback(async () => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .select('count(*)', { count: 'exact', head: true });
+      
+      if (error) {
+        console.error('Database health check failed:', error);
+        setIsConnected(false);
+        return false;
+      }
+      
+      const realtimeConnected = supabase.realtime.isConnected();
+      setIsConnected(realtimeConnected);
+      return realtimeConnected;
+    } catch (error) {
+      console.error('Connection health check failed:', error);
+      setIsConnected(false);
+      return false;
+    }
+  }, []);
+
   useEffect(() => {
     console.log('Setting up real-time synchronization...');
     
-    // Create channels for different table subscriptions
-    const auditRequestsChannel = supabase
-      .channel('audit_requests_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'audit_requests'
-        },
-        (payload) => {
-          console.log('Audit request change:', payload);
-          
-          if (payload.eventType === 'INSERT') {
-            addNotification({
-              message: `New audit request submitted: ${payload.new.project_name}`,
-              type: 'info'
-            });
-          } else if (payload.eventType === 'UPDATE') {
-            const statusChanged = payload.old.status !== payload.new.status;
-            if (statusChanged) {
-              addNotification({
-                message: `Audit request "${payload.new.project_name}" status updated to: ${payload.new.status}`,
-                type: payload.new.status === 'approved' ? 'success' : 'info'
-              });
+    let auditRequestsChannel: any;
+    let servicesChannel: any;
+    let reconnectTimer: NodeJS.Timeout;
+
+    const setupChannels = async () => {
+      try {
+        // Check if we can establish a basic connection first
+        const isHealthy = await checkConnectionHealth();
+        
+        if (!isHealthy && connectionAttempts > 3) {
+          console.warn('Multiple connection attempts failed, reducing retry frequency');
+          addNotification({
+            message: 'Real-time connection unstable. Some features may be delayed.',
+            type: 'warning'
+          });
+          return;
+        }
+
+        // Create channels for different table subscriptions
+        auditRequestsChannel = supabase
+          .channel('audit_requests_changes')
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'audit_requests'
+            },
+            (payload) => {
+              console.log('Audit request change:', payload);
+              
+              if (payload.eventType === 'INSERT') {
+                addNotification({
+                  message: `New audit request: ${payload.new?.project_name || 'Unknown project'}`,
+                  type: 'info'
+                });
+              } else if (payload.eventType === 'UPDATE') {
+                const statusChanged = payload.old?.status !== payload.new?.status;
+                if (statusChanged) {
+                  addNotification({
+                    message: `Audit "${payload.new?.project_name || 'Unknown'}" status: ${payload.new?.status}`,
+                    type: payload.new?.status === 'approved' ? 'success' : 'info'
+                  });
+                }
+              }
             }
-          }
-        }
-      )
-      .subscribe();
+          )
+          .subscribe((status) => {
+            console.log('Audit requests channel status:', status);
+            if (status === 'SUBSCRIBED') {
+              setIsConnected(true);
+              setConnectionAttempts(0);
+            } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+              setIsConnected(false);
+              setConnectionAttempts(prev => prev + 1);
+            }
+          });
 
-    const servicesChannel = supabase
-      .channel('services_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'services'
-        },
-        (payload) => {
-          console.log('Service change:', payload);
-          
-          if (payload.eventType === 'INSERT') {
-            addNotification({
-              message: `New service submitted: ${payload.new.title}`,
-              type: 'info'
-            });
-          } else if (payload.eventType === 'UPDATE') {
-            // Check if this is a status update (assuming we'll add a status field)
-            addNotification({
-              message: `Service "${payload.new.title}" has been updated`,
-              type: 'info'
-            });
-          }
-        }
-      )
-      .subscribe();
+        servicesChannel = supabase
+          .channel('services_changes')
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'services'
+            },
+            (payload) => {
+              console.log('Service change:', payload);
+              
+              if (payload.eventType === 'INSERT') {
+                addNotification({
+                  message: `New service: ${payload.new?.title || 'Unknown service'}`,
+                  type: 'info'
+                });
+              } else if (payload.eventType === 'UPDATE') {
+                addNotification({
+                  message: `Service "${payload.new?.title || 'Unknown'}" updated`,
+                  type: 'info'
+                });
+              }
+            }
+          )
+          .subscribe((status) => {
+            console.log('Services channel status:', status);
+          });
 
-    // Monitor connection status
-    const checkConnection = () => {
-      setIsConnected(supabase.realtime.isConnected());
+      } catch (error) {
+        console.error('Failed to setup real-time channels:', error);
+        setIsConnected(false);
+        setConnectionAttempts(prev => prev + 1);
+        
+        // Schedule reconnection attempt
+        reconnectTimer = setTimeout(() => {
+          if (connectionAttempts < 5) {
+            setupChannels();
+          }
+        }, Math.min(5000 * connectionAttempts, 30000)); // Exponential backoff, max 30s
+      }
     };
 
-    checkConnection();
-    const interval = setInterval(checkConnection, 5000);
+    // Initial setup
+    setupChannels();
+
+    // Monitor connection status periodically
+    const statusInterval = setInterval(() => {
+      checkConnectionHealth();
+    }, 10000); // Check every 10 seconds
 
     return () => {
       console.log('Cleaning up real-time subscriptions...');
-      supabase.removeChannel(auditRequestsChannel);
-      supabase.removeChannel(servicesChannel);
-      clearInterval(interval);
+      if (auditRequestsChannel) supabase.removeChannel(auditRequestsChannel);
+      if (servicesChannel) supabase.removeChannel(servicesChannel);
+      if (reconnectTimer) clearTimeout(reconnectTimer);
+      clearInterval(statusInterval);
     };
-  }, [addNotification]);
+  }, [addNotification, checkConnectionHealth, connectionAttempts]);
 
   const clearNotifications = useCallback(() => {
     setNotifications([]);

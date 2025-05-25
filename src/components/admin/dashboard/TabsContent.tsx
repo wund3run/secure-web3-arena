@@ -11,6 +11,7 @@ import SettingsManagement from "@/components/admin/SettingsManagement";
 import { AdminPlatformReport } from "@/components/admin/PlatformReport";
 import { RealtimeAuditQueue } from "./RealtimeAuditQueue";
 import { RealtimeNotifications } from "@/components/realtime/RealtimeNotifications";
+import { AdminAppConnections } from "./AdminAppConnections";
 import { DashboardTabValue } from "./types";
 
 interface TabsContentProps {
@@ -22,8 +23,9 @@ export function TabsContent({ activeTab }: TabsContentProps) {
     <>
       <UITabsContent value="dashboard" className="space-y-6 mt-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-6">
             <DashboardOverview />
+            <AdminAppConnections />
           </div>
           <div className="space-y-6">
             <RealtimeNotifications />
