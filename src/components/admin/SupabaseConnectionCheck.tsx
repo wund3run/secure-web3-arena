@@ -17,9 +17,9 @@ export function SupabaseConnectionCheck() {
     try {
       console.log("Starting Supabase connection check...");
       
-      // Test basic connection with a simple query
+      // Test basic connection with a simple query using a table that exists
       const { data, error } = await supabase
-        .from('profiles')
+        .from('extended_profiles')
         .select('count(*)', { count: 'exact', head: true });
       
       if (error) {

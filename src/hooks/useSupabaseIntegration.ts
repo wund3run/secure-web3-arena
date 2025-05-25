@@ -47,7 +47,7 @@ export function useSupabaseIntegration() {
       {
         name: 'Database Connection',
         check: async () => {
-          const { error } = await supabase.from('profiles').select('count(*)', { count: 'exact', head: true });
+          const { error } = await supabase.from('extended_profiles').select('count(*)', { count: 'exact', head: true });
           if (error) throw error;
         }
       },
