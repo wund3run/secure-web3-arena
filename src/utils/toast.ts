@@ -2,32 +2,28 @@
 /**
  * Centralized toast utility for consistent notifications across the application
  */
+import { EnhancedToastSystem } from "@/components/ui/enhanced-toast-system";
 import { toast } from "sonner";
 
-// Re-export toast for consistent usage
-export { toast };
+// Re-export enhanced toast system as primary interface
+export { EnhancedToastSystem as toast };
 
-// Helper functions for different toast types
+// Legacy compatibility functions
 export const showErrorToast = (message: string, description?: string) => {
-  toast.error(message, {
-    description: description || undefined,
-    duration: 5000,
-    className: "accessible-toast error-toast", // Add class for styling and accessibility hooks
-  });
+  EnhancedToastSystem.error(message, description);
 };
 
 export const showSuccessToast = (message: string, description?: string) => {
-  toast.success(message, {
-    description: description || undefined,
-    duration: 3000,
-    className: "accessible-toast success-toast", // Add class for styling and accessibility hooks
-  });
+  EnhancedToastSystem.success(message, description);
 };
 
 export const showInfoToast = (message: string, description?: string) => {
-  toast.info(message, {
-    description: description || undefined,
-    duration: 4000,
-    className: "accessible-toast info-toast", // Add class for styling and accessibility hooks
-  });
+  EnhancedToastSystem.info(message, description);
 };
+
+export const showWarningToast = (message: string, description?: string) => {
+  EnhancedToastSystem.warning(message, description);
+};
+
+// Re-export original toast for backward compatibility
+export { toast as sonnerToast };

@@ -2,12 +2,15 @@
 import { toast } from "sonner";
 import { MarketplaceErrorBoundary, useMarketplaceError } from "@/components/marketplace/error-handling";
 import ErrorBoundary from "@/components/ui/error-boundary";
+import { ComprehensiveErrorBoundary } from "@/components/error/comprehensive-error-boundary";
+import { EnhancedToastSystem } from "@/components/ui/enhanced-toast-system";
 import React from "react";
 
 // Re-export components for consistent usage
 export { 
   MarketplaceErrorBoundary, 
-  ErrorBoundary, 
+  ErrorBoundary,
+  ComprehensiveErrorBoundary,
   useMarketplaceError 
 };
 
@@ -20,7 +23,7 @@ export enum ErrorCategory {
   Unknown = "unknown"
 }
 
-// Centralized error handler with improved categorization
+// Enhanced centralized error handler with improved categorization
 export const handleError = (error: unknown, context = "application") => {
   console.error(`Error in ${context}:`, error);
   
@@ -35,10 +38,14 @@ export const handleError = (error: unknown, context = "application") => {
         errorMessage.includes("fetch") || 
         errorMessage.includes("connection")) {
       category = ErrorCategory.Network;
+      EnhancedToastSystem.networkError(() => window.location.reload());
+      return { message: errorMessage, category };
     } else if (errorMessage.includes("auth") || 
                errorMessage.includes("unauthorized") || 
                errorMessage.includes("permission")) {
       category = ErrorCategory.Authentication;
+      EnhancedToastSystem.sessionExpired();
+      return { message: errorMessage, category };
     } else if (errorMessage.includes("database") || 
                errorMessage.includes("query") || 
                errorMessage.includes("supabase")) {
@@ -51,15 +58,11 @@ export const handleError = (error: unknown, context = "application") => {
     errorMessage = error;
   }
   
-  // Show appropriate toast with actionable information
-  toast.error("Error", {
-    description: errorMessage.substring(0, 100), // Limit very long messages
-    id: `error-${Date.now()}-${category}`, // Ensure unique IDs with category
-    action: category === ErrorCategory.Network ? {
-      label: "Retry",
-      onClick: () => window.location.reload()
-    } : undefined
-  });
+  // Show appropriate toast with enhanced system
+  EnhancedToastSystem.error(
+    "Error",
+    errorMessage.substring(0, 100) // Limit very long messages
+  );
   
   return {
     message: errorMessage,
@@ -93,7 +96,7 @@ export async function withErrorHandling<T>(
 // Create a utility to help standardize error boundary usage
 export const createBoundary = (component: React.ReactNode, fallback?: React.ReactNode): React.ReactElement => {
   return React.createElement(
-    ErrorBoundary,
+    ComprehensiveErrorBoundary,
     { 
       fallback,
       children: component
