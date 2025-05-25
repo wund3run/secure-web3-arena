@@ -3,115 +3,127 @@ export interface NavigationItem {
   title: string;
   href: string;
   description?: string;
+  icon?: string;
   badge?: string;
-  featured?: boolean;
   children?: NavigationItem[];
+  featured?: boolean;
+  external?: boolean;
+}
+
+export interface NavigationSection {
+  title: string;
+  items: NavigationItem[];
+  featured?: NavigationItem[];
 }
 
 export const mainNavigation: NavigationItem[] = [
   {
     title: "Marketplace",
     href: "/marketplace",
-    children: [
-      {
-        title: "Browse Services",
-        href: "/marketplace",
-        description: "Find security services for your project",
-        featured: true
-      },
-      {
-        title: "Request Audit",
-        href: "/request-audit",
-        description: "Get your project audited by experts"
-      },
-      {
-        title: "Security Insights",
-        href: "/security-insights",
-        description: "Learn about Web3 security trends"
-      },
-      {
-        title: "Pricing",
-        href: "/pricing",
-        description: "View our pricing plans"
-      }
-    ]
+    description: "Find security experts and services",
+    icon: "Shield"
   },
   {
-    title: "Audits",
-    href: "/audits",
+    title: "Services",
+    href: "/services",
+    description: "Browse all security services",
     children: [
       {
-        title: "Request Audit",
+        title: "Smart Contract Audits",
+        href: "/marketplace?category=smart-contract-audit",
+        description: "Comprehensive smart contract security reviews"
+      },
+      {
+        title: "Security Consulting",
+        href: "/marketplace?category=security-consulting",
+        description: "Expert security guidance and strategy"
+      },
+      {
+        title: "Penetration Testing",
+        href: "/marketplace?category=penetration-testing",
+        description: "In-depth security vulnerability assessment"
+      },
+      {
+        title: "Request Custom Audit",
         href: "/request-audit",
-        description: "Submit your project for security review"
-      },
-      {
-        title: "Audit Process",
-        href: "/audit-guidelines",
-        description: "Learn about our audit methodology"
-      },
-      {
-        title: "Past Audits",
-        href: "/audits",
-        description: "Browse completed security audits",
-        badge: "New"
-      },
-      {
-        title: "Vulnerabilities Database",
-        href: "/vulnerabilities",
-        description: "Learn about common security issues"
+        description: "Get a tailored security audit",
+        featured: true
       }
     ]
   },
   {
     title: "Resources",
     href: "/resources",
+    description: "Security knowledge and tools",
     children: [
+      {
+        title: "Security Guidelines",
+        href: "/audit-guidelines",
+        description: "Best practices for Web3 security"
+      },
       {
         title: "Documentation",
         href: "/docs",
-        description: "Reference materials and guides"
+        description: "Platform guides and API docs"
       },
       {
-        title: "Security Resources",
-        href: "/web3-security",
-        description: "Learn about Web3 security"
+        title: "Knowledge Base",
+        href: "/knowledge-base",
+        description: "Comprehensive security resources"
       },
       {
-        title: "AI Tools",
+        title: "Templates",
+        href: "/templates",
+        description: "Ready-to-use security templates"
+      },
+      {
+        title: "Tutorials",
+        href: "/tutorials",
+        description: "Step-by-step security guides"
+      },
+      {
+        title: "AI Security Tools",
         href: "/ai-tools",
-        description: "AI-powered security tools",
-        badge: "Beta"
+        description: "AI-powered security analysis",
+        badge: "New"
+      }
+    ]
+  },
+  {
+    title: "Community",
+    href: "/community",
+    description: "Connect with security professionals",
+    children: [
+      {
+        title: "Forum",
+        href: "/forum",
+        description: "Discuss security topics"
+      },
+      {
+        title: "Events",
+        href: "/events",
+        description: "Security conferences and meetups"
+      },
+      {
+        title: "Leaderboard",
+        href: "/leaderboard",
+        description: "Top security professionals"
+      },
+      {
+        title: "Achievements",
+        href: "/achievements",
+        description: "Recognition and badges"
       },
       {
         title: "Blog",
         href: "/blog",
-        description: "Articles and updates"
-      },
-      {
-        title: "FAQ",
-        href: "/faq",
-        description: "Frequently asked questions"
-      },
-      {
-        title: "Community",
-        href: "/community",
-        description: "Join our security community"
+        description: "Latest security insights"
       }
     ]
   }
 ];
 
-export interface FooterNavigationSection {
-  title: string;
-  items: Array<{
-    title: string;
-    href: string;
-    external?: boolean;
-  }>;
-}
-
-export const footerNavigation: FooterNavigationSection[] = [
+export const footerNavigation: NavigationSection[] = [
   {
     title: "Platform",
     items: [
@@ -160,3 +172,17 @@ export const footerNavigation: FooterNavigationSection[] = [
     ]
   }
 ];
+
+export const userMenuItems = {
+  authenticated: [
+    { title: "Dashboard", href: "/dashboard", icon: "LayoutDashboard" },
+    { title: "My Audits", href: "/audits", icon: "ClipboardCheck" },
+    { title: "Escrow", href: "/escrow", icon: "Shield" },
+    { title: "Settings", href: "/settings", icon: "Settings" }
+  ],
+  unauthenticated: [
+    { title: "Sign In", href: "/auth", icon: "LogIn" },
+    { title: "Create Account", href: "/auth?mode=signup", icon: "UserPlus" },
+    { title: "Become an Auditor", href: "/service-provider-onboarding", icon: "Shield" }
+  ]
+};

@@ -1,102 +1,113 @@
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Link } from 'react-router-dom';
-import { ArrowRight, Shield, Users, CheckCircle } from 'lucide-react';
-import { ResponsiveLayout } from '@/components/layout/responsive-layout';
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { ArrowRight, Shield, Code, Cpu, FileText } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 py-12 md:py-20 lg:py-24">
-      <div className="absolute inset-0 bg-grid-slate-900/[0.04] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_at_center,white,transparent)]" />
-      
-      <ResponsiveLayout>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
-          <div className="lg:col-span-6 order-2 lg:order-1">
-            <div className="space-y-6 md:space-y-8 text-center lg:text-left">
-              <div className="space-y-4">
-                <Badge variant="secondary" className="inline-flex items-center gap-2">
-                  <Shield className="h-4 w-4" />
-                  Trusted by 500+ Web3 Projects
-                </Badge>
-                
-                <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-foreground">
-                  Secure Your{' '}
-                  <span className="text-primary">Smart Contracts</span>{' '}
-                  with Expert Audits
-                </h1>
-                
-                <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0">
-                  Connect with top security professionals for comprehensive Web3 audits. 
-                  Protect your blockchain assets with thorough security reviews and expert guidance.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button asChild size="lg" className="text-base md:text-lg h-12 px-6 md:px-8">
-                  <Link to="/request-audit">
-                    <Shield className="mr-2 h-5 w-5" />
-                    Request Security Audit
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
-                
-                <Button asChild variant="outline" size="lg" className="text-base md:text-lg h-12 px-6 md:px-8">
+    <div className="px-4 py-16 sm:px-6 sm:py-24 md:py-32 lg:px-8 bg-gradient-to-br from-black to-primary/90 text-white">
+      <div className="max-w-7xl mx-auto text-center">
+        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl mb-6">
+          <span className="block">Smart Contract Security</span>
+          <span className="block mt-2">for Web3 Builders</span>
+        </h1>
+        <p className="mt-6 max-w-lg mx-auto text-xl text-white/80 sm:max-w-3xl">
+          Connect with top security experts, protect your project with comprehensive audits, and build with confidence in the evolving blockchain ecosystem.
+        </p>
+        
+        <div className="mt-10 max-w-xl mx-auto flex flex-col sm:flex-row justify-center gap-4">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button asChild className="bg-white text-primary hover:bg-white/90 text-lg h-12 px-8 shadow-lg">
                   <Link to="/marketplace">
-                    <Users className="mr-2 h-5 w-5" />
-                    Browse Security Experts
+                    Browse Security Services
+                    <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
                   </Link>
                 </Button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 pt-6 md:pt-8">
-                <div className="flex items-center gap-2 justify-center lg:justify-start">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span className="text-sm font-medium">Verified Auditors</span>
-                </div>
-                <div className="flex items-center gap-2 justify-center lg:justify-start">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span className="text-sm font-medium">Secure Escrow</span>
-                </div>
-                <div className="flex items-center gap-2 justify-center lg:justify-start">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span className="text-sm font-medium">Quality Assured</span>
-                </div>
-              </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="bg-white text-primary">
+                Explore our catalog of security services
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button asChild variant="outline" className="border-white text-white hover:bg-white/10 text-lg h-12 px-8">
+                  <Link to="/resources">
+                    Security Resources
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="bg-white text-primary">
+                Access security guidelines and best practices
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+        
+        <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-left shadow-md">
+            <div className="bg-primary/20 rounded-full w-12 h-12 flex items-center justify-center mb-4">
+              <Shield className="h-6 w-6" aria-hidden="true" />
             </div>
+            <h2 className="text-xl font-bold mb-2">Advanced Security</h2>
+            <p className="text-white/70">
+              Industry-leading audits and continuous security monitoring for your Web3 projects.
+            </p>
           </div>
-
-          <div className="lg:col-span-6 order-1 lg:order-2">
-            <div className="relative max-w-md mx-auto lg:max-w-none">
-              <div className="aspect-square rounded-2xl bg-gradient-to-br from-primary/20 via-secondary/20 to-primary/10 p-6 md:p-8 shadow-2xl">
-                <div className="grid grid-cols-2 gap-3 md:gap-4 h-full">
-                  <div className="space-y-3 md:space-y-4">
-                    <div className="h-16 md:h-20 rounded-lg bg-background shadow-lg p-3 md:p-4 flex items-center justify-center">
-                      <Shield className="h-6 w-6 md:h-8 md:w-8 text-primary" />
-                    </div>
-                    <div className="h-24 md:h-32 rounded-lg bg-background shadow-lg p-3 md:p-4">
-                      <div className="h-1.5 md:h-2 bg-primary/20 rounded mb-2"></div>
-                      <div className="h-1.5 md:h-2 bg-primary/40 rounded mb-2"></div>
-                      <div className="h-1.5 md:h-2 bg-primary rounded mb-2"></div>
-                    </div>
-                  </div>
-                  <div className="space-y-3 md:space-y-4 pt-6 md:pt-8">
-                    <div className="h-24 md:h-32 rounded-lg bg-background shadow-lg p-3 md:p-4">
-                      <div className="h-1.5 md:h-2 bg-secondary/20 rounded mb-2"></div>
-                      <div className="h-1.5 md:h-2 bg-secondary/40 rounded mb-2"></div>
-                      <div className="h-1.5 md:h-2 bg-secondary rounded mb-2"></div>
-                    </div>
-                    <div className="h-16 md:h-20 rounded-lg bg-background shadow-lg p-3 md:p-4 flex items-center justify-center">
-                      <Users className="h-6 w-6 md:h-8 md:w-8 text-secondary" />
-                    </div>
-                  </div>
-                </div>
-              </div>
+          
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-left shadow-md">
+            <div className="bg-primary/20 rounded-full w-12 h-12 flex items-center justify-center mb-4">
+              <Code className="h-6 w-6" aria-hidden="true" />
             </div>
+            <h2 className="text-xl font-bold mb-2">Verified Experts</h2>
+            <p className="text-white/70">
+              Thoroughly vetted security professionals with proven blockchain experience.
+            </p>
+          </div>
+          
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 text-left shadow-md">
+            <div className="bg-primary/20 rounded-full w-12 h-12 flex items-center justify-center mb-4">
+              <Cpu className="h-6 w-6" aria-hidden="true" />
+            </div>
+            <h2 className="text-xl font-bold mb-2">
+              <Link to="/security-insights" className="hover:underline inline-flex items-center">
+                AI Security Insights
+                <span className="ml-2 bg-white/20 text-xs px-2 py-0.5 rounded-full">New</span>
+              </Link>
+            </h2>
+            <p className="text-white/70">
+              Cutting-edge AI analysis to detect vulnerabilities in real-time.
+            </p>
+            <Link to="/security-insights" className="text-primary-foreground hover:underline inline-flex items-center mt-2 text-sm font-medium">
+              Try it now
+              <ArrowRight className="ml-1 h-3 w-3" aria-hidden="true" />
+            </Link>
           </div>
         </div>
-      </ResponsiveLayout>
-    </section>
+        
+        <div className="mt-12 flex justify-center">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link to="/audit-guidelines" className="flex items-center gap-2 bg-white/10 hover:bg-white/20 transition-colors px-5 py-2 rounded-lg group shadow-md">
+                  <FileText className="h-5 w-5 text-white/90" aria-hidden="true" />
+                  <span className="text-white font-medium">View Security Audit Guidelines</span>
+                  <ArrowRight className="h-4 w-4 text-white/90 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="bg-white text-primary">
+                Essential guidance for effective security audits
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      </div>
+    </div>
   );
 }

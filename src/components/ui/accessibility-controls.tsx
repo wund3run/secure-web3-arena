@@ -1,194 +1,198 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Accessibility, Type, Eye, Palette, Moon, Sun } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Settings, Eye, Volume2, MousePointer, Keyboard } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+
+interface AccessibilitySettings {
+  fontSize: number;
+  highContrast: boolean;
+  reducedMotion: boolean;
+  screenReader: boolean;
+  darkMode: boolean;
+  focusVisible: boolean;
+}
 
 export function AccessibilityControls() {
   const [isOpen, setIsOpen] = useState(false);
-  const [highContrast, setHighContrast] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
-  const [enhancedFocus, setEnhancedFocus] = useState(false);
-  const [fontSize, setFontSize] = useState([16]);
-  const [screenReader, setScreenReader] = useState(false);
+  const [settings, setSettings] = useState<AccessibilitySettings>({
+    fontSize: 16,
+    highContrast: false,
+    reducedMotion: false,
+    screenReader: false,
+    darkMode: false,
+    focusVisible: true
+  });
 
+  // Load settings from localStorage on mount
   useEffect(() => {
-    // Load saved preferences
-    const savedPrefs = localStorage.getItem('accessibility-preferences');
-    if (savedPrefs) {
-      const prefs = JSON.parse(savedPrefs);
-      setHighContrast(prefs.highContrast || false);
-      setReducedMotion(prefs.reducedMotion || false);
-      setEnhancedFocus(prefs.enhancedFocus || false);
-      setFontSize([prefs.fontSize || 16]);
-      setScreenReader(prefs.screenReader || false);
+    const savedSettings = localStorage.getItem('accessibility-settings');
+    if (savedSettings) {
+      const parsed = JSON.parse(savedSettings);
+      setSettings(parsed);
+      applySettings(parsed);
     }
   }, []);
 
-  useEffect(() => {
-    // Apply accessibility preferences
+  // Apply settings to the document
+  const applySettings = (newSettings: AccessibilitySettings) => {
     const root = document.documentElement;
     
-    if (highContrast) {
+    // Font size
+    root.style.fontSize = `${newSettings.fontSize}px`;
+    
+    // High contrast
+    if (newSettings.highContrast) {
       root.classList.add('high-contrast');
     } else {
       root.classList.remove('high-contrast');
     }
-
-    if (reducedMotion) {
+    
+    // Reduced motion
+    if (newSettings.reducedMotion) {
       root.classList.add('reduce-motion');
     } else {
       root.classList.remove('reduce-motion');
     }
-
-    if (enhancedFocus) {
+    
+    // Dark mode
+    if (newSettings.darkMode) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    
+    // Focus visible
+    if (newSettings.focusVisible) {
       root.classList.add('focus-visible-enhanced');
     } else {
       root.classList.remove('focus-visible-enhanced');
     }
+  };
 
-    root.style.fontSize = `${fontSize[0]}px`;
+  const updateSetting = (key: keyof AccessibilitySettings, value: any) => {
+    const newSettings = { ...settings, [key]: value };
+    setSettings(newSettings);
+    applySettings(newSettings);
+    localStorage.setItem('accessibility-settings', JSON.stringify(newSettings));
+  };
 
-    // Save preferences
-    localStorage.setItem('accessibility-preferences', JSON.stringify({
-      highContrast,
-      reducedMotion,
-      enhancedFocus,
-      fontSize: fontSize[0],
-      screenReader
-    }));
-  }, [highContrast, reducedMotion, enhancedFocus, fontSize, screenReader]);
+  const resetSettings = () => {
+    const defaultSettings: AccessibilitySettings = {
+      fontSize: 16,
+      highContrast: false,
+      reducedMotion: false,
+      screenReader: false,
+      darkMode: false,
+      focusVisible: true
+    };
+    setSettings(defaultSettings);
+    applySettings(defaultSettings);
+    localStorage.setItem('accessibility-settings', JSON.stringify(defaultSettings));
+  };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
         <Button
           variant="outline"
           size="icon"
-          className="fixed bottom-4 right-4 z-50 h-12 w-12 rounded-full shadow-lg"
+          className="fixed bottom-20 right-4 h-12 w-12 rounded-full shadow-lg z-50"
           aria-label="Open accessibility controls"
         >
-          <Settings className="h-5 w-5" />
+          <Accessibility className="h-6 w-6" />
         </Button>
-      </DialogTrigger>
-      
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Eye className="h-5 w-5" />
-            Accessibility Settings
-          </DialogTitle>
-          <DialogDescription>
-            Customize your viewing experience for better accessibility.
-          </DialogDescription>
-        </DialogHeader>
-
+      </PopoverTrigger>
+      <PopoverContent 
+        className="w-80 p-6" 
+        align="end" 
+        side="top"
+        sideOffset={20}
+      >
         <div className="space-y-6">
-          {/* Visual Settings */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Eye className="h-4 w-4" />
-                Visual Settings
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="high-contrast" className="text-sm">High Contrast Mode</Label>
-                <Switch
-                  id="high-contrast"
-                  checked={highContrast}
-                  onCheckedChange={setHighContrast}
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <Label htmlFor="enhanced-focus" className="text-sm">Enhanced Focus Indicators</Label>
-                <Switch
-                  id="enhanced-focus"
-                  checked={enhancedFocus}
-                  onCheckedChange={setEnhancedFocus}
-                />
-              </div>
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">Accessibility Settings</h3>
+            <Button variant="ghost" size="sm" onClick={resetSettings}>
+              Reset
+            </Button>
+          </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="font-size" className="text-sm">Font Size: {fontSize[0]}px</Label>
-                <Slider
-                  id="font-size"
-                  min={12}
-                  max={24}
-                  step={1}
-                  value={fontSize}
-                  onValueChange={setFontSize}
-                  className="w-full"
-                />
-              </div>
-            </CardContent>
-          </Card>
+          {/* Font Size */}
+          <div className="space-y-2">
+            <Label className="flex items-center gap-2">
+              <Type className="h-4 w-4" />
+              Font Size: {settings.fontSize}px
+            </Label>
+            <Slider
+              value={[settings.fontSize]}
+              onValueChange={([value]) => updateSetting('fontSize', value)}
+              min={12}
+              max={24}
+              step={1}
+              className="w-full"
+            />
+          </div>
 
-          {/* Motion Settings */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <MousePointer className="h-4 w-4" />
-                Motion Settings
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="reduced-motion" className="text-sm">Reduce Motion</Label>
-                <Switch
-                  id="reduced-motion"
-                  checked={reducedMotion}
-                  onCheckedChange={setReducedMotion}
-                />
-              </div>
-            </CardContent>
-          </Card>
+          {/* High Contrast */}
+          <div className="flex items-center justify-between">
+            <Label className="flex items-center gap-2">
+              <Eye className="h-4 w-4" />
+              High Contrast
+            </Label>
+            <Switch
+              checked={settings.highContrast}
+              onCheckedChange={(checked) => updateSetting('highContrast', checked)}
+            />
+          </div>
 
-          {/* Screen Reader */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Volume2 className="h-4 w-4" />
-                Screen Reader
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="screen-reader" className="text-sm">Screen Reader Optimized</Label>
-                <Switch
-                  id="screen-reader"
-                  checked={screenReader}
-                  onCheckedChange={setScreenReader}
-                />
-              </div>
-            </CardContent>
-          </Card>
+          {/* Dark Mode */}
+          <div className="flex items-center justify-between">
+            <Label className="flex items-center gap-2">
+              {settings.darkMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              Dark Mode
+            </Label>
+            <Switch
+              checked={settings.darkMode}
+              onCheckedChange={(checked) => updateSetting('darkMode', checked)}
+            />
+          </div>
 
-          {/* Keyboard Navigation Info */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Keyboard className="h-4 w-4" />
-                Keyboard Navigation
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-xs text-muted-foreground space-y-1">
-                <p>• Press Tab to navigate through elements</p>
-                <p>• Press Enter or Space to activate buttons</p>
-                <p>• Press Escape to close dialogs</p>
-                <p>• Use arrow keys in menus and lists</p>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Reduced Motion */}
+          <div className="flex items-center justify-between">
+            <Label className="flex items-center gap-2">
+              <Palette className="h-4 w-4" />
+              Reduce Motion
+            </Label>
+            <Switch
+              checked={settings.reducedMotion}
+              onCheckedChange={(checked) => updateSetting('reducedMotion', checked)}
+            />
+          </div>
+
+          {/* Enhanced Focus */}
+          <div className="flex items-center justify-between">
+            <Label className="flex items-center gap-2">
+              <Eye className="h-4 w-4" />
+              Enhanced Focus
+            </Label>
+            <Switch
+              checked={settings.focusVisible}
+              onCheckedChange={(checked) => updateSetting('focusVisible', checked)}
+            />
+          </div>
+
+          <div className="text-xs text-muted-foreground">
+            Settings are saved automatically and will persist across sessions.
+          </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </PopoverContent>
+    </Popover>
   );
 }

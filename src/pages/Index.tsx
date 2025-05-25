@@ -8,7 +8,6 @@ import { StatsSection } from "@/components/home/stats-section";
 import { TestimonialsSection } from "@/components/home/testimonials-section";
 import { CTASection } from "@/components/home/cta-section";
 import { EnhancedFooter } from "@/components/layout/enhanced-footer";
-import { AccessibilityControls } from "@/components/ui/accessibility-controls";
 import { UserOnboardingFlow } from "@/components/onboarding/user-onboarding-flow";
 import { useAuth } from "@/contexts/auth";
 
@@ -56,10 +55,6 @@ const Index = () => {
         <meta name="twitter:title" content="Hawkly - Web3 Security Audit Platform" />
         <meta name="twitter:description" content="Connect with top security experts for comprehensive Web3 audits." />
         
-        {/* Accessibility meta tags */}
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-        <meta name="color-scheme" content="light dark" />
-        
         {/* Structured data for better SEO */}
         <script type="application/ld+json">
           {JSON.stringify({
@@ -77,7 +72,7 @@ const Index = () => {
         </script>
       </Helmet>
       
-      <main id="main-content" className="min-h-screen bg-background" role="main">
+      <div className="min-h-screen">
         <HeroSection />
         <MarketplaceSection />
         <FeaturesSection />
@@ -86,16 +81,13 @@ const Index = () => {
         <CTASection />
         <EnhancedFooter />
         
-        {/* Accessibility Controls */}
-        <AccessibilityControls />
-        
         {/* User Onboarding Flow */}
         <UserOnboardingFlow
           isOpen={showOnboarding}
           onClose={handleOnboardingClose}
           userType={userType === 'auditor' ? 'auditor' : userType === 'project_owner' ? 'project_owner' : null}
         />
-      </main>
+      </div>
     </>
   );
 };
