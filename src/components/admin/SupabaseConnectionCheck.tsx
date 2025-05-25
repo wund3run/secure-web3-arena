@@ -15,7 +15,9 @@ export function SupabaseConnectionCheck() {
     setErrorMessage(null);
     
     try {
-      // Simple query to test the connection
+      console.log("Starting Supabase connection check...");
+      
+      // Test basic connection with a simple query
       const { data, error } = await supabase
         .from('profiles')
         .select('count(*)', { count: 'exact', head: true });
@@ -23,22 +25,28 @@ export function SupabaseConnectionCheck() {
       if (error) {
         console.error("Supabase connection error:", error);
         setConnectionStatus('error');
-        setErrorMessage(error.message);
+        setErrorMessage(error.message || "Unknown database error");
         toast.error("Failed to connect to database");
       } else {
+        console.log("Supabase connection successful");
         setConnectionStatus('connected');
         toast.success("Connected to Supabase successfully");
       }
-    } catch (err) {
-      console.error("Unexpected error:", err);
+    } catch (err: any) {
+      console.error("Unexpected error during connection check:", err);
       setConnectionStatus('error');
-      setErrorMessage(err instanceof Error ? err.message : "Unknown error occurred");
+      setErrorMessage(err?.message || "Unexpected error occurred");
       toast.error("Unexpected error checking connection");
     }
   };
   
   useEffect(() => {
-    checkConnection();
+    // Delay initial check slightly to allow component to mount
+    const timer = setTimeout(() => {
+      checkConnection();
+    }, 500);
+    
+    return () => clearTimeout(timer);
   }, []);
   
   return (

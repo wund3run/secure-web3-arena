@@ -10,6 +10,7 @@ import { AdminPlatformValidator } from "@/components/dev/AdminPlatformValidator"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 
 interface AdminDashboardProps {
   section?: DashboardTabValue;
@@ -39,12 +40,15 @@ const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
       setIsLoading(false);
     }, 800);
 
-    // Check for platform report query param
+    // Handle URL parameters for tab switching
+    const urlTab = searchParams.get("tab");
     const showPlatformReport = searchParams.get("showPlatformReport") === "true";
+    
     if (showPlatformReport) {
       setActiveTab("reports");
+    } else if (urlTab && ["dashboard", "users", "services", "audits", "providers", "approvals", "reports", "settings"].includes(urlTab)) {
+      setActiveTab(urlTab as DashboardTabValue);
     } else {
-      // Update active tab when section prop changes
       setActiveTab(section);
     }
 
@@ -64,8 +68,13 @@ const AdminDashboard = ({ section = "dashboard" }: AdminDashboardProps) => {
           {showSystemChecks && (
             <Card className="mb-6">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex justify-between">
-                  <span>System Health Checks</span>
+                <CardTitle className="text-lg flex justify-between items-center">
+                  <span className="flex items-center gap-2">
+                    System Health Checks
+                    <Badge variant="outline" className="text-xs">
+                      Real-time
+                    </Badge>
+                  </span>
                   <button 
                     onClick={() => setShowSystemChecks(false)} 
                     className="text-muted-foreground text-sm font-normal hover:text-foreground"

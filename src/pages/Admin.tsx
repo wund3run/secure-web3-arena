@@ -5,9 +5,46 @@ import { IntegrationStatus } from '@/components/admin/IntegrationStatus';
 import { EnhancedSupabaseCheck } from '@/components/admin/EnhancedSupabaseCheck';
 import { DatabaseStatus } from '@/components/database/DatabaseStatus';
 import { PlatformStatusMonitor } from '@/components/admin/PlatformStatusMonitor';
-import { Shield, Database, Activity } from 'lucide-react';
+import { SupabaseConnectionCheck } from '@/components/admin/SupabaseConnectionCheck';
+import { Shield, Database, Activity, Users, FileText } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useNavigate } from 'react-router-dom';
 
 const Admin = () => {
+  const navigate = useNavigate();
+
+  const adminQuickActions = [
+    {
+      title: "View All Users",
+      description: "Manage user accounts and profiles",
+      icon: Users,
+      action: () => navigate('/admin/dashboard?tab=users'),
+      color: "bg-blue-500"
+    },
+    {
+      title: "Service Management", 
+      description: "Review and manage marketplace services",
+      icon: Shield,
+      action: () => navigate('/admin/dashboard?tab=services'),
+      color: "bg-green-500"
+    },
+    {
+      title: "Audit Management",
+      description: "Monitor audit requests and progress",
+      icon: FileText,
+      action: () => navigate('/admin/dashboard?tab=audits'),
+      color: "bg-purple-500"
+    },
+    {
+      title: "Platform Reports",
+      description: "View comprehensive platform analytics",
+      icon: Activity,
+      action: () => navigate('/admin/dashboard?tab=reports'),
+      color: "bg-orange-500"
+    }
+  ];
+
   return (
     <>
       <Helmet>
@@ -27,7 +64,49 @@ const Admin = () => {
             </p>
           </div>
 
+          {/* Quick Actions */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+            {adminQuickActions.map((action, index) => {
+              const Icon = action.icon;
+              return (
+                <Card key={index} className="cursor-pointer hover:shadow-lg transition-shadow">
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center space-x-3">
+                      <div className={`p-2 rounded-lg ${action.color}`}>
+                        <Icon className="h-5 w-5 text-white" />
+                      </div>
+                      <CardTitle className="text-lg">{action.title}</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-3">{action.description}</p>
+                    <Button 
+                      onClick={action.action} 
+                      size="sm" 
+                      className="w-full"
+                    >
+                      Access
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
           <div className="grid gap-6">
+            {/* System Health Checks */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Database className="h-5 w-5" />
+                  <span>System Health Status</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <SupabaseConnectionCheck />
+              </CardContent>
+            </Card>
+            
             {/* Integration Status Overview */}
             <IntegrationStatus />
             
