@@ -40,7 +40,6 @@ export const useAuthProvider = (): AuthContextProps => {
           
         if (extendedError && extendedError.code !== 'PGRST116') {
           console.error("Error fetching extended profile:", extendedError);
-          throw extendedError;
         }
         
         setUserProfile(extendedProfile);
@@ -51,10 +50,10 @@ export const useAuthProvider = (): AuthContextProps => {
       console.log("Profile fetched successfully");
     } catch (err: any) {
       console.error("Profile fetch error:", err);
-      setError(err.message);
+      setError("");
       // Don't show error toast for missing profiles - this is expected for new users
       if (err.code !== 'PGRST116') {
-        toast.error("Failed to load user profile");
+        console.warn("Failed to load user profile, but continuing...");
       }
     }
   }, []);
@@ -65,10 +64,33 @@ export const useAuthProvider = (): AuthContextProps => {
     
     const initializeAuth = async () => {
       try {
-        setLoading(true);
         console.log("Initializing authentication...");
         
-        // Check for existing session
+        // Set up auth state listener FIRST
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          async (event, session) => {
+            console.log("Auth state changed:", event, session?.user?.id);
+            
+            if (mounted) {
+              setSession(session);
+              setUser(session?.user ?? null);
+              
+              if (session?.user && event === 'SIGNED_IN') {
+                // Fetch profile with a small delay to ensure database consistency
+                setTimeout(() => {
+                  if (mounted) {
+                    fetchUserProfile(session.user.id);
+                  }
+                }, 200);
+              } else if (event === 'SIGNED_OUT') {
+                setUserProfile(null);
+                setError("");
+              }
+            }
+          }
+        );
+        
+        // THEN check for existing session
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
         if (sessionError) {
@@ -87,6 +109,10 @@ export const useAuthProvider = (): AuthContextProps => {
         }
         
         console.log("Authentication initialized successfully");
+        
+        return () => {
+          subscription.unsubscribe();
+        };
       } catch (err: any) {
         console.error("Auth initialization error:", err);
         if (mounted) {
@@ -100,33 +126,11 @@ export const useAuthProvider = (): AuthContextProps => {
       }
     };
     
-    initializeAuth();
-    
-    // Enhanced auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log("Auth state changed:", event, session?.user?.id);
-        
-        if (mounted) {
-          setSession(session);
-          setUser(session?.user ?? null);
-          
-          if (session?.user && event === 'SIGNED_IN') {
-            // Fetch profile with a small delay to ensure database consistency
-            setTimeout(() => {
-              fetchUserProfile(session.user.id);
-            }, 100);
-          } else if (event === 'SIGNED_OUT') {
-            setUserProfile(null);
-            setError("");
-          }
-        }
-      }
-    );
+    const cleanup = initializeAuth();
     
     return () => {
       mounted = false;
-      subscription.unsubscribe();
+      cleanup.then(cleanupFn => cleanupFn && cleanupFn());
     };
   }, [fetchUserProfile]);
 
@@ -151,8 +155,6 @@ export const useAuthProvider = (): AuthContextProps => {
       
       if (data.user && data.session) {
         console.log("Sign in successful");
-        setUser(data.user);
-        setSession(data.session);
         toast.success("Successfully signed in");
         navigate("/dashboard");
       }
@@ -199,8 +201,6 @@ export const useAuthProvider = (): AuthContextProps => {
       
       if (data.user) {
         console.log("Sign up successful, creating profiles...");
-        setUser(data.user);
-        setSession(data.session);
         
         // Create both profile records
         await createUserProfiles(data.user.id, email, fullName, userType);
@@ -261,16 +261,11 @@ export const useAuthProvider = (): AuthContextProps => {
         // Don't throw - user can still use the platform
       }
       
-      // Fetch the created profile
-      setTimeout(() => {
-        fetchUserProfile(userId);
-      }, 200);
-      
       console.log("User profiles created successfully");
     } catch (err: any) {
       console.error("Profile creation error:", err);
       // Don't prevent sign up for profile creation issues
-      setError("Profile creation partially failed - you can update it later");
+      console.warn("Profile creation partially failed - user can update it later");
     }
   };
 
