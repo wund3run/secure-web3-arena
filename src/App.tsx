@@ -36,9 +36,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
         <TooltipProvider>
-          <AuthProvider>
-            <EnhancedErrorBoundary>
-              <Router>
+          <EnhancedErrorBoundary>
+            <Router>
+              <AuthProvider>
                 <div className="min-h-screen bg-background font-sans antialiased">
                   <Navbar />
                   <main className="flex-1">
@@ -57,9 +57,9 @@ function App() {
                   </main>
                   <Toaster />
                 </div>
-              </Router>
-            </EnhancedErrorBoundary>
-          </AuthProvider>
+              </AuthProvider>
+            </Router>
+          </EnhancedErrorBoundary>
         </TooltipProvider>
       </HelmetProvider>
     </QueryClientProvider>
