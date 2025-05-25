@@ -3,52 +3,25 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { HawklyLogo } from "./hawkly-logo";
 import { useAuth } from "@/contexts/auth";
-import { navigationLinks } from "./navigation/navigation-links.ts";
-import { DesktopNavigation } from "./navigation/desktop-navigation";
-import { MobileNavigation } from "./navigation/mobile-navigation";
+import { MobileNavigation } from "@/components/ui/mobile-navigation";
 import { AuthButtons } from "./navigation/auth-buttons";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { BreadcrumbTrail } from "./navigation/breadcrumb-trail";
 import { X } from "lucide-react";
+import { mainNavigation } from "@/components/ui/navigation/navigation-config";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
 
 export function EnhancedNavbar() {
   const { user, signOut } = useAuth();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(true);
   const location = useLocation();
-  
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (activeDropdown && 
-          !(event.target as Element).closest('.navigation-trigger')) {
-        setActiveDropdown(null);
-      }
-    };
-
-    // Close dropdown when Escape key is pressed
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && activeDropdown) {
-        setActiveDropdown(null);
-      }
-    };
-
-    // Close dropdown when route changes
-    setActiveDropdown(null);
-
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleKeyDown);
-    
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [activeDropdown, location.pathname]);
-  
-  const handleDropdownToggle = (dropdown: string) => {
-    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
-  };
   
   return (
     <header 
@@ -72,7 +45,7 @@ export function EnhancedNavbar() {
       )}
       
       <div className="container flex h-14 items-center justify-between">
-        <div className="flex items-center">
+        <div className="flex items-center space-x-8">
           <Link 
             to="/" 
             className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded"
@@ -82,27 +55,73 @@ export function EnhancedNavbar() {
           </Link>
           
           {/* Desktop Navigation */}
-          <DesktopNavigation 
-            activeDropdown={activeDropdown} 
-            handleDropdownToggle={handleDropdownToggle} 
-          />
+          <NavigationMenu className="hidden lg:flex">
+            <NavigationMenuList>
+              {mainNavigation.map((item) => (
+                <NavigationMenuItem key={item.href}>
+                  {item.children ? (
+                    <>
+                      <NavigationMenuTrigger className="bg-transparent">
+                        {item.title}
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <div className="grid w-[600px] grid-cols-2 gap-3 p-6">
+                          {item.children.map((child) => (
+                            <NavigationMenuLink key={child.href} asChild>
+                              <Link
+                                to={child.href}
+                                className={cn(
+                                  "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                                  child.featured && "bg-primary/5 border border-primary/20"
+                                )}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <div className="text-sm font-medium leading-none">
+                                    {child.title}
+                                  </div>
+                                  {child.badge && (
+                                    <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded">
+                                      {child.badge}
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                  {child.description}
+                                </p>
+                              </Link>
+                            </NavigationMenuLink>
+                          ))}
+                        </div>
+                      </NavigationMenuContent>
+                    </>
+                  ) : (
+                    <Link
+                      to={item.href}
+                      className={cn(
+                        "group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50",
+                        location.pathname === item.href && "bg-accent text-accent-foreground"
+                      )}
+                    >
+                      {item.title}
+                    </Link>
+                  )}
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
         </div>
         
         {/* Desktop Auth Buttons */}
-        <AuthButtons isAuthenticated={!!user} onSignOut={signOut} />
+        <div className="hidden lg:flex">
+          <AuthButtons isAuthenticated={!!user} onSignOut={signOut} />
+        </div>
         
         {/* Mobile Menu */}
         <MobileNavigation 
-          navigationLinks={navigationLinks} 
-          isOpen={isMobileMenuOpen} 
-          setIsOpen={setIsMobileMenuOpen}
           isAuthenticated={!!user}
           onSignOut={signOut}
         />
       </div>
-      
-      {/* Breadcrumb navigation for deep pages */}
-      {location.pathname !== '/' && <BreadcrumbTrail />}
     </header>
   );
 }
