@@ -19,6 +19,15 @@ import SubmitService from "./pages/SubmitService";
 import Escrow from "./pages/Escrow";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import SystemHealth from "./pages/SystemHealth";
+import NotFound from "./pages/NotFound";
+import Contact from "./pages/Contact";
+import Support from "./pages/Support";
+import FAQ from "./pages/FAQ";
+import AiTools from "./pages/AiTools";
+import Docs from "./pages/Docs";
+import Pricing from "./pages/Pricing";
+import Resources from "./pages/Resources";
+import Templates from "./pages/Templates";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +81,16 @@ function App() {
                       <SystemHealth />
                     </RoleBasedRoute>
                   } />
+
+                  {/* New essential pages */}
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/support" element={<Support />} />
+                  <Route path="/faq" element={<FAQ />} />
+                  <Route path="/ai-tools" element={<AiTools />} />
+                  <Route path="/docs" element={<Docs />} />
+                  <Route path="/pricing" element={<Pricing />} />
+                  <Route path="/resources" element={<Resources />} />
+                  <Route path="/templates" element={<Templates />} />
                   
                   {/* General User Routes */}
                   <Route path="/service-provider-onboarding" element={
@@ -113,6 +132,9 @@ function App() {
                       <AdminDashboard />
                     </RoleBasedRoute>
                   } />
+
+                  {/* 404 fallback */}
+                  <Route path="*" element={<NotFound />} />
                 </Routes>
               </TooltipProvider>
             </EscrowProvider>

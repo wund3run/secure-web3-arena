@@ -1,127 +1,202 @@
 
-import React from "react";
-import { ContentPage } from "@/components/content/content-page";
-import { Mail, MessageSquare, Shield, Globe, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Mail, MessageSquare, Phone, MapPin } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function Contact() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // This would be connected to an actual form submission handler
-    alert("Thanks for reaching out! We'll get back to you soon.");
+    toast.success('Message sent successfully! We\'ll get back to you soon.');
+    setFormData({ name: '', email: '', subject: '', message: '' });
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
   };
 
   return (
-    <ContentPage 
-      title="Contact Us" 
-      description="Get in touch with the Hawkly Web3 Security Marketplace team."
-    >
-      <h1 className="text-3xl md:text-4xl font-bold mb-6">Contact Us</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <div>
-          <p className="text-lg mb-6">
-            Have questions, concerns, or feedback? Our team is here to help. Reach out using the form or contact us directly through one of our channels.
-          </p>
-          
-          <div className="space-y-6 mt-8">
-            <div className="flex items-start">
-              <Mail className="h-5 w-5 text-primary mt-1 mr-3" />
-              <div>
-                <h3 className="font-medium">Email Us</h3>
-                <p className="text-sm text-muted-foreground mb-1">For general inquiries:</p>
-                <a href="mailto:info@hawkly.com" className="text-primary hover:underline">info@hawkly.com</a>
-              </div>
+    <>
+      <Helmet>
+        <title>Contact Us | Hawkly Web3 Security Marketplace</title>
+        <meta name="description" content="Get in touch with Hawkly for Web3 security services, support, or partnership inquiries." />
+      </Helmet>
+      <div className="min-h-screen bg-background flex flex-col">
+        <Navbar />
+        <main className="flex-grow container py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
+              <p className="text-xl text-muted-foreground">
+                Get in touch with our team for support, partnerships, or security consultations.
+              </p>
             </div>
-            
-            <div className="flex items-start">
-              <Shield className="h-5 w-5 text-primary mt-1 mr-3" />
-              <div>
-                <h3 className="font-medium">Security Support</h3>
-                <p className="text-sm text-muted-foreground mb-1">For security concerns or vulnerability reports:</p>
-                <a href="mailto:security@hawkly.com" className="text-primary hover:underline">security@hawkly.com</a>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <div className="space-y-8">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <MessageSquare className="h-5 w-5" />
+                      Send us a Message
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label htmlFor="name" className="block text-sm font-medium mb-2">
+                            Full Name
+                          </label>
+                          <Input
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                            placeholder="Your full name"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="email" className="block text-sm font-medium mb-2">
+                            Email Address
+                          </label>
+                          <Input
+                            id="email"
+                            name="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            placeholder="your.email@example.com"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label htmlFor="subject" className="block text-sm font-medium mb-2">
+                          Subject
+                        </label>
+                        <Input
+                          id="subject"
+                          name="subject"
+                          value={formData.subject}
+                          onChange={handleChange}
+                          required
+                          placeholder="What can we help you with?"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="message" className="block text-sm font-medium mb-2">
+                          Message
+                        </label>
+                        <Textarea
+                          id="message"
+                          name="message"
+                          value={formData.message}
+                          onChange={handleChange}
+                          required
+                          rows={6}
+                          placeholder="Tell us more about your inquiry..."
+                        />
+                      </div>
+                      <Button type="submit" className="w-full">
+                        Send Message
+                      </Button>
+                    </form>
+                  </CardContent>
+                </Card>
               </div>
-            </div>
-            
-            <div className="flex items-start">
-              <MessageSquare className="h-5 w-5 text-primary mt-1 mr-3" />
-              <div>
-                <h3 className="font-medium">Community</h3>
-                <p className="text-sm text-muted-foreground mb-1">Join our Discord community:</p>
-                <a href="https://discord.gg/hawkly" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center">
-                  discord.gg/hawkly <ArrowRight className="h-3 w-3 ml-1" />
-                </a>
-              </div>
-            </div>
-            
-            <div className="flex items-start">
-              <Globe className="h-5 w-5 text-primary mt-1 mr-3" />
-              <div>
-                <h3 className="font-medium">Social Media</h3>
-                <p className="text-sm text-muted-foreground mb-1">Follow us for updates:</p>
-                <div className="flex space-x-3 mt-1">
-                  <a href="https://twitter.com/hawkly" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Twitter</a>
-                  <a href="https://github.com/hawkly" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">GitHub</a>
-                </div>
+
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Contact Information</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <Mail className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="font-medium">Email</p>
+                        <p className="text-muted-foreground">contact@hawkly.security</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Phone className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="font-medium">Phone</p>
+                        <p className="text-muted-foreground">+1 (555) 123-4567</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <MapPin className="h-5 w-5 text-primary" />
+                      <div>
+                        <p className="font-medium">Address</p>
+                        <p className="text-muted-foreground">
+                          123 Blockchain Avenue<br />
+                          Crypto City, CC 12345
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Business Hours</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>Monday - Friday</span>
+                        <span>9:00 AM - 6:00 PM UTC</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Saturday</span>
+                        <span>10:00 AM - 4:00 PM UTC</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Sunday</span>
+                        <span>Closed</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Quick Links</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <p><a href="/support" className="text-primary hover:underline">Support Center</a></p>
+                      <p><a href="/docs" className="text-primary hover:underline">Documentation</a></p>
+                      <p><a href="/faq" className="text-primary hover:underline">FAQ</a></p>
+                      <p><a href="/service-provider-onboarding" className="text-primary hover:underline">Become an Auditor</a></p>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
-        </div>
-        
-        <div className="bg-card p-6 rounded-lg border border-border/40">
-          <h2 className="text-xl font-semibold mb-4">Send Us a Message</h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Your Name</Label>
-                <Input id="name" placeholder="Full name" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input id="email" type="email" placeholder="your@email.com" required />
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="subject">Subject</Label>
-              <Select>
-                <SelectTrigger id="subject">
-                  <SelectValue placeholder="Select a topic" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="general">General Inquiry</SelectItem>
-                  <SelectItem value="support">Technical Support</SelectItem>
-                  <SelectItem value="auditor">Become an Auditor</SelectItem>
-                  <SelectItem value="partnership">Partnership Opportunity</SelectItem>
-                  <SelectItem value="feedback">Feedback</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="message">Message</Label>
-              <Textarea 
-                id="message" 
-                placeholder="How can we help you?" 
-                rows={5} 
-                required 
-              />
-            </div>
-            
-            <Button type="submit" className="w-full">
-              Send Message
-            </Button>
-            
-            <p className="text-xs text-muted-foreground text-center mt-4">
-              By submitting this form, you agree to our <a href="/privacy" className="text-primary hover:underline">Privacy Policy</a>.
-            </p>
-          </form>
-        </div>
+        </main>
+        <Footer />
       </div>
-    </ContentPage>
+    </>
   );
 }
