@@ -15,6 +15,8 @@ import { TrustIndicators } from "@/components/home/trust-indicators";
 import { InteractiveDemo } from "@/components/home/interactive-demo";
 import { PricingPreview } from "@/components/home/pricing-preview";
 import { IndustrySpecificCases } from "@/components/home/industry-specific-cases";
+import { CompetitiveAdvantages } from "@/components/home/competitive-advantages";
+import { ComprehensiveSecurity } from "@/components/home/comprehensive-security";
 
 export default function Index() {
   return (
@@ -113,6 +115,12 @@ export default function Index() {
               </div>
             </div>
           </section>
+          
+          {/* Competitive Advantages */}
+          <CompetitiveAdvantages />
+          
+          {/* Complete Security Coverage */}
+          <ComprehensiveSecurity />
           
           {/* Industry-Specific Security Solutions */}
           <IndustrySpecificCases />
