@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Shield, Play } from 'lucide-react';
+import { ArrowRight, Shield, Play, CheckCircle } from 'lucide-react';
 
 export function SimplifiedHero() {
   return (
@@ -48,9 +48,32 @@ export function SimplifiedHero() {
             </Button>
           </div>
 
-          {/* Risk-Free Guarantee */}
+          {/* Enhanced Risk-Free Guarantee */}
+          <div className="bg-muted/20 border rounded-lg p-6 mb-8 max-w-3xl mx-auto">
+            <div className="flex flex-wrap justify-center gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                <span>30-day satisfaction guarantee</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                <span>Secure escrow payments</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                <span>Free initial consultation</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                <span>No upfront payments</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Pricing Transparency */}
           <p className="text-sm text-muted-foreground">
-            🛡️ 30-day satisfaction guarantee • 💰 Secure escrow payments • ⚡ Fast turnaround
+            Starting from <span className="font-semibold text-primary">$2,500</span> • 
+            Get instant quote • Pay only when satisfied
           </p>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { GamificationSection } from "@/components/home/gamification-section";
 import { FaqSection } from "@/components/home/faq-section";
 import { EnhancedFooter } from "@/components/home/enhanced-footer";
+import { SupportButton } from "@/components/ui/support-button";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, Shield, CheckCircle, Users } from "lucide-react";
@@ -15,6 +16,8 @@ import { TrustIndicators } from "@/components/home/trust-indicators";
 import { InteractiveDemo } from "@/components/home/interactive-demo";
 import { PricingPreview } from "@/components/home/pricing-preview";
 import { ComprehensiveSecurity } from "@/components/home/comprehensive-security";
+import { IndustrySpecificCases } from "@/components/home/industry-specific-cases";
+import { CompetitiveAdvantages } from "@/components/home/competitive-advantages";
 
 export default function Index() {
   return (
@@ -122,10 +125,16 @@ export default function Index() {
             </div>
           </section>
           
+          {/* Industry-Specific Use Cases */}
+          <IndustrySpecificCases />
+          
+          {/* Competitive Advantages */}
+          <CompetitiveAdvantages />
+          
           {/* Pricing Preview */}
           <PricingPreview />
           
-          {/* Comprehensive Security Services - now in separate component */}
+          {/* Comprehensive Security Services */}
           <ComprehensiveSecurity />
           
           {/* Gamification Section */}
@@ -135,6 +144,9 @@ export default function Index() {
           <FaqSection />
         </div>
         <EnhancedFooter />
+        
+        {/* Live Chat/Support Widget */}
+        <SupportButton />
       </div>
     </>
   );
