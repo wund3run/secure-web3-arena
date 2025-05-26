@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { Navbar } from "@/components/layout/navbar";
@@ -6,7 +5,7 @@ import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Code, Terminal, Book, Zap, CheckCircle, ArrowRight, Download, Github } from "lucide-react";
+import { Code, Terminal, Book, Zap, CheckCircle, ArrowRight, Download, Github, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function ForDevelopers() {
