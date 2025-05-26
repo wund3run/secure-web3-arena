@@ -18,15 +18,20 @@ import { IndustrySpecificCases } from "@/components/home/industry-specific-cases
 import { CompetitiveAdvantages } from "@/components/home/competitive-advantages";
 import { ComprehensiveSecurity } from "@/components/home/comprehensive-security";
 
+// New strategic positioning components
+import { MarketPositioning } from "@/components/home/market-positioning";
+import { PlatformFeaturesShowcase } from "@/components/home/platform-features-showcase";
+
 export default function Index() {
   return (
     <>
       <Helmet>
-        <title>Hawkly | Web3 Security Marketplace</title>
+        <title>Hawkly | Next-Generation Web3 Security Platform</title>
         <meta
           name="description"
-          content="Connect with top security auditors and protect your blockchain project. Smart contract audits, bug bounties, and continuous security services."
+          content="The leading Web3 security marketplace. AI-powered auditor matching, smart contract escrow, and continuous monitoring. Faster, more secure, more affordable than traditional audit firms."
         />
+        <meta name="keywords" content="web3 security, smart contract audit, blockchain security, DeFi audit, NFT security, crypto audit" />
       </Helmet>
       <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
@@ -36,6 +41,12 @@ export default function Index() {
           
           {/* Trust Indicators */}
           <TrustIndicators />
+          
+          {/* Market Positioning - NEW */}
+          <MarketPositioning />
+          
+          {/* Platform Features Showcase - NEW */}
+          <PlatformFeaturesShowcase />
           
           {/* Interactive Demo */}
           <div id="demo">
@@ -65,15 +76,15 @@ export default function Index() {
                   <ul className="space-y-3 mb-6">
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
-                      <span>Get matched with security experts</span>
+                      <span>Get matched with security experts in under 2 hours</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
-                      <span>Detailed security reports</span>
+                      <span>Detailed security reports with continuous monitoring</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
-                      <span>Pay only when satisfied</span>
+                      <span>Smart contract escrow - pay only when satisfied</span>
                     </li>
                   </ul>
                   <Button asChild className="w-full">
@@ -95,15 +106,15 @@ export default function Index() {
                   <ul className="space-y-3 mb-6">
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
-                      <span>Work with quality projects</span>
+                      <span>AI-powered matching with quality projects</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
-                      <span>Earn competitive rates</span>
+                      <span>Earn competitive rates with instant payments</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
-                      <span>Build your reputation</span>
+                      <span>Build your reputation in our verified network</span>
                     </li>
                   </ul>
                   <Button asChild variant="outline" className="w-full">
@@ -116,13 +127,13 @@ export default function Index() {
             </div>
           </section>
           
-          {/* Learn More Section */}
+          {/* Learn More Section - Enhanced with competitive positioning */}
           <section className="py-16 border-t">
             <div className="container px-4 md:px-6">
               <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold mb-4">Learn More About Hawkly</h2>
+                <h2 className="text-3xl font-bold mb-4">Why Hawkly Leads the Market</h2>
                 <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                  Discover why Hawkly is the best choice for your Web3 security needs
+                  Discover how our next-generation platform outperforms traditional audit firms and competitor platforms
                 </p>
               </div>
               
@@ -133,11 +144,11 @@ export default function Index() {
                       <Shield className="h-8 w-8 text-primary" />
                     </div>
                     <h3 className="text-2xl font-semibold mb-2">Why Choose Hawkly?</h3>
-                    <p className="text-muted-foreground">See how we compare to traditional auditors</p>
+                    <p className="text-muted-foreground">See how we outperform Code4rena, Spearbit, and traditional auditors</p>
                   </div>
                   <Button asChild className="w-full">
                     <Link to="/competitive-advantages" className="flex items-center justify-center">
-                      Compare Services <ArrowRight className="ml-2 h-4 w-4" />
+                      Compare vs Competitors <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
                 </div>
@@ -162,6 +173,12 @@ export default function Index() {
           
           {/* Industry-Specific Security Solutions */}
           <IndustrySpecificCases />
+          
+          {/* Enhanced Competitive Advantages */}
+          <CompetitiveAdvantages />
+          
+          {/* Comprehensive Security */}
+          <ComprehensiveSecurity />
           
           {/* Pricing Preview */}
           <PricingPreview />

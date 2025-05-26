@@ -4,7 +4,7 @@
  */
 
 export function getFallbackRoute(attemptedPath: string): string {
-  // Common route mappings for user-friendly suggestions
+  // Enhanced route mappings including competitive positioning
   const routeMappings: Record<string, string> = {
     '/dashboard': '/auth',
     '/profile': '/dashboard',
@@ -26,9 +26,15 @@ export function getFallbackRoute(attemptedPath: string): string {
     '/template': '/templates',
     '/resource': '/resources',
     '/compare': '/competitive-advantages',
+    '/comparison': '/competitive-advantages',
+    '/vs': '/competitive-advantages',
+    '/competitors': '/competitive-advantages',
     '/advantages': '/competitive-advantages',
     '/coverage': '/comprehensive-security',
-    '/services': '/comprehensive-security'
+    '/services': '/comprehensive-security',
+    '/features': '/',
+    '/platform': '/',
+    '/technology': '/docs'
   };
 
   // Check for exact matches first
