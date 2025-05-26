@@ -93,23 +93,23 @@ export function FaqSection() {
   })).filter(category => category.faqs.length > 0);
 
   return (
-    <section className="py-20 bg-gradient-to-br from-muted/20 via-background to-muted/30 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-40 left-20 w-64 h-64 bg-primary rounded-full blur-3xl"></div>
-        <div className="absolute bottom-40 right-20 w-48 h-48 bg-secondary rounded-full blur-3xl"></div>
+    <section className="py-20 bg-muted/20 relative overflow-hidden">
+      {/* Subtle background elements */}
+      <div className="absolute inset-0 opacity-3">
+        <div className="absolute top-40 left-20 w-64 h-64 bg-primary/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-40 right-20 w-48 h-48 bg-secondary/20 rounded-full blur-3xl"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 px-6 py-3 rounded-full border border-primary/20 mb-6">
+          <div className="inline-flex items-center gap-2 bg-primary/10 px-6 py-3 rounded-full border border-primary/20 mb-6">
             <MessageCircle className="h-5 w-5 text-primary" />
             <span className="text-sm font-medium">Security Q&A Hub</span>
           </div>
           
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-primary via-purple-600 to-secondary bg-clip-text text-transparent">
+            <span className="text-primary">
               Security Questions
             </span>{" "}
             <span className="text-foreground">Answered</span>
@@ -127,14 +127,14 @@ export function FaqSection() {
               placeholder="Search security questions..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 pr-4 py-3 text-lg bg-background/80 backdrop-blur-sm border-primary/20 focus:border-primary/40 rounded-xl"
+              className="pl-12 pr-4 py-3 text-lg bg-background border-primary/20 focus:border-primary/40 rounded-xl"
             />
           </div>
         </div>
 
         {/* Category Filters */}
         <div className="flex justify-center mb-12">
-          <div className="flex gap-2 p-1 bg-muted/50 rounded-xl border border-border/50">
+          <div className="flex gap-2 p-1 bg-muted/30 rounded-xl border">
             <Button
               variant={activeCategory === null ? "default" : "ghost"}
               onClick={() => setActiveCategory(null)}
@@ -161,10 +161,10 @@ export function FaqSection() {
           {filteredFaqs
             .filter(category => !activeCategory || category.id === activeCategory)
             .map((category) => (
-            <Card key={category.id} className={`${category.bgColor} backdrop-blur-sm ${category.borderColor} border overflow-hidden group hover:shadow-xl transition-all duration-300`}>
+            <Card key={category.id} className={`${category.bgColor} border overflow-hidden group hover:shadow-lg transition-all duration-300`}>
               <CardContent className="p-0">
                 {/* Category Header */}
-                <div className={`p-6 bg-gradient-to-r ${category.color} bg-opacity-10 border-b ${category.borderColor}`}>
+                <div className={`p-6 ${category.bgColor} border-b`}>
                   <div className="flex items-center gap-3">
                     <div className={`p-3 rounded-xl bg-gradient-to-r ${category.color} shadow-lg`}>
                       <category.icon className="h-6 w-6 text-white" />
@@ -185,9 +185,9 @@ export function FaqSection() {
                       <AccordionItem 
                         key={index} 
                         value={`${category.id}-${index}`} 
-                        className="border border-border/30 rounded-lg overflow-hidden hover:border-primary/30 transition-colors"
+                        className="border rounded-lg overflow-hidden hover:border-primary/30 transition-colors"
                       >
-                        <AccordionTrigger className="text-left font-medium px-4 py-4 hover:bg-muted/50 transition-colors group">
+                        <AccordionTrigger className="text-left font-medium px-4 py-4 hover:bg-muted/30 transition-colors group">
                           <span className="group-hover:text-primary transition-colors">
                             {faq.question}
                           </span>
@@ -222,10 +222,10 @@ export function FaqSection() {
 
         {/* Call to Action */}
         <div className="mt-16">
-          <Card className="bg-gradient-to-r from-primary/5 via-purple-500/5 to-secondary/5 border-primary/20 overflow-hidden">
+          <Card className="bg-muted/20 border overflow-hidden">
             <CardContent className="p-8 text-center">
               <div className="flex justify-center mb-6">
-                <div className="p-4 bg-gradient-to-r from-primary to-secondary rounded-2xl">
+                <div className="p-4 bg-primary rounded-2xl">
                   <Zap className="h-8 w-8 text-white" />
                 </div>
               </div>

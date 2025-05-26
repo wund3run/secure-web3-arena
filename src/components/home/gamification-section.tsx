@@ -1,4 +1,3 @@
-
 import { Trophy, Shield, Award, Star, BadgeCheck, Zap, Users, Target, TrendingUp, Crown } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -131,21 +130,21 @@ const getLevelColor = (level: string) => {
 
 export function GamificationSection() {
   return (
-    <section className="py-20 bg-gradient-to-br from-background via-muted/30 to-background relative overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-primary rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-secondary rounded-full blur-3xl"></div>
+    <section className="py-20 bg-muted/20 relative overflow-hidden">
+      {/* Subtle background elements */}
+      <div className="absolute inset-0 opacity-3">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-10 w-40 h-40 bg-secondary/20 rounded-full blur-3xl"></div>
       </div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 px-6 py-3 rounded-full border border-primary/20 mb-6">
+          <div className="inline-flex items-center gap-2 bg-primary/10 px-6 py-3 rounded-full border border-primary/20 mb-6">
             <Trophy className="h-5 w-5 text-primary" />
             <span className="text-sm font-medium">Gamified Security Platform</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-primary via-purple-600 to-secondary bg-clip-text text-transparent">
+            <span className="text-primary">
               Compete, Learn, Excel
             </span>
           </h2>
@@ -158,11 +157,11 @@ export function GamificationSection() {
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
           {/* Enhanced Leaderboard */}
           <div className="xl:col-span-8">
-            <Card className="bg-gradient-to-br from-card to-card/80 border-primary/10 shadow-2xl overflow-hidden">
-              <div className="p-6 bg-gradient-to-r from-primary/5 via-purple-500/5 to-secondary/5 border-b border-border/20">
+            <Card className="bg-card border shadow-sm overflow-hidden">
+              <div className="p-6 bg-muted/30 border-b">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-r from-primary to-secondary rounded-lg">
+                    <div className="p-2 bg-primary rounded-lg">
                       <Trophy className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -179,7 +178,7 @@ export function GamificationSection() {
               <div className="p-6 space-y-4">
                 {TOP_AUDITORS.map((auditor, index) => (
                   <div key={auditor.id} className="group relative">
-                    <div className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-muted/30 to-transparent hover:from-muted/50 transition-all duration-300 border border-transparent hover:border-primary/20">
+                    <div className="flex items-center gap-4 p-4 rounded-xl bg-muted/20 hover:bg-muted/40 transition-all duration-300 border border-transparent hover:border-primary/20">
                       {/* Rank & Avatar */}
                       <div className="flex items-center gap-3">
                         <div className="relative">
@@ -198,7 +197,7 @@ export function GamificationSection() {
                             {auditor.isVerified && (
                               <BadgeCheck className="h-4 w-4 text-primary" />
                             )}
-                            <span className={`px-2 py-1 text-xs rounded-full bg-gradient-to-r ${getLevelColor(auditor.level)} text-white font-medium`}>
+                            <span className={`px-2 py-1 text-xs rounded-full bg-primary/10 text-primary font-medium`}>
                               {auditor.level.toUpperCase()}
                             </span>
                           </div>
@@ -232,7 +231,7 @@ export function GamificationSection() {
                         
                         {/* Points & Progress */}
                         <div className="text-right min-w-[120px]">
-                          <div className="font-bold text-xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                          <div className="font-bold text-xl text-primary">
                             {auditor.points.toLocaleString()}
                           </div>
                           <div className="text-xs text-muted-foreground mb-2">Security Points</div>
@@ -244,7 +243,7 @@ export function GamificationSection() {
                 ))}
               </div>
               
-              <div className="p-6 border-t border-border/20 bg-muted/20">
+              <div className="p-6 border-t bg-muted/10">
                 <Button asChild className="w-full">
                   <Link to="/community">
                     Join the Competition →
@@ -257,10 +256,10 @@ export function GamificationSection() {
           {/* Achievements & Rewards */}
           <div className="xl:col-span-4 space-y-6">
             {/* Achievement Categories */}
-            <Card className="bg-gradient-to-br from-card to-card/80 border-secondary/10 shadow-xl overflow-hidden">
-              <div className="p-6 bg-gradient-to-r from-secondary/5 to-purple-500/5 border-b border-border/20">
+            <Card className="bg-card border shadow-sm overflow-hidden">
+              <div className="p-6 bg-muted/30 border-b">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-r from-secondary to-purple-600 rounded-lg">
+                  <div className="p-2 bg-secondary rounded-lg">
                     <Award className="h-5 w-5 text-white" />
                   </div>
                   <div>
@@ -276,9 +275,8 @@ export function GamificationSection() {
                     <h4 className="font-semibold mb-3 text-primary">{category.title}</h4>
                     <div className="space-y-3">
                       {category.badges.map((badge) => (
-                        <div key={badge.id} className="group relative overflow-hidden rounded-lg border border-border/30 hover:border-primary/30 transition-all duration-300">
-                          <div className={`absolute inset-0 bg-gradient-to-r ${badge.color} opacity-5 group-hover:opacity-10 transition-opacity`}></div>
-                          <div className="relative p-4">
+                        <div key={badge.id} className="group relative overflow-hidden rounded-lg border hover:border-primary/30 transition-all duration-300">
+                          <div className="p-4">
                             <div className="flex items-start gap-3">
                               <div className={`p-2 rounded-lg bg-gradient-to-r ${badge.color} shadow-lg`}>
                                 <badge.icon className="h-4 w-4 text-white" />
@@ -287,9 +285,9 @@ export function GamificationSection() {
                                 <div className="flex items-center gap-2 mb-1">
                                   <span className="font-medium text-sm">{badge.name}</span>
                                   <span className={`px-1.5 py-0.5 text-xs rounded-full ${
-                                    badge.rarity === 'legendary' ? 'bg-purple-500/20 text-purple-400' :
-                                    badge.rarity === 'epic' ? 'bg-orange-500/20 text-orange-400' :
-                                    'bg-blue-500/20 text-blue-400'
+                                    badge.rarity === 'legendary' ? 'bg-purple-500/20 text-purple-600' :
+                                    badge.rarity === 'epic' ? 'bg-orange-500/20 text-orange-600' :
+                                    'bg-blue-500/20 text-blue-600'
                                   }`}>
                                     {badge.rarity}
                                   </span>
@@ -309,10 +307,10 @@ export function GamificationSection() {
             </Card>
             
             {/* Rewards Overview */}
-            <Card className="bg-gradient-to-br from-card to-card/80 border-primary/10 shadow-xl">
-              <div className="p-6 bg-gradient-to-r from-primary/5 to-green-500/5 border-b border-border/20">
+            <Card className="bg-card border shadow-sm">
+              <div className="p-6 bg-muted/30 border-b">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-r from-primary to-green-600 rounded-lg">
+                  <div className="p-2 bg-primary rounded-lg">
                     <Star className="h-5 w-5 text-white" />
                   </div>
                   <div>
@@ -325,12 +323,12 @@ export function GamificationSection() {
               <div className="p-6">
                 <div className="space-y-4">
                   {[
-                    { icon: TrendingUp, text: "Crypto rewards for critical vulnerabilities", color: "text-green-500" },
-                    { icon: Shield, text: "Premium security tool access", color: "text-blue-500" },
-                    { icon: Crown, text: "Priority on high-value contracts", color: "text-purple-500" },
-                    { icon: Users, text: "Exclusive community recognition", color: "text-orange-500" }
+                    { icon: TrendingUp, text: "Crypto rewards for critical vulnerabilities", color: "text-green-600" },
+                    { icon: Shield, text: "Premium security tool access", color: "text-blue-600" },
+                    { icon: Crown, text: "Priority on high-value contracts", color: "text-purple-600" },
+                    { icon: Users, text: "Exclusive community recognition", color: "text-orange-600" }
                   ].map((reward, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                    <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-muted/20 hover:bg-muted/30 transition-colors">
                       <div className={`p-2 rounded-lg bg-background shadow-sm ${reward.color}`}>
                         <reward.icon className="h-4 w-4" />
                       </div>
