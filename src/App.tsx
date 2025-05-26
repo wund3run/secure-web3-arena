@@ -8,12 +8,15 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/auth/AuthContext";
 import { EscrowProvider } from "@/contexts/EscrowContext";
 import { RouterErrorBoundary } from "@/components/error/RouterErrorBoundary";
-import LoadingState from "@/components/ui/loading-state";
 
 // Lazy load pages for better performance
 const Index = React.lazy(() => import("@/pages/Index"));
 const NotFound = React.lazy(() => import("@/pages/NotFound"));
 const OptimizedDistributionStrategy = React.lazy(() => import("@/pages/OptimizedDistributionStrategy"));
+const ForProjectOwners = React.lazy(() => import("@/pages/ForProjectOwners"));
+const ForAuditors = React.lazy(() => import("@/pages/ForAuditors"));
+const ForEnterprises = React.lazy(() => import("@/pages/ForEnterprises"));
+const ForDevelopers = React.lazy(() => import("@/pages/ForDevelopers"));
 
 // Optimized QueryClient with better defaults
 const queryClient = new QueryClient({
@@ -48,6 +51,10 @@ function App() {
                     <Routes>
                       <Route path="/" element={<Index />} />
                       <Route path="/distribution-strategy" element={<OptimizedDistributionStrategy />} />
+                      <Route path="/for-project-owners" element={<ForProjectOwners />} />
+                      <Route path="/for-auditors" element={<ForAuditors />} />
+                      <Route path="/for-enterprises" element={<ForEnterprises />} />
+                      <Route path="/for-developers" element={<ForDevelopers />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
