@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -124,22 +123,30 @@ export function PredictiveOptimization() {
     performPredictiveAnalysis();
   }, []);
 
-  const getImpactColor = (impact: string) => {
-    const colors = {
-      high: "destructive",
-      medium: "secondary",
-      low: "outline"
-    };
-    return colors[impact as keyof typeof colors] || "outline";
+  const getImpactColor = (impact: string): "default" | "destructive" | "secondary" | "outline" | "success" | "warning" => {
+    switch (impact) {
+      case "high":
+        return "destructive";
+      case "medium":
+        return "secondary";
+      case "low":
+        return "outline";
+      default:
+        return "outline";
+    }
   };
 
-  const getEffortColor = (effort: string) => {
-    const colors = {
-      low: "default",
-      medium: "secondary",
-      high: "destructive"
-    };
-    return colors[effort as keyof typeof colors] || "outline";
+  const getEffortColor = (effort: string): "default" | "destructive" | "secondary" | "outline" | "success" | "warning" => {
+    switch (effort) {
+      case "low":
+        return "default";
+      case "medium":
+        return "secondary";
+      case "high":
+        return "destructive";
+      default:
+        return "outline";
+    }
   };
 
   const getCategoryIcon = (category: string) => {
