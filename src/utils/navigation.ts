@@ -80,3 +80,85 @@ export function getPageMetadata(path: string) {
     description: 'Web3 Security Marketplace'
   };
 }
+
+/**
+ * Extract all routes from the App.tsx routing configuration
+ * @returns Array of route paths defined in the application
+ */
+export function extractRoutesFromApp(): string[] {
+  // Define all the routes that exist in the App.tsx file
+  const routes = [
+    '/',
+    '/auth',
+    '/marketplace',
+    '/audits',
+    '/community',
+    '/service-provider-onboarding',
+    '/request-audit',
+    '/submit-service',
+    '/escrow',
+    '/dashboard',
+    '/dashboard/*',
+    '/admin',
+    '/admin/*',
+    '/system-health',
+    '/contact',
+    '/support',
+    '/faq',
+    '/ai-tools',
+    '/docs',
+    '/pricing',
+    '/resources',
+    '/templates'
+  ];
+
+  return routes;
+}
+
+/**
+ * Check if a route exists in the application
+ * @param route - The route path to check
+ * @returns Boolean indicating if the route exists
+ */
+export function routeExists(route: string): boolean {
+  const validRoutes = extractRoutesFromApp();
+  
+  // Check for exact match
+  if (validRoutes.includes(route)) {
+    return true;
+  }
+
+  // Check for dynamic routes (routes ending with /*)
+  const dynamicRoutes = validRoutes.filter(r => r.endsWith('/*'));
+  for (const dynamicRoute of dynamicRoutes) {
+    const baseRoute = dynamicRoute.replace('/*', '');
+    if (route.startsWith(baseRoute)) {
+      return true;
+    }
+  }
+
+  // Check for common route patterns
+  const routePatterns = [
+    /^\/dashboard(\/.*)?$/,
+    /^\/admin(\/.*)?$/,
+    /^\/audit\/[^/]+$/,
+    /^\/service\/[^/]+$/,
+    /^\/provider\/[^/]+$/
+  ];
+
+  return routePatterns.some(pattern => pattern.test(route));
+}
+
+/**
+ * Validate if a navigation path is accessible
+ * @param path - The navigation path to validate
+ * @returns Boolean indicating if the path is valid
+ */
+export function isValidNavigationPath(path: string): boolean {
+  // Skip external links and anchors
+  if (path.startsWith('http') || path.startsWith('#') || path === '') {
+    return true;
+  }
+
+  return routeExists(path);
+}
