@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -171,7 +170,7 @@ export function PersonalizedRecommendations({ userType }: PersonalizedRecommenda
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <h4 className="font-medium">{recommendation.title}</h4>
-                  <Badge variant={getPriorityColor(recommendation.priority) as any} size="sm">
+                  <Badge variant={getPriorityColor(recommendation.priority) as any}>
                     {recommendation.priority}
                   </Badge>
                   <div className="flex items-center gap-1">
