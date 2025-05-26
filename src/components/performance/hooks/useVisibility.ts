@@ -1,27 +1,15 @@
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 
 export const useVisibility = () => {
-  const [visible, setVisible] = useState(false);
-  
-  // Toggle visibility callback - memoized for performance
+  const [visible, setVisible] = useState(() => {
+    // Only show in development by default
+    return process.env.NODE_ENV === 'development';
+  });
+
   const toggleVisibility = useCallback(() => {
     setVisible(prev => !prev);
   }, []);
-  
-  // Keyboard shortcut handler
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Only process if all keys match
-      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
-        e.preventDefault();
-        toggleVisibility();
-      }
-    };
-    
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [toggleVisibility]);
 
   return { visible, toggleVisibility };
 };

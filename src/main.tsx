@@ -11,27 +11,34 @@ const LoadingFallback = () => (
   </div>
 );
 
-// Initialize performance monitoring without blocking the main thread
+// Initialize performance monitoring only in production and defer it
 if (process.env.NODE_ENV === 'production') {
   // Use requestIdleCallback to defer non-critical operations
-  (window.requestIdleCallback || ((cb) => setTimeout(cb, 50)))(async () => {
+  const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 100));
+  
+  idleCallback(async () => {
     try {
       const webVitals = await import('web-vitals');
-      const reportWebVitals = (metric) => {
-        // Group similar metrics to reduce console noise
-        const metricName = metric.name.toUpperCase();
-        const value = Math.round(metric.value);
-        console.debug(`[Perf] ${metricName}: ${value}ms`);
+      
+      // Throttled reporting to reduce overhead
+      let reportTimeout: number;
+      const throttledReport = (metric: any) => {
+        clearTimeout(reportTimeout);
+        reportTimeout = window.setTimeout(() => {
+          const metricName = metric.name.toUpperCase();
+          const value = Math.round(metric.value);
+          console.debug(`[Perf] ${metricName}: ${value}ms`);
+        }, 1000); // Batch reports every second
       };
       
-      // Spread out metric calculations to avoid layout thrashing
-      setTimeout(() => webVitals.onFCP(reportWebVitals), 0);
-      setTimeout(() => webVitals.onLCP(reportWebVitals), 500);
-      setTimeout(() => webVitals.onCLS(reportWebVitals), 1000);
-      setTimeout(() => webVitals.onTTFB(reportWebVitals), 1500);
-      setTimeout(() => webVitals.onINP?.(reportWebVitals), 2000);
+      // Staggered metric collection to avoid blocking
+      setTimeout(() => webVitals.onFCP(throttledReport), 0);
+      setTimeout(() => webVitals.onLCP(throttledReport), 1000);
+      setTimeout(() => webVitals.onCLS(throttledReport), 2000);
+      setTimeout(() => webVitals.onTTFB(throttledReport), 3000);
+      setTimeout(() => webVitals.onINP?.(throttledReport), 4000);
     } catch (err) {
-      console.warn('Web Vitals reporting failed:', err);
+      // Silently fail to avoid blocking the app
     }
   });
 }
@@ -39,9 +46,11 @@ if (process.env.NODE_ENV === 'production') {
 // Create root with concurrent mode for better performance
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
-// Use concurrent mode rendering without any providers (they're now in AppProviders)
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+// Use startTransition for non-urgent updates
+React.startTransition(() => {
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+});

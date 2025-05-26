@@ -1,31 +1,82 @@
 
-import React from "react";
+import React, { Suspense } from "react";
 import { Helmet } from "react-helmet-async";
 import { Navbar } from "@/components/layout/navbar";
-import { FaqSection } from "@/components/home/faq-section";
 import { EnhancedFooter } from "@/components/home/enhanced-footer";
 import { SupportButton } from "@/components/ui/support-button";
+import { LazySection } from "@/components/performance/LazySection";
 
-// Core journey components
+// Core journey components (loaded immediately)
 import { SimplifiedHero } from "@/components/home/simplified-hero";
 import { TrustIndicators } from "@/components/home/trust-indicators";
-import { InteractiveDemo } from "@/components/home/interactive-demo";
-import { PricingPreview } from "@/components/home/pricing-preview";
-
-// Strategic positioning components
-import { MarketPositioning } from "@/components/home/market-positioning";
-import { PlatformFeaturesShowcase } from "@/components/home/platform-features-showcase";
-import { CompetitiveAdvantages } from "@/components/home/competitive-advantages";
-
-// Enhanced user journey components
-import { UserJourneySection } from "@/components/home/user-journey-section";
-import { QuickStartSection } from "@/components/home/quick-start-section";
 import { ValuePropositionSection } from "@/components/home/value-proposition-section";
 
-// Distribution scale strategy components
-import { NetworkEffectsSection } from "@/components/home/network-effects-section";
-import { StrategicPartnershipsSection } from "@/components/home/strategic-partnerships-section";
-import { GlobalExpansionSection } from "@/components/home/global-expansion-section";
+// Lazy load heavy components
+const InteractiveDemo = React.lazy(() => 
+  import("@/components/home/interactive-demo").then(module => ({
+    default: module.InteractiveDemo
+  }))
+);
+
+const FaqSection = React.lazy(() => 
+  import("@/components/home/faq-section").then(module => ({
+    default: module.FaqSection
+  }))
+);
+
+const UserJourneySection = React.lazy(() => 
+  import("@/components/home/user-journey-section").then(module => ({
+    default: module.UserJourneySection
+  }))
+);
+
+const QuickStartSection = React.lazy(() => 
+  import("@/components/home/quick-start-section").then(module => ({
+    default: module.QuickStartSection
+  }))
+);
+
+const PricingPreview = React.lazy(() => 
+  import("@/components/home/pricing-preview").then(module => ({
+    default: module.PricingPreview
+  }))
+);
+
+const MarketPositioning = React.lazy(() => 
+  import("@/components/home/market-positioning").then(module => ({
+    default: module.MarketPositioning
+  }))
+);
+
+const PlatformFeaturesShowcase = React.lazy(() => 
+  import("@/components/home/platform-features-showcase").then(module => ({
+    default: module.PlatformFeaturesShowcase
+  }))
+);
+
+const CompetitiveAdvantages = React.lazy(() => 
+  import("@/components/home/competitive-advantages").then(module => ({
+    default: module.CompetitiveAdvantages
+  }))
+);
+
+const NetworkEffectsSection = React.lazy(() => 
+  import("@/components/home/network-effects-section").then(module => ({
+    default: module.NetworkEffectsSection
+  }))
+);
+
+const StrategicPartnershipsSection = React.lazy(() => 
+  import("@/components/home/strategic-partnerships-section").then(module => ({
+    default: module.StrategicPartnershipsSection
+  }))
+);
+
+const GlobalExpansionSection = React.lazy(() => 
+  import("@/components/home/global-expansion-section").then(module => ({
+    default: module.GlobalExpansionSection
+  }))
+);
 
 export default function Index() {
   return (
@@ -38,56 +89,64 @@ export default function Index() {
         />
         <meta name="keywords" content="web3 security, smart contract audit, blockchain security, DeFi audit, NFT security, crypto audit" />
       </Helmet>
+      
       <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
         <div className="flex-grow">
-          {/* Hero Section - Clear value prop with dual CTAs */}
+          {/* Above-the-fold content - loaded immediately */}
           <SimplifiedHero />
-          
-          {/* Trust Building - Social proof early in the journey */}
           <TrustIndicators />
-          
-          {/* Value Proposition - What makes us different */}
           <ValuePropositionSection />
           
-          {/* User Journey Paths - Clear separation for different user types */}
-          <UserJourneySection />
+          {/* Below-the-fold content - lazy loaded */}
+          <LazySection>
+            <UserJourneySection />
+          </LazySection>
           
-          {/* Quick Start - Immediate action paths */}
-          <QuickStartSection />
+          <LazySection>
+            <QuickStartSection />
+          </LazySection>
           
-          {/* Interactive Demo - Show how it works */}
-          <div id="demo">
-            <InteractiveDemo />
-          </div>
+          <LazySection>
+            <div id="demo">
+              <InteractiveDemo />
+            </div>
+          </LazySection>
           
-          {/* Distribution Scale Strategy - Network effects and growth */}
-          <NetworkEffectsSection />
+          <LazySection>
+            <NetworkEffectsSection />
+          </LazySection>
           
-          {/* Market Positioning - Why choose us over competitors */}
-          <MarketPositioning />
+          <LazySection>
+            <MarketPositioning />
+          </LazySection>
           
-          {/* Platform Features - Technical differentiators */}
-          <PlatformFeaturesShowcase />
+          <LazySection>
+            <PlatformFeaturesShowcase />
+          </LazySection>
           
-          {/* Strategic Partnerships - Distribution channels */}
-          <StrategicPartnershipsSection />
+          <LazySection>
+            <StrategicPartnershipsSection />
+          </LazySection>
           
-          {/* Global Expansion - Worldwide scale */}
-          <GlobalExpansionSection />
+          <LazySection>
+            <GlobalExpansionSection />
+          </LazySection>
           
-          {/* Competitive Advantages - Detailed comparison */}
-          <CompetitiveAdvantages />
+          <LazySection>
+            <CompetitiveAdvantages />
+          </LazySection>
           
-          {/* Pricing Preview - Transparent cost structure */}
-          <PricingPreview />
+          <LazySection>
+            <PricingPreview />
+          </LazySection>
           
-          {/* FAQ Section - Address common concerns */}
-          <FaqSection />
+          <LazySection>
+            <FaqSection />
+          </LazySection>
         </div>
-        <EnhancedFooter />
         
-        {/* Live Chat/Support Widget */}
+        <EnhancedFooter />
         <SupportButton />
       </div>
     </>
