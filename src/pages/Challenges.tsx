@@ -1,359 +1,208 @@
 
 import React from "react";
 import { ContentPage } from "@/components/content/content-page";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Trophy, Target, Users, Clock, Star, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Clock, Users, Target, ArrowRight, ChevronRight, Star, Award, Shield } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export default function Challenges() {
   const activeChallenges = [
     {
-      id: 1,
-      title: "Find the Reentrancy",
-      description: "Identify and fix the reentrancy vulnerability in this DeFi lending protocol.",
+      title: "Reentrancy Hunter",
+      description: "Find and exploit reentrancy vulnerabilities in provided smart contracts.",
       difficulty: "Medium",
-      participants: 145,
-      rewards: "2,500 USD + NFT Badge",
-      daysLeft: 7,
-      progress: 42,
-      category: "Smart Contract"
+      reward: "500 HAWK",
+      participants: 47,
+      timeLeft: "5 days",
+      category: "Smart Contract",
+      isLocked: false
     },
     {
-      id: 2,
-      title: "MEV Protection Challenge",
-      description: "Design a solution to protect a DEX against maximal extractable value exploitation.",
+      title: "Oracle Manipulation Master",
+      description: "Demonstrate price oracle manipulation techniques in a controlled environment.",
       difficulty: "Hard",
-      participants: 89,
-      rewards: "5,000 USD + Exclusive Access",
-      daysLeft: 12,
-      progress: 28,
-      category: "DeFi"
+      reward: "1000 HAWK",
+      participants: 23,
+      timeLeft: "12 days",
+      category: "DeFi",
+      isLocked: false
     },
     {
-      id: 3,
-      title: "ZK Circuit Audit",
-      description: "Audit this zero-knowledge proof circuit implementation and identify vulnerabilities.",
+      title: "Bridge Security Specialist",
+      description: "Identify vulnerabilities in cross-chain bridge implementations.",
       difficulty: "Expert",
-      participants: 56,
-      rewards: "7,500 USD + Employment Opportunity",
-      daysLeft: 18,
-      progress: 15,
-      category: "Zero Knowledge"
+      reward: "2000 HAWK",
+      participants: 8,
+      timeLeft: "20 days",
+      category: "Infrastructure",
+      isLocked: true
     }
   ];
 
   const completedChallenges = [
     {
-      id: 4,
-      title: "Bridge Exploit Prevention",
-      description: "Identify potential exploit vectors in a cross-chain bridge implementation.",
-      difficulty: "Hard",
-      participants: 203,
-      winners: ["Alex J.", "Sarah A.", "Michael Z."],
-      totalPrize: "10,000 USD",
-      category: "Bridges"
+      title: "Flash Loan Attack Simulation",
+      winner: "alice_security",
+      reward: "750 HAWK",
+      completedDate: "May 10, 2025"
     },
     {
-      id: 5,
-      title: "NFT Metadata Security",
-      description: "Find and fix vulnerabilities in NFT metadata handling and storage.",
-      difficulty: "Medium",
-      participants: 178,
-      winners: ["Elena R.", "David W."],
-      totalPrize: "3,500 USD",
-      category: "NFT"
+      title: "NFT Marketplace Exploit",
+      winner: "crypto_hunter",
+      reward: "600 HAWK",
+      completedDate: "May 3, 2025"
     }
   ];
+
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty) {
+      case "Easy": return "bg-green-100 text-green-800";
+      case "Medium": return "bg-yellow-100 text-yellow-800";
+      case "Hard": return "bg-orange-100 text-orange-800";
+      case "Expert": return "bg-red-100 text-red-800";
+      default: return "bg-gray-100 text-gray-800";
+    }
+  };
 
   return (
     <ContentPage
       title="Security Challenges"
-      description="Participate in Web3 security challenges, competitions, and bug bounties to test and improve your skills."
+      description="Test your skills with hands-on security challenges and earn rewards"
+      className="px-4 md:px-6"
     >
-      <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4 flex items-center">
-          <Trophy className="mr-3 h-8 w-8 text-amber-500" /> Security Challenges
-        </h1>
-        <p className="text-lg text-muted-foreground max-w-3xl">
-          Test your security skills, compete with peers, and earn rewards by participating in our Web3 security challenges.
-        </p>
-      </div>
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-card rounded-lg p-6 mb-8 border border-border/40">
+          <div className="flex items-center mb-4">
+            <Trophy className="h-8 w-8 text-primary mr-3" />
+            <h1 className="text-3xl md:text-4xl font-bold">Security Challenges</h1>
+          </div>
+          <p className="text-lg text-muted-foreground">
+            Put your security skills to the test with real-world challenges. Earn rewards and build your reputation.
+          </p>
+        </div>
 
-      <Tabs defaultValue="active" className="mb-12">
-        <TabsList className="grid grid-cols-3 max-w-md mb-8">
-          <TabsTrigger value="active">Active Challenges</TabsTrigger>
-          <TabsTrigger value="completed">Completed</TabsTrigger>
-          <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="active">
-          <div className="grid grid-cols-1 gap-6">
-            {activeChallenges.map(challenge => (
-              <Card key={challenge.id} className="hover:shadow-md transition-all">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <Badge className="mb-2">{challenge.category}</Badge>
-                      <CardTitle className="text-xl mb-1">{challenge.title}</CardTitle>
-                      <CardDescription>{challenge.description}</CardDescription>
-                    </div>
-                    <div className="text-right">
-                      <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                        {challenge.difficulty}
-                      </div>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-3 gap-4 mb-4">
-                    <div>
-                      <div className="text-sm text-muted-foreground mb-1 flex items-center">
-                        <Clock className="h-3.5 w-3.5 mr-1" /> Time Remaining
-                      </div>
-                      <div className="font-semibold">{challenge.daysLeft} days</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground mb-1 flex items-center">
-                        <Users className="h-3.5 w-3.5 mr-1" /> Participants
-                      </div>
-                      <div className="font-semibold">{challenge.participants}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground mb-1 flex items-center">
-                        <Trophy className="h-3.5 w-3.5 mr-1" /> Rewards
-                      </div>
-                      <div className="font-semibold">{challenge.rewards}</div>
-                    </div>
-                  </div>
-                  <div className="mb-1 flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Challenge Progress</span>
-                    <span>{challenge.progress}%</span>
-                  </div>
-                  <Progress value={challenge.progress} className="h-2" />
-                </CardContent>
-                <CardFooter className="flex justify-between">
-                  <Button variant="outline" size="sm">
-                    <Users className="h-4 w-4 mr-1.5" /> View Participants
-                  </Button>
-                  <Button>
-                    Enter Challenge <ArrowRight className="ml-1.5 h-4 w-4" />
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-background rounded-lg p-6 border border-border/40 text-center">
+            <Target className="h-8 w-8 text-primary mx-auto mb-3" />
+            <h3 className="text-xl font-semibold mb-2">Skill Building</h3>
+            <p className="text-muted-foreground">
+              Enhance your security expertise through practical challenges
+            </p>
           </div>
-        </TabsContent>
-        
-        <TabsContent value="completed">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {completedChallenges.map(challenge => (
-              <Card key={challenge.id} className="hover:shadow-md transition-all">
-                <CardHeader>
-                  <Badge variant="outline">{challenge.category}</Badge>
-                  <CardTitle className="text-lg mb-1">{challenge.title}</CardTitle>
-                  <CardDescription>{challenge.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <div className="text-sm text-muted-foreground mb-1 flex items-center">
-                        <Users className="h-3.5 w-3.5 mr-1" /> Participants
-                      </div>
-                      <div className="font-semibold">{challenge.participants}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground mb-1 flex items-center">
-                        <Trophy className="h-3.5 w-3.5 mr-1" /> Total Prize
-                      </div>
-                      <div className="font-semibold">{challenge.totalPrize}</div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Winners</div>
-                    <div className="flex items-center gap-2">
-                      {challenge.winners.map((winner, i) => (
-                        <div key={i} className="flex items-center">
-                          <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-xs mr-1">
-                            {i === 0 ? <Trophy className="h-3 w-3 text-amber-500" /> : <Star className="h-3 w-3 text-primary" />}
-                          </div>
-                          <span className="text-sm">{winner}</span>
-                          {i < challenge.winners.length - 1 && <span className="mx-1 text-muted-foreground">•</span>}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button variant="outline" size="sm" className="w-full">
-                    View Challenge Results <ChevronRight className="ml-1.5 h-4 w-4" />
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
+          <div className="bg-background rounded-lg p-6 border border-border/40 text-center">
+            <Trophy className="h-8 w-8 text-secondary mx-auto mb-3" />
+            <h3 className="text-xl font-semibold mb-2">Earn Rewards</h3>
+            <p className="text-muted-foreground">
+              Complete challenges to earn HAWK tokens and recognition
+            </p>
           </div>
-          
-          <div className="mt-6 text-center">
-            <Button variant="outline" size="lg">View All Past Challenges</Button>
+          <div className="bg-background rounded-lg p-6 border border-border/40 text-center">
+            <Users className="h-8 w-8 text-primary mx-auto mb-3" />
+            <h3 className="text-xl font-semibold mb-2">Community</h3>
+            <p className="text-muted-foreground">
+              Connect with other security professionals and learn together
+            </p>
           </div>
-        </TabsContent>
-        
-        <TabsContent value="upcoming">
-          <Card>
-            <CardHeader>
-              <CardTitle>Coming Soon</CardTitle>
-              <CardDescription>
-                New security challenges are currently being prepared by our team.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8">
-                <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 mb-4">
-                  <Target className="h-8 w-8 text-primary" />
+        </div>
+
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-6">Active Challenges</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {activeChallenges.map((challenge, index) => (
+              <div key={index} className="bg-card rounded-lg p-6 border border-border/40 hover:shadow-md transition-all">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center">
+                    <Badge className={getDifficultyColor(challenge.difficulty)}>
+                      {challenge.difficulty}
+                    </Badge>
+                    <Badge variant="outline" className="ml-2">
+                      {challenge.category}
+                    </Badge>
+                  </div>
+                  {challenge.isLocked && (
+                    <Lock className="h-5 w-5 text-muted-foreground" />
+                  )}
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Stay Tuned for New Challenges</h3>
-                <p className="text-muted-foreground mb-4 max-w-md mx-auto">
-                  Our team is designing new and exciting security challenges. 
-                  Subscribe to notifications to be the first to know when new challenges are posted.
-                </p>
-                <Button>
-                  <Bell className="mr-2 h-4 w-4" />
-                  Get Notified
+                
+                <h3 className="text-xl font-semibold mb-2">{challenge.title}</h3>
+                <p className="text-muted-foreground mb-4">{challenge.description}</p>
+                
+                <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                  <div className="flex items-center">
+                    <Trophy className="h-4 w-4 mr-2 text-primary" />
+                    <span>{challenge.reward}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Users className="h-4 w-4 mr-2 text-muted-foreground" />
+                    <span>{challenge.participants} participants</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Clock className="h-4 w-4 mr-2 text-muted-foreground" />
+                    <span>{challenge.timeLeft} left</span>
+                  </div>
+                </div>
+                
+                <Button 
+                  className="w-full" 
+                  disabled={challenge.isLocked}
+                  variant={challenge.isLocked ? "outline" : "default"}
+                >
+                  {challenge.isLocked ? "Unlock Required" : "Start Challenge"}
                 </Button>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-      
-      {/* How It Works Section */}
-      <section className="bg-card rounded-lg border border-border/40 p-8 mb-12">
-        <h2 className="text-2xl font-bold mb-6 flex items-center">
-          <Shield className="mr-2 h-6 w-6 text-primary" /> How Security Challenges Work
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-background p-6 rounded-lg border border-border/40">
-            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-              <span className="text-primary font-bold">1</span>
-            </div>
-            <h3 className="font-semibold mb-2">Choose a Challenge</h3>
-            <p className="text-sm text-muted-foreground">
-              Browse active challenges and select one that matches your skills and interests. Each challenge has clear objectives and rewards.
-            </p>
+            ))}
           </div>
-          <div className="bg-background p-6 rounded-lg border border-border/40">
-            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-              <span className="text-primary font-bold">2</span>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-2xl font-bold mb-6">Recently Completed</h2>
+          <div className="bg-card rounded-lg border border-border/40">
+            <div className="divide-y divide-border/40">
+              {completedChallenges.map((challenge, index) => (
+                <div key={index} className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-medium">{challenge.title}</h3>
+                      <div className="flex items-center mt-1 text-sm text-muted-foreground">
+                        <Star className="h-4 w-4 mr-1 text-yellow-500" />
+                        <span>Winner: {challenge.winner}</span>
+                        <span className="mx-2">•</span>
+                        <span>{challenge.completedDate}</span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-lg font-semibold text-primary">{challenge.reward}</div>
+                      <div className="text-sm text-muted-foreground">Reward</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-            <h3 className="font-semibold mb-2">Work on Solutions</h3>
-            <p className="text-sm text-muted-foreground">
-              Analyze the code, identify vulnerabilities, and prepare your solution or report according to the challenge requirements.
-            </p>
           </div>
-          <div className="bg-background p-6 rounded-lg border border-border/40">
-            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-              <span className="text-primary font-bold">3</span>
-            </div>
-            <h3 className="font-semibold mb-2">Submit and Earn</h3>
-            <p className="text-sm text-muted-foreground">
-              Submit your solution before the deadline. Winners receive rewards, recognition, and sometimes employment opportunities.
-            </p>
-          </div>
-        </div>
-      </section>
-      
-      {/* Benefits Section */}
-      <section className="mb-8">
-        <h2 className="text-2xl font-bold mb-6">Benefits of Participating</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="flex gap-4">
-            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Award className="h-5 w-5 text-primary" />
+        </section>
+
+        <div className="bg-primary/5 rounded-lg p-6">
+          <h3 className="text-xl font-semibold mb-2">How Challenges Work</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+            <div>
+              <h4 className="font-medium mb-2">Getting Started</h4>
+              <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                <li>Choose a challenge that matches your skill level</li>
+                <li>Read the challenge description and requirements</li>
+                <li>Submit your solution before the deadline</li>
+              </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-1">Skill Development</h3>
-              <p className="text-muted-foreground">
-                Challenge yourself with real-world security scenarios and improve your skills through practical experience.
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-4">
-            <div className="h-10 w-10 rounded-full bg-secondary/10 flex items-center justify-center flex-shrink-0">
-              <Trophy className="h-5 w-5 text-secondary" />
-            </div>
-            <div>
-              <h3 className="font-semibold mb-1">Rewards & Recognition</h3>
-              <p className="text-muted-foreground">
-                Earn financial rewards, NFT badges, and build your reputation in the Web3 security community.
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-4">
-            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Users className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <h3 className="font-semibold mb-1">Networking Opportunities</h3>
-              <p className="text-muted-foreground">
-                Connect with other security professionals and potential employers in the blockchain space.
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-4">
-            <div className="h-10 w-10 rounded-full bg-secondary/10 flex items-center justify-center flex-shrink-0">
-              <BriefcaseIcon className="h-5 w-5 text-secondary" />
-            </div>
-            <div>
-              <h3 className="font-semibold mb-1">Career Advancement</h3>
-              <p className="text-muted-foreground">
-                Top performers often receive employment opportunities from leading Web3 companies and protocols.
-              </p>
+              <h4 className="font-medium mb-2">Rewards & Recognition</h4>
+              <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                <li>Earn HAWK tokens for successful completions</li>
+                <li>Build your reputation score</li>
+                <li>Get featured on the leaderboard</li>
+              </ul>
             </div>
           </div>
         </div>
-      </section>
+      </div>
     </ContentPage>
-  );
-}
-
-function Bell(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-    </svg>
-  );
-}
-
-function BriefcaseIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
-      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-    </svg>
   );
 }

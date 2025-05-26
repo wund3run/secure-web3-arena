@@ -1,205 +1,255 @@
 
-import { Trophy, Star, Shield, Award } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import React from "react";
+import { ContentPage } from "@/components/content/content-page";
+import { Trophy, Star, TrendingUp, Award, Medal, Crown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
-import { LeaderboardHeader } from "@/components/leaderboard/leaderboard-header";
-
-// Sample leaderboard data
-const TOP_AUDITORS = [
-  {
-    rank: 1,
-    name: "Alex CryptoShield",
-    points: 7850,
-    audits: 124,
-    successRate: 98,
-    badges: ["Smart Contract Pro", "Bug Hunter", "First Response"],
-    recentFinds: "Critical vulnerability in DeFi protocol",
-    level: "Expert"
-  },
-  {
-    rank: 2,
-    name: "BlockSafe Security",
-    points: 7540,
-    audits: 118,
-    successRate: 96,
-    badges: ["Protocol Expert", "Fast Responder"],
-    recentFinds: "Multiple high-severity issues in NFT marketplace",
-    level: "Expert"
-  },
-  {
-    rank: 3,
-    name: "SecureLabs",
-    points: 6980,
-    audits: 95,
-    successRate: 94,
-    badges: ["DApp Specialist", "Community Helper"],
-    recentFinds: "Security optimization for major DEX",
-    level: "Expert"
-  },
-  {
-    rank: 4,
-    name: "Ethereum Guardian",
-    points: 6450,
-    audits: 87,
-    successRate: 92,
-    badges: ["Smart Contract Pro", "Mentor"],
-    recentFinds: "Fixed critical overflow issue in governance contract",
-    level: "Expert"
-  },
-  {
-    rank: 5,
-    name: "ChainArmor",
-    points: 5980,
-    audits: 76,
-    successRate: 95,
-    badges: ["Zero-day Hunter", "Code Reviewer"],
-    recentFinds: "Discovered re-entrancy vulnerability in bridge protocol",
-    level: "Advanced"
-  }
-];
-
-const TIME_PERIODS = ["All Time", "This Month", "This Week", "Today"];
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Leaderboard() {
+  const topAuditors = [
+    {
+      rank: 1,
+      name: "alice_security",
+      score: 9850,
+      auditsCompleted: 47,
+      avgRating: 4.9,
+      specialties: ["DeFi", "Smart Contracts"],
+      badge: "Expert",
+      monthlyGrowth: 15
+    },
+    {
+      rank: 2,
+      name: "crypto_hunter",
+      score: 9420,
+      auditsCompleted: 38,
+      avgRating: 4.8,
+      specialties: ["NFT", "Infrastructure"],
+      badge: "Professional",
+      monthlyGrowth: 12
+    },
+    {
+      rank: 3,
+      name: "security_master",
+      score: 9180,
+      auditsCompleted: 42,
+      avgRating: 4.7,
+      specialties: ["Cross-Chain", "DeFi"],
+      badge: "Expert",
+      monthlyGrowth: 8
+    }
+  ];
+
+  const topProjects = [
+    {
+      rank: 1,
+      name: "DeFiProtocol",
+      auditsCompleted: 12,
+      avgRating: 4.9,
+      totalValueSecured: "$45M",
+      category: "DeFi"
+    },
+    {
+      rank: 2,
+      name: "NFTMarketplace",
+      auditsCompleted: 8,
+      avgRating: 4.8,
+      totalValueSecured: "$28M",
+      category: "NFT"
+    },
+    {
+      rank: 3,
+      name: "BridgeNetwork",
+      auditsCompleted: 6,
+      avgRating: 4.7,
+      totalValueSecured: "$67M",
+      category: "Infrastructure"
+    }
+  ];
+
+  const getRankIcon = (rank: number) => {
+    switch (rank) {
+      case 1: return <Crown className="h-6 w-6 text-yellow-500" />;
+      case 2: return <Medal className="h-6 w-6 text-gray-400" />;
+      case 3: return <Award className="h-6 w-6 text-amber-600" />;
+      default: return <span className="text-lg font-bold text-muted-foreground">#{rank}</span>;
+    }
+  };
+
+  const getBadgeColor = (badge: string) => {
+    switch (badge) {
+      case "Expert": return "bg-purple-100 text-purple-800";
+      case "Professional": return "bg-blue-100 text-blue-800";
+      case "Advanced": return "bg-green-100 text-green-800";
+      default: return "bg-gray-100 text-gray-800";
+    }
+  };
+
   return (
-    <div className="bg-background min-h-screen flex flex-col">
-      <Navbar />
-      <div className="flex-grow">
-        <LeaderboardHeader />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col gap-8">
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="hover:shadow-md transition-shadow border-border/40 bg-card">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-primary/10 rounded-full">
-                      <Trophy className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">Total Audits</div>
-                      <div className="text-2xl font-bold">1,234</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card className="hover:shadow-md transition-shadow border-border/40 bg-card">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-secondary/10 rounded-full">
-                      <Shield className="h-6 w-6 text-secondary" />
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">Success Rate</div>
-                      <div className="text-2xl font-bold">96%</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card className="hover:shadow-md transition-shadow border-border/40 bg-card">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-web3-orange/10 rounded-full">
-                      <Award className="h-6 w-6 text-web3-orange" />
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">Active Auditors</div>
-                      <div className="text-2xl font-bold">328</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+    <ContentPage
+      title="Security Leaderboard"
+      description="Top-performing security auditors and projects on the Hawkly platform"
+      className="px-4 md:px-6"
+    >
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-card rounded-lg p-6 mb-8 border border-border/40">
+          <div className="flex items-center mb-4">
+            <Trophy className="h-8 w-8 text-primary mr-3" />
+            <h1 className="text-3xl md:text-4xl font-bold">Security Leaderboard</h1>
+          </div>
+          <p className="text-lg text-muted-foreground">
+            Discover the top-performing security auditors and most active projects on Hawkly.
+          </p>
+        </div>
+
+        <Tabs defaultValue="auditors" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-2 max-w-md">
+            <TabsTrigger value="auditors">Top Auditors</TabsTrigger>
+            <TabsTrigger value="projects">Top Projects</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="auditors" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-background rounded-lg p-6 border border-border/40 text-center">
+                <Star className="h-8 w-8 text-primary mx-auto mb-3" />
+                <h3 className="text-xl font-semibold mb-2">Top Reputation</h3>
+                <p className="text-muted-foreground">
+                  Auditors ranked by community ratings and feedback
+                </p>
+              </div>
+              <div className="bg-background rounded-lg p-6 border border-border/40 text-center">
+                <TrendingUp className="h-8 w-8 text-secondary mx-auto mb-3" />
+                <h3 className="text-xl font-semibold mb-2">Most Active</h3>
+                <p className="text-muted-foreground">
+                  Professionals with the highest audit completion rates
+                </p>
+              </div>
+              <div className="bg-background rounded-lg p-6 border border-border/40 text-center">
+                <Award className="h-8 w-8 text-primary mx-auto mb-3" />
+                <h3 className="text-xl font-semibold mb-2">Rising Stars</h3>
+                <p className="text-muted-foreground">
+                  Auditors showing the fastest growth and improvement
+                </p>
+              </div>
             </div>
 
-            {/* Leaderboard Table */}
-            <Card className="border-border/40 bg-card">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>Top Security Auditors</CardTitle>
-                  <div className="flex gap-2">
-                    {TIME_PERIODS.map((period) => (
-                      <button
-                        key={period}
-                        className="px-3 py-1 text-sm rounded-full hover:bg-accent transition-colors"
-                      >
-                        {period}
-                      </button>
-                    ))}
+            <div className="space-y-4">
+              {topAuditors.map((auditor) => (
+                <div key={auditor.rank} className="bg-card rounded-lg p-6 border border-border/40 hover:shadow-md transition-all">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center justify-center w-12 h-12">
+                        {getRankIcon(auditor.rank)}
+                      </div>
+                      
+                      <div className="flex-grow">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <h3 className="text-xl font-semibold">{auditor.name}</h3>
+                          <Badge className={getBadgeColor(auditor.badge)}>
+                            {auditor.badge}
+                          </Badge>
+                        </div>
+                        
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          {auditor.specialties.map((specialty, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {specialty}
+                            </Badge>
+                          ))}
+                        </div>
+                        
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                          <div>
+                            <div className="font-medium text-primary">{auditor.score}</div>
+                            <div className="text-muted-foreground">Score</div>
+                          </div>
+                          <div>
+                            <div className="font-medium">{auditor.auditsCompleted}</div>
+                            <div className="text-muted-foreground">Audits</div>
+                          </div>
+                          <div>
+                            <div className="font-medium flex items-center">
+                              <Star className="h-4 w-4 text-yellow-500 mr-1" />
+                              {auditor.avgRating}
+                            </div>
+                            <div className="text-muted-foreground">Rating</div>
+                          </div>
+                          <div>
+                            <div className="font-medium text-green-600">+{auditor.monthlyGrowth}%</div>
+                            <div className="text-muted-foreground">Growth</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Rank</TableHead>
-                      <TableHead>Auditor</TableHead>
-                      <TableHead>Level</TableHead>
-                      <TableHead>Points</TableHead>
-                      <TableHead>Audits</TableHead>
-                      <TableHead>Success Rate</TableHead>
-                      <TableHead>Badges</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {TOP_AUDITORS.map((auditor) => (
-                      <TableRow key={auditor.rank} className="hover:bg-muted/30 transition-colors">
-                        <TableCell className="font-medium">{auditor.rank}</TableCell>
-                        <TableCell>
-                          <HoverCard>
-                            <HoverCardTrigger className="cursor-pointer font-medium text-primary">
-                              {auditor.name}
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <div className="space-y-2">
-                                <h4 className="font-semibold">{auditor.name}</h4>
-                                <p className="text-sm text-muted-foreground">
-                                  Recent Achievement: {auditor.recentFinds}
-                                </p>
-                              </div>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </TableCell>
-                        <TableCell>
-                          <Badge 
-                            variant="secondary"
-                            className={`${
-                              auditor.level === "Expert" 
-                                ? "bg-primary/10 text-primary" 
-                                : "bg-secondary/10 text-secondary"
-                            }`}
-                          >
-                            {auditor.level}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{auditor.points.toLocaleString()}</TableCell>
-                        <TableCell>{auditor.audits}</TableCell>
-                        <TableCell>{auditor.successRate}%</TableCell>
-                        <TableCell>
-                          <div className="flex gap-1 flex-wrap">
-                            {auditor.badges.map((badge) => (
-                              <Badge key={badge} variant="outline" className="text-xs">
-                                {badge}
-                              </Badge>
-                            ))}
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="projects" className="space-y-6">
+            <div className="space-y-4">
+              {topProjects.map((project) => (
+                <div key={project.rank} className="bg-card rounded-lg p-6 border border-border/40 hover:shadow-md transition-all">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center justify-center w-12 h-12">
+                        {getRankIcon(project.rank)}
+                      </div>
+                      
+                      <div className="flex-grow">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <h3 className="text-xl font-semibold">{project.name}</h3>
+                          <Badge variant="outline">{project.category}</Badge>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                          <div>
+                            <div className="font-medium">{project.auditsCompleted}</div>
+                            <div className="text-muted-foreground">Audits</div>
                           </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+                          <div>
+                            <div className="font-medium flex items-center">
+                              <Star className="h-4 w-4 text-yellow-500 mr-1" />
+                              {project.avgRating}
+                            </div>
+                            <div className="text-muted-foreground">Rating</div>
+                          </div>
+                          <div>
+                            <div className="font-medium text-primary">{project.totalValueSecured}</div>
+                            <div className="text-muted-foreground">Value Secured</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        <div className="mt-12 bg-primary/5 rounded-lg p-6">
+          <h3 className="text-xl font-semibold mb-2">How Rankings Work</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+            <div>
+              <h4 className="font-medium mb-2">Auditor Rankings</h4>
+              <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                <li>Based on completed audits, client ratings, and community feedback</li>
+                <li>Weighted by audit complexity and value secured</li>
+                <li>Updated in real-time as audits are completed</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-2">Project Rankings</h4>
+              <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                <li>Ranked by total value secured and audit frequency</li>
+                <li>Considers audit quality and remediation response</li>
+                <li>Showcases commitment to security best practices</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
-      <Footer />
-    </div>
+    </ContentPage>
   );
 }

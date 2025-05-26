@@ -1,197 +1,169 @@
 
 import React from "react";
 import { ContentPage } from "@/components/content/content-page";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar, MapPin, Users, Clock, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Users, Video, ExternalLink, ArrowRight, Filter } from "lucide-react";
 
 export default function Events() {
   const upcomingEvents = [
     {
-      id: 1,
       title: "Web3 Security Summit 2025",
-      date: "June 15-16, 2025",
-      location: "Virtual Event",
-      description: "A two-day virtual conference featuring top security experts discussing the latest threats and best practices in blockchain security.",
+      date: "June 15-17, 2025",
+      time: "9:00 AM - 6:00 PM",
+      location: "San Francisco, CA",
       type: "Conference",
-      speakers: ["Alex Johnson", "Sarah Ahmed", "Michael Zhang"],
-      link: "/events/web3-security-summit"
+      attendees: 500,
+      description: "The premier Web3 security conference featuring talks from leading experts.",
+      isVirtual: false
     },
     {
-      id: 2,
-      title: "Smart Contract Auditing Workshop",
-      date: "May 28, 2025",
-      location: "New York, NY",
-      description: "A hands-on workshop covering advanced techniques for auditing complex smart contracts and identifying vulnerabilities.",
-      type: "Workshop",
-      speakers: ["Elena Rodriguez", "David Wilson"],
-      link: "/events/auditing-workshop"
-    },
-    {
-      id: 3,
-      title: "Security Office Hours: MEV Protection",
-      date: "May 20, 2025",
+      title: "Smart Contract Security Workshop",
+      date: "May 30, 2025",
+      time: "2:00 PM - 5:00 PM",
       location: "Virtual",
-      description: "Weekly office hours focusing on MEV protection strategies for DeFi protocols with Q&A session.",
-      type: "Office Hours",
-      speakers: ["Sophia Parker"],
-      link: "/events/office-hours-mev"
+      type: "Workshop",
+      attendees: 150,
+      description: "Hands-on workshop covering advanced smart contract security techniques.",
+      isVirtual: true
     },
+    {
+      title: "DeFi Security Roundtable",
+      date: "June 5, 2025",
+      time: "1:00 PM - 3:00 PM",
+      location: "New York, NY",
+      type: "Roundtable",
+      attendees: 50,
+      description: "Expert panel discussion on current DeFi security challenges.",
+      isVirtual: false
+    }
   ];
 
   const pastEvents = [
     {
-      id: 4,
-      title: "Hawkly Security Hackathon",
-      date: "April 10-12, 2025",
-      location: "London, UK",
-      description: "A 48-hour hackathon focused on building secure blockchain applications with substantial prizes for the winners.",
-      type: "Hackathon",
-      link: "/events/hackathon-2025"
+      title: "Hawkly Security Office Hours",
+      date: "May 15, 2025",
+      type: "Community Call",
+      recording: true
     },
     {
-      id: 5,
-      title: "ZK Security Masterclass",
-      date: "March 25, 2025",
-      location: "Virtual Event",
-      description: "An in-depth exploration of zero-knowledge proof security with practical examples and implementation guidance.",
-      type: "Masterclass",
-      link: "/events/zk-security-masterclass"
+      title: "Cross-Chain Security Deep Dive",
+      date: "May 8, 2025",
+      type: "Technical Talk",
+      recording: true
     }
   ];
 
   return (
     <ContentPage
       title="Security Events"
-      description="Upcoming and past security events, webinars, workshops, and conferences in the Web3 security space."
+      description="Upcoming and past Web3 security events, workshops, and community gatherings"
+      className="px-4 md:px-6"
     >
-      <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Security Events</h1>
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-card rounded-lg p-6 mb-8 border border-border/40">
+          <div className="flex items-center mb-4">
+            <Calendar className="h-8 w-8 text-primary mr-3" />
+            <h1 className="text-3xl md:text-4xl font-bold">Security Events</h1>
+          </div>
           <p className="text-lg text-muted-foreground">
-            Connect with the Web3 security community through conferences, workshops, and online events.
+            Join our community events to learn, network, and stay updated on the latest in Web3 security.
           </p>
         </div>
-        <div className="flex gap-3 mt-4 md:mt-0">
-          <Button className="bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-            Submit Event
-          </Button>
-          <Button variant="outline">
-            <Filter className="h-4 w-4 mr-1.5" /> Filter
-          </Button>
-        </div>
-      </div>
 
-      <div className="space-y-10">
-        {/* Upcoming Events */}
-        <section>
-          <h2 className="text-2xl font-bold mb-6 flex items-center">
-            <Calendar className="mr-2 h-5 w-5 text-primary" /> Upcoming Events
-          </h2>
-          <div className="space-y-4">
-            {upcomingEvents.map((event) => (
-              <Card key={event.id} className="hover:shadow-md transition-all">
-                <CardHeader className="p-6 pb-3">
-                  <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div>
-                      <Badge className="mb-2">{event.type}</Badge>
-                      <CardTitle className="text-xl mb-1">{event.title}</CardTitle>
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-6">Upcoming Events</h2>
+          <div className="space-y-6">
+            {upcomingEvents.map((event, index) => (
+              <div key={index} className="bg-card rounded-lg p-6 border border-border/40 hover:shadow-md transition-all">
+                <div className="flex flex-col md:flex-row md:items-start md:justify-between">
+                  <div className="flex-grow">
+                    <div className="flex items-center mb-2">
+                      <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-sm rounded-full mr-3">
+                        {event.type}
+                      </span>
+                      {event.isVirtual && (
+                        <span className="inline-block px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                          Virtual
+                        </span>
+                      )}
                     </div>
-                    <Button variant="outline" size="sm" asChild>
-                      <a href={event.link}>Register <ArrowRight className="ml-1 h-3 w-3" /></a>
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-6 pt-2">
-                  <div className="flex flex-wrap items-center text-sm text-muted-foreground gap-x-4 gap-y-2 mb-3">
-                    <div className="flex items-center">
-                      <Calendar className="mr-1.5 h-4 w-4" />
-                      <span>{event.date}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <MapPin className="mr-1.5 h-4 w-4" />
-                      <span>{event.location}</span>
-                    </div>
-                    {event.location === "Virtual" || event.location === "Virtual Event" ? (
+                    
+                    <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
+                    <p className="text-muted-foreground mb-4">{event.description}</p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                       <div className="flex items-center">
-                        <Video className="mr-1.5 h-4 w-4" />
-                        <span>Online</span>
+                        <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+                        <span>{event.date}</span>
                       </div>
-                    ) : null}
-                  </div>
-                  <p className="mb-4">{event.description}</p>
-                  {event.speakers && (
+                      <div className="flex items-center">
+                        <Clock className="h-4 w-4 mr-2 text-muted-foreground" />
+                        <span>{event.time}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
+                        <span>{event.location}</span>
+                      </div>
+                    </div>
+                    
                     <div className="flex items-center mt-3">
                       <Users className="h-4 w-4 mr-2 text-muted-foreground" />
-                      <div className="text-sm">
-                        <span className="text-muted-foreground mr-1">Speakers:</span>
-                        {event.speakers.join(", ")}
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        {/* Past Events */}
-        <section>
-          <h2 className="text-2xl font-bold mb-6 flex items-center">
-            <Calendar className="mr-2 h-5 w-5 text-muted-foreground" /> Past Events
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {pastEvents.map((event) => (
-              <Card key={event.id} className="hover:shadow-md transition-all">
-                <CardHeader className="p-4 pb-2">
-                  <Badge variant="outline" className="mb-1">{event.type}</Badge>
-                  <CardTitle className="text-lg">{event.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="p-4 pt-2">
-                  <div className="flex flex-wrap items-center text-xs text-muted-foreground gap-x-3 gap-y-1 mb-3">
-                    <div className="flex items-center">
-                      <Calendar className="mr-1 h-3.5 w-3.5" />
-                      <span>{event.date}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <MapPin className="mr-1 h-3.5 w-3.5" />
-                      <span>{event.location}</span>
+                      <span className="text-sm text-muted-foreground">{event.attendees} attendees expected</span>
                     </div>
                   </div>
-                  <p className="text-sm mb-3">{event.description}</p>
-                  <Button variant="ghost" size="sm" className="text-primary" asChild>
-                    <a href={event.link}>
-                      View Recording <ExternalLink className="ml-1 h-3 w-3" />
-                    </a>
-                  </Button>
-                </CardContent>
-              </Card>
+                  
+                  <div className="mt-4 md:mt-0 md:ml-6">
+                    <Button>Register Now</Button>
+                  </div>
+                </div>
+              </div>
             ))}
-          </div>
-          <div className="mt-6 text-center">
-            <Button variant="outline" size="lg">View All Past Events</Button>
           </div>
         </section>
 
-        {/* Event Calendar */}
-        <section className="bg-card border border-border/40 rounded-lg p-6">
-          <h2 className="text-2xl font-bold mb-4">Event Calendar</h2>
-          <p className="text-muted-foreground mb-6">
-            Subscribe to our security events calendar to stay updated on upcoming workshops, conferences, and webinars.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Button variant="outline">
-              <Calendar className="mr-2 h-4 w-4" /> Add to Google Calendar
-            </Button>
-            <Button variant="outline">
-              <Calendar className="mr-2 h-4 w-4" /> Add to iCal
-            </Button>
-            <Button variant="outline">
-              <Calendar className="mr-2 h-4 w-4" /> Add to Outlook
-            </Button>
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-6">Past Events</h2>
+          <div className="bg-card rounded-lg border border-border/40">
+            <div className="divide-y divide-border/40">
+              {pastEvents.map((event, index) => (
+                <div key={index} className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-medium">{event.title}</h3>
+                      <div className="flex items-center mt-1 text-sm text-muted-foreground">
+                        <Calendar className="h-4 w-4 mr-1" />
+                        <span>{event.date}</span>
+                        <span className="mx-2">•</span>
+                        <span>{event.type}</span>
+                      </div>
+                    </div>
+                    {event.recording && (
+                      <Button variant="outline" size="sm">
+                        <ExternalLink className="h-4 w-4 mr-1" />
+                        Watch Recording
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
+
+        <div className="bg-primary/5 rounded-lg p-6">
+          <h3 className="text-xl font-semibold mb-2">Stay Informed</h3>
+          <p className="text-muted-foreground mb-4">
+            Subscribe to our events newsletter to get notified about upcoming security events and workshops.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="flex-grow px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+            <Button>Subscribe to Events</Button>
+          </div>
+        </div>
       </div>
     </ContentPage>
   );

@@ -84,6 +84,54 @@ export function getPageMetadata(path: string) {
     '/comprehensive-security': {
       title: 'Complete Security Coverage',
       description: 'End-to-end security solutions for every layer of your Web3 application.'
+    },
+    '/audit-guidelines': {
+      title: 'Security Audit Guidelines',
+      description: 'Professional standards and best practices for security audits.'
+    },
+    '/blog': {
+      title: 'Security Blog',
+      description: 'Latest insights, trends, and best practices in Web3 security.'
+    },
+    '/vulnerabilities': {
+      title: 'Vulnerability Database',
+      description: 'Comprehensive database of Web3 security vulnerabilities.'
+    },
+    '/security-insights': {
+      title: 'Security Insights',
+      description: 'Latest trends, vulnerabilities, and security insights for Web3 projects.'
+    },
+    '/forum': {
+      title: 'Security Forum',
+      description: 'Community discussions about Web3 security and best practices.'
+    },
+    '/events': {
+      title: 'Security Events',
+      description: 'Upcoming and past Web3 security events and workshops.'
+    },
+    '/challenges': {
+      title: 'Security Challenges',
+      description: 'Test your skills with hands-on security challenges.'
+    },
+    '/leaderboard': {
+      title: 'Security Leaderboard',
+      description: 'Top-performing security auditors and projects.'
+    },
+    '/achievements': {
+      title: 'Achievements',
+      description: 'Track your progress and unlock achievements.'
+    },
+    '/terms': {
+      title: 'Terms of Service',
+      description: 'Terms and conditions for using Hawkly.'
+    },
+    '/privacy': {
+      title: 'Privacy Policy',
+      description: 'Privacy policy for the Hawkly platform.'
+    },
+    '/security-policy': {
+      title: 'Security Policy',
+      description: 'Security policy for the Hawkly platform.'
     }
   };
 
@@ -123,7 +171,19 @@ export function extractRoutesFromApp(): string[] {
     '/resources',
     '/templates',
     '/competitive-advantages',
-    '/comprehensive-security'
+    '/comprehensive-security',
+    '/audit-guidelines',
+    '/blog',
+    '/vulnerabilities',
+    '/security-insights',
+    '/forum',
+    '/events',
+    '/challenges',
+    '/leaderboard',
+    '/achievements',
+    '/terms',
+    '/privacy',
+    '/security-policy'
   ];
 
   return routes;

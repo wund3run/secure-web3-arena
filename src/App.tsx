@@ -1,3 +1,4 @@
+
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -29,6 +30,18 @@ import Resources from "./pages/Resources";
 import Templates from "./pages/Templates";
 import CompetitiveAdvantages from "./pages/CompetitiveAdvantages";
 import ComprehensiveSecurity from "./pages/ComprehensiveSecurity";
+import AuditGuidelines from "./pages/AuditGuidelines";
+import Blog from "./pages/Blog";
+import Vulnerabilities from "./pages/Vulnerabilities";
+import SecurityInsights from "./pages/SecurityInsights";
+import Forum from "./pages/Forum";
+import Events from "./pages/Events";
+import Challenges from "./pages/Challenges";
+import Leaderboard from "./pages/Leaderboard";
+import Achievements from "./pages/Achievements";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import SecurityPolicy from "./pages/SecurityPolicy";
 
 const queryClient = new QueryClient();
 
@@ -83,7 +96,7 @@ function App() {
                     </RoleBasedRoute>
                   } />
 
-                  {/* New essential pages */}
+                  {/* Essential pages */}
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/support" element={<Support />} />
                   <Route path="/faq" element={<FAQ />} />
@@ -94,6 +107,24 @@ function App() {
                   <Route path="/templates" element={<Templates />} />
                   <Route path="/competitive-advantages" element={<CompetitiveAdvantages />} />
                   <Route path="/comprehensive-security" element={<ComprehensiveSecurity />} />
+
+                  {/* Security and Guidelines pages */}
+                  <Route path="/audit-guidelines" element={<AuditGuidelines />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/vulnerabilities" element={<Vulnerabilities />} />
+                  <Route path="/security-insights" element={<SecurityInsights />} />
+
+                  {/* Community pages */}
+                  <Route path="/forum" element={<Forum />} />
+                  <Route path="/events" element={<Events />} />
+                  <Route path="/challenges" element={<Challenges />} />
+                  <Route path="/leaderboard" element={<Leaderboard />} />
+                  <Route path="/achievements" element={<Achievements />} />
+
+                  {/* Legal pages */}
+                  <Route path="/terms" element={<Terms />} />
+                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/security-policy" element={<SecurityPolicy />} />
                   
                   {/* General User Routes */}
                   <Route path="/service-provider-onboarding" element={
