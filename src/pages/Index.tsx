@@ -14,6 +14,7 @@ import { SimplifiedHero } from "@/components/home/simplified-hero";
 import { TrustIndicators } from "@/components/home/trust-indicators";
 import { InteractiveDemo } from "@/components/home/interactive-demo";
 import { PricingPreview } from "@/components/home/pricing-preview";
+import { IndustrySpecificCases } from "@/components/home/industry-specific-cases";
 
 export default function Index() {
   return (
@@ -112,6 +113,9 @@ export default function Index() {
               </div>
             </div>
           </section>
+          
+          {/* Industry-Specific Security Solutions */}
+          <IndustrySpecificCases />
           
           {/* Pricing Preview */}
           <PricingPreview />
