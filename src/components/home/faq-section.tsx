@@ -1,6 +1,6 @@
 
-import React from "react";
-import { Shield, ChevronDown } from "lucide-react";
+import React, { useState } from "react";
+import { Shield, ChevronDown, Search, MessageCircle, ExternalLink, Zap, Lock, Users } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -8,116 +8,250 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+const FAQ_CATEGORIES = [
+  {
+    id: "security-services",
+    title: "Security Services",
+    icon: Shield,
+    color: "from-blue-600 to-cyan-600",
+    bgColor: "bg-blue-500/10",
+    borderColor: "border-blue-500/20",
+    faqs: [
+      {
+        question: "What types of security services does Hawkly offer?",
+        answer: "Hawkly provides comprehensive Web3 security services including smart contract audits, DeFi protocol reviews, NFT security assessments, blockchain infrastructure audits, and continuous security monitoring. Our vetted experts specialize across Ethereum, Solana, Polygon, and other major blockchain ecosystems."
+      },
+      {
+        question: "How long does a typical security audit take?",
+        answer: "Audit timelines vary by complexity: Simple smart contracts (2-5 days), Medium protocols (1-2 weeks), Complex DeFi systems (2-4 weeks). Our platform shows estimated timelines upfront, and you can discuss expedited options with auditors for urgent needs."
+      },
+      {
+        question: "What's included in a smart contract audit report?",
+        answer: "Our audit reports include vulnerability assessments, severity classifications, detailed findings with exploit scenarios, gas optimization recommendations, code quality analysis, and actionable remediation steps. All reports follow industry-standard formats for easy integration into your development workflow."
+      }
+    ]
+  },
+  {
+    id: "auditor-process",
+    title: "Auditor Verification",
+    icon: Users,
+    color: "from-purple-600 to-pink-600",
+    bgColor: "bg-purple-500/10",
+    borderColor: "border-purple-500/20",
+    faqs: [
+      {
+        question: "How are security auditors verified on Hawkly?",
+        answer: "Our rigorous verification process includes technical skill assessments, credential verification, background checks, and peer reviews. Auditors must demonstrate proven experience with successful audit portfolios, maintain quality standards, and undergo continuous performance monitoring."
+      },
+      {
+        question: "How does the reputation system work?",
+        answer: "Our reputation algorithm considers audit quality scores, client feedback ratings, vulnerability discovery rates, response times, and community contributions. Auditors progress through tiers (Verified → Expert → Elite) with increasing privileges and access to premium projects."
+      },
+      {
+        question: "What happens if vulnerabilities are found after an audit?",
+        answer: "We have a comprehensive post-audit support system with responsible disclosure protocols, original auditor review processes, and continuous monitoring services. Our insurance coverage and dispute resolution ensure accountability throughout the entire security lifecycle."
+      }
+    ]
+  },
+  {
+    id: "platform-security",
+    title: "Platform & Payments",
+    icon: Lock,
+    color: "from-green-600 to-teal-600",
+    bgColor: "bg-green-500/10",
+    borderColor: "border-green-500/20",
+    faqs: [
+      {
+        question: "How secure is the escrow payment system?",
+        answer: "Our smart contract-based escrow system uses multi-signature wallets, time-locked releases, and automated milestone verification. Payments are secured on-chain with dispute resolution mechanisms, ensuring both auditors and clients are fully protected throughout the engagement."
+      },
+      {
+        question: "How is my code kept confidential during audits?",
+        answer: "We employ military-grade encryption, private repositories, secure communication channels, and strict NDAs for all participants. Access is granted on a need-to-know basis with complete audit trails, and all access is immediately revoked upon project completion."
+      },
+      {
+        question: "What are the pricing models for security audits?",
+        answer: "We offer flexible pricing: Fixed-price packages for standard audits, hourly rates for consulting, milestone-based payments for large projects, and subscription models for ongoing security monitoring. Transparent pricing with no hidden fees and competitive rates across all service tiers."
+      }
+    ]
+  }
+];
 
 export function FaqSection() {
-  const faqs = [
-    {
-      question: "What types of security services does Hawkly offer?",
-      answer: "Hawkly provides a comprehensive range of Web3 security services including smart contract audits, DeFi protocol reviews, blockchain security assessments, NFT security audits, and ongoing security monitoring. Our platform connects you with vetted security experts specialized in various blockchain ecosystems."
-    },
-    {
-      question: "How are security experts verified on Hawkly?",
-      answer: "All security experts on our platform undergo a rigorous verification process that includes technical assessments, credential verification, and background checks. Experts must demonstrate proven experience in blockchain security, maintain a track record of successful audits, and adhere to our quality standards."
-    },
-    {
-      question: "What is the typical process for getting a smart contract audit?",
-      answer: "The typical audit process involves: 1) Submitting your project details through our marketplace, 2) Getting matched with qualified security experts, 3) Receiving and accepting a proposal, 4) The expert conducting a comprehensive audit, 5) Receiving a detailed report with vulnerability findings and recommendations, and 6) Verification of fixes if vulnerabilities are found."
-    },
-    {
-      question: "How long does a typical security audit take?",
-      answer: "Audit timeframes vary based on the complexity and size of your project. A simple smart contract might take 2-5 days, while a complex protocol could take 2-4 weeks. Our platform allows you to discuss timeline requirements with experts before engaging their services."
-    },
-    {
-      question: "How does the reputation system work for auditors?",
-      answer: "Our reputation system calculates scores based on multiple factors: audit quality, client feedback, vulnerability discovery rate, community contributions, and peer reviews. Auditors earn badges and rise through tiers (Verified, Expert, Elite) as they successfully complete projects and demonstrate expertise."
-    },
-    {
-      question: "What happens if vulnerabilities are found after an audit?",
-      answer: "If vulnerabilities are discovered after an audit is complete, we have a responsible disclosure process in place. The original auditor is notified and given the opportunity to review the findings. We also offer continuous monitoring services that can help detect new vulnerabilities as they emerge."
-    }
-  ];
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
+  const filteredFaqs = FAQ_CATEGORIES.map(category => ({
+    ...category,
+    faqs: category.faqs.filter(faq =>
+      faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      faq.answer.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  })).filter(category => category.faqs.length > 0);
 
   return (
-    <section className="py-16 bg-gradient-to-b from-muted/30 to-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <div className="flex justify-center mb-4">
-            <div className="relative">
-              <Shield className="h-12 w-12 text-primary" />
-              <div className="absolute -top-1 right-0 h-4 w-4 bg-secondary rounded-full" />
+    <section className="py-20 bg-gradient-to-br from-muted/20 via-background to-muted/30 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-40 left-20 w-64 h-64 bg-primary rounded-full blur-3xl"></div>
+        <div className="absolute bottom-40 right-20 w-48 h-48 bg-secondary rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 px-6 py-3 rounded-full border border-primary/20 mb-6">
+            <MessageCircle className="h-5 w-5 text-primary" />
+            <span className="text-sm font-medium">Security Q&A Hub</span>
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-primary via-purple-600 to-secondary bg-clip-text text-transparent">
+              Security Questions
+            </span>{" "}
+            <span className="text-foreground">Answered</span>
+          </h2>
+          
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            Get instant answers to your Web3 security questions. From audit processes to platform features, 
+            we've got comprehensive answers from our security experts.
+          </p>
+
+          {/* Enhanced Search */}
+          <div className="max-w-md mx-auto relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+            <Input
+              placeholder="Search security questions..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-12 pr-4 py-3 text-lg bg-background/80 backdrop-blur-sm border-primary/20 focus:border-primary/40 rounded-xl"
+            />
+          </div>
+        </div>
+
+        {/* Category Filters */}
+        <div className="flex justify-center mb-12">
+          <div className="flex gap-2 p-1 bg-muted/50 rounded-xl border border-border/50">
+            <Button
+              variant={activeCategory === null ? "default" : "ghost"}
+              onClick={() => setActiveCategory(null)}
+              className="rounded-lg px-6"
+            >
+              All Categories
+            </Button>
+            {FAQ_CATEGORIES.map((category) => (
+              <Button
+                key={category.id}
+                variant={activeCategory === category.id ? "default" : "ghost"}
+                onClick={() => setActiveCategory(activeCategory === category.id ? null : category.id)}
+                className="rounded-lg px-6 flex items-center gap-2"
+              >
+                <category.icon className="h-4 w-4" />
+                {category.title}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* FAQ Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {filteredFaqs
+            .filter(category => !activeCategory || category.id === activeCategory)
+            .map((category) => (
+            <Card key={category.id} className={`${category.bgColor} backdrop-blur-sm ${category.borderColor} border overflow-hidden group hover:shadow-xl transition-all duration-300`}>
+              <CardContent className="p-0">
+                {/* Category Header */}
+                <div className={`p-6 bg-gradient-to-r ${category.color} bg-opacity-10 border-b ${category.borderColor}`}>
+                  <div className="flex items-center gap-3">
+                    <div className={`p-3 rounded-xl bg-gradient-to-r ${category.color} shadow-lg`}>
+                      <category.icon className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold">{category.title}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {category.faqs.length} questions
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* FAQ Items */}
+                <div className="p-6">
+                  <Accordion type="single" collapsible className="w-full space-y-4">
+                    {category.faqs.map((faq, index) => (
+                      <AccordionItem 
+                        key={index} 
+                        value={`${category.id}-${index}`} 
+                        className="border border-border/30 rounded-lg overflow-hidden hover:border-primary/30 transition-colors"
+                      >
+                        <AccordionTrigger className="text-left font-medium px-4 py-4 hover:bg-muted/50 transition-colors group">
+                          <span className="group-hover:text-primary transition-colors">
+                            {faq.question}
+                          </span>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-4 pb-4 text-muted-foreground leading-relaxed">
+                          {faq.answer}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* No Results State */}
+        {filteredFaqs.length === 0 && (
+          <div className="text-center py-16">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-muted/50 rounded-full mb-6">
+              <Search className="h-8 w-8 text-muted-foreground" />
             </div>
+            <h3 className="text-xl font-semibold mb-2">No matching questions found</h3>
+            <p className="text-muted-foreground mb-6">
+              Try adjusting your search or browse all categories
+            </p>
+            <Button variant="outline" onClick={() => setSearchTerm("")}>
+              Clear Search
+            </Button>
           </div>
-          <h2 className="text-3xl font-bold mb-4">Frequently Asked Security Questions</h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Get answers to common questions about blockchain security, our audit process, and how our marketplace connects projects with security experts.
-          </p>
-        </div>
+        )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="bg-card/50 backdrop-blur-sm border-primary/10 overflow-hidden">
-            <CardContent className="p-0">
-              <div className="bg-gradient-to-r from-primary/10 to-transparent p-4 border-b border-primary/10">
-                <h3 className="text-xl font-semibold flex items-center">
-                  <Shield className="h-5 w-5 text-primary mr-2" />
-                  Security Services
-                </h3>
+        {/* Call to Action */}
+        <div className="mt-16">
+          <Card className="bg-gradient-to-r from-primary/5 via-purple-500/5 to-secondary/5 border-primary/20 overflow-hidden">
+            <CardContent className="p-8 text-center">
+              <div className="flex justify-center mb-6">
+                <div className="p-4 bg-gradient-to-r from-primary to-secondary rounded-2xl">
+                  <Zap className="h-8 w-8 text-white" />
+                </div>
               </div>
-              <div className="p-4">
-                <Accordion type="single" collapsible className="w-full">
-                  {faqs.slice(0, 3).map((faq, index) => (
-                    <AccordionItem key={index} value={`item-${index}`} className="border-b border-border/40">
-                      <AccordionTrigger className="text-left font-medium py-4 hover:text-primary transition-colors">
-                        {faq.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-muted-foreground pb-4">
-                        {faq.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
+              
+              <h3 className="text-2xl font-bold mb-4">Still Have Questions?</h3>
+              <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
+                Our security experts are standing by to help. Get personalized answers and guidance 
+                for your specific Web3 security needs.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+                  <a href="/faq" className="flex items-center gap-2">
+                    View Complete FAQ
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </Button>
+                <Button asChild variant="outline" size="lg">
+                  <a href="/contact" className="flex items-center gap-2">
+                    Contact Support Team
+                    <MessageCircle className="h-4 w-4" />
+                  </a>
+                </Button>
               </div>
             </CardContent>
           </Card>
-
-          <Card className="bg-card/50 backdrop-blur-sm border-secondary/10 overflow-hidden">
-            <CardContent className="p-0">
-              <div className="bg-gradient-to-r from-secondary/10 to-transparent p-4 border-b border-secondary/10">
-                <h3 className="text-xl font-semibold flex items-center">
-                  <Shield className="h-5 w-5 text-secondary mr-2" />
-                  Auditor Process
-                </h3>
-              </div>
-              <div className="p-4">
-                <Accordion type="single" collapsible className="w-full">
-                  {faqs.slice(3, 6).map((faq, index) => (
-                    <AccordionItem key={index + 3} value={`item-${index + 3}`} className="border-b border-border/40">
-                      <AccordionTrigger className="text-left font-medium py-4 hover:text-secondary transition-colors">
-                        {faq.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-muted-foreground pb-4">
-                        {faq.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="mt-10 text-center">
-          <p className="text-muted-foreground mb-6">
-            Still have questions about our security services?
-          </p>
-          <div className="flex justify-center gap-4 flex-wrap">
-            <a href="/faq" className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4">
-              View All FAQs
-              <ChevronDown className="ml-1 h-4 w-4" />
-            </a>
-            <a href="/contact" className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 py-2 px-4">
-              Contact Support
-            </a>
-          </div>
         </div>
       </div>
     </section>
