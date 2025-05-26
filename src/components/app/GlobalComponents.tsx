@@ -5,7 +5,7 @@ import { CookieConsent } from "@/components/ui/cookie-consent";
 import { BetaBanner } from "@/components/ui/beta-banner";
 import { AccessibilityMenu } from "@/components/ui/accessibility-menu";
 import { KeyboardShortcuts } from "@/components/ui/keyboard-shortcuts";
-import { PerformanceMonitor } from "@/components/performance";
+import { PerformanceMonitor } from "@/components/performance/PerformanceMonitor";
 import { RouteValidator } from "@/components/dev/RouteValidator";
 import { useLocation } from "react-router-dom";
 import { FileCheck } from "lucide-react";

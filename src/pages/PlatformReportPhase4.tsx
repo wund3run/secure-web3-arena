@@ -1,6 +1,6 @@
 
 import React from "react";
-import { ProductionNavbar } from "@/components/ui/production-navbar";
+import { ProductionNavbar } from "@/components/layout/production-navbar";
 import { Footer } from "@/components/layout/footer";
 import { ComprehensiveErrorBoundary } from "@/components/error/comprehensive-error-boundary";
 import { PageMeta } from "@/components/seo/PageMeta";
