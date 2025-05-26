@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -39,6 +38,8 @@ interface TestSuiteStats {
   warnings: number;
   duration: number;
 }
+
+type TableName = 'profiles' | 'extended_profiles' | 'services' | 'audit_requests' | 'escrow_contracts';
 
 export function IntegrationTestSuite() {
   const [tests, setTests] = useState<TestResult[]>([]);
@@ -85,7 +86,7 @@ export function IntegrationTestSuite() {
             break;
 
           case 'db-tables':
-            const tables = ['profiles', 'extended_profiles', 'services', 'audit_requests', 'escrow_contracts'];
+            const tables: TableName[] = ['profiles', 'extended_profiles', 'services', 'audit_requests', 'escrow_contracts'];
             let accessibleTables = 0;
             
             for (const tableName of tables) {
