@@ -24,7 +24,11 @@ export function getFallbackRoute(attemptedPath: string): string {
     '/reach-out': '/contact',
     '/questions': '/faq',
     '/template': '/templates',
-    '/resource': '/resources'
+    '/resource': '/resources',
+    '/compare': '/competitive-advantages',
+    '/advantages': '/competitive-advantages',
+    '/coverage': '/comprehensive-security',
+    '/services': '/comprehensive-security'
   };
 
   // Check for exact matches first
@@ -72,6 +76,14 @@ export function getPageMetadata(path: string) {
     '/support': {
       title: 'Support Center',
       description: 'Find help and support resources.'
+    },
+    '/competitive-advantages': {
+      title: 'Why Choose Hawkly',
+      description: 'See how Hawkly compares to traditional security audit services.'
+    },
+    '/comprehensive-security': {
+      title: 'Complete Security Coverage',
+      description: 'End-to-end security solutions for every layer of your Web3 application.'
     }
   };
 
@@ -109,7 +121,9 @@ export function extractRoutesFromApp(): string[] {
     '/docs',
     '/pricing',
     '/resources',
-    '/templates'
+    '/templates',
+    '/competitive-advantages',
+    '/comprehensive-security'
   ];
 
   return routes;

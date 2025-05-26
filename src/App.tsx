@@ -1,4 +1,3 @@
-
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -28,6 +27,8 @@ import Docs from "./pages/Docs";
 import Pricing from "./pages/Pricing";
 import Resources from "./pages/Resources";
 import Templates from "./pages/Templates";
+import CompetitiveAdvantages from "./pages/CompetitiveAdvantages";
+import ComprehensiveSecurity from "./pages/ComprehensiveSecurity";
 
 const queryClient = new QueryClient();
 
@@ -91,6 +92,8 @@ function App() {
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/resources" element={<Resources />} />
                   <Route path="/templates" element={<Templates />} />
+                  <Route path="/competitive-advantages" element={<CompetitiveAdvantages />} />
+                  <Route path="/comprehensive-security" element={<ComprehensiveSecurity />} />
                   
                   {/* General User Routes */}
                   <Route path="/service-provider-onboarding" element={

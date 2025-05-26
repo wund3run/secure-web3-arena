@@ -116,11 +116,49 @@ export default function Index() {
             </div>
           </section>
           
-          {/* Competitive Advantages */}
-          <CompetitiveAdvantages />
-          
-          {/* Complete Security Coverage */}
-          <ComprehensiveSecurity />
+          {/* Learn More Section */}
+          <section className="py-16 border-t">
+            <div className="container px-4 md:px-6">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold mb-4">Learn More About Hawkly</h2>
+                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                  Discover why Hawkly is the best choice for your Web3 security needs
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div className="bg-card shadow-sm hover:shadow-md transition-all rounded-lg p-8 border">
+                  <div className="text-center mb-6">
+                    <div className="inline-flex p-3 bg-primary/10 rounded-full mb-4">
+                      <Shield className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="text-2xl font-semibold mb-2">Why Choose Hawkly?</h3>
+                    <p className="text-muted-foreground">See how we compare to traditional auditors</p>
+                  </div>
+                  <Button asChild className="w-full">
+                    <Link to="/competitive-advantages" className="flex items-center justify-center">
+                      Compare Services <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+                
+                <div className="bg-card shadow-sm hover:shadow-md transition-all rounded-lg p-8 border">
+                  <div className="text-center mb-6">
+                    <div className="inline-flex p-3 bg-secondary/10 rounded-full mb-4">
+                      <Users className="h-8 w-8 text-secondary" />
+                    </div>
+                    <h3 className="text-2xl font-semibold mb-2">Complete Security Coverage</h3>
+                    <p className="text-muted-foreground">Explore our comprehensive security solutions</p>
+                  </div>
+                  <Button asChild variant="outline" className="w-full">
+                    <Link to="/comprehensive-security" className="flex items-center justify-center">
+                      View Services <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </section>
           
           {/* Industry-Specific Security Solutions */}
           <IndustrySpecificCases />
