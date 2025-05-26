@@ -1,15 +1,19 @@
 
 import React, { Suspense } from "react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AppInitializer } from "@/components/app/AppInitializer";
 import { AuthProvider } from "@/contexts/auth/AuthContext";
 import { EscrowProvider } from "@/contexts/EscrowContext";
 import { RouterErrorBoundary } from "@/components/error/RouterErrorBoundary";
-import { AppRoutes } from "@/components/app/AppRoutes";
+import LoadingState from "@/components/ui/loading-state";
+
+// Lazy load pages for better performance
+const Index = React.lazy(() => import("@/pages/Index"));
+const NotFound = React.lazy(() => import("@/pages/NotFound"));
+const OptimizedDistributionStrategy = React.lazy(() => import("@/pages/OptimizedDistributionStrategy"));
 
 // Optimized QueryClient with better defaults
 const queryClient = new QueryClient({
@@ -36,16 +40,18 @@ function App() {
             <AuthProvider>
               <EscrowProvider>
                 <TooltipProvider>
-                  <AppInitializer>
-                    <Suspense fallback={
-                      <div className="flex items-center justify-center min-h-screen">
-                        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
-                      </div>
-                    }>
-                      <AppRoutes />
-                    </Suspense>
-                    <Toaster />
-                  </AppInitializer>
+                  <Suspense fallback={
+                    <div className="flex items-center justify-center min-h-screen">
+                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+                    </div>
+                  }>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/distribution-strategy" element={<OptimizedDistributionStrategy />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </Suspense>
+                  <Toaster />
                 </TooltipProvider>
               </EscrowProvider>
             </AuthProvider>

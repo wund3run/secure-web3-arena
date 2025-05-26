@@ -1,9 +1,7 @@
 
 import React from "react";
-import { ProductionNavbar } from "./production-navbar";
+import { SimplifiedNavbar } from "./simplified-navbar";
 
 export function Navbar() {
-  return (
-    <ProductionNavbar />
-  );
+  return <SimplifiedNavbar />;
 }

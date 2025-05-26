@@ -1,9 +1,9 @@
 
-import React from "react";
+import React from 'react';
 
 interface MetricItemProps {
   label: string;
-  value: number | string;
+  value: number;
   unit?: string;
   threshold?: number;
   isGood?: boolean;
@@ -13,31 +13,27 @@ interface MetricItemProps {
 export const MetricItem: React.FC<MetricItemProps> = ({
   label,
   value,
-  unit = "",
+  unit = '',
   threshold,
   isGood,
   showColor = true
 }) => {
-  // Determine if the metric is good or bad if not explicitly specified
-  const isGoodValue = isGood !== undefined 
-    ? isGood 
-    : threshold !== undefined 
-      ? typeof value === 'number'
-        ? (threshold ? value <= threshold : value >= threshold)
-        : true
-      : true;
-  
-  const textColorClass = !showColor 
-    ? "" 
-    : isGoodValue 
-      ? "text-green-400" 
-      : "text-red-400";
-  
+  const getColor = () => {
+    if (!showColor) return 'text-white';
+    if (isGood !== undefined) {
+      return isGood ? 'text-green-400' : 'text-red-400';
+    }
+    if (threshold !== undefined) {
+      return value <= threshold ? 'text-green-400' : 'text-red-400';
+    }
+    return 'text-white';
+  };
+
   return (
     <div className="flex justify-between">
       <span>{label}:</span>
-      <span className={textColorClass}>
-        {value}{unit}
+      <span className={getColor()}>
+        {Math.round(value * 100) / 100}{unit}
       </span>
     </div>
   );
