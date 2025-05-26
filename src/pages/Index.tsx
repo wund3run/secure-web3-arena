@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { Footer } from "@/components/layout/footer";
@@ -7,7 +8,7 @@ import { FaqSection } from "@/components/home/faq-section";
 import { EnhancedFooter } from "@/components/home/enhanced-footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight, Shield, Code, CheckCircle, Database, Key, Activity, MessageSquare, Layout } from "lucide-react";
+import { ArrowRight, Shield, Code, CheckCircle, Database, Key, Activity, MessageSquare, Layout, Zap, Users, Lock, Award, Target } from "lucide-react";
 import { MarketplaceHero } from "@/components/marketplace/sections/MarketplaceHero";
 
 export default function Index() {
@@ -324,6 +325,106 @@ export default function Index() {
           </section>
           
           <GamificationSection />
+          
+          {/* Why Choose Hawkly Section */}
+          <section className="py-20 bg-muted/30">
+            <div className="container px-4 md:px-6">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose Hawkly?</h2>
+                <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                  Our platform connects you with the best security experts in Web3, ensuring your smart 
+                  contracts are thoroughly audited and secure.
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                {/* Comprehensive Security Audits */}
+                <div className="bg-card border rounded-lg p-8 hover:shadow-md transition-all">
+                  <div className="flex items-center mb-4">
+                    <div className="bg-primary/10 p-3 rounded-lg mr-4">
+                      <Shield className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-semibold">Comprehensive Security Audits</h3>
+                  </div>
+                  <p className="text-muted-foreground">
+                    Get thorough security reviews from verified experts who understand the latest Web3 
+                    vulnerabilities and attack vectors.
+                  </p>
+                </div>
+                
+                {/* Fast Turnaround Times */}
+                <div className="bg-card border rounded-lg p-8 hover:shadow-md transition-all">
+                  <div className="flex items-center mb-4">
+                    <div className="bg-primary/10 p-3 rounded-lg mr-4">
+                      <Zap className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-semibold">Fast Turnaround Times</h3>
+                  </div>
+                  <p className="text-muted-foreground">
+                    Connect with auditors who can deliver high-quality results within your project 
+                    timeline requirements.
+                  </p>
+                </div>
+                
+                {/* Verified Expert Network */}
+                <div className="bg-card border rounded-lg p-8 hover:shadow-md transition-all">
+                  <div className="flex items-center mb-4">
+                    <div className="bg-primary/10 p-3 rounded-lg mr-4">
+                      <Users className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-semibold">Verified Expert Network</h3>
+                  </div>
+                  <p className="text-muted-foreground">
+                    Work with thoroughly vetted security professionals with proven track records in 
+                    blockchain security.
+                  </p>
+                </div>
+                
+                {/* Multi-Chain Support */}
+                <div className="bg-card border rounded-lg p-8 hover:shadow-md transition-all">
+                  <div className="flex items-center mb-4">
+                    <div className="bg-primary/10 p-3 rounded-lg mr-4">
+                      <Target className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-semibold">Multi-Chain Support</h3>
+                  </div>
+                  <p className="text-muted-foreground">
+                    Find experts specialized in various blockchain ecosystems including Ethereum, Solana, 
+                    Polygon, and more.
+                  </p>
+                </div>
+                
+                {/* Secure Escrow System */}
+                <div className="bg-card border rounded-lg p-8 hover:shadow-md transition-all">
+                  <div className="flex items-center mb-4">
+                    <div className="bg-primary/10 p-3 rounded-lg mr-4">
+                      <Lock className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-semibold">Secure Escrow System</h3>
+                  </div>
+                  <p className="text-muted-foreground">
+                    Protected payments through our smart contract escrow system ensuring fair compensation 
+                    for all parties.
+                  </p>
+                </div>
+                
+                {/* Quality Assurance */}
+                <div className="bg-card border rounded-lg p-8 hover:shadow-md transition-all">
+                  <div className="flex items-center mb-4">
+                    <div className="bg-primary/10 p-3 rounded-lg mr-4">
+                      <Award className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-semibold">Quality Assurance</h3>
+                  </div>
+                  <p className="text-muted-foreground">
+                    Every audit goes through our quality review process to ensure comprehensive coverage 
+                    and actionable insights.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+          
           <FaqSection />
         </div>
         <EnhancedFooter />
