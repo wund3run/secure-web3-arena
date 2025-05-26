@@ -4,7 +4,7 @@
  */
 
 export function getFallbackRoute(attemptedPath: string): string {
-  // Enhanced route mappings including competitive positioning
+  // Enhanced route mappings including competitive positioning and distribution strategy
   const routeMappings: Record<string, string> = {
     '/dashboard': '/auth',
     '/profile': '/dashboard',
@@ -34,7 +34,13 @@ export function getFallbackRoute(attemptedPath: string): string {
     '/services': '/comprehensive-security',
     '/features': '/',
     '/platform': '/',
-    '/technology': '/docs'
+    '/technology': '/docs',
+    '/distribution': '/distribution-strategy',
+    '/growth': '/distribution-strategy',
+    '/scale': '/distribution-strategy',
+    '/partnerships': '/distribution-strategy',
+    '/expansion': '/distribution-strategy',
+    '/strategy': '/distribution-strategy'
   };
 
   // Check for exact matches first

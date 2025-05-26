@@ -5,9 +5,6 @@ import { Navbar } from "@/components/layout/navbar";
 import { FaqSection } from "@/components/home/faq-section";
 import { EnhancedFooter } from "@/components/home/enhanced-footer";
 import { SupportButton } from "@/components/ui/support-button";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { ArrowRight, Shield, CheckCircle, Users, Play, TrendingUp, Code } from "lucide-react";
 
 // Core journey components
 import { SimplifiedHero } from "@/components/home/simplified-hero";
@@ -20,10 +17,15 @@ import { MarketPositioning } from "@/components/home/market-positioning";
 import { PlatformFeaturesShowcase } from "@/components/home/platform-features-showcase";
 import { CompetitiveAdvantages } from "@/components/home/competitive-advantages";
 
-// New components for enhanced user journeys
+// Enhanced user journey components
 import { UserJourneySection } from "@/components/home/user-journey-section";
 import { QuickStartSection } from "@/components/home/quick-start-section";
 import { ValuePropositionSection } from "@/components/home/value-proposition-section";
+
+// Distribution scale strategy components
+import { NetworkEffectsSection } from "@/components/home/network-effects-section";
+import { StrategicPartnershipsSection } from "@/components/home/strategic-partnerships-section";
+import { GlobalExpansionSection } from "@/components/home/global-expansion-section";
 
 export default function Index() {
   return (
@@ -59,11 +61,20 @@ export default function Index() {
             <InteractiveDemo />
           </div>
           
+          {/* Distribution Scale Strategy - Network effects and growth */}
+          <NetworkEffectsSection />
+          
           {/* Market Positioning - Why choose us over competitors */}
           <MarketPositioning />
           
           {/* Platform Features - Technical differentiators */}
           <PlatformFeaturesShowcase />
+          
+          {/* Strategic Partnerships - Distribution channels */}
+          <StrategicPartnershipsSection />
+          
+          {/* Global Expansion - Worldwide scale */}
+          <GlobalExpansionSection />
           
           {/* Competitive Advantages - Detailed comparison */}
           <CompetitiveAdvantages />
