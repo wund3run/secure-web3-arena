@@ -1,3 +1,4 @@
+
 import { toast } from "sonner";
 
 class PerformanceOptimizer {
@@ -31,7 +32,9 @@ class PerformanceOptimizer {
       try {
         this.observer = new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
-            this.recordMetric(entry.name, entry.value || entry.duration);
+            // Safely access value or duration properties
+            const metricValue = (entry as any).value || entry.duration || 0;
+            this.recordMetric(entry.name, metricValue);
           }
         });
         

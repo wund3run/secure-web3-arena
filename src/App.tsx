@@ -58,7 +58,7 @@ function App() {
                     <div className="flex items-center justify-center min-h-screen">
                       <EnhancedLoadingState 
                         message="Loading Hawkly Platform..." 
-                        variant="shimmer"
+                        variant="spinner"
                         size="lg"
                       />
                     </div>
