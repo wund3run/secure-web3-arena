@@ -163,82 +163,91 @@ export function extractRoutesFromApp(): string[] {
     '/',
     '/auth',
     '/marketplace',
-    '/audits',
-    '/community',
-    '/service-provider-onboarding',
     '/request-audit',
-    '/submit-service',
-    '/escrow',
-    '/dashboard',
-    '/dashboard/*',
-    '/admin',
-    '/admin/*',
-    '/system-health',
-    '/contact',
-    '/support',
-    '/faq',
-    '/ai-tools',
-    '/docs',
+    '/service-provider-onboarding',
     '/pricing',
-    '/resources',
-    '/templates',
-    '/competitive-advantages',
-    '/comprehensive-security',
-    '/audit-guidelines',
-    '/blog',
-    '/vulnerabilities',
+    '/audits',
+    '/audit/:id',
+    '/escrow',
+    '/docs',
+    '/web3-security',
+    '/guides',
+    '/tutorials',
+    '/knowledge-base',
+    '/faq',
     '/security-insights',
+    '/vulnerabilities',
+    '/templates',
+    '/ai-tools',
+    '/platform-report',
     '/forum',
     '/events',
     '/challenges',
     '/leaderboard',
+    '/blog',
     '/achievements',
+    '/dashboard',
+    '/dashboard/user',
+    '/dashboard/auditor',
+    '/dashboard/project',
+    '/dashboard/analytics',
+    '/submit-service',
+    '/calendar',
+    '/contact-provider/:id',
+    '/admin',
+    '/admin/dashboard',
+    '/admin/users',
+    '/admin/providers',
+    '/admin/audits',
+    '/admin/reports',
+    '/admin/services',
+    '/admin/disputes',
+    '/admin/security',
+    '/admin/finance',
+    '/admin/settings',
+    '/contact',
+    '/support',
     '/terms',
     '/privacy',
-    '/security-policy'
+    '/security-policy',
+    '/resources',
+    '/community',
+    '/competitive-advantages',
+    '/comprehensive-security',
+    '/audit-guidelines',
+    '/distribution-strategy',
+    '/for-project-owners',
+    '/for-auditors',
+    '/for-enterprises',
+    '/for-developers'
   ];
 
   return routes;
 }
 
-/**
- * Check if a route exists in the application
- * @param route - The route path to check
- * @returns Boolean indicating if the route exists
- */
 export function routeExists(route: string): boolean {
   const validRoutes = extractRoutesFromApp();
   
-  // Check for exact match
+  // Check for exact matches first
   if (validRoutes.includes(route)) {
     return true;
   }
-
-  // Check for dynamic routes (routes ending with /*)
-  const dynamicRoutes = validRoutes.filter(r => r.endsWith('/*'));
+  
+  // Check for dynamic route patterns
+  const dynamicRoutes = validRoutes.filter(r => r.includes(':'));
   for (const dynamicRoute of dynamicRoutes) {
-    const baseRoute = dynamicRoute.replace('/*', '');
-    if (route.startsWith(baseRoute)) {
+    const pattern = dynamicRoute.replace(/:[^/]+/g, '[^/]+');
+    const regex = new RegExp(`^${pattern}$`);
+    if (regex.test(route)) {
       return true;
     }
   }
-
-  // Check for common route patterns
-  const routePatterns = [
-    /^\/dashboard(\/.*)?$/,
-    /^\/admin(\/.*)?$/,
-    /^\/audit\/[^/]+$/,
-    /^\/service\/[^/]+$/,
-    /^\/provider\/[^/]+$/
-  ];
-
-  return routePatterns.some(pattern => pattern.test(route));
+  
+  return false;
 }
 
 /**
- * Validate if a navigation path is accessible
- * @param path - The navigation path to validate
- * @returns Boolean indicating if the path is valid
+ * Check if a navigation path should be considered valid
  */
 export function isValidNavigationPath(path: string): boolean {
   // Skip external links and anchors
@@ -247,4 +256,18 @@ export function isValidNavigationPath(path: string): boolean {
   }
 
   return routeExists(path);
+}
+
+/**
+ * Get the current route category for styling purposes
+ */
+export function getRouteCategory(path: string): string {
+  if (path.startsWith('/admin')) return 'admin';
+  if (path.startsWith('/dashboard')) return 'dashboard';
+  if (path.startsWith('/audit')) return 'audit';
+  if (['/marketplace', '/request-audit', '/service-provider-onboarding', '/pricing'].includes(path)) return 'marketplace';
+  if (['/docs', '/web3-security', '/guides', '/tutorials', '/knowledge-base', '/faq'].includes(path)) return 'resources';
+  if (['/forum', '/events', '/challenges', '/leaderboard', '/blog'].includes(path)) return 'community';
+  if (['/ai-tools', '/platform-report', '/templates'].includes(path)) return 'tools';
+  return 'general';
 }

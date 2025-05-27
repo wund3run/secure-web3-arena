@@ -1,76 +1,165 @@
 
-import React, { useState } from "react";
-import { Helmet } from "react-helmet-async";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
-import { ServiceProviderOnboardingForm } from "@/components/service-provider/ServiceProviderOnboardingForm";
-import { OnboardingBenefits } from "@/components/service-provider/OnboardingBenefits";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React from 'react';
+import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Shield, CheckCircle, Users, TrendingUp, Star, Award } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const ServiceProviderOnboarding = () => {
-  const [activeTab, setActiveTab] = useState<"auditor" | "service">("auditor");
-
-  const handleTabChange = (value: string) => {
-    setActiveTab(value as "auditor" | "service");
-  };
-
   return (
-    <>
-      <Helmet>
-        <title>Join the Security Provider Network | Hawkly</title>
-        <meta
-          name="description"
-          content="Join Hawkly's elite network of security service providers and auditors. Get matched with ideal projects and grow your Web3 security business."
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      </Helmet>
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
-      <main className="min-h-screen bg-gradient-to-br from-white via-primary/5 to-secondary/5 pt-10 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-              Join the Hawkly Security Circle
-            </h1>
-            <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-              Become part of the premier Web3 security marketplace where top talent connects 
-              with cutting-edge projects. Apply to join our vetted network of security professionals.
+      <main className="flex-grow">
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gradient mb-4">Join as Security Auditor</h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Become part of the world's most trusted Web3 security marketplace
             </p>
           </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
-            <div className="lg:col-span-5 order-2 lg:order-1">
-              <OnboardingBenefits />
-            </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-6 w-6 text-primary" />
+                  Why Join Hawkly?
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+                  <div>
+                    <h3 className="font-semibold">Premium Projects</h3>
+                    <p className="text-sm text-muted-foreground">Access to high-quality DeFi, NFT, and enterprise projects</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+                  <div>
+                    <h3 className="font-semibold">Secure Payments</h3>
+                    <p className="text-sm text-muted-foreground">Escrow-protected payments with milestone releases</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+                  <div>
+                    <h3 className="font-semibold">Professional Growth</h3>
+                    <p className="text-sm text-muted-foreground">Build your reputation and increase your rates</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+                  <div>
+                    <h3 className="font-semibold">Global Network</h3>
+                    <p className="text-sm text-muted-foreground">Connect with projects and auditors worldwide</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
             
-            <div className="lg:col-span-7 order-1 lg:order-2">
-              <div className="bg-white/80 backdrop-blur-md rounded-xl shadow-xl border border-border/40 p-4 sm:p-6">
-                <Tabs defaultValue={activeTab} onValueChange={handleTabChange} className="mb-8">
-                  <TabsList className="grid grid-cols-2 w-full">
-                    <TabsTrigger value="auditor">Independent Auditor</TabsTrigger>
-                    <TabsTrigger value="service">Security Service Provider</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="auditor" className="pt-4">
-                    <h2 className="text-xl font-semibold mb-2">Independent Auditor Application</h2>
-                    <p className="text-muted-foreground mb-6">
-                      Showcase your auditing expertise and join our network of trusted independent security professionals.
-                    </p>
-                  </TabsContent>
-                  <TabsContent value="service" className="pt-4">
-                    <h2 className="text-xl font-semibold mb-2">Security Service Provider Application</h2>
-                    <p className="text-muted-foreground mb-6">
-                      Register your security firm to access enterprise-level clients and expand your service offerings.
-                    </p>
-                  </TabsContent>
-                </Tabs>
-
-                <ServiceProviderOnboardingForm providerType={activeTab} />
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-6 w-6 text-primary" />
+                  Platform Statistics
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">500+</div>
+                    <div className="text-sm text-muted-foreground">Active Auditors</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">$2M+</div>
+                    <div className="text-sm text-muted-foreground">Paid to Auditors</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">1,200+</div>
+                    <div className="text-sm text-muted-foreground">Completed Audits</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">4.9/5</div>
+                    <div className="text-sm text-muted-foreground">Avg Rating</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Application Requirements</CardTitle>
+              <CardDescription>
+                To ensure quality, we have specific requirements for new auditors
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <h3 className="font-semibold flex items-center gap-2">
+                    <Award className="h-5 w-5" />
+                    Experience Requirements
+                  </h3>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-start gap-2">
+                      <Badge variant="outline" className="mt-0.5">Required</Badge>
+                      <span>3+ years in security or blockchain development</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Badge variant="outline" className="mt-0.5">Required</Badge>
+                      <span>Previous audit experience or security research</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Badge variant="secondary" className="mt-0.5">Preferred</Badge>
+                      <span>Published security findings or CVEs</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="space-y-3">
+                  <h3 className="font-semibold flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Technical Skills
+                  </h3>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-start gap-2">
+                      <Badge variant="outline" className="mt-0.5">Required</Badge>
+                      <span>Solidity, Rust, or other smart contract languages</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Badge variant="outline" className="mt-0.5">Required</Badge>
+                      <span>Security analysis tools (Slither, MythX, etc.)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Badge variant="secondary" className="mt-0.5">Preferred</Badge>
+                      <span>Formal verification experience</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
+            </CardContent>
+          </Card>
+          
+          <div className="text-center">
+            <Button asChild size="lg" className="mb-4">
+              <Link to="/auth">
+                <Star className="mr-2 h-4 w-4" />
+                Apply Now
+              </Link>
+            </Button>
+            <p className="text-sm text-muted-foreground">
+              Applications are reviewed within 2-3 business days
+            </p>
           </div>
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 };
 

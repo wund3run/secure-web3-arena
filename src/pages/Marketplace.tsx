@@ -1,179 +1,73 @@
 
-import React, { useEffect } from "react";
-import { MarketplaceLayout } from "@/components/marketplace/layout/MarketplaceLayout";
-import { MarketplaceHeader } from "@/components/marketplace/layout/MarketplaceHeader";
-import { MarketplaceContent as MarketplaceContentComponent } from "@/components/marketplace/layout/MarketplaceContent";
-import { MarketplaceDialogs } from "@/components/marketplace/layout/MarketplaceDialogs";
-import { ComparisonFloatingIndicator } from "@/components/marketplace/sections/ComparisonFloatingIndicator";
-import { SERVICES } from "@/data/marketplace-data";
-import { MarketplaceProvider, useMarketplace } from "@/contexts/marketplace/MarketplaceContext";
-import { MarketplaceErrorBoundary, ErrorBoundary } from "@/utils/error-handling";
-import { useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { handleApiError } from "@/utils/apiErrorHandler";
-import { ServiceCardProps } from "@/types/marketplace-unified";
-import { MarketplaceLoadingState } from "@/components/marketplace/error-handling";
-import { MarketplaceHero } from "@/components/marketplace/sections/MarketplaceHero";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import React from 'react';
+import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Shield, Star, MapPin, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-// Define global interface for window to include SERVICES with correct type
-declare global {
-  interface Window {
-    SERVICES?: any[];
-  }
-}
-
-function MarketplacePageContent() {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const compareParam = searchParams.get('compare');
-  
-  const {
-    state,
-    setViewMode,
-    setShowFilters,
-    setActiveCategory,
-    setSelectedService,
-    handleApplyFilters,
-    toggleCompareService,
-    isServiceInComparison,
-    handleOpenComparison,
-    setShowComparison,
-    handleOnboardingComplete,
-    filterServices,
-    servicesQuery
-  } = useMarketplace();
-  
-  // Destructure state for better readability
-  const {
-    viewMode,
-    showFilters,
-    activeCategory,
-    isLoading,
-    showEnhancedOnboarding,
-    selectedService,
-    activeFilters,
-    showAIRecommendations,
-    servicesForComparison,
-    showComparison
-  } = state;
-
-  // Redirect from /marketplace?compare=true to /marketplace (since we removed the comparison option)
-  useEffect(() => {
-    if (compareParam === 'true') {
-      // Use replace to avoid adding to browser history
-      navigate('/marketplace', { replace: true });
-      // Optional: Show a toast to inform users about the change
-      toast.info("The service comparison feature has been integrated directly into the marketplace.", {
-        description: "Select services to compare them using the compare button."
-      });
-    }
-  }, [compareParam, navigate]);
-
-  // Filter services based on active filters and category
-  const filteredServices = servicesQuery.data ? filterServices(servicesQuery.data) : [];
-  
-  // Handle service selection by ID
-  const handleServiceSelect = (serviceId: string) => {
-    const service = servicesQuery.data?.find(service => service.id === serviceId) || null;
-    if (service) {
-      setSelectedService(service);
-    }
-  };
-
-  // Create a wrapper function to handle string serviceId input
-  const handleAIRecommendationSelect = (serviceId: string) => {
-    console.log("Recommendation selected by ID:", serviceId);
-    // Find the service by ID in the filtered services if needed
-    const service = filteredServices.find(s => s.id === serviceId);
-    if (service) {
-      console.log("Found service:", service);
-      setSelectedService(service);
-    }
-  };
-
-  if (servicesQuery.error) {
-    return (
-      <div className="flex flex-col items-center justify-center p-8 text-center">
-        <div className="bg-destructive/10 p-4 rounded-lg mb-4">
-          <p className="text-destructive font-medium">Failed to load marketplace services</p>
-        </div>
-        <p className="text-muted-foreground">Please try again later or contact support if the issue persists.</p>
-      </div>
-    );
-  }
-
-  if (isLoading || servicesQuery.isLoading) {
-    return <MarketplaceLoadingState count={8} />;
-  }
-
+const Marketplace = () => {
   return (
-    <div className="flex flex-col gap-6">
-      <MarketplaceErrorBoundary>
-        {/* Add the hero section at the top */}
-        <MarketplaceHero onShowOnboarding={() => handleOnboardingComplete()} />
-        
-        <MarketplaceHeader 
-          showFilters={showFilters}
-          setShowFilters={setShowFilters}
-        />
-        
-        <MarketplaceContentComponent 
-          showFilters={showFilters}
-          activeCategory={activeCategory}
-          setActiveCategory={setActiveCategory}
-          viewMode={viewMode}
-          isLoading={isLoading}
-          filteredServices={filteredServices}
-          showAIRecommendations={showAIRecommendations}
-          activeFilters={activeFilters}
-          handleServiceSelect={handleServiceSelect}
-          isServiceInComparison={isServiceInComparison}
-          toggleCompareService={toggleCompareService}
-          handleApplyFilters={handleApplyFilters}
-        />
-
-        {/* Dialogs */}
-        <MarketplaceDialogs 
-          selectedService={selectedService}
-          setSelectedService={setSelectedService}
-          showComparison={showComparison}
-          setShowComparison={setShowComparison}
-          servicesForComparison={servicesForComparison}
-          showEnhancedOnboarding={showEnhancedOnboarding}
-          setShowEnhancedOnboarding={setShowComparison}
-          handleOnboardingComplete={handleOnboardingComplete}
-          reviews={[]} // Pass reviews from a context or state in a real implementation
-        />
-        
-        {/* Floating comparison indicator if items are selected */}
-        {servicesForComparison.length > 0 && (
-          <ComparisonFloatingIndicator
-            servicesForComparison={servicesForComparison}
-            toggleCompareService={toggleCompareService}
-            handleOpenComparison={handleOpenComparison}
-          />
-        )}
-      </MarketplaceErrorBoundary>
+    <div className="min-h-screen flex flex-col bg-background">
+      <Navbar />
+      <main className="flex-grow">
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gradient mb-4">Security Marketplace</h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Connect with verified security auditors for your Web3 project
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <Card key={i} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2">
+                      <Shield className="h-5 w-5 text-primary" />
+                      Security Expert {i}
+                    </CardTitle>
+                    <div className="flex items-center gap-1">
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <span className="text-sm">4.{9-i}</span>
+                    </div>
+                  </div>
+                  <CardDescription className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4" />
+                    Global
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Specialized in smart contract audits, DeFi protocols, and blockchain security.
+                  </p>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm text-muted-foreground flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      2-3 weeks
+                    </span>
+                    <span className="font-semibold">From $5,000</span>
+                  </div>
+                  <Button asChild className="w-full">
+                    <Link to="/contact-provider/1">Contact Auditor</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          
+          <div className="text-center mt-12">
+            <Button asChild size="lg">
+              <Link to="/request-audit">Request Custom Audit</Link>
+            </Button>
+          </div>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
-}
+};
 
-export default function Marketplace() {
-  // Make services available globally for the comparison functionality
-  useEffect(() => {
-    window.SERVICES = SERVICES;
-  }, []);
-
-  return (
-    <ErrorBoundary>
-      <MarketplaceProvider services={SERVICES}>
-        <MarketplaceLayout>
-          <MarketplaceErrorBoundary>
-            <MarketplacePageContent />
-          </MarketplaceErrorBoundary>
-        </MarketplaceLayout>
-      </MarketplaceProvider>
-    </ErrorBoundary>
-  );
-}
+export default Marketplace;

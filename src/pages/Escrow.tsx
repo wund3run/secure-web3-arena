@@ -1,19 +1,15 @@
 
 import React from 'react';
-import { EscrowProvider } from '@/contexts/EscrowContext';
-import { EscrowManager } from '@/components/escrow/EscrowManager';
-import { Helmet } from 'react-helmet-async';
+import { PlaceholderPage } from './placeholder-template';
+import { Shield } from 'lucide-react';
 
 const Escrow = () => {
   return (
-    <>
-      <Helmet>
-        <title>Escrow System | Hawkly Security</title>
-      </Helmet>
-      <EscrowProvider>
-        <EscrowManager />
-      </EscrowProvider>
-    </>
+    <PlaceholderPage
+      title="Escrow Management"
+      description="Secure payment management for audits. Monitor payment milestones and transaction security."
+      icon={Shield}
+    />
   );
 };
 

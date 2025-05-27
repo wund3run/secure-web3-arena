@@ -1,16 +1,16 @@
 
 import React from 'react';
-import { ContentPage } from '@/components/content/content-page';
-import { CompetitiveAdvantages } from '@/components/home/competitive-advantages';
+import { PlaceholderPage } from './placeholder-template';
+import { TrendingUp } from 'lucide-react';
 
-export default function CompetitiveAdvantagesPage() {
+const CompetitiveAdvantages = () => {
   return (
-    <ContentPage
+    <PlaceholderPage
       title="Why Choose Hawkly"
-      description="See how Hawkly compares to traditional security audit services"
-      className="px-4 md:px-6"
-    >
-      <CompetitiveAdvantages />
-    </ContentPage>
+      description="Learn about our competitive advantages and how we compare to traditional security audit services."
+      icon={TrendingUp}
+    />
   );
-}
+};
+
+export default CompetitiveAdvantages;
