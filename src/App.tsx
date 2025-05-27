@@ -1,5 +1,4 @@
-
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -10,6 +9,8 @@ import { EscrowProvider } from "@/contexts/EscrowContext";
 import { SmartErrorBoundary } from "@/components/error/smart-error-boundary";
 import { OptimizedPerformanceMonitor } from "@/components/performance/OptimizedPerformanceMonitor";
 import { EnhancedLoadingState } from "@/components/ui/enhanced-loading-state";
+import { PWAManager } from "@/components/pwa/PWAManager";
+import { bundleOptimizer } from "@/utils/bundle-optimizer";
 
 // Lazy load pages for better performance
 const Index = React.lazy(() => import("@/pages/Index"));
@@ -46,6 +47,15 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  useEffect(() => {
+    // Initialize bundle optimization
+    bundleOptimizer.init();
+    
+    // Setup intelligent route preloading
+    const currentRoute = window.location.pathname;
+    bundleOptimizer.intelligentPreload(currentRoute);
+  }, []);
+
   return (
     <SmartErrorBoundary showReportButton={true}>
       <HelmetProvider>
@@ -75,6 +85,7 @@ function App() {
                   </Suspense>
                   <Toaster position="top-right" richColors closeButton />
                   <OptimizedPerformanceMonitor />
+                  <PWAManager showInstallPrompt={true} />
                 </TooltipProvider>
               </EscrowProvider>
             </AuthProvider>

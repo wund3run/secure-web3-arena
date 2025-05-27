@@ -1,4 +1,3 @@
-
 import React, { Suspense, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Navbar } from "@/components/layout/navbar";
@@ -8,6 +7,7 @@ import { LazySection } from "@/components/performance/LazySection";
 import { analyticsTracker } from "@/utils/analytics-tracker";
 import { performanceOptimizer } from "@/utils/performance-optimizer";
 import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
+import { bundleOptimizer } from "@/utils/bundle-optimizer";
 
 // Core journey components (loaded immediately)
 import { SimplifiedHero } from "@/components/home/simplified-hero";
@@ -88,6 +88,8 @@ const SectionLoadingFallback = ({ height = "h-64" }: { height?: string }) => (
   </div>
 );
 
+import { PersonalizationEngine } from "@/components/personalization/PersonalizationEngine";
+
 export default function Index() {
   useEffect(() => {
     // Track page visit and initialize analytics
@@ -116,6 +118,9 @@ export default function Index() {
     
     document.addEventListener('click', handleUserEngagement, { once: true });
     window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Initialize intelligent route preloading based on user behavior
+    bundleOptimizer.intelligentPreload('/');
     
     return () => {
       document.removeEventListener('click', handleUserEngagement);
@@ -146,6 +151,13 @@ export default function Index() {
           <SimplifiedHero />
           <TrustIndicators />
           <ValuePropositionSection />
+          
+          {/* Personalization Engine */}
+          <LazySection fallback={<SectionLoadingFallback />}>
+            <div className="container mx-auto px-4 py-8">
+              <PersonalizationEngine />
+            </div>
+          </LazySection>
           
           {/* Below-the-fold content - lazy loaded with enhanced loading states */}
           <LazySection fallback={<SectionLoadingFallback />}>
