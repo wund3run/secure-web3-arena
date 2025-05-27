@@ -1,4 +1,6 @@
 
+import React from 'react';
+
 /**
  * Bundle optimization utilities for Phase 4 performance improvements
  */
@@ -191,12 +193,8 @@ class BundleOptimizer {
         hooks: new Set<string>()
       };
 
-      // Monitor component mounts
-      const originalMount = React.Component.prototype.componentDidMount;
-      React.Component.prototype.componentDidMount = function() {
-        usageTracker.components.add(this.constructor.name);
-        return originalMount?.call(this);
-      };
+      // Simple usage tracking without modifying React prototypes
+      console.log('Bundle usage analysis initialized');
 
       // Log usage statistics every 30 seconds in development
       setInterval(() => {

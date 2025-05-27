@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/auth/AuthContext';
 import { analyticsTracker } from '@/utils/analytics-tracker';
@@ -110,6 +109,18 @@ export function PersonalizationEngine() {
             icon: <Zap className="h-5 w-5" />,
             priority: 2
           }
+        ],
+        recommendations: [
+          {
+            type: "onboarding",
+            content: "Complete your profile setup to get personalized audit recommendations",
+            action: "Start Setup"
+          },
+          {
+            type: "tutorial",
+            content: "Take our 5-minute security assessment to understand your needs",
+            action: "Take Assessment"
+          }
         ]
       },
       returning: {
@@ -130,6 +141,18 @@ export function PersonalizationEngine() {
             description: "Fresh audit requests matching your expertise",
             icon: <Shield className="h-5 w-5" />,
             priority: 2
+          }
+        ],
+        recommendations: [
+          {
+            type: "continue",
+            content: "Resume your pending audit request from last week",
+            action: "Continue Audit"
+          },
+          {
+            type: "explore",
+            content: "Check out new auditors that match your previous selections",
+            action: "Browse Auditors"
           }
         ]
       },
@@ -152,6 +175,18 @@ export function PersonalizationEngine() {
             icon: <Shield className="h-5 w-5" />,
             priority: 2
           }
+        ],
+        recommendations: [
+          {
+            type: "premium",
+            content: "Upgrade to Premium for bulk audit discounts and priority support",
+            action: "Upgrade Now"
+          },
+          {
+            type: "analytics",
+            content: "View detailed analytics for your completed audits",
+            action: "View Analytics"
+          }
         ]
       },
       enterprise: {
@@ -172,6 +207,18 @@ export function PersonalizationEngine() {
             description: "24/7 support from our security team",
             icon: <Shield className="h-5 w-5" />,
             priority: 2
+          }
+        ],
+        recommendations: [
+          {
+            type: "enterprise",
+            content: "Schedule a call with our enterprise team for custom solutions",
+            action: "Schedule Call"
+          },
+          {
+            type: "integration",
+            content: "Explore API integrations for your development workflow",
+            action: "View API Docs"
           }
         ]
       }

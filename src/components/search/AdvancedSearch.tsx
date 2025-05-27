@@ -1,21 +1,30 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { search, Filter, ChevronDown, X, Zap, TrendingUp } from 'lucide-react';
-import { analyticsTracker } from '@/utils/analytics-tracker';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Checkbox } from '@/components/ui/checkbox';
+import { 
+  Search, 
+  Filter, 
+  SortAsc, 
+  SortDesc, 
+  Calendar,
+  Star,
+  DollarSign,
+  Clock
+} from 'lucide-react';
 
-interface SearchFilter {
-  id: string;
-  label: string;
-  type: 'text' | 'select' | 'range' | 'boolean';
-  options?: string[];
-  value: any;
+interface SearchFilters {
+  query: string;
+  categories: string[];
+  priceRange: [number, number];
+  rating: number;
+  deliveryTime: string;
+  sortBy: 'relevance' | 'price' | 'rating' | 'date';
+  sortOrder: 'asc' | 'desc';
 }
 
 interface SearchResult {
@@ -23,361 +32,304 @@ interface SearchResult {
   title: string;
   description: string;
   category: string;
-  relevance: number;
-  url: string;
-  metadata: Record<string, any>;
+  price: number;
+  rating: number;
+  provider: string;
+  deliveryTime: string;
+  tags: string[];
 }
 
-interface AdvancedSearchProps {
-  placeholder?: string;
-  categories?: string[];
-  onResults?: (results: SearchResult[]) => void;
-}
+export function AdvancedSearch() {
+  const [filters, setFilters] = useState<SearchFilters>({
+    query: '',
+    categories: [],
+    priceRange: [0, 10000],
+    rating: 0,
+    deliveryTime: '',
+    sortBy: 'relevance',
+    sortOrder: 'desc'
+  });
 
-export function AdvancedSearch({ 
-  placeholder = "Search auditors, services, or documentation...",
-  categories = ['auditors', 'services', 'docs', 'tools'],
-  onResults 
-}: AdvancedSearchProps) {
-  const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [filters, setFilters] = useState<SearchFilter[]>([
-    {
-      id: 'category',
-      label: 'Category',
-      type: 'select',
-      options: categories,
-      value: ''
-    },
-    {
-      id: 'rating',
-      label: 'Min Rating',
-      type: 'range',
-      value: 0
-    },
-    {
-      id: 'verified',
-      label: 'Verified Only',
-      type: 'boolean',
-      value: false
-    }
-  ]);
-  const [showFilters, setShowFilters] = useState(false);
-  const [searchHistory, setSearchHistory] = useState<string[]>([]);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
-  // Mock data for demonstration
+  // Mock search results
   const mockResults: SearchResult[] = [
     {
       id: '1',
-      title: 'Elite Security Auditor',
-      description: 'Specialized in DeFi protocols with 50+ successful audits',
-      category: 'auditors',
-      relevance: 0.95,
-      url: '/auditor/elite-security',
-      metadata: { rating: 4.9, verified: true, experience: '5+ years' }
+      title: 'Smart Contract Security Audit',
+      description: 'Comprehensive security audit for DeFi protocols with detailed vulnerability assessment',
+      category: 'Smart Contract Audit',
+      price: 2500,
+      rating: 4.8,
+      provider: 'SecureWeb3 Labs',
+      deliveryTime: '5-7 days',
+      tags: ['DeFi', 'Solidity', 'Security']
     },
     {
       id: '2',
-      title: 'Smart Contract Audit Service',
-      description: 'Comprehensive security analysis for Ethereum contracts',
-      category: 'services',
-      relevance: 0.87,
-      url: '/service/smart-contract-audit',
-      metadata: { rating: 4.7, verified: true, price: '$5000-$15000' }
+      title: 'NFT Collection Security Review',
+      description: 'Complete security review for NFT smart contracts including minting mechanisms',
+      category: 'NFT Security',
+      price: 1800,
+      rating: 4.9,
+      provider: 'CryptoSec Experts',
+      deliveryTime: '3-5 days',
+      tags: ['NFT', 'ERC-721', 'Minting']
     },
     {
       id: '3',
-      title: 'Security Best Practices Guide',
-      description: 'Complete guide to Web3 security implementation',
-      category: 'docs',
-      relevance: 0.72,
-      url: '/docs/security-best-practices',
-      metadata: { type: 'documentation', updated: '2024-01-15' }
+      title: 'Cross-Chain Bridge Audit',
+      description: 'Advanced security audit for cross-chain bridge protocols and interoperability',
+      category: 'Bridge Security',
+      price: 4500,
+      rating: 4.7,
+      provider: 'Bridge Security Inc',
+      deliveryTime: '7-10 days',
+      tags: ['Bridge', 'Cross-chain', 'Interoperability']
     }
   ];
 
-  useEffect(() => {
-    // Load search history
-    const history = JSON.parse(localStorage.getItem('hawkly_search_history') || '[]');
-    setSearchHistory(history.slice(0, 5)); // Keep last 5 searches
-  }, []);
-
-  useEffect(() => {
-    if (query.length > 2) {
-      performSearch(query);
-    } else {
-      setResults([]);
-      setSuggestions([]);
-    }
-  }, [query, filters]);
-
-  const performSearch = async (searchQuery: string) => {
-    setIsLoading(true);
-    
-    try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      // Apply filters and search logic
-      let filteredResults = mockResults.filter(result => {
-        const matchesQuery = result.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            result.description.toLowerCase().includes(searchQuery.toLowerCase());
-        
-        const matchesCategory = !filters.find(f => f.id === 'category')?.value || 
-                               result.category === filters.find(f => f.id === 'category')?.value;
-        
-        const matchesRating = result.metadata.rating >= (filters.find(f => f.id === 'rating')?.value || 0);
-        
-        const matchesVerified = !filters.find(f => f.id === 'verified')?.value || 
-                               result.metadata.verified;
-        
-        return matchesQuery && matchesCategory && matchesRating && matchesVerified;
-      });
-
-      // Sort by relevance
-      filteredResults.sort((a, b) => b.relevance - a.relevance);
-      
-      setResults(filteredResults);
-      onResults?.(filteredResults);
-      
-      // Generate suggestions based on search
-      const newSuggestions = generateSuggestions(searchQuery);
-      setSuggestions(newSuggestions);
-      
-      // Track search
-      analyticsTracker.track('search', 'interaction', 'search_performed', searchQuery);
-      
-    } catch (error) {
-      console.error('Search failed:', error);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSearch = async () => {
+    setIsSearching(true);
+    // Simulate API call
+    setTimeout(() => {
+      setResults(mockResults);
+      setIsSearching(false);
+    }, 1000);
   };
 
-  const generateSuggestions = (query: string): string[] => {
-    const suggestions = [
-      'smart contract audit',
-      'defi security',
-      'nft audit service',
-      'solidity security',
-      'web3 penetration testing',
-      'blockchain security tools'
-    ];
-    
-    return suggestions.filter(s => 
-      s.toLowerCase().includes(query.toLowerCase()) && s !== query
-    ).slice(0, 3);
-  };
+  const categories = [
+    'Smart Contract Audit',
+    'NFT Security',
+    'DeFi Protocol',
+    'Bridge Security',
+    'Token Audit',
+    'Game Security',
+    'DAO Governance'
+  ];
 
-  const handleSearch = (searchQuery: string) => {
-    if (searchQuery.trim()) {
-      setQuery(searchQuery);
-      
-      // Update search history
-      const newHistory = [searchQuery, ...searchHistory.filter(h => h !== searchQuery)].slice(0, 5);
-      setSearchHistory(newHistory);
-      localStorage.setItem('hawkly_search_history', JSON.stringify(newHistory));
-    }
-  };
-
-  const updateFilter = (filterId: string, value: any) => {
-    setFilters(prev => prev.map(filter => 
-      filter.id === filterId ? { ...filter, value } : filter
-    ));
-  };
-
-  const clearFilters = () => {
-    setFilters(prev => prev.map(filter => ({ ...filter, value: filter.type === 'boolean' ? false : '' })));
-  };
-
-  const activeFiltersCount = filters.filter(f => f.value && f.value !== '').length;
+  const deliveryOptions = [
+    '1-3 days',
+    '3-5 days',
+    '5-7 days',
+    '7-10 days',
+    '10+ days'
+  ];
 
   return (
-    <div className="space-y-4">
-      {/* Search Input */}
-      <div className="relative">
-        <search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={placeholder}
-          className="pl-10 pr-20"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              handleSearch(query);
-            }
-          }}
-        />
-        <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
-          <Popover open={showFilters} onOpenChange={setShowFilters}>
-            <PopoverTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Filter className="h-3 w-3 mr-1" />
-                Filters
-                {activeFiltersCount > 0 && (
-                  <Badge variant="secondary" className="ml-1 h-4 w-4 p-0 text-xs">
-                    {activeFiltersCount}
-                  </Badge>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-80" align="end">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-medium">Search Filters</h4>
-                  <Button variant="ghost" size="sm" onClick={clearFilters}>
-                    Clear all
-                  </Button>
-                </div>
-                
-                {filters.map(filter => (
-                  <div key={filter.id} className="space-y-2">
-                    <label className="text-sm font-medium">{filter.label}</label>
-                    
-                    {filter.type === 'select' && (
-                      <Command>
-                        <CommandInput placeholder={`Search ${filter.label.toLowerCase()}...`} />
-                        <CommandList>
-                          <CommandEmpty>No options found.</CommandEmpty>
-                          <CommandGroup>
-                            {filter.options?.map(option => (
-                              <CommandItem
-                                key={option}
-                                onSelect={() => updateFilter(filter.id, option)}
-                              >
-                                {option}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    )}
-                    
-                    {filter.type === 'boolean' && (
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          checked={filter.value}
-                          onChange={(e) => updateFilter(filter.id, e.target.checked)}
-                          className="rounded"
-                        />
-                        <span className="text-sm">{filter.label}</span>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
+    <div className="p-6 space-y-6">
+      <div className="flex items-center gap-2">
+        <Search className="h-6 w-6" />
+        <h1 className="text-2xl font-bold">Advanced Search</h1>
       </div>
 
-      {/* Search Suggestions */}
-      {suggestions.length > 0 && (
-        <div className="flex items-center gap-2 text-sm">
-          <span className="text-muted-foreground">Suggestions:</span>
-          {suggestions.map(suggestion => (
-            <Button
-              key={suggestion}
-              variant="ghost"
-              size="sm"
-              onClick={() => handleSearch(suggestion)}
-              className="h-6 px-2 text-xs"
-            >
-              {suggestion}
-            </Button>
-          ))}
-        </div>
-      )}
-
-      {/* Search Results */}
-      {query && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center justify-between">
-              <span>Search Results</span>
-              {isLoading && <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full" />}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Search Filters */}
+        <Card className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Filter className="h-4 w-4" />
+              Filters
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            {results.length > 0 ? (
-              <div className="space-y-3">
-                {results.map(result => (
-                  <div key={result.id} className="p-3 border rounded-lg hover:bg-muted/50 transition-colors">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h4 className="font-medium">{result.title}</h4>
-                          <Badge variant="outline" className="text-xs">
-                            {result.category}
-                          </Badge>
-                          {result.metadata.verified && (
-                            <Badge variant="default" className="text-xs">
-                              Verified
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-2">
-                          {result.description}
-                        </p>
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                          {result.metadata.rating && (
-                            <span>★ {result.metadata.rating}</span>
-                          )}
-                          {result.metadata.experience && (
-                            <span>{result.metadata.experience}</span>
-                          )}
-                          {result.metadata.price && (
-                            <span>{result.metadata.price}</span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <TrendingUp className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground">
-                          {Math.round(result.relevance * 100)}%
-                        </span>
-                      </div>
-                    </div>
+          <CardContent className="space-y-6">
+            {/* Search Query */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">Search Query</label>
+              <Input
+                placeholder="Enter keywords..."
+                value={filters.query}
+                onChange={(e) => setFilters({ ...filters, query: e.target.value })}
+              />
+            </div>
+
+            {/* Categories */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">Categories</label>
+              <div className="space-y-2">
+                {categories.map((category) => (
+                  <div key={category} className="flex items-center space-x-2">
+                    <Checkbox
+                      checked={filters.categories.includes(category)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setFilters({
+                            ...filters,
+                            categories: [...filters.categories, category]
+                          });
+                        } else {
+                          setFilters({
+                            ...filters,
+                            categories: filters.categories.filter(c => c !== category)
+                          });
+                        }
+                      }}
+                    />
+                    <label className="text-sm">{category}</label>
                   </div>
                 ))}
               </div>
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground">
-                  {isLoading ? 'Searching...' : 'No results found'}
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Search History */}
-      {searchHistory.length > 0 && !query && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Recent Searches</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {searchHistory.map(historyItem => (
-                <Button
-                  key={historyItem}
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleSearch(historyItem)}
-                  className="h-6 px-2 text-xs"
-                >
-                  {historyItem}
-                </Button>
-              ))}
             </div>
+
+            {/* Price Range */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">Price Range</label>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  placeholder="Min"
+                  value={filters.priceRange[0]}
+                  onChange={(e) => setFilters({
+                    ...filters,
+                    priceRange: [parseInt(e.target.value) || 0, filters.priceRange[1]]
+                  })}
+                />
+                <span>-</span>
+                <Input
+                  type="number"
+                  placeholder="Max"
+                  value={filters.priceRange[1]}
+                  onChange={(e) => setFilters({
+                    ...filters,
+                    priceRange: [filters.priceRange[0], parseInt(e.target.value) || 10000]
+                  })}
+                />
+              </div>
+            </div>
+
+            {/* Minimum Rating */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">Minimum Rating</label>
+              <div className="flex items-center gap-1">
+                {[1, 2, 3, 4, 5].map((rating) => (
+                  <Button
+                    key={rating}
+                    variant={filters.rating >= rating ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setFilters({ ...filters, rating })}
+                  >
+                    <Star className="h-3 w-3" />
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Delivery Time */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">Delivery Time</label>
+              <div className="space-y-2">
+                {deliveryOptions.map((option) => (
+                  <div key={option} className="flex items-center space-x-2">
+                    <Checkbox
+                      checked={filters.deliveryTime === option}
+                      onCheckedChange={(checked) => {
+                        setFilters({
+                          ...filters,
+                          deliveryTime: checked ? option : ''
+                        });
+                      }}
+                    />
+                    <label className="text-sm">{option}</label>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Button onClick={handleSearch} className="w-full" disabled={isSearching}>
+              {isSearching ? 'Searching...' : 'Apply Filters'}
+            </Button>
           </CardContent>
         </Card>
-      )}
+
+        {/* Search Results */}
+        <div className="lg:col-span-3 space-y-4">
+          {/* Sort Controls */}
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-muted-foreground">
+                    {results.length} results found
+                  </span>
+                  {filters.categories.length > 0 && (
+                    <div className="flex items-center gap-2">
+                      {filters.categories.map((category) => (
+                        <Badge key={category} variant="secondary">
+                          {category}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={filters.sortBy}
+                    onChange={(e) => setFilters({ ...filters, sortBy: e.target.value as any })}
+                    className="text-sm border rounded px-2 py-1"
+                  >
+                    <option value="relevance">Relevance</option>
+                    <option value="price">Price</option>
+                    <option value="rating">Rating</option>
+                    <option value="date">Date</option>
+                  </select>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setFilters({
+                      ...filters,
+                      sortOrder: filters.sortOrder === 'asc' ? 'desc' : 'asc'
+                    })}
+                  >
+                    {filters.sortOrder === 'asc' ? <SortAsc className="h-3 w-3" /> : <SortDesc className="h-3 w-3" />}
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Results */}
+          <div className="space-y-4">
+            {results.map((result) => (
+              <Card key={result.id}>
+                <CardContent className="pt-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg mb-2">{result.title}</h3>
+                      <p className="text-muted-foreground mb-3">{result.description}</p>
+                      <div className="flex items-center gap-4 text-sm">
+                        <div className="flex items-center gap-1">
+                          <Star className="h-3 w-3 text-yellow-500" />
+                          <span>{result.rating}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <DollarSign className="h-3 w-3" />
+                          <span>${result.price}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          <span>{result.deliveryTime}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 mt-3">
+                        {result.tags.map((tag) => (
+                          <Badge key={tag} variant="outline" className="text-xs">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-muted-foreground mb-2">by {result.provider}</p>
+                      <Button>View Details</Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
