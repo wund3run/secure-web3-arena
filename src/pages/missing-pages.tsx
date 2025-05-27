@@ -2,7 +2,7 @@
 import React from 'react';
 import { PlaceholderPage } from './placeholder-template';
 import { 
-  FileText, Users, MessageSquare, Calendar, 
+  FileText, Users, MessageSquare, 
   Trophy, Award, BookOpen, HelpCircle,
   Phone, Shield, Scale, Lock,
   Cpu, BarChart3, Wrench, Settings,
@@ -61,7 +61,7 @@ export const Forum = () => (
 );
 
 export const Events = () => (
-  <PlaceholderPage title="Security Events" description="Security conferences and workshops" icon={Calendar} />
+  <PlaceholderPage title="Security Events" description="Security conferences and workshops" icon={MessageSquare} />
 );
 
 export const Challenges = () => (
@@ -98,10 +98,7 @@ export const SubmitService = () => (
   <PlaceholderPage title="Submit Service" description="Submit your security audit service" icon={ClipboardCheck} />
 );
 
-export const Calendar = () => (
-  <PlaceholderPage title="Audit Calendar" description="Schedule and manage audit appointments" icon={Calendar} />
-);
-
+// Calendar component moved to its own file - no local declaration here
 export const ContactProvider = () => (
   <PlaceholderPage title="Contact Provider" description="Contact security service providers" icon={Phone} />
 );
