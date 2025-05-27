@@ -1,188 +1,370 @@
 
-import React from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Navbar } from '@/components/layout/navbar';
-import { Footer } from '@/components/layout/footer';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState } from 'react';
+import { ContentPage } from '@/components/content/content-page';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Brain, Shield, Search, FileText, Zap, TrendingUp, Link } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Progress } from '@/components/ui/progress';
+import { 
+  Zap, Shield, Code, Scan, Brain, Target, 
+  CheckCircle, AlertTriangle, PlayCircle, 
+  Download, Upload, FileText, ArrowRight,
+  Cpu, BarChart3, Settings, Sparkles
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-export default function AiTools() {
+const AiTools = () => {
+  const [scanProgress, setScanProgress] = useState(0);
+  const [isScanning, setIsScanning] = useState(false);
+
   const aiTools = [
     {
-      title: "Smart Contract Analyzer",
-      description: "AI-powered static analysis tool that scans smart contracts for vulnerabilities, gas optimization opportunities, and security best practices.",
-      icon: Brain,
-      features: ["Vulnerability Detection", "Gas Optimization", "Security Scoring", "Real-time Analysis"],
-      status: "available",
-      category: "Analysis"
+      name: "Smart Contract Scanner",
+      description: "AI-powered static analysis for Solidity smart contracts",
+      icon: <Scan className="h-6 w-6" />,
+      category: "Analysis",
+      features: ["Vulnerability Detection", "Gas Optimization", "Code Quality"],
+      accuracy: "94%",
+      supported: ["Solidity", "Vyper"],
+      color: "bg-blue-100 text-blue-700"
     },
     {
-      title: "Threat Intelligence Scanner",
-      description: "Advanced AI system that monitors blockchain networks for suspicious activities, exploit patterns, and emerging security threats.",
-      icon: Shield,
-      features: ["Threat Detection", "Pattern Recognition", "Risk Assessment", "Alert System"],
-      status: "available",
-      category: "Monitoring"
+      name: "DeFi Protocol Analyzer", 
+      description: "Specialized analysis for DeFi protocols and mechanisms",
+      icon: <Target className="h-6 w-6" />,
+      category: "DeFi",
+      features: ["Flash Loan Detection", "Oracle Analysis", "Liquidity Risks"],
+      accuracy: "91%",
+      supported: ["Uniswap", "Compound", "Aave"],
+      color: "bg-green-100 text-green-700"
     },
     {
-      title: "Code Review Assistant",
-      description: "AI-driven code review tool that provides instant feedback on smart contract code quality, security issues, and improvement suggestions.",
-      icon: FileText,
-      features: ["Code Quality Analysis", "Security Recommendations", "Best Practice Guidance", "Automated Reports"],
-      status: "beta",
-      category: "Review"
+      name: "Vulnerability Predictor",
+      description: "Machine learning model for predicting potential vulnerabilities",
+      icon: <Brain className="h-6 w-6" />,
+      category: "Prediction",
+      features: ["Risk Scoring", "Pattern Recognition", "Trend Analysis"],
+      accuracy: "87%",
+      supported: ["All EVM chains"],
+      color: "bg-purple-100 text-purple-700"
     },
     {
-      title: "Vulnerability Search Engine",
-      description: "Comprehensive database of known vulnerabilities with AI-powered search capabilities to find relevant security issues for your project.",
-      icon: Search,
-      features: ["CVE Database", "Smart Search", "Exploit Examples", "Mitigation Strategies"],
-      status: "available",
-      category: "Research"
-    },
-    {
-      title: "Security Score Predictor",
-      description: "Machine learning model that predicts security scores and potential risks based on code patterns, dependencies, and historical data.",
-      icon: TrendingUp,
-      features: ["Risk Prediction", "Score Calculation", "Trend Analysis", "Comparative Benchmarking"],
-      status: "coming-soon",
-      category: "Prediction"
-    },
-    {
-      title: "Automated Audit Generator",
-      description: "AI system that generates preliminary audit reports, identifies potential issues, and suggests testing strategies for smart contracts.",
-      icon: Zap,
-      features: ["Report Generation", "Issue Identification", "Test Suggestions", "Documentation"],
-      status: "beta",
-      category: "Automation"
+      name: "Audit Report Generator",
+      description: "Generate comprehensive audit reports using AI analysis",
+      icon: <FileText className="h-6 w-6" />,
+      category: "Reporting",
+      features: ["Auto Documentation", "Risk Assessment", "Recommendations"],
+      accuracy: "89%",
+      supported: ["Multiple formats"],
+      color: "bg-orange-100 text-orange-700"
     }
   ];
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'available':
-        return <Badge className="bg-green-500">Available</Badge>;
-      case 'beta':
-        return <Badge variant="secondary">Beta</Badge>;
-      case 'coming-soon':
-        return <Badge variant="outline">Coming Soon</Badge>;
-      default:
-        return <Badge variant="outline">Unknown</Badge>;
-    }
-  };
+  const scanResults = [
+    { type: "Critical", count: 0, color: "text-red-600" },
+    { type: "High", count: 2, color: "text-orange-600" },
+    { type: "Medium", count: 5, color: "text-yellow-600" },
+    { type: "Low", count: 8, color: "text-green-600" },
+    { type: "Info", count: 12, color: "text-blue-600" }
+  ];
 
-  const getStatusButton = (status: string) => {
-    switch (status) {
-      case 'available':
-        return <Button className="w-full">Launch Tool</Button>;
-      case 'beta':
-        return <Button variant="outline" className="w-full">Join Beta</Button>;
-      case 'coming-soon':
-        return <Button variant="outline" className="w-full" disabled>Notify Me</Button>;
-      default:
-        return <Button variant="outline" className="w-full" disabled>Unavailable</Button>;
-    }
+  const quickScanFeatures = [
+    "Reentrancy Detection",
+    "Access Control Issues", 
+    "Integer Overflow/Underflow",
+    "Gas Optimization",
+    "Code Quality Checks",
+    "Best Practice Validation"
+  ];
+
+  const startQuickScan = () => {
+    setIsScanning(true);
+    setScanProgress(0);
+    
+    const interval = setInterval(() => {
+      setScanProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setIsScanning(false);
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 300);
   };
 
   return (
-    <>
-      <Helmet>
-        <title>AI Security Tools | Hawkly Web3 Security Marketplace</title>
-        <meta name="description" content="Access AI-powered security tools for smart contract analysis, vulnerability detection, and automated security assessments." />
-      </Helmet>
-      <div className="min-h-screen bg-background flex flex-col">
-        <Navbar />
-        <main className="flex-grow container py-12">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-12">
-              <h1 className="text-4xl font-bold mb-4">AI Security Tools</h1>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                Leverage cutting-edge artificial intelligence to enhance your Web3 security posture 
-                with automated analysis, threat detection, and intelligent recommendations.
-              </p>
-            </div>
+    <ContentPage
+      title="AI Security Tools"
+      description="Advanced AI-powered security analysis tools for smart contracts, DeFi protocols, and Web3 applications with real-time vulnerability detection."
+    >
+      <div className="space-y-8">
+        {/* Hero Section */}
+        <div className="text-center space-y-6">
+          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium">
+            <Sparkles className="h-4 w-4" />
+            AI-Powered Security Analysis
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold">
+            AI Security <span className="text-primary">Tools</span>
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Leverage cutting-edge artificial intelligence to identify vulnerabilities, 
+            optimize code, and enhance the security of your Web3 applications.
+          </p>
+        </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {aiTools.map((tool, index) => (
-                <Card key={index} className="hover:shadow-lg transition-all duration-300">
-                  <CardHeader>
-                    <div className="flex items-center justify-between mb-2">
-                      <tool.icon className="h-8 w-8 text-primary" />
-                      {getStatusBadge(tool.status)}
+        <Tabs defaultValue="scanner" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="scanner">Quick Scanner</TabsTrigger>
+            <TabsTrigger value="tools">AI Tools</TabsTrigger>
+            <TabsTrigger value="analysis">Analysis</TabsTrigger>
+            <TabsTrigger value="reports">Reports</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="scanner" className="space-y-6">
+            <div className="grid lg:grid-cols-2 gap-8">
+              {/* Quick Scanner */}
+              <Card className="lg:col-span-1">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Scan className="h-5 w-5 text-primary" />
+                    Quick Security Scan
+                  </CardTitle>
+                  <CardDescription>
+                    Upload your smart contract for instant AI-powered security analysis
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center">
+                    <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Drop your .sol files here or click to upload
+                    </p>
+                    <Button variant="outline">
+                      <Upload className="mr-2 h-4 w-4" />
+                      Choose Files
+                    </Button>
+                  </div>
+                  
+                  {isScanning && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Analyzing contract...</span>
+                        <span>{scanProgress}%</span>
+                      </div>
+                      <Progress value={scanProgress} />
                     </div>
-                    <CardTitle>{tool.title}</CardTitle>
+                  )}
+
+                  <div className="flex gap-2">
+                    <Button 
+                      onClick={startQuickScan} 
+                      disabled={isScanning}
+                      className="flex-1"
+                    >
+                      {isScanning ? (
+                        <>
+                          <Cpu className="mr-2 h-4 w-4 animate-spin" />
+                          Scanning...
+                        </>
+                      ) : (
+                        <>
+                          <PlayCircle className="mr-2 h-4 w-4" />
+                          Start Scan
+                        </>
+                      )}
+                    </Button>
+                    <Button variant="outline">
+                      <Settings className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-sm">Scan Features:</h4>
+                    <div className="grid grid-cols-2 gap-1 text-xs">
+                      {quickScanFeatures.map((feature, index) => (
+                        <div key={index} className="flex items-center gap-1">
+                          <CheckCircle className="h-3 w-3 text-green-500" />
+                          {feature}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Results Panel */}
+              <Card className="lg:col-span-1">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5 text-primary" />
+                    Scan Results
+                  </CardTitle>
+                  <CardDescription>
+                    {scanProgress === 100 ? "Analysis complete" : "Results will appear here after scanning"}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {scanProgress === 100 ? (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        {scanResults.map((result, index) => (
+                          <div key={index} className="text-center">
+                            <div className={`text-2xl font-bold ${result.color}`}>
+                              {result.count}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {result.type}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-sm">
+                          <span>Security Score</span>
+                          <span className="font-medium">78/100</span>
+                        </div>
+                        <Progress value={78} className="h-2" />
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button size="sm" className="flex-1">
+                          <Download className="mr-2 h-3 w-3" />
+                          Download Report
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          Share Results
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <Shield className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-muted-foreground">
+                        Upload and scan your contract to see detailed security analysis
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="tools" className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              {aiTools.map((tool, index) => (
+                <Card key={index} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`p-2 rounded-lg ${tool.color}`}>
+                          {tool.icon}
+                        </div>
+                        <div>
+                          <CardTitle className="text-lg">{tool.name}</CardTitle>
+                          <Badge variant="outline">{tool.category}</Badge>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm text-muted-foreground">Accuracy</div>
+                        <div className="font-bold text-green-600">{tool.accuracy}</div>
+                      </div>
+                    </div>
                     <CardDescription>{tool.description}</CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div>
-                        <h4 className="font-medium mb-2">Key Features:</h4>
-                        <ul className="space-y-1">
-                          {tool.features.map((feature, i) => (
-                            <li key={i} className="text-sm text-muted-foreground flex items-center">
-                              <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
-                              {feature}
-                            </li>
-                          ))}
-                        </ul>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <h4 className="font-medium text-sm mb-2">Key Features:</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {tool.features.map((feature, idx) => (
+                          <Badge key={idx} variant="secondary" className="text-xs">
+                            {feature}
+                          </Badge>
+                        ))}
                       </div>
-                      <Badge variant="outline" className="text-xs">
-                        {tool.category}
-                      </Badge>
                     </div>
+                    
+                    <div>
+                      <h4 className="font-medium text-sm mb-2">Supported:</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {tool.supported.map((item, idx) => (
+                          <Badge key={idx} variant="outline" className="text-xs">
+                            {item}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    <Button className="w-full">
+                      <PlayCircle className="mr-2 h-4 w-4" />
+                      Try {tool.name}
+                    </Button>
                   </CardContent>
-                  <CardFooter>
-                    {getStatusButton(tool.status)}
-                  </CardFooter>
                 </Card>
               ))}
             </div>
+          </TabsContent>
 
-            <div className="mt-16 bg-gradient-to-r from-primary/10 to-purple-600/10 rounded-lg p-8">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold mb-4">Enterprise AI Solutions</h2>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                  Need custom AI tools for your organization? We develop bespoke security solutions 
-                  tailored to your specific blockchain ecosystem and requirements.
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="text-center">
-                  <Brain className="h-12 w-12 text-primary mx-auto mb-3" />
-                  <h3 className="font-semibold mb-2">Custom AI Models</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Trained on your specific protocols and security requirements
-                  </p>
-                </div>
-                <div className="text-center">
-                  <Link className="h-12 w-12 text-primary mx-auto mb-3" />
-                  <h3 className="font-semibold mb-2">API Integration</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Seamless integration with your existing development workflow
-                  </p>
-                </div>
-                <div className="text-center">
-                  <Shield className="h-12 w-12 text-primary mx-auto mb-3" />
-                  <h3 className="font-semibold mb-2">24/7 Monitoring</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Continuous security monitoring with intelligent alerting
-                  </p>
-                </div>
-              </div>
-              
-              <div className="text-center">
-                <Button size="lg" asChild>
-                  <a href="/contact">Request Enterprise Demo</a>
-                </Button>
-              </div>
+          <TabsContent value="analysis">
+            <div className="text-center py-12">
+              <Brain className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Advanced Analysis</h3>
+              <p className="text-muted-foreground mb-6">
+                Deep dive into your contract's security with advanced AI analysis and recommendations.
+              </p>
+              <Button asChild>
+                <Link to="/vulnerabilities">
+                  View Vulnerability Database
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
             </div>
+          </TabsContent>
+
+          <TabsContent value="reports">
+            <div className="text-center py-12">
+              <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">AI-Generated Reports</h3>
+              <p className="text-muted-foreground mb-6">
+                Get comprehensive, professional audit reports generated by our AI analysis.
+              </p>
+              <Button asChild>
+                <Link to="/templates">
+                  View Report Templates
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        {/* CTA Section */}
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 text-center">
+          <h2 className="text-2xl font-bold mb-4">Need More Comprehensive Analysis?</h2>
+          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+            While AI tools provide excellent initial analysis, combine them with expert human audits 
+            for the most thorough security assessment of your Web3 project.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" asChild>
+              <Link to="/request-audit">
+                <Shield className="mr-2 h-4 w-4" />
+                Request Expert Audit
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" asChild>
+              <Link to="/marketplace">
+                Browse Security Experts
+              </Link>
+            </Button>
           </div>
-        </main>
-        <Footer />
+        </div>
       </div>
-    </>
+    </ContentPage>
   );
-}
+};
+
+export default AiTools;
