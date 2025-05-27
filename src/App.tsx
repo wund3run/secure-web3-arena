@@ -1,3 +1,4 @@
+
 import React, { Suspense, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
@@ -41,7 +42,7 @@ const FAQ = React.lazy(() => import("@/pages/FAQ"));
 const SecurityInsights = React.lazy(() => import("@/pages/SecurityInsights"));
 const Vulnerabilities = React.lazy(() => import("@/pages/Vulnerabilities"));
 
-// Tools and platform pages - Fixed import to match actual file name
+// Tools and platform pages - Using correct casing
 const AiTools = React.lazy(() => import("@/pages/AiTools"));
 const PlatformReport = React.lazy(() => import("@/pages/PlatformReport"));
 const Templates = React.lazy(() => import("@/pages/Templates"));
@@ -174,7 +175,7 @@ function App() {
                       <Route path="/vulnerabilities" element={<Vulnerabilities />} />
                       <Route path="/templates" element={<Templates />} />
                       
-                      {/* Tools Routes - Fixed route to match file name */}
+                      {/* Tools Routes - Fixed route to use correct component */}
                       <Route path="/ai-tools" element={<AiTools />} />
                       <Route path="/platform-report" element={<PlatformReport />} />
                       
