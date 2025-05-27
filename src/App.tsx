@@ -8,31 +8,32 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/auth/AuthContext";
 import { EscrowProvider } from "@/contexts/EscrowContext";
 import { SmartErrorBoundary } from "@/components/error/smart-error-boundary";
-import { OptimizedPerformanceMonitor } from "@/components/performance/OptimizedPerformanceMonitor";
 import { EnhancedLoadingState } from "@/components/ui/enhanced-loading-state";
-import { PWAManager } from "@/components/pwa/PWAManager";
-import { bundleOptimizer } from "@/utils/bundle-optimizer";
 import RoleBasedRoute from "@/components/auth/RoleBasedRoute";
 
-// Public pages - no authentication required
+// Critical pages - loaded immediately
 const Index = React.lazy(() => import("@/pages/Index"));
 const NotFound = React.lazy(() => import("@/pages/NotFound"));
+const Auth = React.lazy(() => import("@/pages/Auth"));
+
+// High-priority pages - preloaded on demand
+const Marketplace = React.lazy(() => import("@/pages/Marketplace"));
+const RequestAudit = React.lazy(() => import("@/pages/RequestAudit"));
+const Dashboard = React.lazy(() => import("@/pages/Dashboard"));
+
+// Secondary pages - lazy loaded when needed
 const OptimizedDistributionStrategy = React.lazy(() => import("@/pages/OptimizedDistributionStrategy"));
 const ForProjectOwners = React.lazy(() => import("@/pages/ForProjectOwners"));
 const ForAuditors = React.lazy(() => import("@/pages/ForAuditors"));
 const ForEnterprises = React.lazy(() => import("@/pages/ForEnterprises"));
 const ForDevelopers = React.lazy(() => import("@/pages/ForDevelopers"));
-
-// Public marketplace and service pages
-const Marketplace = React.lazy(() => import("@/pages/Marketplace"));
-const RequestAudit = React.lazy(() => import("@/pages/RequestAudit"));
 const ServiceProviderOnboarding = React.lazy(() => import("@/pages/ServiceProviderOnboarding"));
 const Pricing = React.lazy(() => import("@/pages/Pricing"));
 const Audits = React.lazy(() => import("@/pages/Audits"));
 const AuditDetails = React.lazy(() => import("@/pages/AuditDetails"));
 const Escrow = React.lazy(() => import("@/pages/Escrow"));
 
-// Resource and documentation pages
+// Content and resource pages
 const Docs = React.lazy(() => import("@/pages/Docs"));
 const Web3Security = React.lazy(() => import("@/pages/Web3Security"));
 const SecurityGuides = React.lazy(() => import("@/pages/SecurityGuides"));
@@ -41,11 +42,9 @@ const KnowledgeBase = React.lazy(() => import("@/pages/KnowledgeBase"));
 const FAQ = React.lazy(() => import("@/pages/FAQ"));
 const SecurityInsights = React.lazy(() => import("@/pages/SecurityInsights"));
 const Vulnerabilities = React.lazy(() => import("@/pages/Vulnerabilities"));
-
-// Tools and platform pages - Using correct casing
+const Templates = React.lazy(() => import("@/pages/Templates"));
 const AiTools = React.lazy(() => import("@/pages/AiTools"));
 const PlatformReport = React.lazy(() => import("@/pages/PlatformReport"));
-const Templates = React.lazy(() => import("@/pages/Templates"));
 
 // Community pages
 const Forum = React.lazy(() => import("@/pages/Forum"));
@@ -54,9 +53,7 @@ const Challenges = React.lazy(() => import("@/pages/Challenges"));
 const Leaderboard = React.lazy(() => import("@/pages/Leaderboard"));
 const Blog = React.lazy(() => import("@/pages/Blog"));
 
-// Authentication and user pages
-const Auth = React.lazy(() => import("@/pages/Auth"));
-const Dashboard = React.lazy(() => import("@/pages/Dashboard"));
+// User dashboard pages
 const UserDashboard = React.lazy(() => import("@/pages/UserDashboard"));
 const AuditorDashboard = React.lazy(() => import("@/pages/AuditorDashboard"));
 const ProjectDashboard = React.lazy(() => import("@/pages/ProjectDashboard"));
@@ -73,14 +70,12 @@ const AdminSecurity = React.lazy(() => import("@/pages/AdminSecurity"));
 const AdminFinance = React.lazy(() => import("@/pages/AdminFinance"));
 const AdminSettings = React.lazy(() => import("@/pages/AdminSettings"));
 
-// Support and legal pages
+// Support and service pages
 const Contact = React.lazy(() => import("@/pages/Contact"));
 const Support = React.lazy(() => import("@/pages/Support"));
 const Terms = React.lazy(() => import("@/pages/Terms"));
 const Privacy = React.lazy(() => import("@/pages/Privacy"));
 const SecurityPolicy = React.lazy(() => import("@/pages/SecurityPolicy"));
-
-// Additional service pages
 const SubmitService = React.lazy(() => import("@/pages/SubmitService"));
 const Calendar = React.lazy(() => import("@/pages/Calendar"));
 const ContactProvider = React.lazy(() => import("@/pages/ContactProvider"));
@@ -89,14 +84,13 @@ const AuditGuidelines = React.lazy(() => import("@/pages/AuditGuidelines"));
 const CompetitiveAdvantages = React.lazy(() => import("@/pages/CompetitiveAdvantages"));
 const ComprehensiveSecurity = React.lazy(() => import("@/pages/ComprehensiveSecurity"));
 
-// Optimized QueryClient with better defaults and error handling
+// Optimized QueryClient for better performance
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes
       retry: (failureCount, error) => {
-        // Don't retry on 4xx errors, but do retry on network errors
         if (error instanceof Error && error.message.includes('4')) {
           return false;
         }
@@ -107,21 +101,23 @@ const queryClient = new QueryClient({
     },
     mutations: {
       retry: 1,
-      onError: (error) => {
-        console.error('Mutation error:', error);
-      }
     },
   },
 });
 
 function App() {
   useEffect(() => {
-    // Initialize bundle optimization
-    bundleOptimizer.init();
+    // Mark app as loaded to hide initial loader
+    document.body.classList.add('app-loaded');
     
-    // Setup intelligent route preloading
-    const currentRoute = window.location.pathname;
-    bundleOptimizer.intelligentPreload(currentRoute);
+    // Preload critical routes after initial render
+    const preloadCriticalRoutes = () => {
+      import("@/pages/Marketplace");
+      import("@/pages/RequestAudit");
+    };
+    
+    // Delay preloading to not block initial render
+    setTimeout(preloadCriticalRoutes, 1000);
   }, []);
 
   return (
@@ -135,15 +131,22 @@ function App() {
                   <Suspense fallback={
                     <div className="flex items-center justify-center min-h-screen">
                       <EnhancedLoadingState 
-                        message="Loading Hawkly Platform..." 
+                        message="Loading..." 
                         variant="spinner"
-                        size="lg"
+                        size="md"
                       />
                     </div>
                   }>
                     <Routes>
-                      {/* Public Routes */}
+                      {/* Critical Routes */}
                       <Route path="/" element={<Index />} />
+                      <Route path="/auth" element={<Auth />} />
+                      
+                      {/* High-Priority Routes */}
+                      <Route path="/marketplace" element={<Marketplace />} />
+                      <Route path="/request-audit" element={<RequestAudit />} />
+                      
+                      {/* Public Routes */}
                       <Route path="/distribution-strategy" element={<OptimizedDistributionStrategy />} />
                       <Route path="/for-project-owners" element={<ForProjectOwners />} />
                       <Route path="/for-auditors" element={<ForAuditors />} />
@@ -152,9 +155,7 @@ function App() {
                       <Route path="/competitive-advantages" element={<CompetitiveAdvantages />} />
                       <Route path="/comprehensive-security" element={<ComprehensiveSecurity />} />
                       
-                      {/* Marketplace Routes */}
-                      <Route path="/marketplace" element={<Marketplace />} />
-                      <Route path="/request-audit" element={<RequestAudit />} />
+                      {/* Service Routes */}
                       <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
                       <Route path="/pricing" element={<Pricing />} />
                       
@@ -174,8 +175,6 @@ function App() {
                       <Route path="/security-insights" element={<SecurityInsights />} />
                       <Route path="/vulnerabilities" element={<Vulnerabilities />} />
                       <Route path="/templates" element={<Templates />} />
-                      
-                      {/* Tools Routes - Fixed route to use correct component */}
                       <Route path="/ai-tools" element={<AiTools />} />
                       <Route path="/platform-report" element={<PlatformReport />} />
                       
@@ -186,9 +185,6 @@ function App() {
                       <Route path="/leaderboard" element={<Leaderboard />} />
                       <Route path="/blog" element={<Blog />} />
                       <Route path="/achievements" element={<Achievements />} />
-                      
-                      {/* Authentication Routes */}
-                      <Route path="/auth" element={<Auth />} />
                       
                       {/* Protected User Routes */}
                       <Route path="/dashboard" element={
@@ -209,11 +205,6 @@ function App() {
                       <Route path="/dashboard/project" element={
                         <RoleBasedRoute allowedRoles={["project_owner"]}>
                           <ProjectDashboard />
-                        </RoleBasedRoute>
-                      } />
-                      <Route path="/dashboard/analytics" element={
-                        <RoleBasedRoute allowedRoles={["auditor", "project_owner"]}>
-                          <Dashboard />
                         </RoleBasedRoute>
                       } />
                       
@@ -298,17 +289,15 @@ function App() {
                       <Route path="/privacy" element={<Privacy />} />
                       <Route path="/security-policy" element={<SecurityPolicy />} />
                       
-                      {/* Route aliases and redirects */}
+                      {/* Route aliases */}
                       <Route path="/resources" element={<KnowledgeBase />} />
                       <Route path="/community" element={<Forum />} />
                       
-                      {/* Catch all - 404 */}
+                      {/* 404 Route */}
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
                   <Toaster position="top-right" richColors closeButton />
-                  <OptimizedPerformanceMonitor />
-                  <PWAManager showInstallPrompt={true} />
                 </TooltipProvider>
               </EscrowProvider>
             </AuthProvider>
