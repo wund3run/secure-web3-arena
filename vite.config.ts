@@ -17,10 +17,14 @@ export default defineConfig(({ mode }) => ({
   },
   server: {
     port: 8080,
-    host: "::"
+    host: "::",
+    hmr: {
+      overlay: false, // Disable error overlay for better UX
+    }
   },
   build: {
     sourcemap: mode === 'development',
+    target: 'esnext', // Use latest JS features for better performance
     rollupOptions: {
       output: {
         manualChunks: {
@@ -41,11 +45,17 @@ export default defineConfig(({ mode }) => ({
         }
       }
     },
-    chunkSizeWarningLimit: 1000
+    chunkSizeWarningLimit: 1000,
+    minify: 'esbuild', // Faster minification
+    cssMinify: 'esbuild'
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom'],
-    exclude: []
+    exclude: [],
+    force: false // Only force when needed
   },
   assetsInclude: ['**/*.svg'], // Ensure SVGs are properly handled
+  css: {
+    devSourcemap: mode === 'development'
+  }
 }));
