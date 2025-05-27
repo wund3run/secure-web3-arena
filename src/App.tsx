@@ -7,7 +7,9 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/auth/AuthContext";
 import { EscrowProvider } from "@/contexts/EscrowContext";
-import { RouterErrorBoundary } from "@/components/error/RouterErrorBoundary";
+import { SmartErrorBoundary } from "@/components/error/smart-error-boundary";
+import { OptimizedPerformanceMonitor } from "@/components/performance/OptimizedPerformanceMonitor";
+import { EnhancedLoadingState } from "@/components/ui/enhanced-loading-state";
 
 // Lazy load pages for better performance
 const Index = React.lazy(() => import("@/pages/Index"));
@@ -18,25 +20,34 @@ const ForAuditors = React.lazy(() => import("@/pages/ForAuditors"));
 const ForEnterprises = React.lazy(() => import("@/pages/ForEnterprises"));
 const ForDevelopers = React.lazy(() => import("@/pages/ForDevelopers"));
 
-// Optimized QueryClient with better defaults
+// Optimized QueryClient with better defaults and error handling
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes (renamed from cacheTime)
-      retry: 1,
+      gcTime: 10 * 60 * 1000, // 10 minutes
+      retry: (failureCount, error) => {
+        // Don't retry on 4xx errors, but do retry on network errors
+        if (error instanceof Error && error.message.includes('4')) {
+          return false;
+        }
+        return failureCount < 2;
+      },
       refetchOnWindowFocus: false,
       refetchOnMount: false,
     },
     mutations: {
       retry: 1,
+      onError: (error) => {
+        console.error('Mutation error:', error);
+      }
     },
   },
 });
 
 function App() {
   return (
-    <RouterErrorBoundary>
+    <SmartErrorBoundary showReportButton={true}>
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
           <BrowserRouter>
@@ -45,7 +56,11 @@ function App() {
                 <TooltipProvider>
                   <Suspense fallback={
                     <div className="flex items-center justify-center min-h-screen">
-                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+                      <EnhancedLoadingState 
+                        message="Loading Hawkly Platform..." 
+                        variant="shimmer"
+                        size="lg"
+                      />
                     </div>
                   }>
                     <Routes>
@@ -58,14 +73,15 @@ function App() {
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
-                  <Toaster />
+                  <Toaster position="top-right" richColors closeButton />
+                  <OptimizedPerformanceMonitor />
                 </TooltipProvider>
               </EscrowProvider>
             </AuthProvider>
           </BrowserRouter>
         </QueryClientProvider>
       </HelmetProvider>
-    </RouterErrorBoundary>
+    </SmartErrorBoundary>
   );
 }
 
