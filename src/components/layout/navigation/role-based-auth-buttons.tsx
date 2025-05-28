@@ -8,7 +8,16 @@ import { getUserDashboard, canPerformAction } from "@/utils/auth/roleBasedRoutin
 import { ActionGuard } from "@/components/auth/ActionGuard";
 
 export function RoleBasedAuthButtons() {
-  const { user, signOut, userProfile, getUserType } = useAuth();
+  const { user, signOut, userProfile, getUserType, loading } = useAuth();
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="hidden md:flex items-center space-x-2">
+        <div className="animate-pulse bg-gray-200 h-9 w-20 rounded"></div>
+      </div>
+    );
+  }
 
   if (!user) {
     return (
@@ -19,33 +28,26 @@ export function RoleBasedAuthButtons() {
             Sign In
           </Link>
         </Button>
-        <ActionGuard 
-          action="submit_audit_service"
-          fallback={
-            <Button variant="outline" asChild>
-              <Link to="/auth">
-                <User className="mr-2 h-4 w-4" />
-                Join Platform
-              </Link>
-            </Button>
-          }
-        >
-          <Button asChild>
-            <Link to="/service-provider-onboarding">
-              <User className="mr-2 h-4 w-4" />
-              Join as Auditor
-            </Link>
-          </Button>
-        </ActionGuard>
+        <Button asChild>
+          <Link to="/auth">
+            <User className="mr-2 h-4 w-4" />
+            Join Platform
+          </Link>
+        </Button>
       </div>
     );
   }
 
   const userDashboard = getUserDashboard(user, userProfile);
   const userType = getUserType();
+  const displayName = userProfile?.display_name || userProfile?.full_name || user.email?.split('@')[0] || 'User';
 
   return (
     <div className="hidden md:flex items-center space-x-2">
+      <span className="text-sm text-muted-foreground">
+        Welcome, {displayName}
+      </span>
+      
       <Button variant="outline" asChild>
         <Link to={userDashboard}>
           <User className="mr-2 h-4 w-4" />

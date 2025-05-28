@@ -32,6 +32,7 @@ const Auth = () => {
 
   useEffect(() => {
     if (user && !loading) {
+      console.log('User authenticated, redirecting to:', from);
       navigate(from, { replace: true });
     }
   }, [user, loading, navigate, from]);
@@ -42,12 +43,18 @@ const Auth = () => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.email || !formData.password) return;
+    if (!formData.email || !formData.password) {
+      toast.error('Please fill in all fields');
+      return;
+    }
 
     setIsLoading(true);
     try {
+      console.log('Attempting sign in for:', formData.email);
       await signIn(formData.email, formData.password);
+      // Navigation will happen automatically via useEffect when user state updates
     } catch (error: any) {
+      console.error('Sign in failed:', error);
       // Error handling is done in the auth context
     } finally {
       setIsLoading(false);
@@ -56,7 +63,10 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.email || !formData.password || !formData.fullName) return;
+    if (!formData.email || !formData.password || !formData.fullName) {
+      toast.error('Please fill in all fields');
+      return;
+    }
     
     if (formData.password !== formData.confirmPassword) {
       toast.error('Passwords do not match');
@@ -70,8 +80,11 @@ const Auth = () => {
 
     setIsLoading(true);
     try {
+      console.log('Attempting sign up for:', formData.email, 'as', formData.userType);
       await signUp(formData.email, formData.password, formData.fullName, formData.userType);
+      // Success message and navigation will be handled in the auth context
     } catch (error: any) {
+      console.error('Sign up failed:', error);
       // Error handling is done in the auth context
     } finally {
       setIsLoading(false);
@@ -179,15 +192,15 @@ const Auth = () => {
                       <AlertDescription>{error}</AlertDescription>
                     </Alert>
                   )}
-                  
+
                   <div className="space-y-2">
-                    <Label>I am a...</Label>
-                    <div className="flex gap-2">
+                    <Label>Account Type</Label>
+                    <div className="grid grid-cols-2 gap-2">
                       <Button
                         type="button"
                         variant={formData.userType === 'project_owner' ? 'default' : 'outline'}
                         onClick={() => handleInputChange('userType', 'project_owner')}
-                        className="flex-1"
+                        className="text-sm"
                       >
                         Project Owner
                       </Button>
@@ -195,13 +208,18 @@ const Auth = () => {
                         type="button"
                         variant={formData.userType === 'auditor' ? 'default' : 'outline'}
                         onClick={() => handleInputChange('userType', 'auditor')}
-                        className="flex-1"
+                        className="text-sm"
                       >
                         Security Auditor
                       </Button>
                     </div>
+                    <p className="text-xs text-muted-foreground">
+                      {formData.userType === 'auditor' 
+                        ? 'Offer security audit services to Web3 projects' 
+                        : 'Request security audits for your Web3 projects'}
+                    </p>
                   </div>
-
+                  
                   <form onSubmit={handleSignUp} className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="fullName">Full Name</Label>
@@ -284,27 +302,6 @@ const Auth = () => {
                   </form>
                 </TabsContent>
               </Tabs>
-
-              <div className="mt-6">
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300" />
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">Or continue with</span>
-                  </div>
-                </div>
-
-                <div className="mt-6 grid grid-cols-2 gap-3">
-                  <Button variant="outline" className="w-full">
-                    Google
-                  </Button>
-                  <Button variant="outline" className="w-full">
-                    <Github className="h-4 w-4 mr-2" />
-                    GitHub
-                  </Button>
-                </div>
-              </div>
 
               <Alert className="mt-4">
                 <Shield className="h-4 w-4" />

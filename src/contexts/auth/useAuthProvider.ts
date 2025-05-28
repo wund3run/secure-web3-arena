@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -15,6 +16,7 @@ export function useAuthProvider(): AuthContextProps {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.id);
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -22,22 +24,26 @@ export function useAuthProvider(): AuthContextProps {
           // Fetch user profile when user is authenticated
           setTimeout(async () => {
             try {
-              const { data: profile } = await supabase
+              const { data: profile, error } = await supabase
                 .from('extended_profiles')
                 .select('*')
                 .eq('id', session.user.id)
                 .single();
               
+              if (error && error.code !== 'PGRST116') {
+                console.error('Error fetching profile:', error);
+              }
+              
               if (profile) {
-                // Type-safe conversion
                 const typedProfile: UserProfile = {
                   ...profile,
                   user_type: profile.user_type as UserProfile['user_type'] || 'project_owner'
                 };
                 setUserProfile(typedProfile);
+                console.log('Profile loaded:', typedProfile);
               }
             } catch (err) {
-              console.log('Profile not found, will be created on first update');
+              console.log('Profile fetch error:', err);
             }
           }, 0);
         } else {
@@ -50,6 +56,7 @@ export function useAuthProvider(): AuthContextProps {
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session?.user?.id);
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -70,8 +77,11 @@ export function useAuthProvider(): AuthContextProps {
 
       if (error) throw error;
       
+      console.log('Sign in successful:', data.user?.id);
       toast.success('Welcome back!');
+      return data;
     } catch (err: any) {
+      console.error('Sign in error:', err);
       setError(err.message);
       toast.error('Sign in failed', { description: err.message });
       throw err;
@@ -85,6 +95,8 @@ export function useAuthProvider(): AuthContextProps {
     setLoading(true);
     
     try {
+      console.log('Signing up user:', { email, fullName, userType });
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -98,8 +110,40 @@ export function useAuthProvider(): AuthContextProps {
 
       if (error) throw error;
       
-      toast.success('Account created successfully! Please check your email to verify your account.');
+      console.log('Sign up response:', data);
+      
+      // Create extended profile
+      if (data.user) {
+        try {
+          const { error: profileError } = await supabase
+            .from('extended_profiles')
+            .insert({
+              id: data.user.id,
+              full_name: fullName,
+              user_type: userType,
+              display_name: fullName,
+              verification_status: 'pending'
+            });
+
+          if (profileError) {
+            console.error('Profile creation error:', profileError);
+          } else {
+            console.log('Profile created successfully');
+          }
+        } catch (profileErr) {
+          console.error('Profile creation failed:', profileErr);
+        }
+      }
+      
+      if (data.user && !data.session) {
+        toast.success('Account created! Please check your email to verify your account.');
+      } else {
+        toast.success('Account created successfully!');
+      }
+      
+      return data;
     } catch (err: any) {
+      console.error('Sign up error:', err);
       setError(err.message);
       toast.error('Sign up failed', { description: err.message });
       throw err;
@@ -118,8 +162,10 @@ export function useAuthProvider(): AuthContextProps {
       setUser(null);
       setSession(null);
       setUserProfile(null);
+      console.log('Sign out successful');
       toast.success('Signed out successfully');
     } catch (err: any) {
+      console.error('Sign out error:', err);
       setError(err.message);
       toast.error('Sign out failed', { description: err.message });
       throw err;
@@ -130,7 +176,9 @@ export function useAuthProvider(): AuthContextProps {
     setError(null);
     
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth?mode=reset`,
+      });
       if (error) throw error;
       
       toast.success('Password reset email sent');

@@ -9,6 +9,7 @@ import { AuthProvider } from './contexts/auth';
 // Import all pages
 import Index from './pages/Index';
 import Auth from './pages/Auth';
+import AuthCallback from './pages/AuthCallback';
 import Dashboard from './pages/Dashboard';
 import Marketplace from './pages/Marketplace';
 import RequestAudit from './pages/RequestAudit';
@@ -97,6 +98,7 @@ function App() {
                   {/* Main pages */}
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<Auth />} />
+                  <Route path="/auth/callback" element={<AuthCallback />} />
                   <Route path="/marketplace" element={<Marketplace />} />
                   <Route path="/request-audit" element={<RequestAudit />} />
                   <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
