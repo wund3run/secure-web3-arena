@@ -19,7 +19,7 @@ import {
   PRICING_FEATURES_2025 
 } from '@/data/pricing-data';
 
-const Pricing = () => {
+const Pricing2025 = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
@@ -247,4 +247,4 @@ const Pricing = () => {
   );
 };
 
-export default Pricing;
+export default Pricing2025;
