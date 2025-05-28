@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './contexts/auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GlobalComponents } from './components/app/GlobalComponents';
@@ -18,26 +19,28 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <GlobalComponents />
-          <div className="min-h-screen bg-background font-sans antialiased">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/marketplace" element={<Marketplace />} />
-              <Route path="/audits" element={<Audits />} />
-              <Route path="/request-audit" element={<RequestAudit />} />
-              <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/tutorials" element={<Tutorials />} />
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              <Route path="/advanced-features" element={<AdvancedFeatures />} />
-            </Routes>
-          </div>
-        </AuthProvider>
-      </QueryClientProvider>
-    </BrowserRouter>
+    <HelmetProvider>
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <GlobalComponents />
+            <div className="min-h-screen bg-background font-sans antialiased">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/marketplace" element={<Marketplace />} />
+                <Route path="/audits" element={<Audits />} />
+                <Route path="/request-audit" element={<RequestAudit />} />
+                <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/tutorials" element={<Tutorials />} />
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/advanced-features" element={<AdvancedFeatures />} />
+              </Routes>
+            </div>
+          </AuthProvider>
+        </QueryClientProvider>
+      </BrowserRouter>
+    </HelmetProvider>
   );
 }
 
