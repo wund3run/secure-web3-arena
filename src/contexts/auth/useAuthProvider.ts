@@ -13,23 +13,34 @@ export function useAuthProvider() {
 
   const fetchUserProfile = useCallback(async (userId: string) => {
     try {
-      const { data, error } = await supabase
+      // Fetch extended profile
+      const { data: profileData, error: profileError } = await supabase
         .from('extended_profiles')
         .select('*')
         .eq('id', userId)
         .single();
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching user profile:', error);
+      if (profileError && profileError.code !== 'PGRST116') {
+        console.error('Error fetching user profile:', profileError);
         return;
       }
 
-      if (data) {
-        // Ensure user_type is properly typed
+      // Fetch user role from user_roles table
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('is_active', true)
+        .order('assigned_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (profileData) {
+        // Merge profile data with role data
         const typedProfile: UserProfile = {
-          ...data,
-          user_type: data.user_type as 'auditor' | 'project_owner' | 'admin' | undefined,
-          social_links: data.social_links as Record<string, string> | undefined
+          ...profileData,
+          user_type: roleData?.role as 'auditor' | 'project_owner' | 'admin' | undefined || profileData.user_type as 'auditor' | 'project_owner' | 'admin' | undefined,
+          social_links: profileData.social_links as Record<string, string> | undefined
         };
         setUserProfile(typedProfile);
       }

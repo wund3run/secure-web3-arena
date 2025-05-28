@@ -1,4 +1,3 @@
-
 import { User, UserProfile } from '@/contexts/auth/types';
 
 // Define user roles and permissions
@@ -30,19 +29,44 @@ export const routePermissions: RoutePermission[] = [
   { path: '/advanced-features', allowedRoles: ['auditor', 'project_owner', 'admin'], requiresAuth: true },
 ];
 
-// Get user role from profile
+// Get user role from profile or database
 export function getUserRole(user: User | null, userProfile: UserProfile | null): UserRole {
   if (!user) return 'general';
   
   // Check if admin (you can implement your own admin logic here)
   if (user.email?.endsWith('@hawkly.admin')) return 'admin';
   
-  // Return role from profile
+  // Return role from profile (this will be updated by the new role system)
   if (userProfile?.user_type === 'admin') return 'admin';
   if (userProfile?.user_type === 'auditor') return 'auditor';
   if (userProfile?.user_type === 'project_owner') return 'project_owner';
   
   return 'general';
+}
+
+// Enhanced function to get user role from database
+export async function getUserRoleFromDatabase(userId: string): Promise<UserRole> {
+  try {
+    const { supabase } = await import('@/integrations/supabase/client');
+    
+    const { data, error } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+      .eq('is_active', true)
+      .order('assigned_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error || !data) {
+      return 'general';
+    }
+
+    return data.role as UserRole;
+  } catch (error) {
+    console.error('Error fetching user role:', error);
+    return 'general';
+  }
 }
 
 // Check if user has access to route

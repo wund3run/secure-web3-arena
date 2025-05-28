@@ -9,6 +9,36 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_actions: {
+        Row: {
+          action_type: string
+          admin_id: string
+          created_at: string | null
+          details: Json | null
+          id: string
+          target_id: string
+          target_type: string
+        }
+        Insert: {
+          action_type: string
+          admin_id: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          target_id: string
+          target_type: string
+        }
+        Update: {
+          action_type?: string
+          admin_id?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          target_id?: string
+          target_type?: string
+        }
+        Relationships: []
+      }
       audit_log: {
         Row: {
           action: string
@@ -598,6 +628,33 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          id: string
+          is_active: boolean | null
+          role: Database["public"]["Enums"]["user_role"]
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          role?: Database["public"]["Enums"]["user_role"]
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          role?: Database["public"]["Enums"]["user_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -628,6 +685,14 @@ export type Database = {
         Args: Record<PropertyKey, never> | { user_id: number }
         Returns: undefined
       }
+      get_user_role: {
+        Args: { user_id: string }
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
+      is_admin: {
+        Args: { user_id: string }
+        Returns: boolean
+      }
       update_dispute_status: {
         Args: { dispute_id: string; new_status: string }
         Returns: undefined
@@ -648,6 +713,7 @@ export type Database = {
         | "refund"
         | "fee"
         | "dispute_resolution"
+      user_role: "admin" | "auditor" | "project_owner" | "general"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -779,6 +845,7 @@ export const Constants = {
         "fee",
         "dispute_resolution",
       ],
+      user_role: ["admin", "auditor", "project_owner", "general"],
     },
   },
 } as const
