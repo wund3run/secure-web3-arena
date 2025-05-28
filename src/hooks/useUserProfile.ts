@@ -42,14 +42,26 @@ export const useUserProfile = (userId?: string) => {
         profileUserId = user.id;
       }
 
-      const { data, error } = await supabase
-        .from('profiles')
+      // Try to get from extended_profiles first, then fallback to profiles
+      const { data: extendedProfile } = await supabase
+        .from('extended_profiles')
         .select('*')
         .eq('id', profileUserId)
         .single();
 
-      if (error && error.code !== 'PGRST116') throw error;
-      setProfile(data);
+      if (extendedProfile) {
+        setProfile(extendedProfile as UserProfile);
+      } else {
+        // Fallback to basic profiles table
+        const { data: basicProfile, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', profileUserId)
+          .single();
+
+        if (error && error.code !== 'PGRST116') throw error;
+        setProfile(basicProfile as UserProfile);
+      }
     } catch (err: any) {
       setError(err.message);
       console.error('Failed to fetch profile:', err);
@@ -63,18 +75,36 @@ export const useUserProfile = (userId?: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
-      const { data, error } = await supabase
-        .from('profiles')
+      // Try to update extended_profiles first
+      const { data: extendedData, error: extendedError } = await supabase
+        .from('extended_profiles')
         .update(updates)
         .eq('id', user.id)
         .select()
         .single();
 
-      if (error) throw error;
+      if (extendedError) {
+        // Fallback to basic profiles
+        const { data, error } = await supabase
+          .from('profiles')
+          .update({
+            full_name: updates.full_name,
+            avatar_url: updates.avatar_url,
+            wallet_address: updates.wallet_address,
+            is_arbitrator: updates.is_arbitrator
+          })
+          .eq('id', user.id)
+          .select()
+          .single();
+
+        if (error) throw error;
+        setProfile(data as UserProfile);
+      } else {
+        setProfile(extendedData as UserProfile);
+      }
       
-      setProfile(data);
       toast.success('Profile updated successfully');
-      return data;
+      return profile;
     } catch (err: any) {
       toast.error('Failed to update profile');
       throw err;
@@ -86,8 +116,9 @@ export const useUserProfile = (userId?: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
-      const { data, error } = await supabase
-        .from('profiles')
+      // Try to create in extended_profiles first
+      const { data: extendedData, error: extendedError } = await supabase
+        .from('extended_profiles')
         .insert({
           id: user.id,
           ...profileData,
@@ -95,11 +126,28 @@ export const useUserProfile = (userId?: string) => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (extendedError) {
+        // Fallback to basic profiles
+        const { data, error } = await supabase
+          .from('profiles')
+          .insert({
+            id: user.id,
+            full_name: profileData.full_name,
+            avatar_url: profileData.avatar_url,
+            wallet_address: profileData.wallet_address,
+            is_arbitrator: profileData.is_arbitrator || false
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+        setProfile(data as UserProfile);
+      } else {
+        setProfile(extendedData as UserProfile);
+      }
       
-      setProfile(data);
       toast.success('Profile created successfully');
-      return data;
+      return profile;
     } catch (err: any) {
       toast.error('Failed to create profile');
       throw err;

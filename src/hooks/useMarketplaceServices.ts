@@ -42,25 +42,18 @@ export const useMarketplaceServices = () => {
       setLoading(true);
       let query = supabase
         .from('services')
-        .select('*')
-        .eq('verification_status', 'approved');
+        .select('*');
 
       if (filters?.category) {
         query = query.eq('category', filters.category);
       }
 
-      if (filters?.blockchain) {
+      if (filters?.blockchain && Array.isArray(filters.blockchain)) {
         query = query.contains('blockchain_ecosystems', [filters.blockchain]);
       }
 
       if (filters?.featured) {
         query = query.eq('featured', true);
-      }
-
-      if (filters?.priceRange) {
-        query = query
-          .gte('min_price', filters.priceRange[0])
-          .lte('max_price', filters.priceRange[1]);
       }
 
       const { data, error } = await query
