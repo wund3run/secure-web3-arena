@@ -73,7 +73,7 @@ const AuthCallback = () => {
   }, [navigate]);
 
   return (
-    <AuthLayout title="Authenticating | Hawkly" description="Completing your authentication">
+    <AuthLayout>
       <div className="flex flex-col items-center justify-center p-8 bg-white/80 rounded-lg border border-border/40 shadow-sm backdrop-blur-sm">
         {error ? (
           <>
