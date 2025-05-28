@@ -47,7 +47,8 @@ export default defineConfig(({ mode }) => ({
     },
     chunkSizeWarningLimit: 1000,
     minify: 'esbuild', // Faster minification
-    cssMinify: 'esbuild'
+    cssMinify: 'esbuild',
+    assetsInlineLimit: 4096, // Inline small assets
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom'],
@@ -57,5 +58,10 @@ export default defineConfig(({ mode }) => ({
   assetsInclude: ['**/*.svg'], // Ensure SVGs are properly handled
   css: {
     devSourcemap: mode === 'development'
+  },
+  esbuild: {
+    target: 'esnext',
+    format: 'esm',
+    platform: 'browser'
   }
 }));
