@@ -87,26 +87,69 @@ export const useEnhancedAIMatching = () => {
     setIsAnalyzing(true);
     
     try {
-      // Call the enhanced AI matching service
-      const { data, error } = await supabase.functions.invoke('enhanced-ai-matching', {
-        body: {
-          criteria,
-          include_performance_analytics: true,
-          include_market_insights: true,
+      // For now, we'll create mock enhanced results since the full AI system isn't implemented
+      const mockAuditors: EnhancedAuditorProfile[] = [
+        {
+          id: '1',
+          name: 'Alice Security Expert',
+          expertise: ['Solidity', 'DeFi', criteria.blockchain],
+          experience_years: 5,
+          rating: 4.8,
+          hourly_rate: 150,
+          availability: 'available',
+          specializations: [criteria.project_type, 'Smart Contracts'],
+          past_audits: 50,
+          success_rate: 0.96,
+          workload_capacity: 100,
+          current_workload: 20,
+          timezone: 'UTC-5',
+          languages: ['English', 'Spanish'],
+          certifications: ['Certified Ethereum Developer', 'Security+'],
+          performance_score: 95,
+          response_time_avg: 2,
+          quality_rating: 4.9,
+          completion_rate: 0.98,
+          geographic_preferences: ['North America', 'Europe'],
+          preferred_project_sizes: ['medium', 'large'],
+          minimum_budget: 5000,
+          maximum_concurrent_audits: 3,
         },
-      });
+        {
+          id: '2',
+          name: 'Bob Audit Master',
+          expertise: ['Rust', 'Solana', 'Security'],
+          experience_years: 7,
+          rating: 4.6,
+          hourly_rate: 200,
+          availability: 'busy',
+          specializations: ['DeFi', 'NFT'],
+          past_audits: 75,
+          success_rate: 0.94,
+          workload_capacity: 80,
+          current_workload: 60,
+          timezone: 'UTC+1',
+          languages: ['English', 'German'],
+          certifications: ['Rust Expert', 'Blockchain Security'],
+          performance_score: 88,
+          response_time_avg: 4,
+          quality_rating: 4.7,
+          completion_rate: 0.95,
+          geographic_preferences: ['Europe', 'Asia'],
+          preferred_project_sizes: ['large', 'enterprise'],
+          minimum_budget: 10000,
+          maximum_concurrent_audits: 2,
+        },
+      ];
 
-      if (error) throw error;
-
-      const enhancedResults: EnhancedMatchingResult[] = data.matches.map((match: any) => {
+      const enhancedResults: EnhancedMatchingResult[] = mockAuditors.map((auditor) => {
         // Calculate compatibility breakdown
-        const technicalFit = calculateTechnicalFit(match.auditor, criteria);
-        const availabilityScore = calculateAvailabilityScore(match.auditor, criteria);
-        const experienceMatch = calculateExperienceMatch(match.auditor, criteria);
-        const budgetCompatibility = calculateBudgetCompatibility(match.auditor, criteria);
-        const timezoneAlignment = calculateTimezoneAlignment(match.auditor, criteria);
-        const qualityScore = match.auditor.quality_rating;
-        const workloadFeasibility = calculateWorkloadFeasibility(match.auditor);
+        const technicalFit = calculateTechnicalFit(auditor, criteria);
+        const availabilityScore = calculateAvailabilityScore(auditor, criteria);
+        const experienceMatch = calculateExperienceMatch(auditor, criteria);
+        const budgetCompatibility = calculateBudgetCompatibility(auditor, criteria);
+        const timezoneAlignment = calculateTimezoneAlignment(auditor, criteria);
+        const qualityScore = auditor.quality_rating / 5.0;
+        const workloadFeasibility = calculateWorkloadFeasibility(auditor);
 
         const overallScore = (
           technicalFit * 0.25 +
@@ -119,7 +162,7 @@ export const useEnhancedAIMatching = () => {
         );
 
         // Generate insights and concerns
-        const reasons = generateMatchReasons(match.auditor, criteria, {
+        const reasons = generateMatchReasons(auditor, criteria, {
           technicalFit,
           availabilityScore,
           experienceMatch,
@@ -129,10 +172,10 @@ export const useEnhancedAIMatching = () => {
           workloadFeasibility,
         });
 
-        const concerns = generateMatchConcerns(match.auditor, criteria);
+        const concerns = generateMatchConcerns(auditor, criteria);
 
         return {
-          auditor: match.auditor,
+          auditor,
           match_score: overallScore,
           compatibility_breakdown: {
             technical_fit: technicalFit,
@@ -145,8 +188,8 @@ export const useEnhancedAIMatching = () => {
           },
           reasons,
           concerns,
-          estimated_cost: match.auditor.hourly_rate * estimateProjectHours(criteria),
-          estimated_timeline: estimateTimeline(match.auditor, criteria),
+          estimated_cost: auditor.hourly_rate * estimateProjectHours(criteria),
+          estimated_timeline: estimateTimeline(auditor, criteria),
           confidence_level: overallScore >= 0.8 ? 'high' : overallScore >= 0.6 ? 'medium' : 'low',
           recommended_action: getRecommendedAction(overallScore, concerns.length),
         };
@@ -155,7 +198,13 @@ export const useEnhancedAIMatching = () => {
       const sortedResults = enhancedResults.sort((a, b) => b.match_score - a.match_score);
       
       setDetailedResults(sortedResults);
-      setMatchingInsights(data.insights);
+      setMatchingInsights({
+        total_auditors_evaluated: mockAuditors.length,
+        filtering_criteria_applied: ['experience', 'blockchain_expertise', 'availability'],
+        market_demand_level: 'medium',
+        average_response_time: 3,
+        success_prediction: 0.92,
+      });
       
       toast.success(`Found ${sortedResults.length} potential matches with detailed analysis`);
       return sortedResults;
@@ -170,34 +219,25 @@ export const useEnhancedAIMatching = () => {
 
   // Helper functions for scoring
   const calculateTechnicalFit = (auditor: EnhancedAuditorProfile, criteria: EnhancedMatchingCriteria): number => {
-    let score = 0.5; // Base score
-
-    // Blockchain expertise
+    let score = 0.5;
     if (auditor.expertise.some(exp => exp.toLowerCase().includes(criteria.blockchain.toLowerCase()))) {
       score += 0.3;
     }
-
-    // Project type alignment
     if (auditor.specializations.some(spec => spec.toLowerCase().includes(criteria.project_type.toLowerCase()))) {
       score += 0.2;
     }
-
-    // Required certifications
     if (criteria.required_certifications?.length) {
       const certificationMatch = criteria.required_certifications.filter(cert =>
         auditor.certifications.includes(cert)
       ).length / criteria.required_certifications.length;
       score += certificationMatch * 0.2;
     }
-
     return Math.min(score, 1.0);
   };
 
   const calculateAvailabilityScore = (auditor: EnhancedAuditorProfile, criteria: EnhancedMatchingCriteria): number => {
     if (auditor.availability === 'unavailable') return 0;
     if (auditor.availability === 'available') return 1.0;
-    
-    // For 'busy' auditors, check workload capacity
     const workloadRatio = auditor.current_workload / auditor.workload_capacity;
     return Math.max(0, 1 - workloadRatio);
   };
@@ -210,105 +250,71 @@ export const useEnhancedAIMatching = () => {
   const calculateBudgetCompatibility = (auditor: EnhancedAuditorProfile, criteria: EnhancedMatchingCriteria): number => {
     const estimatedCost = auditor.hourly_rate * estimateProjectHours(criteria);
     const [minBudget, maxBudget] = criteria.budget_range;
-    
-    if (estimatedCost < minBudget) return 0.5; // Suspiciously low
-    if (estimatedCost > maxBudget) return 0; // Over budget
-    if (estimatedCost <= maxBudget * 0.8) return 1.0; // Well within budget
-    return 0.7; // At upper limit
+    if (estimatedCost < minBudget) return 0.5;
+    if (estimatedCost > maxBudget) return 0;
+    if (estimatedCost <= maxBudget * 0.8) return 1.0;
+    return 0.7;
   };
 
   const calculateTimezoneAlignment = (auditor: EnhancedAuditorProfile, criteria: EnhancedMatchingCriteria): number => {
-    if (!criteria.preferred_timezone) return 0.8; // Neutral if no preference
-    
-    // Simplified timezone matching (in real implementation, use proper timezone library)
+    if (!criteria.preferred_timezone) return 0.8;
     const timezoneMatch = auditor.timezone === criteria.preferred_timezone;
     return timezoneMatch ? 1.0 : 0.3;
   };
 
   const calculateWorkloadFeasibility = (auditor: EnhancedAuditorProfile): number => {
     if (auditor.current_workload >= auditor.maximum_concurrent_audits) return 0;
-    
     const workloadRatio = auditor.current_workload / auditor.maximum_concurrent_audits;
     return 1 - workloadRatio;
   };
 
   const estimateProjectHours = (criteria: EnhancedMatchingCriteria): number => {
-    const baseHours = {
-      'small': 40,
-      'medium': 80,
-      'large': 160,
-      'enterprise': 320,
-    };
-    
-    const complexityMultiplier = {
-      'low': 0.8,
-      'medium': 1.0,
-      'high': 1.5,
-    };
-    
+    const baseHours = { 'small': 40, 'medium': 80, 'large': 160, 'enterprise': 320 };
+    const complexityMultiplier = { 'low': 0.8, 'medium': 1.0, 'high': 1.5 };
     return (baseHours[criteria.project_size] || 80) * complexityMultiplier[criteria.complexity];
   };
 
   const estimateTimeline = (auditor: EnhancedAuditorProfile, criteria: EnhancedMatchingCriteria): string => {
     const hours = estimateProjectHours(criteria);
-    const workingHoursPerDay = 6; // Assuming 6 productive hours per day
+    const workingHoursPerDay = 6;
     const days = Math.ceil(hours / workingHoursPerDay);
-    
     if (auditor.availability === 'busy') {
       return `${Math.ceil(days * 1.5)} days`;
     }
-    
     return `${days} days`;
   };
 
-  const generateMatchReasons = (
-    auditor: EnhancedAuditorProfile,
-    criteria: EnhancedMatchingCriteria,
-    scores: any
-  ): string[] => {
+  const generateMatchReasons = (auditor: EnhancedAuditorProfile, criteria: EnhancedMatchingCriteria, scores: any): string[] => {
     const reasons = [];
-    
     if (scores.technicalFit > 0.8) {
       reasons.push(`Strong technical expertise in ${criteria.blockchain}`);
     }
-    
     if (auditor.rating >= 4.8) {
       reasons.push(`Excellent rating (${auditor.rating}/5.0)`);
     }
-    
     if (auditor.success_rate > 0.95) {
       reasons.push(`High success rate (${(auditor.success_rate * 100).toFixed(1)}%)`);
     }
-    
     if (scores.availabilityScore === 1.0) {
       reasons.push('Currently available');
     }
-    
     if (auditor.response_time_avg < 2) {
       reasons.push('Fast response time');
     }
-    
     return reasons;
   };
 
-  const generateMatchConcerns = (
-    auditor: EnhancedAuditorProfile,
-    criteria: EnhancedMatchingCriteria
-  ): string[] => {
+  const generateMatchConcerns = (auditor: EnhancedAuditorProfile, criteria: EnhancedMatchingCriteria): string[] => {
     const concerns = [];
-    
     if (auditor.current_workload / auditor.workload_capacity > 0.8) {
       concerns.push('High current workload');
     }
-    
     if (auditor.response_time_avg > 8) {
       concerns.push('Slower response time than average');
     }
-    
     if (auditor.rating < criteria.quality_threshold) {
       concerns.push('Rating below quality threshold');
     }
-    
     return concerns;
   };
 
