@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -34,30 +33,47 @@ export function AdminActionLog() {
     try {
       setIsLoading(true);
       
-      // Fetch admin actions with admin profile information
+      // Fetch admin actions first
       const { data: adminActions, error: actionsError } = await supabase
         .from('admin_actions')
-        .select(`
-          *,
-          extended_profiles!admin_id (
-            full_name
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false })
         .limit(50);
 
       if (actionsError) throw actionsError;
 
-      const transformedActions: AdminAction[] = adminActions?.map(action => ({
-        id: action.id,
-        admin_id: action.admin_id,
-        admin_name: action.extended_profiles?.full_name || 'Unknown Admin',
-        action_type: action.action_type,
-        target_type: action.target_type,
-        target_id: action.target_id,
-        details: action.details,
-        created_at: action.created_at
-      })) || [];
+      if (!adminActions || adminActions.length === 0) {
+        setActions([]);
+        return;
+      }
+
+      // Get unique admin IDs
+      const adminIds = [...new Set(adminActions.map(action => action.admin_id))];
+      
+      // Fetch admin profiles separately
+      const { data: profiles, error: profilesError } = await supabase
+        .from('extended_profiles')
+        .select('id, full_name')
+        .in('id', adminIds);
+
+      if (profilesError) {
+        console.error('Error fetching profiles:', profilesError);
+      }
+
+      // Combine the data
+      const transformedActions: AdminAction[] = adminActions.map(action => {
+        const profile = profiles?.find(p => p.id === action.admin_id);
+        return {
+          id: action.id,
+          admin_id: action.admin_id,
+          admin_name: profile?.full_name || 'Unknown Admin',
+          action_type: action.action_type,
+          target_type: action.target_type,
+          target_id: action.target_id,
+          details: action.details,
+          created_at: action.created_at
+        };
+      });
 
       setActions(transformedActions);
     } catch (error: any) {

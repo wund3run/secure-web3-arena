@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,33 +46,62 @@ export function AdminServiceApproval() {
     try {
       setIsLoading(true);
       
-      // Fetch services with provider information
+      // Fetch services first
       const { data: services, error: servicesError } = await supabase
         .from('services')
-        .select(`
-          *,
-          extended_profiles!provider_id (
-            full_name
-          )
-        `);
+        .select('*');
 
       if (servicesError) throw servicesError;
 
+      if (!services || services.length === 0) {
+        setPendingServices([]);
+        setApprovedServices([]);
+        setRejectedServices([]);
+        return;
+      }
+
+      // Get unique provider IDs
+      const providerIds = [...new Set(services.map(service => service.provider_id))];
+      
+      // Fetch provider profiles separately
+      const { data: profiles, error: profilesError } = await supabase
+        .from('extended_profiles')
+        .select('id, full_name')
+        .in('id', providerIds);
+
+      if (profilesError) {
+        console.error('Error fetching profiles:', profilesError);
+      }
+
       // Transform the data to match our interface
-      const transformedServices: ServiceSubmission[] = services?.map(service => ({
-        id: service.id,
-        title: service.title,
-        category: service.category,
-        provider_id: service.provider_id,
-        provider_name: service.extended_profiles?.full_name || 'Unknown Provider',
-        created_at: service.created_at,
-        verification_status: (service as any).verification_status || 'pending',
-        blockchain_ecosystems: service.blockchain_ecosystems || [],
-        description: service.description,
-        delivery_time: service.delivery_time || 0,
-        price_range: service.price_range || { min: 0, max: 0 },
-        portfolio_link: (service as any).portfolio_link
-      })) || [];
+      const transformedServices: ServiceSubmission[] = services.map(service => {
+        const profile = profiles?.find(p => p.id === service.provider_id);
+        
+        // Handle price_range type conversion
+        let priceRange = { min: 0, max: 0 };
+        if (service.price_range && typeof service.price_range === 'object') {
+          const range = service.price_range as any;
+          priceRange = {
+            min: typeof range.min === 'number' ? range.min : 0,
+            max: typeof range.max === 'number' ? range.max : 0
+          };
+        }
+
+        return {
+          id: service.id,
+          title: service.title,
+          category: service.category,
+          provider_id: service.provider_id,
+          provider_name: profile?.full_name || 'Unknown Provider',
+          created_at: service.created_at,
+          verification_status: (service as any).verification_status || 'pending',
+          blockchain_ecosystems: service.blockchain_ecosystems || [],
+          description: service.description,
+          delivery_time: service.delivery_time || 0,
+          price_range: priceRange,
+          portfolio_link: (service as any).portfolio_link
+        };
+      });
 
       // Filter services by status
       setPendingServices(transformedServices.filter(s => s.verification_status === 'pending'));
