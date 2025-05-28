@@ -42,7 +42,7 @@ export const useEnhancedAuth = () => {
           user: session?.user ?? null,
           session,
           loading: false,
-          verificationPending: event === 'SIGNED_UP' && !session?.user?.email_confirmed_at,
+          verificationPending: event === 'SIGNED_IN' && !session?.user?.email_confirmed_at,
         }));
 
         if (event === 'SIGNED_IN') {

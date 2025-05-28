@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { PageMeta } from '@/components/seo/PageMeta';
-import { Mail, Shield, Clock, Truck, FileText, Lock } from 'lucide-react';
+import { Mail, Shield, Clock, Truck, FileText, Lock, Users, Settings, BarChart3, Award, BookOpen, MessageCircle, Calendar, Trophy, Zap, HeadphonesIcon, Code, Search, Building, Activity, DollarSign, AlertTriangle, Database, UserCheck, PieChart, ClipboardList, HelpCircle, Lightbulb } from 'lucide-react';
 
 export function Terms() {
   return (
@@ -741,6 +741,818 @@ export function Contact() {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function Achievements() {
+  return (
+    <>
+      <PageMeta
+        title="Achievements"
+        description="Track your achievements and progress on the Hawkly platform."
+        keywords={['achievements', 'progress', 'web3', 'security']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <Award className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Achievements</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Track your progress and unlock achievements as you participate in Web3 security.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Coming soon - Achievement system in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function AdminAudits() {
+  return (
+    <>
+      <PageMeta
+        title="Admin - Audit Management"
+        description="Administrative interface for managing audits on the Hawkly platform."
+        keywords={['admin', 'audits', 'management', 'web3']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <ClipboardList className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Audit Management</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Administrative tools for managing platform audits.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Admin panel in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function AdminDashboard() {
+  return (
+    <>
+      <PageMeta
+        title="Admin Dashboard"
+        description="Administrative dashboard for the Hawkly platform."
+        keywords={['admin', 'dashboard', 'management', 'web3']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <BarChart3 className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Admin Dashboard</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Administrative overview and platform management.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Admin dashboard in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function AdminDisputes() {
+  return (
+    <>
+      <PageMeta
+        title="Admin - Dispute Management"
+        description="Administrative interface for managing disputes on the Hawkly platform."
+        keywords={['admin', 'disputes', 'management', 'arbitration']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <AlertTriangle className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Dispute Management</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Administrative tools for managing platform disputes.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Dispute management in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function AdminFinance() {
+  return (
+    <>
+      <PageMeta
+        title="Admin - Finance Management"
+        description="Administrative interface for managing finances on the Hawkly platform."
+        keywords={['admin', 'finance', 'payments', 'revenue']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <DollarSign className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Finance Management</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Administrative tools for managing platform finances.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Finance management in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function AdminProviders() {
+  return (
+    <>
+      <PageMeta
+        title="Admin - Provider Management"
+        description="Administrative interface for managing service providers on the Hawkly platform."
+        keywords={['admin', 'providers', 'auditors', 'management']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <UserCheck className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Provider Management</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Administrative tools for managing service providers.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Provider management in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function AdminReports() {
+  return (
+    <>
+      <PageMeta
+        title="Admin - Reports"
+        description="Administrative reports and analytics for the Hawkly platform."
+        keywords={['admin', 'reports', 'analytics', 'statistics']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <PieChart className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Reports & Analytics</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Administrative reports and platform analytics.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Reports system in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function AdminSecurity() {
+  return (
+    <>
+      <PageMeta
+        title="Admin - Security Management"
+        description="Administrative interface for managing platform security on Hawkly."
+        keywords={['admin', 'security', 'management', 'platform']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <Shield className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Security Management</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Administrative tools for managing platform security.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Security management in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function AdminServices() {
+  return (
+    <>
+      <PageMeta
+        title="Admin - Service Management"
+        description="Administrative interface for managing services on the Hawkly platform."
+        keywords={['admin', 'services', 'management', 'marketplace']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <Settings className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Service Management</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Administrative tools for managing marketplace services.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Service management in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function AdminSettings() {
+  return (
+    <>
+      <PageMeta
+        title="Admin - Platform Settings"
+        description="Administrative settings for the Hawkly platform."
+        keywords={['admin', 'settings', 'configuration', 'platform']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <Settings className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Platform Settings</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Administrative settings and configuration.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Settings panel in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function AdminUsers() {
+  return (
+    <>
+      <PageMeta
+        title="Admin - User Management"
+        description="Administrative interface for managing users on the Hawkly platform."
+        keywords={['admin', 'users', 'management', 'accounts']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <Users className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">User Management</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Administrative tools for managing platform users.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">User management in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function AuditGuidelines() {
+  return (
+    <>
+      <PageMeta
+        title="Audit Guidelines"
+        description="Guidelines and best practices for conducting security audits on Hawkly."
+        keywords={['audit', 'guidelines', 'security', 'best practices']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <BookOpen className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Audit Guidelines</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Comprehensive guidelines for conducting security audits.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Audit guidelines in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function AuditorDashboard() {
+  return (
+    <>
+      <PageMeta
+        title="Auditor Dashboard"
+        description="Dashboard for security auditors on the Hawkly platform."
+        keywords={['auditor', 'dashboard', 'security', 'projects']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <Activity className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Auditor Dashboard</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Your personalized auditor workspace.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Auditor dashboard in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function Blog() {
+  return (
+    <>
+      <PageMeta
+        title="Blog"
+        description="Latest insights, news, and updates from the Hawkly team."
+        keywords={['blog', 'news', 'web3', 'security', 'insights']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <FileText className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Blog</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Latest insights and updates from the Web3 security community.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Blog coming soon</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function Challenges() {
+  return (
+    <>
+      <PageMeta
+        title="Security Challenges"
+        description="Participate in Web3 security challenges and competitions on Hawkly."
+        keywords={['challenges', 'competitions', 'security', 'web3']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <Zap className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Security Challenges</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Test your skills with Web3 security challenges and competitions.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Challenges platform in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function ContactProvider() {
+  return (
+    <>
+      <PageMeta
+        title="Contact Provider"
+        description="Contact a security service provider on the Hawkly platform."
+        keywords={['contact', 'provider', 'auditor', 'communication']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <Mail className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Contact Provider</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Get in touch with security service providers.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Provider contact system in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function Docs() {
+  return (
+    <>
+      <PageMeta
+        title="Documentation"
+        description="Comprehensive documentation for the Hawkly Web3 security platform."
+        keywords={['documentation', 'guides', 'api', 'web3', 'security']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <BookOpen className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Documentation</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Complete guides and API documentation for developers and users.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Documentation in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function Events() {
+  return (
+    <>
+      <PageMeta
+        title="Events"
+        description="Upcoming Web3 security events, conferences, and workshops."
+        keywords={['events', 'conferences', 'workshops', 'web3', 'security']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <Calendar className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Events</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Stay updated on Web3 security events and community gatherings.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Events calendar coming soon</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function FAQ() {
+  return (
+    <>
+      <PageMeta
+        title="Frequently Asked Questions"
+        description="Find answers to common questions about the Hawkly platform."
+        keywords={['faq', 'questions', 'help', 'support', 'answers']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <HelpCircle className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Frequently Asked Questions</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Find answers to common questions about our platform.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">FAQ section in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function Forum() {
+  return (
+    <>
+      <PageMeta
+        title="Community Forum"
+        description="Join the Hawkly community forum for Web3 security discussions."
+        keywords={['forum', 'community', 'discussions', 'web3', 'security']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <MessageCircle className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Community Forum</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Connect with the Web3 security community.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Community forum coming soon</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function Leaderboard() {
+  return (
+    <>
+      <PageMeta
+        title="Leaderboard"
+        description="Top performers and rankings in the Hawkly Web3 security community."
+        keywords={['leaderboard', 'rankings', 'top performers', 'community']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <Trophy className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Leaderboard</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Top performers in the Web3 security community.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Leaderboard system in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function PlatformReport() {
+  return (
+    <>
+      <PageMeta
+        title="Platform Report"
+        description="Comprehensive platform statistics and performance reports."
+        keywords={['platform', 'report', 'statistics', 'performance']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <BarChart3 className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Platform Report</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Comprehensive platform statistics and insights.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Platform reports coming soon</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function ProjectDashboard() {
+  return (
+    <>
+      <PageMeta
+        title="Project Dashboard"
+        description="Dashboard for project owners on the Hawkly platform."
+        keywords={['project', 'dashboard', 'owner', 'management']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <Building className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Project Dashboard</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Manage your projects and security audits.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Project dashboard in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function SecurityInsights() {
+  return (
+    <>
+      <PageMeta
+        title="Security Insights"
+        description="Web3 security insights, trends, and analysis from the Hawkly platform."
+        keywords={['security', 'insights', 'trends', 'analysis', 'web3']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <Lightbulb className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Security Insights</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Web3 security trends, insights, and analysis.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Security insights coming soon</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function SubmitService() {
+  return (
+    <>
+      <PageMeta
+        title="Submit Service"
+        description="Submit your security service to the Hawkly marketplace."
+        keywords={['submit', 'service', 'marketplace', 'auditor']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <Code className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Submit Service</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Add your security service to our marketplace.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Service submission in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function Support() {
+  return (
+    <>
+      <PageMeta
+        title="Support"
+        description="Get support and help with the Hawkly platform."
+        keywords={['support', 'help', 'assistance', 'contact']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <HeadphonesIcon className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Support</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Get help and support for using the Hawkly platform.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Support center in development</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function Templates() {
+  return (
+    <>
+      <PageMeta
+        title="Security Templates"
+        description="Security audit templates and frameworks for Web3 projects."
+        keywords={['templates', 'security', 'audit', 'frameworks']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <FileText className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Security Templates</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Ready-to-use security audit templates and frameworks.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Templates library coming soon</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function Tutorials() {
+  return (
+    <>
+      <PageMeta
+        title="Tutorials"
+        description="Learn Web3 security with step-by-step tutorials and guides."
+        keywords={['tutorials', 'learning', 'web3', 'security', 'guides']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <BookOpen className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">Tutorials</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Learn Web3 security with comprehensive tutorials.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">Tutorials coming soon</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+export function UserDashboard() {
+  return (
+    <>
+      <PageMeta
+        title="User Dashboard"
+        description="Your personal dashboard on the Hawkly platform."
+        keywords={['dashboard', 'user', 'profile', 'projects']}
+      />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center mb-6">
+              <Users className="h-8 w-8 text-primary mr-3" />
+              <h1 className="text-4xl font-bold">User Dashboard</h1>
+            </div>
+            <p className="text-muted-foreground mb-8">Your personalized dashboard and account overview.</p>
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">User dashboard in development</p>
             </div>
           </div>
         </main>
