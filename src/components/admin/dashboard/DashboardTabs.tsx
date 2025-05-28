@@ -1,54 +1,37 @@
 
-import React from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AdminOverview } from './AdminOverview';
-import { UserManagement } from '../UserManagement';
-import { AuditManagement } from '../AuditManagement';
-import { SystemAnalytics } from '../SystemAnalytics';
-import { PlatformReports } from '../PlatformReports';
-import { SystemSettings } from '../SystemSettings';
-import { DashboardTabValue } from './types';
-
-interface DashboardTabsProps {
-  activeTab: DashboardTabValue;
-  onTabChange: (tab: DashboardTabValue) => void;
-}
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TabsContent } from "./TabsContent";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { DashboardTabsProps } from "./types";
 
 export function DashboardTabs({ activeTab, onTabChange }: DashboardTabsProps) {
+  const location = useLocation();
+  
+  useEffect(() => {
+    // Check for URL params indicating which tab to show
+    const params = new URLSearchParams(location.search);
+    const showPlatformReport = params.get("showPlatformReport") === "true";
+    
+    if (showPlatformReport && activeTab !== "reports") {
+      onTabChange("reports");
+    }
+  }, [location.search, activeTab, onTabChange]);
+  
   return (
-    <Tabs value={activeTab} onValueChange={onTabChange}>
-      <TabsList className="grid w-full grid-cols-6 mb-6">
+    <Tabs value={activeTab} onValueChange={onTabChange as any} className="space-y-4">
+      <TabsList className="grid grid-cols-8 gap-2">
         <TabsTrigger value="dashboard">Overview</TabsTrigger>
         <TabsTrigger value="users">Users</TabsTrigger>
+        <TabsTrigger value="services">Services</TabsTrigger>
         <TabsTrigger value="audits">Audits</TabsTrigger>
-        <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        <TabsTrigger value="providers">Providers</TabsTrigger>
+        <TabsTrigger value="approvals">Approvals</TabsTrigger>
         <TabsTrigger value="reports">Reports</TabsTrigger>
         <TabsTrigger value="settings">Settings</TabsTrigger>
       </TabsList>
-
-      <TabsContent value="dashboard">
-        <AdminOverview />
-      </TabsContent>
-
-      <TabsContent value="users">
-        <UserManagement />
-      </TabsContent>
-
-      <TabsContent value="audits">
-        <AuditManagement />
-      </TabsContent>
-
-      <TabsContent value="analytics">
-        <SystemAnalytics />
-      </TabsContent>
-
-      <TabsContent value="reports">
-        <PlatformReports />
-      </TabsContent>
-
-      <TabsContent value="settings">
-        <SystemSettings />
-      </TabsContent>
+      
+      <TabsContent activeTab={activeTab} />
     </Tabs>
   );
 }

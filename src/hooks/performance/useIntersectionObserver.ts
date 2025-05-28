@@ -1,22 +1,20 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-interface UseIntersectionObserverProps {
-  threshold?: number | number[];
-  root?: Element | null;
+interface UseIntersectionObserverOptions {
+  threshold?: number;
   rootMargin?: string;
   triggerOnce?: boolean;
 }
 
-export function useIntersectionObserver<T extends Element>({
-  threshold = 0,
-  root = null,
-  rootMargin = '0px',
-  triggerOnce = false
-}: UseIntersectionObserverProps = {}) {
+export function useIntersectionObserver<T extends HTMLElement = HTMLDivElement>(
+  options: UseIntersectionObserverOptions = {}
+) {
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [hasIntersected, setHasIntersected] = useState(false);
   const targetRef = useRef<T>(null);
+
+  const { threshold = 0.1, rootMargin = '0px', triggerOnce = false } = options;
 
   useEffect(() => {
     const target = targetRef.current;
@@ -35,11 +33,7 @@ export function useIntersectionObserver<T extends Element>({
           observer.unobserve(target);
         }
       },
-      {
-        threshold,
-        root,
-        rootMargin
-      }
+      { threshold, rootMargin }
     );
 
     observer.observe(target);
@@ -47,7 +41,7 @@ export function useIntersectionObserver<T extends Element>({
     return () => {
       observer.unobserve(target);
     };
-  }, [threshold, root, rootMargin, triggerOnce, hasIntersected]);
+  }, [threshold, rootMargin, triggerOnce, hasIntersected]);
 
   return {
     targetRef,

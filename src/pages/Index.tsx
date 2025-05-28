@@ -1,4 +1,3 @@
-
 import React, { Suspense, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Navbar } from "@/components/layout/navbar";
@@ -40,10 +39,9 @@ const QuickStartSection = React.lazy(() =>
   }))
 );
 
-// Import the updated 2025 pricing component
-const PricingPreview2025 = React.lazy(() => 
-  import("@/components/home/pricing-preview-2025").then(module => ({
-    default: module.PricingPreview2025
+const PricingPreview = React.lazy(() => 
+  import("@/components/home/pricing-preview").then(module => ({
+    default: module.PricingPreview
   }))
 );
 
@@ -133,12 +131,12 @@ export default function Index() {
   return (
     <>
       <Helmet>
-        <title>Hawkly | Revolutionary Web3 Security Platform 2025</title>
+        <title>Hawkly | Next-Generation Web3 Security Platform</title>
         <meta
           name="description"
-          content="The next-generation Web3 security marketplace. AI-enhanced auditor matching, smart contract escrow, and continuous monitoring. 70% more affordable, 80% faster than traditional audit firms."
+          content="The leading Web3 security marketplace. AI-powered auditor matching, smart contract escrow, and continuous monitoring. Faster, more secure, more affordable than traditional audit firms."
         />
-        <meta name="keywords" content="web3 security 2025, smart contract audit, AI security, blockchain audit, DeFi security, NFT audit, crypto security" />
+        <meta name="keywords" content="web3 security, smart contract audit, blockchain security, DeFi audit, NFT security, crypto audit" />
         
         {/* Performance optimizations */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -201,7 +199,7 @@ export default function Index() {
           </LazySection>
           
           <LazySection fallback={<SectionLoadingFallback />}>
-            <PricingPreview2025 />
+            <PricingPreview />
           </LazySection>
           
           <LazySection fallback={<SectionLoadingFallback height="h-80" />}>

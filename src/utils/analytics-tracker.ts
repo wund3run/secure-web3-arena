@@ -1,34 +1,24 @@
-// Advanced analytics tracking system
-import { toast } from "sonner";
-
 interface AnalyticsEvent {
   event: string;
   category: string;
   action: string;
-  properties?: Record<string, any>;
+  label?: string;
+  value?: number;
+  user_type?: string;
+  page: string;
   timestamp: number;
-  userId?: string;
-  sessionId: string;
-}
-
-interface UserJourney {
-  step: string;
-  timestamp: number;
-  duration?: number;
-  metadata?: Record<string, any>;
+  session_id: string;
 }
 
 class AnalyticsTracker {
   private static instance: AnalyticsTracker;
-  private events: AnalyticsEvent[] = [];
-  private journey: UserJourney[] = [];
   private sessionId: string;
-  private userId?: string;
-  private isEnabled: boolean = true;
+  private events: AnalyticsEvent[] = [];
+  private userType: string | null = null;
 
   constructor() {
     this.sessionId = this.generateSessionId();
-    this.initializeSession();
+    this.initializeTracking();
   }
 
   static getInstance(): AnalyticsTracker {
@@ -42,247 +32,189 @@ class AnalyticsTracker {
     return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  private initializeSession() {
-    // Track session start
-    this.track('session', 'lifecycle', 'start');
+  private initializeTracking() {
+    if (typeof window === 'undefined') return;
+
+    // Track page views
+    this.trackPageView();
     
-    // Track page visibility changes
-    if (typeof window !== 'undefined') {
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-          this.track('session', 'lifecycle', 'hidden');
-        } else {
-          this.track('session', 'lifecycle', 'visible');
-        }
-      });
-
-      // Track session end before page unload
-      window.addEventListener('beforeunload', () => {
-        this.track('session', 'lifecycle', 'end');
-        this.flush();
-      });
-    }
+    // Track user interactions
+    this.setupInteractionTracking();
+    
+    // Track performance events
+    this.setupPerformanceTracking();
   }
 
-  setUserId(userId: string) {
-    this.userId = userId;
-    this.track('user', 'identification', 'set_user_id', { userId });
+  setUserType(type: string) {
+    this.userType = type;
+    this.track('user_type_identified', 'user', 'type_set', type);
   }
 
-  track(event: string, category: string, action: string, properties?: Record<string, any>) {
-    if (!this.isEnabled) return;
-
+  track(event: string, category: string, action: string, label?: string, value?: number) {
     const analyticsEvent: AnalyticsEvent = {
       event,
       category,
       action,
-      properties: {
-        ...properties,
-        userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'unknown',
-        url: typeof window !== 'undefined' ? window.location.href : 'unknown',
-        referrer: typeof window !== 'undefined' ? document.referrer : 'unknown'
-      },
+      label,
+      value,
+      user_type: this.userType || undefined,
+      page: window.location.pathname,
       timestamp: Date.now(),
-      userId: this.userId,
-      sessionId: this.sessionId
+      session_id: this.sessionId
     };
 
     this.events.push(analyticsEvent);
+    console.log('📊 Analytics Event:', analyticsEvent);
 
-    // Log to console in development
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Analytics Event:', analyticsEvent);
+    // Store in localStorage for batch sending
+    this.storeEvent(analyticsEvent);
+    
+    // Send to analytics service (implement your preferred service)
+    this.sendToAnalytics(analyticsEvent);
+  }
+
+  private trackPageView() {
+    const referrer = document.referrer;
+    const isFirstVisit = !localStorage.getItem('hawkly_previous_visit');
+    
+    this.track('page_view', 'navigation', 'page_load', window.location.pathname);
+    
+    if (referrer) {
+      this.track('referrer', 'traffic', 'external_referrer', referrer);
     }
-
-    // Auto-flush events periodically
-    if (this.events.length >= 10) {
-      this.flush();
+    
+    if (isFirstVisit) {
+      this.track('first_visit', 'user', 'new_visitor');
+      localStorage.setItem('hawkly_previous_visit', 'true');
     }
   }
 
-  trackUserJourney(step: string, metadata?: Record<string, any>) {
-    const now = Date.now();
-    const lastStep = this.journey[this.journey.length - 1];
-    
-    const journeyStep: UserJourney = {
-      step,
-      timestamp: now,
-      duration: lastStep ? now - lastStep.timestamp : undefined,
-      metadata
+  private setupInteractionTracking() {
+    // Track CTA clicks
+    document.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      
+      // Track button clicks
+      if (target.tagName === 'BUTTON' || target.closest('button')) {
+        const button = target.tagName === 'BUTTON' ? target : target.closest('button');
+        const buttonText = button?.textContent?.trim() || '';
+        this.track('button_click', 'interaction', 'click', buttonText);
+      }
+      
+      // Track link clicks
+      if (target.tagName === 'A' || target.closest('a')) {
+        const link = target.tagName === 'A' ? target as HTMLAnchorElement : target.closest('a');
+        const href = link?.href || '';
+        const linkText = link?.textContent?.trim() || '';
+        this.track('link_click', 'interaction', 'navigation', `${linkText} -> ${href}`);
+      }
+    });
+
+    // Track form interactions
+    document.addEventListener('submit', (event) => {
+      const form = event.target as HTMLFormElement;
+      const formId = form.id || form.className || 'unknown_form';
+      this.track('form_submit', 'interaction', 'form_submission', formId);
+    });
+
+    // Track scroll depth
+    this.setupScrollTracking();
+  }
+
+  private setupScrollTracking() {
+    let maxScroll = 0;
+    const trackingPoints = [25, 50, 75, 90, 100];
+    const tracked = new Set<number>();
+
+    const handleScroll = () => {
+      const scrollPercent = Math.round(
+        (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+      );
+      
+      maxScroll = Math.max(maxScroll, scrollPercent);
+      
+      trackingPoints.forEach(point => {
+        if (scrollPercent >= point && !tracked.has(point)) {
+          tracked.add(point);
+          this.track('scroll_depth', 'engagement', 'scroll', `${point}%`, point);
+        }
+      });
     };
 
-    this.journey.push(journeyStep);
-    
-    // Track as analytics event too
-    this.track('user_journey', 'navigation', step, {
-      ...metadata,
-      step_duration: journeyStep.duration,
-      total_steps: this.journey.length
+    window.addEventListener('scroll', handleScroll, { passive: true });
+  }
+
+  private setupPerformanceTracking() {
+    // Track page load performance
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+        if (navigation) {
+          const loadTime = navigation.loadEventEnd - navigation.fetchStart;
+          this.track('page_performance', 'performance', 'load_time', 'total', Math.round(loadTime));
+          
+          const interactiveTime = navigation.domInteractive - navigation.fetchStart;
+          this.track('page_performance', 'performance', 'interactive_time', 'dom', Math.round(interactiveTime));
+        }
+      }, 1000);
     });
   }
 
-  trackPerformance(metric: string, value: number, category: string = 'performance') {
-    this.track('performance', category, metric, {
-      value,
-      metric,
-      timestamp: Date.now()
-    });
-  }
-
-  trackError(error: Error, context?: Record<string, any>) {
-    this.track('error', 'application', 'error_occurred', {
-      error_message: error.message,
-      error_stack: error.stack,
-      error_name: error.name,
-      ...context
-    });
-  }
-
-  trackConversion(goal: string, value?: number, properties?: Record<string, any>) {
-    this.track('conversion', 'goals', goal, {
-      goal,
-      value,
-      conversion_timestamp: Date.now(),
-      ...properties
-    });
-  }
-
-  trackEngagement(action: string, element: string, duration?: number) {
-    this.track('engagement', 'interaction', action, {
-      element,
-      duration,
-      interaction_timestamp: Date.now()
-    });
-  }
-
-  // A/B Testing support
-  trackExperiment(experimentId: string, variant: string, action: string) {
-    this.track('experiment', 'ab_test', action, {
-      experiment_id: experimentId,
-      variant,
-      experiment_timestamp: Date.now()
-    });
-  }
-
-  // Feature flag tracking
-  trackFeatureFlag(flagName: string, enabled: boolean, context?: Record<string, any>) {
-    this.track('feature_flag', 'usage', flagName, {
-      flag_name: flagName,
-      enabled,
-      ...context
-    });
-  }
-
-  flush() {
-    if (this.events.length === 0) return;
-
-    // In a real application, this would send events to your analytics service
-    // For now, we'll store them in localStorage for development purposes
+  private storeEvent(event: AnalyticsEvent) {
     try {
-      const existingEvents = JSON.parse(localStorage.getItem('analytics_events') || '[]');
-      const allEvents = [...existingEvents, ...this.events];
+      const stored = JSON.parse(localStorage.getItem('hawkly_analytics_events') || '[]');
+      stored.push(event);
       
-      // Keep only last 1000 events in localStorage
-      const recentEvents = allEvents.slice(-1000);
-      localStorage.setItem('analytics_events', JSON.stringify(recentEvents));
+      // Keep only last 100 events
+      if (stored.length > 100) {
+        stored.splice(0, stored.length - 100);
+      }
       
-      // Store journey separately
-      localStorage.setItem('user_journey', JSON.stringify(this.journey));
-      
-      console.log(`Flushed ${this.events.length} analytics events`);
-      this.events = [];
+      localStorage.setItem('hawkly_analytics_events', JSON.stringify(stored));
     } catch (error) {
-      console.warn('Failed to flush analytics events:', error);
+      console.warn('Failed to store analytics event:', error);
     }
   }
 
+  private sendToAnalytics(event: AnalyticsEvent) {
+    // Implement your analytics service integration here
+    // Examples: Google Analytics, Mixpanel, Amplitude, etc.
+    
+    // For now, we'll just log and prepare for future integration
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Would send to analytics:', event);
+    }
+  }
+
+  // User journey specific tracking
+  trackUserJourney(step: string, userType: string, metadata?: Record<string, any>) {
+    this.track('user_journey', 'onboarding', step, userType);
+    
+    if (metadata) {
+      Object.entries(metadata).forEach(([key, value]) => {
+        this.track('journey_metadata', 'onboarding', key, String(value));
+      });
+    }
+  }
+
+  trackConversion(type: string, value?: number) {
+    this.track('conversion', 'business', type, undefined, value);
+  }
+
+  // Get analytics summary
   getAnalyticsSummary() {
-    const storedEvents = JSON.parse(localStorage.getItem('analytics_events') || '[]');
-    const storedJourney = JSON.parse(localStorage.getItem('user_journey') || '[]');
-    
-    return {
-      session_id: this.sessionId,
-      user_id: this.userId,
-      total_events: storedEvents.length + this.events.length,
-      journey_steps: storedJourney.length + this.journey.length,
-      current_session_events: this.events.length,
-      is_enabled: this.isEnabled
-    };
-  }
-
-  // Privacy controls
-  enableTracking() {
-    this.isEnabled = true;
-    this.track('privacy', 'consent', 'tracking_enabled');
-  }
-
-  disableTracking() {
-    this.track('privacy', 'consent', 'tracking_disabled');
-    this.flush();
-    this.isEnabled = false;
-  }
-
-  clearData() {
-    this.events = [];
-    this.journey = [];
-    localStorage.removeItem('analytics_events');
-    localStorage.removeItem('user_journey');
-    toast.success("Analytics data cleared");
-  }
-
-  // Export data for GDPR compliance
-  exportUserData() {
-    const data = {
-      session_id: this.sessionId,
-      user_id: this.userId,
-      events: this.events,
-      journey: this.journey,
-      stored_events: JSON.parse(localStorage.getItem('analytics_events') || '[]'),
-      stored_journey: JSON.parse(localStorage.getItem('user_journey') || '[]')
+    const events = this.events;
+    const summary = {
+      total_events: events.length,
+      session_duration: events.length > 0 ? Date.now() - events[0].timestamp : 0,
+      pages_visited: new Set(events.map(e => e.page)).size,
+      interactions: events.filter(e => e.category === 'interaction').length,
+      conversions: events.filter(e => e.category === 'business').length,
+      user_type: this.userType
     };
     
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `analytics-data-${this.sessionId}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+    return summary;
   }
 }
 
 export const analyticsTracker = AnalyticsTracker.getInstance();
-
-// Convenience functions
-export const trackEvent = (event: string, category: string, action: string, properties?: Record<string, any>) => {
-  analyticsTracker.track(event, category, action, properties);
-};
-
-export const trackPageView = (page: string, title?: string) => {
-  analyticsTracker.track('page_view', 'navigation', 'view', {
-    page,
-    title: title || document.title,
-    timestamp: Date.now()
-  });
-};
-
-export const trackClick = (element: string, context?: Record<string, any>) => {
-  analyticsTracker.trackEngagement('click', element, undefined);
-};
-
-export const trackFormSubmission = (formName: string, success: boolean, errors?: string[]) => {
-  analyticsTracker.track('form', 'submission', success ? 'success' : 'error', {
-    form_name: formName,
-    success,
-    errors
-  });
-};
-
-export const trackSearch = (query: string, results?: number, category?: string) => {
-  analyticsTracker.track('search', 'query', 'performed', {
-    query,
-    results_count: results,
-    category,
-    search_timestamp: Date.now()
-  });
-};
