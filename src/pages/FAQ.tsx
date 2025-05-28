@@ -187,7 +187,7 @@ const FAQ = () => {
           </div>
           <div className="grid md:grid-cols-4 gap-4 text-center">
             <div className="space-y-1">
-              <div className="text-2xl font-bold text-blue-600">< 2hrs</div>
+              <div className="text-2xl font-bold text-blue-600">{"< 2hrs"}</div>
               <div className="text-sm text-muted-foreground">Avg response time</div>
             </div>
             <div className="space-y-1">
