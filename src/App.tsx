@@ -29,7 +29,7 @@ import ShippingDelivery from './pages/ShippingDelivery';
 import CancellationRefund from './pages/CancellationRefund';
 
 // Admin pages
-import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminDashboard from './pages/AdminDashboard';
 
 // New pages we'll create
 import WebSecurity from './pages/WebSecurity';
@@ -37,7 +37,7 @@ import SecurityGuides from './pages/SecurityGuides';
 import KnowledgeBase from './pages/KnowledgeBase';
 import SecurityInsights from './pages/SecurityInsights';
 import Vulnerabilities from './pages/Vulnerabilities';
-import AITools from './pages/AITools';
+import AiTools from './pages/AiTools';
 import PlatformReport from './pages/PlatformReport';
 import Forum from './pages/Forum';
 import Events from './pages/Events';
@@ -109,7 +109,7 @@ function App() {
                   <Route path="/templates" element={<Templates />} />
                   
                   {/* Tools and Analysis */}
-                  <Route path="/ai-tools" element={<AITools />} />
+                  <Route path="/ai-tools" element={<AiTools />} />
                   <Route path="/platform-report" element={<PlatformReport />} />
                   
                   {/* Community */}

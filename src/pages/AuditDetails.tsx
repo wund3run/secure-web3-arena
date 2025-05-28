@@ -8,7 +8,7 @@ const AuditDetails = () => {
     <PlaceholderPage
       title="Audit Details"
       description="Detailed view of security audit progress and results. This page will show audit status, findings, and reports."
-      icon={FileText}
+      icon={<FileText className="h-6 w-6" />}
     />
   );
 };

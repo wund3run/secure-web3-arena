@@ -7,8 +7,14 @@ const ComprehensiveSecurity = () => {
   return (
     <PlaceholderPage
       title="Comprehensive Security"
-      description="End-to-end security solutions for every layer of your Web3 application."
-      icon={Shield}
+      description="End-to-end security solutions covering all aspects of Web3 application security from development to deployment."
+      icon={<Shield className="h-6 w-6" />}
+      features={[
+        "Full stack security",
+        "Continuous monitoring",
+        "Incident response",
+        "Compliance support"
+      ]}
     />
   );
 };

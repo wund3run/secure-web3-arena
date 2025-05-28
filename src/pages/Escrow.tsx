@@ -8,7 +8,7 @@ const Escrow = () => {
     <PlaceholderPage
       title="Escrow Management"
       description="Secure payment management for audits. Monitor payment milestones and transaction security."
-      icon={Shield}
+      icon={<Shield className="h-6 w-6" />}
     />
   );
 };

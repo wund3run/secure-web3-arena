@@ -8,7 +8,7 @@ const Dashboard = () => {
     <PlaceholderPage
       title="User Dashboard"
       description="Your personalized dashboard is being built. This will include project overview, audit status, and account management."
-      icon={LayoutDashboard}
+      icon={<LayoutDashboard className="h-6 w-6" />}
     />
   );
 };

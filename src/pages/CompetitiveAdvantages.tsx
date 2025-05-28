@@ -6,9 +6,15 @@ import { TrendingUp } from 'lucide-react';
 const CompetitiveAdvantages = () => {
   return (
     <PlaceholderPage
-      title="Why Choose Hawkly"
-      description="Learn about our competitive advantages and how we compare to traditional security audit services."
-      icon={TrendingUp}
+      title="Competitive Advantages"
+      description="Discover what makes Hawkly the leading Web3 security platform and how we outperform traditional audit firms."
+      icon={<TrendingUp className="h-6 w-6" />}
+      features={[
+        "AI-powered matching",
+        "Faster delivery",
+        "Lower costs",
+        "Quality assurance"
+      ]}
     />
   );
 };

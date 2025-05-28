@@ -8,7 +8,7 @@ const Auth = () => {
     <PlaceholderPage
       title="Authentication"
       description="User authentication page is being implemented. This will include sign in, sign up, and password recovery functionality."
-      icon={LogIn}
+      icon={<LogIn className="h-6 w-6" />}
     />
   );
 };
