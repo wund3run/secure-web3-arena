@@ -6,6 +6,8 @@ import { Notification, NotificationContextType } from '@/types/notification.type
 import { toast } from 'sonner';
 import { useNotificationPersistence } from '@/hooks/useNotificationPersistence';
 import { useBrowserNotifications } from '@/hooks/useBrowserNotifications';
+import { useAuditNotifications } from '@/hooks/useAuditNotifications';
+import { usePaymentNotifications } from '@/hooks/usePaymentNotifications';
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
@@ -26,6 +28,10 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
   const { user } = useAuth();
   const { saveNotifications, loadNotifications } = useNotificationPersistence();
   const { sendBrowserNotification, canSendNotifications } = useBrowserNotifications();
+
+  // Initialize notification hooks
+  useAuditNotifications();
+  usePaymentNotifications();
 
   // Load persisted notifications on mount
   useEffect(() => {
@@ -98,83 +104,6 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
   };
 
   const unreadCount = notifications.filter(n => !n.read).length;
-
-  // Enhanced real-time listeners
-  useEffect(() => {
-    if (!user) return;
-
-    const auditRequestsSubscription = supabase
-      .channel('audit_requests_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'audit_requests',
-          filter: `client_id=eq.${user.id}`,
-        },
-        (payload) => {
-          if (payload.eventType === 'UPDATE') {
-            const oldStatus = payload.old?.status;
-            const newStatus = payload.new?.status;
-            
-            if (oldStatus !== newStatus) {
-              addNotification({
-                title: 'Audit Status Updated',
-                message: `Your audit "${payload.new.project_name}" status changed to: ${newStatus}`,
-                type: newStatus === 'approved' ? 'success' : newStatus === 'rejected' ? 'error' : 'info',
-                category: 'audit',
-                userId: user.id,
-                actionUrl: `/audit/${payload.new.id}`,
-                actionLabel: 'View Audit',
-              });
-            }
-          } else if (payload.eventType === 'INSERT') {
-            addNotification({
-              title: 'New Audit Request',
-              message: `New audit request "${payload.new.project_name}" has been created`,
-              type: 'info',
-              category: 'audit',
-              userId: user.id,
-              actionUrl: `/audit/${payload.new.id}`,
-              actionLabel: 'View Audit',
-            });
-          }
-        }
-      )
-      .subscribe();
-
-    const messagesSubscription = supabase
-      .channel('new_messages')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'audit_messages',
-        },
-        (payload) => {
-          // Only notify if the message is not from the current user
-          if (payload.new.sender_id !== user.id) {
-            addNotification({
-              title: 'New Message',
-              message: 'You have received a new message in your audit',
-              type: 'info',
-              category: 'message',
-              userId: user.id,
-              actionUrl: `/audit/${payload.new.audit_request_id}`,
-              actionLabel: 'View Message',
-            });
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(auditRequestsSubscription);
-      supabase.removeChannel(messagesSubscription);
-    };
-  }, [user]);
 
   return (
     <NotificationContext.Provider

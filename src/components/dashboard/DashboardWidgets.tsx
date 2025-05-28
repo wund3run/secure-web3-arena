@@ -1,8 +1,20 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, Book, CheckSquare, Shield, Award, FileSpreadsheet, ChartPie, LineChart, Users, Settings } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { NotificationDashboardWidget } from './NotificationDashboardWidget';
+import { AuditorStats } from './widgets/AuditorStats';
+import { ReputationWidget } from './widgets/ReputationWidget';
+import { EarningsWidget } from './widgets/EarningsWidget';
+import { UpcomingDeadlinesWidget } from './widgets/UpcomingDeadlinesWidget';
+import { AuditPerformanceWidget } from './widgets/AuditPerformanceWidget';
+import { ProjectOwnerStats } from './widgets/ProjectOwnerStats';
+import { SecurityScoreWidget } from './widgets/SecurityScoreWidget';
+import { ProjectsWidget } from './widgets/ProjectsWidget';
+import { VulnerabilityWidget } from './widgets/VulnerabilityWidget';
+import { AuditProgressWidget } from './widgets/AuditProgressWidget';
+import { AdminDashboardWidgets } from '../admin/dashboard/AdminDashboardWidgets';
 
 interface DashboardWidgetsProps {
   userType: string;

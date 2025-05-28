@@ -13,7 +13,10 @@ export default function NotificationTesting() {
   const { user } = useAuth();
 
   return (
-    <StandardLayout>
+    <StandardLayout 
+      title="Notification Testing - Hawkly"
+      description="Test and monitor the notification system functionality"
+    >
       <Helmet>
         <title>Notification Testing - Hawkly</title>
         <meta name="description" content="Test and monitor the notification system" />
