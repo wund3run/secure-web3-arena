@@ -14,7 +14,8 @@ import RoleBasedRoute from "@/components/auth/RoleBasedRoute";
 // Critical pages - loaded immediately
 const Index = React.lazy(() => import("@/pages/Index"));
 const NotFound = React.lazy(() => import("@/pages/NotFound"));
-const Auth = React.lazy(() => import("@/pages/Auth"));
+const AuthPage = React.lazy(() => import("@/pages/AuthPage")); // Fixed: Use AuthPage instead of Auth
+const AuthCallback = React.lazy(() => import("@/pages/AuthCallback"));
 
 // High-priority pages - preloaded on demand
 const Marketplace = React.lazy(() => import("@/pages/Marketplace"));
@@ -83,6 +84,8 @@ const Achievements = React.lazy(() => import("@/pages/Achievements"));
 const AuditGuidelines = React.lazy(() => import("@/pages/AuditGuidelines"));
 const CompetitiveAdvantages = React.lazy(() => import("@/pages/CompetitiveAdvantages"));
 const ComprehensiveSecurity = React.lazy(() => import("@/pages/ComprehensiveSecurity"));
+const CancellationRefund = React.lazy(() => import("@/pages/CancellationRefund"));
+const ShippingDelivery = React.lazy(() => import("@/pages/ShippingDelivery"));
 
 // Optimized QueryClient for better performance
 const queryClient = new QueryClient({
@@ -140,7 +143,8 @@ function App() {
                     <Routes>
                       {/* Critical Routes */}
                       <Route path="/" element={<Index />} />
-                      <Route path="/auth" element={<Auth />} />
+                      <Route path="/auth" element={<AuthPage />} />
+                      <Route path="/auth/callback" element={<AuthCallback />} />
                       
                       {/* High-Priority Routes */}
                       <Route path="/marketplace" element={<Marketplace />} />
@@ -288,6 +292,8 @@ function App() {
                       <Route path="/terms" element={<Terms />} />
                       <Route path="/privacy" element={<Privacy />} />
                       <Route path="/security-policy" element={<SecurityPolicy />} />
+                      <Route path="/cancellation-refund" element={<CancellationRefund />} />
+                      <Route path="/shipping-delivery" element={<ShippingDelivery />} />
                       
                       {/* Route aliases */}
                       <Route path="/resources" element={<KnowledgeBase />} />
