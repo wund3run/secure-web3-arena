@@ -1,193 +1,84 @@
-import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { UserType, AuthContextProps } from "./types";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 
-export const useAuthProvider = (): AuthContextProps => {
-  const [user, setUser] = useState<any>(null);
-  const [session, setSession] = useState<any>(null);
+import { useState, useEffect } from 'react';
+import { User, Session } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import type { AuthContextProps, UserProfile } from './types';
+
+export function useAuthProvider(): AuthContextProps {
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [userProfile, setUserProfile] = useState<any>(null);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
-  
-  // Enhanced profile fetching with better error handling
-  const fetchUserProfile = useCallback(async (userId: string) => {
-    try {
-      console.log("Fetching user profile for:", userId);
-      
-      // Try to get from profiles table first
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-      
-      if (profileError && profileError.code !== 'PGRST116') {
-        console.error("Error fetching profile:", profileError);
-        throw profileError;
-      }
-      
-      // If no profile exists, try extended_profiles
-      if (!profileData) {
-        const { data: extendedProfile, error: extendedError } = await supabase
-          .from('extended_profiles')
-          .select('*')
-          .eq('id', userId)
-          .single();
-          
-        if (extendedError && extendedError.code !== 'PGRST116') {
-          console.error("Error fetching extended profile:", extendedError);
-        }
-        
-        setUserProfile(extendedProfile);
-      } else {
-        setUserProfile(profileData);
-      }
-      
-      console.log("Profile fetched successfully");
-    } catch (err: any) {
-      console.error("Profile fetch error:", err);
-      setError("");
-      // Don't show error toast for missing profiles - this is expected for new users
-      if (err.code !== 'PGRST116') {
-        console.warn("Failed to load user profile, but continuing...");
-      }
-    }
-  }, []);
-  
-  // Enhanced session initialization
-  useEffect(() => {
-    let mounted = true;
-    
-    const initializeAuth = async () => {
-      try {
-        console.log("Initializing authentication...");
-        
-        // Set up auth state listener FIRST
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-          async (event, session) => {
-            console.log("Auth state changed:", event, session?.user?.id);
-            
-            if (mounted) {
-              setSession(session);
-              setUser(session?.user ?? null);
-              
-              if (session?.user && event === 'SIGNED_IN') {
-                // Fetch profile with a small delay to ensure database consistency
-                setTimeout(() => {
-                  if (mounted) {
-                    fetchUserProfile(session.user.id);
-                  }
-                }, 200);
-              } else if (event === 'SIGNED_OUT') {
-                setUserProfile(null);
-                setError("");
-              }
-            }
-          }
-        );
-        
-        // THEN check for existing session
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
-        if (sessionError) {
-          console.error("Session error:", sessionError);
-          throw sessionError;
-        }
-        
-        if (mounted) {
-          setSession(session);
-          setUser(session?.user ?? null);
-          
-          if (session?.user) {
-            console.log("User found, fetching profile...");
-            await fetchUserProfile(session.user.id);
-          }
-        }
-        
-        console.log("Authentication initialized successfully");
-        
-        return () => {
-          subscription.unsubscribe();
-        };
-      } catch (err: any) {
-        console.error("Auth initialization error:", err);
-        if (mounted) {
-          setError(err.message);
-          toast.error("Authentication initialization failed");
-        }
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    };
-    
-    const cleanup = initializeAuth();
-    
-    return () => {
-      mounted = false;
-      cleanup.then(cleanupFn => cleanupFn && cleanupFn());
-    };
-  }, [fetchUserProfile]);
+  const [error, setError] = useState<string | null>(null);
 
-  // Enhanced sign in with better error handling and navigation
-  const signIn = async (email: string, password: string, captchaToken?: string) => {
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          // Fetch user profile when user is authenticated
+          setTimeout(async () => {
+            try {
+              const { data: profile } = await supabase
+                .from('extended_profiles')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+              
+              setUserProfile(profile);
+            } catch (err) {
+              console.log('Profile not found, will be created on first update');
+            }
+          }, 0);
+        } else {
+          setUserProfile(null);
+        }
+        
+        setLoading(false);
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const signIn = async (email: string, password: string) => {
+    setError(null);
+    setLoading(true);
+    
     try {
-      setLoading(true);
-      setError("");
-      console.log("Attempting sign in for:", email);
-      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+
+      if (error) throw error;
       
-      if (error) {
-        console.error("Sign in error:", error);
-        setError(error.message);
-        toast.error("Sign in failed", { description: error.message });
-        return;
-      }
-      
-      if (data.user && data.session) {
-        console.log("Sign in successful");
-        toast.success("Successfully signed in");
-        
-        // Navigate safely with error handling
-        try {
-          navigate("/dashboard", { replace: true });
-        } catch (navError) {
-          console.error("Navigation error after sign in:", navError);
-          // Fallback navigation
-          window.location.href = "/dashboard";
-        }
-      }
+      toast.success('Welcome back!');
     } catch (err: any) {
-      console.error("Unexpected sign in error:", err);
-      const errorMessage = err.message || "An unexpected error occurred";
-      setError(errorMessage);
-      toast.error("Sign in failed", { description: errorMessage });
+      setError(err.message);
+      toast.error('Sign in failed', { description: err.message });
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  // Enhanced sign up with comprehensive profile creation and navigation
-  const signUp = async (
-    email: string, 
-    password: string, 
-    fullName?: string,
-    userType?: UserType, 
-    captchaToken?: string
-  ) => {
+  const signUp = async (email: string, password: string, fullName: string, userType: 'auditor' | 'project_owner') => {
+    setError(null);
+    setLoading(true);
+    
     try {
-      setLoading(true);
-      setError("");
-      console.log("Attempting sign up for:", email);
-      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -198,216 +89,121 @@ export const useAuthProvider = (): AuthContextProps => {
           },
         },
       });
+
+      if (error) throw error;
       
-      if (error) {
-        console.error("Sign up error:", error);
-        setError(error.message);
-        toast.error("Sign up failed", { description: error.message });
-        return;
-      }
-      
-      if (data.user) {
-        console.log("Sign up successful, creating profiles...");
-        
-        // Create both profile records
-        await createUserProfiles(data.user.id, email, fullName, userType);
-        
-        toast.success("Account created successfully");
-        
-        // Navigate safely with error handling
-        try {
-          navigate("/dashboard", { replace: true });
-        } catch (navError) {
-          console.error("Navigation error after sign up:", navError);
-          // Fallback navigation
-          window.location.href = "/dashboard";
-        }
-      }
+      toast.success('Account created successfully! Please check your email to verify your account.');
     } catch (err: any) {
-      console.error("Unexpected sign up error:", err);
-      const errorMessage = err.message || "An unexpected error occurred";
-      setError(errorMessage);
-      toast.error("Sign up failed", { description: errorMessage });
+      setError(err.message);
+      toast.error('Sign up failed', { description: err.message });
+      throw err;
     } finally {
       setLoading(false);
     }
   };
-  
-  // Enhanced profile creation with better error handling
-  const createUserProfiles = async (
-    userId: string, 
-    email: string, 
-    fullName?: string,
-    userType?: UserType
-  ) => {
-    try {
-      console.log("Creating user profiles for:", userId);
-      
-      // Create main profile
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: userId, 
-          full_name: fullName || '',
-          wallet_address: null,
-          avatar_url: null,
-          is_arbitrator: false,
-          updated_at: new Date().toISOString()
-        });
-      
-      if (profileError) {
-        console.error("Profile creation error:", profileError);
-        // Don't throw - extended profile might still work
-      }
-      
-      // Create extended profile
-      const { error: extendedError } = await supabase
-        .from('extended_profiles')
-        .insert({
-          id: userId,
-          full_name: fullName || '',
-          user_type: userType || 'project_owner',
-          verification_status: 'pending',
-          projects_completed: 0
-        });
-      
-      if (extendedError) {
-        console.error("Extended profile creation error:", extendedError);
-        // Don't throw - user can still use the platform
-      }
-      
-      console.log("User profiles created successfully");
-    } catch (err: any) {
-      console.error("Profile creation error:", err);
-      // Don't prevent sign up for profile creation issues
-      console.warn("Profile creation partially failed - user can update it later");
-    }
-  };
 
-  // Enhanced sign out with safe navigation
   const signOut = async () => {
+    setError(null);
+    
     try {
-      setLoading(true);
-      console.log("Signing out...");
-      
       const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error("Sign out error:", error);
-        setError(error.message);
-        toast.error("Sign out failed", { description: error.message });
-        return;
-      }
+      if (error) throw error;
       
       setUser(null);
       setSession(null);
       setUserProfile(null);
-      setError("");
-      toast.success("Successfully signed out");
-      
-      // Navigate safely with error handling
-      try {
-        navigate("/", { replace: true });
-      } catch (navError) {
-        console.error("Navigation error after sign out:", navError);
-        // Fallback navigation
-        window.location.href = "/";
-      }
+      toast.success('Signed out successfully');
     } catch (err: any) {
-      console.error("Unexpected sign out error:", err);
       setError(err.message);
-      toast.error("Sign out failed", { description: err.message });
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  // Enhanced forgot password
-  const forgotPassword = async (email: string) => {
-    try {
-      setLoading(true);
-      console.log("Sending password reset for:", email);
-      
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
-      });
-      
-      if (error) {
-        console.error("Password reset error:", error);
-        setError(error.message);
-        toast.error("Password reset failed", { description: error.message });
-        return;
-      }
-      
-      toast.success("Password reset email sent");
-    } catch (err: any) {
-      console.error("Unexpected password reset error:", err);
-      setError(err.message);
-      toast.error("Password reset failed", { description: err.message });
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  // Enhanced reset password
-  const resetPassword = async (newPassword: string) => {
-    try {
-      setLoading(true);
-      console.log("Updating password...");
-      
-      const { error } = await supabase.auth.updateUser({
-        password: newPassword,
-      });
-      
-      if (error) {
-        console.error("Password update error:", error);
-        setError(error.message);
-        toast.error("Password update failed", { description: error.message });
-        return;
-      }
-      
-      toast.success("Password updated successfully");
-      
-      // Navigate safely with error handling
-      try {
-        navigate("/dashboard", { replace: true });
-      } catch (navError) {
-        console.error("Navigation error after password reset:", navError);
-        // Fallback navigation
-        window.location.href = "/dashboard";
-      }
-    } catch (err: any) {
-      console.error("Unexpected password update error:", err);
-      setError(err.message);
-      toast.error("Password update failed", { description: err.message });
-    } finally {
-      setLoading(false);
+      toast.error('Sign out failed', { description: err.message });
+      throw err;
     }
   };
 
-  // Enhanced user type detection
-  const getUserType = (): UserType => {
-    if (!user) return "visitor" as UserType;
+  const forgotPassword = async (email: string) => {
+    setError(null);
     
-    // Check userProfile first
-    if (userProfile?.user_type) {
-      return userProfile.user_type as UserType;
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      if (error) throw error;
+      
+      toast.success('Password reset email sent');
+    } catch (err: any) {
+      setError(err.message);
+      toast.error('Failed to send reset email', { description: err.message });
+      throw err;
     }
+  };
+
+  const resetPassword = async (newPassword: string) => {
+    setError(null);
     
-    // Fall back to user metadata
-    return (user.user_metadata?.user_type as UserType) || "project_owner";
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+      
+      if (error) throw error;
+      
+      toast.success('Password updated successfully');
+    } catch (err: any) {
+      setError(err.message);
+      toast.error('Failed to update password', { description: err.message });
+      throw err;
+    }
+  };
+
+  const getUserType = (): 'auditor' | 'project_owner' => {
+    if (userProfile?.user_type) {
+      return userProfile.user_type as 'auditor' | 'project_owner';
+    }
+    return user?.user_metadata?.user_type || 'project_owner';
+  };
+
+  const updateProfile = async (data: Partial<UserProfile>) => {
+    if (!user) throw new Error('No user logged in');
+    
+    setError(null);
+    
+    try {
+      const { error } = await supabase
+        .from('extended_profiles')
+        .upsert({
+          id: user.id,
+          ...data,
+          updated_at: new Date().toISOString(),
+        });
+
+      if (error) throw error;
+      
+      // Refresh user profile
+      const { data: updatedProfile } = await supabase
+        .from('extended_profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+      
+      setUserProfile(updatedProfile);
+      toast.success('Profile updated successfully');
+    } catch (err: any) {
+      setError(err.message);
+      toast.error('Failed to update profile', { description: err.message });
+      throw err;
+    }
   };
 
   return {
     user,
     session,
-    loading,
     userProfile,
-    error,
+    loading,
     signIn,
     signUp,
     signOut,
     forgotPassword,
     resetPassword,
     getUserType,
+    updateProfile,
+    error,
   };
-};
+}

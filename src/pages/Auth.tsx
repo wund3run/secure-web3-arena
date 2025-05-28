@@ -24,7 +24,7 @@ const Auth = () => {
     userType: 'project_owner' as 'project_owner' | 'auditor'
   });
 
-  const { signIn, signUp, user, loading } = useAuth();
+  const { signIn, signUp, user, loading, error } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -47,9 +47,8 @@ const Auth = () => {
     setIsLoading(true);
     try {
       await signIn(formData.email, formData.password);
-      toast.success('Welcome back!');
     } catch (error: any) {
-      toast.error('Sign in failed', { description: error.message });
+      // Error handling is done in the auth context
     } finally {
       setIsLoading(false);
     }
@@ -64,12 +63,16 @@ const Auth = () => {
       return;
     }
 
+    if (formData.password.length < 6) {
+      toast.error('Password must be at least 6 characters long');
+      return;
+    }
+
     setIsLoading(true);
     try {
       await signUp(formData.email, formData.password, formData.fullName, formData.userType);
-      toast.success('Account created successfully!');
     } catch (error: any) {
-      toast.error('Sign up failed', { description: error.message });
+      // Error handling is done in the auth context
     } finally {
       setIsLoading(false);
     }
@@ -114,6 +117,12 @@ const Auth = () => {
                 </TabsList>
                 
                 <TabsContent value="login" className="space-y-4">
+                  {error && (
+                    <Alert variant="destructive">
+                      <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                  )}
+                  
                   <form onSubmit={handleSignIn} className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
@@ -165,8 +174,14 @@ const Auth = () => {
                 </TabsContent>
                 
                 <TabsContent value="register" className="space-y-4">
+                  {error && (
+                    <Alert variant="destructive">
+                      <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                  )}
+                  
                   <div className="space-y-2">
-                    <Label>Account Type</Label>
+                    <Label>I am a...</Label>
                     <div className="flex gap-2">
                       <Button
                         type="button"
@@ -182,7 +197,7 @@ const Auth = () => {
                         onClick={() => handleInputChange('userType', 'auditor')}
                         className="flex-1"
                       >
-                        Auditor
+                        Security Auditor
                       </Button>
                     </div>
                   </div>

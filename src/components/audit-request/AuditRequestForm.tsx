@@ -9,11 +9,13 @@ import FormProgress from './FormProgress';
 import AIMatchingJourney from './AIMatchingJourney';
 import { ErrorBoundary } from "@/utils/error-handling";
 import LoadingState from "@/components/ui/loading-state";
-import { showFeedback } from "@/components/ui/interactive-feedback";
 import { AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useAuth } from '@/contexts/auth';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { UserPlus } from 'lucide-react';
 
-// Define a type for the prefilledData prop
 interface PrefilledData {
   serviceType?: string;
   serviceName?: string;
@@ -21,13 +23,14 @@ interface PrefilledData {
   providerName?: string;
 }
 
-// Update the props interface to include prefilledData
 interface AuditRequestFormProps {
   onSubmitSuccess: () => void;
   prefilledData?: PrefilledData;
 }
 
 const AuditRequestForm = ({ onSubmitSuccess, prefilledData }: AuditRequestFormProps) => {
+  const { user, loading: authLoading } = useAuth();
+  
   const {
     formData,
     formStep,
@@ -46,6 +49,35 @@ const AuditRequestForm = ({ onSubmitSuccess, prefilledData }: AuditRequestFormPr
     prevStep,
     completeAIMatching
   } = useAuditForm(onSubmitSuccess, prefilledData);
+
+  // Show auth loading state
+  if (authLoading) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <LoadingState message="Loading..." />
+      </div>
+    );
+  }
+
+  // Show login required message if not authenticated
+  if (!user) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Card>
+          <CardContent className="p-8 text-center">
+            <UserPlus className="h-12 w-12 text-primary mx-auto mb-4" />
+            <h3 className="text-xl font-semibold mb-4">Authentication Required</h3>
+            <p className="text-gray-600 mb-6">
+              You need to be signed in to submit an audit request. Please create an account or sign in to continue.
+            </p>
+            <Button asChild>
+              <a href="/auth">Sign In / Sign Up</a>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <ErrorBoundary>
@@ -67,7 +99,7 @@ const AuditRequestForm = ({ onSubmitSuccess, prefilledData }: AuditRequestFormPr
           <form onSubmit={handleSubmit}>
             {isSubmitting ? (
               <LoadingState 
-                message="Processing your audit request..." 
+                message="Submitting your audit request..." 
                 fullPage={false} 
                 size="lg"
                 showTrivia={true}

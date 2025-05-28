@@ -1,13 +1,10 @@
 
-// Define form data type
 export interface AuditFormData {
   projectName: string;
   projectDescription: string;
-  contactName: string;
-  contactEmail: string;
   blockchain: string;
-  customBlockchain: string;
-  repositoryUrl: string;
+  customBlockchain?: string;
+  repositoryUrl?: string;
   contractCount: string;
   linesOfCode: string;
   deadline: string;
@@ -15,28 +12,36 @@ export interface AuditFormData {
   auditScope: string;
   specificConcerns: string;
   previousAudits: boolean;
-  previousAuditLinks: string;
-  collaborativeAudit: boolean;
-  continuousAuditing: boolean;
-  hybridModel: boolean;
+  previousAuditLinks?: string;
   specializedAuditType: string;
   accountabilityPreference: string;
   preferredCommunication: string;
+  contactName: string;
+  contactEmail: string;
+  collaborativeAudit?: boolean;
+  continuousAuditing?: boolean;
+  hybridModel?: boolean;
 }
 
-// Define form errors type
-export interface AuditFormErrors {
-  [key: string]: string;
-}
-
-// Define form step validators type
-export interface FormStepValidators {
-  [key: number]: (formData: AuditFormData) => { isValid: boolean; errors: AuditFormErrors };
-}
-
-// Additional types can be added here
-export interface AuditResponse {
+export interface AuditRequest {
   id: string;
+  client_id: string;
+  project_name: string;
+  project_description?: string;
+  blockchain: string;
+  repository_url?: string;
+  contract_count?: number;
+  lines_of_code?: number;
+  deadline?: string;
+  budget?: number;
+  audit_scope?: string;
+  specific_concerns?: string;
+  previous_audits?: boolean;
   status: string;
   created_at: string;
+  updated_at: string;
+  assigned_auditor_id?: string;
+  ai_matching_completed?: boolean;
+  escrow_contract_id?: string;
+  priority_score?: number;
 }
