@@ -31,7 +31,15 @@ export const useAuditProposals = () => {
       const { data, error } = await query.order('submitted_at', { ascending: false });
 
       if (error) throw error;
-      setProposals(data || []);
+      
+      // Transform the data to match our TypeScript interfaces
+      const transformedData = data?.map(proposal => ({
+        ...proposal,
+        milestones: Array.isArray(proposal.milestones) ? proposal.milestones : [],
+        status: proposal.status as 'pending' | 'accepted' | 'rejected' | 'withdrawn'
+      })) || [];
+      
+      setProposals(transformedData);
     } catch (err: any) {
       setError(err.message);
       toast.error('Failed to fetch proposals');

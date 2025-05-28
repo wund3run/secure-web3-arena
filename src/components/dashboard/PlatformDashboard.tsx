@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -133,6 +132,13 @@ export function PlatformDashboard() {
     );
   }
 
+  const switchToRequestAuditTab = () => {
+    const requestAuditTab = document.querySelector('[value="request-audit"]') as HTMLElement;
+    if (requestAuditTab) {
+      requestAuditTab.click();
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Platform Metrics */}
@@ -199,7 +205,7 @@ export function PlatformDashboard() {
                     <Shield className="h-12 w-12 mx-auto text-gray-400 mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">No audits yet</h3>
                     <p className="text-gray-600 mb-4">Get started by requesting your first security audit.</p>
-                    <Button onClick={() => document.querySelector('[value="request-audit"]')?.click()}>
+                    <Button onClick={switchToRequestAuditTab}>
                       Request Audit
                     </Button>
                   </div>
@@ -233,11 +239,6 @@ export function PlatformDashboard() {
                           )}
 
                           <div className="flex gap-2">
-                            {audit.status === 'in_progress' && (
-                              <Button size="sm" variant="outline">
-                                <AuditProgressTracker auditRequestId={audit.id} />
-                              </Button>
-                            )}
                             <Button size="sm">View Details</Button>
                           </div>
                         </CardContent>

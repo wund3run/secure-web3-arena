@@ -57,8 +57,23 @@ export function AuditProgressTracker({ auditRequestId }: AuditProgressTrackerPro
 
       if (messagesError) throw messagesError;
 
-      setProgress(progressData);
-      setMessages(messagesData || []);
+      // Transform progress data to match interface
+      if (progressData) {
+        const transformedProgress: AuditProgress = {
+          ...progressData,
+          deliverables: Array.isArray(progressData.deliverables) ? progressData.deliverables : []
+        };
+        setProgress(transformedProgress);
+      }
+
+      // Transform messages data to match interface
+      const transformedMessages: AuditMessage[] = (messagesData || []).map(message => ({
+        ...message,
+        message_type: message.message_type as 'text' | 'file' | 'milestone_update' | 'system',
+        file_attachments: Array.isArray(message.file_attachments) ? message.file_attachments : []
+      }));
+      
+      setMessages(transformedMessages);
     } catch (error) {
       console.error('Error fetching progress data:', error);
     } finally {

@@ -21,7 +21,17 @@ export const useAuditorProfiles = () => {
       const { data, error } = await query.order('total_audits_completed', { ascending: false });
 
       if (error) throw error;
-      setAuditorProfiles(data || []);
+      
+      // Transform the data to match our TypeScript interfaces
+      const transformedData = data?.map(profile => ({
+        ...profile,
+        certifications: Array.isArray(profile.certifications) ? profile.certifications : [],
+        verification_documents: profile.verification_documents || {},
+        availability_status: profile.availability_status as 'available' | 'busy' | 'unavailable',
+        verification_status: profile.verification_status as 'pending' | 'verified' | 'rejected'
+      })) || [];
+      
+      setAuditorProfiles(transformedData);
     } catch (err: any) {
       setError(err.message);
       toast.error('Failed to fetch auditor profiles');
