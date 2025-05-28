@@ -9,26 +9,39 @@ interface ProjectMetricsProps {
   userType: string;
 }
 
+interface AuditorMetrics {
+  activeAudits: number;
+  completedAudits: number;
+  averageRating: number;
+  totalEarnings: number;
+  monthlyGrowth: number;
+}
+
+interface ProjectOwnerMetrics {
+  activeProjects: number;
+  completedAudits: number;
+  securityScore: number;
+  totalSpent: number;
+  vulnerabilitiesFixed: number;
+}
+
 export function ProjectMetrics({ userType }: ProjectMetricsProps) {
   // Mock data - in real app, this would come from API
-  const metrics = {
-    auditor: {
-      activeAudits: 5,
-      completedAudits: 127,
-      averageRating: 4.8,
-      totalEarnings: 45231,
-      monthlyGrowth: 12.5
-    },
-    project_owner: {
-      activeProjects: 3,
-      completedAudits: 12,
-      securityScore: 92,
-      totalSpent: 45200,
-      vulnerabilitiesFixed: 28
-    }
+  const auditorMetrics: AuditorMetrics = {
+    activeAudits: 5,
+    completedAudits: 127,
+    averageRating: 4.8,
+    totalEarnings: 45231,
+    monthlyGrowth: 12.5
   };
 
-  const data = userType === 'auditor' ? metrics.auditor : metrics.project_owner;
+  const projectOwnerMetrics: ProjectOwnerMetrics = {
+    activeProjects: 3,
+    completedAudits: 12,
+    securityScore: 92,
+    totalSpent: 45200,
+    vulnerabilitiesFixed: 28
+  };
 
   if (userType === 'auditor') {
     return (
@@ -39,7 +52,7 @@ export function ProjectMetrics({ userType }: ProjectMetricsProps) {
             <Shield className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data.activeAudits}</div>
+            <div className="text-2xl font-bold">{auditorMetrics.activeAudits}</div>
             <p className="text-xs text-muted-foreground">
               +2 from last week
             </p>
@@ -52,9 +65,9 @@ export function ProjectMetrics({ userType }: ProjectMetricsProps) {
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data.completedAudits}</div>
+            <div className="text-2xl font-bold">{auditorMetrics.completedAudits}</div>
             <p className="text-xs text-muted-foreground">
-              +{data.monthlyGrowth}% this month
+              +{auditorMetrics.monthlyGrowth}% this month
             </p>
           </CardContent>
         </Card>
@@ -65,7 +78,7 @@ export function ProjectMetrics({ userType }: ProjectMetricsProps) {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data.averageRating}</div>
+            <div className="text-2xl font-bold">{auditorMetrics.averageRating}</div>
             <p className="text-xs text-muted-foreground">
               Based on 89 reviews
             </p>
@@ -78,9 +91,9 @@ export function ProjectMetrics({ userType }: ProjectMetricsProps) {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${data.totalEarnings.toLocaleString()}</div>
+            <div className="text-2xl font-bold">${auditorMetrics.totalEarnings.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              +{data.monthlyGrowth}% from last month
+              +{auditorMetrics.monthlyGrowth}% from last month
             </p>
           </CardContent>
         </Card>
@@ -96,7 +109,7 @@ export function ProjectMetrics({ userType }: ProjectMetricsProps) {
           <Shield className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{data.activeProjects}</div>
+          <div className="text-2xl font-bold">{projectOwnerMetrics.activeProjects}</div>
           <p className="text-xs text-muted-foreground">
             2 under review
           </p>
@@ -109,7 +122,7 @@ export function ProjectMetrics({ userType }: ProjectMetricsProps) {
           <CheckCircle className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{data.securityScore}%</div>
+          <div className="text-2xl font-bold">{projectOwnerMetrics.securityScore}%</div>
           <p className="text-xs text-muted-foreground">
             +5% improvement
           </p>
@@ -122,9 +135,9 @@ export function ProjectMetrics({ userType }: ProjectMetricsProps) {
           <DollarSign className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">${data.totalSpent.toLocaleString()}</div>
+          <div className="text-2xl font-bold">${projectOwnerMetrics.totalSpent.toLocaleString()}</div>
           <p className="text-xs text-muted-foreground">
-            Across {data.completedAudits} audits
+            Across {projectOwnerMetrics.completedAudits} audits
           </p>
         </CardContent>
       </Card>
@@ -135,7 +148,7 @@ export function ProjectMetrics({ userType }: ProjectMetricsProps) {
           <AlertTriangle className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{data.vulnerabilitiesFixed}</div>
+          <div className="text-2xl font-bold">{projectOwnerMetrics.vulnerabilitiesFixed}</div>
           <p className="text-xs text-muted-foreground">
             This month
           </p>
