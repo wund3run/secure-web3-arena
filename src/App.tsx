@@ -1,10 +1,10 @@
-
 import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 import { AuthProvider } from './contexts/auth';
+import { NotificationProvider } from '@/contexts/NotificationContext';
 
 // Import all pages
 import Index from './pages/Index';
@@ -90,8 +90,8 @@ function App() {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <AuthProvider>
+        <AuthProvider>
+          <NotificationProvider>
             <div className="min-h-screen bg-background font-sans antialiased">
               <Suspense fallback={<div>Loading...</div>}>
                 <Routes>
@@ -181,8 +181,8 @@ function App() {
               </Suspense>
               <Toaster />
             </div>
-          </AuthProvider>
-        </BrowserRouter>
+          </NotificationProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </HelmetProvider>
   );
