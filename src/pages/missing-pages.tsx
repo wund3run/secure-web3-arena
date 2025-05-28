@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { PlaceholderPage } from './placeholder-template';
 import { 
@@ -24,7 +23,8 @@ import {
   Lock,
   User,
   Code,
-  Gavel
+  Gavel,
+  Shield
 } from 'lucide-react';
 
 // Tutorial and Template Pages
@@ -55,6 +55,71 @@ export const Templates = () => {
         "Smart contract templates",
         "Security frameworks",
         "Testing templates"
+      ]}
+    />
+  );
+};
+
+// Legal Pages
+export const Terms = () => {
+  return (
+    <PlaceholderPage
+      title="Terms of Service"
+      description="Review our terms of service, user agreements, and platform policies for using Hawkly's security marketplace."
+      icon={<FileText className="h-6 w-6" />}
+      features={[
+        "Service terms",
+        "User agreements",
+        "Platform policies",
+        "Usage guidelines"
+      ]}
+    />
+  );
+};
+
+export const Privacy = () => {
+  return (
+    <PlaceholderPage
+      title="Privacy Policy"
+      description="Learn how we protect your data, handle user information, and maintain privacy across our security platform."
+      icon={<Shield className="h-6 w-6" />}
+      features={[
+        "Data protection",
+        "Privacy controls",
+        "Information handling",
+        "Security measures"
+      ]}
+    />
+  );
+};
+
+export const SecurityPolicy = () => {
+  return (
+    <PlaceholderPage
+      title="Security Policy"
+      description="Our comprehensive security policy covering platform security, data protection, and vulnerability disclosure."
+      icon={<Lock className="h-6 w-6" />}
+      features={[
+        "Platform security",
+        "Vulnerability disclosure",
+        "Security standards",
+        "Incident response"
+      ]}
+    />
+  );
+};
+
+export const AuditGuidelines = () => {
+  return (
+    <PlaceholderPage
+      title="Audit Guidelines"
+      description="Comprehensive guidelines for security auditors, including standards, processes, and best practices for Web3 audits."
+      icon={<FileCheck className="h-6 w-6" />}
+      features={[
+        "Audit standards",
+        "Process guidelines",
+        "Quality assurance",
+        "Best practices"
       ]}
     />
   );
