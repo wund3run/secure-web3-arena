@@ -2,8 +2,8 @@
 import React from 'react';
 import { useAuth } from '@/contexts/auth';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RoleBasedDashboardContent } from './role-based-dashboard-content';
 import { DashboardWidgets } from './DashboardWidgets';
-import { FunctionalDashboard } from './FunctionalDashboard';
 import LoadingState from '@/components/ui/loading-state';
 import { UserStats } from './stats/UserStats';
 import { Button } from '@/components/ui/button';
@@ -32,7 +32,6 @@ export function DashboardLayout({ dashboardType = '' }: DashboardLayoutProps) {
   const userType = getUserType();
   const isAuditor = userType === 'auditor';
   const isAdmin = userType === 'admin';
-  const isProjectOwner = userType === 'project_owner';
   
   return (
     <div className="container py-8 max-w-7xl">
@@ -96,12 +95,12 @@ export function DashboardLayout({ dashboardType = '' }: DashboardLayoutProps) {
             <TabsTrigger value="projects">{isAuditor ? 'Audits' : 'Projects'}</TabsTrigger>
             <TabsTrigger value="reports">Reports</TabsTrigger>
             {isAuditor && <TabsTrigger value="skills">Skills & Certs</TabsTrigger>}
-            {isProjectOwner && <TabsTrigger value="security">Security</TabsTrigger>}
+            {!isAuditor && !isAdmin && <TabsTrigger value="security">Security</TabsTrigger>}
             {isAdmin && <TabsTrigger value="management">Management</TabsTrigger>}
           </TabsList>
           
           <TabsContent value="overview">
-            <FunctionalDashboard />
+            <RoleBasedDashboardContent />
           </TabsContent>
           
           <TabsContent value="analytics">
@@ -122,7 +121,7 @@ export function DashboardLayout({ dashboardType = '' }: DashboardLayoutProps) {
             </TabsContent>
           )}
           
-          {isProjectOwner && (
+          {!isAuditor && !isAdmin && (
             <TabsContent value="security">
               <DashboardWidgets userType={userType} section="security" />
             </TabsContent>
