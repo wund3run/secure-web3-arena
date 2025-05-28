@@ -27,7 +27,7 @@ export function useAuditSubmission() {
         repository_url: formData.repositoryUrl,
         contract_count: parseInt(formData.contractCount.split('-')[0]) || 1,
         lines_of_code: parseInt(formData.linesOfCode.replace(/[<>]/g, '').split(' ')[0]) || 1000,
-        deadline: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 2 weeks from now as default
+        deadline: formData.deadline, // Keep as string for database
         budget: parseBudgetRange(formData.budget),
         audit_scope: formData.auditScope,
         specific_concerns: formData.specificConcerns,
@@ -39,7 +39,7 @@ export function useAuditSubmission() {
 
       const { data, error } = await supabase
         .from('audit_requests')
-        .insert([auditRequestData])
+        .insert(auditRequestData)
         .select()
         .single();
 

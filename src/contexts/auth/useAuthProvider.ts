@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -29,7 +28,14 @@ export function useAuthProvider(): AuthContextProps {
                 .eq('id', session.user.id)
                 .single();
               
-              setUserProfile(profile);
+              if (profile) {
+                // Type-safe conversion
+                const typedProfile: UserProfile = {
+                  ...profile,
+                  user_type: profile.user_type as UserProfile['user_type'] || 'project_owner'
+                };
+                setUserProfile(typedProfile);
+              }
             } catch (err) {
               console.log('Profile not found, will be created on first update');
             }
@@ -153,9 +159,9 @@ export function useAuthProvider(): AuthContextProps {
     }
   };
 
-  const getUserType = (): 'auditor' | 'project_owner' => {
+  const getUserType = (): 'auditor' | 'project_owner' | 'admin' | 'general' | 'visitor' => {
     if (userProfile?.user_type) {
-      return userProfile.user_type as 'auditor' | 'project_owner';
+      return userProfile.user_type as 'auditor' | 'project_owner' | 'admin' | 'general' | 'visitor';
     }
     return user?.user_metadata?.user_type || 'project_owner';
   };
@@ -183,7 +189,13 @@ export function useAuthProvider(): AuthContextProps {
         .eq('id', user.id)
         .single();
       
-      setUserProfile(updatedProfile);
+      if (updatedProfile) {
+        const typedProfile: UserProfile = {
+          ...updatedProfile,
+          user_type: updatedProfile.user_type as UserProfile['user_type'] || 'project_owner'
+        };
+        setUserProfile(typedProfile);
+      }
       toast.success('Profile updated successfully');
     } catch (err: any) {
       setError(err.message);

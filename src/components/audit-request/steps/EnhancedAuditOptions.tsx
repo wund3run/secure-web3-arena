@@ -29,8 +29,8 @@ import { AuditFormData, AuditFormErrors } from "@/types/audit-request.types";
 interface EnhancedAuditOptionsProps {
   formData: AuditFormData;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  handleCheckboxChange: (name: string, checked: boolean) => void;
-  handleSelectChange: (name: string, value: string) => void;
+  handleCheckboxChange: (name: keyof AuditFormData, checked: boolean) => void;
+  handleSelectChange: (name: keyof AuditFormData, value: string) => void;
   formErrors: AuditFormErrors;
 }
 

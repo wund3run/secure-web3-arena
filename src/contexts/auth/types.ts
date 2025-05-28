@@ -11,7 +11,7 @@ export interface AuthContextProps {
   signOut: () => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
   resetPassword: (newPassword: string) => Promise<void>;
-  getUserType: () => 'auditor' | 'project_owner';
+  getUserType: () => 'auditor' | 'project_owner' | 'admin' | 'general' | 'visitor';
   updateProfile: (data: any) => Promise<void>;
   error: string | null;
 }
@@ -21,7 +21,7 @@ export interface UserProfile {
   full_name?: string;
   avatar_url?: string;
   wallet_address?: string;
-  user_type?: 'auditor' | 'project_owner';
+  user_type?: 'auditor' | 'project_owner' | 'admin' | 'general' | 'visitor';
   verification_status?: string;
   bio?: string;
   website?: string;

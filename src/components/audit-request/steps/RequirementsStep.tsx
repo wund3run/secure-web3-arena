@@ -13,7 +13,7 @@ import EnhancedAuditOptions from "./EnhancedAuditOptions";
 interface RequirementsStepProps {
   formData: AuditFormData;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  handleSelectChange: (name: string, value: string) => void;
+  handleSelectChange: (name: keyof AuditFormData, value: string) => void;
   prevStep: () => void;
   nextStep: () => void;
   formErrors: AuditFormErrors;
@@ -28,7 +28,7 @@ export default function RequirementsStep({
   formErrors
 }: RequirementsStepProps) {
   // Define the checkbox change handler
-  const handleCheckboxChange = (name: string, checked: boolean) => {
+  const handleCheckboxChange = (name: keyof AuditFormData, checked: boolean) => {
     const changeEvent = {
       target: {
         name,

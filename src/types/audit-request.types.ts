@@ -23,6 +23,14 @@ export interface AuditFormData {
   hybridModel?: boolean;
 }
 
+export interface AuditFormErrors {
+  [key: string]: string;
+}
+
+export interface FormStepValidators {
+  [step: number]: (formData: AuditFormData) => { isValid: boolean; errors: AuditFormErrors };
+}
+
 export interface AuditRequest {
   id: string;
   client_id: string;

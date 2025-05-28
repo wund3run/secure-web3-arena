@@ -13,8 +13,8 @@ interface TechnicalInfoStepProps {
   formData: AuditFormData;
   formErrors?: AuditFormErrors;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  handleSelectChange: (name: string, value: string) => void;
-  handleCheckboxChange: (name: string, checked: boolean) => void;
+  handleSelectChange: (name: keyof AuditFormData, value: string) => void;
+  handleCheckboxChange: (name: keyof AuditFormData, checked: boolean) => void;
   prevStep: () => void;
   nextStep: () => void;
 }
