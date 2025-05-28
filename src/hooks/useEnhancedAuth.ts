@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -42,7 +43,7 @@ export const useEnhancedAuth = () => {
           user: session?.user ?? null,
           session,
           loading: false,
-          verificationPending: event === 'SIGNED_UP' && !session,
+          verificationPending: !session && event === 'SIGNED_UP',
         }));
 
         if (event === 'SIGNED_IN') {
