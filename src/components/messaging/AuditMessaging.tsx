@@ -75,7 +75,7 @@ export function AuditMessaging({ auditRequestId, otherParticipant }: AuditMessag
         sender_name: msg.sender_id === user?.id ? 'You' : otherParticipant.name,
         created_at: msg.created_at,
         message_type: msg.message_type as 'text' | 'file' | 'system',
-        file_attachments: msg.file_attachments,
+        file_attachments: Array.isArray(msg.file_attachments) ? msg.file_attachments : [],
       }));
 
       setMessages(formattedMessages);
@@ -107,7 +107,7 @@ export function AuditMessaging({ auditRequestId, otherParticipant }: AuditMessag
             sender_name: newMsg.sender_id === user?.id ? 'You' : otherParticipant.name,
             created_at: newMsg.created_at,
             message_type: newMsg.message_type,
-            file_attachments: newMsg.file_attachments,
+            file_attachments: Array.isArray(newMsg.file_attachments) ? newMsg.file_attachments : [],
           };
           
           setMessages(prev => [...prev, formattedMessage]);
