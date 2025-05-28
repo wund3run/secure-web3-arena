@@ -1,4 +1,3 @@
-
 import React, { Suspense, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
@@ -34,20 +33,23 @@ const Audits = React.lazy(() => import("@/pages/Audits"));
 const AuditDetails = React.lazy(() => import("@/pages/AuditDetails"));
 const Escrow = React.lazy(() => import("@/pages/Escrow"));
 
-// Content and resource pages
+// Production content pages - now fully functional
 const Docs = React.lazy(() => import("@/pages/Docs"));
+const Tutorials = React.lazy(() => import("@/pages/Tutorials"));
+const FAQ = React.lazy(() => import("@/pages/FAQ"));
+const Support = React.lazy(() => import("@/pages/Support"));
+const Templates = React.lazy(() => import("@/pages/Templates"));
+
+// Content and resource pages
 const Web3Security = React.lazy(() => import("@/pages/Web3Security"));
 const SecurityGuides = React.lazy(() => import("@/pages/SecurityGuides"));
-const Tutorials = React.lazy(() => import("@/pages/Tutorials"));
 const KnowledgeBase = React.lazy(() => import("@/pages/KnowledgeBase"));
-const FAQ = React.lazy(() => import("@/pages/FAQ"));
 const SecurityInsights = React.lazy(() => import("@/pages/SecurityInsights"));
 const Vulnerabilities = React.lazy(() => import("@/pages/Vulnerabilities"));
-const Templates = React.lazy(() => import("@/pages/Templates"));
 const AiTools = React.lazy(() => import("@/pages/AiTools"));
 const PlatformReport = React.lazy(() => import("@/pages/PlatformReport"));
 
-// Community pages
+// Community pages - still using placeholder until Phase 4
 const Forum = React.lazy(() => import("@/pages/Forum"));
 const Events = React.lazy(() => import("@/pages/Events"));
 const Challenges = React.lazy(() => import("@/pages/Challenges"));
@@ -73,7 +75,6 @@ const AdminSettings = React.lazy(() => import("@/pages/AdminSettings"));
 
 // Support and service pages
 const Contact = React.lazy(() => import("@/pages/Contact"));
-const Support = React.lazy(() => import("@/pages/Support"));
 const Terms = React.lazy(() => import("@/pages/Terms"));
 const Privacy = React.lazy(() => import("@/pages/Privacy"));
 const SecurityPolicy = React.lazy(() => import("@/pages/SecurityPolicy"));
@@ -169,16 +170,19 @@ function App() {
                       <Route path="/escrow" element={<Escrow />} />
                       <Route path="/audit-guidelines" element={<AuditGuidelines />} />
                       
-                      {/* Resource Routes */}
+                      {/* Production Resource Routes - Now Fully Functional */}
                       <Route path="/docs" element={<Docs />} />
+                      <Route path="/tutorials" element={<Tutorials />} />
+                      <Route path="/faq" element={<FAQ />} />
+                      <Route path="/support" element={<Support />} />
+                      <Route path="/templates" element={<Templates />} />
+                      
+                      {/* Other Resource Routes */}
                       <Route path="/web3-security" element={<Web3Security />} />
                       <Route path="/guides" element={<SecurityGuides />} />
-                      <Route path="/tutorials" element={<Tutorials />} />
                       <Route path="/knowledge-base" element={<KnowledgeBase />} />
-                      <Route path="/faq" element={<FAQ />} />
                       <Route path="/security-insights" element={<SecurityInsights />} />
                       <Route path="/vulnerabilities" element={<Vulnerabilities />} />
-                      <Route path="/templates" element={<Templates />} />
                       <Route path="/ai-tools" element={<AiTools />} />
                       <Route path="/platform-report" element={<PlatformReport />} />
                       
@@ -288,7 +292,6 @@ function App() {
                       
                       {/* Support and Legal Routes */}
                       <Route path="/contact" element={<Contact />} />
-                      <Route path="/support" element={<Support />} />
                       <Route path="/terms" element={<Terms />} />
                       <Route path="/privacy" element={<Privacy />} />
                       <Route path="/security-policy" element={<SecurityPolicy />} />
