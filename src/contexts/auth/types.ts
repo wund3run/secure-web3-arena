@@ -11,7 +11,7 @@ export interface UserProfile {
   avatar_url?: string;
   website?: string;
   wallet_address?: string;
-  user_type?: 'auditor' | 'project_owner';
+  user_type?: 'auditor' | 'project_owner' | 'admin';
   verification_status?: string;
   skills?: string[];
   specializations?: string[];
@@ -26,11 +26,12 @@ export interface AuthContextProps {
   user: User | null;
   userProfile: UserProfile | null;
   loading: boolean;
+  error?: string | null;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, metadata?: Record<string, any>) => Promise<void>;
   signOut: () => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
   resetPassword: (newPassword: string) => Promise<void>;
-  getUserType: () => 'auditor' | 'project_owner' | null;
+  getUserType: () => 'auditor' | 'project_owner' | 'admin' | null;
 }

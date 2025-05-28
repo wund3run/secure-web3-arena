@@ -9,6 +9,7 @@ export function useAuthProvider() {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchUserProfile = useCallback(async (userId: string) => {
     try {
@@ -23,7 +24,15 @@ export function useAuthProvider() {
         return;
       }
 
-      setUserProfile(data);
+      if (data) {
+        // Ensure user_type is properly typed
+        const typedProfile: UserProfile = {
+          ...data,
+          user_type: data.user_type as 'auditor' | 'project_owner' | 'admin' | undefined,
+          social_links: data.social_links as Record<string, string> | undefined
+        };
+        setUserProfile(typedProfile);
+      }
     } catch (error) {
       console.error('Error in fetchUserProfile:', error);
     }
@@ -85,6 +94,7 @@ export function useAuthProvider() {
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
+      setError(null);
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -98,6 +108,7 @@ export function useAuthProvider() {
       toast.success('Successfully signed in!');
     } catch (error: any) {
       console.error('Sign in error:', error);
+      setError(error.message || 'Failed to sign in');
       analyticsTracker.trackError(error, { context: 'sign_in' });
       toast.error(error.message || 'Failed to sign in');
       throw error;
@@ -109,6 +120,7 @@ export function useAuthProvider() {
   const signUp = async (email: string, password: string, metadata?: Record<string, any>) => {
     try {
       setLoading(true);
+      setError(null);
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -125,6 +137,7 @@ export function useAuthProvider() {
       toast.success('Account created successfully!');
     } catch (error: any) {
       console.error('Sign up error:', error);
+      setError(error.message || 'Failed to create account');
       analyticsTracker.trackError(error, { context: 'sign_up' });
       toast.error(error.message || 'Failed to create account');
       throw error;
@@ -143,10 +156,12 @@ export function useAuthProvider() {
 
       setUser(null);
       setUserProfile(null);
+      setError(null);
       analyticsTracker.track('auth', 'user', 'signed_out');
       toast.success('Successfully signed out!');
     } catch (error: any) {
       console.error('Sign out error:', error);
+      setError(error.message || 'Failed to sign out');
       analyticsTracker.trackError(error, { context: 'sign_out' });
       toast.error(error.message || 'Failed to sign out');
       throw error;
@@ -176,6 +191,7 @@ export function useAuthProvider() {
       toast.success('Profile updated successfully!');
     } catch (error: any) {
       console.error('Update profile error:', error);
+      setError(error.message || 'Failed to update profile');
       analyticsTracker.trackError(error, { context: 'update_profile' });
       toast.error(error.message || 'Failed to update profile');
       throw error;
@@ -194,6 +210,7 @@ export function useAuthProvider() {
       toast.success('Password reset email sent!');
     } catch (error: any) {
       console.error('Forgot password error:', error);
+      setError(error.message || 'Failed to send reset email');
       analyticsTracker.trackError(error, { context: 'forgot_password' });
       toast.error(error.message || 'Failed to send reset email');
       throw error;
@@ -214,13 +231,14 @@ export function useAuthProvider() {
       toast.success('Password reset successfully!');
     } catch (error: any) {
       console.error('Reset password error:', error);
+      setError(error.message || 'Failed to reset password');
       analyticsTracker.trackError(error, { context: 'reset_password' });
       toast.error(error.message || 'Failed to reset password');
       throw error;
     }
   };
 
-  const getUserType = (): 'auditor' | 'project_owner' | null => {
+  const getUserType = (): 'auditor' | 'project_owner' | 'admin' | null => {
     return userProfile?.user_type || null;
   };
 
@@ -228,6 +246,7 @@ export function useAuthProvider() {
     user,
     userProfile,
     loading,
+    error,
     signIn,
     signUp,
     signOut,

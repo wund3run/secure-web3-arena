@@ -78,8 +78,16 @@ export function ServiceProviderOnboardingForm({ providerType }: ServiceProviderO
       // Use the providerType prop to set the user type
       const userType = providerType === "auditor" ? "auditor" : "project_owner";
       
+      // Create metadata with user information
+      const metadata = {
+        full_name: data.name,
+        user_type: userType,
+        wallet_address: data.walletAddress,
+        website: data.website
+      };
+      
       // Fixed: Pass parameters properly according to the function signature
-      await signUp(data.email, data.email, data.name, userType);
+      await signUp(data.email, data.email, metadata);
       
       toast({
         title: "Application Submitted",

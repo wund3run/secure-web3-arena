@@ -10,6 +10,13 @@ export interface RoutePermission {
   requiresAuth: boolean;
 }
 
+export interface NavigationItem {
+  title: string;
+  href: string;
+  description?: string;
+  children?: NavigationItem[];
+}
+
 // Define route permissions
 export const routePermissions: RoutePermission[] = [
   { path: '/', allowedRoles: ['general', 'auditor', 'project_owner', 'admin'], requiresAuth: false },
@@ -31,6 +38,7 @@ export function getUserRole(user: User | null, userProfile: UserProfile | null):
   if (user.email?.endsWith('@hawkly.admin')) return 'admin';
   
   // Return role from profile
+  if (userProfile?.user_type === 'admin') return 'admin';
   if (userProfile?.user_type === 'auditor') return 'auditor';
   if (userProfile?.user_type === 'project_owner') return 'project_owner';
   
@@ -54,6 +62,17 @@ export function hasRouteAccess(user: User | null, path: string, userProfile: Use
   return permission.allowedRoles.includes(userRole);
 }
 
+// Filter navigation items based on user role
+export function getFilteredNavigation(user: User | null, navigationItems: NavigationItem[], userProfile: UserProfile | null): NavigationItem[] {
+  const userRole = getUserRole(user, userProfile);
+  
+  return navigationItems.filter(item => {
+    // For now, show all navigation items
+    // You can implement role-based filtering here if needed
+    return true;
+  });
+}
+
 // Check if user can perform specific action
 export function canPerformAction(user: User | null, action: string, userProfile: UserProfile | null): boolean {
   const userRole = getUserRole(user, userProfile);
@@ -67,6 +86,8 @@ export function canPerformAction(user: User | null, action: string, userProfile:
     'access_admin_features': ['admin'],
     'view_analytics': ['auditor', 'project_owner', 'admin'],
     'manage_profile': ['auditor', 'project_owner', 'admin'],
+    'submit_audit_service': ['auditor', 'admin'],
+    'access_admin_panel': ['admin'],
   };
   
   const allowedRoles = actionPermissions[action] || [];

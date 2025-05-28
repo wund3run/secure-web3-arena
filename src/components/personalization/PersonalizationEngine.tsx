@@ -8,7 +8,7 @@ import { PersonalizedHero } from './components/PersonalizedHero';
 import { PersonalizedFeatures } from './components/PersonalizedFeatures';
 
 export function PersonalizationEngine() {
-  const { user } = useAuth();
+  const { user, getUserType } = useAuth();
   const { userBehavior, userSegment } = useUserBehavior();
 
   const personalizedContent = generatePersonalizedContent(userSegment, userBehavior || {
@@ -17,6 +17,8 @@ export function PersonalizationEngine() {
     interactions: [],
     lastVisit: new Date().toISOString()
   });
+
+  const userType = getUserType();
 
   return (
     <div className="space-y-6">
@@ -29,7 +31,7 @@ export function PersonalizationEngine() {
       <PersonalizedFeatures content={personalizedContent} />
 
       <PersonalizedRecommendations 
-        userType={userBehavior?.userType as any || 'general'} 
+        userType={userType || 'general'} 
       />
     </div>
   );
