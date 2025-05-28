@@ -82,12 +82,24 @@ export const useMarketplaceServices = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
+      // Ensure required fields are present
+      const insertData = {
+        provider_id: user.id,
+        title: serviceData.title || '',
+        description: serviceData.description || '',
+        category: serviceData.category || '',
+        blockchain_ecosystems: serviceData.blockchain_ecosystems,
+        tags: serviceData.tags,
+        price_range: serviceData.price_range,
+        delivery_time: serviceData.delivery_time,
+        featured: serviceData.featured || false,
+        average_rating: serviceData.average_rating || 0,
+        review_count: serviceData.review_count || 0
+      };
+
       const { data, error } = await supabase
         .from('services')
-        .insert({
-          ...serviceData,
-          provider_id: user.id,
-        })
+        .insert(insertData)
         .select()
         .single();
 

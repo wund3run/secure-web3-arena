@@ -54,12 +54,26 @@ export const useAuditRequests = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
+      // Ensure required fields are present
+      const insertData = {
+        client_id: user.id,
+        project_name: requestData.project_name || '',
+        blockchain: requestData.blockchain || '',
+        project_description: requestData.project_description,
+        repository_url: requestData.repository_url,
+        contract_count: requestData.contract_count,
+        lines_of_code: requestData.lines_of_code,
+        deadline: requestData.deadline,
+        budget: requestData.budget,
+        audit_scope: requestData.audit_scope,
+        previous_audits: requestData.previous_audits,
+        specific_concerns: requestData.specific_concerns,
+        status: requestData.status || 'pending'
+      };
+
       const { data, error } = await supabase
         .from('audit_requests')
-        .insert({
-          ...requestData,
-          client_id: user.id,
-        })
+        .insert(insertData)
         .select()
         .single();
 
