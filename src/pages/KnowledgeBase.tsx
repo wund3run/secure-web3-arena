@@ -9,12 +9,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Search, Book, Shield, Code, Zap, Users, FileText, 
   ArrowRight, Star, Clock, TrendingUp, Bookmark, Bot,
-  Brain, Cpu, Globe, Lock, AlertTriangle
+  Brain, Cpu, Globe, Lock, AlertTriangle, ExternalLink,
+  Download, Share2, Filter, SortAsc
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const KnowledgeBase = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [bookmarkedArticles, setBookmarkedArticles] = useState<number[]>([]);
+  const [sortBy, setSortBy] = useState<'recent' | 'popular' | 'rating'>('recent');
+
+  const toggleBookmark = (articleIndex: number) => {
+    setBookmarkedArticles(prev => 
+      prev.includes(articleIndex) 
+        ? prev.filter(i => i !== articleIndex)
+        : [...prev, articleIndex]
+    );
+  };
 
   const categories = [
     {
@@ -22,56 +33,64 @@ const KnowledgeBase = () => {
       name: 'Security',
       icon: <Shield className="h-5 w-5" />,
       count: 68,
-      color: 'bg-red-100 text-red-700'
+      color: 'bg-red-100 text-red-700',
+      href: '/vulnerabilities'
     },
     {
       id: 'ai-security',
       name: 'AI Security',
       icon: <Bot className="h-5 w-5" />,
       count: 42,
-      color: 'bg-purple-100 text-purple-700'
+      color: 'bg-purple-100 text-purple-700',
+      href: '/ai-tools'
     },
     {
       id: 'development',
       name: 'Development',
       icon: <Code className="h-5 w-5" />,
       count: 39,
-      color: 'bg-blue-100 text-blue-700'
+      color: 'bg-blue-100 text-blue-700',
+      href: '/docs'
     },
     {
       id: 'auditing',
       name: 'Auditing',
       icon: <FileText className="h-5 w-5" />,
       count: 35,
-      color: 'bg-green-100 text-green-700'
+      color: 'bg-green-100 text-green-700',
+      href: '/audits'
     },
     {
       id: 'defi',
       name: 'DeFi',
       icon: <Zap className="h-5 w-5" />,
       count: 28,
-      color: 'bg-yellow-100 text-yellow-700'
+      color: 'bg-yellow-100 text-yellow-700',
+      href: '/web3-security'
     },
     {
       id: 'cross-chain',
       name: 'Cross-Chain',
       icon: <Globe className="h-5 w-5" />,
       count: 24,
-      color: 'bg-cyan-100 text-cyan-700'
+      color: 'bg-cyan-100 text-cyan-700',
+      href: '/guides'
     },
     {
       id: 'zk-proofs',
       name: 'ZK Proofs',
       icon: <Lock className="h-5 w-5" />,
       count: 19,
-      color: 'bg-indigo-100 text-indigo-700'
+      color: 'bg-indigo-100 text-indigo-700',
+      href: '/tutorials'
     },
     {
       id: 'governance',
       name: 'Governance',
       icon: <Users className="h-5 w-5" />,
       count: 16,
-      color: 'bg-teal-100 text-teal-700'
+      color: 'bg-teal-100 text-teal-700',
+      href: '/forum'
     }
   ];
 
@@ -86,7 +105,9 @@ const KnowledgeBase = () => {
       author: "Dr. Elena Vasquez",
       date: "2025-01-20",
       tags: ["AI", "Machine Learning", "Automated Auditing", "GPT-4"],
-      isNew: true
+      isNew: true,
+      href: "/ai-tools",
+      downloadUrl: "/resources/ai-enhanced-auditing-2025.pdf"
     },
     {
       title: "Cross-Chain Bridge Security: Lessons from $3.2B in Losses",
@@ -97,7 +118,9 @@ const KnowledgeBase = () => {
       rating: 4.8,
       author: "Marcus Chen",
       date: "2025-01-15",
-      tags: ["Bridges", "Cross-Chain", "Security", "Vulnerabilities"]
+      tags: ["Bridges", "Cross-Chain", "Security", "Vulnerabilities"],
+      href: "/vulnerabilities",
+      downloadUrl: "/resources/cross-chain-security-analysis.pdf"
     },
     {
       title: "Zero-Knowledge Proof Security: Privacy Meets Verification",
@@ -108,7 +131,9 @@ const KnowledgeBase = () => {
       rating: 4.7,
       author: "Prof. Aisha Patel",
       date: "2025-01-10",
-      tags: ["ZK-Proofs", "Privacy", "Cryptography", "Scaling"]
+      tags: ["ZK-Proofs", "Privacy", "Cryptography", "Scaling"],
+      href: "/tutorials",
+      downloadUrl: "/resources/zk-proof-security-guide.pdf"
     },
     {
       title: "Formal Verification in Practice: Mathematical Proof Systems",
@@ -119,7 +144,9 @@ const KnowledgeBase = () => {
       rating: 4.6,
       author: "Sarah Kim",
       date: "2025-01-08",
-      tags: ["Formal Verification", "Mathematics", "Proofs", "DeFi"]
+      tags: ["Formal Verification", "Mathematics", "Proofs", "DeFi"],
+      href: "/docs",
+      downloadUrl: "/resources/formal-verification-guide.pdf"
     },
     {
       title: "MEV Protection Strategies: Beyond Traditional Defenses",
@@ -130,7 +157,9 @@ const KnowledgeBase = () => {
       rating: 4.8,
       author: "Alex Rodriguez",
       date: "2025-01-05",
-      tags: ["MEV", "Flashbots", "Private Pools", "DeFi"]
+      tags: ["MEV", "Flashbots", "Private Pools", "DeFi"],
+      href: "/web3-security",
+      downloadUrl: "/resources/mev-protection-strategies.pdf"
     },
     {
       title: "Account Abstraction Security Patterns",
@@ -141,49 +170,81 @@ const KnowledgeBase = () => {
       rating: 4.5,
       author: "Jordan Walsh",
       date: "2025-01-03",
-      tags: ["Account Abstraction", "EIP-4337", "Wallets", "UX"]
+      tags: ["Account Abstraction", "EIP-4337", "Wallets", "UX"],
+      href: "/docs",
+      downloadUrl: "/resources/account-abstraction-security.pdf"
     }
   ];
 
   const trendingTopics = [
-    { name: "AI-Powered Exploit Detection", growth: "+340%", icon: <Brain className="h-4 w-4" /> },
-    { name: "Quantum-Resistant Cryptography", growth: "+280%", icon: <Cpu className="h-4 w-4" /> },
-    { name: "Cross-Chain Security", growth: "+195%", icon: <Globe className="h-4 w-4" /> },
-    { name: "ZK-Proof Vulnerabilities", growth: "+150%", icon: <Lock className="h-4 w-4" /> },
-    { name: "Intent-Based Architecture", growth: "+125%", icon: <Zap className="h-4 w-4" /> },
-    { name: "Modular Blockchain Security", growth: "+110%", icon: <Code className="h-4 w-4" /> }
+    { name: "AI-Powered Exploit Detection", growth: "+340%", icon: <Brain className="h-4 w-4" />, href: "/ai-tools" },
+    { name: "Quantum-Resistant Cryptography", growth: "+280%", icon: <Cpu className="h-4 w-4" />, href: "/tutorials" },
+    { name: "Cross-Chain Security", growth: "+195%", icon: <Globe className="h-4 w-4" />, href: "/guides" },
+    { name: "ZK-Proof Vulnerabilities", growth: "+150%", icon: <Lock className="h-4 w-4" />, href: "/vulnerabilities" },
+    { name: "Intent-Based Architecture", growth: "+125%", icon: <Zap className="h-4 w-4" />, href: "/docs" },
+    { name: "Modular Blockchain Security", growth: "+110%", icon: <Code className="h-4 w-4" />, href: "/web3-security" }
   ];
 
-  const emergingTopics = [
+  const emergingThreats = [
     {
       title: "Post-Quantum Cryptography Migration",
       description: "Preparing blockchain systems for quantum computer threats",
       urgency: "High",
-      timeline: "2025-2030"
+      timeline: "2025-2030",
+      href: "/security-insights"
     },
     {
       title: "AI Agent Security Frameworks",
       description: "Securing autonomous AI agents in DeFi and governance",
       urgency: "Critical",
-      timeline: "2025"
+      timeline: "2025",
+      href: "/ai-tools"
     },
     {
       title: "Modular Rollup Security",
       description: "Security implications of disaggregated blockchain architecture",
       urgency: "Medium",
-      timeline: "2025-2026"
+      timeline: "2025-2026",
+      href: "/tutorials"
     }
   ];
 
   const quickLinks = [
-    { title: "2025 Web3 Security Landscape", href: "/web3-security" },
-    { title: "AI-Enhanced Audit Tools", href: "/ai-tools" },
-    { title: "Smart Contract Audit Checklist", href: "/templates" },
-    { title: "Cross-Chain Security Guide", href: "/guides" },
-    { title: "Vulnerability Database", href: "/vulnerabilities" },
-    { title: "Community Security Forum", href: "/forum" },
-    { title: "Security Research Events", href: "/events" },
-    { title: "ZK-Proof Security Patterns", href: "/tutorials" }
+    { title: "2025 Web3 Security Landscape", href: "/web3-security", icon: <Shield className="h-4 w-4" /> },
+    { title: "AI-Enhanced Audit Tools", href: "/ai-tools", icon: <Bot className="h-4 w-4" /> },
+    { title: "Smart Contract Audit Checklist", href: "/templates", icon: <FileText className="h-4 w-4" /> },
+    { title: "Cross-Chain Security Guide", href: "/guides", icon: <Globe className="h-4 w-4" /> },
+    { title: "Vulnerability Database", href: "/vulnerabilities", icon: <AlertTriangle className="h-4 w-4" /> },
+    { title: "Community Security Forum", href: "/forum", icon: <Users className="h-4 w-4" /> },
+    { title: "Security Research Events", href: "/events", icon: <Book className="h-4 w-4" /> },
+    { title: "ZK-Proof Security Patterns", href: "/tutorials", icon: <Lock className="h-4 w-4" /> }
+  ];
+
+  const recentArticles = [
+    {
+      title: "2025 Q1 Security Threat Report",
+      date: "March 15, 2025",
+      category: "Reports",
+      href: "/platform-report"
+    },
+    {
+      title: "New Solana MEV Protection Framework",
+      date: "March 12, 2025",
+      category: "Development",
+      href: "/docs"
+    },
+    {
+      title: "LayerZero V2 Security Analysis",
+      date: "March 10, 2025",
+      category: "Cross-Chain",
+      href: "/vulnerabilities"
+    },
+    {
+      title: "EigenLayer Restaking Risks Update",
+      date: "March 8, 2025",
+      category: "DeFi",
+      href: "/web3-security"
+    }
   ];
 
   return (
@@ -218,10 +279,12 @@ const KnowledgeBase = () => {
 
           <div className="flex flex-wrap justify-center gap-2">
             {categories.map((category) => (
-              <Badge key={category.id} variant="secondary" className={`${category.color} hover:opacity-80 cursor-pointer`}>
-                {category.icon}
-                <span className="ml-1">{category.name} ({category.count})</span>
-              </Badge>
+              <Link key={category.id} to={category.href}>
+                <Badge variant="secondary" className={`${category.color} hover:opacity-80 cursor-pointer transition-all hover:scale-105`}>
+                  {category.icon}
+                  <span className="ml-1">{category.name} ({category.count})</span>
+                </Badge>
+              </Link>
             ))}
           </div>
         </div>
@@ -252,18 +315,31 @@ const KnowledgeBase = () => {
         </div>
 
         <Tabs defaultValue="featured" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="featured">Featured</TabsTrigger>
-            <TabsTrigger value="trending">Trending</TabsTrigger>
-            <TabsTrigger value="emerging">Emerging</TabsTrigger>
-            <TabsTrigger value="recent">Recent</TabsTrigger>
-            <TabsTrigger value="categories">Categories</TabsTrigger>
-          </TabsList>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <TabsList className="grid w-full sm:w-auto grid-cols-5">
+              <TabsTrigger value="featured">Featured</TabsTrigger>
+              <TabsTrigger value="trending">Trending</TabsTrigger>
+              <TabsTrigger value="emerging">Emerging</TabsTrigger>
+              <TabsTrigger value="recent">Recent</TabsTrigger>
+              <TabsTrigger value="categories">Categories</TabsTrigger>
+            </TabsList>
+            
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={() => setSortBy('recent')}>
+                <SortAsc className="h-4 w-4 mr-1" />
+                Sort: {sortBy === 'recent' ? 'Recent' : sortBy === 'popular' ? 'Popular' : 'Rating'}
+              </Button>
+              <Button variant="outline" size="sm">
+                <Filter className="h-4 w-4 mr-1" />
+                Filter
+              </Button>
+            </div>
+          </div>
 
           <TabsContent value="featured" className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               {featuredArticles.map((article, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer">
+                <Card key={index} className="hover:shadow-lg transition-all cursor-pointer group">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-2 mb-2">
@@ -279,10 +355,29 @@ const KnowledgeBase = () => {
                           <Badge className="bg-green-100 text-green-700 text-xs">NEW</Badge>
                         )}
                       </div>
-                      <Bookmark className="h-4 w-4 text-muted-foreground hover:text-primary cursor-pointer" />
+                      <div className="flex gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleBookmark(index);
+                          }}
+                        >
+                          <Bookmark className={`h-4 w-4 ${bookmarkedArticles.includes(index) ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
+                        </Button>
+                        <Button variant="ghost" size="sm" asChild>
+                          <a href={article.downloadUrl} download>
+                            <Download className="h-4 w-4" />
+                          </a>
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <Share2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
-                    <CardTitle className="text-lg hover:text-primary transition-colors">
-                      {article.title}
+                    <CardTitle className="text-lg hover:text-primary transition-colors group-hover:text-primary">
+                      <Link to={article.href}>{article.title}</Link>
                     </CardTitle>
                     <CardDescription>{article.description}</CardDescription>
                   </CardHeader>
@@ -309,8 +404,10 @@ const KnowledgeBase = () => {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm">By {article.author}</span>
-                      <Button variant="ghost" size="sm">
-                        Read More <ArrowRight className="ml-1 h-3 w-3" />
+                      <Button variant="ghost" size="sm" asChild>
+                        <Link to={article.href}>
+                          Read More <ArrowRight className="ml-1 h-3 w-3" />
+                        </Link>
                       </Button>
                     </div>
                   </CardContent>
@@ -322,12 +419,14 @@ const KnowledgeBase = () => {
           <TabsContent value="trending" className="space-y-6">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {trendingTopics.map((topic, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer">
+                <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer group">
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         {topic.icon}
-                        <CardTitle className="text-lg">{topic.name}</CardTitle>
+                        <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                          <Link to={topic.href}>{topic.name}</Link>
+                        </CardTitle>
                       </div>
                       <Badge className="bg-green-100 text-green-700">
                         <TrendingUp className="h-3 w-3 mr-1" />
@@ -335,6 +434,13 @@ const KnowledgeBase = () => {
                       </Badge>
                     </div>
                   </CardHeader>
+                  <CardContent>
+                    <Button variant="outline" size="sm" asChild className="w-full">
+                      <Link to={topic.href}>
+                        Explore Topic <ExternalLink className="ml-1 h-3 w-3" />
+                      </Link>
+                    </Button>
+                  </CardContent>
                 </Card>
               ))}
             </div>
@@ -342,14 +448,16 @@ const KnowledgeBase = () => {
 
           <TabsContent value="emerging" className="space-y-6">
             <div className="grid md:grid-cols-1 gap-6">
-              {emergingTopics.map((topic, index) => (
-                <Card key={index} className="border-orange-200 bg-orange-50/50">
+              {emergingThreats.map((topic, index) => (
+                <Card key={index} className="border-orange-200 bg-orange-50/50 hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div>
                         <CardTitle className="text-lg text-orange-800 flex items-center gap-2">
                           <AlertTriangle className="h-5 w-5" />
-                          {topic.title}
+                          <Link to={topic.href} className="hover:text-orange-600 transition-colors">
+                            {topic.title}
+                          </Link>
                         </CardTitle>
                         <CardDescription className="text-orange-700 mt-2">
                           {topic.description}
@@ -367,33 +475,59 @@ const KnowledgeBase = () => {
                       </div>
                     </div>
                   </CardHeader>
+                  <CardContent>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to={topic.href}>
+                        Learn More <ArrowRight className="ml-1 h-3 w-3" />
+                      </Link>
+                    </Button>
+                  </CardContent>
                 </Card>
               ))}
             </div>
           </TabsContent>
 
-          <TabsContent value="recent">
-            <div className="text-center py-12">
-              <Book className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Recent Articles</h3>
-              <p className="text-muted-foreground">Stay updated with the latest security insights and developments for 2025.</p>
+          <TabsContent value="recent" className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              {recentArticles.map((article, index) => (
+                <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer group">
+                  <CardHeader>
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge variant="secondary">{article.category}</Badge>
+                      <span className="text-sm text-muted-foreground">{article.date}</span>
+                    </div>
+                    <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                      <Link to={article.href}>{article.title}</Link>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Button variant="ghost" size="sm" asChild>
+                      <Link to={article.href}>
+                        Read Article <ArrowRight className="ml-1 h-3 w-3" />
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </TabsContent>
 
           <TabsContent value="categories" className="space-y-6">
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
               {categories.map((category) => (
-                <Card key={category.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+                <Card key={category.id} className="hover:shadow-lg transition-shadow cursor-pointer group">
                   <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <div className={`p-2 rounded-lg ${category.color}`}>
-                        {category.icon}
+                    <Link to={category.href}>
+                      <div className="flex items-center gap-3">
+                        <div className={`p-2 rounded-lg ${category.color}`}>
+                          {category.icon}
+                        </div>
+                        <div>
+                          <CardTitle className="text-lg group-hover:text-primary transition-colors">{category.name}</CardTitle>
+                          <CardDescription>{category.count} articles</CardDescription>
+                        </div>
                       </div>
-                      <div>
-                        <CardTitle className="text-lg">{category.name}</CardTitle>
-                        <CardDescription>{category.count} articles</CardDescription>
-                      </div>
-                    </div>
+                    </Link>
                   </CardHeader>
                 </Card>
               ))}
@@ -406,10 +540,11 @@ const KnowledgeBase = () => {
           <h3 className="text-xl font-semibold mb-4">Quick Access to 2025 Security Resources</h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
             {quickLinks.map((link, index) => (
-              <Button key={index} variant="ghost" asChild className="justify-start">
-                <Link to={link.href}>
-                  <ArrowRight className="mr-2 h-4 w-4" />
-                  {link.title}
+              <Button key={index} variant="ghost" asChild className="justify-start h-auto p-3">
+                <Link to={link.href} className="flex items-center gap-3">
+                  {link.icon}
+                  <span className="text-left">{link.title}</span>
+                  <ArrowRight className="ml-auto h-4 w-4 opacity-50" />
                 </Link>
               </Button>
             ))}
