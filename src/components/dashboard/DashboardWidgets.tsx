@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, Book, CheckSquare, Shield, Award, FileSpreadsheet, ChartPie, LineChart, Users, Settings } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { NotificationDashboardWidget } from './NotificationDashboardWidget';
 
 interface DashboardWidgetsProps {
   userType: string;
@@ -37,9 +38,53 @@ export function DashboardWidgets({ userType, section }: DashboardWidgetsProps) {
     }
   };
   
+  const renderOverviewWidgets = () => {
+    switch (userType) {
+      case 'auditor':
+        return (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <AuditorStats />
+            <ReputationWidget />
+            <EarningsWidget />
+            <NotificationDashboardWidget />
+            <UpcomingDeadlinesWidget />
+            <AuditPerformanceWidget />
+          </div>
+        );
+      case 'project_owner':
+        return (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <ProjectOwnerStats />
+            <SecurityScoreWidget />
+            <ProjectsWidget />
+            <NotificationDashboardWidget />
+            <VulnerabilityWidget />
+            <AuditProgressWidget />
+          </div>
+        );
+      case 'admin':
+        return (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <AdminDashboardWidgets />
+            <NotificationDashboardWidget />
+          </div>
+        );
+      default:
+        return (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <ProjectOwnerStats />
+            <SecurityScoreWidget />
+            <NotificationDashboardWidget />
+            <ProjectsWidget />
+          </div>
+        );
+    }
+  };
+  
   return (
     <div className="mt-6">
       {renderContent()}
+      {renderOverviewWidgets()}
     </div>
   );
 }

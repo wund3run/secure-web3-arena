@@ -1,4 +1,3 @@
-
 import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
@@ -77,6 +76,9 @@ import {
 
 // 404 page
 import NotFound from './pages/NotFound';
+
+// Import the new page
+import NotificationTesting from './pages/NotificationTesting';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -176,6 +178,9 @@ function App() {
                     <Route path="/auditor-dashboard" element={<AuditorDashboard />} />
                     <Route path="/project-dashboard" element={<ProjectDashboard />} />
                     <Route path="/user-dashboard" element={<UserDashboard />} />
+                    
+                    {/* Add notification testing route */}
+                    <Route path="/notification-testing" element={<NotificationTesting />} />
                     
                     {/* 404 */}
                     <Route path="*" element={<NotFound />} />
