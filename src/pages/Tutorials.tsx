@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ContentPage } from '@/components/content/content-page';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
