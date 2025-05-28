@@ -11,7 +11,6 @@ import {
   Package,
   Truck,
   RefreshCw,
-  Calculator,
   Users,
   Award,
   BarChart3,
@@ -27,7 +26,6 @@ import {
   Newspaper,
   Brain,
   TrendingUp,
-  MapPin,
   Lock,
   User,
   Code

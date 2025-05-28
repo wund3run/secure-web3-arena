@@ -1,230 +1,242 @@
 
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Navbar } from '@/components/layout/navbar';
-import { Footer } from '@/components/layout/footer';
-import { Check, Star, Shield, Zap, Users, Crown } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Check, Star, Shield, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
 
-export default function Pricing() {
+const Pricing = () => {
   const plans = [
     {
-      name: "Starter Audit",
-      icon: <Shield className="h-6 w-6" />,
-      price: "$2,500",
-      priceRange: "$2,500 - $5,000",
+      name: "Starter",
+      price: "$1,500",
+      period: "per audit",
       description: "Perfect for small projects and individual developers",
       features: [
+        "Basic smart contract audit",
         "Up to 500 lines of code",
-        "Basic vulnerability assessment", 
-        "1-2 smart contracts",
-        "Standard report delivery (5-7 days)",
+        "Standard report",
+        "3-5 day turnaround",
         "Email support",
-        "Basic remediation guidance"
+        "1 revision included"
       ],
       popular: false,
-      cta: "Get Started"
+      color: "border-gray-200"
     },
     {
-      name: "Professional Audit", 
-      icon: <Star className="h-6 w-6" />,
-      price: "$7,500",
-      priceRange: "$5,000 - $15,000",
-      description: "Comprehensive audits for production-ready projects",
+      name: "Professional",
+      price: "$5,000",
+      period: "per audit",
+      description: "Ideal for growing projects and startups",
       features: [
+        "Comprehensive security audit",
         "Up to 2,000 lines of code",
-        "Comprehensive security analysis",
-        "Up to 10 smart contracts", 
-        "Priority delivery (3-5 days)",
-        "24/7 chat support",
-        "Detailed remediation plan",
-        "Post-audit verification",
-        "Security badge for marketing"
+        "Detailed security report",
+        "Gas optimization review",
+        "2-3 day turnaround",
+        "Priority support",
+        "2 revisions included",
+        "Video walkthrough"
       ],
       popular: true,
-      cta: "Most Popular"
+      color: "border-blue-500"
     },
     {
-      name: "Enterprise Audit",
-      icon: <Crown className="h-6 w-6" />,
-      price: "$25,000",
-      priceRange: "$15,000 - $50,000+", 
-      description: "Complete security solutions for large-scale projects",
+      name: "Enterprise",
+      price: "$15,000",
+      period: "per audit",
+      description: "For large-scale protocols and institutions",
       features: [
+        "Full security assessment",
         "Unlimited lines of code",
-        "Full ecosystem security audit",
-        "Unlimited smart contracts",
-        "Express delivery (1-3 days)",
-        "Dedicated security manager",
-        "Custom security framework",
-        "Ongoing monitoring setup",
-        "Emergency response plan",
-        "Compliance documentation",
-        "Team security training"
+        "Executive summary",
+        "Multiple auditor review",
+        "1-2 day turnaround",
+        "24/7 dedicated support",
+        "Unlimited revisions",
+        "Live presentation",
+        "Ongoing monitoring",
+        "Insurance coverage"
       ],
       popular: false,
-      cta: "Contact Sales"
+      color: "border-purple-500"
     }
   ];
 
   const additionalServices = [
     {
-      title: "Continuous Monitoring",
-      price: "From $500/month",
-      description: "24/7 automated monitoring of your deployed contracts",
-      icon: <Zap className="h-5 w-5" />
+      name: "Emergency Audit",
+      price: "$2,500",
+      description: "24-48 hour turnaround for critical issues",
+      icon: <Zap className="h-5 w-5 text-yellow-500" />
     },
     {
-      title: "Security Training",
-      price: "From $2,000",
-      description: "Comprehensive security training for your development team",
-      icon: <Users className="h-5 w-5" />
+      name: "Re-audit",
+      price: "$500",
+      description: "Follow-up audit after implementing fixes",
+      icon: <Shield className="h-5 w-5 text-green-500" />
     },
     {
-      title: "Emergency Response",
-      price: "From $5,000",
-      description: "Rapid response for security incidents and vulnerabilities",
-      icon: <Shield className="h-5 w-5" />
+      name: "Continuous Monitoring",
+      price: "$200",
+      description: "Monthly security monitoring and alerts",
+      icon: <Star className="h-5 w-5 text-blue-500" />
     }
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
       <Helmet>
-        <title>Security Audit Pricing | Hawkly</title>
-        <meta name="description" content="Transparent pricing for professional Web3 security audits. Choose from starter, professional, or enterprise audit packages." />
+        <title>Pricing | Hawkly</title>
+        <meta name="description" content="Transparent pricing for Web3 security audits" />
       </Helmet>
-      
-      <Navbar />
-      
-      <div className="container mx-auto px-4 py-8">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 text-primary mb-6">
-            <Shield className="h-4 w-4 mr-2" />
-            <span className="text-sm font-medium">Transparent Pricing</span>
+
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        
+        <div className="container mx-auto px-4 py-16">
+          {/* Header */}
+          <div className="text-center mb-16">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Simple, Transparent Pricing
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Professional security audits with fixed pricing. No hidden fees, no surprises.
+              Choose the plan that fits your project's needs.
+            </p>
           </div>
-          
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Security Audit 
-            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"> Pricing</span>
-          </h1>
-          
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            Choose the right security audit package for your project. All audits include comprehensive 
-            vulnerability assessment and detailed remediation guidance.
-          </p>
-        </div>
 
-        {/* Pricing Cards */}
-        <div className="grid lg:grid-cols-3 gap-8 mb-16">
-          {plans.map((plan, index) => (
-            <Card key={index} className={`relative ${plan.popular ? 'border-primary shadow-lg scale-105' : ''}`}>
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-primary text-primary-foreground">Most Popular</Badge>
-                </div>
-              )}
-              
-              <CardHeader className="text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg mb-4 mx-auto">
-                  {plan.icon}
-                </div>
-                <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                <CardDescription className="text-base">{plan.description}</CardDescription>
-                <div className="mt-4">
-                  <div className="text-3xl font-bold">{plan.price}</div>
-                  <div className="text-sm text-muted-foreground">Starting from</div>
-                  <div className="text-sm text-muted-foreground">{plan.priceRange}</div>
-                </div>
-              </CardHeader>
-              
-              <CardContent className="space-y-6">
-                <ul className="space-y-3">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-start gap-3">
-                      <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                
-                <Link to="/request-audit" className="block">
-                  <Button 
-                    className={`w-full ${plan.popular ? 'bg-primary hover:bg-primary/90' : ''}`}
-                    variant={plan.popular ? "default" : "outline"}
-                  >
-                    {plan.cta}
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Additional Services */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-8">Additional Services</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {additionalServices.map((service, index) => (
-              <Card key={index} className="text-center hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <div className="inline-flex items-center justify-center w-10 h-10 bg-primary/10 rounded-lg mb-3 mx-auto">
-                    {service.icon}
+          {/* Pricing Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            {plans.map((plan, index) => (
+              <Card key={index} className={`relative ${plan.color} ${plan.popular ? 'border-2 shadow-lg' : ''}`}>
+                {plan.popular && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <Badge className="bg-blue-500 text-white px-3 py-1">
+                      Most Popular
+                    </Badge>
                   </div>
-                  <CardTitle className="text-lg">{service.title}</CardTitle>
-                  <div className="text-lg font-semibold text-primary">{service.price}</div>
+                )}
+                
+                <CardHeader className="text-center pb-4">
+                  <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
+                  <div className="mt-4">
+                    <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
+                    <span className="text-gray-600 ml-2">{plan.period}</span>
+                  </div>
+                  <p className="text-gray-600 mt-2">{plan.description}</p>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground mb-4">{service.description}</p>
-                  <Button variant="outline" size="sm">Learn More</Button>
+                
+                <CardContent className="space-y-6">
+                  <ul className="space-y-3">
+                    {plan.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-center">
+                        <Check className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                        <span className="text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <Button 
+                    asChild 
+                    className={`w-full ${plan.popular ? 'bg-blue-500 hover:bg-blue-600' : ''}`}
+                    variant={plan.popular ? 'default' : 'outline'}
+                  >
+                    <Link to="/request-audit">
+                      Get Started
+                    </Link>
+                  </Button>
                 </CardContent>
               </Card>
             ))}
           </div>
-        </div>
 
-        {/* FAQ Section */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-          <div className="max-w-3xl mx-auto space-y-6">
-            <div className="p-6 border rounded-lg">
-              <h3 className="font-semibold mb-2">How long does an audit take?</h3>
-              <p className="text-muted-foreground">Audit duration depends on the complexity and size of your project. Starter audits typically take 5-7 days, Professional audits 3-5 days, and Enterprise audits 1-3 days with express service.</p>
+          {/* Additional Services */}
+          <div className="mb-16">
+            <h2 className="text-3xl font-bold text-center mb-8">Additional Services</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {additionalServices.map((service, index) => (
+                <Card key={index}>
+                  <CardContent className="p-6 text-center">
+                    <div className="mb-4">{service.icon}</div>
+                    <h3 className="font-semibold text-lg mb-2">{service.name}</h3>
+                    <p className="text-gray-600 mb-4">{service.description}</p>
+                    <div className="text-2xl font-bold text-gray-900 mb-4">
+                      {service.price}
+                    </div>
+                    <Button variant="outline" className="w-full">
+                      Add to Audit
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-            <div className="p-6 border rounded-lg">
-              <h3 className="font-semibold mb-2">What's included in the audit report?</h3>
-              <p className="text-muted-foreground">All audits include a comprehensive report detailing vulnerabilities found, severity ratings, and specific remediation recommendations. Professional and Enterprise audits also include post-audit verification.</p>
+          </div>
+
+          {/* FAQ Section */}
+          <div className="bg-white rounded-lg p-8">
+            <h2 className="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="font-semibold mb-2">What's included in an audit?</h3>
+                <p className="text-gray-600 text-sm">
+                  Every audit includes a comprehensive security review, detailed report with findings, 
+                  and recommendations for fixes.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2">How long does an audit take?</h3>
+                <p className="text-gray-600 text-sm">
+                  Timeline depends on your plan and project complexity. Most audits complete 
+                  within 1-5 business days.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2">Do you offer refunds?</h3>
+                <p className="text-gray-600 text-sm">
+                  We offer a 100% satisfaction guarantee. If you're not happy with your audit, 
+                  we'll refund your payment.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2">Can I upgrade my plan?</h3>
+                <p className="text-gray-600 text-sm">
+                  Yes, you can upgrade during the audit process. We'll apply the price difference 
+                  and extend the scope.
+                </p>
+              </div>
             </div>
-            <div className="p-6 border rounded-lg">
-              <h3 className="font-semibold mb-2">Do you offer custom pricing for large projects?</h3>
-              <p className="text-muted-foreground">Yes, we offer custom pricing for large-scale projects, multi-protocol audits, and ongoing security partnerships. Contact our sales team for a personalized quote.</p>
+          </div>
+
+          {/* CTA Section */}
+          <div className="text-center mt-16">
+            <h2 className="text-3xl font-bold mb-4">Ready to Secure Your Project?</h2>
+            <p className="text-gray-600 mb-8">
+              Join thousands of projects that trust Hawkly for their security needs
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button asChild size="lg">
+                <Link to="/request-audit">
+                  Request Audit
+                </Link>
+              </Button>
+              <Button variant="outline" size="lg" asChild>
+                <Link to="/contact">
+                  Talk to Sales
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
-
-        {/* CTA Section */}
-        <div className="text-center bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-8">
-          <h2 className="text-2xl font-bold mb-4">Ready to Secure Your Project?</h2>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Get started with a professional security audit today. Our expert auditors will help identify 
-            and fix vulnerabilities before you deploy to mainnet.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/request-audit">
-              <Button size="lg">Request Audit</Button>
-            </Link>
-            <Link to="/contact">
-              <Button variant="outline" size="lg">Talk to Sales</Button>
-            </Link>
-          </div>
-        </div>
+        
+        <Footer />
       </div>
-      
-      <Footer />
-    </div>
+    </>
   );
-}
+};
+
+export default Pricing;
