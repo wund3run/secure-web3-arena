@@ -7,25 +7,38 @@ interface LazySectionProps {
   fallback?: React.ReactNode;
   threshold?: number;
   className?: string;
+  eager?: boolean; // New prop for immediate loading
 }
 
-const DefaultFallback = () => (
-  <div className="min-h-[200px] flex items-center justify-center">
-    <div className="animate-pulse bg-muted rounded-lg w-full h-48"></div>
+const MinimalFallback = () => (
+  <div className="min-h-[100px] flex items-center justify-center">
+    <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
   </div>
 );
 
 export function LazySection({ 
   children, 
-  fallback = <DefaultFallback />, 
-  threshold = 0.1,
-  className = ""
+  fallback = <MinimalFallback />, 
+  threshold = 0.2, // Increased threshold for earlier loading
+  className = "",
+  eager = false
 }: LazySectionProps) {
   const { targetRef, hasIntersected } = useIntersectionObserver<HTMLDivElement>({
     threshold,
     triggerOnce: true,
-    rootMargin: '100px'
+    rootMargin: '200px' // Increased root margin for earlier loading
   });
+
+  // If eager loading is enabled, load immediately
+  if (eager) {
+    return (
+      <div className={className}>
+        <Suspense fallback={fallback}>
+          {children}
+        </Suspense>
+      </div>
+    );
+  }
 
   return (
     <div ref={targetRef} className={className}>
