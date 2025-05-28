@@ -34,7 +34,7 @@ export const useNotificationHelpers = () => {
     });
   };
 
-  const notifyPaymentUpdate = (message: string, type: 'success' | 'warning' | 'error' = 'info') => {
+  const notifyPaymentUpdate = (message: string, type: 'success' | 'warning' | 'error' = 'success') => {
     if (!user) return;
     
     addNotification({
