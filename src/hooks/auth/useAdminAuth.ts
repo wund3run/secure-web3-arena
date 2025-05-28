@@ -90,20 +90,29 @@ export function useAdminAuth() {
     targetId: string, 
     details?: any
   ) => {
-    if (!user || !isAdmin) return;
+    if (!user || !isAdmin) {
+      console.warn('Cannot log admin action: user not authenticated or not admin');
+      return;
+    }
 
     try {
-      await supabase
+      const { error } = await supabase
         .from('admin_actions')
         .insert({
           admin_id: user.id,
           action_type: actionType,
           target_type: targetType,
           target_id: targetId,
-          details
+          details: details || {}
         });
+
+      if (error) {
+        console.error('Error logging admin action:', error);
+        // Don't throw here to avoid breaking the main action
+      }
     } catch (error) {
       console.error('Error logging admin action:', error);
+      // Don't throw here to avoid breaking the main action
     }
   };
 
