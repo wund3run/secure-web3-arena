@@ -10,7 +10,7 @@ import { GlobalComponents } from './components/app/GlobalComponents';
 import MarketplacePage from './pages/MarketplacePage';
 import Audits from './pages/Audits';
 import AuditRequestForm from './components/audit-request/AuditRequestForm';
-import ServiceProviderOnboardingForm from './components/service-provider/ServiceProviderOnboardingForm';
+import { ServiceProviderOnboardingForm } from './components/service-provider/ServiceProviderOnboardingForm';
 import Community from './pages/Community';
 import ContactProvider from './pages/ContactProvider';
 import RequestAuditPage from './pages/RequestAudit';
@@ -46,7 +46,7 @@ function App() {
                     </ActionGuard>
                   } />
                   
-                  <Route path="/service-provider-onboarding" element={<ServiceProviderOnboardingForm />} />
+                  <Route path="/service-provider-onboarding" element={<ServiceProviderOnboardingForm providerType="auditor" />} />
                   <Route path="/community" element={<Community />} />
                   <Route path="/contact-provider/:id" element={<ContactProvider />} />
                   
