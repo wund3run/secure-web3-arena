@@ -44,32 +44,41 @@ export function RoleManagement() {
 
   const fetchUsersWithRoles = async () => {
     try {
-      // Fetch users from extended_profiles with their roles
-      const { data: profiles, error: profilesError } = await supabase
-        .from('extended_profiles')
-        .select(`
-          id,
-          full_name,
-          user_roles!inner(role, assigned_at, is_active)
-        `);
-
-      if (profilesError) throw profilesError;
-
-      // Get user emails from auth metadata
+      // First fetch all users from auth
       const { data: { users: authUsers }, error: authError } = await supabase.auth.admin.listUsers();
       
       if (authError) throw authError;
 
-      const usersWithRoles = profiles?.map(profile => {
-        const authUser = authUsers.find(u => u.id === profile.id);
-        const activeRole = profile.user_roles?.find((r: any) => r.is_active);
+      // Then fetch extended profiles
+      const { data: profiles, error: profilesError } = await supabase
+        .from('extended_profiles')
+        .select('id, full_name');
+
+      if (profilesError) {
+        console.error('Error fetching profiles:', profilesError);
+      }
+
+      // Fetch user roles
+      const { data: userRoles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id, role, assigned_at')
+        .eq('is_active', true);
+
+      if (rolesError) {
+        console.error('Error fetching roles:', rolesError);
+      }
+
+      // Combine the data
+      const usersWithRoles: UserWithRole[] = authUsers?.map(authUser => {
+        const profile = profiles?.find(p => p.id === authUser.id);
+        const roleData = userRoles?.find(r => r.user_id === authUser.id);
         
         return {
-          id: profile.id,
-          email: authUser?.email || 'Unknown',
-          full_name: profile.full_name,
-          role: activeRole?.role || 'general',
-          assigned_at: activeRole?.assigned_at
+          id: authUser.id,
+          email: authUser.email || 'Unknown',
+          full_name: profile?.full_name,
+          role: roleData?.role || 'general',
+          assigned_at: roleData?.assigned_at
         };
       }) || [];
 

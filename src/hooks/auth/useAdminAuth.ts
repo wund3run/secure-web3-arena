@@ -50,18 +50,27 @@ export function useAdminAuth() {
     }
 
     try {
-      const { error } = await supabase
+      // First, deactivate any existing roles for this user
+      const { error: deactivateError } = await supabase
         .from('user_roles')
-        .upsert({
+        .update({ is_active: false })
+        .eq('user_id', userId);
+
+      if (deactivateError) {
+        console.error('Error deactivating existing roles:', deactivateError);
+      }
+
+      // Then insert the new role
+      const { error: insertError } = await supabase
+        .from('user_roles')
+        .insert({
           user_id: userId,
           role,
           assigned_by: user?.id,
           is_active: true
-        }, {
-          onConflict: 'user_id,role'
         });
 
-      if (error) throw error;
+      if (insertError) throw insertError;
 
       // Log admin action
       await logAdminAction('assign_role', 'user', userId, { role });
