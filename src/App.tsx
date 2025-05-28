@@ -1,8 +1,9 @@
+
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/auth';
 import { QueryClient } from 'react-query';
-import GlobalComponents from './components/GlobalComponents';
+import { GlobalComponents } from './components/app/GlobalComponents';
 import Home from './pages/Home';
 import Marketplace from './pages/Marketplace';
 import Audits from './pages/Audits';
