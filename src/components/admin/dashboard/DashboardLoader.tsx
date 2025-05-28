@@ -1,73 +1,80 @@
 
-import { useState, useEffect } from "react";
-import LoadingTrivia from "@/components/ui/loading-trivia";
-import { toast } from "sonner";
-import { Loader2, AlertCircle } from "lucide-react";
-import { handleError } from "@/utils/error-handling";
+import React from 'react';
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function DashboardLoader() {
-  const [loadAttempts, setLoadAttempts] = useState(0);
-  const [loadError, setLoadError] = useState<Error | null>(null);
-  
-  // Simulate checking for loading issues
-  useEffect(() => {
-    // Only show an error if we've tried loading multiple times
-    if (loadAttempts > 2 && !loadError) {
-      const error = new Error("Data loading is taking longer than expected");
-      setLoadError(error);
-      
-      handleError(error, "dashboard-loader");
-      
-      // Auto-retry after a delay
-      const retryTimer = setTimeout(() => {
-        setLoadError(null);
-        setLoadAttempts(0);
-      }, 10000); // 10 seconds
-      
-      return () => clearTimeout(retryTimer);
-    }
-    
-    // Track loading attempts
-    const loadTimer = setTimeout(() => {
-      setLoadAttempts(prev => prev + 1);
-    }, 5000); // Every 5 seconds
-    
-    return () => clearTimeout(loadTimer);
-  }, [loadAttempts, loadError]);
-  
-  if (loadError) {
-    return (
-      <div className="flex flex-col items-center justify-center h-64 gap-4 p-4 rounded-md border border-destructive/20 bg-destructive/5">
-        <AlertCircle className="h-10 w-10 text-destructive" />
-        <div className="text-center">
-          <h3 className="font-medium text-destructive">Loading Error</h3>
-          <p className="text-sm text-muted-foreground mt-1 max-w-md">
-            We're having trouble loading your dashboard data. 
-            The system will automatically retry.
-          </p>
-        </div>
-        <button 
-          onClick={() => {
-            setLoadError(null);
-            setLoadAttempts(0);
-            toast.success("Retrying data load");
-          }}
-          className="text-sm text-primary underline underline-offset-4 hover:text-primary/70"
-        >
-          Retry Now
-        </button>
-      </div>
-    );
-  }
-  
   return (
-    <div className="flex items-center justify-center h-64">
-      <LoadingTrivia 
-        message={loadAttempts > 1 
-          ? "Still loading dashboard data... this is taking longer than usual" 
-          : "Loading dashboard data..."}
-        size="md" 
-      />
+    <div className="space-y-6">
+      {/* Metrics skeleton */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {[...Array(4)].map((_, i) => (
+          <Card key={i}>
+            <CardHeader className="space-y-2">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-8 w-16" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-3 w-24" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Content skeleton */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-6 w-48" />
+              <Skeleton className="h-4 w-64" />
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-3 p-3 border rounded-lg">
+                    <Skeleton className="h-8 w-8 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-3 w-48" />
+                    </div>
+                    <Skeleton className="h-6 w-16" />
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-4 w-40" />
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {[...Array(4)].map((_, i) => (
+                  <Skeleton key={i} className="h-10 w-full" />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-6 w-28" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-center space-y-3">
+                <Skeleton className="h-8 w-12 mx-auto" />
+                <Skeleton className="h-4 w-20 mx-auto" />
+                <Skeleton className="h-8 w-24 mx-auto" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 }
