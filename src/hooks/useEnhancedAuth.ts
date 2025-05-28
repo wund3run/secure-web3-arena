@@ -1,8 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { User, Session } from '@supabase/supabase-js';
+import { User, Session, AuthChangeEvent } from '@supabase/supabase-js';
 
 export interface EnhancedAuthState {
   user: User | null;
@@ -37,13 +36,13 @@ export const useEnhancedAuth = () => {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      async (event: AuthChangeEvent, session: Session | null) => {
         setAuthState(prev => ({
           ...prev,
           user: session?.user ?? null,
           session,
           loading: false,
-          verificationPending: !session && prev.user !== null,
+          verificationPending: event === 'SIGNED_UP' && !session,
         }));
 
         if (event === 'SIGNED_IN') {
