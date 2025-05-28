@@ -2,135 +2,30 @@
 import React from 'react';
 import { PlaceholderPage } from './placeholder-template';
 import { 
-  HelpCircle, 
   FileText, 
   Book, 
-  Phone, 
-  Shield, 
-  MessageSquare,
   Package,
   Truck,
   RefreshCw,
-  Users,
-  Award,
-  BarChart3,
-  Gavel,
-  DollarSign,
-  UserCheck,
-  FileCheck,
-  Settings,
-  Monitor,
+  MessageSquare,
   Calendar,
   Target,
   Trophy,
   Newspaper,
+  Award,
+  BarChart3,
+  Monitor,
+  DollarSign,
+  UserCheck,
+  FileCheck,
+  Settings,
+  Users,
   Brain,
-  TrendingUp,
   Lock,
   User,
-  Code
+  Code,
+  Gavel
 } from 'lucide-react';
-
-// FAQ Page
-export const FAQ = () => {
-  return (
-    <PlaceholderPage
-      title="Frequently Asked Questions"
-      description="Find answers to common questions about security audits, our platform, and the audit process."
-      icon={<HelpCircle className="h-6 w-6" />}
-      features={[
-        "Security audit FAQs",
-        "Platform usage guides", 
-        "Pricing information",
-        "Process explanations"
-      ]}
-    />
-  );
-};
-
-// Documentation Pages
-export const Docs = () => {
-  return (
-    <PlaceholderPage
-      title="Documentation"
-      description="Comprehensive documentation for developers, including API references, integration guides, and best practices."
-      icon={<Book className="h-6 w-6" />}
-      features={[
-        "API documentation",
-        "Integration tutorials",
-        "SDK references",
-        "Code examples"
-      ]}
-    />
-  );
-};
-
-// Contact Page
-export const Contact = () => {
-  return (
-    <PlaceholderPage
-      title="Contact Us"
-      description="Get in touch with our security experts and support team for personalized assistance."
-      icon={<Phone className="h-6 w-6" />}
-      features={[
-        "24/7 support availability",
-        "Expert consultation",
-        "Custom audit requests",
-        "Partnership inquiries"
-      ]}
-    />
-  );
-};
-
-// Support Page  
-export const Support = () => {
-  return (
-    <PlaceholderPage
-      title="Support Center"
-      description="Access help resources, submit tickets, and get assistance with your security audits and platform usage."
-      icon={<MessageSquare className="h-6 w-6" />}
-      features={[
-        "Help documentation",
-        "Ticket system",
-        "Live chat support",
-        "Video tutorials"
-      ]}
-    />
-  );
-};
-
-// Legal Pages
-export const Terms = () => {
-  return (
-    <PlaceholderPage
-      title="Terms of Service"
-      description="Review our terms of service, user agreements, and platform policies for security audit services."
-      icon={<FileText className="h-6 w-6" />}
-      features={[
-        "Service agreements",
-        "User responsibilities",
-        "Platform policies",
-        "Legal compliance"
-      ]}
-    />
-  );
-};
-
-export const Privacy = () => {
-  return (
-    <PlaceholderPage
-      title="Privacy Policy"
-      description="Learn how we protect your data, handle personal information, and maintain confidentiality in security audits."
-      icon={<Shield className="h-6 w-6" />}
-      features={[
-        "Data protection policies",
-        "Privacy controls",
-        "GDPR compliance",
-        "Security measures"
-      ]}
-    />
-  );
-};
 
 // Tutorial and Template Pages
 export const Tutorials = () => {
@@ -205,7 +100,7 @@ export const Forum = () => {
     <PlaceholderPage
       title="Security Forum"
       description="Connect with other security professionals, share insights, and discuss the latest Web3 security trends."
-      icon={<Users className="h-6 w-6" />}
+      icon={<MessageSquare className="h-6 w-6" />}
       features={[
         "Discussion threads",
         "Expert insights",
@@ -318,7 +213,7 @@ export const Vulnerabilities = () => {
     <PlaceholderPage
       title="Vulnerability Database"
       description="Comprehensive database of known vulnerabilities, exploits, and security patterns in Web3 applications."
-      icon={<Shield className="h-6 w-6" />}
+      icon={<Lock className="h-6 w-6" />}
       features={[
         "CVE database",
         "Exploit patterns",
@@ -507,22 +402,6 @@ export const AdminProviders = () => {
 };
 
 // Additional Pages
-export const AuditGuidelines = () => {
-  return (
-    <PlaceholderPage
-      title="Audit Guidelines"
-      description="Comprehensive guidelines for conducting security audits, quality standards, and best practices."
-      icon={<FileCheck className="h-6 w-6" />}
-      features={[
-        "Audit standards",
-        "Quality guidelines",
-        "Best practices",
-        "Compliance requirements"
-      ]}
-    />
-  );
-};
-
 export const ContactProvider = () => {
   return (
     <PlaceholderPage
@@ -550,22 +429,6 @@ export const AuditorDashboard = () => {
         "Client communication",
         "Performance metrics",
         "Scheduling tools"
-      ]}
-    />
-  );
-};
-
-export const SecurityPolicy = () => {
-  return (
-    <PlaceholderPage
-      title="Security Policy"
-      description="Platform security policies, procedures, and compliance frameworks for data protection."
-      icon={<Shield className="h-6 w-6" />}
-      features={[
-        "Security policies",
-        "Compliance frameworks",
-        "Data protection",
-        "Privacy measures"
       ]}
     />
   );

@@ -24,17 +24,13 @@ import FAQ from './pages/FAQ';
 import Docs from './pages/Docs';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
-import Tutorials from './pages/Tutorials';
-import Templates from './pages/Templates';
-import ShippingDelivery from './pages/ShippingDelivery';
-import CancellationRefund from './pages/CancellationRefund';
+import Community from './pages/Community';
 
 // Resource pages
 import WebSecurity from './pages/WebSecurity';
 import SecurityGuides from './pages/SecurityGuides';
 import KnowledgeBase from './pages/KnowledgeBase';
 import Resources from './pages/Resources';
-import Community from './pages/Community';
 import CompetitiveAdvantages from './pages/CompetitiveAdvantages';
 import ComprehensiveSecurity from './pages/ComprehensiveSecurity';
 import AuditGuidelines from './pages/AuditGuidelines';
@@ -44,6 +40,38 @@ import SecurityPolicy from './pages/SecurityPolicy';
 // Service-specific pages
 import ServiceDetails from './pages/ServiceDetails';
 import AuditRequestForService from './pages/AuditRequestForService';
+
+// Missing pages (now as proper placeholders for future implementation)
+import { 
+  Tutorials, 
+  Templates, 
+  ShippingDelivery, 
+  CancellationRefund,
+  Forum,
+  Events,
+  Challenges,
+  Leaderboard,
+  Blog,
+  Achievements,
+  SecurityInsights,
+  Vulnerabilities,
+  PlatformReport,
+  AdminDashboard,
+  AdminUsers,
+  AdminAudits,
+  AdminFinance,
+  AdminReports,
+  AdminDisputes,
+  AdminSecurity,
+  AdminServices,
+  AdminSettings,
+  AdminProviders,
+  ContactProvider,
+  AuditorDashboard,
+  ProjectDashboard,
+  UserDashboard,
+  SubmitService
+} from './pages/missing-pages';
 
 // 404 page
 import NotFound from './pages/NotFound';
@@ -77,6 +105,7 @@ function App() {
                   <Route path="/audit/:id" element={<AuditDetails />} />
                   <Route path="/calendar" element={<Calendar />} />
                   <Route path="/escrow" element={<Escrow />} />
+                  <Route path="/community" element={<Community />} />
                   
                   {/* Dashboard routes */}
                   <Route path="/dashboard" element={<Dashboard />} />
@@ -86,33 +115,63 @@ function App() {
                   <Route path="/service/:serviceId" element={<ServiceDetails />} />
                   <Route path="/service/:serviceId/request" element={<AuditRequestForService />} />
                   
-                  {/* Resources and Documentation */}
+                  {/* Support and Documentation */}
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/support" element={<Support />} />
+                  <Route path="/faq" element={<FAQ />} />
                   <Route path="/docs" element={<Docs />} />
+                  
+                  {/* Resources and Documentation */}
                   <Route path="/web3-security" element={<WebSecurity />} />
                   <Route path="/guides" element={<SecurityGuides />} />
-                  <Route path="/tutorials" element={<Tutorials />} />
                   <Route path="/knowledge-base" element={<KnowledgeBase />} />
-                  <Route path="/faq" element={<FAQ />} />
-                  <Route path="/templates" element={<Templates />} />
-                  
-                  {/* Community */}
-                  <Route path="/community" element={<Community />} />
+                  <Route path="/resources" element={<Resources />} />
                   
                   {/* Platform Information */}
-                  <Route path="/resources" element={<Resources />} />
                   <Route path="/competitive-advantages" element={<CompetitiveAdvantages />} />
                   <Route path="/comprehensive-security" element={<ComprehensiveSecurity />} />
                   <Route path="/audit-guidelines" element={<AuditGuidelines />} />
                   <Route path="/distribution-strategy" element={<DistributionStrategy />} />
                   
-                  {/* Support and Legal */}
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/support" element={<Support />} />
+                  {/* Legal */}
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/security-policy" element={<SecurityPolicy />} />
+                  
+                  {/* Placeholder pages for future implementation */}
+                  <Route path="/tutorials" element={<Tutorials />} />
+                  <Route path="/templates" element={<Templates />} />
                   <Route path="/shipping-delivery" element={<ShippingDelivery />} />
                   <Route path="/cancellation-refund" element={<CancellationRefund />} />
+                  <Route path="/forum" element={<Forum />} />
+                  <Route path="/events" element={<Events />} />
+                  <Route path="/challenges" element={<Challenges />} />
+                  <Route path="/leaderboard" element={<Leaderboard />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/achievements" element={<Achievements />} />
+                  <Route path="/security-insights" element={<SecurityInsights />} />
+                  <Route path="/vulnerabilities" element={<Vulnerabilities />} />
+                  <Route path="/platform-report" element={<PlatformReport />} />
+                  <Route path="/submit-service" element={<SubmitService />} />
+                  
+                  {/* Admin routes */}
+                  <Route path="/admin" element={<AdminDashboard />} />
+                  <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                  <Route path="/admin/users" element={<AdminUsers />} />
+                  <Route path="/admin/audits" element={<AdminAudits />} />
+                  <Route path="/admin/finance" element={<AdminFinance />} />
+                  <Route path="/admin/reports" element={<AdminReports />} />
+                  <Route path="/admin/disputes" element={<AdminDisputes />} />
+                  <Route path="/admin/security" element={<AdminSecurity />} />
+                  <Route path="/admin/services" element={<AdminServices />} />
+                  <Route path="/admin/settings" element={<AdminSettings />} />
+                  <Route path="/admin/providers" element={<AdminProviders />} />
+                  
+                  {/* User-specific routes */}
+                  <Route path="/contact-provider" element={<ContactProvider />} />
+                  <Route path="/auditor-dashboard" element={<AuditorDashboard />} />
+                  <Route path="/project-dashboard" element={<ProjectDashboard />} />
+                  <Route path="/user-dashboard" element={<UserDashboard />} />
                   
                   {/* 404 */}
                   <Route path="*" element={<NotFound />} />
