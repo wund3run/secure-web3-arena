@@ -6,8 +6,7 @@ import { Notification, NotificationContextType } from '@/types/notification.type
 import { toast } from 'sonner';
 import { useNotificationPersistence } from '@/hooks/useNotificationPersistence';
 import { useBrowserNotifications } from '@/hooks/useBrowserNotifications';
-import { useAuditNotifications } from '@/hooks/useAuditNotifications';
-import { usePaymentNotifications } from '@/hooks/usePaymentNotifications';
+import { NotificationHandlers } from '@/components/notifications/NotificationHandlers';
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
@@ -28,10 +27,6 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
   const { user } = useAuth();
   const { saveNotifications, loadNotifications } = useNotificationPersistence();
   const { sendBrowserNotification, canSendNotifications } = useBrowserNotifications();
-
-  // Initialize notification hooks
-  useAuditNotifications();
-  usePaymentNotifications();
 
   // Load persisted notifications on mount
   useEffect(() => {
@@ -117,6 +112,7 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
         clearAll,
       }}
     >
+      <NotificationHandlers />
       {children}
     </NotificationContext.Provider>
   );
