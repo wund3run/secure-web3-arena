@@ -1,15 +1,16 @@
 
 import React from 'react';
-import { PlaceholderPage } from './placeholder-template';
-import { Shield } from 'lucide-react';
+import { StandardLayout } from '@/components/layout/StandardLayout';
+import { EscrowManager } from '@/components/escrow/EscrowManager';
 
 const Escrow = () => {
   return (
-    <PlaceholderPage
+    <StandardLayout
       title="Escrow Management"
-      description="Secure payment management for audits. Monitor payment milestones and transaction security."
-      icon={<Shield className="h-6 w-6" />}
-    />
+      description="Secure escrow services for audit payments"
+    >
+      <EscrowManager />
+    </StandardLayout>
   );
 };
 
