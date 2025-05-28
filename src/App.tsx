@@ -16,6 +16,7 @@ import ServiceProviderOnboarding from './pages/ServiceProviderOnboarding';
 import Pricing from './pages/Pricing';
 import Audits from './pages/Audits';
 import AuditDetails from './pages/AuditDetails';
+import Calendar from './pages/Calendar';
 import Escrow from './pages/Escrow';
 import Contact from './pages/Contact';
 import Support from './pages/Support';
@@ -28,23 +29,10 @@ import Templates from './pages/Templates';
 import ShippingDelivery from './pages/ShippingDelivery';
 import CancellationRefund from './pages/CancellationRefund';
 
-// Admin pages
-import AdminDashboard from './pages/AdminDashboard';
-
-// New pages we'll create
+// Resource pages
 import WebSecurity from './pages/WebSecurity';
 import SecurityGuides from './pages/SecurityGuides';
 import KnowledgeBase from './pages/KnowledgeBase';
-import SecurityInsights from './pages/SecurityInsights';
-import Vulnerabilities from './pages/Vulnerabilities';
-import AiTools from './pages/AiTools';
-import PlatformReport from './pages/PlatformReport';
-import Forum from './pages/Forum';
-import Events from './pages/Events';
-import Challenges from './pages/Challenges';
-import Leaderboard from './pages/Leaderboard';
-import Blog from './pages/Blog';
-import Achievements from './pages/Achievements';
 import Resources from './pages/Resources';
 import Community from './pages/Community';
 import CompetitiveAdvantages from './pages/CompetitiveAdvantages';
@@ -57,7 +45,7 @@ import SecurityPolicy from './pages/SecurityPolicy';
 import ServiceDetails from './pages/ServiceDetails';
 import AuditRequestForService from './pages/AuditRequestForService';
 
-// 404 and other utility pages
+// 404 page
 import NotFound from './pages/NotFound';
 
 const queryClient = new QueryClient({
@@ -87,6 +75,7 @@ function App() {
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/audits" element={<Audits />} />
                   <Route path="/audit/:id" element={<AuditDetails />} />
+                  <Route path="/calendar" element={<Calendar />} />
                   <Route path="/escrow" element={<Escrow />} />
                   
                   {/* Dashboard routes */}
@@ -104,21 +93,9 @@ function App() {
                   <Route path="/tutorials" element={<Tutorials />} />
                   <Route path="/knowledge-base" element={<KnowledgeBase />} />
                   <Route path="/faq" element={<FAQ />} />
-                  <Route path="/security-insights" element={<SecurityInsights />} />
-                  <Route path="/vulnerabilities" element={<Vulnerabilities />} />
                   <Route path="/templates" element={<Templates />} />
                   
-                  {/* Tools and Analysis */}
-                  <Route path="/ai-tools" element={<AiTools />} />
-                  <Route path="/platform-report" element={<PlatformReport />} />
-                  
                   {/* Community */}
-                  <Route path="/forum" element={<Forum />} />
-                  <Route path="/events" element={<Events />} />
-                  <Route path="/challenges" element={<Challenges />} />
-                  <Route path="/leaderboard" element={<Leaderboard />} />
-                  <Route path="/blog" element={<Blog />} />
-                  <Route path="/achievements" element={<Achievements />} />
                   <Route path="/community" element={<Community />} />
                   
                   {/* Platform Information */}
@@ -127,10 +104,6 @@ function App() {
                   <Route path="/comprehensive-security" element={<ComprehensiveSecurity />} />
                   <Route path="/audit-guidelines" element={<AuditGuidelines />} />
                   <Route path="/distribution-strategy" element={<DistributionStrategy />} />
-                  
-                  {/* Admin routes */}
-                  <Route path="/admin" element={<AdminDashboard />} />
-                  <Route path="/admin/*" element={<AdminDashboard />} />
                   
                   {/* Support and Legal */}
                   <Route path="/contact" element={<Contact />} />
