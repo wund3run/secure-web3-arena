@@ -1,17 +1,12 @@
 
+import React from 'react';
+
 export interface UserBehavior {
   pageViews: string[];
   timeSpent: Record<string, number>;
   interactions: string[];
   lastVisit: string;
-}
-
-export type UserSegment = 'new' | 'returning' | 'power' | 'enterprise';
-
-export interface PersonalizationConfig {
-  segment: UserSegment;
-  recommendations: string[];
-  customizations: Record<string, any>;
+  userType?: string;
 }
 
 export interface PersonalizedContent {
@@ -23,7 +18,7 @@ export interface PersonalizedContent {
   features: Array<{
     title: string;
     description: string;
-    icon: React.ReactElement;
+    icon: React.ReactNode;
     priority: number;
   }>;
   recommendations: Array<{
@@ -32,3 +27,5 @@ export interface PersonalizedContent {
     action: string;
   }>;
 }
+
+export type UserSegment = 'new' | 'returning' | 'power' | 'enterprise';

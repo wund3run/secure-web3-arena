@@ -20,17 +20,8 @@ import {
 } from 'lucide-react';
 import { useAIMatching } from '@/hooks/useAIMatching';
 
-interface AIMatchingCriteria {
-  blockchain: string;
-  project_type: string;
-  budget_range: [number, number];
-  timeline: string;
-  complexity: 'low' | 'medium' | 'high';
-  specific_requirements: string[];
-}
-
 export const AIMatchingInterface = () => {
-  const [criteria, setCriteria] = useState<AIMatchingCriteria>({
+  const [criteria, setCriteria] = useState({
     blockchain: '',
     project_type: '',
     budget_range: [5000, 50000] as [number, number],
@@ -39,20 +30,10 @@ export const AIMatchingInterface = () => {
     specific_requirements: [] as string[],
   });
 
-  const [matchingResults, setMatchingResults] = useState<any[]>([]);
-  const { loading, calculateAIMatching, getMatchingResults } = useAIMatching();
+  const { isAnalyzing, results, findMatches } = useAIMatching();
 
   const handleFindMatches = async () => {
-    try {
-      // For demo purposes, create a mock audit request ID
-      const mockAuditRequestId = 'demo-request-' + Date.now();
-      
-      await calculateAIMatching(mockAuditRequestId);
-      const results = await getMatchingResults(mockAuditRequestId);
-      setMatchingResults(results || []);
-    } catch (error) {
-      console.error('Error finding matches:', error);
-    }
+    await findMatches(criteria);
   };
 
   const handleRequirementAdd = (requirement: string) => {
@@ -177,13 +158,13 @@ export const AIMatchingInterface = () => {
             </div>
           </div>
 
-          <Button onClick={handleFindMatches} className="w-full" disabled={loading || !criteria.blockchain || !criteria.project_type}>
-            {loading ? 'Analyzing...' : 'Find Best Matches'}
+          <Button onClick={handleFindMatches} className="w-full" disabled={isAnalyzing || !criteria.blockchain || !criteria.project_type}>
+            {isAnalyzing ? 'Analyzing...' : 'Find Best Matches'}
           </Button>
         </CardContent>
       </Card>
 
-      {loading && (
+      {isAnalyzing && (
         <Card>
           <CardContent className="p-6">
             <div className="text-center space-y-4">
@@ -198,38 +179,38 @@ export const AIMatchingInterface = () => {
         </Card>
       )}
 
-      {matchingResults.length > 0 && (
+      {results.length > 0 && (
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">AI Match Results</h3>
-          {matchingResults.map((result) => (
-            <Card key={result.id} className="border-l-4 border-l-blue-500">
+          {results.map((result) => (
+            <Card key={result.auditor.id} className="border-l-4 border-l-blue-500">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h4 className="text-lg font-semibold flex items-center gap-2">
-                      {result.auditor_profiles?.business_name || 'Professional Auditor'}
+                      {result.auditor.name}
                       <Badge className="bg-blue-500">
-                        {Math.round(result.overall_score * 100)}% match
+                        {Math.round(result.match_score * 100)}% match
                       </Badge>
                     </h4>
                     <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Star className="h-4 w-4 text-yellow-500" />
-                        5.0
+                        {result.auditor.rating}
                       </span>
                       <span className="flex items-center gap-1">
                         <Shield className="h-4 w-4" />
-                        {result.auditor_profiles?.total_audits_completed || 0} audits
+                        {result.auditor.past_audits} audits
                       </span>
                       <span className="flex items-center gap-1">
                         <TrendingUp className="h-4 w-4" />
-                        95% success rate
+                        {Math.round(result.auditor.success_rate * 100)}% success rate
                       </span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-semibold">$5,000 - $15,000</p>
-                    <p className="text-sm text-muted-foreground">2-3 weeks</p>
+                    <p className="text-lg font-semibold">${result.estimated_cost.toLocaleString()}</p>
+                    <p className="text-sm text-muted-foreground">{result.estimated_timeline}</p>
                   </div>
                 </div>
 
@@ -237,29 +218,23 @@ export const AIMatchingInterface = () => {
                   <div>
                     <p className="font-medium mb-1">Expertise:</p>
                     <div className="flex flex-wrap gap-1">
-                      {result.auditor_profiles?.blockchain_expertise?.map((skill: string) => (
+                      {result.auditor.expertise.map((skill) => (
                         <Badge key={skill} variant="outline" className="text-xs">
                           {skill}
                         </Badge>
-                      )) || []}
+                      ))}
                     </div>
                   </div>
 
                   <div>
                     <p className="font-medium mb-1">Why this is a good match:</p>
                     <ul className="space-y-1">
-                      <li className="flex items-center gap-2 text-sm">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        Expert in {criteria.blockchain} blockchain
-                      </li>
-                      <li className="flex items-center gap-2 text-sm">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        Specialized in {criteria.project_type} projects
-                      </li>
-                      <li className="flex items-center gap-2 text-sm">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        Available within your timeline
-                      </li>
+                      {result.reasons.map((reason, index) => (
+                        <li key={index} className="flex items-center gap-2 text-sm">
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                          {reason}
+                        </li>
+                      ))}
                     </ul>
                   </div>
 

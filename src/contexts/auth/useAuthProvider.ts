@@ -1,269 +1,413 @@
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserType, AuthContextProps } from "./types";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
-import { User, UserProfile } from './types';
-import { analyticsTracker } from '@/utils/analytics-tracker';
-
-export function useAuthProvider() {
-  const [user, setUser] = useState<User | null>(null);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+export const useAuthProvider = (): AuthContextProps => {
+  const [user, setUser] = useState<any>(null);
+  const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  
+  // Enhanced profile fetching with better error handling
   const fetchUserProfile = useCallback(async (userId: string) => {
     try {
-      // Fetch extended profile
+      console.log("Fetching user profile for:", userId);
+      
+      // Try to get from profiles table first
       const { data: profileData, error: profileError } = await supabase
-        .from('extended_profiles')
+        .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
-
+      
       if (profileError && profileError.code !== 'PGRST116') {
-        console.error('Error fetching user profile:', profileError);
-        return;
+        console.error("Error fetching profile:", profileError);
+        throw profileError;
       }
-
-      // Fetch user role from user_roles table
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .eq('is_active', true)
-        .order('assigned_at', { ascending: false })
-        .limit(1)
-        .single();
-
-      if (profileData) {
-        // Merge profile data with role data
-        const typedProfile: UserProfile = {
-          ...profileData,
-          user_type: roleData?.role as 'auditor' | 'project_owner' | 'admin' | undefined || profileData.user_type as 'auditor' | 'project_owner' | 'admin' | undefined,
-          social_links: profileData.social_links as Record<string, string> | undefined
-        };
-        setUserProfile(typedProfile);
+      
+      // If no profile exists, try extended_profiles
+      if (!profileData) {
+        const { data: extendedProfile, error: extendedError } = await supabase
+          .from('extended_profiles')
+          .select('*')
+          .eq('id', userId)
+          .single();
+          
+        if (extendedError && extendedError.code !== 'PGRST116') {
+          console.error("Error fetching extended profile:", extendedError);
+        }
+        
+        setUserProfile(extendedProfile);
+      } else {
+        setUserProfile(profileData);
       }
-    } catch (error) {
-      console.error('Error in fetchUserProfile:', error);
+      
+      console.log("Profile fetched successfully");
+    } catch (err: any) {
+      console.error("Profile fetch error:", err);
+      setError("");
+      // Don't show error toast for missing profiles - this is expected for new users
+      if (err.code !== 'PGRST116') {
+        console.warn("Failed to load user profile, but continuing...");
+      }
     }
   }, []);
-
+  
+  // Enhanced session initialization
   useEffect(() => {
-    // Get initial session
-    const getInitialSession = async () => {
+    let mounted = true;
+    
+    const initializeAuth = async () => {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession();
+        console.log("Initializing authentication...");
         
-        if (error) {
-          console.error('Error getting session:', error);
-        } else if (session?.user) {
-          setUser(session.user);
-          await fetchUserProfile(session.user.id);
-          analyticsTracker.setUserId(session.user.id);
+        // Set up auth state listener FIRST
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          async (event, session) => {
+            console.log("Auth state changed:", event, session?.user?.id);
+            
+            if (mounted) {
+              setSession(session);
+              setUser(session?.user ?? null);
+              
+              if (session?.user && event === 'SIGNED_IN') {
+                // Fetch profile with a small delay to ensure database consistency
+                setTimeout(() => {
+                  if (mounted) {
+                    fetchUserProfile(session.user.id);
+                  }
+                }, 200);
+              } else if (event === 'SIGNED_OUT') {
+                setUserProfile(null);
+                setError("");
+              }
+            }
+          }
+        );
+        
+        // THEN check for existing session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          console.error("Session error:", sessionError);
+          throw sessionError;
         }
-      } catch (error) {
-        console.error('Error in getInitialSession:', error);
+        
+        if (mounted) {
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          if (session?.user) {
+            console.log("User found, fetching profile...");
+            await fetchUserProfile(session.user.id);
+          }
+        }
+        
+        console.log("Authentication initialized successfully");
+        
+        return () => {
+          subscription.unsubscribe();
+        };
+      } catch (err: any) {
+        console.error("Auth initialization error:", err);
+        if (mounted) {
+          setError(err.message);
+          toast.error("Authentication initialization failed");
+        }
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
-
-    getInitialSession();
-
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.info('Auth state changed:', event);
-        
-        if (session?.user) {
-          setUser(session.user);
-          analyticsTracker.setUserId(session.user.id);
-          
-          // Defer profile fetching to avoid potential recursion
-          setTimeout(() => {
-            fetchUserProfile(session.user.id);
-          }, 0);
-        } else {
-          setUser(null);
-          setUserProfile(null);
-        }
-        
-        if (event === 'SIGNED_OUT') {
-          analyticsTracker.track('auth', 'user', 'signed_out');
-        }
-        
-        setLoading(false);
-      }
-    );
-
+    
+    const cleanup = initializeAuth();
+    
     return () => {
-      subscription.unsubscribe();
+      mounted = false;
+      cleanup.then(cleanupFn => cleanupFn && cleanupFn());
     };
   }, [fetchUserProfile]);
 
-  const signIn = async (email: string, password: string) => {
+  // Enhanced sign in with better error handling and navigation
+  const signIn = async (email: string, password: string, captchaToken?: string) => {
     try {
       setLoading(true);
-      setError(null);
-      const { error } = await supabase.auth.signInWithPassword({
+      setError("");
+      console.log("Attempting sign in for:", email);
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password
+        password,
       });
-
+      
       if (error) {
-        throw error;
+        console.error("Sign in error:", error);
+        setError(error.message);
+        toast.error("Sign in failed", { description: error.message });
+        return;
       }
-
-      analyticsTracker.track('auth', 'user', 'signed_in');
-      toast.success('Successfully signed in!');
-    } catch (error: any) {
-      console.error('Sign in error:', error);
-      setError(error.message || 'Failed to sign in');
-      analyticsTracker.trackError(error, { context: 'sign_in' });
-      toast.error(error.message || 'Failed to sign in');
-      throw error;
+      
+      if (data.user && data.session) {
+        console.log("Sign in successful");
+        toast.success("Successfully signed in");
+        
+        // Navigate safely with error handling
+        try {
+          navigate("/dashboard", { replace: true });
+        } catch (navError) {
+          console.error("Navigation error after sign in:", navError);
+          // Fallback navigation
+          window.location.href = "/dashboard";
+        }
+      }
+    } catch (err: any) {
+      console.error("Unexpected sign in error:", err);
+      const errorMessage = err.message || "An unexpected error occurred";
+      setError(errorMessage);
+      toast.error("Sign in failed", { description: errorMessage });
     } finally {
       setLoading(false);
     }
   };
 
-  const signUp = async (email: string, password: string, metadata?: Record<string, any>) => {
+  // Enhanced sign up with comprehensive profile creation and navigation
+  const signUp = async (
+    email: string, 
+    password: string, 
+    fullName?: string,
+    userType?: UserType, 
+    captchaToken?: string
+  ) => {
     try {
       setLoading(true);
-      setError(null);
-      const { error } = await supabase.auth.signUp({
+      setError("");
+      console.log("Attempting sign up for:", email);
+      
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: metadata
-        }
+          data: {
+            full_name: fullName,
+            user_type: userType,
+          },
+        },
       });
-
+      
       if (error) {
-        throw error;
+        console.error("Sign up error:", error);
+        setError(error.message);
+        toast.error("Sign up failed", { description: error.message });
+        return;
       }
+      
+      if (data.user) {
+        console.log("Sign up successful, creating profiles...");
+        
+        // Create both profile records
+        await createUserProfiles(data.user.id, email, fullName, userType);
+        
+        toast.success("Account created successfully");
+        
+        // Navigate safely with error handling
+        try {
+          navigate("/dashboard", { replace: true });
+        } catch (navError) {
+          console.error("Navigation error after sign up:", navError);
+          // Fallback navigation
+          window.location.href = "/dashboard";
+        }
+      }
+    } catch (err: any) {
+      console.error("Unexpected sign up error:", err);
+      const errorMessage = err.message || "An unexpected error occurred";
+      setError(errorMessage);
+      toast.error("Sign up failed", { description: errorMessage });
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // Enhanced profile creation with better error handling
+  const createUserProfiles = async (
+    userId: string, 
+    email: string, 
+    fullName?: string,
+    userType?: UserType
+  ) => {
+    try {
+      console.log("Creating user profiles for:", userId);
+      
+      // Create main profile
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: userId, 
+          full_name: fullName || '',
+          wallet_address: null,
+          avatar_url: null,
+          is_arbitrator: false,
+          updated_at: new Date().toISOString()
+        });
+      
+      if (profileError) {
+        console.error("Profile creation error:", profileError);
+        // Don't throw - extended profile might still work
+      }
+      
+      // Create extended profile
+      const { error: extendedError } = await supabase
+        .from('extended_profiles')
+        .insert({
+          id: userId,
+          full_name: fullName || '',
+          user_type: userType || 'project_owner',
+          verification_status: 'pending',
+          projects_completed: 0
+        });
+      
+      if (extendedError) {
+        console.error("Extended profile creation error:", extendedError);
+        // Don't throw - user can still use the platform
+      }
+      
+      console.log("User profiles created successfully");
+    } catch (err: any) {
+      console.error("Profile creation error:", err);
+      // Don't prevent sign up for profile creation issues
+      console.warn("Profile creation partially failed - user can update it later");
+    }
+  };
 
-      analyticsTracker.track('auth', 'user', 'signed_up');
-      toast.success('Account created successfully!');
-    } catch (error: any) {
-      console.error('Sign up error:', error);
-      setError(error.message || 'Failed to create account');
-      analyticsTracker.trackError(error, { context: 'sign_up' });
-      toast.error(error.message || 'Failed to create account');
-      throw error;
+  // Enhanced sign out with safe navigation
+  const signOut = async () => {
+    try {
+      setLoading(true);
+      console.log("Signing out...");
+      
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Sign out error:", error);
+        setError(error.message);
+        toast.error("Sign out failed", { description: error.message });
+        return;
+      }
+      
+      setUser(null);
+      setSession(null);
+      setUserProfile(null);
+      setError("");
+      toast.success("Successfully signed out");
+      
+      // Navigate safely with error handling
+      try {
+        navigate("/", { replace: true });
+      } catch (navError) {
+        console.error("Navigation error after sign out:", navError);
+        // Fallback navigation
+        window.location.href = "/";
+      }
+    } catch (err: any) {
+      console.error("Unexpected sign out error:", err);
+      setError(err.message);
+      toast.error("Sign out failed", { description: err.message });
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // Enhanced forgot password
+  const forgotPassword = async (email: string) => {
+    try {
+      setLoading(true);
+      console.log("Sending password reset for:", email);
+      
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+      });
+      
+      if (error) {
+        console.error("Password reset error:", error);
+        setError(error.message);
+        toast.error("Password reset failed", { description: error.message });
+        return;
+      }
+      
+      toast.success("Password reset email sent");
+    } catch (err: any) {
+      console.error("Unexpected password reset error:", err);
+      setError(err.message);
+      toast.error("Password reset failed", { description: err.message });
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // Enhanced reset password
+  const resetPassword = async (newPassword: string) => {
+    try {
+      setLoading(true);
+      console.log("Updating password...");
+      
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+      
+      if (error) {
+        console.error("Password update error:", error);
+        setError(error.message);
+        toast.error("Password update failed", { description: error.message });
+        return;
+      }
+      
+      toast.success("Password updated successfully");
+      
+      // Navigate safely with error handling
+      try {
+        navigate("/dashboard", { replace: true });
+      } catch (navError) {
+        console.error("Navigation error after password reset:", navError);
+        // Fallback navigation
+        window.location.href = "/dashboard";
+      }
+    } catch (err: any) {
+      console.error("Unexpected password update error:", err);
+      setError(err.message);
+      toast.error("Password update failed", { description: err.message });
     } finally {
       setLoading(false);
     }
   };
 
-  const signOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        throw error;
-      }
-
-      setUser(null);
-      setUserProfile(null);
-      setError(null);
-      analyticsTracker.track('auth', 'user', 'signed_out');
-      toast.success('Successfully signed out!');
-    } catch (error: any) {
-      console.error('Sign out error:', error);
-      setError(error.message || 'Failed to sign out');
-      analyticsTracker.trackError(error, { context: 'sign_out' });
-      toast.error(error.message || 'Failed to sign out');
-      throw error;
+  // Enhanced user type detection
+  const getUserType = (): UserType => {
+    if (!user) return "visitor" as UserType;
+    
+    // Check userProfile first
+    if (userProfile?.user_type) {
+      return userProfile.user_type as UserType;
     }
-  };
-
-  const updateProfile = async (updates: Partial<UserProfile>) => {
-    if (!user) {
-      throw new Error('No user logged in');
-    }
-
-    try {
-      const { error } = await supabase
-        .from('extended_profiles')
-        .upsert({
-          id: user.id,
-          ...updates,
-          updated_at: new Date().toISOString()
-        });
-
-      if (error) {
-        throw error;
-      }
-
-      await fetchUserProfile(user.id);
-      analyticsTracker.track('profile', 'user', 'updated');
-      toast.success('Profile updated successfully!');
-    } catch (error: any) {
-      console.error('Update profile error:', error);
-      setError(error.message || 'Failed to update profile');
-      analyticsTracker.trackError(error, { context: 'update_profile' });
-      toast.error(error.message || 'Failed to update profile');
-      throw error;
-    }
-  };
-
-  const forgotPassword = async (email: string) => {
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email);
-      
-      if (error) {
-        throw error;
-      }
-
-      analyticsTracker.track('auth', 'user', 'password_reset_requested');
-      toast.success('Password reset email sent!');
-    } catch (error: any) {
-      console.error('Forgot password error:', error);
-      setError(error.message || 'Failed to send reset email');
-      analyticsTracker.trackError(error, { context: 'forgot_password' });
-      toast.error(error.message || 'Failed to send reset email');
-      throw error;
-    }
-  };
-
-  const resetPassword = async (newPassword: string) => {
-    try {
-      const { error } = await supabase.auth.updateUser({
-        password: newPassword
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      analyticsTracker.track('auth', 'user', 'password_reset_completed');
-      toast.success('Password reset successfully!');
-    } catch (error: any) {
-      console.error('Reset password error:', error);
-      setError(error.message || 'Failed to reset password');
-      analyticsTracker.trackError(error, { context: 'reset_password' });
-      toast.error(error.message || 'Failed to reset password');
-      throw error;
-    }
-  };
-
-  const getUserType = (): 'auditor' | 'project_owner' | 'admin' | null => {
-    return userProfile?.user_type || null;
+    
+    // Fall back to user metadata
+    return (user.user_metadata?.user_type as UserType) || "project_owner";
   };
 
   return {
     user,
-    userProfile,
+    session,
     loading,
+    userProfile,
     error,
     signIn,
     signUp,
     signOut,
-    updateProfile,
     forgotPassword,
     resetPassword,
-    getUserType
+    getUserType,
   };
-}
+};

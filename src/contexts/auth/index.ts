@@ -1,3 +1,4 @@
 
-export { AuthProvider, useAuth } from './AuthContext';
-export type { AuthContextProps, User, UserProfile } from './types';
+// Re-export AuthProvider and useAuth hook for cleaner imports
+export { AuthProvider } from './AuthContext';
+export { useAuth } from './AuthContext';

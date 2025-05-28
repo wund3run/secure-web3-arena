@@ -6,6 +6,8 @@ import { EnhancedFooter } from "@/components/home/enhanced-footer";
 import { SupportButton } from "@/components/ui/support-button";
 import { LazySection } from "@/components/performance/LazySection";
 import { analyticsTracker } from "@/utils/analytics-tracker";
+import { performanceOptimizer } from "@/utils/performance-optimizer";
+import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
 import { bundleOptimizer } from "@/utils/bundle-optimizer";
 
 // Core journey components (loaded immediately)
@@ -13,7 +15,7 @@ import { SimplifiedHero } from "@/components/home/simplified-hero";
 import { TrustIndicators } from "@/components/home/trust-indicators";
 import { ValuePropositionSection } from "@/components/home/value-proposition-section";
 
-// Lazy load components with minimal loading states
+// Lazy load heavy components with enhanced loading states
 const InteractiveDemo = React.lazy(() => 
   import("@/components/home/interactive-demo").then(module => ({
     default: module.InteractiveDemo
@@ -38,6 +40,7 @@ const QuickStartSection = React.lazy(() =>
   }))
 );
 
+// Import the updated 2025 pricing component
 const PricingPreview2025 = React.lazy(() => 
   import("@/components/home/pricing-preview-2025").then(module => ({
     default: module.PricingPreview2025
@@ -80,10 +83,10 @@ const GlobalExpansionSection = React.lazy(() =>
   }))
 );
 
-// Minimal loading fallback
-const QuickLoader = () => (
-  <div className="h-32 flex items-center justify-center">
-    <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+// Enhanced loading fallback component
+const SectionLoadingFallback = ({ height = "h-64" }: { height?: string }) => (
+  <div className={`${height} p-6`}>
+    <EnhancedSkeleton variant="card" animation="shimmer" className="h-full w-full" />
   </div>
 );
 
@@ -91,18 +94,40 @@ import { PersonalizationEngine } from "@/components/personalization/Personalizat
 
 export default function Index() {
   useEffect(() => {
-    // Minimal analytics tracking
+    // Track page visit and initialize analytics
     analyticsTracker.track('home_page_visit', 'navigation', 'page_view');
     
-    // Aggressive route preloading for instant navigation
+    // Preload critical resources
+    performanceOptimizer.preloadCriticalResources([
+      '/src/assets/hawkly-logo.svg'
+    ]);
+    
+    // Optimize images for lazy loading
+    performanceOptimizer.optimizeImages();
+    
+    // Track user engagement
+    const handleUserEngagement = () => {
+      analyticsTracker.track('user_engagement', 'interaction', 'page_interaction');
+    };
+    
+    // Track scroll engagement
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        analyticsTracker.track('scroll_engagement', 'engagement', 'deep_scroll');
+        window.removeEventListener('scroll', handleScroll);
+      }
+    };
+    
+    document.addEventListener('click', handleUserEngagement, { once: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Initialize intelligent route preloading based on user behavior
     bundleOptimizer.intelligentPreload('/');
     
-    // Preload likely next routes immediately
-    setTimeout(() => {
-      bundleOptimizer.preloadRoute('/marketplace');
-      bundleOptimizer.preloadRoute('/dashboard');
-    }, 100);
-    
+    return () => {
+      document.removeEventListener('click', handleUserEngagement);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   return (
@@ -129,57 +154,57 @@ export default function Index() {
           <TrustIndicators />
           <ValuePropositionSection />
           
-          {/* Personalization Engine - loaded eagerly */}
-          <LazySection fallback={<QuickLoader />} eager>
+          {/* Personalization Engine */}
+          <LazySection fallback={<SectionLoadingFallback />}>
             <div className="container mx-auto px-4 py-8">
               <PersonalizationEngine />
             </div>
           </LazySection>
           
-          {/* Below-the-fold content - lazy loaded with faster thresholds */}
-          <LazySection fallback={<QuickLoader />}>
+          {/* Below-the-fold content - lazy loaded with enhanced loading states */}
+          <LazySection fallback={<SectionLoadingFallback />}>
             <UserJourneySection />
           </LazySection>
           
-          <LazySection fallback={<QuickLoader />}>
+          <LazySection fallback={<SectionLoadingFallback />}>
             <QuickStartSection />
           </LazySection>
           
-          <LazySection fallback={<QuickLoader />}>
+          <LazySection fallback={<SectionLoadingFallback height="h-96" />}>
             <div id="demo">
               <InteractiveDemo />
             </div>
           </LazySection>
           
-          <LazySection fallback={<QuickLoader />}>
+          <LazySection fallback={<SectionLoadingFallback />}>
             <NetworkEffectsSection />
           </LazySection>
           
-          <LazySection fallback={<QuickLoader />}>
+          <LazySection fallback={<SectionLoadingFallback />}>
             <MarketPositioning />
           </LazySection>
           
-          <LazySection fallback={<QuickLoader />}>
+          <LazySection fallback={<SectionLoadingFallback height="h-80" />}>
             <PlatformFeaturesShowcase />
           </LazySection>
           
-          <LazySection fallback={<QuickLoader />}>
+          <LazySection fallback={<SectionLoadingFallback />}>
             <StrategicPartnershipsSection />
           </LazySection>
           
-          <LazySection fallback={<QuickLoader />}>
+          <LazySection fallback={<SectionLoadingFallback />}>
             <GlobalExpansionSection />
           </LazySection>
           
-          <LazySection fallback={<QuickLoader />}>
+          <LazySection fallback={<SectionLoadingFallback />}>
             <CompetitiveAdvantages />
           </LazySection>
           
-          <LazySection fallback={<QuickLoader />}>
+          <LazySection fallback={<SectionLoadingFallback />}>
             <PricingPreview2025 />
           </LazySection>
           
-          <LazySection fallback={<QuickLoader />}>
+          <LazySection fallback={<SectionLoadingFallback height="h-80" />}>
             <FaqSection />
           </LazySection>
         </div>

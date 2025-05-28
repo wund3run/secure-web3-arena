@@ -37,75 +37,52 @@ export function AccessibilityEnhancer() {
 
   useEffect(() => {
     // Load saved accessibility settings
-    try {
-      const saved = localStorage.getItem('accessibility-settings');
-      if (saved) {
-        setSettings(JSON.parse(saved));
-      }
-    } catch (error) {
-      console.warn('Failed to load accessibility settings:', error);
+    const saved = localStorage.getItem('accessibility-settings');
+    if (saved) {
+      setSettings(JSON.parse(saved));
     }
   }, []);
 
   useEffect(() => {
     // Save settings to localStorage
-    try {
-      localStorage.setItem('accessibility-settings', JSON.stringify(settings));
-      
-      // Apply settings to the document
-      applyAccessibilitySettings(settings);
-    } catch (error) {
-      console.warn('Failed to save accessibility settings:', error);
-    }
+    localStorage.setItem('accessibility-settings', JSON.stringify(settings));
+    
+    // Apply settings to the document
+    applyAccessibilitySettings(settings);
   }, [settings]);
 
   const applyAccessibilitySettings = (settings: AccessibilitySettings) => {
-    // Check if we're in a browser environment and DOM is ready
-    if (typeof window === 'undefined' || !document?.documentElement) {
-      return;
+    const root = document.documentElement;
+    
+    // Font size
+    root.style.setProperty('--base-font-size', `${settings.fontSize}px`);
+    
+    // High contrast
+    if (settings.highContrast) {
+      root.classList.add('high-contrast');
+    } else {
+      root.classList.remove('high-contrast');
     }
-
-    try {
-      const root = document.documentElement;
-      
-      // Ensure classList exists before using it
-      if (!root.classList) {
-        console.warn('classList not available on document element');
-        return;
-      }
-      
-      // Font size
-      root.style.setProperty('--base-font-size', `${settings.fontSize}px`);
-      
-      // High contrast
-      if (settings.highContrast) {
-        root.classList.add('high-contrast');
-      } else {
-        root.classList.remove('high-contrast');
-      }
-      
-      // Reduce motion
-      if (settings.reduceMotion) {
-        root.classList.add('reduce-motion');
-      } else {
-        root.classList.remove('reduce-motion');
-      }
-      
-      // Focus indicators
-      if (settings.focusIndicators) {
-        root.classList.add('enhanced-focus');
-      } else {
-        root.classList.remove('enhanced-focus');
-      }
-      
-      // Text spacing
-      root.style.setProperty('--text-spacing', settings.textSpacing.toString());
-      
-      // Color blind mode
-      root.setAttribute('data-colorblind-mode', settings.colorBlindMode);
-    } catch (error) {
-      console.warn('Failed to apply accessibility settings:', error);
+    
+    // Reduce motion
+    if (settings.reduceMotion) {
+      root.classList.add('reduce-motion');
+    } else {
+      root.classList.remove('reduce-motion');
     }
+    
+    // Focus indicators
+    if (settings.focusIndicators) {
+      root.classList.add('enhanced-focus');
+    } else {
+      root.classList.remove('enhanced-focus');
+    }
+    
+    // Text spacing
+    root.style.setProperty('--text-spacing', settings.textSpacing.toString());
+    
+    // Color blind mode
+    root.setAttribute('data-colorblind-mode', settings.colorBlindMode);
   };
 
   const updateSetting = <K extends keyof AccessibilitySettings>(

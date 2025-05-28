@@ -1,134 +1,211 @@
-import { User, UserProfile } from '@/contexts/auth/types';
+import { User } from "@supabase/supabase-js";
+import { getUserRole } from "./roleAccess";
 
-// Define user roles and permissions
-export type UserRole = 'general' | 'auditor' | 'project_owner' | 'admin';
+export type UserRole = "general" | "auditor" | "project_owner" | "admin";
 
-export interface RoutePermission {
-  path: string;
-  allowedRoles: UserRole[];
-  requiresAuth: boolean;
-}
+// Define allowed routes for each role
+export const ROLE_ROUTES: Record<UserRole, string[]> = {
+  general: [
+    "/",
+    "/web3-security",
+    "/resources",
+    "/guides",
+    "/tutorials",
+    "/knowledge-base",
+    "/community",
+    "/forum",
+    "/events",
+    "/challenges",
+    "/templates",
+    "/faq",
+    "/security-policy",
+    "/docs",
+    "/audits",
+    "/security-insights",
+    "/marketplace",
+    "/support",
+    "/contact",
+    "/auth",
+    "/service-provider-onboarding"
+  ],
+  auditor: [
+    "/",
+    "/marketplace",
+    "/audits",
+    "/community",
+    "/dashboard",
+    "/dashboard/auditor",
+    "/dashboard/analytics",
+    "/submit-service",
+    "/audit/:id",
+    "/security-insights",
+    "/ai-tools",
+    "/escrow",
+    "/achievements",
+    "/leaderboard",
+    "/contact-provider",
+    "/audit-guidelines"
+  ],
+  project_owner: [
+    "/",
+    "/marketplace",
+    "/audits",
+    "/community",
+    "/dashboard",
+    "/dashboard/project",
+    "/dashboard/analytics",
+    "/request-audit",
+    "/calendar",
+    "/audit/:id",
+    "/contact-provider/:id",
+    "/security-insights",
+    "/escrow",
+    "/pricing"
+  ],
+  admin: [
+    "/",
+    "/admin",
+    "/admin/dashboard",
+    "/admin/users",
+    "/admin/providers",
+    "/admin/audits",
+    "/admin/reports",
+    "/admin/services",
+    "/admin/disputes",
+    "/admin/security",
+    "/admin/finance",
+    "/admin/settings",
+    "/escrow",
+    "/marketplace",
+    "/audits",
+    "/community"
+  ]
+};
 
-export interface NavigationItem {
-  title: string;
-  href: string;
-  description?: string;
-  children?: NavigationItem[];
-}
+// Default redirect paths for each role
+export const ROLE_DASHBOARDS: Record<UserRole, string> = {
+  general: "/",
+  auditor: "/dashboard/auditor",
+  project_owner: "/dashboard/project",
+  admin: "/admin/dashboard"
+};
 
-// Define route permissions
-export const routePermissions: RoutePermission[] = [
-  { path: '/', allowedRoles: ['general', 'auditor', 'project_owner', 'admin'], requiresAuth: false },
-  { path: '/marketplace', allowedRoles: ['general', 'auditor', 'project_owner', 'admin'], requiresAuth: false },
-  { path: '/audits', allowedRoles: ['auditor', 'project_owner', 'admin'], requiresAuth: true },
-  { path: '/request-audit', allowedRoles: ['project_owner', 'admin'], requiresAuth: true },
-  { path: '/service-provider-onboarding', allowedRoles: ['auditor', 'admin'], requiresAuth: true },
-  { path: '/dashboard', allowedRoles: ['auditor', 'project_owner', 'admin'], requiresAuth: true },
-  { path: '/tutorials', allowedRoles: ['general', 'auditor', 'project_owner', 'admin'], requiresAuth: false },
-  { path: '/admin/dashboard', allowedRoles: ['admin'], requiresAuth: true },
-  { path: '/advanced-features', allowedRoles: ['auditor', 'project_owner', 'admin'], requiresAuth: true },
-];
+// Restricted actions for each role
+export const ROLE_RESTRICTIONS: Record<UserRole, string[]> = {
+  general: [
+    "create_audit_request",
+    "submit_audit_service",
+    "access_admin_panel",
+    "manage_users",
+    "approve_services"
+  ],
+  auditor: [
+    "create_audit_request",
+    "access_admin_panel",
+    "manage_users",
+    "approve_services"
+  ],
+  project_owner: [
+    "submit_audit_service",
+    "access_admin_panel",
+    "manage_users",
+    "approve_services"
+  ],
+  admin: [] // Admin has no restrictions
+};
 
-// Get user role from profile or database
-export function getUserRole(user: User | null, userProfile: UserProfile | null): UserRole {
-  if (!user) return 'general';
+/**
+ * Check if a user has access to a specific route
+ */
+export const hasRouteAccess = (
+  user: User | null,
+  route: string,
+  userProfile?: any
+): boolean => {
+  if (!user) {
+    // Non-authenticated users can only access general routes
+    return ROLE_ROUTES.general.includes(route) || route.startsWith('/auth');
+  }
+
+  const role = getUserRole(user, userProfile) as UserRole;
+  const allowedRoutes = ROLE_ROUTES[role];
   
-  // Check if admin (you can implement your own admin logic here)
-  if (user.email?.endsWith('@hawkly.admin')) return 'admin';
-  
-  // Return role from profile (this will be updated by the new role system)
-  if (userProfile?.user_type === 'admin') return 'admin';
-  if (userProfile?.user_type === 'auditor') return 'auditor';
-  if (userProfile?.user_type === 'project_owner') return 'project_owner';
-  
-  return 'general';
-}
-
-// Enhanced function to get user role from database
-export async function getUserRoleFromDatabase(userId: string): Promise<UserRole> {
-  try {
-    const { supabase } = await import('@/integrations/supabase/client');
+  // Check exact match or pattern match (for dynamic routes)
+  return allowedRoutes.some(allowedRoute => {
+    if (allowedRoute === route) return true;
     
-    const { data, error } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', userId)
-      .eq('is_active', true)
-      .order('assigned_at', { ascending: false })
-      .limit(1)
-      .single();
-
-    if (error || !data) {
-      return 'general';
+    // Handle dynamic routes (e.g., /audit/:id)
+    if (allowedRoute.includes(':')) {
+      const pattern = allowedRoute.replace(/:[^/]+/g, '[^/]+');
+      const regex = new RegExp(`^${pattern}$`);
+      return regex.test(route);
     }
-
-    return data.role as UserRole;
-  } catch (error) {
-    console.error('Error fetching user role:', error);
-    return 'general';
-  }
-}
-
-// Check if user has access to route
-export function hasRouteAccess(user: User | null, path: string, userProfile: UserProfile | null): boolean {
-  const permission = routePermissions.find(p => p.path === path);
-  
-  if (!permission) {
-    // Allow access to undefined routes for flexibility
-    return true;
-  }
-  
-  if (permission.requiresAuth && !user) {
+    
     return false;
-  }
-  
-  const userRole = getUserRole(user, userProfile);
-  return permission.allowedRoles.includes(userRole);
-}
+  });
+};
 
-// Filter navigation items based on user role
-export function getFilteredNavigation(user: User | null, navigationItems: NavigationItem[], userProfile: UserProfile | null): NavigationItem[] {
-  const userRole = getUserRole(user, userProfile);
+/**
+ * Check if a user can perform a specific action
+ */
+export const canPerformAction = (
+  user: User | null,
+  action: string,
+  userProfile?: any
+): boolean => {
+  if (!user) return false;
+
+  const role = getUserRole(user, userProfile) as UserRole;
+  const restrictions = ROLE_RESTRICTIONS[role];
+  
+  return !restrictions.includes(action);
+};
+
+/**
+ * Get the appropriate dashboard for a user's role
+ */
+export const getUserDashboard = (
+  user: User | null,
+  userProfile?: any
+): string => {
+  if (!user) return "/";
+
+  const role = getUserRole(user, userProfile) as UserRole;
+  return ROLE_DASHBOARDS[role];
+};
+
+/**
+ * Get navigation items filtered by user role
+ */
+export const getFilteredNavigation = (
+  user: User | null,
+  navigationItems: any[],
+  userProfile?: any
+): any[] => {
+  if (!user) {
+    // Return general navigation for non-authenticated users
+    return navigationItems.filter(item => 
+      hasRouteAccess(user, item.href, userProfile)
+    );
+  }
+
+  const role = getUserRole(user, userProfile) as UserRole;
   
   return navigationItems.filter(item => {
-    // For now, show all navigation items
-    // You can implement role-based filtering here if needed
+    // Check if user has access to main route
+    if (!hasRouteAccess(user, item.href, userProfile)) {
+      return false;
+    }
+    
+    // Check children routes if they exist
+    if (item.children) {
+      item.children = item.children.filter((child: any) => 
+        hasRouteAccess(user, child.href, userProfile)
+      );
+      // Keep parent if it has accessible children
+      return item.children.length > 0;
+    }
+    
     return true;
   });
-}
-
-// Check if user can perform specific action
-export function canPerformAction(user: User | null, action: string, userProfile: UserProfile | null): boolean {
-  const userRole = getUserRole(user, userProfile);
-  
-  // Define action permissions
-  const actionPermissions: Record<string, UserRole[]> = {
-    'create_audit_request': ['project_owner', 'admin'],
-    'accept_audit_request': ['auditor', 'admin'],
-    'manage_escrow': ['auditor', 'project_owner', 'admin'],
-    'resolve_disputes': ['admin'],
-    'access_admin_features': ['admin'],
-    'view_analytics': ['auditor', 'project_owner', 'admin'],
-    'manage_profile': ['auditor', 'project_owner', 'admin'],
-    'submit_audit_service': ['auditor', 'admin'],
-    'access_admin_panel': ['admin'],
-  };
-  
-  const allowedRoles = actionPermissions[action] || [];
-  return allowedRoles.includes(userRole);
-}
-
-// Get dashboard URL based on user role
-export function getUserDashboard(user: User | null, userProfile: UserProfile | null): string {
-  const userRole = getUserRole(user, userProfile);
-  
-  switch (userRole) {
-    case 'admin':
-      return '/admin/dashboard';
-    case 'auditor':
-    case 'project_owner':
-      return '/dashboard';
-    default:
-      return '/';
-  }
-}
+};
