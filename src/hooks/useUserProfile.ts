@@ -23,6 +23,18 @@ export interface UserProfile {
   updated_at: string;
 }
 
+// Helper function to safely extract social links from JSON
+const extractSocialLinks = (socialLinks: any) => {
+  if (!socialLinks || typeof socialLinks !== 'object') {
+    return { github: undefined, linkedin: undefined };
+  }
+  
+  return {
+    github: socialLinks.github || undefined,
+    linkedin: socialLinks.linkedin || undefined,
+  };
+};
+
 export const useUserProfile = (userId?: string) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -50,6 +62,9 @@ export const useUserProfile = (userId?: string) => {
         .single();
 
       if (extendedProfile) {
+        // Extract social links safely
+        const socialLinks = extractSocialLinks(extendedProfile.social_links);
+        
         // Transform extended_profile to UserProfile with proper defaults
         const transformedProfile: UserProfile = {
           id: extendedProfile.id,
@@ -60,8 +75,8 @@ export const useUserProfile = (userId?: string) => {
           user_type: extendedProfile.user_type,
           bio: extendedProfile.bio,
           website: extendedProfile.website,
-          github_url: extendedProfile.social_links?.github,
-          linkedin_url: extendedProfile.social_links?.linkedin,
+          github_url: socialLinks.github,
+          linkedin_url: socialLinks.linkedin,
           verification_status: extendedProfile.verification_status,
           specializations: extendedProfile.specializations,
           hourly_rate: undefined, // Not available in extended_profiles
@@ -120,6 +135,12 @@ export const useUserProfile = (userId?: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
+      // Prepare social links for update
+      const socialLinksUpdate = {
+        github: updates.github_url,
+        linkedin: updates.linkedin_url,
+      };
+
       // Try to update extended_profiles first
       const { data: extendedData, error: extendedError } = await supabase
         .from('extended_profiles')
@@ -132,6 +153,7 @@ export const useUserProfile = (userId?: string) => {
           website: updates.website,
           verification_status: updates.verification_status,
           specializations: updates.specializations,
+          social_links: socialLinksUpdate,
         })
         .eq('id', user.id)
         .select()
@@ -176,6 +198,8 @@ export const useUserProfile = (userId?: string) => {
           setProfile(transformedProfile);
         }
       } else {
+        const socialLinks = extractSocialLinks(extendedData.social_links);
+        
         const transformedProfile: UserProfile = {
           id: extendedData.id,
           full_name: extendedData.full_name,
@@ -185,8 +209,8 @@ export const useUserProfile = (userId?: string) => {
           user_type: extendedData.user_type,
           bio: extendedData.bio,
           website: extendedData.website,
-          github_url: extendedData.social_links?.github,
-          linkedin_url: extendedData.social_links?.linkedin,
+          github_url: socialLinks.github,
+          linkedin_url: socialLinks.linkedin,
           verification_status: extendedData.verification_status,
           specializations: extendedData.specializations,
           hourly_rate: undefined,
@@ -211,6 +235,12 @@ export const useUserProfile = (userId?: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
+      // Prepare social links for creation
+      const socialLinksData = {
+        github: profileData.github_url,
+        linkedin: profileData.linkedin_url,
+      };
+
       // Try to create in extended_profiles first
       const { data: extendedData, error: extendedError } = await supabase
         .from('extended_profiles')
@@ -224,6 +254,7 @@ export const useUserProfile = (userId?: string) => {
           website: profileData.website,
           verification_status: profileData.verification_status || 'pending',
           specializations: profileData.specializations,
+          social_links: socialLinksData,
         })
         .select()
         .single();
@@ -267,6 +298,8 @@ export const useUserProfile = (userId?: string) => {
           setProfile(transformedProfile);
         }
       } else {
+        const socialLinks = extractSocialLinks(extendedData.social_links);
+        
         const transformedProfile: UserProfile = {
           id: extendedData.id,
           full_name: extendedData.full_name,
@@ -276,8 +309,8 @@ export const useUserProfile = (userId?: string) => {
           user_type: extendedData.user_type,
           bio: extendedData.bio,
           website: extendedData.website,
-          github_url: extendedData.social_links?.github,
-          linkedin_url: extendedData.social_links?.linkedin,
+          github_url: socialLinks.github,
+          linkedin_url: socialLinks.linkedin,
           verification_status: extendedData.verification_status,
           specializations: extendedData.specializations,
           hourly_rate: undefined,
