@@ -8,18 +8,18 @@ import { Toaster } from "@/components/ui/toaster"
 import { AppInitializer } from './components/app/AppInitializer';
 import { GlobalComponents } from './components/app/GlobalComponents';
 import MarketplacePage from './pages/MarketplacePage';
-import AuditSubmitPage from './pages/AuditSubmitPage';
+import Audits from './pages/Audits';
 import AuditRequestForm from './components/audit-request/AuditRequestForm';
-import AuditorOnboardingForm from './components/onboarding/AuditorOnboardingForm';
-import CommunityPage from './pages/CommunityPage';
-import ContactProvider from './components/marketplace/ContactProvider';
-import RequestAuditPage from './pages/RequestAuditPage';
+import ServiceProviderOnboardingForm from './components/service-provider/ServiceProviderOnboardingForm';
+import Community from './pages/Community';
+import ContactProvider from './pages/ContactProvider';
+import RequestAuditPage from './pages/RequestAudit';
 import AdminDashboard from './pages/AdminDashboard';
 import AuditorDashboard from './pages/AuditorDashboard';
 import UserDashboard from './pages/UserDashboard';
 import ProjectDashboard from './pages/ProjectDashboard';
 import { ActionGuard } from './components/auth/ActionGuard';
-import { PricingPage } from './pages/PricingPage';
+import Pricing from './pages/Pricing';
 import { AuditDetailsPage } from './components/audits/AuditDetailsPage';
 
 const queryClient = new QueryClient();
@@ -38,7 +38,7 @@ function App() {
                 <Routes>
                   <Route path="/" element={<MarketplacePage />} />
                   <Route path="/marketplace" element={<MarketplacePage />} />
-                  <Route path="/audits" element={<AuditSubmitPage />} />
+                  <Route path="/audits" element={<Audits />} />
                   
                   <Route path="/request-audit" element={
                     <ActionGuard action="create_audit_request">
@@ -46,8 +46,8 @@ function App() {
                     </ActionGuard>
                   } />
                   
-                  <Route path="/service-provider-onboarding" element={<AuditorOnboardingForm />} />
-                  <Route path="/community" element={<CommunityPage />} />
+                  <Route path="/service-provider-onboarding" element={<ServiceProviderOnboardingForm />} />
+                  <Route path="/community" element={<Community />} />
                   <Route path="/contact-provider/:id" element={<ContactProvider />} />
                   
                   <Route path="/admin" element={
@@ -62,7 +62,7 @@ function App() {
                   <Route path="/dashboard/project" element={<ProjectDashboard />} />
                   
                   {/* Public Pricing Page */}
-                  <Route path="/pricing" element={<PricingPage />} />
+                  <Route path="/pricing" element={<Pricing />} />
                   
                   {/* Add new audit details route */}
                   <Route path="/audit/:id" element={<AuditDetailsPage />} />
