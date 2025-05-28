@@ -50,7 +50,27 @@ export const useUserProfile = (userId?: string) => {
         .single();
 
       if (extendedProfile) {
-        setProfile(extendedProfile as UserProfile);
+        // Transform extended_profile to UserProfile with proper defaults
+        const transformedProfile: UserProfile = {
+          id: extendedProfile.id,
+          full_name: extendedProfile.full_name,
+          avatar_url: extendedProfile.avatar_url,
+          wallet_address: extendedProfile.wallet_address,
+          is_arbitrator: false, // Default value since extended_profiles doesn't have this field
+          user_type: extendedProfile.user_type,
+          bio: extendedProfile.bio,
+          website: extendedProfile.website,
+          github_url: extendedProfile.social_links?.github,
+          linkedin_url: extendedProfile.social_links?.linkedin,
+          verification_status: extendedProfile.verification_status,
+          specializations: extendedProfile.specializations,
+          hourly_rate: undefined, // Not available in extended_profiles
+          total_audits_completed: extendedProfile.projects_completed,
+          reputation_score: undefined, // Not available in extended_profiles
+          created_at: extendedProfile.created_at,
+          updated_at: extendedProfile.updated_at,
+        };
+        setProfile(transformedProfile);
       } else {
         // Fallback to basic profiles table
         const { data: basicProfile, error } = await supabase
@@ -60,7 +80,32 @@ export const useUserProfile = (userId?: string) => {
           .single();
 
         if (error && error.code !== 'PGRST116') throw error;
-        setProfile(basicProfile as UserProfile);
+        
+        if (basicProfile) {
+          // Transform basic profile to UserProfile
+          const transformedProfile: UserProfile = {
+            id: basicProfile.id,
+            full_name: basicProfile.full_name,
+            avatar_url: basicProfile.avatar_url,
+            wallet_address: basicProfile.wallet_address,
+            is_arbitrator: basicProfile.is_arbitrator,
+            user_type: undefined,
+            bio: undefined,
+            website: undefined,
+            github_url: undefined,
+            linkedin_url: undefined,
+            verification_status: undefined,
+            specializations: undefined,
+            hourly_rate: undefined,
+            total_audits_completed: undefined,
+            reputation_score: undefined,
+            created_at: basicProfile.created_at,
+            updated_at: basicProfile.updated_at,
+          };
+          setProfile(transformedProfile);
+        } else {
+          setProfile(null);
+        }
       }
     } catch (err: any) {
       setError(err.message);
@@ -78,7 +123,16 @@ export const useUserProfile = (userId?: string) => {
       // Try to update extended_profiles first
       const { data: extendedData, error: extendedError } = await supabase
         .from('extended_profiles')
-        .update(updates)
+        .update({
+          full_name: updates.full_name,
+          avatar_url: updates.avatar_url,
+          wallet_address: updates.wallet_address,
+          user_type: updates.user_type,
+          bio: updates.bio,
+          website: updates.website,
+          verification_status: updates.verification_status,
+          specializations: updates.specializations,
+        })
         .eq('id', user.id)
         .select()
         .single();
@@ -98,9 +152,50 @@ export const useUserProfile = (userId?: string) => {
           .single();
 
         if (error) throw error;
-        setProfile(data as UserProfile);
+        
+        if (data) {
+          const transformedProfile: UserProfile = {
+            id: data.id,
+            full_name: data.full_name,
+            avatar_url: data.avatar_url,
+            wallet_address: data.wallet_address,
+            is_arbitrator: data.is_arbitrator,
+            user_type: undefined,
+            bio: undefined,
+            website: undefined,
+            github_url: undefined,
+            linkedin_url: undefined,
+            verification_status: undefined,
+            specializations: undefined,
+            hourly_rate: undefined,
+            total_audits_completed: undefined,
+            reputation_score: undefined,
+            created_at: data.created_at,
+            updated_at: data.updated_at,
+          };
+          setProfile(transformedProfile);
+        }
       } else {
-        setProfile(extendedData as UserProfile);
+        const transformedProfile: UserProfile = {
+          id: extendedData.id,
+          full_name: extendedData.full_name,
+          avatar_url: extendedData.avatar_url,
+          wallet_address: extendedData.wallet_address,
+          is_arbitrator: false, // Default value
+          user_type: extendedData.user_type,
+          bio: extendedData.bio,
+          website: extendedData.website,
+          github_url: extendedData.social_links?.github,
+          linkedin_url: extendedData.social_links?.linkedin,
+          verification_status: extendedData.verification_status,
+          specializations: extendedData.specializations,
+          hourly_rate: undefined,
+          total_audits_completed: extendedData.projects_completed,
+          reputation_score: undefined,
+          created_at: extendedData.created_at,
+          updated_at: extendedData.updated_at,
+        };
+        setProfile(transformedProfile);
       }
       
       toast.success('Profile updated successfully');
@@ -121,7 +216,14 @@ export const useUserProfile = (userId?: string) => {
         .from('extended_profiles')
         .insert({
           id: user.id,
-          ...profileData,
+          full_name: profileData.full_name,
+          avatar_url: profileData.avatar_url,
+          wallet_address: profileData.wallet_address,
+          user_type: profileData.user_type,
+          bio: profileData.bio,
+          website: profileData.website,
+          verification_status: profileData.verification_status || 'pending',
+          specializations: profileData.specializations,
         })
         .select()
         .single();
@@ -141,9 +243,50 @@ export const useUserProfile = (userId?: string) => {
           .single();
 
         if (error) throw error;
-        setProfile(data as UserProfile);
+        
+        if (data) {
+          const transformedProfile: UserProfile = {
+            id: data.id,
+            full_name: data.full_name,
+            avatar_url: data.avatar_url,
+            wallet_address: data.wallet_address,
+            is_arbitrator: data.is_arbitrator,
+            user_type: undefined,
+            bio: undefined,
+            website: undefined,
+            github_url: undefined,
+            linkedin_url: undefined,
+            verification_status: undefined,
+            specializations: undefined,
+            hourly_rate: undefined,
+            total_audits_completed: undefined,
+            reputation_score: undefined,
+            created_at: data.created_at,
+            updated_at: data.updated_at,
+          };
+          setProfile(transformedProfile);
+        }
       } else {
-        setProfile(extendedData as UserProfile);
+        const transformedProfile: UserProfile = {
+          id: extendedData.id,
+          full_name: extendedData.full_name,
+          avatar_url: extendedData.avatar_url,
+          wallet_address: extendedData.wallet_address,
+          is_arbitrator: false, // Default value
+          user_type: extendedData.user_type,
+          bio: extendedData.bio,
+          website: extendedData.website,
+          github_url: extendedData.social_links?.github,
+          linkedin_url: extendedData.social_links?.linkedin,
+          verification_status: extendedData.verification_status,
+          specializations: extendedData.specializations,
+          hourly_rate: undefined,
+          total_audits_completed: extendedData.projects_completed,
+          reputation_score: undefined,
+          created_at: extendedData.created_at,
+          updated_at: extendedData.updated_at,
+        };
+        setProfile(transformedProfile);
       }
       
       toast.success('Profile created successfully');
