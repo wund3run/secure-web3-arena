@@ -80,7 +80,7 @@ const Terms = () => {
                 <li>Payments released based on milestone completion</li>
                 <li>Dispute resolution through qualified arbitrators</li>
                 <li>Refunds subject to project completion status</li>
-                <li>Manual approval required for transactions >$10,000</li>
+                <li>Manual approval required for transactions greater than $10,000</li>
               </ul>
             </section>
 

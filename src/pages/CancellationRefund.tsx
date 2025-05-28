@@ -124,7 +124,7 @@ const CancellationRefund = () => {
                   <span className="text-muted-foreground">5-10 business days</span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-muted/30 rounded">
-                  <span className="font-medium">Large Amount Refunds (>$10k)</span>
+                  <span className="font-medium">Large Amount Refunds (greater than $10k)</span>
                   <span className="text-muted-foreground">Up to 30 days</span>
                 </div>
               </div>
