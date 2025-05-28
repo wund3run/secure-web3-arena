@@ -1,467 +1,252 @@
-import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageCircle, Users, Trophy, Calendar, Flag, Shield } from "lucide-react";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
-import { CommunityHeader } from "@/components/community/community-header";
-import { CommunityFooter } from "@/components/community/community-footer";
+
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
+import { Users, MessageSquare, Calendar, Trophy, Star, ExternalLink, Github, Twitter, Youtube } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Link } from 'react-router-dom';
 
 export default function Community() {
-  const [activeTab, setActiveTab] = useState("discussions");
+  const communityFeatures = [
+    {
+      icon: <MessageSquare className="h-8 w-8 text-blue-500" />,
+      title: "Security Forum",
+      description: "Discuss security vulnerabilities, share findings, and collaborate with experts worldwide.",
+      link: "/forum",
+      members: "12,500+",
+      activity: "Daily discussions"
+    },
+    {
+      icon: <Calendar className="h-8 w-8 text-green-500" />,
+      title: "Events & Workshops",
+      description: "Join virtual workshops, conferences, and security training sessions.",
+      link: "/events",
+      members: "8,200+",
+      activity: "Weekly events"
+    },
+    {
+      icon: <Trophy className="h-8 w-8 text-purple-500" />,
+      title: "Security Challenges",
+      description: "Test your skills with hands-on security challenges and CTF competitions.",
+      link: "/challenges",
+      members: "5,800+",
+      activity: "Monthly challenges"
+    },
+    {
+      icon: <Star className="h-8 w-8 text-yellow-500" />,
+      title: "Leaderboard",
+      description: "See top-performing auditors and community contributors.",
+      link: "/leaderboard",
+      members: "3,400+",
+      activity: "Real-time updates"
+    }
+  ];
+
+  const socialChannels = [
+    {
+      name: "Discord",
+      icon: <MessageSquare className="h-6 w-6" />,
+      description: "Real-time chat with the community",
+      members: "25,000+",
+      url: "https://discord.gg/hawkly",
+      color: "bg-indigo-100 text-indigo-800"
+    },
+    {
+      name: "Twitter",
+      icon: <Twitter className="h-6 w-6" />,
+      description: "Latest updates and security news",
+      members: "18,500+",
+      url: "https://twitter.com/hawkly",
+      color: "bg-blue-100 text-blue-800"
+    },
+    {
+      name: "GitHub",
+      icon: <Github className="h-6 w-6" />,
+      description: "Open source tools and templates",
+      members: "12,200+",
+      url: "https://github.com/hawkly",
+      color: "bg-gray-100 text-gray-800"
+    },
+    {
+      name: "YouTube",
+      icon: <Youtube className="h-6 w-6" />,
+      description: "Security tutorials and webinars",
+      members: "8,900+",
+      url: "https://youtube.com/hawkly",
+      color: "bg-red-100 text-red-800"
+    }
+  ];
+
+  const upcomingEvents = [
+    {
+      title: "Web3 Security Summit 2025",
+      date: "March 15-17, 2025",
+      type: "Virtual Conference",
+      description: "Three-day conference featuring the latest in Web3 security research and best practices.",
+      speakers: "50+ speakers",
+      attendees: "2,000+ expected"
+    },
+    {
+      title: "Smart Contract Security Workshop",
+      date: "March 8, 2025",
+      type: "Workshop",
+      description: "Hands-on workshop covering advanced smart contract security techniques.",
+      speakers: "Expert auditors",
+      attendees: "Limited to 100"
+    },
+    {
+      title: "DeFi Security CTF",
+      date: "March 22, 2025",
+      type: "Competition",
+      description: "Capture-the-flag competition focused on DeFi protocol security.",
+      speakers: "Community-driven",
+      attendees: "Open to all"
+    }
+  ];
+
+  const communityStats = [
+    { label: "Active Members", value: "45,000+" },
+    { label: "Security Experts", value: "1,200+" },
+    { label: "Monthly Discussions", value: "8,500+" },
+    { label: "Resources Shared", value: "15,000+" }
+  ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Community | Hawkly</title>
+        <meta name="description" content="Join the Hawkly Web3 security community. Connect with experts, participate in events, and stay updated on the latest security trends." />
+      </Helmet>
+      
       <Navbar />
       
-      <main className="flex-grow">
-        <CommunityHeader />
-        
-        {/* Community Stats */}
-        <section className="py-12 bg-card">
-          <div className="container mx-auto px-4 max-w-7xl">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="text-center">
-                <p className="text-3xl md:text-4xl font-bold text-primary">12.5k+</p>
-                <p className="text-muted-foreground">Active Members</p>
-              </div>
-              <div className="text-center">
-                <p className="text-3xl md:text-4xl font-bold text-primary">350+</p>
-                <p className="text-muted-foreground">Security Experts</p>
-              </div>
-              <div className="text-center">
-                <p className="text-3xl md:text-4xl font-bold text-primary">4.2k+</p>
-                <p className="text-muted-foreground">Forum Topics</p>
-              </div>
-              <div className="text-center">
-                <p className="text-3xl md:text-4xl font-bold text-primary">120+</p>
-                <p className="text-muted-foreground">Events per Year</p>
-              </div>
-            </div>
+      <div className="container mx-auto px-4 py-8">
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 text-primary mb-6">
+            <Users className="h-4 w-4 mr-2" />
+            <span className="text-sm font-medium">Join Our Community</span>
           </div>
-        </section>
-        
-        {/* Community Content Tabs */}
-        <section className="py-12">
-          <div className="container mx-auto px-4 max-w-7xl">
-            <Tabs defaultValue="discussions" onValueChange={setActiveTab} className="w-full">
-              <div className="flex justify-center mb-8">
-                <TabsList className="grid grid-cols-2 md:grid-cols-4 w-full max-w-2xl">
-                  <TabsTrigger value="discussions" className="flex gap-2 items-center">
-                    <MessageCircle className="h-4 w-4" />
-                    <span className="hidden md:inline">Discussions</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="groups" className="flex gap-2 items-center">
-                    <Users className="h-4 w-4" />
-                    <span className="hidden md:inline">Groups</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="events" className="flex gap-2 items-center">
-                    <Calendar className="h-4 w-4" />
-                    <span className="hidden md:inline">Events</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="challenges" className="flex gap-2 items-center">
-                    <Flag className="h-4 w-4" />
-                    <span className="hidden md:inline">Challenges</span>
-                  </TabsTrigger>
-                </TabsList>
+          
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            Web3 Security 
+            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"> Community</span>
+          </h1>
+          
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            Connect with thousands of security professionals, developers, and researchers working to make 
+            Web3 safer. Share knowledge, learn from experts, and stay ahead of emerging threats.
+          </p>
+          
+          {/* Community Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+            {communityStats.map((stat, index) => (
+              <div key={index} className="text-center">
+                <div className="text-2xl font-bold text-primary">{stat.value}</div>
+                <div className="text-sm text-muted-foreground">{stat.label}</div>
               </div>
-
-              {/* Discussions Tab */}
-              <TabsContent value="discussions">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {discussionThreads.map((thread) => (
-                    <Card key={thread.id} className="h-full">
-                      <CardHeader>
-                        <div className="flex justify-between items-start">
-                          <CardTitle>{thread.title}</CardTitle>
-                          <div className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
-                            {thread.category}
-                          </div>
-                        </div>
-                        <CardDescription className="flex items-center gap-2 mt-2">
-                          <img src={thread.author.avatar} alt={thread.author.name} className="w-6 h-6 rounded-full" />
-                          {thread.author.name} • {thread.date}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="line-clamp-3">{thread.preview}</p>
-                      </CardContent>
-                      <CardFooter className="flex justify-between text-sm text-muted-foreground">
-                        <div className="flex items-center gap-2">
-                          <MessageCircle className="w-4 h-4" /> {thread.replies} replies
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Trophy className="w-4 h-4" /> {thread.points} points
-                        </div>
-                      </CardFooter>
-                    </Card>
-                  ))}
-                </div>
-                <div className="flex justify-center mt-8">
-                  <Button variant="outline">View All Discussions</Button>
-                </div>
-              </TabsContent>
-
-              {/* Groups Tab */}
-              <TabsContent value="groups">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {communityGroups.map((group) => (
-                    <Card key={group.id} className="h-full">
-                      <CardHeader>
-                        <div className="flex justify-between items-start">
-                          <CardTitle className="flex items-center gap-2">
-                            {group.icon}
-                            {group.name}
-                          </CardTitle>
-                          <div className={`text-xs px-2 py-1 rounded-full ${
-                            group.type === "Public" 
-                              ? "bg-green-100 text-green-700" 
-                              : "bg-blue-100 text-blue-700"
-                          }`}>
-                            {group.type}
-                          </div>
-                        </div>
-                        <CardDescription>{group.members} members</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="line-clamp-3">{group.description}</p>
-                      </CardContent>
-                      <CardFooter className="flex justify-between">
-                        <Button variant="outline" size="sm">View Group</Button>
-                        <Button size="sm">Join</Button>
-                      </CardFooter>
-                    </Card>
-                  ))}
-                </div>
-                <div className="flex justify-center mt-8">
-                  <Button variant="outline">View All Groups</Button>
-                </div>
-              </TabsContent>
-
-              {/* Events Tab */}
-              <TabsContent value="events">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {communityEvents.map((event) => (
-                    <Card key={event.id} className="h-full">
-                      <CardHeader className="pb-2">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <CardTitle>{event.title}</CardTitle>
-                            <CardDescription className="mt-1">
-                              {event.date} • {event.time} • {event.format}
-                            </CardDescription>
-                          </div>
-                          <div className={`text-xs px-2 py-1 rounded-full ${
-                            event.status === "Upcoming" 
-                              ? "bg-primary/10 text-primary" 
-                              : "bg-zinc-100 text-zinc-700"
-                          }`}>
-                            {event.status}
-                          </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="mb-3 line-clamp-2">{event.description}</p>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Users className="h-4 w-4" />
-                          {event.attendees} attendees
-                        </div>
-                      </CardContent>
-                      <CardFooter className="flex justify-between">
-                        <Button variant="outline" size="sm">Learn More</Button>
-                        <Button size="sm">{event.status === "Upcoming" ? "Register" : "Watch Recording"}</Button>
-                      </CardFooter>
-                    </Card>
-                  ))}
-                </div>
-                <div className="flex justify-center mt-8">
-                  <Button variant="outline">View All Events</Button>
-                </div>
-              </TabsContent>
-
-              {/* Challenges Tab */}
-              <TabsContent value="challenges">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {securityChallenges.map((challenge) => (
-                    <Card key={challenge.id} className="h-full">
-                      <CardHeader>
-                        <div className="flex justify-between items-start">
-                          <CardTitle>{challenge.title}</CardTitle>
-                          <div className={`text-xs px-2 py-1 rounded-full ${
-                            challenge.difficulty === "Easy" 
-                              ? "bg-green-100 text-green-700" 
-                              : challenge.difficulty === "Medium"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-red-100 text-red-700"
-                          }`}>
-                            {challenge.difficulty}
-                          </div>
-                        </div>
-                        <CardDescription>{challenge.category}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="line-clamp-3 mb-3">{challenge.description}</p>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Trophy className="h-4 w-4" />
-                          {challenge.points} points
-                        </div>
-                      </CardContent>
-                      <CardFooter className="flex justify-between">
-                        <div className="text-sm text-muted-foreground">{challenge.submissions} submissions</div>
-                        <Button size="sm">Try Challenge</Button>
-                      </CardFooter>
-                    </Card>
-                  ))}
-                </div>
-                <div className="flex justify-center mt-8">
-                  <Button variant="outline">View All Challenges</Button>
-                </div>
-              </TabsContent>
-            </Tabs>
+            ))}
           </div>
-        </section>
-        
-        {/* Add community footer instead of the existing simple section */}
-        <div className="container mx-auto px-4 max-w-7xl">
-          <CommunityFooter />
         </div>
-      </main>
+
+        {/* Community Features */}
+        <div className="grid md:grid-cols-2 gap-6 mb-16">
+          {communityFeatures.map((feature, index) => (
+            <Card key={index} className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-2">
+                  {feature.icon}
+                  <CardTitle className="text-xl">{feature.title}</CardTitle>
+                </div>
+                <CardDescription>{feature.description}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between mb-4 text-sm text-muted-foreground">
+                  <span>{feature.members} members</span>
+                  <span>{feature.activity}</span>
+                </div>
+                <Link to={feature.link}>
+                  <Button className="w-full">Join Discussion</Button>
+                </Link>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Social Channels */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-center mb-8">Connect With Us</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {socialChannels.map((channel, index) => (
+              <Card key={index} className="text-center hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className={`inline-flex items-center justify-center w-12 h-12 rounded-lg mb-3 ${channel.color}`}>
+                    {channel.icon}
+                  </div>
+                  <h3 className="font-semibold mb-1">{channel.name}</h3>
+                  <p className="text-sm text-muted-foreground mb-2">{channel.description}</p>
+                  <p className="text-xs text-muted-foreground mb-3">{channel.members} followers</p>
+                  <Button size="sm" variant="outline" className="w-full">
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Follow
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Upcoming Events */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-center mb-8">Upcoming Events</h2>
+          <div className="space-y-4">
+            {upcomingEvents.map((event, index) => (
+              <Card key={index} className="hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge variant="secondary">{event.type}</Badge>
+                        <span className="text-sm text-muted-foreground">{event.date}</span>
+                      </div>
+                      <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
+                      <p className="text-muted-foreground mb-2">{event.description}</p>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span>{event.speakers}</span>
+                        <span>{event.attendees}</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button variant="outline">Learn More</Button>
+                      <Button>Register</Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA Section */}
+        <div className="text-center bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-8">
+          <h2 className="text-2xl font-bold mb-4">Ready to Join Our Community?</h2>
+          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+            Start connecting with security experts, participate in discussions, and contribute to making 
+            Web3 more secure for everyone.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Button size="lg">Join Discord</Button>
+            <Link to="/forum">
+              <Button variant="outline" size="lg">Browse Forum</Button>
+            </Link>
+          </div>
+        </div>
+      </div>
       
       <Footer />
     </div>
   );
 }
-
-// Mock data for the community page tabs
-const discussionThreads = [
-  {
-    id: 1,
-    title: "Latest approaches to preventing reentrancy exploits",
-    category: "Smart Contracts",
-    author: {
-      name: "Alex Johnson",
-      avatar: "https://i.pravatar.cc/150?img=1"
-    },
-    date: "2 days ago",
-    preview: "I've been working with several projects implementing various reentrancy prevention mechanisms. The classic mutex approach works well, but I've found some edge cases where it fails. Has anyone experimented with the newer OpenZeppelin ReentrancyGuard implementation?",
-    replies: 42,
-    points: 128
-  },
-  {
-    id: 2,
-    title: "MEV protection strategies for new DeFi protocols",
-    category: "DeFi",
-    author: {
-      name: "Sarah Ahmed",
-      avatar: "https://i.pravatar.cc/150?img=2"
-    },
-    date: "5 days ago",
-    preview: "Building a new DEX and concerned about MEV. We're considering implementing a batch auction mechanism similar to what CoW Swap uses. Any experiences or recommendations from the community on this approach?",
-    replies: 37,
-    points: 95
-  },
-  {
-    id: 3,
-    title: "Best practices for secure upgradable proxy patterns",
-    category: "Smart Contracts",
-    author: {
-      name: "Michael Zhang",
-      avatar: "https://i.pravatar.cc/150?img=3"
-    },
-    date: "1 week ago",
-    preview: "Working on a protocol that needs upgradeability, but I'm concerned about security implications. Is the UUPS pattern still considered best practice in 2025? What governance protections should we put in place?",
-    replies: 28,
-    points: 83
-  },
-  {
-    id: 4,
-    title: "Security implications of EIP-4844 (Proto-Danksharding)",
-    category: "Layer 2",
-    author: {
-      name: "Elena Rodriguez",
-      avatar: "https://i.pravatar.cc/150?img=4"
-    },
-    date: "2 weeks ago",
-    preview: "With EIP-4844 now live, what security considerations should L2 developers be aware of? How does blob storage affect the security model of rollups?",
-    replies: 19,
-    points: 76
-  },
-  {
-    id: 5,
-    title: "Auditing ZK circuits - tools and approaches",
-    category: "Zero Knowledge",
-    author: {
-      name: "David Wilson",
-      avatar: "https://i.pravatar.cc/150?img=5"
-    },
-    date: "3 weeks ago",
-    preview: "ZK proofs are becoming ubiquitous, but auditing ZK circuits remains challenging. What tools and techniques are people using? Are there standards emerging for documenting circuit security properties?",
-    replies: 31,
-    points: 102
-  },
-  {
-    id: 6,
-    title: "Analyzing the recent cross-chain bridge exploit",
-    category: "Exploits",
-    author: {
-      name: "Sophia Parker",
-      avatar: "https://i.pravatar.cc/150?img=6"
-    },
-    date: "1 month ago",
-    preview: "Deep diving into the recent bridge exploit. It looks like the attackers found a novel way to manipulate the message verification on the destination chain. I've created a POC that demonstrates the attack vector.",
-    replies: 56,
-    points: 210
-  }
-];
-
-const communityGroups = [
-  {
-    id: 1,
-    name: "Smart Contract Auditors",
-    icon: <Shield className="h-5 w-5 text-primary" />,
-    type: "Public",
-    members: 3240,
-    description: "A group for professional smart contract auditors to discuss methodologies, tools, and best practices for auditing blockchain applications."
-  },
-  {
-    id: 2,
-    name: "DeFi Security Working Group",
-    icon: <Shield className="h-5 w-5 text-primary" />,
-    type: "Private",
-    members: 1875,
-    description: "Focused on identifying and addressing security challenges specific to decentralized finance protocols and applications."
-  },
-  {
-    id: 3,
-    name: "ZK Security Research",
-    icon: <Shield className="h-5 w-5 text-primary" />,
-    type: "Public",
-    members: 942,
-    description: "Researching security aspects of zero-knowledge proof systems and their implementations in blockchain protocols."
-  },
-  {
-    id: 4,
-    name: "Security Mentorship Network",
-    icon: <Shield className="h-5 w-5 text-primary" />,
-    type: "Public",
-    members: 2130,
-    description: "Connecting security beginners with experienced mentors to foster growth and knowledge sharing in the Web3 security space."
-  },
-  {
-    id: 5,
-    name: "Exploit Analysis Team",
-    icon: <Shield className="h-5 w-5 text-primary" />,
-    type: "Private",
-    members: 768,
-    description: "A specialized group focusing on analyzing recent exploits, creating educational content, and developing prevention strategies."
-  },
-  {
-    id: 6,
-    name: "Layer 2 Security Coalition",
-    icon: <Shield className="h-5 w-5 text-primary" />,
-    type: "Public",
-    members: 1453,
-    description: "Focused on the unique security challenges of Layer 2 scaling solutions including rollups, state channels, and validiums."
-  }
-];
-
-const communityEvents = [
-  {
-    id: 1,
-    title: "Web3 Security Summit",
-    date: "May 15, 2025",
-    time: "9:00 AM - 6:00 PM UTC",
-    format: "Virtual & In-person",
-    status: "Upcoming",
-    description: "Join top security researchers and protocol developers for a day of presentations and workshops on the latest in blockchain security.",
-    attendees: 1200
-  },
-  {
-    id: 2,
-    title: "Smart Contract Auditing Masterclass",
-    date: "June 3-5, 2025",
-    time: "2:00 PM - 5:00 PM UTC",
-    format: "Virtual Workshop",
-    status: "Upcoming",
-    description: "A three-day hands-on workshop covering advanced smart contract auditing techniques, featuring live code reviews and vulnerability hunting.",
-    attendees: 500
-  },
-  {
-    id: 3,
-    title: "Security Tools Showcase",
-    date: "April 22, 2025",
-    time: "3:00 PM - 5:00 PM UTC",
-    format: "Virtual",
-    status: "Past",
-    description: "Demonstrations of the latest security tools and frameworks for blockchain developers and auditors, with Q&A from the creators.",
-    attendees: 850
-  },
-  {
-    id: 4,
-    title: "DeFi Security Best Practices Panel",
-    date: "April 10, 2025",
-    time: "6:00 PM - 7:30 PM UTC",
-    format: "Virtual",
-    status: "Past",
-    description: "Security leads from major DeFi protocols discuss best practices, recent challenges, and future security trends in the ecosystem.",
-    attendees: 1350
-  }
-];
-
-const securityChallenges = [
-  {
-    id: 1,
-    title: "Reentrancy Riddles",
-    difficulty: "Medium",
-    category: "Smart Contract Security",
-    description: "A series of increasingly complex reentrancy challenges. Can you exploit the vulnerable contracts while also implementing proper fixes?",
-    points: 500,
-    submissions: 342
-  },
-  {
-    id: 2,
-    title: "MEV Extraction Challenge",
-    difficulty: "Hard",
-    category: "DeFi Security",
-    description: "Identify profitable MEV opportunities in a simulated mempool environment. Points awarded for novel extraction strategies.",
-    points: 750,
-    submissions: 126
-  },
-  {
-    id: 3,
-    title: "Access Control Basics",
-    difficulty: "Easy",
-    category: "Smart Contract Security",
-    description: "Find and exploit the access control vulnerabilities in these sample contracts. Perfect for security beginners.",
-    points: 250,
-    submissions: 958
-  },
-  {
-    id: 4,
-    title: "Bridge Security Audit",
-    difficulty: "Hard",
-    category: "Cross-chain Security",
-    description: "Audit a cross-chain bridge implementation and identify as many vulnerabilities as possible. Real-world bridge exploits have resulted in losses of millions.",
-    points: 1000,
-    submissions: 87
-  },
-  {
-    id: 5,
-    title: "Oracle Manipulation",
-    difficulty: "Medium",
-    category: "DeFi Security",
-    description: "Learn how price oracle manipulations work by exploiting vulnerable lending protocols in a sandboxed environment.",
-    points: 500,
-    submissions: 274
-  },
-  {
-    id: 6,
-    title: "ZK Circuit Bugs",
-    difficulty: "Hard",
-    category: "Zero Knowledge",
-    description: "Find the vulnerabilities in these ZK circuit implementations. Test your understanding of zero-knowledge proof systems.",
-    points: 1000,
-    submissions: 62
-  }
-];

@@ -1,73 +1,94 @@
 
-import { useLocation, Link } from "react-router-dom";
-import { useEffect } from "react";
-import { Shield, AlertTriangle, ArrowLeft, Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
-import { getFallbackRoute } from "@/utils/navigation";
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
+import { AlertTriangle, Home, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Link, useNavigate } from 'react-router-dom';
 
-const NotFound = () => {
-  const location = useLocation();
-  const suggestedRoute = getFallbackRoute(location.pathname);
-  const hasSuggestion = suggestedRoute !== "/";
+export default function NotFound() {
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    console.error(
-      "404 Error: User attempted to access non-existent route:",
-      location.pathname
-    );
-  }, [location.pathname]);
+  const popularPages = [
+    { title: "Security Marketplace", href: "/marketplace", description: "Find verified security auditors" },
+    { title: "Request Audit", href: "/request-audit", description: "Submit your project for review" },
+    { title: "Documentation", href: "/docs", description: "Platform guides and API docs" },
+    { title: "Web3 Security", href: "/web3-security", description: "Learn about blockchain security" },
+    { title: "Contact Support", href: "/contact", description: "Get help from our team" }
+  ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Page Not Found | Hawkly</title>
+        <meta name="description" content="The page you're looking for doesn't exist. Explore our security marketplace and resources." />
+      </Helmet>
+      
       <Navbar />
-      <main className="flex-grow flex items-center justify-center">
-        <div className="max-w-md mx-auto px-4 py-16 sm:px-6 sm:py-24 text-center">
-          <div className="flex justify-center mb-6">
-            <div className="relative">
-              <Shield className="h-24 w-24 text-primary/30" />
-              <AlertTriangle className="h-10 w-10 text-web3-orange absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+      
+      <div className="container mx-auto px-4 py-16">
+        <div className="text-center max-w-2xl mx-auto">
+          {/* Error Icon */}
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-muted rounded-full mb-8">
+            <AlertTriangle className="h-10 w-10 text-muted-foreground" />
+          </div>
+          
+          {/* Error Message */}
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Page Not Found
+          </h1>
+          
+          <p className="text-xl text-muted-foreground mb-8">
+            Sorry, we couldn't find the page you're looking for. The page may have been moved, deleted, or the URL might be incorrect.
+          </p>
+          
+          {/* Action Buttons */}
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            <Button onClick={() => navigate(-1)} variant="outline">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Go Back
+            </Button>
+            <Link to="/">
+              <Button>
+                <Home className="h-4 w-4 mr-2" />
+                Go Home
+              </Button>
+            </Link>
+          </div>
+          
+          {/* Popular Pages */}
+          <div className="text-left">
+            <h2 className="text-2xl font-bold text-center mb-6">Popular Pages</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              {popularPages.map((page, index) => (
+                <Link 
+                  key={index}
+                  to={page.href}
+                  className="block p-4 border rounded-lg hover:shadow-md transition-shadow"
+                >
+                  <h3 className="font-semibold mb-1">{page.title}</h3>
+                  <p className="text-sm text-muted-foreground">{page.description}</p>
+                </Link>
+              ))}
             </div>
           </div>
           
-          <h1 className="text-6xl font-extrabold text-gradient mb-6">404</h1>
-          
-          <p className="text-xl text-muted-foreground mb-8">
-            This page is still being secured. Our security experts are working on it!
-          </p>
-          
-          <div className="bg-card border border-border/30 rounded-lg p-6 mb-8">
-            <p className="text-sm text-muted-foreground mb-3">
-              You tried to access:
+          {/* Help Section */}
+          <div className="mt-12 p-6 bg-muted/50 rounded-lg">
+            <h3 className="text-lg font-semibold mb-2">Still need help?</h3>
+            <p className="text-muted-foreground mb-4">
+              If you believe this is an error or you need assistance finding what you're looking for, 
+              our support team is here to help.
             </p>
-            <code className="px-2 py-1 bg-background rounded text-sm">
-              {location.pathname}
-            </code>
-          </div>
-          
-          <div className="flex flex-col space-y-4">
-            <Button asChild size="lg">
-              <Link to="/">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Return to Homepage
-              </Link>
-            </Button>
-            
-            {hasSuggestion && (
-              <Button asChild variant="outline" size="lg">
-                <Link to={suggestedRoute}>
-                  <Search className="mr-2 h-4 w-4" />
-                  Did you mean: {suggestedRoute}?
-                </Link>
-              </Button>
-            )}
+            <Link to="/contact">
+              <Button variant="outline">Contact Support</Button>
+            </Link>
           </div>
         </div>
-      </main>
+      </div>
+      
       <Footer />
     </div>
   );
-};
-
-export default NotFound;
+}
