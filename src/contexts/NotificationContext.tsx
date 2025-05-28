@@ -4,6 +4,8 @@ import { useAuth } from '@/contexts/auth';
 import { supabase } from '@/integrations/supabase/client';
 import { Notification, NotificationContextType } from '@/types/notification.types';
 import { toast } from 'sonner';
+import { useNotificationPersistence } from '@/hooks/useNotificationPersistence';
+import { useBrowserNotifications } from '@/hooks/useBrowserNotifications';
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
@@ -22,6 +24,23 @@ interface NotificationProviderProps {
 export const NotificationProvider = ({ children }: NotificationProviderProps) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const { user } = useAuth();
+  const { saveNotifications, loadNotifications } = useNotificationPersistence();
+  const { sendBrowserNotification, canSendNotifications } = useBrowserNotifications();
+
+  // Load persisted notifications on mount
+  useEffect(() => {
+    if (user?.id) {
+      const loaded = loadNotifications();
+      setNotifications(loaded);
+    }
+  }, [user?.id]);
+
+  // Save notifications whenever they change
+  useEffect(() => {
+    if (notifications.length > 0) {
+      saveNotifications(notifications);
+    }
+  }, [notifications, saveNotifications]);
 
   const addNotification = (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
     const newNotification: Notification = {
@@ -33,7 +52,7 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
     
     setNotifications(prev => [newNotification, ...prev]);
     
-    // Show toast for new notifications
+    // Show toast notification
     toast(notification.title, {
       description: notification.message,
       action: notification.actionUrl ? {
@@ -41,6 +60,19 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
         onClick: () => window.location.href = notification.actionUrl!,
       } : undefined,
     });
+
+    // Send browser notification if enabled
+    if (canSendNotifications) {
+      sendBrowserNotification(notification.title, {
+        body: notification.message,
+        data: { actionUrl: notification.actionUrl },
+      });
+    }
+
+    // Play notification sound
+    if ((window as any).playNotificationSound) {
+      (window as any).playNotificationSound();
+    }
   };
 
   const markAsRead = (id: string) => {
@@ -67,7 +99,7 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  // Set up real-time listeners for audit updates
+  // Enhanced real-time listeners
   useEffect(() => {
     if (!user) return;
 
@@ -83,13 +115,28 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
         },
         (payload) => {
           if (payload.eventType === 'UPDATE') {
+            const oldStatus = payload.old?.status;
+            const newStatus = payload.new?.status;
+            
+            if (oldStatus !== newStatus) {
+              addNotification({
+                title: 'Audit Status Updated',
+                message: `Your audit "${payload.new.project_name}" status changed to: ${newStatus}`,
+                type: newStatus === 'approved' ? 'success' : newStatus === 'rejected' ? 'error' : 'info',
+                category: 'audit',
+                userId: user.id,
+                actionUrl: `/audit/${payload.new.id}`,
+                actionLabel: 'View Audit',
+              });
+            }
+          } else if (payload.eventType === 'INSERT') {
             addNotification({
-              title: 'Audit Status Updated',
-              message: `Your audit request has been updated`,
+              title: 'New Audit Request',
+              message: `New audit request "${payload.new.project_name}" has been created`,
               type: 'info',
               category: 'audit',
               userId: user.id,
-              actionUrl: `/audits/${payload.new.id}`,
+              actionUrl: `/audit/${payload.new.id}`,
               actionLabel: 'View Audit',
             });
           }
@@ -115,7 +162,7 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
               type: 'info',
               category: 'message',
               userId: user.id,
-              actionUrl: `/audits/${payload.new.audit_request_id}`,
+              actionUrl: `/audit/${payload.new.audit_request_id}`,
               actionLabel: 'View Message',
             });
           }
