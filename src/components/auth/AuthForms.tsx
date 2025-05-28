@@ -1,188 +1,231 @@
 
 import React, { useState } from "react";
-import { useAuth } from "@/contexts/auth";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 
 interface AuthFormsProps {
-  isSignIn: boolean;
-  onToggle: () => void;
-  returnMessage?: string;
-  onSignIn: (email: string, password: string, captchaToken?: string) => Promise<void>;
-  onSignUp: (email: string, password: string, name: string, userType: "auditor" | "project_owner", captchaToken?: string) => Promise<void>;
-  userType: "auditor" | "project_owner";
-  setUserType: (type: "auditor" | "project_owner") => void;
+  onSignIn: (email: string, password: string) => Promise<void>;
+  onSignUp: (email: string, password: string, fullName: string, userType: 'auditor' | 'project_owner') => Promise<void>;
+  isLoading: boolean;
+  error: string | null;
 }
 
-export function AuthForms({
-  isSignIn,
-  onToggle,
-  returnMessage,
-  onSignIn,
-  onSignUp,
-  userType,
-  setUserType,
-}: AuthFormsProps) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { error } = useAuth();
+export const AuthForms = ({ onSignIn, onSignUp, isLoading, error }: AuthFormsProps) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [activeTab, setActiveTab] = useState('login');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    fullName: '',
+    confirmPassword: '',
+    userType: 'project_owner' as 'project_owner' | 'auditor'
+  });
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
-      return;
-    }
-    
-    setIsLoading(true);
-    try {
-      await onSignIn(email, password);
-    } catch (err) {
-      console.error("Sign in error:", err);
-    } finally {
-      setIsLoading(false);
-    }
+    await onSignIn(formData.email, formData.password);
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password || !fullName) {
-      return;
-    }
-    
-    setIsLoading(true);
-    try {
-      await onSignUp(email, password, fullName, userType);
-    } catch (err) {
-      console.error("Sign up error:", err);
-    } finally {
-      setIsLoading(false);
-    }
+    await onSignUp(formData.email, formData.password, formData.fullName, formData.userType);
   };
 
   return (
-    <div className="w-full max-w-md space-y-6">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold">{isSignIn ? "Sign In to Hawkly" : "Create a Hawkly Account"}</h1>
-        <p className="text-sm text-muted-foreground mt-2">
-          {isSignIn
-            ? "Enter your credentials to access your account"
-            : "Join our platform to connect with security professionals"}
-        </p>
-      </div>
-      
-      {returnMessage && (
-        <div className="bg-muted/50 px-4 py-3 rounded-md text-sm">
-          {returnMessage}
-        </div>
-      )}
+    <Card className="shadow-xl">
+      <CardHeader>
+        <CardTitle className="text-center">Get Started</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="login">Sign In</TabsTrigger>
+            <TabsTrigger value="register">Sign Up</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="login" className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            
+            <form onSubmit={handleSignIn} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    className="pl-10"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Enter your password"
+                    className="pl-10 pr-10"
+                    value={formData.password}
+                    onChange={(e) => handleInputChange('password', e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </button>
+                </div>
+              </div>
 
-      {!isSignIn && (
-        <div className="space-y-2">
-          <label className="block text-sm font-medium">Select Account Type</label>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => setUserType("project_owner")}
-              className={`flex-1 py-2 px-4 text-sm rounded-md border transition-colors ${
-                userType === "project_owner" ? "bg-primary text-primary-foreground" : "bg-muted/20 hover:bg-muted/30"
-              }`}
-              aria-pressed={userType === "project_owner"}
-            >
-              Project Owner
-            </button>
-            <button
-              type="button"
-              onClick={() => setUserType("auditor")}
-              className={`flex-1 py-2 px-4 text-sm rounded-md border transition-colors ${
-                userType === "auditor" ? "bg-primary text-primary-foreground" : "bg-muted/20 hover:bg-muted/30"
-              }`}
-              aria-pressed={userType === "auditor"}
-            >
-              Security Auditor
-            </button>
-          </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            {userType === "auditor" 
-              ? "Register as an auditor to offer your security expertise" 
-              : "Register as a project owner to request security audits"}
-          </p>
-        </div>
-      )}
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? 'Signing in...' : 'Sign in'}
+              </Button>
+            </form>
+          </TabsContent>
+          
+          <TabsContent value="register" className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
 
-      <div className="space-y-4">
-        <form onSubmit={isSignIn ? handleSignIn : handleSignUp} className="space-y-4">
-          {!isSignIn && (
             <div className="space-y-2">
-              <label htmlFor="fullName" className="block text-sm font-medium">
-                Full Name
-              </label>
-              <input
-                id="fullName"
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                required
-                disabled={isLoading}
-              />
+              <Label>Account Type</Label>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  type="button"
+                  variant={formData.userType === 'project_owner' ? 'default' : 'outline'}
+                  onClick={() => handleInputChange('userType', 'project_owner')}
+                  className="text-sm"
+                >
+                  Project Owner
+                </Button>
+                <Button
+                  type="button"
+                  variant={formData.userType === 'auditor' ? 'default' : 'outline'}
+                  onClick={() => handleInputChange('userType', 'auditor')}
+                  className="text-sm"
+                >
+                  Security Auditor
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {formData.userType === 'auditor' 
+                  ? 'Offer security audit services to Web3 projects' 
+                  : 'Request security audits for your Web3 projects'}
+              </p>
             </div>
-          )}
-          
-          <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              required
-              disabled={isLoading}
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <label htmlFor="password" className="block text-sm font-medium">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              minLength={6}
-              required
-              disabled={isLoading}
-            />
-          </div>
-          
-          {error && <p className="text-sm text-red-500">{error}</p>}
-          
-          <button
-            type="submit"
-            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            disabled={isLoading || !email || !password || (!isSignIn && !fullName)}
-          >
-            {isLoading ? (isSignIn ? "Signing in..." : "Creating account...") : (isSignIn ? "Sign In" : "Create Account")}
-          </button>
-        </form>
-      </div>
+            
+            <form onSubmit={handleSignUp} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="fullName">Full Name</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="fullName"
+                    type="text"
+                    placeholder="Enter your full name"
+                    className="pl-10"
+                    value={formData.fullName}
+                    onChange={(e) => handleInputChange('fullName', e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="registerEmail">Email</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="registerEmail"
+                    type="email"
+                    placeholder="Enter your email"
+                    className="pl-10"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="registerPassword">Password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="registerPassword"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Create a password"
+                    className="pl-10 pr-10"
+                    value={formData.password}
+                    onChange={(e) => handleInputChange('password', e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </button>
+                </div>
+              </div>
 
-      <div className="text-center mt-6">
-        <p className="text-sm">
-          {isSignIn ? "Don't have an account? " : "Already have an account? "}
-          <button
-            onClick={onToggle}
-            className="text-primary hover:underline font-medium"
-            type="button"
-          >
-            {isSignIn ? "Sign Up" : "Sign In"}
-          </button>
-        </p>
-      </div>
-    </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="confirmPassword"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Confirm your password"
+                    className="pl-10"
+                    value={formData.confirmPassword}
+                    onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? 'Creating account...' : 'Create account'}
+              </Button>
+            </form>
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
   );
-}
+};
