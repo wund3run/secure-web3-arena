@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Star, Clock, Shield, CheckCircle, MessageCircle } from 'lucide-react';
 import { useRealTimeAuditMatching } from '@/hooks/useRealTimeAuditMatching';
 import { RealTimeMessagingService } from '@/services/real-time-messaging-service';
-import { LoadingState } from '@/components/ui/loading-state';
+import LoadingState from '@/components/ui/loading-state';
 
 interface AIMatchingInterfaceProps {
   auditRequestId: string;
