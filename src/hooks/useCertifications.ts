@@ -18,14 +18,20 @@ export interface Certification {
 
 export const useCertifications = () => {
   const [certifications, setCertifications] = useState<Certification[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchCertifications = async () => {
     try {
       setLoading(true);
+      setError(null);
+      
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
+      if (!user) {
+        console.log('No authenticated user found');
+        setLoading(false);
+        return;
+      }
 
       const { data, error } = await supabase
         .from('certifications')
@@ -33,11 +39,15 @@ export const useCertifications = () => {
         .eq('user_id', user.id)
         .order('issued_at', { ascending: false });
 
-      if (error) throw error;
-      setCertifications(data || []);
+      if (error) {
+        console.error('Certifications fetch error:', error);
+        setError('Failed to fetch certifications');
+      } else {
+        setCertifications(data || []);
+      }
     } catch (err: any) {
-      setError(err.message);
-      console.error('Failed to fetch certifications:', err);
+      console.error('Certifications error:', err);
+      setError(err.message || 'An error occurred');
     } finally {
       setLoading(false);
     }

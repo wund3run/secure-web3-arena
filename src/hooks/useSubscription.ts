@@ -19,14 +19,20 @@ export interface Subscription {
 
 export const useSubscription = () => {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchUserSubscription = async () => {
     try {
       setLoading(true);
+      setError(null);
+      
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
+      if (!user) {
+        console.log('No authenticated user found');
+        setLoading(false);
+        return;
+      }
 
       const { data, error } = await supabase
         .from('subscriptions')
@@ -35,13 +41,17 @@ export const useSubscription = () => {
         .eq('status', 'active')
         .order('created_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') throw error;
-      setSubscription(data);
+      if (error && error.code !== 'PGRST116') {
+        console.error('Subscription fetch error:', error);
+        setError('Failed to fetch subscription');
+      } else {
+        setSubscription(data);
+      }
     } catch (err: any) {
-      setError(err.message);
-      console.error('Failed to fetch subscription:', err);
+      console.error('Subscription error:', err);
+      setError(err.message || 'An error occurred');
     } finally {
       setLoading(false);
     }
@@ -60,7 +70,7 @@ export const useSubscription = () => {
           status: 'active',
           features: features as Json,
           started_at: new Date().toISOString(),
-          expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days
+          expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         })
         .select()
         .single();

@@ -28,7 +28,7 @@ const SUBSCRIPTION_TIERS = {
 };
 
 export const SubscriptionManager = () => {
-  const { subscription, loading, upgradeSubscription, hasFeature } = useSubscription();
+  const { subscription, loading, error, upgradeSubscription, hasFeature } = useSubscription();
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -66,10 +66,29 @@ export const SubscriptionManager = () => {
     );
   }
 
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <Shield className="h-5 w-5 mr-2" />
+            Security Subscription
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-4">
+            <AlertTriangle className="h-8 w-8 mx-auto text-yellow-500 mb-2" />
+            <p className="text-muted-foreground">{error}</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Current Subscription */}
-      {subscription && (
+      {subscription ? (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
@@ -87,7 +106,7 @@ export const SubscriptionManager = () => {
               <div>
                 <h3 className="text-lg font-semibold capitalize">{subscription.tier}</h3>
                 <p className="text-sm text-muted-foreground">
-                  ${subscription.monthly_cost}/month
+                  ${subscription.monthly_cost || 0}/month
                 </p>
               </div>
               {subscription.expires_at && (
@@ -109,6 +128,18 @@ export const SubscriptionManager = () => {
                 ))}
               </div>
             </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Shield className="h-5 w-5 mr-2" />
+              No Active Subscription
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground mb-4">Choose a plan to get started with security services.</p>
           </CardContent>
         </Card>
       )}
