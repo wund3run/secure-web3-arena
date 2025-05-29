@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { Json } from '@/integrations/supabase/types';
 
 export interface Subscription {
   id: string;
@@ -11,7 +12,7 @@ export interface Subscription {
   started_at: string;
   expires_at?: string;
   monthly_cost?: number;
-  features: string[];
+  features: Json;
   created_at: string;
   updated_at: string;
 }
@@ -57,7 +58,7 @@ export const useSubscription = () => {
           user_id: user.id,
           tier,
           status: 'active',
-          features,
+          features: features as Json,
           started_at: new Date().toISOString(),
           expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days
         })
@@ -76,7 +77,9 @@ export const useSubscription = () => {
   };
 
   const hasFeature = (feature: string): boolean => {
-    return subscription?.features.includes(feature) || false;
+    if (!subscription?.features) return false;
+    const features = Array.isArray(subscription.features) ? subscription.features : [];
+    return features.includes(feature);
   };
 
   useEffect(() => {

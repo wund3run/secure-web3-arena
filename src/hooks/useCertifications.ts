@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { Json } from '@/integrations/supabase/types';
 
 export interface Certification {
   id: string;
@@ -12,7 +13,7 @@ export interface Certification {
   certificate_url?: string;
   verification_code?: string;
   is_active: boolean;
-  metadata: Record<string, any>;
+  metadata: Json;
 }
 
 export const useCertifications = () => {

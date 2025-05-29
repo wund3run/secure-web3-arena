@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { Json } from '@/integrations/supabase/types';
 
 export interface MonitoringService {
   id: string;
@@ -26,7 +27,7 @@ export interface ThreatIntelligence {
   is_resolved: boolean;
   detected_at: string;
   resolved_at?: string;
-  metadata: Record<string, any>;
+  metadata: Json;
 }
 
 export const useMonitoringServices = () => {
