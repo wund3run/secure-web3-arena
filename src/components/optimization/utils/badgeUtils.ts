@@ -1,26 +1,26 @@
 
-export const getImpactColor = (impact: string): "default" | "destructive" | "secondary" | "outline" | "success" | "warning" => {
+export const getImpactColor = (impact: string) => {
   switch (impact) {
-    case "high":
-      return "destructive";
-    case "medium":
-      return "secondary";
-    case "low":
-      return "outline";
+    case 'high':
+      return 'destructive';
+    case 'medium':
+      return 'warning';
+    case 'low':
+      return 'success';
     default:
-      return "outline";
+      return 'outline';
   }
 };
 
-export const getEffortColor = (effort: string): "default" | "destructive" | "secondary" | "outline" | "success" | "warning" => {
+export const getEffortColor = (effort: string) => {
   switch (effort) {
-    case "low":
-      return "default";
-    case "medium":
-      return "secondary";
-    case "high":
-      return "destructive";
+    case 'high':
+      return 'destructive';
+    case 'medium':
+      return 'warning';
+    case 'low':
+      return 'success';
     default:
-      return "outline";
+      return 'outline';
   }
 };
