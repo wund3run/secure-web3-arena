@@ -39,6 +39,42 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_matching_preferences: {
+        Row: {
+          budget_flexibility: number | null
+          communication_style: string | null
+          complexity_preference: string | null
+          created_at: string | null
+          id: string
+          preferred_auditor_experience: string | null
+          timeline_flexibility: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          budget_flexibility?: number | null
+          communication_style?: string | null
+          complexity_preference?: string | null
+          created_at?: string | null
+          id?: string
+          preferred_auditor_experience?: string | null
+          timeline_flexibility?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          budget_flexibility?: number | null
+          communication_style?: string | null
+          complexity_preference?: string | null
+          created_at?: string | null
+          id?: string
+          preferred_auditor_experience?: string | null
+          timeline_flexibility?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       ai_matching_scores: {
         Row: {
           audit_request_id: string
@@ -295,15 +331,19 @@ export type Database = {
           ai_matching_completed: boolean | null
           assigned_auditor_id: string | null
           audit_scope: string | null
+          auto_assign_enabled: boolean | null
           blockchain: string
           budget: number | null
           client_id: string
+          communication_preference: string | null
           contract_count: number | null
           created_at: string
           deadline: string | null
           escrow_contract_id: string | null
           id: string
           lines_of_code: number | null
+          matching_score: number | null
+          preferred_auditor_location: string | null
           previous_audits: boolean | null
           priority_score: number | null
           project_description: string | null
@@ -312,20 +352,25 @@ export type Database = {
           specific_concerns: string | null
           status: string | null
           updated_at: string
+          urgency_level: string | null
         }
         Insert: {
           ai_matching_completed?: boolean | null
           assigned_auditor_id?: string | null
           audit_scope?: string | null
+          auto_assign_enabled?: boolean | null
           blockchain: string
           budget?: number | null
           client_id: string
+          communication_preference?: string | null
           contract_count?: number | null
           created_at?: string
           deadline?: string | null
           escrow_contract_id?: string | null
           id?: string
           lines_of_code?: number | null
+          matching_score?: number | null
+          preferred_auditor_location?: string | null
           previous_audits?: boolean | null
           priority_score?: number | null
           project_description?: string | null
@@ -334,20 +379,25 @@ export type Database = {
           specific_concerns?: string | null
           status?: string | null
           updated_at?: string
+          urgency_level?: string | null
         }
         Update: {
           ai_matching_completed?: boolean | null
           assigned_auditor_id?: string | null
           audit_scope?: string | null
+          auto_assign_enabled?: boolean | null
           blockchain?: string
           budget?: number | null
           client_id?: string
+          communication_preference?: string | null
           contract_count?: number | null
           created_at?: string
           deadline?: string | null
           escrow_contract_id?: string | null
           id?: string
           lines_of_code?: number | null
+          matching_score?: number | null
+          preferred_auditor_location?: string | null
           previous_audits?: boolean | null
           priority_score?: number | null
           project_description?: string | null
@@ -356,6 +406,7 @@ export type Database = {
           specific_concerns?: string | null
           status?: string | null
           updated_at?: string
+          urgency_level?: string | null
         }
         Relationships: [
           {
@@ -429,7 +480,14 @@ export type Database = {
           languages_spoken: string[] | null
           linkedin_url: string | null
           max_concurrent_audits: number | null
+          max_project_size: number | null
+          min_project_size: number | null
           portfolio_url: string | null
+          preferred_project_types: string[] | null
+          repeat_client_rate: number | null
+          response_time_hours: number | null
+          specialization_tags: string[] | null
+          success_rate: number | null
           timezone: string | null
           total_audits_completed: number | null
           updated_at: string | null
@@ -454,7 +512,14 @@ export type Database = {
           languages_spoken?: string[] | null
           linkedin_url?: string | null
           max_concurrent_audits?: number | null
+          max_project_size?: number | null
+          min_project_size?: number | null
           portfolio_url?: string | null
+          preferred_project_types?: string[] | null
+          repeat_client_rate?: number | null
+          response_time_hours?: number | null
+          specialization_tags?: string[] | null
+          success_rate?: number | null
           timezone?: string | null
           total_audits_completed?: number | null
           updated_at?: string | null
@@ -479,7 +544,14 @@ export type Database = {
           languages_spoken?: string[] | null
           linkedin_url?: string | null
           max_concurrent_audits?: number | null
+          max_project_size?: number | null
+          min_project_size?: number | null
           portfolio_url?: string | null
+          preferred_project_types?: string[] | null
+          repeat_client_rate?: number | null
+          response_time_hours?: number | null
+          specialization_tags?: string[] | null
+          success_rate?: number | null
           timezone?: string | null
           total_audits_completed?: number | null
           updated_at?: string | null
@@ -489,6 +561,88 @@ export type Database = {
           years_experience?: number
         }
         Relationships: []
+      }
+      auditor_reviews: {
+        Row: {
+          audit_request_id: string | null
+          auditor_id: string | null
+          client_id: string | null
+          communication_rating: number | null
+          created_at: string | null
+          id: string
+          rating: number | null
+          review_text: string | null
+          technical_quality_rating: number | null
+          timeliness_rating: number | null
+          would_recommend: boolean | null
+        }
+        Insert: {
+          audit_request_id?: string | null
+          auditor_id?: string | null
+          client_id?: string | null
+          communication_rating?: number | null
+          created_at?: string | null
+          id?: string
+          rating?: number | null
+          review_text?: string | null
+          technical_quality_rating?: number | null
+          timeliness_rating?: number | null
+          would_recommend?: boolean | null
+        }
+        Update: {
+          audit_request_id?: string | null
+          auditor_id?: string | null
+          client_id?: string | null
+          communication_rating?: number | null
+          created_at?: string | null
+          id?: string
+          rating?: number | null
+          review_text?: string | null
+          technical_quality_rating?: number | null
+          timeliness_rating?: number | null
+          would_recommend?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auditor_reviews_audit_request_id_fkey"
+            columns: ["audit_request_id"]
+            isOneToOne: false
+            referencedRelation: "audit_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      auditor_skills: {
+        Row: {
+          auditor_id: string | null
+          created_at: string | null
+          id: string
+          proficiency_level: number | null
+          skill_name: string
+        }
+        Insert: {
+          auditor_id?: string | null
+          created_at?: string | null
+          id?: string
+          proficiency_level?: number | null
+          skill_name: string
+        }
+        Update: {
+          auditor_id?: string | null
+          created_at?: string | null
+          id?: string
+          proficiency_level?: number | null
+          skill_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auditor_skills_auditor_id_fkey"
+            columns: ["auditor_id"]
+            isOneToOne: false
+            referencedRelation: "auditor_profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
       certifications: {
         Row: {
@@ -564,6 +718,44 @@ export type Database = {
           status?: string
         }
         Relationships: []
+      }
+      conversations: {
+        Row: {
+          audit_request_id: string | null
+          auditor_id: string | null
+          client_id: string | null
+          created_at: string | null
+          id: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          audit_request_id?: string | null
+          auditor_id?: string | null
+          client_id?: string | null
+          created_at?: string | null
+          id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          audit_request_id?: string | null
+          auditor_id?: string | null
+          client_id?: string | null
+          created_at?: string | null
+          id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_audit_request_id_fkey"
+            columns: ["audit_request_id"]
+            isOneToOne: false
+            referencedRelation: "audit_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       dispute_comments: {
         Row: {
@@ -842,6 +1034,44 @@ export type Database = {
           },
         ]
       }
+      messages: {
+        Row: {
+          content: string
+          conversation_id: string | null
+          created_at: string | null
+          id: string
+          message_type: string | null
+          read_at: string | null
+          sender_id: string | null
+        }
+        Insert: {
+          content: string
+          conversation_id?: string | null
+          created_at?: string | null
+          id?: string
+          message_type?: string | null
+          read_at?: string | null
+          sender_id?: string | null
+        }
+        Update: {
+          content?: string
+          conversation_id?: string | null
+          created_at?: string | null
+          id?: string
+          message_type?: string | null
+          read_at?: string | null
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       milestones: {
         Row: {
           amount: number
@@ -975,6 +1205,39 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          action_url: string | null
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          title: string
+          type: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action_url?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          title: string
+          type?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action_url?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          title?: string
+          type?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       platform_analytics: {
         Row: {
           date_bucket: string | null
@@ -997,6 +1260,30 @@ export type Database = {
           id?: string
           metadata?: Json | null
           metric_name?: string
+          metric_value?: number | null
+          recorded_at?: string | null
+        }
+        Relationships: []
+      }
+      platform_metrics: {
+        Row: {
+          id: string
+          metadata: Json | null
+          metric_type: string
+          metric_value: number | null
+          recorded_at: string | null
+        }
+        Insert: {
+          id?: string
+          metadata?: Json | null
+          metric_type: string
+          metric_value?: number | null
+          recorded_at?: string | null
+        }
+        Update: {
+          id?: string
+          metadata?: Json | null
+          metric_type?: string
           metric_value?: number | null
           recorded_at?: string | null
         }
@@ -1363,6 +1650,10 @@ export type Database = {
       add_dispute_comment: {
         Args: { dispute_id: string; user_id: string; comment: string }
         Returns: string
+      }
+      calculate_auditor_match_score: {
+        Args: { p_audit_request_id: string; p_auditor_id: string }
+        Returns: number
       }
       calculate_expertise_match: {
         Args:

@@ -1,39 +1,29 @@
 
-import React from "react";
-import { Helmet } from "react-helmet-async";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
-import { AuditorParametersForm } from "@/components/auditor-parameters/AuditorParametersForm";
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { AuditorOnboardingWizard } from '@/components/auditor/AuditorOnboardingWizard';
 
-const AuditorOnboarding = () => {
+export default function AuditorOnboarding() {
   return (
     <>
       <Helmet>
-        <title>Auditor Onboarding | Hawkly</title>
-        <meta
-          name="description"
-          content="Complete your auditor profile to be matched with suitable Web3 projects."
-        />
+        <title>Become an Auditor | Hawkly</title>
+        <meta name="description" content="Join Hawkly as a security auditor and help secure Web3 projects" />
       </Helmet>
-      <Navbar />
-      <main className="min-h-screen bg-gradient-to-br from-white via-primary/5 to-secondary/5 pt-10 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-              Complete Your Auditor Profile
-            </h1>
-            <p className="mt-4 text-lg text-muted-foreground">
-              Provide your expertise details to help our AI matching system connect you with
-              the perfect projects for your skills
+
+      <div className="min-h-screen bg-background py-8">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold mb-4">Become a Verified Auditor</h1>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Join our network of expert security auditors and help secure the Web3 ecosystem. 
+              Complete your profile to start receiving high-quality audit opportunities.
             </p>
           </div>
           
-          <AuditorParametersForm />
+          <AuditorOnboardingWizard />
         </div>
-      </main>
-      <Footer />
+      </div>
     </>
   );
-};
-
-export default AuditorOnboarding;
+}
