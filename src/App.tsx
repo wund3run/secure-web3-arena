@@ -27,6 +27,7 @@ import AuditorDashboard from "@/pages/AuditorDashboard";
 import ProjectDashboard from "@/pages/ProjectDashboard";
 import Index from "@/pages/Index";
 import Marketplace from "@/pages/Marketplace";
+import { AuthProvider } from "@/contexts/auth";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import SecurityServices from "@/pages/SecurityServices";
 import Home from "@/pages/Home";
@@ -186,9 +187,11 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <NotificationProvider>
-      <RouterProvider router={router} />
-    </NotificationProvider>
+    <AuthProvider>
+      <NotificationProvider>
+        <RouterProvider router={router} />
+      </NotificationProvider>
+    </AuthProvider>
   );
 }
 
