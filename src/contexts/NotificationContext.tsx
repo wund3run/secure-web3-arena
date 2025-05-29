@@ -1,7 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useAuth } from '@/contexts/auth';
-import { supabase } from '@/integrations/supabase/client';
 import { Notification, NotificationContextType } from '@/types/notification.types';
 import { toast } from 'sonner';
 import { useNotificationPersistence } from '@/hooks/useNotificationPersistence';

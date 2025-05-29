@@ -29,7 +29,6 @@ export const usePaymentNotifications = () => {
               message: `Payment of $${payload.new.amount} has been initiated`,
               type: 'info',
               category: 'payment',
-              userId: user.id,
               actionUrl: '/escrow',
               actionLabel: 'View Escrow',
             });
@@ -51,7 +50,6 @@ export const usePaymentNotifications = () => {
                   message: config.message,
                   type: config.type,
                   category: 'payment',
-                  userId: user.id,
                   actionUrl: '/escrow',
                   actionLabel: 'View Details',
                 });

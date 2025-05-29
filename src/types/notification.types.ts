@@ -6,6 +6,7 @@ export interface Notification {
   type: 'info' | 'success' | 'warning' | 'error';
   timestamp: Date;
   read: boolean;
+  category?: string;
   actionUrl?: string;
   actionLabel?: string;
 }

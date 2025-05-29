@@ -45,7 +45,6 @@ export const useAuditNotifications = () => {
                 message: statusConfig.message,
                 type: statusConfig.type,
                 category: 'audit',
-                userId: user.id,
                 actionUrl: `/audit/${payload.new.id}`,
                 actionLabel: 'View Details',
               });
@@ -72,7 +71,6 @@ export const useAuditNotifications = () => {
               message: `Milestone "${payload.new.title}" has been completed`,
               type: 'success',
               category: 'audit',
-              userId: user.id,
               actionUrl: `/audit/${payload.new.audit_request_id}`,
               actionLabel: 'View Progress',
             });
