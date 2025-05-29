@@ -1,6 +1,5 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useAuth } from '@/contexts/auth';
 import { Notification, NotificationContextType } from '@/types/notification.types';
 import { toast } from 'sonner';
 import { useNotificationPersistence } from '@/hooks/useNotificationPersistence';
@@ -22,55 +21,64 @@ interface NotificationProviderProps {
 
 export const NotificationProvider = ({ children }: NotificationProviderProps) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const auth = useAuth();
   const { saveNotifications, loadNotifications } = useNotificationPersistence();
   const { sendBrowserNotification, canSendNotifications } = useBrowserNotifications();
 
-  // Load persisted notifications on mount, but only if user is available
+  // Load persisted notifications on mount
   useEffect(() => {
-    if (auth?.user?.id) {
+    try {
       const loaded = loadNotifications();
       setNotifications(loaded);
+    } catch (error) {
+      console.error('Failed to load notifications:', error);
     }
-  }, [auth?.user?.id, loadNotifications]);
+  }, [loadNotifications]);
 
   // Save notifications whenever they change
   useEffect(() => {
     if (notifications.length > 0) {
-      saveNotifications(notifications);
+      try {
+        saveNotifications(notifications);
+      } catch (error) {
+        console.error('Failed to save notifications:', error);
+      }
     }
   }, [notifications, saveNotifications]);
 
   const addNotification = (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
-    const newNotification: Notification = {
-      ...notification,
-      id: crypto.randomUUID(),
-      timestamp: new Date(),
-      read: false,
-    };
-    
-    setNotifications(prev => [newNotification, ...prev]);
-    
-    // Show toast notification
-    toast(notification.title, {
-      description: notification.message,
-      action: notification.actionUrl ? {
-        label: notification.actionLabel || 'View',
-        onClick: () => window.location.href = notification.actionUrl!,
-      } : undefined,
-    });
-
-    // Send browser notification if enabled
-    if (canSendNotifications) {
-      sendBrowserNotification(notification.title, {
-        body: notification.message,
-        data: { actionUrl: notification.actionUrl },
+    try {
+      const newNotification: Notification = {
+        ...notification,
+        id: crypto.randomUUID(),
+        timestamp: new Date(),
+        read: false,
+      };
+      
+      setNotifications(prev => [newNotification, ...prev]);
+      
+      // Show toast notification
+      toast(notification.title, {
+        description: notification.message,
+        action: notification.actionUrl ? {
+          label: notification.actionLabel || 'View',
+          onClick: () => window.location.href = notification.actionUrl!,
+        } : undefined,
       });
-    }
 
-    // Play notification sound
-    if ((window as any).playNotificationSound) {
-      (window as any).playNotificationSound();
+      // Send browser notification if enabled
+      if (canSendNotifications) {
+        sendBrowserNotification(notification.title, {
+          body: notification.message,
+          data: { actionUrl: notification.actionUrl },
+        });
+      }
+
+      // Play notification sound
+      if ((window as any).playNotificationSound) {
+        (window as any).playNotificationSound();
+      }
+    } catch (error) {
+      console.error('Failed to add notification:', error);
     }
   };
 
