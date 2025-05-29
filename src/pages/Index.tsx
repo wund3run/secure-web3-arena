@@ -1,3 +1,4 @@
+
 import React, { Suspense, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Navbar } from "@/components/layout/navbar";
@@ -36,12 +37,6 @@ const UserJourneySection = React.lazy(() =>
 const QuickStartSection = React.lazy(() => 
   import("@/components/home/quick-start-section").then(module => ({
     default: module.QuickStartSection
-  }))
-);
-
-const PricingPreview = React.lazy(() => 
-  import("@/components/home/pricing-preview").then(module => ({
-    default: module.PricingPreview
   }))
 );
 
@@ -87,8 +82,6 @@ const SectionLoadingFallback = ({ height = "h-64" }: { height?: string }) => (
     <EnhancedSkeleton variant="card" animation="shimmer" className="h-full w-full" />
   </div>
 );
-
-import { PersonalizationEngine } from "@/components/personalization/PersonalizationEngine";
 
 export default function Index() {
   useEffect(() => {
@@ -152,13 +145,6 @@ export default function Index() {
           <TrustIndicators />
           <ValuePropositionSection />
           
-          {/* Personalization Engine */}
-          <LazySection fallback={<SectionLoadingFallback />}>
-            <div className="container mx-auto px-4 py-8">
-              <PersonalizationEngine />
-            </div>
-          </LazySection>
-          
           {/* Below-the-fold content - lazy loaded with enhanced loading states */}
           <LazySection fallback={<SectionLoadingFallback />}>
             <UserJourneySection />
@@ -196,10 +182,6 @@ export default function Index() {
           
           <LazySection fallback={<SectionLoadingFallback />}>
             <CompetitiveAdvantages />
-          </LazySection>
-          
-          <LazySection fallback={<SectionLoadingFallback />}>
-            <PricingPreview />
           </LazySection>
           
           <LazySection fallback={<SectionLoadingFallback height="h-80" />}>
