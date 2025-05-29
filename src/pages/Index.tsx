@@ -1,4 +1,5 @@
 
+
 import React, { Suspense, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Navbar } from "@/components/layout/navbar";
@@ -142,7 +143,6 @@ export default function Index() {
         <div className="flex-grow">
           {/* Above-the-fold content - loaded immediately */}
           <SimplifiedHero />
-          <TrustIndicators />
           <ValuePropositionSection />
           
           {/* Below-the-fold content - lazy loaded with enhanced loading states */}
@@ -187,6 +187,9 @@ export default function Index() {
           <LazySection fallback={<SectionLoadingFallback height="h-80" />}>
             <FaqSection />
           </LazySection>
+          
+          {/* Trust indicators moved to the end */}
+          <TrustIndicators />
         </div>
         
         <EnhancedFooter />
@@ -195,3 +198,4 @@ export default function Index() {
     </>
   );
 }
+
