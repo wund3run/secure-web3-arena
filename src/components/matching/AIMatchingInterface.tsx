@@ -7,21 +7,21 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Star, Clock, Shield, CheckCircle, MessageCircle } from 'lucide-react';
 import { useRealTimeAuditMatching } from '@/hooks/useRealTimeAuditMatching';
 import { RealTimeMessagingService } from '@/services/real-time-messaging-service';
+import { AuditApprovalInterface } from '@/components/audit/AuditApprovalInterface';
 import LoadingState from '@/components/ui/loading-state';
 
 interface AIMatchingInterfaceProps {
   auditRequestId: string;
+  auditRequest?: any;
   onMatchAccepted?: () => void;
 }
 
-export function AIMatchingInterface({ auditRequestId, onMatchAccepted }: AIMatchingInterfaceProps) {
+export function AIMatchingInterface({ auditRequestId, auditRequest, onMatchAccepted }: AIMatchingInterfaceProps) {
   const { matches, isMatching, matchingComplete, acceptMatch, requestNewMatches } = useRealTimeAuditMatching(auditRequestId);
 
   const handleAcceptMatch = async (auditorId: string) => {
     const success = await acceptMatch(auditorId);
     if (success) {
-      // Create conversation
-      await RealTimeMessagingService.createConversation(auditRequestId, auditorId);
       onMatchAccepted?.();
     }
   };
@@ -33,6 +33,18 @@ export function AIMatchingInterface({ auditRequestId, onMatchAccepted }: AIMatch
       window.location.href = `/conversations/${conversation.id}`;
     }
   };
+
+  // Show approval interface if audit has been matched
+  if (auditRequest && auditRequest.assigned_auditor_id && auditRequest.status !== 'pending') {
+    return (
+      <AuditApprovalInterface 
+        auditRequest={auditRequest}
+        onApprovalComplete={(conversationId) => {
+          window.location.href = `/conversations/${conversationId}`;
+        }}
+      />
+    );
+  }
 
   if (isMatching) {
     return (
