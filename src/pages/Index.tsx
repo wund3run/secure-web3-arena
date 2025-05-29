@@ -10,7 +10,7 @@ import { MarketplaceSection } from "@/components/home/marketplace-section";
 import { InteractiveDemo } from "@/components/home/interactive-demo";
 import { CompetitiveAdvantages } from "@/components/home/competitive-advantages";
 import { PricingPreview } from "@/components/home/pricing-preview";
-import { FAQSection } from "@/components/home/faq-section";
+import { FaqSection } from "@/components/home/faq-section";
 import { EnhancedErrorBoundary } from "@/components/error/enhanced-error-boundary";
 
 export default function Index() {
@@ -63,7 +63,7 @@ export default function Index() {
           </EnhancedErrorBoundary>
           
           <EnhancedErrorBoundary>
-            <FAQSection />
+            <FaqSection />
           </EnhancedErrorBoundary>
         </div>
         
