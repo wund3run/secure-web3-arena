@@ -238,19 +238,19 @@ const Support = () => {
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span>API Services</span>
-                      <Badge variant="success">Operational</Badge>
+                      <Badge variant="outline" className="text-green-700 border-green-700">Operational</Badge>
                     </div>
                     <div className="flex justify-between items-center">
                       <span>Payment Processing</span>
-                      <Badge variant="success">Operational</Badge>
+                      <Badge variant="outline" className="text-green-700 border-green-700">Operational</Badge>
                     </div>
                     <div className="flex justify-between items-center">
                       <span>Authentication</span>
-                      <Badge variant="success">Operational</Badge>
+                      <Badge variant="outline" className="text-green-700 border-green-700">Operational</Badge>
                     </div>
                     <div className="flex justify-between items-center">
                       <span>File Storage</span>
-                      <Badge variant="success">Operational</Badge>
+                      <Badge variant="outline" className="text-green-700 border-green-700">Operational</Badge>
                     </div>
                   </div>
                 </CardContent>

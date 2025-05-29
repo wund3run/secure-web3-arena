@@ -1,10 +1,10 @@
-
 import React from "react";
 import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Auth from "@/pages/Auth";
 import Profile from "@/pages/Profile";
 import Admin from "@/pages/Admin";
@@ -29,7 +29,7 @@ import Index from "@/pages/Index";
 import Marketplace from "@/pages/Marketplace";
 import { AuthProvider } from "@/contexts/auth/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { ThemeProvider } from "next-themes";
 import SecurityServices from "@/pages/SecurityServices";
 import Home from "@/pages/Home";
 import Services from "@/pages/Services";
@@ -43,7 +43,18 @@ import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import ContactUs from "@/pages/ContactUs";
 import AboutUs from "@/pages/AboutUs";
 import Settings from "@/pages/Settings";
+import Support from "@/pages/Support";
 import { EnhancedErrorBoundary } from "@/components/error/enhanced-error-boundary";
+
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 1,
+    },
+  },
+});
 
 const router = createBrowserRouter([
   {
@@ -65,6 +76,10 @@ const router = createBrowserRouter([
   {
     path: "/settings",
     element: <Settings />,
+  },
+  {
+    path: "/support",
+    element: <Support />,
   },
   {
     path: "/admin",
@@ -201,13 +216,15 @@ function App() {
         enableSystem
         disableTransitionOnChange
       >
-        <EnhancedErrorBoundary>
-          <AuthProvider>
-            <NotificationProvider>
-              <RouterProvider router={router} />
-            </NotificationProvider>
-          </AuthProvider>
-        </EnhancedErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <EnhancedErrorBoundary>
+            <AuthProvider>
+              <NotificationProvider>
+                <RouterProvider router={router} />
+              </NotificationProvider>
+            </AuthProvider>
+          </EnhancedErrorBoundary>
+        </QueryClientProvider>
       </ThemeProvider>
     </HelmetProvider>
   );
