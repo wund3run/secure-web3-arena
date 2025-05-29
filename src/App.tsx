@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
   createBrowserRouter,
@@ -28,6 +29,7 @@ import Index from "@/pages/Index";
 import Marketplace from "@/pages/Marketplace";
 import { AuthProvider } from "@/contexts/auth/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import SecurityServices from "@/pages/SecurityServices";
 import Home from "@/pages/Home";
 import Services from "@/pages/Services";
@@ -193,13 +195,20 @@ const router = createBrowserRouter([
 function App() {
   return (
     <HelmetProvider>
-      <EnhancedErrorBoundary>
-        <AuthProvider>
-          <NotificationProvider>
-            <RouterProvider router={router} />
-          </NotificationProvider>
-        </AuthProvider>
-      </EnhancedErrorBoundary>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <EnhancedErrorBoundary>
+          <AuthProvider>
+            <NotificationProvider>
+              <RouterProvider router={router} />
+            </NotificationProvider>
+          </AuthProvider>
+        </EnhancedErrorBoundary>
+      </ThemeProvider>
     </HelmetProvider>
   );
 }

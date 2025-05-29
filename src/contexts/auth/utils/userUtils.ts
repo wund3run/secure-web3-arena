@@ -1,13 +1,15 @@
 
 import { User } from '@supabase/supabase-js';
-import type { UserProfile } from '../types';
+import { UserProfile } from '../types';
 
-export const getUserType = (
-  user: User | null,
-  userProfile: UserProfile | null
-): 'auditor' | 'project_owner' | 'admin' | 'general' | 'visitor' => {
+export function getUserType(user: User | null, userProfile: UserProfile | null): 'auditor' | 'project_owner' | 'admin' | 'general' | 'visitor' {
+  if (!user) return 'visitor';
+  
+  // Check userProfile first
   if (userProfile?.user_type) {
-    return userProfile.user_type as 'auditor' | 'project_owner' | 'admin' | 'general' | 'visitor';
+    return userProfile.user_type;
   }
-  return user?.user_metadata?.user_type || 'project_owner';
-};
+  
+  // Fall back to user metadata
+  return user.user_metadata?.user_type || 'project_owner';
+}

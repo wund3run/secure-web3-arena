@@ -1,51 +1,36 @@
 
 import { useState, useEffect } from 'react';
 
-export const useBrowserNotifications = () => {
-  const [canSendNotifications, setCanSendNotifications] = useState(false);
+export function useBrowserNotifications() {
   const [permission, setPermission] = useState<NotificationPermission>('default');
-  const [isSupported, setIsSupported] = useState(false);
 
   useEffect(() => {
-    const supported = 'Notification' in window;
-    setIsSupported(supported);
-    
-    if (supported) {
+    if ('Notification' in window) {
       setPermission(Notification.permission);
-      setCanSendNotifications(Notification.permission === 'granted');
     }
   }, []);
 
-  const requestPermission = async (): Promise<boolean> => {
-    if (!isSupported) return false;
-    
-    try {
+  const requestPermission = async () => {
+    if ('Notification' in window) {
       const result = await Notification.requestPermission();
       setPermission(result);
-      const granted = result === 'granted';
-      setCanSendNotifications(granted);
-      return granted;
-    } catch (error) {
-      console.warn('Failed to request notification permission:', error);
-      return false;
+      return result;
     }
+    return 'denied';
   };
 
   const sendBrowserNotification = (title: string, options?: NotificationOptions) => {
-    if (canSendNotifications && isSupported) {
-      try {
-        new Notification(title, options);
-      } catch (error) {
-        console.warn('Failed to send browser notification:', error);
-      }
+    if (permission === 'granted' && 'Notification' in window) {
+      new Notification(title, options);
     }
   };
 
+  const canSendNotifications = permission === 'granted';
+
   return {
-    canSendNotifications,
-    sendBrowserNotification,
-    requestPermission,
     permission,
-    isSupported
+    requestPermission,
+    sendBrowserNotification,
+    canSendNotifications,
   };
-};
+}
