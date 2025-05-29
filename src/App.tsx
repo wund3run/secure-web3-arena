@@ -41,6 +41,9 @@ import TermsOfService from "@/pages/TermsOfService";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import ContactUs from "@/pages/ContactUs";
 import AboutUs from "@/pages/AboutUs";
+import { ComprehensiveErrorBoundary } from "@/components/error/comprehensive-error-boundary";
+import { GlobalComponents } from "@/components/app/GlobalComponents";
+import { NotificationHandlers } from "@/components/notifications/NotificationHandlers";
 
 const router = createBrowserRouter([
   {
@@ -187,11 +190,15 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <AuthProvider>
-      <NotificationProvider>
-        <RouterProvider router={router} />
-      </NotificationProvider>
-    </AuthProvider>
+    <ComprehensiveErrorBoundary>
+      <AuthProvider>
+        <NotificationProvider>
+          <RouterProvider router={router} />
+          <NotificationHandlers />
+          <GlobalComponents />
+        </NotificationProvider>
+      </AuthProvider>
+    </ComprehensiveErrorBoundary>
   );
 }
 

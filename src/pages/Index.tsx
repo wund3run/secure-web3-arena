@@ -1,5 +1,4 @@
 
-
 import React, { Suspense, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Navbar } from "@/components/layout/navbar";
@@ -10,6 +9,7 @@ import { analyticsTracker } from "@/utils/analytics-tracker";
 import { performanceOptimizer } from "@/utils/performance-optimizer";
 import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
 import { bundleOptimizer } from "@/utils/bundle-optimizer";
+import { ComprehensiveErrorBoundary } from "@/components/error/comprehensive-error-boundary";
 
 // Core journey components (loaded immediately)
 import { SimplifiedHero } from "@/components/home/simplified-hero";
@@ -86,44 +86,56 @@ const SectionLoadingFallback = ({ height = "h-64" }: { height?: string }) => (
 
 export default function Index() {
   useEffect(() => {
-    // Track page visit and initialize analytics
-    analyticsTracker.track('home_page_visit', 'navigation', 'page_view');
-    
-    // Preload critical resources
-    performanceOptimizer.preloadCriticalResources([
-      '/src/assets/hawkly-logo.svg'
-    ]);
-    
-    // Optimize images for lazy loading
-    performanceOptimizer.optimizeImages();
-    
-    // Track user engagement
-    const handleUserEngagement = () => {
-      analyticsTracker.track('user_engagement', 'interaction', 'page_interaction');
-    };
-    
-    // Track scroll engagement
-    const handleScroll = () => {
-      if (window.scrollY > 100) {
-        analyticsTracker.track('scroll_engagement', 'engagement', 'deep_scroll');
+    // Track page visit and initialize analytics with error handling
+    try {
+      analyticsTracker.track('home_page_visit', 'navigation', 'page_view');
+      
+      // Preload critical resources with error handling
+      performanceOptimizer.preloadCriticalResources([
+        '/src/assets/hawkly-logo.svg'
+      ]);
+      
+      // Optimize images for lazy loading
+      performanceOptimizer.optimizeImages();
+      
+      // Track user engagement
+      const handleUserEngagement = () => {
+        try {
+          analyticsTracker.track('user_engagement', 'interaction', 'page_interaction');
+        } catch (error) {
+          console.warn('Failed to track user engagement:', error);
+        }
+      };
+      
+      // Track scroll engagement
+      const handleScroll = () => {
+        try {
+          if (window.scrollY > 100) {
+            analyticsTracker.track('scroll_engagement', 'engagement', 'deep_scroll');
+            window.removeEventListener('scroll', handleScroll);
+          }
+        } catch (error) {
+          console.warn('Failed to track scroll engagement:', error);
+        }
+      };
+      
+      document.addEventListener('click', handleUserEngagement, { once: true });
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      
+      // Initialize intelligent route preloading based on user behavior
+      bundleOptimizer.intelligentPreload('/');
+      
+      return () => {
+        document.removeEventListener('click', handleUserEngagement);
         window.removeEventListener('scroll', handleScroll);
-      }
-    };
-    
-    document.addEventListener('click', handleUserEngagement, { once: true });
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    // Initialize intelligent route preloading based on user behavior
-    bundleOptimizer.intelligentPreload('/');
-    
-    return () => {
-      document.removeEventListener('click', handleUserEngagement);
-      window.removeEventListener('scroll', handleScroll);
-    };
+      };
+    } catch (error) {
+      console.warn('Error initializing Index page:', error);
+    }
   }, []);
 
   return (
-    <>
+    <ComprehensiveErrorBoundary>
       <Helmet>
         <title>Hawkly | Next-Generation Web3 Security Platform</title>
         <meta
@@ -142,60 +154,91 @@ export default function Index() {
         <Navbar />
         <div className="flex-grow">
           {/* Above-the-fold content - loaded immediately */}
-          <SimplifiedHero />
-          <ValuePropositionSection />
+          <ComprehensiveErrorBoundary>
+            <SimplifiedHero />
+          </ComprehensiveErrorBoundary>
+          
+          <ComprehensiveErrorBoundary>
+            <ValuePropositionSection />
+          </ComprehensiveErrorBoundary>
           
           {/* Below-the-fold content - lazy loaded with enhanced loading states */}
           <LazySection fallback={<SectionLoadingFallback />}>
-            <UserJourneySection />
+            <Suspense fallback={<SectionLoadingFallback />}>
+              <UserJourneySection />
+            </Suspense>
           </LazySection>
           
           <LazySection fallback={<SectionLoadingFallback />}>
-            <QuickStartSection />
+            <Suspense fallback={<SectionLoadingFallback />}>
+              <QuickStartSection />
+            </Suspense>
           </LazySection>
           
           <LazySection fallback={<SectionLoadingFallback height="h-96" />}>
-            <div id="demo">
-              <InteractiveDemo />
-            </div>
+            <Suspense fallback={<SectionLoadingFallback height="h-96" />}>
+              <div id="demo">
+                <InteractiveDemo />
+              </div>
+            </Suspense>
           </LazySection>
           
           <LazySection fallback={<SectionLoadingFallback />}>
-            <NetworkEffectsSection />
+            <Suspense fallback={<SectionLoadingFallback />}>
+              <NetworkEffectsSection />
+            </Suspense>
           </LazySection>
           
           <LazySection fallback={<SectionLoadingFallback />}>
-            <MarketPositioning />
+            <Suspense fallback={<SectionLoadingFallback />}>
+              <MarketPositioning />
+            </Suspense>
           </LazySection>
           
           <LazySection fallback={<SectionLoadingFallback height="h-80" />}>
-            <PlatformFeaturesShowcase />
+            <Suspense fallback={<SectionLoadingFallback height="h-80" />}>
+              <PlatformFeaturesShowcase />
+            </Suspense>
           </LazySection>
           
           <LazySection fallback={<SectionLoadingFallback />}>
-            <StrategicPartnershipsSection />
+            <Suspense fallback={<SectionLoadingFallback />}>
+              <StrategicPartnershipsSection />
+            </Suspense>
           </LazySection>
           
           <LazySection fallback={<SectionLoadingFallback />}>
-            <GlobalExpansionSection />
+            <Suspense fallback={<SectionLoadingFallback />}>
+              <GlobalExpansionSection />
+            </Suspense>
           </LazySection>
           
           <LazySection fallback={<SectionLoadingFallback />}>
-            <CompetitiveAdvantages />
+            <Suspense fallback={<SectionLoadingFallback />}>
+              <CompetitiveAdvantages />
+            </Suspense>
           </LazySection>
           
           <LazySection fallback={<SectionLoadingFallback height="h-80" />}>
-            <FaqSection />
+            <Suspense fallback={<SectionLoadingFallback height="h-80" />}>
+              <FaqSection />
+            </Suspense>
           </LazySection>
           
           {/* Trust indicators moved to the end */}
-          <TrustIndicators />
+          <ComprehensiveErrorBoundary>
+            <TrustIndicators />
+          </ComprehensiveErrorBoundary>
         </div>
         
-        <EnhancedFooter />
-        <SupportButton />
+        <ComprehensiveErrorBoundary>
+          <EnhancedFooter />
+        </ComprehensiveErrorBoundary>
+        
+        <ComprehensiveErrorBoundary>
+          <SupportButton />
+        </ComprehensiveErrorBoundary>
       </div>
-    </>
+    </ComprehensiveErrorBoundary>
   );
 }
-
