@@ -43,6 +43,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         setUser(session?.user ?? null);
+        
+        // Fetch user profile if user exists
+        if (session?.user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+          setUserProfile(profile);
+        }
+        
         setLoading(false);
       } catch (error) {
         console.error('Error getting initial session:', error);
@@ -56,6 +67,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         setUser(session?.user ?? null);
+        
+        // Fetch user profile when user signs in
+        if (session?.user && event === 'SIGNED_IN') {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+          setUserProfile(profile);
+        } else if (event === 'SIGNED_OUT') {
+          setUserProfile(null);
+        }
+        
         setLoading(false);
       }
     );
