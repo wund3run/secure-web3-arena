@@ -1365,21 +1365,23 @@ export type Database = {
         Returns: string
       }
       calculate_expertise_match: {
-        Args: {
-          auditor_skills: string[]
-          auditor_blockchains: string[]
-          request_blockchain: string
-          request_category: string
-        }
-        Returns: number
+        Args:
+          | Record<PropertyKey, never>
+          | {
+              auditor_skills: string[]
+              auditor_blockchains: string[]
+              request_blockchain: string
+              request_category: string
+            }
+        Returns: undefined
       }
       get_user_profile: {
         Args: Record<PropertyKey, never> | { user_id: number }
         Returns: undefined
       }
       get_user_role: {
-        Args: { user_id: string }
-        Returns: Database["public"]["Enums"]["user_role"]
+        Args: Record<PropertyKey, never> | { user_id: string }
+        Returns: string
       }
       get_user_subscription: {
         Args: { user_id: string }

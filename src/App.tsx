@@ -1,9 +1,8 @@
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   createBrowserRouter,
   RouterProvider,
-  useNavigate,
 } from "react-router-dom";
 import Auth from "@/pages/Auth";
 import Profile from "@/pages/Profile";
@@ -41,9 +40,7 @@ import TermsOfService from "@/pages/TermsOfService";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import ContactUs from "@/pages/ContactUs";
 import AboutUs from "@/pages/AboutUs";
-import { ComprehensiveErrorBoundary } from "@/components/error/comprehensive-error-boundary";
-import { GlobalComponents } from "@/components/app/GlobalComponents";
-import { NotificationHandlers } from "@/components/notifications/NotificationHandlers";
+import { EnhancedErrorBoundary } from "@/components/error/enhanced-error-boundary";
 
 const router = createBrowserRouter([
   {
@@ -190,15 +187,13 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <ComprehensiveErrorBoundary>
+    <EnhancedErrorBoundary>
       <AuthProvider>
         <NotificationProvider>
           <RouterProvider router={router} />
-          <NotificationHandlers />
-          <GlobalComponents />
         </NotificationProvider>
       </AuthProvider>
-    </ComprehensiveErrorBoundary>
+    </EnhancedErrorBoundary>
   );
 }
 
