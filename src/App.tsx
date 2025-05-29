@@ -1,198 +1,195 @@
-import React, { Suspense } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Toaster } from 'sonner';
-import { AuthProvider } from './contexts/auth';
-import { NotificationProvider } from '@/contexts/NotificationContext';
+import React, { useEffect, useState } from "react";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  useNavigate,
+} from "react-router-dom";
+import { useUser } from "@supabase/auth-helpers-react";
+import { Auth } from "@/pages/Auth";
+import { Home } from "@/pages/Home";
+import { Profile } from "@/pages/Profile";
+import { Admin } from "@/pages/Admin";
+import { RequestAudit } from "@/pages/RequestAudit";
+import { ServiceProviderOnboarding } from "@/pages/ServiceProviderOnboarding";
+import { SubmitService } from "@/pages/SubmitService";
+import { Services } from "@/pages/Services";
+import { ServiceDetails } from "@/pages/ServiceDetails";
+import { EditService } from "@/pages/EditService";
+import { Audits } from "@/pages/Audits";
+import { AuditDetails } from "@/pages/AuditDetails";
+import { Disputes } from "@/pages/Disputes";
+import { DisputeDetails } from "@/pages/DisputeDetails";
+import { EscrowContracts } from "@/pages/EscrowContracts";
+import { EscrowContractDetails } from "@/pages/EscrowContractDetails";
+import { AIMatchingHub } from "@/pages/AIMatchingHub";
+import { TermsOfService } from "@/pages/TermsOfService";
+import { PrivacyPolicy } from "@/pages/PrivacyPolicy";
+import { ContactUs } from "@/pages/ContactUs";
+import { AboutUs } from "@/pages/AboutUs";
+import { Forum } from "@/pages/Forum";
+import { Leaderboard } from "@/pages/Leaderboard";
+import { Events } from "@/pages/Events";
+import { KnowledgeBase } from "@/pages/KnowledgeBase";
+import { Tutorials } from "@/pages/Tutorials";
+import { SecurityGuides } from "@/pages/SecurityGuides";
+import { AuditGuidelines } from "@/pages/AuditGuidelines";
+import { Dashboard } from "@/pages/Dashboard";
+import { AuditorDashboard } from "@/pages/AuditorDashboard";
+import { ProjectDashboard } from "@/pages/ProjectDashboard";
+import { Index } from "@/pages/Index";
+import { Marketplace } from "@/pages/Marketplace";
+import { NotificationHandlers } from "@/components/notifications/NotificationHandlers";
+import SecurityServices from "@/pages/SecurityServices";
 
-// Import all pages
-import Index from './pages/Index';
-import Auth from './pages/Auth';
-import AuthCallback from './pages/AuthCallback';
-import Dashboard from './pages/Dashboard';
-import Marketplace from './pages/Marketplace';
-import RequestAudit from './pages/RequestAudit';
-import ServiceProviderOnboarding from './pages/ServiceProviderOnboarding';
-import Pricing from './pages/Pricing';
-import Audits from './pages/Audits';
-import AuditDetails from './pages/AuditDetails';
-import Calendar from './pages/Calendar';
-import Escrow from './pages/Escrow';
-import Contact from './pages/Contact';
-import Support from './pages/Support';
-import FAQ from './pages/FAQ';
-import Docs from './pages/Docs';
-import Terms from './pages/Terms';
-import Privacy from './pages/Privacy';
-import Community from './pages/Community';
-
-// Resource pages
-import WebSecurity from './pages/WebSecurity';
-import SecurityGuides from './pages/SecurityGuides';
-import KnowledgeBase from './pages/KnowledgeBase';
-import Resources from './pages/Resources';
-import CompetitiveAdvantages from './pages/CompetitiveAdvantages';
-import ComprehensiveSecurity from './pages/ComprehensiveSecurity';
-import AuditGuidelines from './pages/AuditGuidelines';
-import DistributionStrategy from './pages/DistributionStrategy';
-import SecurityPolicy from './pages/SecurityPolicy';
-
-// Service-specific pages
-import ServiceDetails from './pages/ServiceDetails';
-import AuditRequestForService from './pages/AuditRequestForService';
-
-// Missing pages (now as proper placeholders for future implementation)
-import { 
-  Tutorials, 
-  Templates, 
-  ShippingDelivery, 
-  CancellationRefund,
-  Forum,
-  Events,
-  Challenges,
-  Leaderboard,
-  Blog,
-  Achievements,
-  SecurityInsights,
-  Vulnerabilities,
-  PlatformReport,
-  AdminDashboard,
-  AdminUsers,
-  AdminAudits,
-  AdminFinance,
-  AdminReports,
-  AdminDisputes,
-  AdminSecurity,
-  AdminServices,
-  AdminSettings,
-  AdminProviders,
-  ContactProvider,
-  AuditorDashboard,
-  ProjectDashboard,
-  UserDashboard,
-  SubmitService
-} from './pages/missing-pages';
-
-// 404 page
-import NotFound from './pages/NotFound';
-
-// Import the new page
-import NotificationTesting from './pages/NotificationTesting';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: 1,
-    },
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Index />,
   },
-});
+  {
+    path: "/home",
+    element: <Home />,
+  },
+  {
+    path: "/auth",
+    element: <Auth />,
+  },
+  {
+    path: "/profile/:id",
+    element: <Profile />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
+  },
+  {
+    path: "/admin",
+    element: <Admin />,
+  },
+  {
+    path: "/request-audit",
+    element: <RequestAudit />,
+  },
+  {
+    path: "/service-provider-onboarding",
+    element: <ServiceProviderOnboarding />,
+  },
+  {
+    path: "/submit-service",
+    element: <SubmitService />,
+  },
+  {
+    path: "/services",
+    element: <Services />,
+  },
+  {
+    path: "/marketplace",
+    element: <Marketplace />,
+  },
+  {
+    path: "/service/:id",
+    element: <ServiceDetails />,
+  },
+  {
+    path: "/service/edit/:id",
+    element: <EditService />,
+  },
+  {
+    path: "/audits",
+    element: <Audits />,
+  },
+  {
+    path: "/audit/:id",
+    element: <AuditDetails />,
+  },
+  {
+    path: "/disputes",
+    element: <Disputes />,
+  },
+  {
+    path: "/dispute/:id",
+    element: <DisputeDetails />,
+  },
+  {
+    path: "/escrow-contracts",
+    element: <EscrowContracts />,
+  },
+  {
+    path: "/escrow-contract/:id",
+    element: <EscrowContractDetails />,
+  },
+  {
+    path: "/ai-matching-hub",
+    element: <AIMatchingHub />,
+  },
+  {
+    path: "/terms-of-service",
+    element: <TermsOfService />,
+  },
+  {
+    path: "/privacy-policy",
+    element: <PrivacyPolicy />,
+  },
+  {
+    path: "/contact-us",
+    element: <ContactUs />,
+  },
+  {
+    path: "/about-us",
+    element: <AboutUs />,
+  },
+  {
+    path: "/forum",
+    element: <Forum />,
+  },
+  {
+    path: "/leaderboard",
+    element: <Leaderboard />,
+  },
+  {
+    path: "/events",
+    element: <Events />,
+  },
+  {
+    path: "/knowledge-base",
+    element: <KnowledgeBase />,
+  },
+  {
+    path: "/tutorials",
+    element: <Tutorials />,
+  },
+  {
+    path: "/security-guides",
+    element: <SecurityGuides />,
+  },
+  {
+    path: "/audit-guidelines",
+    element: <AuditGuidelines />,
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
+  },
+  {
+    path: "/auditor-dashboard",
+    element: <AuditorDashboard />,
+  },
+  {
+    path: "/project-dashboard",
+    element: <ProjectDashboard />,
+  },
+  {
+    path: "/security-services",
+    element: <SecurityServices />,
+  },
+]);
 
 function App() {
   return (
-    <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <NotificationProvider>
-            <BrowserRouter>
-              <div className="min-h-screen bg-background font-sans antialiased">
-                <Suspense fallback={<div>Loading...</div>}>
-                  <Routes>
-                    {/* Main pages */}
-                    <Route path="/" element={<Index />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/auth/callback" element={<AuthCallback />} />
-                    <Route path="/marketplace" element={<Marketplace />} />
-                    <Route path="/request-audit" element={<RequestAudit />} />
-                    <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
-                    <Route path="/pricing" element={<Pricing />} />
-                    <Route path="/audits" element={<Audits />} />
-                    <Route path="/audit/:id" element={<AuditDetails />} />
-                    <Route path="/calendar" element={<Calendar />} />
-                    <Route path="/escrow" element={<Escrow />} />
-                    <Route path="/community" element={<Community />} />
-                    
-                    {/* Dashboard routes */}
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/dashboard/*" element={<Dashboard />} />
-                    
-                    {/* Service-specific routes */}
-                    <Route path="/service/:serviceId" element={<ServiceDetails />} />
-                    <Route path="/service/:serviceId/request" element={<AuditRequestForService />} />
-                    
-                    {/* Support and Documentation */}
-                    <Route path="/contact" element={<Contact />} />
-                    <Route path="/support" element={<Support />} />
-                    <Route path="/faq" element={<FAQ />} />
-                    <Route path="/docs" element={<Docs />} />
-                    
-                    {/* Resources and Documentation */}
-                    <Route path="/web3-security" element={<WebSecurity />} />
-                    <Route path="/guides" element={<SecurityGuides />} />
-                    <Route path="/knowledge-base" element={<KnowledgeBase />} />
-                    <Route path="/resources" element={<Resources />} />
-                    
-                    {/* Platform Information */}
-                    <Route path="/competitive-advantages" element={<CompetitiveAdvantages />} />
-                    <Route path="/comprehensive-security" element={<ComprehensiveSecurity />} />
-                    <Route path="/audit-guidelines" element={<AuditGuidelines />} />
-                    <Route path="/distribution-strategy" element={<DistributionStrategy />} />
-                    
-                    {/* Legal */}
-                    <Route path="/terms" element={<Terms />} />
-                    <Route path="/privacy" element={<Privacy />} />
-                    <Route path="/security-policy" element={<SecurityPolicy />} />
-                    
-                    {/* Placeholder pages for future implementation */}
-                    <Route path="/tutorials" element={<Tutorials />} />
-                    <Route path="/templates" element={<Templates />} />
-                    <Route path="/shipping-delivery" element={<ShippingDelivery />} />
-                    <Route path="/cancellation-refund" element={<CancellationRefund />} />
-                    <Route path="/forum" element={<Forum />} />
-                    <Route path="/events" element={<Events />} />
-                    <Route path="/challenges" element={<Challenges />} />
-                    <Route path="/leaderboard" element={<Leaderboard />} />
-                    <Route path="/blog" element={<Blog />} />
-                    <Route path="/achievements" element={<Achievements />} />
-                    <Route path="/security-insights" element={<SecurityInsights />} />
-                    <Route path="/vulnerabilities" element={<Vulnerabilities />} />
-                    <Route path="/platform-report" element={<PlatformReport />} />
-                    <Route path="/submit-service" element={<SubmitService />} />
-                    
-                    {/* Admin routes */}
-                    <Route path="/admin" element={<AdminDashboard />} />
-                    <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                    <Route path="/admin/users" element={<AdminUsers />} />
-                    <Route path="/admin/audits" element={<AdminAudits />} />
-                    <Route path="/admin/finance" element={<AdminFinance />} />
-                    <Route path="/admin/reports" element={<AdminReports />} />
-                    <Route path="/admin/disputes" element={<AdminDisputes />} />
-                    <Route path="/admin/security" element={<AdminSecurity />} />
-                    <Route path="/admin/services" element={<AdminServices />} />
-                    <Route path="/admin/settings" element={<AdminSettings />} />
-                    <Route path="/admin/providers" element={<AdminProviders />} />
-                    
-                    {/* User-specific routes */}
-                    <Route path="/contact-provider" element={<ContactProvider />} />
-                    <Route path="/auditor-dashboard" element={<AuditorDashboard />} />
-                    <Route path="/project-dashboard" element={<ProjectDashboard />} />
-                    <Route path="/user-dashboard" element={<UserDashboard />} />
-                    
-                    {/* Add notification testing route */}
-                    <Route path="/notification-testing" element={<NotificationTesting />} />
-                    
-                    {/* 404 */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </Suspense>
-                <Toaster />
-              </div>
-            </BrowserRouter>
-          </NotificationProvider>
-        </AuthProvider>
-      </QueryClientProvider>
-    </HelmetProvider>
+    <>
+      <NotificationHandlers />
+      <RouterProvider router={router} />
+    </>
   );
 }
 

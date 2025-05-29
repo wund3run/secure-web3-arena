@@ -1,129 +1,127 @@
 
+import { Shield, Search, Users, BookOpen, HeadphonesIcon, BarChart3, Gavel, Settings, UserCheck, Building, AlertTriangle } from 'lucide-react';
+
 export interface NavigationLink {
-  title: string;
+  name: string;
   href: string;
+  icon?: any;
   description?: string;
-  children?: NavigationLink[];
+  roles?: string[];
+  submenu?: NavigationLink[];
 }
 
 export const navigationLinks: NavigationLink[] = [
   {
-    title: "Services",
-    href: "/marketplace",
-    children: [
-      {
-        title: "Browse Auditors",
-        href: "/marketplace",
-        description: "Find verified security auditors for your project"
-      },
-      {
-        title: "Request Audit",
-        href: "/request-audit",
-        description: "Submit your project for professional security review"
-      },
-      {
-        title: "Join as Auditor",
-        href: "/service-provider-onboarding",
-        description: "Become a certified security auditor on our platform"
-      },
-      {
-        title: "Pricing",
-        href: "/pricing",
-        description: "Transparent pricing for all audit services"
-      }
+    name: 'Marketplace',
+    href: '/marketplace',
+    icon: Search,
+    description: 'Find security services',
+    submenu: [
+      { name: 'Browse Services', href: '/marketplace' },
+      { name: 'Service Providers', href: '/service-provider-onboarding' },
+      { name: 'Submit Service', href: '/submit-service' },
     ]
   },
   {
-    title: "Resources",
-    href: "/resources",
-    children: [
-      {
-        title: "Web3 Security",
-        href: "/web3-security",
-        description: "Learn about blockchain and smart contract security"
-      },
-      {
-        title: "Documentation",
-        href: "/docs",
-        description: "Platform guides and API documentation"
-      },
-      {
-        title: "Security Guides",
-        href: "/guides",
-        description: "Best practices for Web3 security"
-      },
-      {
-        title: "Tutorials",
-        href: "/tutorials",
-        description: "Step-by-step security tutorials"
-      },
-      {
-        title: "Knowledge Base",
-        href: "/knowledge-base",
-        description: "Comprehensive security knowledge repository"
-      },
-      {
-        title: "FAQ",
-        href: "/faq",
-        description: "Frequently asked questions"
-      }
+    name: 'Security Services',
+    href: '/security-services',
+    icon: Shield,
+    description: 'Security-as-a-Service platform',
+    submenu: [
+      { name: 'Continuous Monitoring', href: '/security-services?tab=monitoring' },
+      { name: 'Threat Intelligence', href: '/security-services?tab=monitoring' },
+      { name: 'Certifications', href: '/security-services?tab=certifications' },
+      { name: 'Compliance', href: '/security-services?tab=analytics' },
     ]
   },
   {
-    title: "Tools",
-    href: "/ai-tools",
-    children: [
-      {
-        title: "AI Security Tools",
-        href: "/ai-tools",
-        description: "AI-powered security analysis and testing tools"
-      },
-      {
-        title: "Platform Analysis",
-        href: "/platform-report",
-        description: "Comprehensive platform security assessment"
-      },
-      {
-        title: "Vulnerability Database",
-        href: "/vulnerabilities",
-        description: "Known vulnerabilities and exploits database"
-      },
-      {
-        title: "Audit Templates",
-        href: "/templates",
-        description: "Standardized audit templates and checklists"
-      }
+    name: 'Audits',
+    href: '/audits',
+    icon: Shield,
+    description: 'Security audit services',
+    submenu: [
+      { name: 'Browse Audits', href: '/audits' },
+      { name: 'Request Audit', href: '/request-audit' },
+      { name: 'AI Matching', href: '/ai-matching-hub' },
     ]
   },
   {
-    title: "Community",
-    href: "/community",
-    children: [
-      {
-        title: "Forum",
-        href: "/forum",
-        description: "Connect with security professionals worldwide"
-      },
-      {
-        title: "Events",
-        href: "/events",
-        description: "Security conferences and workshops"
-      },
-      {
-        title: "Challenges",
-        href: "/challenges",
-        description: "Security challenges and CTF competitions"
-      },
-      {
-        title: "Leaderboard",
-        href: "/leaderboard",
-        description: "Top auditors and community contributors"
-      },
-      {
-        title: "Blog",
-        href: "/blog",
-        description: "Latest insights and security updates"
-      }
+    name: 'Resources',
+    href: '/resources',
+    icon: BookOpen,
+    description: 'Learning and guides',
+    submenu: [
+      { name: 'Security Guides', href: '/security-guides' },
+      { name: 'Guidelines', href: '/audit-guidelines' },
+      { name: 'Knowledge Base', href: '/knowledge-base' },
+      { name: 'Tutorials', href: '/tutorials' },
     ]
-  }
+  },
+  {
+    name: 'Community',
+    href: '/community',
+    icon: Users,
+    description: 'Connect with peers',
+    submenu: [
+      { name: 'Forum', href: '/forum' },
+      { name: 'Leaderboard', href: '/leaderboard' },
+      { name: 'Events', href: '/events' },
+    ]
+  },
 ];
+
+// Role-specific navigation for authenticated users
+export const getNavigationForRole = (role: string): NavigationLink[] => {
+  const baseLinks = [...navigationLinks];
+  
+  switch (role) {
+    case 'admin':
+      baseLinks.push({
+        name: 'Admin',
+        href: '/admin',
+        icon: Settings,
+        description: 'Platform management',
+        roles: ['admin'],
+        submenu: [
+          { name: 'Dashboard', href: '/admin' },
+          { name: 'Users', href: '/admin/users' },
+          { name: 'Audits', href: '/admin/audits' },
+          { name: 'Services', href: '/admin/services' },
+          { name: 'Reports', href: '/admin/reports' },
+        ]
+      });
+      break;
+      
+    case 'auditor':
+      baseLinks.push({
+        name: 'Auditor Tools',
+        href: '/auditor-dashboard',
+        icon: UserCheck,
+        description: 'Auditor workspace',
+        roles: ['auditor'],
+        submenu: [
+          { name: 'Dashboard', href: '/auditor-dashboard' },
+          { name: 'Active Audits', href: '/audits?status=active' },
+          { name: 'AI Tools', href: '/ai-tools' },
+        ]
+      });
+      break;
+      
+    case 'project_owner':
+      baseLinks.push({
+        name: 'Project Tools',
+        href: '/project-dashboard',
+        icon: Building,
+        description: 'Project management',
+        roles: ['project_owner'],
+        submenu: [
+          { name: 'Dashboard', href: '/project-dashboard' },
+          { name: 'My Projects', href: '/dashboard?tab=projects' },
+          { name: 'Request Audit', href: '/request-audit' },
+        ]
+      });
+      break;
+  }
+  
+  return baseLinks;
+};

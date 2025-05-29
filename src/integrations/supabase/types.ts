@@ -490,6 +490,81 @@ export type Database = {
         }
         Relationships: []
       }
+      certifications: {
+        Row: {
+          certificate_url: string | null
+          certification_type: Database["public"]["Enums"]["certification_type"]
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          issued_at: string
+          metadata: Json | null
+          user_id: string
+          verification_code: string | null
+        }
+        Insert: {
+          certificate_url?: string | null
+          certification_type: Database["public"]["Enums"]["certification_type"]
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          issued_at?: string
+          metadata?: Json | null
+          user_id: string
+          verification_code?: string | null
+        }
+        Update: {
+          certificate_url?: string | null
+          certification_type?: Database["public"]["Enums"]["certification_type"]
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          issued_at?: string
+          metadata?: Json | null
+          user_id?: string
+          verification_code?: string | null
+        }
+        Relationships: []
+      }
+      compliance_checks: {
+        Row: {
+          created_at: string
+          findings: Json | null
+          framework: Database["public"]["Enums"]["compliance_framework"]
+          id: string
+          last_checked_at: string | null
+          next_check_at: string | null
+          project_id: string
+          recommendations: Json | null
+          score: number | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          findings?: Json | null
+          framework: Database["public"]["Enums"]["compliance_framework"]
+          id?: string
+          last_checked_at?: string | null
+          next_check_at?: string | null
+          project_id: string
+          recommendations?: Json | null
+          score?: number | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          findings?: Json | null
+          framework?: Database["public"]["Enums"]["compliance_framework"]
+          id?: string
+          last_checked_at?: string | null
+          next_check_at?: string | null
+          project_id?: string
+          recommendations?: Json | null
+          score?: number | null
+          status?: string
+        }
+        Relationships: []
+      }
       dispute_comments: {
         Row: {
           comment: string
@@ -717,6 +792,56 @@ export type Database = {
         }
         Relationships: []
       }
+      insurance_policies: {
+        Row: {
+          coverage_amount: number
+          created_at: string
+          effective_date: string
+          expiry_date: string
+          id: string
+          policy_number: string
+          premium_amount: number
+          provider_name: string
+          status: Database["public"]["Enums"]["insurance_status"]
+          subscription_id: string
+          terms: Json | null
+        }
+        Insert: {
+          coverage_amount: number
+          created_at?: string
+          effective_date: string
+          expiry_date: string
+          id?: string
+          policy_number: string
+          premium_amount: number
+          provider_name: string
+          status?: Database["public"]["Enums"]["insurance_status"]
+          subscription_id: string
+          terms?: Json | null
+        }
+        Update: {
+          coverage_amount?: number
+          created_at?: string
+          effective_date?: string
+          expiry_date?: string
+          id?: string
+          policy_number?: string
+          premium_amount?: number
+          provider_name?: string
+          status?: Database["public"]["Enums"]["insurance_status"]
+          subscription_id?: string
+          terms?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_policies_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       milestones: {
         Row: {
           amount: number
@@ -760,6 +885,53 @@ export type Database = {
             columns: ["escrow_contract_id"]
             isOneToOne: false
             referencedRelation: "escrow_contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      monitoring_services: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          last_scan_at: string | null
+          monitoring_type: Database["public"]["Enums"]["monitoring_type"]
+          next_scan_at: string | null
+          project_id: string
+          scan_frequency_hours: number | null
+          subscription_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_scan_at?: string | null
+          monitoring_type?: Database["public"]["Enums"]["monitoring_type"]
+          next_scan_at?: string | null
+          project_id: string
+          scan_frequency_hours?: number | null
+          subscription_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_scan_at?: string | null
+          monitoring_type?: Database["public"]["Enums"]["monitoring_type"]
+          next_scan_at?: string | null
+          project_id?: string
+          scan_frequency_hours?: number | null
+          subscription_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "monitoring_services_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
             referencedColumns: ["id"]
           },
         ]
@@ -827,6 +999,36 @@ export type Database = {
           metric_name?: string
           metric_value?: number | null
           recorded_at?: string | null
+        }
+        Relationships: []
+      }
+      predictive_analytics: {
+        Row: {
+          analysis_type: string
+          confidence_score: number | null
+          created_at: string
+          id: string
+          prediction_data: Json
+          user_id: string
+          valid_until: string | null
+        }
+        Insert: {
+          analysis_type: string
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          prediction_data: Json
+          user_id: string
+          valid_until?: string | null
+        }
+        Update: {
+          analysis_type?: string
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          prediction_data?: Json
+          user_id?: string
+          valid_until?: string | null
         }
         Relationships: []
       }
@@ -951,6 +1153,92 @@ export type Database = {
           verification_status?: string | null
         }
         Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          features: Json | null
+          id: string
+          monthly_cost: number | null
+          started_at: string
+          status: Database["public"]["Enums"]["subscription_status"]
+          tier: Database["public"]["Enums"]["subscription_tier"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          features?: Json | null
+          id?: string
+          monthly_cost?: number | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          tier?: Database["public"]["Enums"]["subscription_tier"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          features?: Json | null
+          id?: string
+          monthly_cost?: number | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          tier?: Database["public"]["Enums"]["subscription_tier"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      threat_intelligence: {
+        Row: {
+          description: string
+          detected_at: string
+          id: string
+          is_resolved: boolean
+          metadata: Json | null
+          monitoring_service_id: string
+          recommendation: string | null
+          resolved_at: string | null
+          threat_level: Database["public"]["Enums"]["threat_level"]
+          threat_type: string
+        }
+        Insert: {
+          description: string
+          detected_at?: string
+          id?: string
+          is_resolved?: boolean
+          metadata?: Json | null
+          monitoring_service_id: string
+          recommendation?: string | null
+          resolved_at?: string | null
+          threat_level: Database["public"]["Enums"]["threat_level"]
+          threat_type: string
+        }
+        Update: {
+          description?: string
+          detected_at?: string
+          id?: string
+          is_resolved?: boolean
+          metadata?: Json | null
+          monitoring_service_id?: string
+          recommendation?: string | null
+          resolved_at?: string | null
+          threat_level?: Database["public"]["Enums"]["threat_level"]
+          threat_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "threat_intelligence_monitoring_service_id_fkey"
+            columns: ["monitoring_service_id"]
+            isOneToOne: false
+            referencedRelation: "monitoring_services"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       transactions: {
         Row: {
@@ -1093,6 +1381,20 @@ export type Database = {
         Args: { user_id: string }
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      get_user_subscription: {
+        Args: { user_id: string }
+        Returns: {
+          id: string
+          tier: Database["public"]["Enums"]["subscription_tier"]
+          status: Database["public"]["Enums"]["subscription_status"]
+          features: Json
+          expires_at: string
+        }[]
+      }
+      has_subscription_feature: {
+        Args: { user_id: string; feature_name: string }
+        Returns: boolean
+      }
       is_admin: {
         Args: Record<PropertyKey, never> | { user_id: string }
         Returns: boolean
@@ -1107,6 +1409,12 @@ export type Database = {
       }
     }
     Enums: {
+      certification_type:
+        | "basic_auditor"
+        | "advanced_auditor"
+        | "security_specialist"
+        | "compliance_expert"
+      compliance_framework: "gdpr" | "soc2" | "iso27001" | "hipaa" | "pci_dss"
       dispute_status: "opened" | "in_review" | "resolved" | "closed"
       escrow_status:
         | "pending"
@@ -1115,6 +1423,11 @@ export type Database = {
         | "disputed"
         | "refunded"
         | "cancelled"
+      insurance_status: "pending" | "active" | "claimed" | "expired"
+      monitoring_type: "continuous" | "scheduled" | "on_demand"
+      subscription_status: "active" | "cancelled" | "suspended" | "trial"
+      subscription_tier: "basic" | "professional" | "enterprise" | "custom"
+      threat_level: "low" | "medium" | "high" | "critical"
       transaction_type:
         | "deposit"
         | "milestone_payment"
@@ -1237,6 +1550,13 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      certification_type: [
+        "basic_auditor",
+        "advanced_auditor",
+        "security_specialist",
+        "compliance_expert",
+      ],
+      compliance_framework: ["gdpr", "soc2", "iso27001", "hipaa", "pci_dss"],
       dispute_status: ["opened", "in_review", "resolved", "closed"],
       escrow_status: [
         "pending",
@@ -1246,6 +1566,11 @@ export const Constants = {
         "refunded",
         "cancelled",
       ],
+      insurance_status: ["pending", "active", "claimed", "expired"],
+      monitoring_type: ["continuous", "scheduled", "on_demand"],
+      subscription_status: ["active", "cancelled", "suspended", "trial"],
+      subscription_tier: ["basic", "professional", "enterprise", "custom"],
+      threat_level: ["low", "medium", "high", "critical"],
       transaction_type: [
         "deposit",
         "milestone_payment",
