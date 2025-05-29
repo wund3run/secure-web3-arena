@@ -1,58 +1,47 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/contexts/auth';
+import { useAuth } from '@/contexts/auth/AuthContext';
 import { toast } from 'sonner';
 
 export const useAuthPage = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn, signUp, user, loading, error } = useAuth();
+  const { user, loading, signIn, signUp, error } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = location.state?.from?.pathname || '/dashboard';
-
+  // Redirect authenticated users
   useEffect(() => {
     if (user && !loading) {
-      console.log('User authenticated, redirecting to:', from);
+      const from = (location.state as any)?.from?.pathname || '/';
       navigate(from, { replace: true });
     }
-  }, [user, loading, navigate, from]);
+  }, [user, loading, navigate, location]);
 
   const handleSignIn = async (email: string, password: string) => {
-    if (!email || !password) {
-      toast.error('Please fill in all fields');
-      return;
-    }
-
-    setIsLoading(true);
     try {
-      console.log('Attempting sign in for:', email);
+      setIsLoading(true);
       await signIn(email, password);
-    } catch (error: any) {
-      console.error('Sign in failed:', error);
+      toast.success('Welcome back!');
+    } catch (err: any) {
+      toast.error('Sign in failed', { description: err.message });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSignUp = async (email: string, password: string, fullName: string, userType: 'auditor' | 'project_owner') => {
-    if (!email || !password || !fullName) {
-      toast.error('Please fill in all fields');
-      return;
-    }
-
-    if (password.length < 6) {
-      toast.error('Password must be at least 6 characters long');
-      return;
-    }
-
-    setIsLoading(true);
+  const handleSignUp = async (
+    email: string, 
+    password: string, 
+    fullName: string, 
+    userType: 'auditor' | 'project_owner'
+  ) => {
     try {
-      console.log('Attempting sign up for:', email, 'as', userType);
+      setIsLoading(true);
       await signUp(email, password, fullName, userType);
-    } catch (error: any) {
-      console.error('Sign up failed:', error);
+      toast.success('Account created successfully!');
+    } catch (err: any) {
+      toast.error('Sign up failed', { description: err.message });
     } finally {
       setIsLoading(false);
     }
@@ -63,6 +52,6 @@ export const useAuthPage = () => {
     loading,
     error,
     handleSignIn,
-    handleSignUp
+    handleSignUp,
   };
 };

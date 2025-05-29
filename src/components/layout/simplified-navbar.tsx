@@ -14,7 +14,7 @@ import {
 import { ModeToggle } from "@/components/theme/ModeToggle";
 import { useLocation } from 'react-router-dom';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
-import { useAuth } from '@/contexts/auth';
+import { useAuth } from '@/contexts/auth/AuthContext';
 
 export function SimplifiedNavbar() {
   const { user, signOut, userProfile } = useAuth();

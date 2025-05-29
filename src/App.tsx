@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   createBrowserRouter,
@@ -27,7 +26,7 @@ import AuditorDashboard from "@/pages/AuditorDashboard";
 import ProjectDashboard from "@/pages/ProjectDashboard";
 import Index from "@/pages/Index";
 import Marketplace from "@/pages/Marketplace";
-import { AuthProvider } from "@/contexts/auth";
+import { AuthProvider } from "@/contexts/auth/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import SecurityServices from "@/pages/SecurityServices";
 import Home from "@/pages/Home";
@@ -41,6 +40,7 @@ import TermsOfService from "@/pages/TermsOfService";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import ContactUs from "@/pages/ContactUs";
 import AboutUs from "@/pages/AboutUs";
+import Settings from "@/pages/Settings";
 import { EnhancedErrorBoundary } from "@/components/error/enhanced-error-boundary";
 
 const router = createBrowserRouter([
@@ -59,6 +59,10 @@ const router = createBrowserRouter([
   {
     path: "/profile",
     element: <Profile />,
+  },
+  {
+    path: "/settings",
+    element: <Settings />,
   },
   {
     path: "/admin",

@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Helmet } from "react-helmet-async";
-import { Navbar } from "@/components/layout/navbar";
+import { SimplifiedNavbar } from "@/components/layout/simplified-navbar";
 import { EnhancedFooter } from "@/components/home/enhanced-footer";
 import { SimplifiedHero } from "@/components/home/simplified-hero";
 import { TrustIndicators } from "@/components/home/trust-indicators";
@@ -20,7 +20,7 @@ export default function Index() {
       </Helmet>
       
       <div className="min-h-screen bg-background flex flex-col">
-        <Navbar />
+        <SimplifiedNavbar />
         <div className="flex-grow">
           <EnhancedErrorBoundary>
             <SimplifiedHero />
