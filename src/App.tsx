@@ -44,6 +44,7 @@ import ContactUs from "@/pages/ContactUs";
 import AboutUs from "@/pages/AboutUs";
 import Settings from "@/pages/Settings";
 import Support from "@/pages/Support";
+import PlatformReview from "@/pages/PlatformReview";
 import { EnhancedErrorBoundary } from "@/components/error/enhanced-error-boundary";
 
 // Create a client
@@ -80,6 +81,10 @@ const router = createBrowserRouter([
   {
     path: "/support",
     element: <Support />,
+  },
+  {
+    path: "/platform-review",
+    element: <PlatformReview />,
   },
   {
     path: "/admin",
