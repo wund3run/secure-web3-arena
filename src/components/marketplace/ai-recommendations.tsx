@@ -19,10 +19,8 @@ export function AIRecommendations({
   blockchains,
   onRecommendationSelect,
 }: AIRecommendationsProps) {
-  // This would normally be a complex AI-driven recommendation algorithm
-  // For demo purposes, we'll just select based on some simple rules
+  // Enhanced recommendation logic with improved ML simulation
   const getRecommendations = () => {
-    // First, filter by relevant blockchains if specified
     let filtered = [...services];
     
     if (blockchains && blockchains.length > 0) {
@@ -35,13 +33,16 @@ export function AIRecommendations({
       );
     }
     
-    // Then sort by rating and pick top 3
+    // Enhanced sorting with ML-like scoring
     filtered = filtered.sort((a, b) => {
-      // Boost services based on project size
-      const sizeBoostA = a.tags.includes(projectSize) ? 1 : 0;
-      const sizeBoostB = b.tags.includes(projectSize) ? 1 : 0;
+      const sizeBoostA = a.tags.includes(projectSize) ? 1.5 : 0;
+      const sizeBoostB = b.tags.includes(projectSize) ? 1.5 : 0;
       
-      return (b.rating + sizeBoostB) - (a.rating + sizeBoostA);
+      // Simulate ML confidence scoring
+      const mlConfidenceA = a.rating * 0.4 + (a.completedJobs || 0) * 0.001 + sizeBoostA * 0.3;
+      const mlConfidenceB = b.rating * 0.4 + (b.completedJobs || 0) * 0.001 + sizeBoostB * 0.3;
+      
+      return mlConfidenceB - mlConfidenceA;
     });
     
     return filtered.slice(0, 3);
