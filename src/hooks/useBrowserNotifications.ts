@@ -3,9 +3,11 @@ import { useState, useEffect } from 'react';
 
 export function useBrowserNotifications() {
   const [permission, setPermission] = useState<NotificationPermission>('default');
+  const [isSupported, setIsSupported] = useState(false);
 
   useEffect(() => {
     if ('Notification' in window) {
+      setIsSupported(true);
       setPermission(Notification.permission);
     }
   }, []);
@@ -32,5 +34,6 @@ export function useBrowserNotifications() {
     requestPermission,
     sendBrowserNotification,
     canSendNotifications,
+    isSupported,
   };
 }
