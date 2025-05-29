@@ -4,6 +4,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import Auth from "@/pages/Auth";
 import Profile from "@/pages/Profile";
 import Admin from "@/pages/Admin";
@@ -187,13 +188,15 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <EnhancedErrorBoundary>
-      <AuthProvider>
-        <NotificationProvider>
-          <RouterProvider router={router} />
-        </NotificationProvider>
-      </AuthProvider>
-    </EnhancedErrorBoundary>
+    <HelmetProvider>
+      <EnhancedErrorBoundary>
+        <AuthProvider>
+          <NotificationProvider>
+            <RouterProvider router={router} />
+          </NotificationProvider>
+        </AuthProvider>
+      </EnhancedErrorBoundary>
+    </HelmetProvider>
   );
 }
 
