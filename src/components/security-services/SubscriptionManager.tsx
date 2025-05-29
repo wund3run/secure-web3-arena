@@ -40,6 +40,13 @@ export const SubscriptionManager = () => {
     }
   };
 
+  const getFeatureArray = (features: any): string[] => {
+    if (Array.isArray(features)) {
+      return features;
+    }
+    return [];
+  };
+
   if (loading) {
     return (
       <Card>
@@ -94,7 +101,7 @@ export const SubscriptionManager = () => {
             <div>
               <h4 className="font-medium mb-2">Active Features:</h4>
               <div className="flex flex-wrap gap-2">
-                {subscription.features.map((feature) => (
+                {getFeatureArray(subscription.features).map((feature) => (
                   <Badge key={feature} variant="outline" className="flex items-center">
                     <CheckCircle className="h-3 w-3 mr-1" />
                     {feature.replace('_', ' ')}
