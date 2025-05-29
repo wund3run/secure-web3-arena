@@ -271,7 +271,7 @@ const Support = () => {
                     </div>
                     <div className="flex justify-between items-center">
                       <span>Support Response</span>
-                      <span className="font-medium">< 24h</span>
+                      <span className="font-medium">&lt; 24h</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span>Uptime (30 days)</span>
