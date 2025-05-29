@@ -2,54 +2,68 @@
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-export interface AuditorProfile {
-  user_id: string;
+export interface AuditorProfileData {
+  business_name?: string;
   years_experience: number;
   hourly_rate_min?: number;
   hourly_rate_max?: number;
   blockchain_expertise: string[];
   audit_types: string[];
-  verification_status: string;
-  availability_status: string;
-  success_rate: number;
-  response_time_hours: number;
-  specialization_tags: string[];
-  business_name?: string;
   portfolio_url?: string;
   github_username?: string;
   linkedin_url?: string;
-}
-
-export interface AuditorSkill {
-  skill_name: string;
-  proficiency_level: number;
+  specialization_tags?: string[];
 }
 
 export class AuditorProfileService {
-  static async createAuditorProfile(profileData: Partial<AuditorProfile>): Promise<boolean> {
+  static async createAuditorProfile(profileData: AuditorProfileData): Promise<boolean> {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
-      // Create or update auditor profile
+      // Create auditor profile
       const { error: profileError } = await supabase
         .from('auditor_profiles')
-        .upsert({
+        .insert({
           user_id: user.id,
-          ...profileData
+          business_name: profileData.business_name,
+          years_experience: profileData.years_experience,
+          hourly_rate_min: profileData.hourly_rate_min,
+          hourly_rate_max: profileData.hourly_rate_max,
+          blockchain_expertise: profileData.blockchain_expertise,
+          audit_types: profileData.audit_types,
+          portfolio_url: profileData.portfolio_url,
+          github_username: profileData.github_username,
+          linkedin_url: profileData.linkedin_url,
+          specialization_tags: profileData.specialization_tags || [],
+          verification_status: 'pending',
+          availability_status: 'available'
         });
 
       if (profileError) throw profileError;
 
-      // Create user role if not exists
-      await supabase
+      // Update user role to auditor
+      const { error: roleError } = await supabase
         .from('user_roles')
         .upsert({
           user_id: user.id,
-          role: 'auditor'
+          role: 'auditor',
+          is_active: true
         });
 
-      toast.success('Auditor profile created successfully!');
+      if (roleError) throw roleError;
+
+      // Update extended profile
+      const { error: extendedProfileError } = await supabase
+        .from('extended_profiles')
+        .upsert({
+          id: user.id,
+          user_type: 'auditor',
+          verification_status: 'pending'
+        });
+
+      if (extendedProfileError) throw extendedProfileError;
+
       return true;
     } catch (error) {
       console.error('Failed to create auditor profile:', error);
@@ -58,78 +72,22 @@ export class AuditorProfileService {
     }
   }
 
-  static async updateAuditorProfile(profileData: Partial<AuditorProfile>): Promise<boolean> {
+  static async getAuditorProfile(userId: string) {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
-
-      const { error } = await supabase
-        .from('auditor_profiles')
-        .update(profileData)
-        .eq('user_id', user.id);
-
-      if (error) throw error;
-
-      toast.success('Profile updated successfully!');
-      return true;
-    } catch (error) {
-      console.error('Failed to update profile:', error);
-      toast.error('Failed to update profile');
-      return false;
-    }
-  }
-
-  static async addSkills(skills: AuditorSkill[]): Promise<boolean> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
-
-      const skillsData = skills.map(skill => ({
-        auditor_id: user.id,
-        skill_name: skill.skill_name,
-        proficiency_level: skill.proficiency_level
-      }));
-
-      const { error } = await supabase
-        .from('auditor_skills')
-        .upsert(skillsData);
-
-      if (error) throw error;
-
-      toast.success('Skills updated successfully!');
-      return true;
-    } catch (error) {
-      console.error('Failed to add skills:', error);
-      toast.error('Failed to update skills');
-      return false;
-    }
-  }
-
-  static async getAuditorProfile(userId?: string): Promise<AuditorProfile | null> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      const targetUserId = userId || user?.id;
-      
-      if (!targetUserId) return null;
-
       const { data, error } = await supabase
         .from('auditor_profiles')
         .select(`
           *,
-          auditor_skills (
-            skill_name,
-            proficiency_level
-          ),
-          auditor_reviews (
-            rating,
-            review_text,
-            created_at
+          extended_profiles!auditor_profiles_user_id_fkey (
+            full_name,
+            avatar_url,
+            bio
           )
         `)
-        .eq('user_id', targetUserId)
+        .eq('user_id', userId)
         .single();
 
-      if (error && error.code !== 'PGRST116') throw error;
+      if (error) throw error;
       return data;
     } catch (error) {
       console.error('Failed to get auditor profile:', error);
@@ -137,55 +95,30 @@ export class AuditorProfileService {
     }
   }
 
-  static async searchAuditors(filters: {
-    blockchain?: string;
-    minExperience?: number;
-    maxRate?: number;
-    skills?: string[];
-    availability?: string;
-  }): Promise<AuditorProfile[]> {
+  static async getAllAuditors() {
     try {
-      let query = supabase
+      const { data, error } = await supabase
         .from('auditor_profiles')
         .select(`
           *,
-          extended_profiles:user_id (
+          extended_profiles!auditor_profiles_user_id_fkey (
             full_name,
-            avatar_url
-          ),
-          auditor_reviews (
-            rating
+            avatar_url,
+            bio
           )
         `)
-        .eq('verification_status', 'verified');
-
-      if (filters.blockchain) {
-        query = query.contains('blockchain_expertise', [filters.blockchain]);
-      }
-
-      if (filters.minExperience) {
-        query = query.gte('years_experience', filters.minExperience);
-      }
-
-      if (filters.maxRate) {
-        query = query.lte('hourly_rate_max', filters.maxRate);
-      }
-
-      if (filters.availability) {
-        query = query.eq('availability_status', filters.availability);
-      }
-
-      const { data, error } = await query;
+        .eq('verification_status', 'verified')
+        .eq('availability_status', 'available');
 
       if (error) throw error;
       return data || [];
     } catch (error) {
-      console.error('Failed to search auditors:', error);
+      console.error('Failed to get auditors:', error);
       return [];
     }
   }
 
-  static async updateAvailability(status: 'available' | 'limited' | 'unavailable'): Promise<boolean> {
+  static async updateAvailability(status: 'available' | 'busy' | 'unavailable') {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
@@ -196,12 +129,9 @@ export class AuditorProfileService {
         .eq('user_id', user.id);
 
       if (error) throw error;
-
-      toast.success('Availability updated!');
       return true;
     } catch (error) {
       console.error('Failed to update availability:', error);
-      toast.error('Failed to update availability');
       return false;
     }
   }
