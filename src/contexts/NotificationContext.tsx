@@ -22,17 +22,17 @@ interface NotificationProviderProps {
 
 export const NotificationProvider = ({ children }: NotificationProviderProps) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const { user } = useAuth();
+  const auth = useAuth();
   const { saveNotifications, loadNotifications } = useNotificationPersistence();
   const { sendBrowserNotification, canSendNotifications } = useBrowserNotifications();
 
-  // Load persisted notifications on mount
+  // Load persisted notifications on mount, but only if user is available
   useEffect(() => {
-    if (user?.id) {
+    if (auth?.user?.id) {
       const loaded = loadNotifications();
       setNotifications(loaded);
     }
-  }, [user?.id, loadNotifications]);
+  }, [auth?.user?.id, loadNotifications]);
 
   // Save notifications whenever they change
   useEffect(() => {
