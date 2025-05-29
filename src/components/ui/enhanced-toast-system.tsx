@@ -1,97 +1,124 @@
 
-import { toast } from "sonner";
-import { CheckCircle, AlertCircle, XCircle, Info, Wifi, WifiOff } from "lucide-react";
+import { toast } from 'sonner';
+import { CheckCircle, AlertTriangle, Info, X, Wifi, WifiOff } from 'lucide-react';
 
 export class EnhancedToastSystem {
-  static success(title: string, description?: string) {
+  // Success notifications with actions
+  static success(title: string, description?: string, action?: { label: string; onClick: () => void }) {
     return toast.success(title, {
       description,
       icon: <CheckCircle className="h-4 w-4" />,
-      duration: 4000,
-      className: "border-green-200 bg-green-50 text-green-900"
-    });
-  }
-
-  static error(title: string, description?: string, action?: { label: string; onClick: () => void }) {
-    return toast.error(title, {
-      description,
-      icon: <XCircle className="h-4 w-4" />,
-      duration: 6000,
       action: action ? {
         label: action.label,
         onClick: action.onClick
       } : undefined,
-      className: "border-red-200 bg-red-50 text-red-900"
+      duration: 4000
     });
   }
 
-  static warning(title: string, description?: string) {
-    return toast.warning(title, {
+  // Error notifications with retry capability
+  static error(title: string, description?: string, retry?: () => void) {
+    return toast.error(title, {
       description,
-      icon: <AlertCircle className="h-4 w-4" />,
-      duration: 5000,
-      className: "border-yellow-200 bg-yellow-50 text-yellow-900"
+      icon: <AlertTriangle className="h-4 w-4" />,
+      action: retry ? {
+        label: "Retry",
+        onClick: retry
+      } : undefined,
+      duration: 6000
     });
   }
 
-  static info(title: string, description?: string) {
+  // Info notifications
+  static info(title: string, description?: string, action?: { label: string; onClick: () => void }) {
     return toast.info(title, {
       description,
       icon: <Info className="h-4 w-4" />,
-      duration: 4000,
-      className: "border-blue-200 bg-blue-50 text-blue-900"
+      action: action ? {
+        label: action.label,
+        onClick: action.onClick
+      } : undefined,
+      duration: 4000
     });
   }
 
-  static formValidationError() {
-    return toast.error("Form Validation Error", {
-      description: "Please check the form fields and try again",
-      icon: <AlertCircle className="h-4 w-4" />,
-      duration: 5000,
-      className: "border-red-200 bg-red-50 text-red-900"
+  // Warning notifications
+  static warning(title: string, description?: string) {
+    return toast.warning(title, {
+      description,
+      icon: <AlertTriangle className="h-4 w-4" />,
+      duration: 5000
     });
   }
 
-  static networkError(retryAction?: () => void) {
-    return toast.error("Network Error", {
-      description: "Please check your connection and try again",
+  // Network-specific notifications
+  static networkError(retry?: () => void) {
+    return toast.error("Connection lost", {
+      description: "Please check your internet connection",
       icon: <WifiOff className="h-4 w-4" />,
-      duration: 8000,
-      action: retryAction ? {
+      action: retry ? {
         label: "Retry",
-        onClick: retryAction
-      } : undefined
+        onClick: retry
+      } : undefined,
+      duration: 8000
     });
   }
 
+  // Session expired notification
   static sessionExpired() {
-    return toast.warning("Session Expired", {
+    return toast.error("Session expired", {
       description: "Please sign in again to continue",
-      icon: <AlertCircle className="h-4 w-4" />,
-      duration: 10000,
+      icon: <X className="h-4 w-4" />,
       action: {
         label: "Sign In",
         onClick: () => window.location.href = "/auth"
-      }
+      },
+      duration: 10000
     });
   }
 
+  // Loading notifications with promise support
+  static promise<T>(
+    promise: Promise<T>,
+    {
+      loading,
+      success,
+      error
+    }: {
+      loading: string;
+      success: string | ((data: T) => string);
+      error: string | ((error: any) => string);
+    }
+  ) {
+    return toast.promise(promise, {
+      loading,
+      success,
+      error,
+      duration: 4000
+    });
+  }
+
+  // Connection restored notification
   static connectionRestored() {
-    return toast.success("Connection Restored", {
+    return toast.success("Connection restored", {
+      description: "You're back online",
       icon: <Wifi className="h-4 w-4" />,
-      duration: 3000,
-      className: "border-green-200 bg-green-50 text-green-900"
+      duration: 3000
     });
   }
 
-  static loading(title: string, description?: string) {
-    return toast.loading(title, {
-      description,
-      duration: Infinity
+  // Audit-specific notifications
+  static auditProgress(milestone: string, projectName: string) {
+    return toast.info("Audit Progress Update", {
+      description: `${projectName}: ${milestone}`,
+      duration: 5000
     });
   }
 
-  static dismiss(toastId: string | number) {
-    toast.dismiss(toastId);
+  static newMessage(senderName: string, preview?: string) {
+    return toast.info(`New message from ${senderName}`, {
+      description: preview ? preview.substring(0, 50) + "..." : "Click to view",
+      duration: 6000
+    });
   }
 }

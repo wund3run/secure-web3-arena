@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,7 +11,8 @@ import {
   MessageCircle, 
   CheckCircle,
   AlertTriangle,
-  Star
+  Star,
+  RefreshCw
 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth';
 import { supabase } from '@/integrations/supabase/client';
@@ -41,6 +41,7 @@ export function EnhancedUserDashboard() {
   const [showTutorial, setShowTutorial] = useState(false);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -74,6 +75,7 @@ export function EnhancedUserDashboard() {
         await loadRecentActivity();
       } catch (error) {
         console.error('Failed to load user data:', error);
+        setError('Failed to load user data');
       } finally {
         setLoading(false);
       }
@@ -117,6 +119,7 @@ export function EnhancedUserDashboard() {
       });
     } catch (error) {
       console.error('Failed to load auditor stats:', error);
+      setError('Failed to load auditor stats');
     }
   };
 
@@ -142,6 +145,7 @@ export function EnhancedUserDashboard() {
       });
     } catch (error) {
       console.error('Failed to load client stats:', error);
+      setError('Failed to load client stats');
     }
   };
 
@@ -158,12 +162,20 @@ export function EnhancedUserDashboard() {
       setRecentActivity(notifications || []);
     } catch (error) {
       console.error('Failed to load recent activity:', error);
+      setError('Failed to load recent activity');
     }
   };
 
   const handleTutorialComplete = () => {
     setShowTutorial(false);
     localStorage.setItem(`hawkly_tutorial_${user?.id}`, 'completed');
+  };
+
+  const handleRetry = () => {
+    setError(null);
+    setLoading(true);
+    // Trigger data reload
+    window.location.reload();
   };
 
   if (loading) {
@@ -179,6 +191,26 @@ export function EnhancedUserDashboard() {
             </Card>
           ))}
         </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto p-6">
+        <Card className="max-w-md mx-auto">
+          <CardContent className="p-6 text-center space-y-4">
+            <AlertTriangle className="h-12 w-12 text-red-500 mx-auto" />
+            <div>
+              <h3 className="font-semibold text-lg">Unable to Load Dashboard</h3>
+              <p className="text-sm text-muted-foreground mt-1">{error}</p>
+            </div>
+            <Button onClick={handleRetry}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Try Again
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
