@@ -46,12 +46,25 @@ import Settings from "@/pages/Settings";
 import Support from "@/pages/Support";
 import PlatformReview from "@/pages/PlatformReview";
 import { EnhancedErrorBoundary } from "@/components/error/enhanced-error-boundary";
+import { ProductionErrorHandler } from "@/components/error/production-error-handler";
+import { PerformanceMonitor } from "@/components/monitoring/performance-monitor";
 
-// Create a client
+// Create a client with optimized settings for production
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: (failureCount, error: any) => {
+        // Don't retry for certain errors
+        if (error?.status === 404 || error?.status === 403) {
+          return false;
+        }
+        return failureCount < 2;
+      },
+      refetchOnWindowFocus: false, // Optimize for production
+      refetchOnReconnect: true,
+    },
+    mutations: {
       retry: 1,
     },
   },
@@ -214,24 +227,25 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <HelmetProvider>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-      >
-        <QueryClientProvider client={queryClient}>
-          <EnhancedErrorBoundary>
+    <ProductionErrorHandler>
+      <HelmetProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <QueryClientProvider client={queryClient}>
             <AuthProvider>
               <NotificationProvider>
+                <PerformanceMonitor />
                 <RouterProvider router={router} />
               </NotificationProvider>
             </AuthProvider>
-          </EnhancedErrorBoundary>
-        </QueryClientProvider>
-      </ThemeProvider>
-    </HelmetProvider>
+          </QueryClientProvider>
+        </ThemeProvider>
+      </HelmetProvider>
+    </ProductionErrorHandler>
   );
 }
 
