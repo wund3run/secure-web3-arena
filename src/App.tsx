@@ -27,6 +27,7 @@ import ProjectDashboard from "@/pages/ProjectDashboard";
 import Index from "@/pages/Index";
 import Marketplace from "@/pages/Marketplace";
 import { NotificationHandlers } from "@/components/notifications/NotificationHandlers";
+import { NotificationProvider } from "@/contexts/NotificationContext";
 import SecurityServices from "@/pages/SecurityServices";
 import Home from "@/pages/Home";
 import Services from "@/pages/Services";
@@ -185,10 +186,10 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <>
+    <NotificationProvider>
       <NotificationHandlers />
       <RouterProvider router={router} />
-    </>
+    </NotificationProvider>
   );
 }
 
