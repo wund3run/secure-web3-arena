@@ -135,9 +135,14 @@ export async function optimizedFetch<T>(
   query: any,
   cacheKey?: string
 ): Promise<T[]> {
-  return dbOptimizer.optimizedQuery(
-    () => supabase.from(tableName).select(query),
+  const result = await dbOptimizer.optimizedQuery(
+    async () => {
+      const { data, error } = await supabase.from(tableName).select(query);
+      return { data, error };
+    },
     cacheKey,
     { cache: !!cacheKey }
-  ) as Promise<T[]>;
+  );
+  
+  return (result as T[]) || [];
 }

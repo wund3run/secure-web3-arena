@@ -13,15 +13,21 @@ export class OptimizedAuditService {
 
   static async getUserAuditRequests(userId: string): Promise<AuditRequest[]> {
     try {
-      return await dbOptimizer.optimizedQuery(
-        () => supabase
-          .from('audit_requests')
-          .select('*')
-          .eq('client_id', userId)
-          .order('created_at', { ascending: false }),
+      const result = await dbOptimizer.optimizedQuery(
+        async () => {
+          const { data, error } = await supabase
+            .from('audit_requests')
+            .select('*')
+            .eq('client_id', userId)
+            .order('created_at', { ascending: false });
+          
+          return { data, error };
+        },
         this.CACHE_KEYS.USER_AUDITS(userId),
         { cache: true, retries: 2 }
-      ) || [];
+      );
+      
+      return result || [];
     } catch (error) {
       console.error('Failed to fetch audit requests:', error);
       toast.error('Failed to load audit requests');
@@ -47,21 +53,27 @@ export class OptimizedAuditService {
 
   static async getPendingAuditRequests(): Promise<AuditRequest[]> {
     try {
-      return await dbOptimizer.optimizedQuery(
-        () => supabase
-          .from('audit_requests')
-          .select(`
-            *,
-            profiles:client_id (
-              full_name,
-              avatar_url
-            )
-          `)
-          .eq('status', 'pending')
-          .order('created_at', { ascending: false }),
+      const result = await dbOptimizer.optimizedQuery(
+        async () => {
+          const { data, error } = await supabase
+            .from('audit_requests')
+            .select(`
+              *,
+              profiles:client_id (
+                full_name,
+                avatar_url
+              )
+            `)
+            .eq('status', 'pending')
+            .order('created_at', { ascending: false });
+          
+          return { data, error };
+        },
         this.CACHE_KEYS.PENDING_AUDITS,
         { cache: true, retries: 2 }
-      ) || [];
+      );
+      
+      return result || [];
     } catch (error) {
       console.error('Failed to fetch pending audit requests:', error);
       return [];

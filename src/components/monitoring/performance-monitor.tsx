@@ -23,7 +23,7 @@ export function PerformanceMonitor() {
             if (entry.entryType === 'navigation') {
               const navEntry = entry as PerformanceNavigationTiming;
               const metrics: Partial<PerformanceMetrics> = {
-                page_load_time: navEntry.loadEventEnd - navEntry.navigationStart,
+                page_load_time: navEntry.loadEventEnd - navEntry.fetchStart,
                 route: window.location.pathname,
                 user_agent: navigator.userAgent,
                 timestamp: new Date().toISOString()

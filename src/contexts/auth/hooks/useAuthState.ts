@@ -2,32 +2,36 @@
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { UserProfile } from '../types';
+
+interface UserProfile {
+  id: string;
+  user_type?: 'auditor' | 'project_owner' | 'admin' | 'general';
+  full_name?: string;
+  avatar_url?: string;
+}
 
 export function useAuthState() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     // Get initial session
     const getInitialSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
-          setUserProfile(profile);
+          await fetchUserProfile(session.user.id);
         }
-      } catch (error) {
-        console.error('Error getting initial session:', error);
+      } catch (err: any) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -41,18 +45,9 @@ export function useAuthState() {
         setSession(session);
         setUser(session?.user ?? null);
         
-        if (session?.user && event === 'SIGNED_IN') {
-          try {
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', session.user.id)
-              .single();
-            setUserProfile(profile);
-          } catch (error) {
-            console.error('Error fetching user profile:', error);
-          }
-        } else if (event === 'SIGNED_OUT') {
+        if (session?.user) {
+          await fetchUserProfile(session.user.id);
+        } else {
           setUserProfile(null);
         }
         
@@ -63,13 +58,32 @@ export function useAuthState() {
     return () => subscription.unsubscribe();
   }, []);
 
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('extended_profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        throw error;
+      }
+
+      setUserProfile(data);
+    } catch (err: any) {
+      console.warn('Failed to fetch user profile:', err.message);
+    }
+  };
+
   return {
     user,
     session,
-    userProfile,
     loading,
+    error,
+    userProfile,
     setUser,
     setSession,
-    setUserProfile,
+    setUserProfile
   };
 }
