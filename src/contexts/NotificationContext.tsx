@@ -6,7 +6,6 @@ import { Notification, NotificationContextType } from '@/types/notification.type
 import { toast } from 'sonner';
 import { useNotificationPersistence } from '@/hooks/useNotificationPersistence';
 import { useBrowserNotifications } from '@/hooks/useBrowserNotifications';
-import { NotificationHandlers } from '@/components/notifications/NotificationHandlers';
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
@@ -34,7 +33,7 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
       const loaded = loadNotifications();
       setNotifications(loaded);
     }
-  }, [user?.id]);
+  }, [user?.id, loadNotifications]);
 
   // Save notifications whenever they change
   useEffect(() => {
@@ -112,7 +111,6 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
         clearAll,
       }}
     >
-      <NotificationHandlers />
       {children}
     </NotificationContext.Provider>
   );

@@ -8,8 +8,6 @@ export interface Notification {
   read: boolean;
   actionUrl?: string;
   actionLabel?: string;
-  userId: string;
-  category: 'audit' | 'message' | 'system' | 'payment';
 }
 
 export interface NotificationContextType {
