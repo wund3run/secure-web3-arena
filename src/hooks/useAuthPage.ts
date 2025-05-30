@@ -35,7 +35,8 @@ export const useAuthPage = () => {
       setIsLoading(true);
       setError(null);
       
-      await signUp(email, password, fullName ? { full_name: fullName } : {});
+      // Fix the signUp call to match the expected signature
+      await signUp(email, password, fullName || '', {});
       toast.success('Account created successfully! Please check your email to verify your account.');
       navigate('/auth');
     } catch (err: any) {
