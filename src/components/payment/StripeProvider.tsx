@@ -2,12 +2,10 @@
 import React, { ReactNode } from 'react';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import { config } from '@/config/environment';
 
-// Replace with your actual Stripe publishable key
-const stripePromise = loadStripe(process.env.NODE_ENV === 'production' 
-  ? 'pk_live_...' // Production key
-  : 'pk_test_51...' // Test key - replace with actual test key
-);
+// Initialize Stripe with the publishable key from config
+const stripePromise = loadStripe(config.stripe.publishableKey);
 
 interface StripeProviderProps {
   children: ReactNode;

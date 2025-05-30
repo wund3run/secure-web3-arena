@@ -12,8 +12,8 @@ export const config = {
   // External Services
   stripe: {
     publishableKey: process.env.NODE_ENV === 'production' 
-      ? 'pk_live_...' // Replace with actual production key
-      : 'pk_test_...' // Replace with actual test key
+      ? 'pk_live_51...' // Replace with actual production key when ready
+      : 'pk_test_51QbOFDBLJ8LCUlAWyQJhxkL1qPZpPEy3hPJH6gWkpWGWGwJoQLuOJwJfSIE4AJ6rQbqI9eqJdZD5LkVKXxLHJBQd00x5hkN3pv' // Test key for development
   },
   
   analytics: {
