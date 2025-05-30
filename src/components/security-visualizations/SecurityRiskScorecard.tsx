@@ -123,13 +123,6 @@ export function SecurityRiskScorecard({
               <Progress 
                 value={(category.score / category.maxScore) * 100} 
                 className="h-2"
-                indicatorClassName={cn(
-                  category.riskLevel === 'critical' ? "bg-red-500" :
-                  category.riskLevel === 'high' ? "bg-orange-500" :
-                  category.riskLevel === 'medium' ? "bg-yellow-500" :
-                  category.riskLevel === 'low' ? "bg-green-500" :
-                  "bg-blue-500"
-                )}
               />
               
               {category.description && (

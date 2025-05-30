@@ -113,21 +113,6 @@ export const TrustIndicators: React.FC<TrustIndicatorsProps> = ({
     }
   };
 
-  const getProgressColor = (status: string) => {
-    switch (status) {
-      case 'excellent':
-        return 'bg-green-500';
-      case 'good':
-        return 'bg-blue-500';
-      case 'average':
-        return 'bg-yellow-500';
-      case 'poor':
-        return 'bg-red-500';
-      default:
-        return 'bg-gray-500';
-    }
-  };
-
   const overallTrustScore = Math.round(
     trustMetrics.reduce((acc, metric) => acc + (metric.value / metric.max), 0) / trustMetrics.length * 100
   );
@@ -154,7 +139,6 @@ export const TrustIndicators: React.FC<TrustIndicatorsProps> = ({
           <Progress 
             value={overallTrustScore} 
             className="h-2" 
-            indicatorClassName="bg-primary"
           />
         </div>
 
@@ -184,7 +168,6 @@ export const TrustIndicators: React.FC<TrustIndicatorsProps> = ({
               <Progress 
                 value={metric.max === 5 ? (metric.value / metric.max) * 100 : metric.value} 
                 className="h-2"
-                indicatorClassName={getProgressColor(metric.status)}
               />
               
               <p className="text-xs text-muted-foreground">
