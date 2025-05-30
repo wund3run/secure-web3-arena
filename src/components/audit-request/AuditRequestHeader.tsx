@@ -12,7 +12,7 @@ const AuditRequestHeader: React.FC = () => {
   const location = useLocation();
   
   // Check if we're in a router context
-  const canNavigate = location && navigate;
+  const canNavigate = Boolean(location && navigate);
   
   const handleSignInClick = () => {
     if (canNavigate) {
