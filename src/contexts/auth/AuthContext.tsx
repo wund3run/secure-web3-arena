@@ -8,14 +8,16 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const auth = useAuthProvider();
 
-  // Add the missing functions if they don't exist in the useAuthProvider hook
+  // Ensure all required functions are present with proper fallbacks
   const authWithRequiredFunctions: AuthContextProps = {
     ...auth,
     forgotPassword: auth.forgotPassword || (async (email: string) => {
       console.warn("forgotPassword not implemented");
+      throw new Error("Password reset not implemented");
     }),
     resetPassword: auth.resetPassword || (async (newPassword: string) => {
       console.warn("resetPassword not implemented");
+      throw new Error("Password reset not implemented");
     }),
   };
 

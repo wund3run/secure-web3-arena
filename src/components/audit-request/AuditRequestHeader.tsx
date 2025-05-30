@@ -1,33 +1,22 @@
+
 import React from 'react';
 import { useAuth } from '@/contexts/auth/AuthContext';
 import { HawklyLogo } from "@/components/layout/hawkly-logo";
 import { Button } from '@/components/ui/button';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { Shield } from 'lucide-react';
 
 const AuditRequestHeader: React.FC = () => {
   const { user } = useAuth();
   
-  // Safely access router hooks with fallbacks
-  let navigate;
-  let location;
-  try {
-    navigate = useNavigate();
-    location = useLocation();
-  } catch (error) {
-    console.log('Router context not available:', error);
-    navigate = null;
-    location = null;
-  }
-  
-  // Check if we're in a router context
-  const canNavigate = Boolean(location && navigate);
-  
+  // Safe navigation handler that works with or without router context
   const handleSignInClick = () => {
-    if (canNavigate && navigate) {
+    try {
+      // Try to use programmatic navigation first
+      const { useNavigate } = require('react-router-dom');
+      const navigate = useNavigate();
       navigate('/auth');
-    } else {
-      // Fallback for when router context is not available
+    } catch (error) {
+      // Fallback to direct navigation if router context is not available
       window.location.href = '/auth';
     }
   };
@@ -35,7 +24,7 @@ const AuditRequestHeader: React.FC = () => {
   return (
     <div className="text-center mb-10">
       <div className="flex justify-center mb-6 animate-in fade-in slide-in-from-top-5">
-        <HawklyLogo variant="large" className="hover-lift cursor-pointer transition-all" asLink={canNavigate} />
+        <HawklyLogo variant="large" className="hover-lift cursor-pointer transition-all" />
       </div>
       <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#8A73E2] to-[#33C3F0] animate-in fade-in slide-in-from-bottom-5">
         Request a Security Audit

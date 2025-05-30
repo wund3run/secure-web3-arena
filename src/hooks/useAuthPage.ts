@@ -1,46 +1,41 @@
 
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth/AuthContext';
 import { toast } from 'sonner';
 
 export const useAuthPage = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { user, loading, signIn, signUp, error } = useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // Redirect authenticated users
-  useEffect(() => {
-    if (user && !loading) {
-      const from = (location.state as any)?.from?.pathname || '/';
-      navigate(from, { replace: true });
-    }
-  }, [user, loading, navigate, location]);
 
   const handleSignIn = async (email: string, password: string) => {
+    setIsLoading(true);
+    setError(null);
+    
     try {
-      setIsLoading(true);
       await signIn(email, password);
       toast.success('Welcome back!');
+      navigate('/dashboard');
     } catch (err: any) {
+      setError(err.message || 'Sign in failed');
       toast.error('Sign in failed', { description: err.message });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSignUp = async (
-    email: string, 
-    password: string, 
-    fullName: string, 
-    userType: 'auditor' | 'project_owner'
-  ) => {
+  const handleSignUp = async (email: string, password: string, fullName: string, userType: 'auditor' | 'project_owner') => {
+    setIsLoading(true);
+    setError(null);
+    
     try {
-      setIsLoading(true);
       await signUp(email, password, fullName, userType);
       toast.success('Account created successfully!');
+      navigate('/dashboard');
     } catch (err: any) {
+      setError(err.message || 'Sign up failed');
       toast.error('Sign up failed', { description: err.message });
     } finally {
       setIsLoading(false);
@@ -49,9 +44,9 @@ export const useAuthPage = () => {
 
   return {
     isLoading,
-    loading,
+    loading: isLoading, // Alias for compatibility
     error,
     handleSignIn,
-    handleSignUp,
+    handleSignUp
   };
 };
