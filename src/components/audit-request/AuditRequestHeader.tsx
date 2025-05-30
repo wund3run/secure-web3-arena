@@ -8,14 +8,24 @@ import { Shield } from 'lucide-react';
 
 const AuditRequestHeader: React.FC = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+  
+  // Safely access router hooks with fallbacks
+  let navigate;
+  let location;
+  try {
+    navigate = useNavigate();
+    location = useLocation();
+  } catch (error) {
+    console.log('Router context not available:', error);
+    navigate = null;
+    location = null;
+  }
   
   // Check if we're in a router context
   const canNavigate = Boolean(location && navigate);
   
   const handleSignInClick = () => {
-    if (canNavigate) {
+    if (canNavigate && navigate) {
       navigate('/auth');
     } else {
       // Fallback for when router context is not available

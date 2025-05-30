@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './contexts/auth/AuthContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { HelmetProvider } from 'react-helmet-async';
-import { ProductionErrorHandler } from './components/error/production-error-handler';
 
 import Index from './pages/Index';
 import Auth from './pages/Auth';
@@ -29,47 +28,45 @@ const queryClient = new QueryClient();
 
 export default function App() {
   return (
-    <ProductionErrorHandler>
-      <HelmetProvider>
-        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-          <QueryClientProvider client={queryClient}>
-            <Router>
-              <AuthProvider>
-                <NotificationProvider>
-                  <div className="min-h-screen bg-background">
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/auth" element={<Auth />} />
-                      <Route path="/marketplace" element={<Marketplace />} />
-                      <Route path="/audits" element={<MyAudits />} />
-                      <Route path="/request-audit" element={<RequestAudit />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/settings" element={<Settings />} />
-                      <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
-                      <Route path="/auditor-onboarding" element={<AuditorOnboarding />} />
-                      <Route path="/system-health" element={<SystemHealth />} />
-                      <Route path="/connection-test" element={<ConnectionTest />} />
-                      
-                      {/* Legal and Policy Pages */}
-                      <Route path="/terms" element={<TermsOfService />} />
-                      <Route path="/privacy" element={<PrivacyPolicy />} />
-                      <Route path="/security-policy" element={<SecurityPolicy />} />
-                      
-                      {/* Redirect old routes */}
-                      <Route path="/terms-of-service" element={<Navigate to="/terms" replace />} />
-                      <Route path="/privacy-policy" element={<Navigate to="/privacy" replace />} />
-                      
-                      {/* 404 fallback */}
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </div>
-                </NotificationProvider>
-              </AuthProvider>
-            </Router>
-          </QueryClientProvider>
-        </ThemeProvider>
-      </HelmetProvider>
-    </ProductionErrorHandler>
+    <HelmetProvider>
+      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+        <QueryClientProvider client={queryClient}>
+          <Router>
+            <AuthProvider>
+              <NotificationProvider>
+                <div className="min-h-screen bg-background">
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/marketplace" element={<Marketplace />} />
+                    <Route path="/audits" element={<MyAudits />} />
+                    <Route path="/request-audit" element={<RequestAudit />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
+                    <Route path="/auditor-onboarding" element={<AuditorOnboarding />} />
+                    <Route path="/system-health" element={<SystemHealth />} />
+                    <Route path="/connection-test" element={<ConnectionTest />} />
+                    
+                    {/* Legal and Policy Pages */}
+                    <Route path="/terms" element={<TermsOfService />} />
+                    <Route path="/privacy" element={<PrivacyPolicy />} />
+                    <Route path="/security-policy" element={<SecurityPolicy />} />
+                    
+                    {/* Redirect old routes */}
+                    <Route path="/terms-of-service" element={<Navigate to="/terms" replace />} />
+                    <Route path="/privacy-policy" element={<Navigate to="/privacy" replace />} />
+                    
+                    {/* 404 fallback */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </div>
+              </NotificationProvider>
+            </AuthProvider>
+          </Router>
+        </QueryClientProvider>
+      </ThemeProvider>
+    </HelmetProvider>
   );
 }
