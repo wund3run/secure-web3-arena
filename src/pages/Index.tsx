@@ -1,5 +1,4 @@
 
-
 import React, { Suspense, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Navbar } from "@/components/layout/navbar";
@@ -44,7 +43,11 @@ const QuickStartSection = React.lazy(() =>
 const MarketPositioning = React.lazy(() => 
   import("@/components/home/market-positioning").then(module => ({
     default: module.MarketPositioning
-  }))
+  })).catch(error => {
+    console.error('Failed to load MarketPositioning:', error);
+    // Return a fallback component
+    return { default: () => <div className="py-16"><div className="container px-4 md:px-6"><div className="text-center"><h2 className="text-3xl font-bold mb-4">Market Positioning</h2><p className="text-muted-foreground">Content temporarily unavailable</p></div></div></div> };
+  })
 );
 
 const PlatformFeaturesShowcase = React.lazy(() => 
@@ -165,7 +168,9 @@ export default function Index() {
           </LazySection>
           
           <LazySection fallback={<SectionLoadingFallback />}>
-            <MarketPositioning />
+            <Suspense fallback={<SectionLoadingFallback />}>
+              <MarketPositioning />
+            </Suspense>
           </LazySection>
           
           <LazySection fallback={<SectionLoadingFallback height="h-80" />}>
@@ -198,4 +203,3 @@ export default function Index() {
     </>
   );
 }
-

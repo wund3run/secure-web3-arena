@@ -181,3 +181,6 @@ export function MarketPositioning() {
     </section>
   );
 }
+
+// Ensure default export
+export default MarketPositioning;
