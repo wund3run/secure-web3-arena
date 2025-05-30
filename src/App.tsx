@@ -30,13 +30,13 @@ const queryClient = new QueryClient();
 export default function App() {
   return (
     <ProductionErrorHandler>
-      <div className="min-h-screen bg-background">
-        <HelmetProvider>
-          <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-            <QueryClientProvider client={queryClient}>
-              <Router>
-                <AuthProvider>
-                  <NotificationProvider>
+      <HelmetProvider>
+        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+          <QueryClientProvider client={queryClient}>
+            <Router>
+              <AuthProvider>
+                <NotificationProvider>
+                  <div className="min-h-screen bg-background">
                     <Routes>
                       <Route path="/" element={<Index />} />
                       <Route path="/auth" element={<Auth />} />
@@ -63,13 +63,13 @@ export default function App() {
                       {/* 404 fallback */}
                       <Route path="*" element={<NotFound />} />
                     </Routes>
-                  </NotificationProvider>
-                </AuthProvider>
-              </Router>
-            </QueryClientProvider>
-          </ThemeProvider>
-        </HelmetProvider>
-      </div>
+                  </div>
+                </NotificationProvider>
+              </AuthProvider>
+            </Router>
+          </QueryClientProvider>
+        </ThemeProvider>
+      </HelmetProvider>
     </ProductionErrorHandler>
   );
 }
