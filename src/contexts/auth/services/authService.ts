@@ -7,6 +7,7 @@ export const authService = {
       email,
       password,
     });
+    
     if (error) throw error;
     return data;
   },
@@ -22,6 +23,7 @@ export const authService = {
         },
       },
     });
+    
     if (error) throw error;
     return data;
   },

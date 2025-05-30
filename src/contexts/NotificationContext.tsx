@@ -1,9 +1,23 @@
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Notification, NotificationContextType } from '@/types/notification.types';
-import { toast } from 'sonner';
-import { useNotificationPersistence } from '@/hooks/useNotificationPersistence';
-import { useBrowserNotifications } from '@/hooks/useBrowserNotifications';
+import React, { createContext, useContext, useState, useCallback } from 'react';
+
+interface Notification {
+  id: string;
+  type: 'success' | 'error' | 'warning' | 'info';
+  title: string;
+  message?: string;
+  timestamp: Date;
+  read: boolean;
+}
+
+interface NotificationContextType {
+  notifications: Notification[];
+  addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void;
+  markAsRead: (id: string) => void;
+  clearNotification: (id: string) => void;
+  clearAll: () => void;
+  unreadCount: number;
+}
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
@@ -15,109 +29,49 @@ export const useNotifications = () => {
   return context;
 };
 
-interface NotificationProviderProps {
-  children: ReactNode;
-}
-
-export const NotificationProvider = ({ children }: NotificationProviderProps) => {
+export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const { saveNotifications, loadNotifications } = useNotificationPersistence();
-  const { sendBrowserNotification, canSendNotifications } = useBrowserNotifications();
 
-  // Load persisted notifications on mount
-  useEffect(() => {
-    try {
-      const loaded = loadNotifications();
-      setNotifications(loaded);
-    } catch (error) {
-      console.error('Failed to load notifications:', error);
-    }
-  }, [loadNotifications]);
+  const addNotification = useCallback((notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
+    const newNotification: Notification = {
+      ...notification,
+      id: Math.random().toString(36).substr(2, 9),
+      timestamp: new Date(),
+      read: false,
+    };
+    
+    setNotifications(prev => [newNotification, ...prev]);
+  }, []);
 
-  // Save notifications whenever they change
-  useEffect(() => {
-    if (notifications.length > 0) {
-      try {
-        saveNotifications(notifications);
-      } catch (error) {
-        console.error('Failed to save notifications:', error);
-      }
-    }
-  }, [notifications, saveNotifications]);
-
-  const addNotification = (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
-    try {
-      const newNotification: Notification = {
-        ...notification,
-        id: crypto.randomUUID(),
-        timestamp: new Date(),
-        read: false,
-      };
-      
-      setNotifications(prev => [newNotification, ...prev]);
-      
-      // Show toast notification
-      toast(notification.title, {
-        description: notification.message,
-        action: notification.actionUrl ? {
-          label: notification.actionLabel || 'View',
-          onClick: () => window.location.href = notification.actionUrl!,
-        } : undefined,
-      });
-
-      // Send browser notification if enabled
-      if (canSendNotifications) {
-        sendBrowserNotification(notification.title, {
-          body: notification.message,
-          data: { actionUrl: notification.actionUrl },
-        });
-      }
-
-      // Play notification sound
-      if ((window as any).playNotificationSound) {
-        (window as any).playNotificationSound();
-      }
-    } catch (error) {
-      console.error('Failed to add notification:', error);
-    }
-  };
-
-  const markAsRead = (id: string) => {
-    setNotifications(prev =>
-      prev.map(notification =>
+  const markAsRead = useCallback((id: string) => {
+    setNotifications(prev => 
+      prev.map(notification => 
         notification.id === id ? { ...notification, read: true } : notification
       )
     );
-  };
+  }, []);
 
-  const markAllAsRead = () => {
-    setNotifications(prev =>
-      prev.map(notification => ({ ...notification, read: true }))
-    );
-  };
-
-  const removeNotification = (id: string) => {
+  const clearNotification = useCallback((id: string) => {
     setNotifications(prev => prev.filter(notification => notification.id !== id));
-  };
+  }, []);
 
-  const clearAll = () => {
+  const clearAll = useCallback(() => {
     setNotifications([]);
-  };
+  }, []);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
+  const value = {
+    notifications,
+    addNotification,
+    markAsRead,
+    clearNotification,
+    clearAll,
+    unreadCount,
+  };
+
   return (
-    <NotificationContext.Provider
-      value={{
-        notifications,
-        unreadCount,
-        addNotification,
-        markAsRead,
-        markAllAsRead,
-        removeNotification,
-        clearAll,
-      }}
-    >
+    <NotificationContext.Provider value={value}>
       {children}
     </NotificationContext.Provider>
   );
