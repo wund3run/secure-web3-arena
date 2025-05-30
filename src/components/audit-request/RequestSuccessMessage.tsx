@@ -2,9 +2,19 @@
 import React from 'react';
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const RequestSuccessMessage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleReturnHome = () => {
+    navigate('/');
+  };
+
+  const handleExploreMarketplace = () => {
+    navigate('/marketplace');
+  };
+
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-8 bg-card border border-border/40 rounded-xl p-10 shadow-sm">
@@ -31,14 +41,14 @@ const RequestSuccessMessage: React.FC = () => {
         
         <div className="flex justify-center gap-4">
           <Button 
-            onClick={() => window.location.href = '/'}
+            onClick={handleReturnHome}
             variant="outline"
             size="lg"
           >
             Return to Home
           </Button>
           <Button
-            onClick={() => window.location.href = '/marketplace'}
+            onClick={handleExploreMarketplace}
             className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
             size="lg"
           >

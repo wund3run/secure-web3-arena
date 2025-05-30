@@ -3,16 +3,30 @@ import React from 'react';
 import { useAuth } from '@/contexts/auth';
 import { HawklyLogo } from "@/components/layout/hawkly-logo";
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Shield } from 'lucide-react';
 
 const AuditRequestHeader: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Check if we're in a router context
+  const canNavigate = location && navigate;
+  
+  const handleSignInClick = () => {
+    if (canNavigate) {
+      navigate('/auth');
+    } else {
+      // Fallback for when router context is not available
+      window.location.href = '/auth';
+    }
+  };
   
   return (
     <div className="text-center mb-10">
       <div className="flex justify-center mb-6 animate-in fade-in slide-in-from-top-5">
-        <HawklyLogo variant="large" className="hover-lift cursor-pointer transition-all" />
+        <HawklyLogo variant="large" className="hover-lift cursor-pointer transition-all" asLink={canNavigate} />
       </div>
       <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#8A73E2] to-[#33C3F0] animate-in fade-in slide-in-from-bottom-5">
         Request a Security Audit
@@ -25,14 +39,16 @@ const AuditRequestHeader: React.FC = () => {
       {!user && (
         <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mt-6 max-w-xl mx-auto animate-in fade-in slide-in-from-bottom-5 delay-300 hover:bg-primary/15 hover:border-primary/30 transition-colors interactive-card">
           <h3 className="text-sm font-medium text-primary mb-2">Already have an account?</h3>
-          <Button variant="outline" asChild className="flex items-center gap-2 group transition-all hover:bg-primary/10">
-            <Link to="/auth">
-              <Shield className="h-4 w-4 group-hover:rotate-12 transition-transform" />
-              <span className="relative">
-                Sign In to Track Your Audit Requests
-                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-              </span>
-            </Link>
+          <Button 
+            variant="outline" 
+            onClick={handleSignInClick}
+            className="flex items-center gap-2 group transition-all hover:bg-primary/10"
+          >
+            <Shield className="h-4 w-4 group-hover:rotate-12 transition-transform" />
+            <span className="relative">
+              Sign In to Track Your Audit Requests
+              <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+            </span>
           </Button>
         </div>
       )}
