@@ -54,3 +54,6 @@ export function HawklyLogo({ asLink = true, className = "", variant = 'default' 
     </Link>
   );
 }
+
+// Export the interface for other components to use
+export type { HawklyLogoProps };
