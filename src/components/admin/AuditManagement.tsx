@@ -1,136 +1,239 @@
 
-import { Card, CardContent } from "@/components/ui/card";
-import { useAuditManagement } from "@/hooks/useAuditManagement";
-import { AuditSearchHeader } from "./audits/AuditSearchHeader";
-import { AuditTable } from "./audits/AuditTable";
-import { AuditPagination } from "./audits/AuditPagination";
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import { 
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from "@/components/ui/tooltip";
-import { InfoIcon, Shield, Award, BarChart } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
+  Clock, 
+  CheckCircle, 
+  AlertTriangle, 
+  Eye,
+  Filter,
+  Search,
+  Download
+} from 'lucide-react';
 
-export function AuditManagement() {
-  const { audits, viewAudit, downloadReport, viewOnExplorer } = useAuditManagement();
+interface AuditRequest {
+  id: string;
+  project_name: string;
+  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  created_at: string;
+  deadline: string;
+  progress: number;
+  assigned_auditor?: string;
+}
 
-  const stats = {
-    completed: 42,
-    inProgress: 8,
-    securityScore: 87,
-    vulnerabilities: 125
+const mockAudits: AuditRequest[] = [
+  {
+    id: '1',
+    project_name: 'DeFi Lending Protocol',
+    status: 'in_progress',
+    priority: 'high',
+    created_at: '2024-01-15',
+    deadline: '2024-02-15',
+    progress: 65,
+    assigned_auditor: 'Sarah Chen'
+  },
+  {
+    id: '2',
+    project_name: 'NFT Marketplace',
+    status: 'pending',
+    priority: 'medium',
+    created_at: '2024-01-20',
+    deadline: '2024-02-20',
+    progress: 0
+  },
+  {
+    id: '3',
+    project_name: 'Cross-chain Bridge',
+    status: 'completed',
+    priority: 'critical',
+    created_at: '2024-01-10',
+    deadline: '2024-02-10',
+    progress: 100,
+    assigned_auditor: 'Alex Rodriguez'
+  }
+];
+
+export const AuditManagement = () => {
+  const [audits, setAudits] = useState<AuditRequest[]>(mockAudits);
+  const [filteredAudits, setFilteredAudits] = useState<AuditRequest[]>(mockAudits);
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [priorityFilter, setPriorityFilter] = useState<string>('all');
+
+  useEffect(() => {
+    let filtered = audits;
+
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(audit => audit.status === statusFilter);
+    }
+
+    if (priorityFilter !== 'all') {
+      filtered = filtered.filter(audit => audit.priority === priorityFilter);
+    }
+
+    setFilteredAudits(filtered);
+  }, [audits, statusFilter, priorityFilter]);
+
+  const getStatusBadge = (status: string) => {
+    const variants = {
+      pending: 'default',
+      in_progress: 'default',
+      completed: 'default',
+      cancelled: 'destructive'
+    } as const;
+
+    const colors = {
+      pending: 'bg-yellow-100 text-yellow-800',
+      in_progress: 'bg-blue-100 text-blue-800',
+      completed: 'bg-green-100 text-green-800',
+      cancelled: 'bg-red-100 text-red-800'
+    };
+
+    return (
+      <Badge variant={variants[status as keyof typeof variants]} className={colors[status as keyof typeof colors]}>
+        {status.replace('_', ' ')}
+      </Badge>
+    );
+  };
+
+  const getPriorityBadge = (priority: string) => {
+    const colors = {
+      low: 'bg-gray-100 text-gray-800',
+      medium: 'bg-blue-100 text-blue-800',
+      high: 'bg-orange-100 text-orange-800',
+      critical: 'bg-red-100 text-red-800'
+    };
+
+    return (
+      <Badge variant="outline" className={colors[priority as keyof typeof colors]}>
+        {priority}
+      </Badge>
+    );
   };
 
   return (
-    <div className="space-y-4" role="region" aria-label="Audit Management">
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-xl font-semibold">Audit Management</h2>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex items-center cursor-help">
-                <InfoIcon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                <span className="sr-only">Information about audit management</span>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side="left" className="max-w-xs">
-              <p className="text-xs">
-                Track and manage all security audits. Use the filters to find specific audits,
-                and the action menu to view details, download reports, or view on blockchain explorer.
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Audit Management</h2>
+          <p className="text-muted-foreground">
+            Monitor and manage all audit requests across the platform
+          </p>
+        </div>
+        <Button>
+          <Download className="mr-2 h-4 w-4" />
+          Export Report
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <Card className="bg-gradient-to-br from-primary/5 to-background">
-          <CardContent className="p-4">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Security Score</p>
-                <div className="flex items-center mt-1">
-                  <Shield className="h-4 w-4 text-primary mr-1.5" />
-                  <span className="text-2xl font-bold">{stats.securityScore}%</span>
-                </div>
-              </div>
-              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">Good</Badge>
-            </div>
-            <Progress 
-              value={stats.securityScore} 
-              className="h-1.5 mt-2" 
-              indicatorClassName="bg-gradient-to-r from-primary/80 to-primary"
-            />
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-secondary/5 to-background">
-          <CardContent className="p-4">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Audits Status</p>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-2xl font-bold">{stats.completed}</span>
-                  <span className="text-xs text-muted-foreground mt-1">completed</span>
-                  <span className="text-muted-foreground">|</span>
-                  <span className="text-lg font-semibold text-amber-500">{stats.inProgress}</span>
-                  <span className="text-xs text-muted-foreground mt-1">in progress</span>
-                </div>
-              </div>
-              <Award className="h-5 w-5 text-secondary" />
-            </div>
-            <div className="flex items-center justify-between mt-2">
-              <div className="w-full bg-muted h-1.5 rounded-full overflow-hidden">
-                <div 
-                  className="bg-secondary h-full rounded-full" 
-                  style={{ width: `${(stats.completed / (stats.completed + stats.inProgress)) * 100}%` }} 
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-destructive/5 to-background">
-          <CardContent className="p-4">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Vulnerabilities Found</p>
-                <div className="flex items-center mt-1">
-                  <BarChart className="h-4 w-4 text-destructive mr-1.5" />
-                  <span className="text-2xl font-bold">{stats.vulnerabilities}</span>
-                </div>
-              </div>
-              <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/20">Critical: 17</Badge>
-            </div>
-            <Progress 
-              value={70} 
-              className="h-1.5 mt-2" 
-              indicatorClassName="bg-gradient-to-r from-amber-500 to-destructive"
-            />
-          </CardContent>
-        </Card>
-      </div>
-      
+      {/* Filters */}
       <Card>
-        <AuditSearchHeader />
-        <CardContent>
-          <AuditTable
-            audits={audits}
-            onView={viewAudit}
-            onDownload={downloadReport}
-            onViewExplorer={viewOnExplorer}
-          />
-          
-          <AuditPagination 
-            currentPage={1}
-            totalItems={50}
-            itemsPerPage={10}
-          />
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Filter className="h-5 w-5" />
+            Filters
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex gap-4">
+          <div>
+            <label className="text-sm font-medium">Status</label>
+            <select 
+              className="ml-2 border rounded px-2 py-1"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div>
+            <label className="text-sm font-medium">Priority</label>
+            <select 
+              className="ml-2 border rounded px-2 py-1"
+              value={priorityFilter}
+              onChange={(e) => setPriorityFilter(e.target.value)}
+            >
+              <option value="all">All Priority</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="critical">Critical</option>
+            </select>
+          </div>
         </CardContent>
       </Card>
+
+      {/* Audit List */}
+      <div className="grid gap-4">
+        {filteredAudits.map((audit) => (
+          <Card key={audit.id}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-4 mb-2">
+                    <h3 className="text-lg font-semibold">{audit.project_name}</h3>
+                    {getStatusBadge(audit.status)}
+                    {getPriorityBadge(audit.priority)}
+                  </div>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground">
+                    <div>
+                      <span className="font-medium">Created:</span>
+                      <br />
+                      {new Date(audit.created_at).toLocaleDateString()}
+                    </div>
+                    <div>
+                      <span className="font-medium">Deadline:</span>
+                      <br />
+                      {new Date(audit.deadline).toLocaleDateString()}
+                    </div>
+                    <div>
+                      <span className="font-medium">Auditor:</span>
+                      <br />
+                      {audit.assigned_auditor || 'Unassigned'}
+                    </div>
+                    <div>
+                      <span className="font-medium">Progress:</span>
+                      <br />
+                      <div className="flex items-center gap-2 mt-1">
+                        <Progress 
+                          value={audit.progress} 
+                          className="h-2 flex-1" 
+                          indicatorClassName="bg-primary"
+                        />
+                        <span className="text-xs">{audit.progress}%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <Button variant="outline" size="sm">
+                  <Eye className="h-4 w-4 mr-2" />
+                  View Details
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {filteredAudits.length === 0 && (
+        <Card>
+          <CardContent className="p-12 text-center">
+            <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No audits found</h3>
+            <p className="text-muted-foreground">
+              Try adjusting your filters to see more results.
+            </p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
-}
+};

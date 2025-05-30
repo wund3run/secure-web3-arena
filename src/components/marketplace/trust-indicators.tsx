@@ -1,129 +1,225 @@
 
-import { Shield, BadgeCheck, Users } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import React from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Shield, Award, Users, TrendingUp, CheckCircle, AlertTriangle } from "lucide-react";
+
+interface TrustMetric {
+  label: string;
+  value: number;
+  max: number;
+  description: string;
+  status: 'excellent' | 'good' | 'average' | 'poor';
+}
 
 interface TrustIndicatorsProps {
-  securityScore: number;
-  verificationLevel: "verified" | "expert" | "elite";
-  completedProjects: number;
-  size: "sm" | "md" | "lg";
+  auditorId?: string;
+  projectId?: string;
+  type: 'auditor' | 'project';
 }
 
-export function TrustIndicators({
-  securityScore,
-  verificationLevel,
-  completedProjects,
-  size = "md"
-}: TrustIndicatorsProps) {
-  const getVerificationColor = () => {
-    if (verificationLevel === "elite") return "text-blue-500";
-    if (verificationLevel === "expert") return "text-violet-500"; 
-    return "text-green-500";
-  };
-  
-  const getScoreColor = () => {
-    if (securityScore >= 90) return "bg-green-500";
-    if (securityScore >= 70) return "bg-amber-500";
-    return "bg-primary";
-  };
-  
-  const getSizeClasses = () => {
-    switch (size) {
-      case "sm":
-        return {
-          container: "gap-1.5",
-          icon: "h-3 w-3",
-          text: "text-xs",
-          progress: "h-1"
-        };
-      case "lg":
-        return {
-          container: "gap-2.5",
-          icon: "h-5 w-5",
-          text: "text-base",
-          progress: "h-1.5"
-        };
-      default: // medium
-        return {
-          container: "gap-2",
-          icon: "h-4 w-4",
-          text: "text-sm",
-          progress: "h-1.5"
-        };
+export const TrustIndicators: React.FC<TrustIndicatorsProps> = ({ 
+  auditorId, 
+  projectId, 
+  type 
+}) => {
+  // Mock data - in real implementation, fetch based on auditorId/projectId
+  const trustMetrics: TrustMetric[] = type === 'auditor' ? [
+    {
+      label: "Audit Success Rate",
+      value: 96,
+      max: 100,
+      description: "Percentage of audits completed successfully",
+      status: 'excellent'
+    },
+    {
+      label: "Client Satisfaction",
+      value: 4.8,
+      max: 5,
+      description: "Average rating from clients",
+      status: 'excellent'
+    },
+    {
+      label: "Response Time",
+      value: 87,
+      max: 100,
+      description: "Speed of initial response to requests",
+      status: 'good'
+    },
+    {
+      label: "Vulnerability Detection",
+      value: 92,
+      max: 100,
+      description: "Accuracy in finding security issues",
+      status: 'excellent'
+    }
+  ] : [
+    {
+      label: "Project Legitimacy",
+      value: 85,
+      max: 100,
+      description: "Verification of project authenticity",
+      status: 'good'
+    },
+    {
+      label: "Payment History",
+      value: 100,
+      max: 100,
+      description: "Track record of paying auditors",
+      status: 'excellent'
+    },
+    {
+      label: "Communication",
+      value: 78,
+      max: 100,
+      description: "Quality of project communication",
+      status: 'good'
+    },
+    {
+      label: "Code Quality",
+      value: 82,
+      max: 100,
+      description: "Initial code quality assessment",
+      status: 'good'
+    }
+  ];
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'excellent':
+        return 'text-green-600 bg-green-50 border-green-200';
+      case 'good':
+        return 'text-blue-600 bg-blue-50 border-blue-200';
+      case 'average':
+        return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+      case 'poor':
+        return 'text-red-600 bg-red-50 border-red-200';
+      default:
+        return 'text-gray-600 bg-gray-50 border-gray-200';
     }
   };
-  
-  const sizeClasses = getSizeClasses();
-  
-  return (
-    <div className="space-y-1.5">
-      <div className={`flex items-center ${sizeClasses.container}`}>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex items-center">
-                <Shield className={`${sizeClasses.icon} text-primary mr-0.5`} />
-                <span className={`${sizeClasses.text} font-medium`}>{securityScore}%</span>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-xs">Security Score: Based on audit history and security practices</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex items-center">
-                <BadgeCheck className={`${sizeClasses.icon} ${getVerificationColor()} mr-0.5`} />
-                <span className={`${sizeClasses.text} font-medium capitalize`}>{verificationLevel}</span>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-xs">Verification Level: {verificationLevel.charAt(0).toUpperCase() + verificationLevel.slice(1)} provider with validated credentials</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex items-center">
-                <Users className={`${sizeClasses.icon} text-muted-foreground mr-0.5`} />
-                <span className={`${sizeClasses.text}`}>{completedProjects}</span>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="text-xs">{completedProjects} Completed Projects</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
-      
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="w-full">
-              <Progress 
-                value={securityScore} 
-                className={`${sizeClasses.progress} bg-muted`}
-                indicatorClassName={getScoreColor()}
-              />
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p className="text-xs">
-              Security Score: {securityScore}% - {
-                securityScore >= 90 ? "Excellent" : 
-                securityScore >= 70 ? "Good" : 
-                securityScore >= 50 ? "Average" : "Needs improvement"
-              }
-            </p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    </div>
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'excellent':
+      case 'good':
+        return <CheckCircle className="h-4 w-4" />;
+      case 'average':
+      case 'poor':
+        return <AlertTriangle className="h-4 w-4" />;
+      default:
+        return null;
+    }
+  };
+
+  const getProgressColor = (status: string) => {
+    switch (status) {
+      case 'excellent':
+        return 'bg-green-500';
+      case 'good':
+        return 'bg-blue-500';
+      case 'average':
+        return 'bg-yellow-500';
+      case 'poor':
+        return 'bg-red-500';
+      default:
+        return 'bg-gray-500';
+    }
+  };
+
+  const overallTrustScore = Math.round(
+    trustMetrics.reduce((acc, metric) => acc + (metric.value / metric.max), 0) / trustMetrics.length * 100
   );
-}
+
+  return (
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Shield className="h-5 w-5 text-primary" />
+          Trust Indicators
+        </CardTitle>
+        <CardDescription>
+          {type === 'auditor' 
+            ? "Auditor reliability and performance metrics"
+            : "Project legitimacy and reliability metrics"
+          }
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Overall Trust Score */}
+        <div className="text-center space-y-2">
+          <div className="text-3xl font-bold text-primary">{overallTrustScore}%</div>
+          <div className="text-sm text-muted-foreground">Overall Trust Score</div>
+          <Progress 
+            value={overallTrustScore} 
+            className="h-2" 
+            indicatorClassName="bg-primary"
+          />
+        </div>
+
+        {/* Individual Metrics */}
+        <div className="space-y-4">
+          {trustMetrics.map((metric, index) => (
+            <div key={index} className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium">{metric.label}</span>
+                  <Badge 
+                    variant="outline" 
+                    className={`${getStatusColor(metric.status)} text-xs`}
+                  >
+                    {getStatusIcon(metric.status)}
+                    <span className="ml-1 capitalize">{metric.status}</span>
+                  </Badge>
+                </div>
+                <div className="text-sm font-medium">
+                  {metric.max === 5 
+                    ? `${metric.value.toFixed(1)}/${metric.max}`
+                    : `${metric.value}%`
+                  }
+                </div>
+              </div>
+              
+              <Progress 
+                value={metric.max === 5 ? (metric.value / metric.max) * 100 : metric.value} 
+                className="h-2"
+                indicatorClassName={getProgressColor(metric.status)}
+              />
+              
+              <p className="text-xs text-muted-foreground">
+                {metric.description}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Verification Badges */}
+        <div className="border-t pt-4">
+          <h4 className="font-medium mb-3 flex items-center gap-2">
+            <Award className="h-4 w-4" />
+            Verifications
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+              <CheckCircle className="h-3 w-3 mr-1" />
+              Identity Verified
+            </Badge>
+            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+              <Shield className="h-3 w-3 mr-1" />
+              Security Certified
+            </Badge>
+            {type === 'auditor' && (
+              <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                <Users className="h-3 w-3 mr-1" />
+                Expert Level
+              </Badge>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default TrustIndicators;
