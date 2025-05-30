@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { AuditorCard } from './AuditorCard';
-import { LoadingState } from '@/components/ui/loading-state';
+import LoadingState from '@/components/ui/loading-state';
 
 interface AuditorGridProps {
   filters: any;
