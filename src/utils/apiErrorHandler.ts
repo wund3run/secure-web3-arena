@@ -14,7 +14,7 @@ export const handleApiError = (
   
   // Default error message
   let displayMessage = "An unexpected error occurred. Please try again.";
-  let category = ErrorCategory.Unknown;
+  let category = ErrorCategory.UNKNOWN;
   let actionable = false;
   
   // Handle Supabase PostgrestError
@@ -24,25 +24,25 @@ export const handleApiError = (
     // Check for common error patterns with more descriptive messages
     if (errorMsg.includes("violates foreign key constraint")) {
       displayMessage = "This operation references invalid or deleted data.";
-      category = ErrorCategory.Database;
+      category = ErrorCategory.DATABASE;
     } else if (errorMsg.includes("violates unique constraint")) {
       displayMessage = "This record already exists.";
-      category = ErrorCategory.Validation;
+      category = ErrorCategory.VALIDATION;
       actionable = true;
     } else if (errorMsg.includes("violates not-null constraint")) {
       displayMessage = "Missing required information.";
-      category = ErrorCategory.Validation;
+      category = ErrorCategory.VALIDATION;
       actionable = true;
     } else if (errorMsg.includes("permission denied")) {
       displayMessage = "You don't have permission to perform this action.";
-      category = ErrorCategory.Authentication;
+      category = ErrorCategory.AUTHENTICATION;
     } else if (errorMsg.includes("JWT expired")) {
       displayMessage = "Your session has expired. Please sign in again.";
-      category = ErrorCategory.Authentication;
+      category = ErrorCategory.AUTHENTICATION;
       actionable = true;
     } else if (errorMsg.includes("network") || errorMsg.includes("fetch")) {
       displayMessage = "Network connection issue. Please check your internet connection.";
-      category = ErrorCategory.Network;
+      category = ErrorCategory.NETWORK;
       actionable = true;
     } else {
       // Use the actual error message if available
@@ -60,12 +60,12 @@ export const handleApiError = (
     description: displayMessage,
     id: `api-error-${Date.now()}-${category}`,
     action: actionable ? {
-      label: category === ErrorCategory.Authentication ? "Sign In" : 
-             category === ErrorCategory.Network ? "Retry" : "Dismiss",
+      label: category === ErrorCategory.AUTHENTICATION ? "Sign In" : 
+             category === ErrorCategory.NETWORK ? "Retry" : "Dismiss",
       onClick: () => {
-        if (category === ErrorCategory.Authentication) {
+        if (category === ErrorCategory.AUTHENTICATION) {
           window.location.href = "/auth";
-        } else if (category === ErrorCategory.Network) {
+        } else if (category === ErrorCategory.NETWORK) {
           window.location.reload();
         }
       }

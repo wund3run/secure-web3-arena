@@ -92,7 +92,10 @@ export function useFormValidation<T extends Record<string, any>>(
     setErrors(newErrors);
     
     if (!isValid) {
-      EnhancedToastSystem.formValidationError();
+      EnhancedToastSystem.formValidationError(
+        "Form Validation Error",
+        "Please check the form for errors and try again"
+      );
     }
     
     return isValid;
