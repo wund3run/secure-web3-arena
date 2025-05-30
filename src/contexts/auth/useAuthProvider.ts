@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { User, Session } from "@supabase/supabase-js";
 import { AuthContextProps, UserProfile } from "./types";
+import { profileService } from "./services/profileService";
 
 export function useAuthProvider(): AuthContextProps {
   const [user, setUser] = useState<User | null>(null);
