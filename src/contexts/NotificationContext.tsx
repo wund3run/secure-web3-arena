@@ -7,20 +7,24 @@ export interface Notification {
   title: string;
   message: string;
   type: 'info' | 'success' | 'warning' | 'error';
-  category?: string;
+  category: string;
   userId?: string;
   actionUrl?: string;
   actionLabel?: string;
   timestamp: Date;
-  isRead: boolean;
+  read: boolean; // Changed from isRead to read to match component expectations
 }
 
 interface NotificationContextType {
   notifications: Notification[];
-  addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'isRead'>) => void;
+  unreadCount: number;
+  addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void;
   markAsRead: (id: string) => void;
-  clearNotifications: () => void;
-  getUnreadCount: () => number;
+  markAllAsRead: () => void;
+  removeNotification: (id: string) => void;
+  clearAll: () => void;
+  clearNotifications: () => void; // Keep for backward compatibility
+  getUnreadCount: () => number; // Keep for backward compatibility
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
@@ -28,12 +32,12 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const addNotification = useCallback((notification: Omit<Notification, 'id' | 'timestamp' | 'isRead'>) => {
+  const addNotification = useCallback((notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
     const newNotification: Notification = {
       ...notification,
       id: crypto.randomUUID(),
       timestamp: new Date(),
-      isRead: false,
+      read: false,
     };
 
     setNotifications(prev => [newNotification, ...prev]);
@@ -66,10 +70,24 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     setNotifications(prev => 
       prev.map(notification => 
         notification.id === id 
-          ? { ...notification, isRead: true }
+          ? { ...notification, read: true }
           : notification
       )
     );
+  }, []);
+
+  const markAllAsRead = useCallback(() => {
+    setNotifications(prev => 
+      prev.map(notification => ({ ...notification, read: true }))
+    );
+  }, []);
+
+  const removeNotification = useCallback((id: string) => {
+    setNotifications(prev => prev.filter(notification => notification.id !== id));
+  }, []);
+
+  const clearAll = useCallback(() => {
+    setNotifications([]);
   }, []);
 
   const clearNotifications = useCallback(() => {
@@ -77,14 +95,20 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   }, []);
 
   const getUnreadCount = useCallback(() => {
-    return notifications.filter(n => !n.isRead).length;
+    return notifications.filter(n => !n.read).length;
   }, [notifications]);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
     <NotificationContext.Provider value={{
       notifications,
+      unreadCount,
       addNotification,
       markAsRead,
+      markAllAsRead,
+      removeNotification,
+      clearAll,
       clearNotifications,
       getUnreadCount,
     }}>
