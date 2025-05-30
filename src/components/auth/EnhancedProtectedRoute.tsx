@@ -44,7 +44,11 @@ export function EnhancedProtectedRoute({
   // Check role requirements
   if (requiredRole && !hasRole(user, requiredRole, userProfile)) {
     const userRole = getUserRole(user, userProfile);
-    const redirectPath = fallbackPath || (userRole === "auditor" ? "/dashboard/auditor" : "/dashboard/project");
+    const redirectPath = fallbackPath || (
+      userRole === "auditor" ? "/dashboard/auditor" : 
+      userRole === "admin" ? "/admin/dashboard" : 
+      "/dashboard/project"
+    );
     
     return (
       <div className="min-h-screen flex items-center justify-center bg-muted/50">
