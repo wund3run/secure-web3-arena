@@ -8,80 +8,100 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Star, Shield, Clock, DollarSign, Filter, Users, Award, Zap } from 'lucide-react';
+import { Search, Filter, Grid, List, SlidersHorizontal } from 'lucide-react';
+import { EnhancedMarketplaceFilters } from '@/components/marketplace/enhanced-filters/EnhancedMarketplaceFilters';
+import { EnhancedAuditorCard } from '@/components/marketplace/auditor-cards/EnhancedAuditorCard';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const Marketplace = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [priceRange, setPriceRange] = useState('all');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [sortBy, setSortBy] = useState('rating');
+  const [filters, setFilters] = useState({});
+  const [activeFiltersCount, setActiveFiltersCount] = useState(0);
 
+  // Mock auditor data - enhanced version
   const auditors = [
     {
-      id: 1,
+      id: '1',
       name: "CyberGuard Security",
       avatar: "/placeholder-avatar.jpg",
       rating: 4.9,
-      reviews: 47,
-      expertise: ["Smart Contracts", "DeFi", "NFT"],
-      blockchain: ["Ethereum", "Polygon", "Arbitrum"],
-      price: "$5,000 - $15,000",
-      turnaround: "5-7 days",
-      verified: true,
-      premium: true,
-      description: "Expert security auditing firm with 3+ years in Web3. Specialized in DeFi protocols and smart contract security.",
-      completedAudits: 127
+      reviewCount: 47,
+      expertise: ["Smart Contracts", "DeFi", "NFT", "Cross-chain"],
+      blockchains: ["Ethereum", "Polygon", "Arbitrum", "Optimism"],
+      completedAudits: 127,
+      responseTime: "2h avg",
+      hourlyRate: { min: 150, max: 300 },
+      isVerified: true,
+      isPremium: true,
+      description: "Expert security auditing firm with 3+ years in Web3. Specialized in DeFi protocols and smart contract security with formal verification expertise.",
+      availability: 'available' as const
     },
     {
-      id: 2,
+      id: '2',
       name: "BlockSafe Auditors",
       avatar: "/placeholder-avatar.jpg",
       rating: 4.8,
-      reviews: 32,
-      expertise: ["Smart Contracts", "Cross-chain", "Gaming"],
-      blockchain: ["Ethereum", "BSC", "Solana"],
-      price: "$3,000 - $10,000",
-      turnaround: "3-5 days",
-      verified: true,
-      premium: false,
-      description: "Rapid security assessments with comprehensive reporting. Trusted by leading GameFi projects.",
-      completedAudits: 89
+      reviewCount: 32,
+      expertise: ["Smart Contracts", "Gaming", "Layer 2"],
+      blockchains: ["Ethereum", "BSC", "Solana"],
+      completedAudits: 89,
+      responseTime: "4h avg",
+      hourlyRate: { min: 100, max: 200 },
+      isVerified: true,
+      isPremium: false,
+      description: "Rapid security assessments with comprehensive reporting. Trusted by leading GameFi projects and emerging DeFi protocols.",
+      availability: 'busy' as const
     },
     {
-      id: 3,
+      id: '3',
       name: "SecureChain Labs",
       avatar: "/placeholder-avatar.jpg",
       rating: 4.7,
-      reviews: 28,
-      expertise: ["Smart Contracts", "Infrastructure", "Layer 2"],
-      blockchain: ["Ethereum", "Optimism", "Arbitrum"],
-      price: "$7,000 - $20,000",
-      turnaround: "7-10 days",
-      verified: true,
-      premium: true,
-      description: "Deep technical expertise in Layer 2 solutions and complex DeFi protocols.",
-      completedAudits: 76
+      reviewCount: 28,
+      expertise: ["Infrastructure", "Layer 2", "Bridges"],
+      blockchains: ["Ethereum", "Optimism", "Arbitrum"],
+      completedAudits: 76,
+      responseTime: "6h avg",
+      hourlyRate: { min: 200, max: 400 },
+      isVerified: true,
+      isPremium: true,
+      description: "Deep technical expertise in Layer 2 solutions and complex DeFi protocols. Specializing in cross-chain bridge security.",
+      availability: 'available' as const
     }
   ];
 
-  const categories = [
-    { value: 'all', label: 'All Categories' },
-    { value: 'smart-contracts', label: 'Smart Contracts' },
-    { value: 'defi', label: 'DeFi Protocols' },
-    { value: 'nft', label: 'NFT Projects' },
-    { value: 'gaming', label: 'GameFi' },
-    { value: 'infrastructure', label: 'Infrastructure' }
-  ];
+  const handleFiltersChange = (newFilters: any) => {
+    setFilters(newFilters);
+    // Calculate active filters count
+    let count = 0;
+    if (newFilters.expertise?.length > 0) count++;
+    if (newFilters.blockchains?.length > 0) count++;
+    if (newFilters.experienceLevel?.length > 0) count++;
+    if (newFilters.features?.length > 0) count++;
+    if (newFilters.priceRange && (newFilters.priceRange[0] > 1000 || newFilters.priceRange[1] < 100000)) count++;
+    setActiveFiltersCount(count);
+  };
+
+  const handleClearAllFilters = () => {
+    setFilters({});
+    setActiveFiltersCount(0);
+  };
+
+  const handleContact = (auditorId: string) => {
+    console.log('Contact auditor:', auditorId);
+    // Implement contact logic
+  };
+
+  const handleRequestQuote = (auditorId: string) => {
+    console.log('Request quote from:', auditorId);
+    // Navigate to request audit form with prefilled auditor
+  };
 
   const filteredAuditors = auditors.filter(auditor => {
-    const matchesSearch = auditor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         auditor.expertise.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase()));
-    
-    const matchesCategory = selectedCategory === 'all' || 
-                           auditor.expertise.some(skill => 
-                             skill.toLowerCase().includes(selectedCategory.replace('-', ' '))
-                           );
-    
-    return matchesSearch && matchesCategory;
+    return auditor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           auditor.expertise.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase()));
   });
 
   return (
@@ -105,34 +125,16 @@ const Marketplace = () => {
               </p>
             </div>
 
-            {/* Search and Filters */}
-            <div className="max-w-4xl mx-auto space-y-4">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input
-                    placeholder="Search auditors, skills, or blockchain..."
-                    className="pl-10"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="w-full md:w-48">
-                    <SelectValue placeholder="Category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map(category => (
-                      <SelectItem key={category.value} value={category.value}>
-                        {category.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Button variant="outline" size="default">
-                  <Filter className="h-4 w-4 mr-2" />
-                  Filters
-                </Button>
+            {/* Search Bar */}
+            <div className="max-w-2xl mx-auto">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Input
+                  placeholder="Search auditors, skills, or blockchain expertise..."
+                  className="pl-10 h-12 text-lg"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
             </div>
           </div>
@@ -140,137 +142,122 @@ const Marketplace = () => {
 
         {/* Content */}
         <div className="container mx-auto px-4 py-8">
-          <Tabs defaultValue="auditors" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto">
-              <TabsTrigger value="auditors">Auditors</TabsTrigger>
-              <TabsTrigger value="services">Services</TabsTrigger>
-              <TabsTrigger value="teams">Teams</TabsTrigger>
-            </TabsList>
+          <div className="flex gap-8">
+            {/* Desktop Filters */}
+            <div className="hidden lg:block w-80 flex-shrink-0">
+              <div className="sticky top-4">
+                <EnhancedMarketplaceFilters
+                  onFiltersChange={handleFiltersChange}
+                  activeFiltersCount={activeFiltersCount}
+                  onClearAll={handleClearAllFilters}
+                />
+              </div>
+            </div>
 
-            <TabsContent value="auditors" className="space-y-6">
-              <div className="flex justify-between items-center">
-                <p className="text-gray-600">
-                  {filteredAuditors.length} verified auditors found
-                </p>
-                <Select defaultValue="rating">
-                  <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="rating">Highest Rated</SelectItem>
-                    <SelectItem value="price-low">Price: Low to High</SelectItem>
-                    <SelectItem value="price-high">Price: High to Low</SelectItem>
-                    <SelectItem value="experience">Most Experienced</SelectItem>
-                  </SelectContent>
-                </Select>
+            {/* Main Content */}
+            <div className="flex-1">
+              {/* Controls */}
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div className="flex items-center gap-4">
+                  <p className="text-gray-600">
+                    {filteredAuditors.length} verified auditors found
+                  </p>
+                  {activeFiltersCount > 0 && (
+                    <Badge variant="secondary">
+                      {activeFiltersCount} filter{activeFiltersCount > 1 ? 's' : ''} active
+                    </Badge>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-3">
+                  {/* Mobile Filter Button */}
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <Button variant="outline" size="sm" className="lg:hidden">
+                        <SlidersHorizontal className="h-4 w-4 mr-2" />
+                        Filters
+                        {activeFiltersCount > 0 && (
+                          <Badge variant="secondary" className="ml-2">
+                            {activeFiltersCount}
+                          </Badge>
+                        )}
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="left" className="w-80">
+                      <EnhancedMarketplaceFilters
+                        onFiltersChange={handleFiltersChange}
+                        activeFiltersCount={activeFiltersCount}
+                        onClearAll={handleClearAllFilters}
+                      />
+                    </SheetContent>
+                  </Sheet>
+
+                  {/* View Mode Toggle */}
+                  <div className="flex border rounded-lg">
+                    <Button
+                      variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setViewMode('grid')}
+                      className="rounded-r-none"
+                    >
+                      <Grid className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant={viewMode === 'list' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setViewMode('list')}
+                      className="rounded-l-none"
+                    >
+                      <List className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {/* Sort Dropdown */}
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="rating">Highest Rated</SelectItem>
+                      <SelectItem value="price-low">Price: Low to High</SelectItem>
+                      <SelectItem value="price-high">Price: High to Low</SelectItem>
+                      <SelectItem value="experience">Most Experienced</SelectItem>
+                      <SelectItem value="response-time">Fastest Response</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Auditors Grid */}
+              <div className={
+                viewMode === 'grid' 
+                  ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+                  : "space-y-4"
+              }>
                 {filteredAuditors.map(auditor => (
-                  <Card key={auditor.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader className="pb-4">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                            <Shield className="h-6 w-6 text-white" />
-                          </div>
-                          <div>
-                            <CardTitle className="text-lg flex items-center gap-2">
-                              {auditor.name}
-                              {auditor.verified && <Award className="h-4 w-4 text-blue-500" />}
-                              {auditor.premium && <Zap className="h-4 w-4 text-yellow-500" />}
-                            </CardTitle>
-                            <div className="flex items-center gap-2 mt-1">
-                              <div className="flex items-center">
-                                <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                                <span className="ml-1 text-sm font-medium">{auditor.rating}</span>
-                              </div>
-                              <span className="text-sm text-gray-500">({auditor.reviews} reviews)</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </CardHeader>
-
-                    <CardContent className="space-y-4">
-                      <p className="text-sm text-gray-600">{auditor.description}</p>
-                      
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2 text-sm">
-                          <Users className="h-4 w-4 text-gray-400" />
-                          <span>{auditor.completedAudits} audits completed</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm">
-                          <Clock className="h-4 w-4 text-gray-400" />
-                          <span>{auditor.turnaround} turnaround</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm">
-                          <DollarSign className="h-4 w-4 text-gray-400" />
-                          <span>{auditor.price}</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <div>
-                          <span className="text-sm font-medium text-gray-700">Expertise:</span>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {auditor.expertise.map(skill => (
-                              <Badge key={skill} variant="secondary" className="text-xs">
-                                {skill}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                        <div>
-                          <span className="text-sm font-medium text-gray-700">Blockchains:</span>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {auditor.blockchain.map(chain => (
-                              <Badge key={chain} variant="outline" className="text-xs">
-                                {chain}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex gap-2 pt-2">
-                        <Button asChild className="flex-1">
-                          <Link to={`/service/${auditor.id}`}>
-                            View Profile
-                          </Link>
-                        </Button>
-                        <Button variant="outline" asChild>
-                          <Link to={`/service/${auditor.id}/request`}>
-                            Request Quote
-                          </Link>
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <EnhancedAuditorCard
+                    key={auditor.id}
+                    {...auditor}
+                    onContact={() => handleContact(auditor.id)}
+                    onRequestQuote={() => handleRequestQuote(auditor.id)}
+                  />
                 ))}
               </div>
-            </TabsContent>
 
-            <TabsContent value="services" className="space-y-6">
-              <div className="text-center py-12">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">Security Services</h3>
-                <p className="text-gray-600 mb-8">Browse specialized security services and packages</p>
-                <Button asChild>
-                  <Link to="/request-audit">Request Custom Service</Link>
+              {/* Call to Action */}
+              <div className="text-center mt-12 py-8 border-t">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  Can't find the right auditor?
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Post your audit request and let our AI matching system find the perfect auditors for your project.
+                </p>
+                <Button asChild size="lg">
+                  <Link to="/request-audit">Request Security Audit</Link>
                 </Button>
               </div>
-            </TabsContent>
-
-            <TabsContent value="teams" className="space-y-6">
-              <div className="text-center py-12">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">Security Teams</h3>
-                <p className="text-gray-600 mb-8">Connect with full-service security teams for complex projects</p>
-                <Button asChild>
-                  <Link to="/contact">Contact Sales</Link>
-                </Button>
-              </div>
-            </TabsContent>
-          </Tabs>
+            </div>
+          </div>
         </div>
       </div>
     </>
