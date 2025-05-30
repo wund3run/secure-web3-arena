@@ -1,9 +1,20 @@
 
 <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M25 4L6 14V34L25 44L44 34V14L25 4Z" stroke="#000000" strokeWidth="4" strokeLinejoin="round"/>
-  <path d="M25 44V28" stroke="#000000" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-  <path d="M44 14L25 28L6 14" stroke="#000000" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-  <path d="M6 34L25 28" stroke="#000000" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-  <path d="M25 28L44 34" stroke="#000000" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
-  <path d="M25 18V19" stroke="#000000" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+  <defs>
+    <linearGradient id="hawkly-gradient-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#4A90E2"/>
+      <stop offset="50%" stopColor="#8A73E2"/>
+      <stop offset="100%" stopColor="#33C3F0"/>
+    </linearGradient>
+  </defs>
+  <!-- Hawk head outline -->
+  <path d="M25 5 L10 15 L10 25 L15 35 L25 45 L35 35 L40 25 L40 15 L25 5 Z" fill="url(#hawkly-gradient-dark)" stroke="#000000" strokeWidth="1"/>
+  <!-- Eyes -->
+  <ellipse cx="20" cy="20" rx="2" ry="3" fill="#FFB74D"/>
+  <ellipse cx="30" cy="20" rx="2" ry="3" fill="#FFB74D"/>
+  <!-- Beak -->
+  <path d="M25 25 L23 30 L27 30 Z" fill="#000000"/>
+  <!-- Wing details -->
+  <path d="M15 25 Q20 30 25 25" stroke="#000000" strokeWidth="1" fill="none"/>
+  <path d="M35 25 Q30 30 25 25" stroke="#000000" strokeWidth="1" fill="none"/>
 </svg>

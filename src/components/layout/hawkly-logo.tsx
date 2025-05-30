@@ -19,11 +19,11 @@ export function HawklyLogo({ size = "default", asLink = true, variant = "default
   const getLogoSize = (): { width: number, height: number } => {
     switch (size) {
       case "small":
-        return { width: 24, height: 24 };
-      case "large":
         return { width: 32, height: 32 };
+      case "large":
+        return { width: 48, height: 48 };
       default:
-        return { width: 28, height: 28 };
+        return { width: 40, height: 40 };
     }
   };
   
@@ -34,20 +34,26 @@ export function HawklyLogo({ size = "default", asLink = true, variant = "default
   
   const logoContent = (
     <div className={`flex items-center ${className}`}>
-      <div className="mr-2">
+      <div className="mr-3">
         <img 
           src={logoSrc} 
-          alt="Hawkly Logo" 
+          alt="Hawkly - Web3 Security Platform" 
           width={logoSizes.width} 
           height={logoSizes.height}
-          className="text-current"
+          className="text-current transition-transform hover:scale-105"
         />
       </div>
-      <span className={`font-bold ${size === "small" ? "text-lg" : size === "large" ? "text-2xl" : "text-xl"}`}>
-        Hawkly
+      <span className={`font-bold bg-gradient-to-r from-[#4A90E2] via-[#8A73E2] to-[#33C3F0] bg-clip-text text-transparent ${
+        size === "small" ? "text-xl" : size === "large" ? "text-3xl" : "text-2xl"
+      }`}>
+        HAWKLY
       </span>
     </div>
   );
 
-  return asLink ? <Link to="/" aria-label="Hawkly Home">{logoContent}</Link> : logoContent;
+  return asLink ? (
+    <Link to="/" aria-label="Hawkly Home" className="transition-opacity hover:opacity-80">
+      {logoContent}
+    </Link>
+  ) : logoContent;
 }
