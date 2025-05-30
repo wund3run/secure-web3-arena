@@ -16,6 +16,8 @@ export interface UserProfile {
   social_links?: any;
   years_of_experience?: number;
   projects_completed?: number;
+  company?: string;
+  location?: string;
   created_at?: string;
   updated_at?: string;
 }
