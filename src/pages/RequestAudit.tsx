@@ -1,34 +1,58 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { ChevronRight, ChevronLeft, FileText } from 'lucide-react';
+import { CheckCircle, FileText, Settings, Clock, Send } from 'lucide-react';
 import { toast } from 'sonner';
 import { useRequestAuditForm } from '@/hooks/useRequestAuditForm';
 import { ProjectInformationStep } from '@/components/request-audit/steps/ProjectInformationStep';
 import { TechnicalDetailsStep } from '@/components/request-audit/steps/TechnicalDetailsStep';
 import { TimelineBudgetStep } from '@/components/request-audit/steps/TimelineBudgetStep';
 import { ReviewSubmitStep } from '@/components/request-audit/steps/ReviewSubmitStep';
+import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
 
 const RequestAudit = () => {
   const {
     currentStep,
     formData,
+    errors,
     handleInputChange,
     handleScopeChange,
     nextStep,
     prevStep
   } = useRequestAuditForm();
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const totalSteps = 4;
   const progress = (currentStep / totalSteps) * 100;
 
-  const submitRequest = () => {
-    // Here you would submit to your backend
-    toast.success('Audit request submitted successfully!');
-    console.log('Form data:', formData);
+  const stepIcons = [
+    { icon: FileText, label: "Project Info" },
+    { icon: Settings, label: "Technical Details" },
+    { icon: Clock, label: "Timeline & Budget" },
+    { icon: Send, label: "Review & Submit" }
+  ];
+
+  const submitRequest = async () => {
+    setIsSubmitting(true);
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      toast.success('Audit request submitted successfully!', {
+        description: 'You will receive an email confirmation shortly.'
+      });
+      console.log('Form data:', formData);
+      
+      // TODO: Redirect to dashboard or success page
+    } catch (error) {
+      toast.error('Failed to submit audit request. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getStepTitle = () => {
@@ -48,6 +72,8 @@ const RequestAudit = () => {
           <ProjectInformationStep
             formData={formData}
             handleInputChange={handleInputChange}
+            errors={errors}
+            onNext={nextStep}
           />
         );
       case 2:
@@ -56,6 +82,9 @@ const RequestAudit = () => {
             formData={formData}
             handleInputChange={handleInputChange}
             handleScopeChange={handleScopeChange}
+            errors={errors}
+            onNext={nextStep}
+            onBack={prevStep}
           />
         );
       case 3:
@@ -63,10 +92,20 @@ const RequestAudit = () => {
           <TimelineBudgetStep
             formData={formData}
             handleInputChange={handleInputChange}
+            errors={errors}
+            onNext={nextStep}
+            onBack={prevStep}
           />
         );
       case 4:
-        return <ReviewSubmitStep formData={formData} />;
+        return (
+          <ReviewSubmitStep
+            formData={formData}
+            onBack={prevStep}
+            onSubmit={submitRequest}
+            isSubmitting={isSubmitting}
+          />
+        );
       default:
         return null;
     }
@@ -76,69 +115,86 @@ const RequestAudit = () => {
     <>
       <Helmet>
         <title>Request Security Audit | Hawkly</title>
-        <meta name="description" content="Submit your Web3 project for professional security audit" />
+        <meta name="description" content="Submit your Web3 project for professional security audit with our streamlined request process" />
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50">
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-2xl mx-auto">
-            {/* Header */}
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                Request Security Audit
-              </h1>
-              <p className="text-gray-600">
-                Get your Web3 project audited by expert security professionals
-              </p>
-            </div>
-
-            {/* Progress */}
-            <div className="mb-8">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium">Step {currentStep} of {totalSteps}</span>
-                <span className="text-sm text-gray-500">{Math.round(progress)}% complete</span>
+      <div className="min-h-screen bg-background flex flex-col">
+        <Navbar />
+        <main className="flex-grow">
+          <div className="container mx-auto px-4 py-8">
+            <div className="max-w-4xl mx-auto">
+              {/* Header */}
+              <div className="text-center mb-8">
+                <h1 className="text-3xl font-bold text-foreground mb-4">
+                  Request Security Audit
+                </h1>
+                <p className="text-muted-foreground">
+                  Get your Web3 project audited by expert security professionals with our comprehensive audit request process
+                </p>
               </div>
-              <Progress value={progress} className="w-full" />
-            </div>
 
-            {/* Form */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  {getStepTitle()}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {renderStep()}
+              {/* Progress Steps */}
+              <div className="mb-8">
+                <div className="flex justify-between items-center mb-4">
+                  {stepIcons.map((step, index) => {
+                    const stepNumber = index + 1;
+                    const isActive = stepNumber === currentStep;
+                    const isCompleted = stepNumber < currentStep;
+                    const Icon = step.icon;
 
-                {/* Navigation */}
-                <div className="flex justify-between mt-8">
-                  <Button
-                    variant="outline"
-                    onClick={prevStep}
-                    disabled={currentStep === 1}
-                  >
-                    <ChevronLeft className="h-4 w-4 mr-2" />
-                    Previous
-                  </Button>
-                  
-                  {currentStep < totalSteps ? (
-                    <Button onClick={nextStep}>
-                      Next
-                      <ChevronRight className="h-4 w-4 ml-2" />
-                    </Button>
-                  ) : (
-                    <Button onClick={submitRequest}>
-                      Submit Request
-                      <FileText className="h-4 w-4 ml-2" />
-                    </Button>
-                  )}
+                    return (
+                      <div key={stepNumber} className="flex flex-col items-center flex-1">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 transition-colors ${
+                          isCompleted 
+                            ? 'bg-primary text-primary-foreground' 
+                            : isActive 
+                              ? 'bg-primary/10 text-primary border-2 border-primary' 
+                              : 'bg-muted text-muted-foreground'
+                        }`}>
+                          {isCompleted ? (
+                            <CheckCircle className="h-5 w-5" />
+                          ) : (
+                            <Icon className="h-5 w-5" />
+                          )}
+                        </div>
+                        <span className={`text-sm font-medium text-center ${
+                          isActive ? 'text-primary' : isCompleted ? 'text-foreground' : 'text-muted-foreground'
+                        }`}>
+                          {step.label}
+                        </span>
+                        {index < stepIcons.length - 1 && (
+                          <div className={`hidden md:block w-full h-0.5 mt-5 -ml-full ${
+                            isCompleted ? 'bg-primary' : 'bg-muted'
+                          }`} />
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
-              </CardContent>
-            </Card>
+                
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Step {currentStep} of {totalSteps}</span>
+                  <span className="text-sm text-muted-foreground">{Math.round(progress)}% complete</span>
+                </div>
+                <Progress value={progress} className="w-full" />
+              </div>
+
+              {/* Form */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    {React.createElement(stepIcons[currentStep - 1].icon, { className: "h-5 w-5" })}
+                    {getStepTitle()}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {renderStep()}
+                </CardContent>
+              </Card>
+            </div>
           </div>
-        </div>
+        </main>
+        <Footer />
       </div>
     </>
   );
