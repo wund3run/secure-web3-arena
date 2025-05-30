@@ -78,20 +78,22 @@ export function FileUpload({
     setUploadingFiles(prev => [...prev, uploadingFile]);
 
     try {
+      // Simulate progress updates
+      const progressInterval = setInterval(() => {
+        setUploadingFiles(prev => 
+          prev.map(f => 
+            f.file === file && f.progress < 90
+              ? { ...f, progress: f.progress + 10 }
+              : f
+          )
+        );
+      }, 200);
+
       const { data, error } = await supabase.storage
         .from(bucket)
-        .upload(filePath, file, {
-          onUploadProgress: (progress) => {
-            const percentage = Math.round((progress.loaded / progress.total) * 100);
-            setUploadingFiles(prev => 
-              prev.map(f => 
-                f.file === file 
-                  ? { ...f, progress: percentage }
-                  : f
-              )
-            );
-          }
-        });
+        .upload(filePath, file);
+
+      clearInterval(progressInterval);
 
       if (error) throw error;
 
@@ -104,7 +106,7 @@ export function FileUpload({
       setUploadingFiles(prev => 
         prev.map(f => 
           f.file === file 
-            ? { ...f, status: 'completed', url: publicUrl }
+            ? { ...f, status: 'completed', url: publicUrl, progress: 100 }
             : f
         )
       );
