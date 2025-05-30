@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { useAuth } from '@/contexts/auth';
+import { useAuth } from '@/contexts/auth/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

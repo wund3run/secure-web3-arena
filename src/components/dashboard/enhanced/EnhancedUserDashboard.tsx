@@ -14,7 +14,7 @@ import {
   Star,
   RefreshCw
 } from 'lucide-react';
-import { useAuth } from '@/contexts/auth';
+import { useAuth } from '@/contexts/auth/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { OnboardingTutorial } from '@/components/onboarding/OnboardingTutorial';
 
