@@ -13,7 +13,11 @@ import { StripeProvider } from '@/components/payment/StripeProvider';
 // Components
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { AppErrorBoundary } from '@/components/error/AppErrorBoundary';
-import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { EnhancedProtectedRoute } from '@/components/auth/EnhancedProtectedRoute';
+
+// Security Components
+import { SecurityHeaders } from '@/components/security/SecurityHeaders';
+import { SecurityAuditLogger } from '@/components/security/SecurityAuditLogger';
 
 // Pages
 import Index from '@/pages/Index';
@@ -28,9 +32,11 @@ function App() {
   return (
     <AppErrorBoundary>
       <HelmetProvider>
+        <SecurityHeaders />
         <QueryProvider>
           <ThemeProvider defaultTheme="light" storageKey="hawkly-ui-theme">
             <AuthProvider>
+              <SecurityAuditLogger />
               <NotificationProvider>
                 <StripeProvider>
                   <Router>
@@ -47,17 +53,17 @@ function App() {
                         <Route 
                           path="/dashboard" 
                           element={
-                            <ProtectedRoute>
+                            <EnhancedProtectedRoute>
                               <Dashboard />
-                            </ProtectedRoute>
+                            </EnhancedProtectedRoute>
                           } 
                         />
                         <Route 
                           path="/admin/dashboard" 
                           element={
-                            <ProtectedRoute requiredRole="admin">
+                            <EnhancedProtectedRoute requiredRole="admin">
                               <AdminDashboard />
-                            </ProtectedRoute>
+                            </EnhancedProtectedRoute>
                           } 
                         />
                         
