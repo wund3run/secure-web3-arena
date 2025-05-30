@@ -3,10 +3,16 @@
 export { ErrorMonitoringService, errorMonitoring } from './ErrorMonitoringService';
 export { AutomatedTestRunner, testRunner } from './AutomatedTestRunner';
 export { initializeTestSuites } from './ComponentTestSuites';
-export { TestingDashboard } from '../components/testing/TestingDashboard';
+export { TestingDashboard } from '../../components/testing/TestingDashboard';
 
 export type { BugReport, TestResult } from './ErrorMonitoringService';
 export type { TestCase, TestSuite } from './AutomatedTestRunner';
+
+// Import the services we need
+import { errorMonitoring } from './ErrorMonitoringService';
+import { testRunner } from './AutomatedTestRunner';
+import { initializeTestSuites } from './ComponentTestSuites';
+import { TestingDashboard } from '../../components/testing/TestingDashboard';
 
 // Utility function to initialize the complete testing framework
 export const initializeTestingFramework = () => {
