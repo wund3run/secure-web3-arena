@@ -5,8 +5,17 @@ export interface UserProfile {
   id: string;
   user_id: string;
   full_name: string | null;
-  user_type: 'auditor' | 'project_owner' | 'admin' | null;
+  display_name: string | null;
+  user_type: 'auditor' | 'project_owner' | 'admin' | 'general' | null;
   avatar_url: string | null;
+  bio: string | null;
+  website: string | null;
+  wallet_address: string | null;
+  verification_status: string | null;
+  specializations: string[] | null;
+  projects_completed: number | null;
+  years_of_experience: number | null;
+  social_links: any | null;
   created_at: string;
   updated_at: string;
 }
@@ -22,5 +31,5 @@ export interface AuthContextProps {
   signOut: () => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
   resetPassword: (newPassword: string) => Promise<void>;
-  getUserType: () => 'auditor' | 'project_owner' | 'admin' | null;
+  getUserType: () => 'auditor' | 'project_owner' | 'admin' | 'general' | null;
 }

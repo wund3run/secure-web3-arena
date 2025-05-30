@@ -62,22 +62,49 @@ export function useAuthProvider(): AuthContextProps {
 
   const fetchUserProfile = async (userId: string) => {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
+      const profile = await profileService.fetchProfile(userId);
+      if (profile) {
+        setUserProfile(profile);
+      } else {
+        // Fallback to basic profiles table
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .single();
 
-      if (error) throw error;
-      setUserProfile(data);
+        if (error && error.code !== 'PGRST116') throw error;
+        
+        if (data) {
+          const basicProfile: UserProfile = {
+            id: data.id,
+            user_id: data.id,
+            full_name: data.full_name,
+            display_name: data.full_name, // Use full_name as display_name fallback
+            user_type: 'general',
+            avatar_url: data.avatar_url,
+            bio: null,
+            website: null,
+            wallet_address: data.wallet_address,
+            verification_status: null,
+            specializations: null,
+            projects_completed: null,
+            years_of_experience: null,
+            social_links: null,
+            created_at: data.created_at,
+            updated_at: data.updated_at,
+          };
+          setUserProfile(basicProfile);
+        }
+      }
     } catch (error: any) {
       console.error("Error fetching user profile:", error);
       // Don't set error state for profile fetch failures
     }
   };
 
-  const getUserType = (): 'auditor' | 'project_owner' | 'admin' | null => {
-    return userProfile?.user_type || null;
+  const getUserType = (): 'auditor' | 'project_owner' | 'admin' | 'general' | null => {
+    return userProfile?.user_type || 'general';
   };
 
   const signIn = async (email: string, password: string) => {
