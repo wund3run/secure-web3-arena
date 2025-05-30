@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './contexts/auth/AuthContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { HelmetProvider } from 'react-helmet-async';
+import { ProductionErrorHandler } from './components/error/production-error-handler';
 
 import Index from './pages/Index';
 import Auth from './pages/Auth';
@@ -23,7 +24,6 @@ import NotFound from './pages/NotFound';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import SecurityPolicy from './pages/SecurityPolicy';
-import { ProductionErrorHandler } from './components/error/production-error-handler';
 
 const queryClient = new QueryClient();
 
