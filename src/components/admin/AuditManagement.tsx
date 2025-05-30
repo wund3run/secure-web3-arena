@@ -1,239 +1,309 @@
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { 
-  Clock, 
-  CheckCircle, 
-  AlertTriangle, 
-  Eye,
-  Filter,
-  Search,
-  Download
-} from 'lucide-react';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Search, MoreHorizontal, FileText, Eye, AlertTriangle, CheckCircle, Clock, XCircle } from "lucide-react";
+import { toast } from "sonner";
 
-interface AuditRequest {
+interface Audit {
   id: string;
-  project_name: string;
-  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  created_at: string;
+  projectName: string;
+  client: string;
+  auditor: string;
+  status: "in_progress" | "review" | "completed" | "disputed";
+  priority: "low" | "medium" | "high" | "critical";
+  startDate: string;
   deadline: string;
+  budget: number;
+  vulnerabilities: number;
   progress: number;
-  assigned_auditor?: string;
 }
 
-const mockAudits: AuditRequest[] = [
-  {
-    id: '1',
-    project_name: 'DeFi Lending Protocol',
-    status: 'in_progress',
-    priority: 'high',
-    created_at: '2024-01-15',
-    deadline: '2024-02-15',
-    progress: 65,
-    assigned_auditor: 'Sarah Chen'
-  },
-  {
-    id: '2',
-    project_name: 'NFT Marketplace',
-    status: 'pending',
-    priority: 'medium',
-    created_at: '2024-01-20',
-    deadline: '2024-02-20',
-    progress: 0
-  },
-  {
-    id: '3',
-    project_name: 'Cross-chain Bridge',
-    status: 'completed',
-    priority: 'critical',
-    created_at: '2024-01-10',
-    deadline: '2024-02-10',
-    progress: 100,
-    assigned_auditor: 'Alex Rodriguez'
-  }
-];
-
-export const AuditManagement = () => {
-  const [audits, setAudits] = useState<AuditRequest[]>(mockAudits);
-  const [filteredAudits, setFilteredAudits] = useState<AuditRequest[]>(mockAudits);
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [priorityFilter, setPriorityFilter] = useState<string>('all');
-
-  useEffect(() => {
-    let filtered = audits;
-
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(audit => audit.status === statusFilter);
+export function AuditManagement() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [audits] = useState<Audit[]>([
+    {
+      id: "AUD-001",
+      projectName: "DeFi Protocol v2",
+      client: "Sarah Chen",
+      auditor: "Alex Thompson",
+      status: "in_progress",
+      priority: "high",
+      startDate: "2024-01-15",
+      deadline: "2024-02-15",
+      budget: 25000,
+      vulnerabilities: 0,
+      progress: 65
+    },
+    {
+      id: "AUD-002", 
+      projectName: "NFT Marketplace",
+      client: "Marcus Rodriguez",
+      auditor: "Elena Kovač",
+      status: "review",
+      priority: "medium",
+      startDate: "2024-01-10",
+      deadline: "2024-02-10",
+      budget: 18000,
+      vulnerabilities: 3,
+      progress: 85
+    },
+    {
+      id: "AUD-003",
+      projectName: "Cross-Chain Bridge",
+      client: "David Kim",
+      auditor: "Maria Santos",
+      status: "completed",
+      priority: "critical",
+      startDate: "2023-12-15",
+      deadline: "2024-01-15",
+      budget: 45000,
+      vulnerabilities: 5,
+      progress: 100
+    },
+    {
+      id: "AUD-004",
+      projectName: "Gaming DAO Token",
+      client: "Lisa Wang",
+      auditor: "James Wilson",
+      status: "disputed",
+      priority: "medium",
+      startDate: "2024-01-05",
+      deadline: "2024-02-05",
+      budget: 12000,
+      vulnerabilities: 2,
+      progress: 75
     }
+  ]);
 
-    if (priorityFilter !== 'all') {
-      filtered = filtered.filter(audit => audit.priority === priorityFilter);
+  const filteredAudits = audits.filter(audit =>
+    audit.projectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    audit.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    audit.auditor.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "in_progress":
+        return "bg-blue-100 text-blue-800";
+      case "review":
+        return "bg-yellow-100 text-yellow-800";
+      case "completed":
+        return "bg-green-100 text-green-800";
+      case "disputed":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
-
-    setFilteredAudits(filtered);
-  }, [audits, statusFilter, priorityFilter]);
-
-  const getStatusBadge = (status: string) => {
-    const variants = {
-      pending: 'default',
-      in_progress: 'default',
-      completed: 'default',
-      cancelled: 'destructive'
-    } as const;
-
-    const colors = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      in_progress: 'bg-blue-100 text-blue-800',
-      completed: 'bg-green-100 text-green-800',
-      cancelled: 'bg-red-100 text-red-800'
-    };
-
-    return (
-      <Badge variant={variants[status as keyof typeof variants]} className={colors[status as keyof typeof colors]}>
-        {status.replace('_', ' ')}
-      </Badge>
-    );
   };
 
-  const getPriorityBadge = (priority: string) => {
-    const colors = {
-      low: 'bg-gray-100 text-gray-800',
-      medium: 'bg-blue-100 text-blue-800',
-      high: 'bg-orange-100 text-orange-800',
-      critical: 'bg-red-100 text-red-800'
-    };
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "critical":
+        return "bg-red-100 text-red-800";
+      case "high":
+        return "bg-orange-100 text-orange-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "low":
+        return "bg-green-100 text-green-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
 
-    return (
-      <Badge variant="outline" className={colors[priority as keyof typeof colors]}>
-        {priority}
-      </Badge>
-    );
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "completed":
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case "in_progress":
+        return <Clock className="h-4 w-4 text-blue-500" />;
+      case "review":
+        return <Eye className="h-4 w-4 text-yellow-500" />;
+      case "disputed":
+        return <XCircle className="h-4 w-4 text-red-500" />;
+      default:
+        return null;
+    }
+  };
+
+  const handleAuditAction = (action: string, auditId: string, projectName: string) => {
+    toast.success(`${action} action performed for "${projectName}"`);
+  };
+
+  const getDaysUntilDeadline = (deadline: string) => {
+    const deadlineDate = new Date(deadline);
+    const today = new Date();
+    const diffTime = deadlineDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Audit Management</h2>
-          <p className="text-muted-foreground">
-            Monitor and manage all audit requests across the platform
-          </p>
-        </div>
-        <Button>
-          <Download className="mr-2 h-4 w-4" />
-          Export Report
-        </Button>
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight">Audit Management</h2>
+        <p className="text-muted-foreground">
+          Monitor active audits, track progress, and manage disputes
+        </p>
       </div>
 
-      {/* Filters */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5" />
-            Filters
-          </CardTitle>
+          <CardTitle>Active Audits</CardTitle>
+          <div className="flex items-center gap-4">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Search audits..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Button>
+              <FileText className="h-4 w-4 mr-2" />
+              Export Report
+            </Button>
+          </div>
         </CardHeader>
-        <CardContent className="flex gap-4">
-          <div>
-            <label className="text-sm font-medium">Status</label>
-            <select 
-              className="ml-2 border rounded px-2 py-1"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="all">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="in_progress">In Progress</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-          </div>
-          <div>
-            <label className="text-sm font-medium">Priority</label>
-            <select 
-              className="ml-2 border rounded px-2 py-1"
-              value={priorityFilter}
-              onChange={(e) => setPriorityFilter(e.target.value)}
-            >
-              <option value="all">All Priority</option>
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
-              <option value="critical">Critical</option>
-            </select>
-          </div>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Project</TableHead>
+                <TableHead>Participants</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Priority</TableHead>
+                <TableHead>Progress</TableHead>
+                <TableHead>Issues</TableHead>
+                <TableHead>Timeline</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredAudits.map((audit) => {
+                const daysLeft = getDaysUntilDeadline(audit.deadline);
+                return (
+                  <TableRow key={audit.id}>
+                    <TableCell>
+                      <div>
+                        <div className="font-medium">{audit.projectName}</div>
+                        <div className="text-sm text-muted-foreground">{audit.id}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-sm">
+                        <div><strong>Client:</strong> {audit.client}</div>
+                        <div><strong>Auditor:</strong> {audit.auditor}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        {getStatusIcon(audit.status)}
+                        <Badge className={getStatusColor(audit.status)}>
+                          {audit.status.replace('_', ' ')}
+                        </Badge>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge className={getPriorityColor(audit.priority)}>
+                        {audit.priority}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <div className="w-16 bg-gray-200 rounded-full h-2">
+                          <div
+                            className="bg-blue-500 h-2 rounded-full"
+                            style={{ width: `${audit.progress}%` }}
+                          />
+                        </div>
+                        <span className="text-sm">{audit.progress}%</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        {audit.vulnerabilities > 0 && (
+                          <AlertTriangle className="h-4 w-4 text-red-500" />
+                        )}
+                        <span>{audit.vulnerabilities} found</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-sm">
+                        <div className={daysLeft < 0 ? "text-red-600" : daysLeft < 7 ? "text-yellow-600" : ""}>
+                          {daysLeft < 0 
+                            ? `${Math.abs(daysLeft)} days overdue`
+                            : daysLeft === 0 
+                            ? "Due today"
+                            : `${daysLeft} days left`
+                          }
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          ${audit.budget.toLocaleString()}
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem 
+                            onClick={() => handleAuditAction("View", audit.id, audit.projectName)}
+                          >
+                            <Eye className="h-4 w-4 mr-2" />
+                            View Details
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => handleAuditAction("Message", audit.id, audit.projectName)}
+                          >
+                            Send Message
+                          </DropdownMenuItem>
+                          {audit.status === "disputed" && (
+                            <DropdownMenuItem 
+                              onClick={() => handleAuditAction("Mediate", audit.id, audit.projectName)}
+                              className="text-blue-600"
+                            >
+                              Mediate Dispute
+                            </DropdownMenuItem>
+                          )}
+                          <DropdownMenuItem 
+                            onClick={() => handleAuditAction("Escalate", audit.id, audit.projectName)}
+                            className="text-red-600"
+                          >
+                            Escalate Issue
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
-
-      {/* Audit List */}
-      <div className="grid gap-4">
-        {filteredAudits.map((audit) => (
-          <Card key={audit.id}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-4 mb-2">
-                    <h3 className="text-lg font-semibold">{audit.project_name}</h3>
-                    {getStatusBadge(audit.status)}
-                    {getPriorityBadge(audit.priority)}
-                  </div>
-                  
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground">
-                    <div>
-                      <span className="font-medium">Created:</span>
-                      <br />
-                      {new Date(audit.created_at).toLocaleDateString()}
-                    </div>
-                    <div>
-                      <span className="font-medium">Deadline:</span>
-                      <br />
-                      {new Date(audit.deadline).toLocaleDateString()}
-                    </div>
-                    <div>
-                      <span className="font-medium">Auditor:</span>
-                      <br />
-                      {audit.assigned_auditor || 'Unassigned'}
-                    </div>
-                    <div>
-                      <span className="font-medium">Progress:</span>
-                      <br />
-                      <div className="flex items-center gap-2 mt-1">
-                        <Progress 
-                          value={audit.progress} 
-                          className="h-2 flex-1" 
-                          indicatorClassName="bg-primary"
-                        />
-                        <span className="text-xs">{audit.progress}%</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <Button variant="outline" size="sm">
-                  <Eye className="h-4 w-4 mr-2" />
-                  View Details
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {filteredAudits.length === 0 && (
-        <Card>
-          <CardContent className="p-12 text-center">
-            <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No audits found</h3>
-            <p className="text-muted-foreground">
-              Try adjusting your filters to see more results.
-            </p>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
-};
+}
