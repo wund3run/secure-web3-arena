@@ -1,12 +1,13 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { ThemeProvider } from './components/theme/theme-provider';
+import { ThemeProvider } from './components/ui/theme-provider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './contexts/auth/AuthContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { HelmetProvider } from 'react-helmet-async';
 
-import Index from './pages';
+import Index from './pages/Index';
 import Auth from './pages/Auth';
 import Marketplace from './pages/Marketplace';
 import MyAudits from './pages/MyAudits';

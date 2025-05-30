@@ -51,6 +51,15 @@ export class EnhancedToastSystem {
     });
   }
 
+  // Form validation error notification
+  static formValidationError(title = "Form Validation Error", description = "Please check the highlighted fields and try again") {
+    return toast.error(title, {
+      description,
+      icon: <AlertTriangle className="h-4 w-4" />,
+      duration: 5000
+    });
+  }
+
   // Network-specific notifications
   static networkError(retry?: () => void) {
     return toast.error("Connection lost", {
