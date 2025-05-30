@@ -35,8 +35,8 @@ export const useAuthPage = () => {
       setIsLoading(true);
       setError(null);
       
-      // Fix the signUp call to match the expected signature
-      await signUp(email, password, fullName || '', {});
+      // Fix the signUp call to match the expected signature with role parameter
+      await signUp(email, password, fullName || '', 'project_owner');
       toast.success('Account created successfully! Please check your email to verify your account.');
       navigate('/auth');
     } catch (err: any) {
