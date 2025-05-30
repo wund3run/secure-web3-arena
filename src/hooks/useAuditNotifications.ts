@@ -11,30 +11,43 @@ export const useAuditNotifications = () => {
   useEffect(() => {
     if (!user) return;
 
-    // Audit status change notifications
-    const auditChannel = supabase
-      .channel('audit_updates')
+    // Enhanced audit request status notifications
+    const auditStatusChannel = supabase
+      .channel('audit_status_updates')
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'UPDATE',
           schema: 'public',
           table: 'audit_requests',
           filter: `client_id=eq.${user.id}`,
         },
         (payload) => {
-          if (payload.eventType === 'UPDATE') {
-            const oldStatus = payload.old?.status;
-            const newStatus = payload.new?.status;
+          const oldStatus = payload.old?.status;
+          const newStatus = payload.new?.status;
+          
+          if (oldStatus !== newStatus) {
+            const statusMessages = {
+              'pending': { type: 'info' as const, message: 'Your audit request is pending review' },
+              'in_review': { type: 'info' as const, message: 'Your audit request is being reviewed' },
+              'approved': { type: 'success' as const, message: 'Your audit request has been approved!' },
+              'assigned': { type: 'success' as const, message: 'An auditor has been assigned to your project' },
+              'in_progress': { type: 'info' as const, message: 'Your audit is now in progress' },
+              'completed': { type: 'success' as const, message: 'Your audit has been completed!' },
+              'rejected': { type: 'error' as const, message: 'Your audit request was rejected' },
+            };
+
+            const statusConfig = statusMessages[newStatus as keyof typeof statusMessages];
             
-            if (oldStatus !== newStatus) {
+            if (statusConfig) {
               addNotification({
-                title: 'Audit Status Update',
-                message: `Your audit status has changed to: ${newStatus}`,
-                type: 'info',
+                title: `Audit Status: ${newStatus.replace('_', ' ').toUpperCase()}`,
+                message: statusConfig.message,
+                type: statusConfig.type,
                 category: 'audit',
+                userId: user.id,
                 actionUrl: `/audit/${payload.new.id}`,
-                actionLabel: 'View Audit',
+                actionLabel: 'View Details',
               });
             }
           }
@@ -42,8 +55,35 @@ export const useAuditNotifications = () => {
       )
       .subscribe();
 
+    // Milestone completion notifications
+    const milestoneChannel = supabase
+      .channel('milestone_updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'audit_milestones',
+        },
+        (payload) => {
+          if (payload.new?.completed && !payload.old?.completed) {
+            addNotification({
+              title: 'Milestone Completed',
+              message: `Milestone "${payload.new.title}" has been completed`,
+              type: 'success',
+              category: 'audit',
+              userId: user.id,
+              actionUrl: `/audit/${payload.new.audit_request_id}`,
+              actionLabel: 'View Progress',
+            });
+          }
+        }
+      )
+      .subscribe();
+
     return () => {
-      supabase.removeChannel(auditChannel);
+      supabase.removeChannel(auditStatusChannel);
+      supabase.removeChannel(milestoneChannel);
     };
   }, [user, addNotification]);
 };

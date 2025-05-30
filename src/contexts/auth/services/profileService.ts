@@ -1,61 +1,87 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { UserProfile } from '../types';
+import { toast } from 'sonner';
+import type { UserProfile } from '../types';
 
 export const profileService = {
-  async getProfile(userId: string): Promise<UserProfile | null> {
+  async fetchProfile(userId: string): Promise<UserProfile | null> {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
+      const { data: profile, error } = await supabase
+        .from('extended_profiles')
         .select('*')
         .eq('id', userId)
         .single();
-
+      
       if (error && error.code !== 'PGRST116') {
-        throw error;
+        console.error('Error fetching profile:', error);
+        return null;
       }
-
-      return data;
-    } catch (error) {
-      console.warn('Failed to fetch user profile:', error);
+      
+      if (profile) {
+        const typedProfile: UserProfile = {
+          ...profile,
+          user_type: profile.user_type as UserProfile['user_type'] || 'project_owner'
+        };
+        console.log('Profile loaded:', typedProfile);
+        return typedProfile;
+      }
+      
+      return null;
+    } catch (err) {
+      console.log('Profile fetch error:', err);
       return null;
     }
   },
 
-  async createProfile(userId: string, fullName: string, userType: 'auditor' | 'project_owner'): Promise<UserProfile | null> {
+  async createProfile(userId: string, fullName: string, userType: 'auditor' | 'project_owner'): Promise<void> {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
+      const { error: profileError } = await supabase
+        .from('extended_profiles')
         .insert({
           id: userId,
           full_name: fullName,
           user_type: userType,
-        })
-        .select()
-        .single();
+          display_name: fullName,
+          verification_status: 'pending'
+        });
 
-      if (error) throw error;
-      return data;
-    } catch (error) {
-      console.warn('Failed to create user profile:', error);
-      return null;
+      if (profileError) {
+        console.error('Profile creation error:', profileError);
+      } else {
+        console.log('Profile created successfully');
+      }
+    } catch (profileErr) {
+      console.error('Profile creation failed:', profileErr);
     }
   },
 
-  async updateProfile(userId: string, updates: Partial<UserProfile>): Promise<UserProfile | null> {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .update(updates)
-        .eq('id', userId)
-        .select()
-        .single();
+  async updateProfile(userId: string, data: Partial<UserProfile>): Promise<UserProfile | null> {
+    const { error } = await supabase
+      .from('extended_profiles')
+      .upsert({
+        id: userId,
+        ...data,
+        updated_at: new Date().toISOString(),
+      });
 
-      if (error) throw error;
-      return data;
-    } catch (error) {
-      console.warn('Failed to update user profile:', error);
-      return null;
+    if (error) throw error;
+    
+    // Refresh user profile
+    const { data: updatedProfile } = await supabase
+      .from('extended_profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
+    
+    if (updatedProfile) {
+      const typedProfile: UserProfile = {
+        ...updatedProfile,
+        user_type: updatedProfile.user_type as UserProfile['user_type'] || 'project_owner'
+      };
+      toast.success('Profile updated successfully');
+      return typedProfile;
     }
-  },
+    
+    return null;
+  }
 };

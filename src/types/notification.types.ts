@@ -4,11 +4,12 @@ export interface Notification {
   title: string;
   message: string;
   type: 'info' | 'success' | 'warning' | 'error';
-  category: 'audit' | 'payment' | 'message' | 'system';
   timestamp: Date;
   read: boolean;
   actionUrl?: string;
   actionLabel?: string;
+  userId: string;
+  category: 'audit' | 'message' | 'system' | 'payment';
 }
 
 export interface NotificationContextType {

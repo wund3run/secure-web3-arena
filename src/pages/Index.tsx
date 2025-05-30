@@ -1,76 +1,201 @@
 
-import React from "react";
+
+import React, { Suspense, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { SimplifiedNavbar } from "@/components/layout/simplified-navbar";
+import { Navbar } from "@/components/layout/navbar";
 import { EnhancedFooter } from "@/components/home/enhanced-footer";
+import { SupportButton } from "@/components/ui/support-button";
+import { LazySection } from "@/components/performance/LazySection";
+import { analyticsTracker } from "@/utils/analytics-tracker";
+import { performanceOptimizer } from "@/utils/performance-optimizer";
+import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
+import { bundleOptimizer } from "@/utils/bundle-optimizer";
+
+// Core journey components (loaded immediately)
 import { SimplifiedHero } from "@/components/home/simplified-hero";
 import { TrustIndicators } from "@/components/home/trust-indicators";
 import { ValuePropositionSection } from "@/components/home/value-proposition-section";
-import { MarketplaceSection } from "@/components/home/marketplace-section";
-import { InteractiveDemo } from "@/components/home/interactive-demo";
-import { CompetitiveAdvantages } from "@/components/home/competitive-advantages";
-import { PricingPreview } from "@/components/home/pricing-preview";
-import { FaqSection } from "@/components/home/faq-section";
-import { EnhancedErrorBoundary } from "@/components/error/enhanced-error-boundary";
+
+// Lazy load heavy components with enhanced loading states
+const InteractiveDemo = React.lazy(() => 
+  import("@/components/home/interactive-demo").then(module => ({
+    default: module.InteractiveDemo
+  }))
+);
+
+const FaqSection = React.lazy(() => 
+  import("@/components/home/faq-section").then(module => ({
+    default: module.FaqSection
+  }))
+);
+
+const UserJourneySection = React.lazy(() => 
+  import("@/components/home/user-journey-section").then(module => ({
+    default: module.UserJourneySection
+  }))
+);
+
+const QuickStartSection = React.lazy(() => 
+  import("@/components/home/quick-start-section").then(module => ({
+    default: module.QuickStartSection
+  }))
+);
+
+const MarketPositioning = React.lazy(() => 
+  import("@/components/home/market-positioning").then(module => ({
+    default: module.MarketPositioning
+  }))
+);
+
+const PlatformFeaturesShowcase = React.lazy(() => 
+  import("@/components/home/platform-features-showcase").then(module => ({
+    default: module.PlatformFeaturesShowcase
+  }))
+);
+
+const CompetitiveAdvantages = React.lazy(() => 
+  import("@/components/home/competitive-advantages").then(module => ({
+    default: module.CompetitiveAdvantages
+  }))
+);
+
+const NetworkEffectsSection = React.lazy(() => 
+  import("@/components/home/network-effects-section").then(module => ({
+    default: module.NetworkEffectsSection
+  }))
+);
+
+const StrategicPartnershipsSection = React.lazy(() => 
+  import("@/components/home/strategic-partnerships-section").then(module => ({
+    default: module.StrategicPartnershipsSection
+  }))
+);
+
+const GlobalExpansionSection = React.lazy(() => 
+  import("@/components/home/global-expansion-section").then(module => ({
+    default: module.GlobalExpansionSection
+  }))
+);
+
+// Enhanced loading fallback component
+const SectionLoadingFallback = ({ height = "h-64" }: { height?: string }) => (
+  <div className={`${height} p-6`}>
+    <EnhancedSkeleton variant="card" animation="shimmer" className="h-full w-full" />
+  </div>
+);
 
 export default function Index() {
+  useEffect(() => {
+    // Track page visit and initialize analytics
+    analyticsTracker.track('home_page_visit', 'navigation', 'page_view');
+    
+    // Preload critical resources
+    performanceOptimizer.preloadCriticalResources([
+      '/src/assets/hawkly-logo.svg'
+    ]);
+    
+    // Optimize images for lazy loading
+    performanceOptimizer.optimizeImages();
+    
+    // Track user engagement
+    const handleUserEngagement = () => {
+      analyticsTracker.track('user_engagement', 'interaction', 'page_interaction');
+    };
+    
+    // Track scroll engagement
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        analyticsTracker.track('scroll_engagement', 'engagement', 'deep_scroll');
+        window.removeEventListener('scroll', handleScroll);
+      }
+    };
+    
+    document.addEventListener('click', handleUserEngagement, { once: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Initialize intelligent route preloading based on user behavior
+    bundleOptimizer.intelligentPreload('/');
+    
+    return () => {
+      document.removeEventListener('click', handleUserEngagement);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
-    <EnhancedErrorBoundary>
+    <>
       <Helmet>
-        <title>Hawkly | Next-Generation Web3 Security Platform - Secure Your Projects in 2 Hours</title>
+        <title>Hawkly | Next-Generation Web3 Security Platform</title>
         <meta
           name="description"
-          content="The world's fastest Web3 security marketplace. Get matched with expert auditors instantly, pay securely through smart contracts, and protect your project before launch. 500+ verified auditors, $350M+ assets protected."
+          content="The leading Web3 security marketplace. AI-powered auditor matching, smart contract escrow, and continuous monitoring. Faster, more secure, more affordable than traditional audit firms."
         />
-        <meta name="keywords" content="Web3 security, smart contract audit, blockchain security, crypto audit, DeFi security, NFT audit, security experts" />
-        <meta property="og:title" content="Hawkly | Secure Your Web3 Project in Under 2 Hours" />
-        <meta property="og:description" content="Connect with expert auditors to protect your blockchain applications from critical vulnerabilities. Trusted by 500+ Web3 projects worldwide." />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Hawkly | Next-Generation Web3 Security Platform" />
-        <meta name="twitter:description" content="The world's fastest Web3 security marketplace. Get your project audited by expert security professionals." />
+        <meta name="keywords" content="web3 security, smart contract audit, blockchain security, DeFi audit, NFT security, crypto audit" />
+        
+        {/* Performance optimizations */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
       </Helmet>
       
       <div className="min-h-screen bg-background flex flex-col">
-        <SimplifiedNavbar />
+        <Navbar />
         <div className="flex-grow">
-          <EnhancedErrorBoundary>
-            <SimplifiedHero />
-          </EnhancedErrorBoundary>
+          {/* Above-the-fold content - loaded immediately */}
+          <SimplifiedHero />
+          <ValuePropositionSection />
           
-          <EnhancedErrorBoundary>
-            <TrustIndicators />
-          </EnhancedErrorBoundary>
+          {/* Below-the-fold content - lazy loaded with enhanced loading states */}
+          <LazySection fallback={<SectionLoadingFallback />}>
+            <UserJourneySection />
+          </LazySection>
           
-          <EnhancedErrorBoundary>
-            <ValuePropositionSection />
-          </EnhancedErrorBoundary>
+          <LazySection fallback={<SectionLoadingFallback />}>
+            <QuickStartSection />
+          </LazySection>
           
-          <EnhancedErrorBoundary>
-            <InteractiveDemo />
-          </EnhancedErrorBoundary>
+          <LazySection fallback={<SectionLoadingFallback height="h-96" />}>
+            <div id="demo">
+              <InteractiveDemo />
+            </div>
+          </LazySection>
           
-          <EnhancedErrorBoundary>
-            <MarketplaceSection />
-          </EnhancedErrorBoundary>
+          <LazySection fallback={<SectionLoadingFallback />}>
+            <NetworkEffectsSection />
+          </LazySection>
           
-          <EnhancedErrorBoundary>
+          <LazySection fallback={<SectionLoadingFallback />}>
+            <MarketPositioning />
+          </LazySection>
+          
+          <LazySection fallback={<SectionLoadingFallback height="h-80" />}>
+            <PlatformFeaturesShowcase />
+          </LazySection>
+          
+          <LazySection fallback={<SectionLoadingFallback />}>
+            <StrategicPartnershipsSection />
+          </LazySection>
+          
+          <LazySection fallback={<SectionLoadingFallback />}>
+            <GlobalExpansionSection />
+          </LazySection>
+          
+          <LazySection fallback={<SectionLoadingFallback />}>
             <CompetitiveAdvantages />
-          </EnhancedErrorBoundary>
+          </LazySection>
           
-          <EnhancedErrorBoundary>
-            <PricingPreview />
-          </EnhancedErrorBoundary>
-          
-          <EnhancedErrorBoundary>
+          <LazySection fallback={<SectionLoadingFallback height="h-80" />}>
             <FaqSection />
-          </EnhancedErrorBoundary>
+          </LazySection>
+          
+          {/* Trust indicators moved to the end */}
+          <TrustIndicators />
         </div>
         
-        <EnhancedErrorBoundary>
-          <EnhancedFooter />
-        </EnhancedErrorBoundary>
+        <EnhancedFooter />
+        <SupportButton />
       </div>
-    </EnhancedErrorBoundary>
+    </>
   );
 }
+

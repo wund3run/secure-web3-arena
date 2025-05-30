@@ -1,31 +1,57 @@
-
-import { useCallback } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/auth';
 import { Notification } from '@/types/notification.types';
 
-export function useNotificationPersistence() {
-  const saveNotifications = useCallback((notifications: Notification[]) => {
-    try {
-      localStorage.setItem('hawkly_notifications', JSON.stringify(notifications));
-    } catch (error) {
-      console.error('Failed to save notifications:', error);
-    }
-  }, []);
+export const useNotificationPersistence = () => {
+  const { user } = useAuth();
+  const [persistedNotifications, setPersistedNotifications] = useState<Notification[]>([]);
 
-  const loadNotifications = useCallback((): Notification[] => {
-    try {
-      const stored = localStorage.getItem('hawkly_notifications');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        return parsed.map((n: any) => ({
-          ...n,
-          timestamp: new Date(n.timestamp),
+  const saveNotifications = (notifications: Notification[]) => {
+    if (!user?.id) return;
+    
+    // Keep only the last 50 notifications to avoid localStorage bloat
+    const toSave = notifications.slice(0, 50);
+    localStorage.setItem(`notifications_${user.id}`, JSON.stringify(toSave));
+    setPersistedNotifications(toSave);
+  };
+
+  const loadNotifications = (): Notification[] => {
+    if (!user?.id) return [];
+    
+    const saved = localStorage.getItem(`notifications_${user.id}`);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Convert timestamp strings back to Date objects
+        return parsed.map((notification: any) => ({
+          ...notification,
+          timestamp: new Date(notification.timestamp)
         }));
+      } catch (error) {
+        console.error('Failed to parse saved notifications:', error);
+        return [];
       }
-    } catch (error) {
-      console.error('Failed to load notifications:', error);
     }
     return [];
-  }, []);
+  };
 
-  return { saveNotifications, loadNotifications };
-}
+  const clearPersistedNotifications = () => {
+    if (!user?.id) return;
+    localStorage.removeItem(`notifications_${user.id}`);
+    setPersistedNotifications([]);
+  };
+
+  useEffect(() => {
+    if (user?.id) {
+      const loaded = loadNotifications();
+      setPersistedNotifications(loaded);
+    }
+  }, [user?.id]);
+
+  return {
+    persistedNotifications,
+    saveNotifications,
+    loadNotifications,
+    clearPersistedNotifications,
+  };
+};

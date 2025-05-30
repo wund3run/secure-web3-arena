@@ -14,6 +14,7 @@ export const useNotificationHelpers = () => {
       message: `Your audit status has changed to: ${status}`,
       type: 'info',
       category: 'audit',
+      userId: user.id,
       actionUrl: `/audits/${auditId}`,
       actionLabel: 'View Audit',
     });
@@ -27,6 +28,7 @@ export const useNotificationHelpers = () => {
       message: senderName ? `${senderName} sent you a message` : 'You have a new message',
       type: 'info',
       category: 'message',
+      userId: user.id,
       actionUrl: `/audits/${auditId}`,
       actionLabel: 'View Message',
     });
@@ -40,6 +42,7 @@ export const useNotificationHelpers = () => {
       message,
       type,
       category: 'payment',
+      userId: user.id,
     });
   };
 
@@ -51,6 +54,7 @@ export const useNotificationHelpers = () => {
       message,
       type: 'info',
       category: 'system',
+      userId: user.id,
     });
   };
 

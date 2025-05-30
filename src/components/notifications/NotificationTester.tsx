@@ -47,6 +47,7 @@ export const NotificationTester = () => {
   const sendTestNotification = (notification: typeof testNotifications[0]) => {
     addNotification({
       ...notification,
+      userId: user.id,
       actionUrl: '/dashboard',
       actionLabel: 'View Details',
     });

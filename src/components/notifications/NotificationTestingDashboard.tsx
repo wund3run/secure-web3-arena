@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -34,6 +35,7 @@ export const NotificationTestingDashboard = () => {
       message: 'This is a test notification to verify the system works.',
       type: 'info',
       category: 'system',
+      userId: user.id,
     });
     addTestResult('✅ Basic notification sent');
 
@@ -67,6 +69,7 @@ export const NotificationTestingDashboard = () => {
           message: `Testing ${test.type} notification type`,
           type: test.type,
           category: 'system',
+          userId: user.id,
         });
         addTestResult(`✅ ${test.type} notification sent`);
       }, (index + 1) * 1000);
@@ -92,6 +95,7 @@ export const NotificationTestingDashboard = () => {
           message: scenario.message,
           type: scenario.type,
           category: 'audit',
+          userId: user.id,
           actionUrl: `/audit/${auditId}`,
           actionLabel: 'View Audit',
         });
@@ -154,6 +158,7 @@ export const NotificationTestingDashboard = () => {
                       message: 'Quick notification test',
                       type: 'info',
                       category: 'system',
+                      userId: user.id,
                     })}
                     size="sm"
                     variant="outline"

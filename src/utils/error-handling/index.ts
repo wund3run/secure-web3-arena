@@ -10,12 +10,7 @@ export { ErrorCategory } from "../error-handling";
 export { 
   handleError, 
   createBoundary,
-  logErrorToAnalytics,
-  ErrorBoundary,
-  MarketplaceErrorBoundary,
-  withErrorHandling,
-  formatError,
-  isNetworkError
+  logErrorToAnalytics 
 } from "../error-handling";
 
 // Export new accessibility-focused error handling

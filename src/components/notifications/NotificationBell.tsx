@@ -1,21 +1,34 @@
 
-import React from 'react';
-import { Bell } from 'lucide-react';
+import React, { useState } from 'react';
+import { Bell, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNotifications } from '@/contexts/NotificationContext';
+import { NotificationList } from './NotificationList';
+import { NotificationPreferences } from './NotificationPreferences';
+import { NotificationSound } from './NotificationSound';
 
-export function NotificationBell() {
-  const { notifications, unreadCount, markAllAsRead } = useNotifications();
+export const NotificationBell = () => {
+  const [open, setOpen] = useState(false);
+  const { unreadCount, markAllAsRead } = useNotifications();
+
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (isOpen && unreadCount > 0) {
+      // Mark all as read when opening the notifications
+      setTimeout(() => markAllAsRead(), 2000);
+    }
+  };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <Popover open={open} onOpenChange={handleOpenChange}>
+      <PopoverTrigger asChild>
         <Button variant="ghost" size="sm" className="relative">
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
@@ -23,47 +36,44 @@ export function NotificationBell() {
               variant="destructive" 
               className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
             >
-              {unreadCount > 99 ? '99+' : unreadCount}
+              {unreadCount > 9 ? '9+' : unreadCount}
             </Badge>
           )}
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-80">
-        <div className="flex items-center justify-between p-2">
-          <h3 className="font-semibold">Notifications</h3>
-          {unreadCount > 0 && (
-            <Button variant="ghost" size="sm" onClick={markAllAsRead}>
-              Mark all as read
-            </Button>
-          )}
-        </div>
-        <div className="max-h-96 overflow-y-auto">
-          {notifications.length === 0 ? (
-            <div className="p-4 text-center text-muted-foreground">
-              No notifications yet
-            </div>
-          ) : (
-            <div className="space-y-1">
-              {notifications.slice(0, 10).map((notification) => (
-                <div
-                  key={notification.id}
-                  className={`p-3 hover:bg-muted/50 cursor-pointer ${
-                    !notification.read ? 'bg-muted/30' : ''
-                  }`}
-                >
-                  <div className="font-medium text-sm">{notification.title}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {notification.message}
-                  </div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {notification.timestamp.toLocaleDateString()}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </PopoverTrigger>
+      <PopoverContent 
+        className="w-96 p-0 bg-background border shadow-lg z-50" 
+        align="end"
+        side="bottom"
+      >
+        <Tabs defaultValue="notifications" className="w-full">
+          <div className="flex items-center justify-between p-4 border-b">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="notifications">
+                Notifications
+                {unreadCount > 0 && (
+                  <Badge variant="secondary" className="ml-2 h-5 w-5 p-0 text-xs">
+                    {unreadCount}
+                  </Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="settings">
+                <Settings className="h-4 w-4 mr-1" />
+                Settings
+              </TabsTrigger>
+            </TabsList>
+            <NotificationSound />
+          </div>
+          
+          <TabsContent value="notifications" className="m-0">
+            <NotificationList />
+          </TabsContent>
+          
+          <TabsContent value="settings" className="m-0 p-4">
+            <NotificationPreferences />
+          </TabsContent>
+        </Tabs>
+      </PopoverContent>
+    </Popover>
   );
-}
+};

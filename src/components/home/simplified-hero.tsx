@@ -2,22 +2,18 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Shield, Play, CheckCircle, Zap, Users, Star, Clock, Award, FileCheck } from 'lucide-react';
+import { ArrowRight, Shield, Play, CheckCircle, Zap, Users, Star } from 'lucide-react';
 
 const HERO_STATS = [
-  { icon: Users, value: "500+", label: "Expert Auditors", subtext: "Verified professionals" },
-  { icon: Shield, value: "$350M+", label: "Assets Protected", subtext: "Secured to date" },
-  { icon: Star, value: "4.9/5", label: "Client Rating", subtext: "Average satisfaction" }
-];
-
-const TRUST_LOGOS = [
-  "Ethereum", "Solana", "Polygon", "Avalanche", "BNB Chain"
+  { icon: Users, value: "500+", label: "Expert Auditors" },
+  { icon: Shield, value: "$350M+", label: "Assets Protected" },
+  { icon: Star, value: "4.9/5", label: "Client Rating" }
 ];
 
 export function SimplifiedHero() {
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden bg-gradient-to-br from-background via-primary/5 to-secondary/5">
-      {/* Enhanced Background Elements */}
+    <section className="relative py-16 md:py-24 overflow-hidden bg-gradient-to-br from-background via-primary/5 to-secondary/5">
+      {/* Background Elements */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-20 left-10 w-32 h-32 bg-primary/30 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-40 h-40 bg-secondary/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
@@ -25,136 +21,95 @@ export function SimplifiedHero() {
       </div>
 
       <div className="container px-4 md:px-6 relative">
-        <div className="max-w-5xl mx-auto text-center">
-          {/* Enhanced Trust Badge with Social Proof */}
-          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-primary/10 to-secondary/10 px-8 py-4 rounded-full border border-primary/20 mb-10 shadow-lg">
-            <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-primary animate-pulse" />
-              <span className="text-sm font-semibold">Trusted by 500+ Web3 Projects</span>
-            </div>
-            <div className="h-4 w-px bg-primary/30"></div>
-            <div className="flex items-center gap-2">
-              <Award className="h-4 w-4 text-secondary" />
-              <span className="text-sm font-medium text-secondary">12,800+ Vulnerabilities Found</span>
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Enhanced Trust Badge */}
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 px-6 py-3 rounded-full border border-primary/20 mb-8 shadow-sm">
+            <Shield className="h-5 w-5 text-primary animate-pulse" />
+            <span className="text-sm font-semibold">Trusted by 500+ Web3 Projects Worldwide</span>
+            <div className="flex -space-x-1 ml-2">
+              {[1,2,3].map((i) => (
+                <div key={i} className="w-6 h-6 rounded-full bg-primary/20 border-2 border-background"></div>
+              ))}
             </div>
           </div>
 
-          {/* Enhanced Main Headline with Urgency */}
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-8 leading-tight">
+          {/* Enhanced Main Headline */}
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6">
             <span className="block text-foreground">Secure Your Web3 Project</span>
             <span className="block bg-gradient-to-r from-primary via-purple-600 to-secondary bg-clip-text text-transparent">
               In Under 2 Hours
             </span>
           </h1>
 
-          {/* Enhanced Value Proposition with Risk Focus */}
-          <p className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-4xl mx-auto leading-relaxed">
-            Don't risk your users' funds. Get matched with expert auditors instantly, 
-            secure smart contract escrow, and protect your project before launch.
+          {/* Enhanced Value Proposition */}
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+            The world's fastest Web3 security marketplace. Get matched with expert auditors instantly, 
+            pay securely through smart contracts, and protect your project before launch.
           </p>
-          
-          {/* Risk Urgency Indicator */}
-          <div className="flex items-center justify-center gap-2 mb-10 text-orange-600">
-            <Clock className="h-5 w-5" />
-            <span className="text-lg font-semibold">Every day unaudited = Higher risk of exploits</span>
-          </div>
 
-          {/* Enhanced Primary CTAs */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
-            <Button asChild size="lg" className="text-xl px-10 py-8 bg-gradient-to-r from-primary to-secondary hover:opacity-90 shadow-2xl hover:shadow-3xl transition-all group relative overflow-hidden">
+          {/* Primary CTAs with enhanced styling */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
+            <Button asChild size="lg" className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-secondary hover:opacity-90 shadow-lg hover:shadow-xl transition-all group">
               <Link to="/request-audit" className="flex items-center">
-                <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                <Shield className="mr-3 h-7 w-7 group-hover:rotate-12 transition-transform" />
-                Get Security Audit Now
-                <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                <Shield className="mr-2 h-6 w-6 group-hover:rotate-12 transition-transform" />
+                Get Security Audit 
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="text-xl px-10 py-8 border-2 hover:bg-muted/50 transition-all group">
+            <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6 border-2 hover:bg-muted/50 transition-all group">
               <Link to="#demo" className="flex items-center">
-                <Play className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform" />
-                See How It Works (2 min)
+                <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
+                See How It Works
               </Link>
             </Button>
           </div>
 
-          {/* Enhanced Risk-Free Guarantee with More Benefits */}
-          <div className="bg-card/90 backdrop-blur-sm border-2 border-primary/20 rounded-2xl p-8 mb-10 max-w-5xl mx-auto shadow-xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-sm">
-              <div className="flex items-center gap-3 group">
-                <CheckCircle className="h-6 w-6 text-green-500 group-hover:scale-110 transition-transform" />
-                <div className="text-left">
-                  <div className="font-semibold">30-Day Guarantee</div>
-                  <div className="text-muted-foreground text-xs">100% satisfaction or refund</div>
-                </div>
+          {/* Enhanced Risk-Free Guarantee */}
+          <div className="bg-card/80 backdrop-blur-sm border-2 border-primary/10 rounded-xl p-6 mb-8 max-w-4xl mx-auto shadow-lg">
+            <div className="flex flex-wrap justify-center gap-8 text-sm">
+              <div className="flex items-center gap-2 group">
+                <CheckCircle className="h-5 w-5 text-green-500 group-hover:scale-110 transition-transform" />
+                <span className="font-medium">30-day satisfaction guarantee</span>
               </div>
-              <div className="flex items-center gap-3 group">
-                <FileCheck className="h-6 w-6 text-green-500 group-hover:scale-110 transition-transform" />
-                <div className="text-left">
-                  <div className="font-semibold">Smart Escrow</div>
-                  <div className="text-muted-foreground text-xs">Secure blockchain payments</div>
-                </div>
+              <div className="flex items-center gap-2 group">
+                <CheckCircle className="h-5 w-5 text-green-500 group-hover:scale-110 transition-transform" />
+                <span className="font-medium">Smart contract escrow protection</span>
               </div>
-              <div className="flex items-center gap-3 group">
-                <Users className="h-6 w-6 text-green-500 group-hover:scale-110 transition-transform" />
-                <div className="text-left">
-                  <div className="font-semibold">Expert Auditors</div>
-                  <div className="text-muted-foreground text-xs">Verified professionals only</div>
-                </div>
+              <div className="flex items-center gap-2 group">
+                <CheckCircle className="h-5 w-5 text-green-500 group-hover:scale-110 transition-transform" />
+                <span className="font-medium">Free security consultation</span>
               </div>
-              <div className="flex items-center gap-3 group">
-                <Zap className="h-6 w-6 text-green-500 group-hover:scale-110 transition-transform" />
-                <div className="text-left">
-                  <div className="font-semibold">Instant Matching</div>
-                  <div className="text-muted-foreground text-xs">AI-powered in minutes</div>
-                </div>
+              <div className="flex items-center gap-2 group">
+                <CheckCircle className="h-5 w-5 text-green-500 group-hover:scale-110 transition-transform" />
+                <span className="font-medium">Pay only when satisfied</span>
               </div>
             </div>
           </div>
 
-          {/* Enhanced Hero Stats with More Detail */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+          {/* Hero Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {HERO_STATS.map((stat, index) => (
-              <div key={index} className="bg-card/70 backdrop-blur-sm border border-border/50 rounded-xl p-6 hover:shadow-lg transition-all group hover:border-primary/30">
-                <div className="flex items-center justify-center mb-3">
-                  <div className="p-3 bg-primary/10 rounded-full">
-                    <stat.icon className="h-8 w-8 text-primary group-hover:scale-110 transition-transform" />
-                  </div>
+              <div key={index} className="bg-card/60 backdrop-blur-sm border border-border/50 rounded-lg p-4 hover:shadow-md transition-all group">
+                <div className="flex items-center justify-center mb-2">
+                  <stat.icon className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
                 </div>
-                <div className="text-3xl font-bold text-primary mb-1">{stat.value}</div>
-                <div className="text-lg font-medium text-foreground mb-1">{stat.label}</div>
-                <div className="text-sm text-muted-foreground">{stat.subtext}</div>
+                <div className="text-2xl font-bold text-primary">{stat.value}</div>
+                <div className="text-sm text-muted-foreground">{stat.label}</div>
               </div>
             ))}
           </div>
 
-          {/* Blockchain Ecosystem Support */}
-          <div className="mb-10">
-            <p className="text-sm text-muted-foreground mb-4 font-medium">Supporting all major blockchain ecosystems:</p>
-            <div className="flex flex-wrap justify-center gap-4">
-              {TRUST_LOGOS.map((chain, index) => (
-                <div 
-                  key={chain} 
-                  className="px-4 py-2 bg-muted/60 rounded-full text-sm font-medium hover:bg-muted/80 transition-colors"
-                >
-                  {chain}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Enhanced Pricing with Urgency */}
-          <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl p-6 border border-primary/20 max-w-4xl mx-auto">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="text-left">
-                <p className="text-2xl font-bold text-primary mb-1">Starting from $2,500</p>
-                <p className="text-sm text-muted-foreground">
-                  Transparent pricing • Instant matching • Secure payments • Expert auditors
-                </p>
-              </div>
-              <div className="bg-orange-100 text-orange-800 px-4 py-2 rounded-full text-sm font-semibold">
-                🔥 Limited time: Free security consultation included
-              </div>
-            </div>
+          {/* Enhanced Pricing Transparency */}
+          <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-4 border border-primary/20">
+            <p className="text-sm text-muted-foreground">
+              <span className="font-semibold text-primary text-lg">Starting from $2,500</span> • 
+              <span className="mx-2">•</span>
+              <span className="font-medium">Instant matching</span> • 
+              <span className="mx-2">•</span>
+              <span className="font-medium">Transparent pricing</span> •
+              <span className="mx-2">•</span>
+              <span className="font-medium">Secure payments</span>
+            </p>
           </div>
         </div>
       </div>

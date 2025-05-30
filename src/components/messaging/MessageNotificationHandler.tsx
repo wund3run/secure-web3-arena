@@ -29,6 +29,7 @@ export const MessageNotificationHandler = () => {
               message: 'You have received a new message in your audit',
               type: 'info',
               category: 'message',
+              userId: user.id,
               actionUrl: `/audit/${payload.new.audit_request_id}`,
               actionLabel: 'View Message',
             });

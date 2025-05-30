@@ -1,11 +1,9 @@
 
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, Mail, Lock, User } from 'lucide-react';
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SignInForm } from "./forms/SignInForm";
+import { SignUpForm } from "./forms/SignUpForm";
 
 interface AuthFormsProps {
   onSignIn: (email: string, password: string) => Promise<void>;
@@ -14,135 +12,67 @@ interface AuthFormsProps {
   error: string | null;
 }
 
-export const AuthForms: React.FC<AuthFormsProps> = ({
-  onSignIn,
-  onSignUp,
-  isLoading,
-  error
-}) => {
-  const [signInData, setSignInData] = useState({ email: '', password: '' });
-  const [signUpData, setSignUpData] = useState({
+export const AuthForms = ({ onSignIn, onSignUp, isLoading, error }: AuthFormsProps) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [activeTab, setActiveTab] = useState('login');
+  const [formData, setFormData] = useState({
     email: '',
     password: '',
     fullName: '',
-    userType: 'project_owner' as 'auditor' | 'project_owner'
+    confirmPassword: '',
+    userType: 'project_owner' as 'project_owner' | 'auditor'
   });
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSignIn(signInData.email, signInData.password);
+    await onSignIn(formData.email, formData.password);
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSignUp(signUpData.email, signUpData.password, signUpData.fullName, signUpData.userType);
+    await onSignUp(formData.email, formData.password, formData.fullName, formData.userType);
   };
 
+  const togglePassword = () => setShowPassword(!showPassword);
+
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader className="text-center">
-        <CardTitle>Welcome to Hawkly</CardTitle>
-        <CardDescription>
-          Sign in to your account or create a new one
-        </CardDescription>
+    <Card className="shadow-xl">
+      <CardHeader>
+        <CardTitle className="text-center">Get Started</CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="signin" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="signin">Sign In</TabsTrigger>
-            <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            <TabsTrigger value="login">Sign In</TabsTrigger>
+            <TabsTrigger value="register">Sign Up</TabsTrigger>
           </TabsList>
-
-          {error && (
-            <Alert variant="destructive" className="mt-4">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
-          <TabsContent value="signin">
-            <form onSubmit={handleSignIn} className="space-y-4">
-              <div className="space-y-2">
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="email"
-                    placeholder="Email"
-                    value={signInData.email}
-                    onChange={(e) => setSignInData({ ...signInData, email: e.target.value })}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="password"
-                    placeholder="Password"
-                    value={signInData.password}
-                    onChange={(e) => setSignInData({ ...signInData, password: e.target.value })}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-              </div>
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Sign In
-              </Button>
-            </form>
+          
+          <TabsContent value="login">
+            <SignInForm
+              formData={formData}
+              showPassword={showPassword}
+              isLoading={isLoading}
+              error={error}
+              onInputChange={handleInputChange}
+              onTogglePassword={togglePassword}
+              onSubmit={handleSignIn}
+            />
           </TabsContent>
-
-          <TabsContent value="signup">
-            <form onSubmit={handleSignUp} className="space-y-4">
-              <div className="space-y-2">
-                <div className="relative">
-                  <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="text"
-                    placeholder="Full Name"
-                    value={signUpData.fullName}
-                    onChange={(e) => setSignUpData({ ...signUpData, fullName: e.target.value })}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="email"
-                    placeholder="Email"
-                    value={signUpData.email}
-                    onChange={(e) => setSignUpData({ ...signUpData, email: e.target.value })}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="password"
-                    placeholder="Password"
-                    value={signUpData.password}
-                    onChange={(e) => setSignUpData({ ...signUpData, password: e.target.value })}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-                <select
-                  value={signUpData.userType}
-                  onChange={(e) => setSignUpData({ ...signUpData, userType: e.target.value as 'auditor' | 'project_owner' })}
-                  className="w-full p-2 border rounded-md"
-                  required
-                >
-                  <option value="project_owner">Project Owner</option>
-                  <option value="auditor">Security Auditor</option>
-                </select>
-              </div>
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Sign Up
-              </Button>
-            </form>
+          
+          <TabsContent value="register">
+            <SignUpForm
+              formData={formData}
+              showPassword={showPassword}
+              isLoading={isLoading}
+              error={error}
+              onInputChange={handleInputChange}
+              onTogglePassword={togglePassword}
+              onSubmit={handleSignUp}
+            />
           </TabsContent>
         </Tabs>
       </CardContent>

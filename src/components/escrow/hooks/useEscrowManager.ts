@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useEscrow } from "@/contexts/EscrowContext";
 import { toast } from "sonner";
+import { withErrorHandling } from "@/utils/error-handling";
 
 export function useEscrowManager() {
   const { profile, loading } = useEscrow();
@@ -23,7 +24,10 @@ export function useEscrowManager() {
       if (window.ethereum) {
         try {
           setIsWalletConnecting(true);
-          const chainIdResponse = await window.ethereum.request({ method: 'eth_chainId' });
+          const chainIdResponse = await withErrorHandling(
+            async () => window.ethereum.request({ method: 'eth_chainId' }),
+            "Failed to get network information"
+          );
           
           if (chainIdResponse) {
             setChainId(chainIdResponse);
