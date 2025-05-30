@@ -1,192 +1,199 @@
 
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Bell, AlertTriangle, CheckCircle, Clock, X } from "lucide-react";
-import { toast } from "sonner";
+import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useNotifications } from '@/contexts/NotificationContext';
+import { useAuth } from '@/contexts/auth';
+import { Badge } from '@/components/ui/badge';
+import { Bell, Send, Users, AlertTriangle } from 'lucide-react';
+import { toast } from 'sonner';
 
-interface AdminNotification {
-  id: string;
-  type: "critical" | "warning" | "info" | "success";
-  title: string;
-  message: string;
-  timestamp: Date;
-  read: boolean;
-  actionRequired?: boolean;
-}
+export const AdminNotificationCenter = () => {
+  const { addNotification } = useNotifications();
+  const { user } = useAuth();
+  const [announcementTitle, setAnnouncementTitle] = useState('');
+  const [announcementMessage, setAnnouncementMessage] = useState('');
+  const [announcementType, setAnnouncementType] = useState<'info' | 'warning' | 'error' | 'success'>('info');
+  const [targetAudience, setTargetAudience] = useState('all');
 
-export function AdminNotificationCenter() {
-  const [notifications, setNotifications] = useState<AdminNotification[]>([
+  const sendSystemAnnouncement = () => {
+    if (!announcementTitle || !announcementMessage) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    // In a real app, this would send to all users based on targetAudience
+    // For now, we'll just add it to the current user's notifications
+    addNotification({
+      title: `[SYSTEM] ${announcementTitle}`,
+      message: announcementMessage,
+      type: announcementType,
+      category: 'system',
+      userId: user?.id || '',
+    });
+
+    toast.success('System announcement sent successfully');
+    setAnnouncementTitle('');
+    setAnnouncementMessage('');
+    setAnnouncementType('info');
+  };
+
+  const quickAnnouncements = [
     {
-      id: "1",
-      type: "critical",
-      title: "High Priority Audit",
-      message: "Critical vulnerability found in DeFi Protocol audit requires immediate attention",
-      timestamp: new Date(Date.now() - 5 * 60 * 1000),
-      read: false,
-      actionRequired: true
+      title: 'Scheduled Maintenance',
+      message: 'The platform will undergo scheduled maintenance tonight from 2-4 AM UTC.',
+      type: 'warning' as const,
     },
     {
-      id: "2", 
-      type: "warning",
-      title: "Auditor Verification Pending",
-      message: "3 new auditor applications waiting for verification review",
-      timestamp: new Date(Date.now() - 15 * 60 * 1000),
-      read: false,
-      actionRequired: true
+      title: 'New Feature Release',
+      message: 'We\'ve released new notification features! Check them out in your dashboard.',
+      type: 'success' as const,
     },
     {
-      id: "3",
-      type: "success",
-      title: "Audit Completed",
-      message: "NFT Marketplace security audit completed successfully",
-      timestamp: new Date(Date.now() - 30 * 60 * 1000),
-      read: true
+      title: 'Security Update',
+      message: 'Please update your passwords and enable 2FA for enhanced security.',
+      type: 'info' as const,
     },
-    {
-      id: "4",
-      type: "info", 
-      title: "System Maintenance",
-      message: "Scheduled maintenance window completed without issues",
-      timestamp: new Date(Date.now() - 60 * 60 * 1000),
-      read: true
-    }
-  ]);
-
-  const unreadCount = notifications.filter(n => !n.read).length;
-
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case "critical":
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      case "warning":
-        return <Clock className="h-4 w-4 text-yellow-500" />;
-      case "success":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      default:
-        return <Bell className="h-4 w-4 text-blue-500" />;
-    }
-  };
-
-  const getNotificationVariant = (type: string) => {
-    switch (type) {
-      case "critical":
-        return "destructive";
-      case "warning":
-        return "secondary";
-      case "success":
-        return "default";
-      default:
-        return "outline";
-    }
-  };
-
-  const markAsRead = (id: string) => {
-    setNotifications(prev =>
-      prev.map(n => n.id === id ? { ...n, read: true } : n)
-    );
-  };
-
-  const dismissNotification = (id: string) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
-    toast.success("Notification dismissed");
-  };
-
-  const formatTimeAgo = (date: Date) => {
-    const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-    
-    if (diffInMinutes < 1) return "Just now";
-    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
-    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
-    return `${Math.floor(diffInMinutes / 1440)}d ago`;
-  };
+  ];
 
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
             <Bell className="h-5 w-5" />
-            Notifications
-            {unreadCount > 0 && (
-              <Badge variant="destructive" className="text-xs">
-                {unreadCount}
-              </Badge>
-            )}
+            Admin Notification Center
+          </CardTitle>
+          <CardDescription>
+            Send system-wide announcements and manage platform notifications
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Announcement Title</label>
+              <Input
+                value={announcementTitle}
+                onChange={(e) => setAnnouncementTitle(e.target.value)}
+                placeholder="Enter announcement title"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Target Audience</label>
+              <Select value={targetAudience} onValueChange={setTargetAudience}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Users</SelectItem>
+                  <SelectItem value="auditors">Auditors Only</SelectItem>
+                  <SelectItem value="clients">Clients Only</SelectItem>
+                  <SelectItem value="active">Active Users</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setNotifications(prev => prev.map(n => ({ ...n, read: true })))}
-          >
-            Mark all read
-          </Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-80">
-          <div className="space-y-3">
-            {notifications.map((notification) => (
+
+          <div>
+            <label className="text-sm font-medium">Message</label>
+            <Textarea
+              value={announcementMessage}
+              onChange={(e) => setAnnouncementMessage(e.target.value)}
+              placeholder="Enter your announcement message"
+              rows={3}
+            />
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div>
+              <label className="text-sm font-medium">Type</label>
+              <Select value={announcementType} onValueChange={(value) => setAnnouncementType(value as any)}>
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="info">Info</SelectItem>
+                  <SelectItem value="success">Success</SelectItem>
+                  <SelectItem value="warning">Warning</SelectItem>
+                  <SelectItem value="error">Error</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button onClick={sendSystemAnnouncement} className="flex items-center gap-2">
+              <Send className="h-4 w-4" />
+              Send Announcement
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Quick Announcements</CardTitle>
+          <CardDescription>
+            Pre-defined announcements for common scenarios
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            {quickAnnouncements.map((announcement, index) => (
               <div
-                key={notification.id}
-                className={`p-3 rounded-lg border transition-colors ${
-                  !notification.read ? "bg-muted/50 border-primary/20" : "bg-muted/20"
-                }`}
+                key={index}
+                className="flex items-center justify-between p-3 border rounded-lg"
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex items-start gap-2 flex-1">
-                    {getNotificationIcon(notification.type)}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="text-sm font-medium truncate">
-                          {notification.title}
-                        </p>
-                        <Badge variant={getNotificationVariant(notification.type) as any} className="text-xs">
-                          {notification.type}
-                        </Badge>
-                      </div>
-                      <p className="text-xs text-muted-foreground mb-2">
-                        {notification.message}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground">
-                          {formatTimeAgo(notification.timestamp)}
-                        </span>
-                        {notification.actionRequired && (
-                          <Badge variant="outline" className="text-xs">
-                            Action Required
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-medium">{announcement.title}</h4>
+                    <Badge variant={announcement.type === 'warning' ? 'destructive' : 'default'}>
+                      {announcement.type}
+                    </Badge>
                   </div>
-                  <div className="flex items-center gap-1">
-                    {!notification.read && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => markAsRead(notification.id)}
-                      >
-                        <CheckCircle className="h-3 w-3" />
-                      </Button>
-                    )}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => dismissNotification(notification.id)}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
-                  </div>
+                  <p className="text-sm text-muted-foreground">{announcement.message}</p>
                 </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setAnnouncementTitle(announcement.title);
+                    setAnnouncementMessage(announcement.message);
+                    setAnnouncementType(announcement.type);
+                  }}
+                >
+                  Use Template
+                </Button>
               </div>
             ))}
           </div>
-        </ScrollArea>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5" />
+            Notification Statistics
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <div className="text-2xl font-bold">1,247</div>
+              <div className="text-sm text-muted-foreground">Total Sent Today</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold">89%</div>
+              <div className="text-sm text-muted-foreground">Read Rate</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold">23</div>
+              <div className="text-sm text-muted-foreground">Active Campaigns</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
-}
+};

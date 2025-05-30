@@ -1,19 +1,13 @@
 
 import React from "react";
-import { createRoot } from "react-dom/client";
+import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 
-// Get the root element
-const container = document.getElementById("root");
-if (!container) {
-  throw new Error("Root element not found");
-}
+// Create root with concurrent mode for better performance
+const root = ReactDOM.createRoot(document.getElementById("root")!);
 
-// Create root with React 18
-const root = createRoot(container);
-
-// Render the app
+// Use createRoot for React 18+ features
 root.render(
   <React.StrictMode>
     <App />

@@ -80,6 +80,7 @@ export function TutorialTabs({
           <Progress 
             value={progress[activeTab as keyof typeof progress]} 
             className="h-1.5" 
+            indicatorClassName={progress[activeTab as keyof typeof progress] === 100 ? "bg-green-500" : undefined}
           />
         </div>
       </div>

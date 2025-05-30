@@ -32,6 +32,7 @@ export function AuditorProfileProgress({ currentStep, progress, steps }: Auditor
               <Progress 
                 value={progress} 
                 className="h-2" 
+                indicatorClassName="bg-gradient-to-r from-primary to-secondary"
               />
             </div>
           </TooltipTrigger>

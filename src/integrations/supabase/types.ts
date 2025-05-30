@@ -1685,9 +1685,7 @@ export type Database = {
         }[]
       }
       has_subscription_feature: {
-        Args:
-          | Record<PropertyKey, never>
-          | { user_id: string; feature_name: string }
+        Args: { user_id: string; feature_name: string }
         Returns: boolean
       }
       is_admin: {

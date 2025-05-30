@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAuth } from '@/contexts/auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,8 +26,8 @@ export function RoleBasedDashboardContent() {
   const { user, userProfile, getUserType } = useAuth();
   const userType = getUserType();
 
-  // General user dashboard (including visitor)
-  if (userType === "general" || !userType) {
+  // General user dashboard
+  if (userType === "general" || userType === "visitor") {
     return (
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>

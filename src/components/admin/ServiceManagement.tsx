@@ -1,10 +1,8 @@
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { 
+import {
   Table,
   TableBody,
   TableCell,
@@ -16,249 +14,254 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Search, MoreHorizontal, Eye, Edit, Trash2, CheckCircle, Clock, XCircle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Filter,
+  MoreHorizontal,
+  Plus,
+  Search,
+  Edit,
+  Trash,
+  Eye,
+  InfoIcon,
+} from "lucide-react";
 import { toast } from "sonner";
-
-interface Service {
-  id: string;
-  title: string;
-  provider: string;
-  category: string;
-  price: number;
-  status: "active" | "pending" | "suspended";
-  createdDate: string;
-  lastUpdated: string;
-  completedAudits: number;
-  rating: number;
-}
+import { SERVICES } from "@/data/marketplace-data";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function ServiceManagement() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [services] = useState<Service[]>([
-    {
-      id: "1",
-      title: "Smart Contract Security Audit",
-      provider: "Alex Thompson",
-      category: "Smart Contract",
-      price: 2500,
-      status: "active",
-      createdDate: "2024-01-15",
-      lastUpdated: "2024-01-20",
-      completedAudits: 45,
-      rating: 4.9
-    },
-    {
-      id: "2",
-      title: "DeFi Protocol Complete Review",
-      provider: "Sarah Chen",
-      category: "DeFi",
-      price: 5000,
-      status: "active",
-      createdDate: "2024-01-10",
-      lastUpdated: "2024-01-19",
-      completedAudits: 28,
-      rating: 4.8
-    },
-    {
-      id: "3",
-      title: "NFT Marketplace Security Assessment",
-      provider: "Marcus Rodriguez",
-      category: "NFT",
-      price: 3000,
-      status: "pending",
-      createdDate: "2024-01-18",
-      lastUpdated: "2024-01-18",
-      completedAudits: 0,
-      rating: 0
-    },
-    {
-      id: "4",
-      title: "Cross-Chain Bridge Analysis",
-      provider: "Elena Kovač",
-      category: "Bridge",
-      price: 7500,
-      status: "suspended",
-      createdDate: "2023-12-20",
-      lastUpdated: "2024-01-15",
-      completedAudits: 12,
-      rating: 4.6
-    }
-  ]);
+  const [services, setServices] = useState(SERVICES.slice(0, 10));
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState<typeof services[0] | null>(null);
 
-  const filteredServices = services.filter(service =>
-    service.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    service.provider.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    service.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const getCategoryColor = (category: string) => {
-    switch (category.toLowerCase()) {
-      case "smart contract":
-        return "bg-blue-100 text-blue-800";
-      case "defi":
-        return "bg-green-100 text-green-800";
-      case "nft":
-        return "bg-purple-100 text-purple-800";
-      case "bridge":
-        return "bg-orange-100 text-orange-800";
-      default:
-        return "bg-gray-100 text-gray-800";
+  const handleDeleteService = () => {
+    if (selectedService) {
+      setServices(services.filter((service) => service.id !== selectedService.id));
+      toast.success("Service deleted successfully", {
+        description: `"${selectedService.title}" has been removed.`,
+      });
+      setIsDeleteDialogOpen(false);
+      setSelectedService(null);
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "active":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case "pending":
-        return <Clock className="h-4 w-4 text-yellow-500" />;
-      case "suspended":
-        return <XCircle className="h-4 w-4 text-red-500" />;
-      default:
-        return null;
-    }
+  const confirmDelete = (service: typeof services[0]) => {
+    setSelectedService(service);
+    setIsDeleteDialogOpen(true);
   };
 
-  const handleServiceAction = (action: string, serviceId: string, serviceTitle: string) => {
-    toast.success(`${action} action performed for "${serviceTitle}"`);
+  const editService = (service: typeof services[0]) => {
+    toast.info("Edit service", {
+      description: `Editing "${service.title}" (feature in development)`,
+    });
+  };
+
+  const viewService = (service: typeof services[0]) => {
+    toast.info("View service details", {
+      description: `Viewing details for "${service.title}"`,
+    });
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight">Service Management</h2>
-        <p className="text-muted-foreground">
-          Manage audit services, approvals, and quality control
-        </p>
+    <>
+      <div className="space-y-4">
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex flex-col md:flex-row md:items-center justify-between space-y-2 md:space-y-0">
+              <div>
+                <CardTitle>Security Services</CardTitle>
+                <CardDescription>
+                  Manage and monitor all security services on the platform
+                </CardDescription>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="relative w-full md:w-auto">
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="search"
+                    placeholder="Search services..."
+                    className="pl-8 w-full md:w-[300px]"
+                  />
+                </div>
+                <Button variant="outline" size="icon" aria-label="Filter services">
+                  <Filter className="h-4 w-4" />
+                </Button>
+                <Button aria-label="Add new service">
+                  <Plus className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">Add Service</span>
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-md border overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Provider</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      <div className="flex items-center">
+                        <span>Status</span>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <InfoIcon className="h-3.5 w-3.5 ml-1 text-muted-foreground cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">Current availability of the service</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    </TableHead>
+                    <TableHead className="hidden lg:table-cell">
+                      <div className="flex items-center">
+                        <span>Price</span>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <InfoIcon className="h-3.5 w-3.5 ml-1 text-muted-foreground cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">Base price in USD</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    </TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {services.map((service) => (
+                    <TableRow key={service.id}>
+                      <TableCell className="font-medium">{service.title}</TableCell>
+                      <TableCell>{service.provider.name}</TableCell>
+                      <TableCell>{service.category}</TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        <Badge variant="outline" className="bg-green-50 text-green-700 hover:bg-green-50">
+                          Active
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">${service.pricing.amount}</TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span className="sr-only">Open menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => viewService(service)}>
+                              <Eye className="h-4 w-4 mr-2" />
+                              View Details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => editService(service)}>
+                              <Edit className="h-4 w-4 mr-2" />
+                              Edit Service
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              className="text-destructive focus:text-destructive" 
+                              onClick={() => confirmDelete(service)}
+                            >
+                              <Trash className="h-4 w-4 mr-2" />
+                              Delete Service
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 py-4">
+              <div className="text-sm text-muted-foreground order-2 sm:order-1">
+                Showing <span className="font-medium">1</span> to{" "}
+                <span className="font-medium">{services.length}</span> of{" "}
+                <span className="font-medium">{SERVICES.length}</span> services
+              </div>
+              <div className="flex gap-2 order-1 sm:order-2">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="sm" disabled>
+                        Previous
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">Already on the first page</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        Next
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">Go to next page</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Security Services</CardTitle>
-          <div className="flex items-center gap-4">
-            <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                placeholder="Search services..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Button>Add Service</Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Service</TableHead>
-                <TableHead>Provider</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Performance</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredServices.map((service) => (
-                <TableRow key={service.id}>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium">{service.title}</div>
-                      <div className="text-sm text-muted-foreground">
-                        Updated: {new Date(service.lastUpdated).toLocaleDateString()}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{service.provider}</TableCell>
-                  <TableCell>
-                    <Badge className={getCategoryColor(service.category)}>
-                      {service.category}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>${service.price.toLocaleString()}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(service.status)}
-                      <span className="capitalize">{service.status}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm">
-                      <div>{service.completedAudits} audits</div>
-                      {service.rating > 0 && (
-                        <div className="text-xs text-muted-foreground">
-                          ⭐ {service.rating}/5.0
-                        </div>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem 
-                          onClick={() => handleServiceAction("View", service.id, service.title)}
-                        >
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Details
-                        </DropdownMenuItem>
-                        <DropdownMenuItem 
-                          onClick={() => handleServiceAction("Edit", service.id, service.title)}
-                        >
-                          <Edit className="h-4 w-4 mr-2" />
-                          Edit Service
-                        </DropdownMenuItem>
-                        {service.status === "pending" && (
-                          <DropdownMenuItem 
-                            onClick={() => handleServiceAction("Approve", service.id, service.title)}
-                            className="text-green-600"
-                          >
-                            <CheckCircle className="h-4 w-4 mr-2" />
-                            Approve
-                          </DropdownMenuItem>
-                        )}
-                        {service.status === "active" ? (
-                          <DropdownMenuItem 
-                            onClick={() => handleServiceAction("Suspend", service.id, service.title)}
-                            className="text-red-600"
-                          >
-                            <XCircle className="h-4 w-4 mr-2" />
-                            Suspend
-                          </DropdownMenuItem>
-                        ) : service.status === "suspended" && (
-                          <DropdownMenuItem 
-                            onClick={() => handleServiceAction("Reactivate", service.id, service.title)}
-                            className="text-green-600"
-                          >
-                            <CheckCircle className="h-4 w-4 mr-2" />
-                            Reactivate
-                          </DropdownMenuItem>
-                        )}
-                        <DropdownMenuItem 
-                          onClick={() => handleServiceAction("Delete", service.id, service.title)}
-                          className="text-red-600"
-                        >
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-    </div>
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete "{selectedService?.title}"? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleDeleteService}>
+              Delete Service
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

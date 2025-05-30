@@ -19,22 +19,8 @@ export const profileService = {
       
       if (profile) {
         const typedProfile: UserProfile = {
-          id: profile.id,
-          user_id: profile.id, // Use id as user_id for extended_profiles
-          full_name: profile.full_name,
-          display_name: profile.display_name,
-          user_type: profile.user_type as UserProfile['user_type'] || 'general',
-          avatar_url: profile.avatar_url,
-          bio: profile.bio,
-          website: profile.website,
-          wallet_address: profile.wallet_address,
-          verification_status: profile.verification_status,
-          specializations: profile.specializations,
-          projects_completed: profile.projects_completed,
-          years_of_experience: profile.years_of_experience,
-          social_links: profile.social_links,
-          created_at: profile.created_at,
-          updated_at: profile.updated_at,
+          ...profile,
+          user_type: profile.user_type as UserProfile['user_type'] || 'project_owner'
         };
         console.log('Profile loaded:', typedProfile);
         return typedProfile;
@@ -54,8 +40,8 @@ export const profileService = {
         .insert({
           id: userId,
           full_name: fullName,
-          display_name: fullName,
           user_type: userType,
+          display_name: fullName,
           verification_status: 'pending'
         });
 
@@ -89,22 +75,8 @@ export const profileService = {
     
     if (updatedProfile) {
       const typedProfile: UserProfile = {
-        id: updatedProfile.id,
-        user_id: updatedProfile.id,
-        full_name: updatedProfile.full_name,
-        display_name: updatedProfile.display_name,
-        user_type: updatedProfile.user_type as UserProfile['user_type'] || 'general',
-        avatar_url: updatedProfile.avatar_url,
-        bio: updatedProfile.bio,
-        website: updatedProfile.website,
-        wallet_address: updatedProfile.wallet_address,
-        verification_status: updatedProfile.verification_status,
-        specializations: updatedProfile.specializations,
-        projects_completed: updatedProfile.projects_completed,
-        years_of_experience: updatedProfile.years_of_experience,
-        social_links: updatedProfile.social_links,
-        created_at: updatedProfile.created_at,
-        updated_at: updatedProfile.updated_at,
+        ...updatedProfile,
+        user_type: updatedProfile.user_type as UserProfile['user_type'] || 'project_owner'
       };
       toast.success('Profile updated successfully');
       return typedProfile;
