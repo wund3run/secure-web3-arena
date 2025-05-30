@@ -11,12 +11,12 @@ import { NotificationProvider } from '@/contexts/NotificationContext';
 import { StripeProvider } from '@/components/payment/StripeProvider';
 
 // Components
-import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeProvider } from '@/components/ui/theme-provider';
 import { AppErrorBoundary } from '@/components/error/AppErrorBoundary';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 // Pages
-import LandingPage from '@/pages/LandingPage';
+import Index from '@/pages/Index';
 import AuthPage from '@/pages/AuthPage';
 import AuthCallback from '@/pages/AuthCallback';
 import Dashboard from '@/pages/Dashboard';
@@ -37,7 +37,7 @@ function App() {
                     <div className="min-h-screen bg-background">
                       <Routes>
                         {/* Public routes */}
-                        <Route path="/" element={<LandingPage />} />
+                        <Route path="/" element={<Index />} />
                         <Route path="/auth" element={<AuthPage />} />
                         <Route path="/auth/callback" element={<AuthCallback />} />
                         <Route path="/privacy" element={<PrivacyPolicy />} />
