@@ -1,9 +1,20 @@
 
 import { User, Session } from "@supabase/supabase-js";
 
+export interface UserProfile {
+  id: string;
+  user_id: string;
+  full_name: string | null;
+  user_type: 'auditor' | 'project_owner' | 'admin' | null;
+  avatar_url: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface AuthContextProps {
   user: User | null;
   session: Session | null;
+  userProfile: UserProfile | null;
   loading: boolean;
   error: string | null;
   signIn: (email: string, password: string) => Promise<any>;
@@ -11,4 +22,5 @@ export interface AuthContextProps {
   signOut: () => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
   resetPassword: (newPassword: string) => Promise<void>;
+  getUserType: () => 'auditor' | 'project_owner' | 'admin' | null;
 }

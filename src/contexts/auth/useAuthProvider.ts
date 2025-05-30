@@ -1,13 +1,13 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { User, Session } from "@supabase/supabase-js";
-import { AuthContextProps } from "./types";
+import { AuthContextProps, UserProfile } from "./types";
 
 export function useAuthProvider(): AuthContextProps {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,6 +20,11 @@ export function useAuthProvider(): AuthContextProps {
         
         setSession(session);
         setUser(session?.user ?? null);
+        
+        // Fetch user profile if user exists
+        if (session?.user) {
+          await fetchUserProfile(session.user.id);
+        }
       } catch (error: any) {
         console.error("Error getting session:", error);
         setError(error.message);
@@ -35,6 +40,13 @@ export function useAuthProvider(): AuthContextProps {
       async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          await fetchUserProfile(session.user.id);
+        } else {
+          setUserProfile(null);
+        }
+        
         setLoading(false);
         
         if (event === 'SIGNED_IN') {
@@ -47,6 +59,26 @@ export function useAuthProvider(): AuthContextProps {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (error) throw error;
+      setUserProfile(data);
+    } catch (error: any) {
+      console.error("Error fetching user profile:", error);
+      // Don't set error state for profile fetch failures
+    }
+  };
+
+  const getUserType = (): 'auditor' | 'project_owner' | 'admin' | null => {
+    return userProfile?.user_type || null;
+  };
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -155,6 +187,7 @@ export function useAuthProvider(): AuthContextProps {
   return {
     user,
     session,
+    userProfile,
     loading,
     error,
     signIn,
@@ -162,5 +195,6 @@ export function useAuthProvider(): AuthContextProps {
     signOut,
     forgotPassword,
     resetPassword,
+    getUserType,
   };
 }
