@@ -1,4 +1,6 @@
 
+import React from 'react';
+
 export const logErrorToAnalytics = (error: Error, context?: string) => {
   // In development, log to console
   if (process.env.NODE_ENV === 'development') {
@@ -38,7 +40,8 @@ export enum ErrorCategory {
   AUTHORIZATION = 'authorization',
   SERVER = 'server',
   CLIENT = 'client',
-  UNKNOWN = 'unknown'
+  UNKNOWN = 'unknown',
+  DATABASE = 'database'
 }
 
 export const handleError = (error: unknown, context?: string) => {
@@ -66,10 +69,10 @@ export const createBoundary = (Component: React.ComponentType<any>) => {
 
     render() {
       if (this.state.hasError) {
-        return <div>Something went wrong.</div>;
+        return React.createElement('div', null, 'Something went wrong.');
       }
 
-      return <Component {...this.props} />;
+      return React.createElement(Component, this.props);
     }
   };
 };
@@ -79,10 +82,10 @@ export const withErrorHandling = <P extends object>(
 ): React.ComponentType<P> => {
   return (props: P) => {
     try {
-      return <Component {...props} />;
+      return React.createElement(Component, props);
     } catch (error) {
       handleError(error, Component.name);
-      return <div>Error loading component</div>;
+      return React.createElement('div', null, 'Error loading component');
     }
   };
 };
@@ -107,13 +110,15 @@ export class ErrorBoundary extends React.Component<
 
   render() {
     if (this.state.hasError) {
-      return this.props.fallback || (
-        <div className="p-4 border border-red-200 rounded-lg bg-red-50">
-          <h3 className="text-red-800 font-medium">Something went wrong</h3>
-          <p className="text-red-600 text-sm mt-1">
-            {this.state.error?.message || 'An unexpected error occurred'}
-          </p>
-        </div>
+      return this.props.fallback || React.createElement(
+        'div',
+        { className: 'p-4 border border-red-200 rounded-lg bg-red-50' },
+        React.createElement('h3', { className: 'text-red-800 font-medium' }, 'Something went wrong'),
+        React.createElement(
+          'p',
+          { className: 'text-red-600 text-sm mt-1' },
+          this.state.error?.message || 'An unexpected error occurred'
+        )
       );
     }
 
