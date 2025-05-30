@@ -1,169 +1,145 @@
 
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Search, Filter, X } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
+import { X } from 'lucide-react';
 
 interface SearchFiltersProps {
-  searchQuery: string;
-  onSearchChange: (query: string) => void;
-  selectedCategory: string;
-  onCategoryChange: (category: string) => void;
-  selectedBlockchain: string;
-  onBlockchainChange: (blockchain: string) => void;
-  selectedPriceRange: string;
-  onPriceRangeChange: (range: string) => void;
-  onClearFilters: () => void;
-  activeFiltersCount: number;
+  filters: {
+    blockchain: string;
+    expertise: string;
+    availability: string;
+    priceRange: number[];
+    rating: number;
+    experience: string;
+    location: string;
+  };
+  onFiltersChange: (filters: any) => void;
 }
 
-const SearchFilters: React.FC<SearchFiltersProps> = ({
-  searchQuery,
-  onSearchChange,
-  selectedCategory,
-  onCategoryChange,
-  selectedBlockchain,
-  onBlockchainChange,
-  selectedPriceRange,
-  onPriceRangeChange,
-  onClearFilters,
-  activeFiltersCount
-}) => {
-  const categories = [
-    'Smart Contract Audit',
-    'DeFi Protocol Review',
-    'NFT Security Assessment',
-    'Bridge Audit',
-    'DAO Security Review',
-    'Penetration Testing'
-  ];
+export function SearchFilters({ filters, onFiltersChange }: SearchFiltersProps) {
+  const updateFilter = (key: string, value: any) => {
+    onFiltersChange({ ...filters, [key]: value });
+  };
 
-  const blockchains = [
-    'Ethereum',
-    'Polygon',
-    'Binance Smart Chain',
-    'Arbitrum',
-    'Optimism',
-    'Solana',
-    'Avalanche',
-    'Fantom'
-  ];
-
-  const priceRanges = [
-    'Under $1,000',
-    '$1,000 - $5,000',
-    '$5,000 - $15,000',
-    '$15,000 - $50,000',
-    'Over $50,000'
-  ];
+  const clearFilters = () => {
+    onFiltersChange({
+      blockchain: '',
+      expertise: '',
+      availability: '',
+      priceRange: [0, 10000],
+      rating: 0,
+      experience: '',
+      location: ''
+    });
+  };
 
   return (
-    <Card className="mb-6">
-      <CardContent className="p-6">
-        <div className="flex flex-col lg:flex-row gap-4">
-          {/* Search Input */}
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search security services..."
-                value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-          </div>
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>Filters</CardTitle>
+        <Button variant="ghost" size="sm" onClick={clearFilters}>
+          <X className="h-4 w-4 mr-1" />
+          Clear
+        </Button>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="space-y-2">
+          <Label>Blockchain</Label>
+          <Select value={filters.blockchain} onValueChange={(value) => updateFilter('blockchain', value)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select blockchain" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ethereum">Ethereum</SelectItem>
+              <SelectItem value="solana">Solana</SelectItem>
+              <SelectItem value="polygon">Polygon</SelectItem>
+              <SelectItem value="arbitrum">Arbitrum</SelectItem>
+              <SelectItem value="optimism">Optimism</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-          {/* Filters */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Select value={selectedCategory} onValueChange={onCategoryChange}>
-              <SelectTrigger className="w-full sm:w-48">
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {categories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <div className="space-y-2">
+          <Label>Expertise</Label>
+          <Select value={filters.expertise} onValueChange={(value) => updateFilter('expertise', value)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select expertise" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="defi">DeFi</SelectItem>
+              <SelectItem value="nft">NFT</SelectItem>
+              <SelectItem value="gamefi">GameFi</SelectItem>
+              <SelectItem value="dao">DAO</SelectItem>
+              <SelectItem value="bridge">Cross-chain</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-            <Select value={selectedBlockchain} onValueChange={onBlockchainChange}>
-              <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder="Blockchain" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Blockchains</SelectItem>
-                {blockchains.map((blockchain) => (
-                  <SelectItem key={blockchain} value={blockchain}>
-                    {blockchain}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <div className="space-y-2">
+          <Label>Availability</Label>
+          <Select value={filters.availability} onValueChange={(value) => updateFilter('availability', value)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select availability" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="immediate">Immediate</SelectItem>
+              <SelectItem value="week">Within 1 week</SelectItem>
+              <SelectItem value="month">Within 1 month</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-            <Select value={selectedPriceRange} onValueChange={onPriceRangeChange}>
-              <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder="Price Range" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Prices</SelectItem>
-                {priceRanges.map((range) => (
-                  <SelectItem key={range} value={range}>
-                    {range}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {activeFiltersCount > 0 && (
-              <Button
-                variant="outline"
-                onClick={onClearFilters}
-                className="flex items-center gap-2"
-              >
-                <X className="h-4 w-4" />
-                Clear {activeFiltersCount > 1 && `(${activeFiltersCount})`}
-              </Button>
-            )}
+        <div className="space-y-3">
+          <Label>Price Range (USD)</Label>
+          <Slider
+            value={filters.priceRange}
+            onValueChange={(value) => updateFilter('priceRange', value)}
+            max={10000}
+            min={0}
+            step={100}
+            className="w-full"
+          />
+          <div className="flex justify-between text-sm text-muted-foreground">
+            <span>${filters.priceRange[0]}</span>
+            <span>${filters.priceRange[1]}</span>
           </div>
         </div>
 
-        {/* Active Filters */}
-        {activeFiltersCount > 0 && (
-          <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t">
-            <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Filter className="h-3 w-3" />
-              Active filters:
-            </span>
-            {selectedCategory !== 'all' && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                {selectedCategory}
-                <X className="h-3 w-3 cursor-pointer" onClick={() => onCategoryChange('all')} />
-              </Badge>
-            )}
-            {selectedBlockchain !== 'all' && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                {selectedBlockchain}
-                <X className="h-3 w-3 cursor-pointer" onClick={() => onBlockchainChange('all')} />
-              </Badge>
-            )}
-            {selectedPriceRange !== 'all' && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                {selectedPriceRange}
-                <X className="h-3 w-3 cursor-pointer" onClick={() => onPriceRangeChange('all')} />
-              </Badge>
-            )}
-          </div>
-        )}
+        <div className="space-y-2">
+          <Label>Experience Level</Label>
+          <Select value={filters.experience} onValueChange={(value) => updateFilter('experience', value)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select experience" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="junior">Junior (1-2 years)</SelectItem>
+              <SelectItem value="mid">Mid-level (3-5 years)</SelectItem>
+              <SelectItem value="senior">Senior (5+ years)</SelectItem>
+              <SelectItem value="expert">Expert (10+ years)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Minimum Rating</Label>
+          <Select value={filters.rating.toString()} onValueChange={(value) => updateFilter('rating', parseInt(value))}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select rating" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="0">Any rating</SelectItem>
+              <SelectItem value="3">3+ stars</SelectItem>
+              <SelectItem value="4">4+ stars</SelectItem>
+              <SelectItem value="5">5 stars only</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </CardContent>
     </Card>
   );
-};
-
-export default SearchFilters;
+}

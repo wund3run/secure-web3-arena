@@ -4,123 +4,127 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Star, Clock, DollarSign, Shield, CheckCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Star, MapPin, Clock, Shield, CheckCircle } from 'lucide-react';
 
 interface AuditorCardProps {
   auditor: {
     id: string;
     name: string;
-    avatar_url?: string;
+    avatar: string;
     rating: number;
     reviewCount: number;
-    hourlyRate: { min: number; max: number };
-    experience: number;
-    specializations: string[];
-    availability: 'available' | 'busy' | 'unavailable';
+    expertise: string[];
+    blockchain: string[];
+    hourlyRate: number;
+    availability: string;
     completedAudits: number;
-    verified: boolean;
-    responseTime: number; // hours
+    experience: number;
+    location: string;
+    responseTime: string;
     bio: string;
+    verified: boolean;
   };
 }
 
-export const AuditorCard: React.FC<AuditorCardProps> = ({ auditor }) => {
-  const getAvailabilityColor = (status: string) => {
-    switch (status) {
-      case 'available': return 'bg-green-500';
-      case 'busy': return 'bg-yellow-500';
-      case 'unavailable': return 'bg-red-500';
-      default: return 'bg-gray-500';
-    }
-  };
-
-  const getAvailabilityText = (status: string) => {
-    switch (status) {
-      case 'available': return 'Available';
-      case 'busy': return 'Busy';
-      case 'unavailable': return 'Unavailable';
-      default: return 'Unknown';
-    }
-  };
-
+export function AuditorCard({ auditor }: AuditorCardProps) {
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-200 h-full">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="relative">
-              <Avatar className="h-12 w-12">
-                <AvatarImage src={auditor.avatar_url} alt={auditor.name} />
-                <AvatarFallback>{auditor.name[0]}</AvatarFallback>
-              </Avatar>
-              <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${getAvailabilityColor(auditor.availability)}`} />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-lg">{auditor.name}</h3>
-                {auditor.verified && (
-                  <CheckCircle className="h-4 w-4 text-blue-500" />
-                )}
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <span>{auditor.rating.toFixed(1)}</span>
-                <span>({auditor.reviewCount} reviews)</span>
-              </div>
-            </div>
-          </div>
-          <Badge variant={auditor.availability === 'available' ? 'default' : 'secondary'}>
-            {getAvailabilityText(auditor.availability)}
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <p className="text-sm text-muted-foreground line-clamp-2">{auditor.bio}</p>
-        
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="flex items-center gap-2">
-            <DollarSign className="h-4 w-4 text-green-600" />
-            <span>${auditor.hourlyRate.min}-${auditor.hourlyRate.max}/hr</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-blue-600" />
-            <span>{auditor.responseTime}h response</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Shield className="h-4 w-4 text-purple-600" />
-            <span>{auditor.completedAudits} audits</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-muted-foreground">{auditor.experience}+ years</span>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <h4 className="text-sm font-medium">Specializations</h4>
-          <div className="flex flex-wrap gap-1">
-            {auditor.specializations.slice(0, 3).map((spec) => (
-              <Badge key={spec} variant="outline" className="text-xs">
-                {spec}
-              </Badge>
-            ))}
-            {auditor.specializations.length > 3 && (
-              <Badge variant="outline" className="text-xs">
-                +{auditor.specializations.length - 3} more
-              </Badge>
+    <Card className="hover:shadow-lg transition-shadow">
+      <CardHeader>
+        <div className="flex items-start gap-4">
+          <div className="relative">
+            <Avatar className="h-16 w-16">
+              <AvatarImage src={auditor.avatar} alt={auditor.name} />
+              <AvatarFallback>{auditor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+            </Avatar>
+            {auditor.verified && (
+              <CheckCircle className="absolute -bottom-1 -right-1 h-5 w-5 text-blue-500 bg-white rounded-full" />
             )}
           </div>
+          
+          <div className="flex-1 space-y-2">
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="font-semibold text-lg">{auditor.name}</h3>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <MapPin className="h-3 w-3" />
+                  {auditor.location}
+                </div>
+              </div>
+              <Badge 
+                variant={auditor.availability === 'Available' ? 'default' : 'secondary'}
+                className={auditor.availability === 'Available' ? 'bg-green-100 text-green-800' : ''}
+              >
+                {auditor.availability}
+              </Badge>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1">
+                <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                <span className="font-medium">{auditor.rating}</span>
+                <span className="text-sm text-muted-foreground">({auditor.reviewCount})</span>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                ${auditor.hourlyRate}/hr
+              </div>
+            </div>
+          </div>
         </div>
-
-        <div className="flex gap-2 pt-2">
-          <Button asChild variant="outline" size="sm" className="flex-1">
-            <Link to={`/auditors/${auditor.id}`}>View Profile</Link>
-          </Button>
-          <Button asChild size="sm" className="flex-1">
-            <Link to={`/audit-request?auditor=${auditor.id}`}>Contact</Link>
-          </Button>
+      </CardHeader>
+      
+      <CardContent className="space-y-4">
+        <p className="text-sm text-muted-foreground">{auditor.bio}</p>
+        
+        <div className="space-y-3">
+          <div>
+            <h4 className="text-sm font-medium mb-2">Expertise</h4>
+            <div className="flex flex-wrap gap-1">
+              {auditor.expertise.map((skill, index) => (
+                <Badge key={index} variant="secondary" className="text-xs">
+                  {skill}
+                </Badge>
+              ))}
+            </div>
+          </div>
+          
+          <div>
+            <h4 className="text-sm font-medium mb-2">Blockchain</h4>
+            <div className="flex flex-wrap gap-1">
+              {auditor.blockchain.map((chain, index) => (
+                <Badge key={index} variant="outline" className="text-xs">
+                  {chain}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-3 gap-4 pt-4 border-t">
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-1 mb-1">
+              <Shield className="h-3 w-3 text-primary" />
+              <span className="text-sm font-medium">{auditor.completedAudits}</span>
+            </div>
+            <div className="text-xs text-muted-foreground">Audits</div>
+          </div>
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-1 mb-1">
+              <Clock className="h-3 w-3 text-primary" />
+              <span className="text-sm font-medium">{auditor.responseTime}</span>
+            </div>
+            <div className="text-xs text-muted-foreground">Response</div>
+          </div>
+          <div className="text-center">
+            <div className="text-sm font-medium mb-1">{auditor.experience}+ years</div>
+            <div className="text-xs text-muted-foreground">Experience</div>
+          </div>
+        </div>
+        
+        <div className="flex gap-2 pt-4">
+          <Button className="flex-1">View Profile</Button>
+          <Button variant="outline" className="flex-1">Contact</Button>
         </div>
       </CardContent>
     </Card>
   );
-};
+}

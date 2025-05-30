@@ -25,6 +25,8 @@ import AuthPage from '@/pages/AuthPage';
 import AuthCallback from '@/pages/AuthCallback';
 import Dashboard from '@/pages/Dashboard';
 import AdminDashboard from '@/pages/AdminDashboard';
+import Marketplace from '@/pages/Marketplace';
+import RequestAudit from '@/pages/RequestAudit';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import TermsOfService from '@/pages/TermsOfService';
 
@@ -46,6 +48,7 @@ function App() {
                         <Route path="/" element={<Index />} />
                         <Route path="/auth" element={<AuthPage />} />
                         <Route path="/auth/callback" element={<AuthCallback />} />
+                        <Route path="/marketplace" element={<Marketplace />} />
                         <Route path="/privacy" element={<PrivacyPolicy />} />
                         <Route path="/terms" element={<TermsOfService />} />
                         
@@ -55,6 +58,14 @@ function App() {
                           element={
                             <EnhancedProtectedRoute>
                               <Dashboard />
+                            </EnhancedProtectedRoute>
+                          } 
+                        />
+                        <Route 
+                          path="/request-audit" 
+                          element={
+                            <EnhancedProtectedRoute>
+                              <RequestAudit />
                             </EnhancedProtectedRoute>
                           } 
                         />
