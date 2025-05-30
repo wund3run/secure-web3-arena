@@ -34,9 +34,9 @@ export default function App() {
         <HelmetProvider>
           <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
             <QueryClientProvider client={queryClient}>
-              <AuthProvider>
-                <NotificationProvider>
-                  <Router>
+              <Router>
+                <AuthProvider>
+                  <NotificationProvider>
                     <Routes>
                       <Route path="/" element={<Index />} />
                       <Route path="/auth" element={<Auth />} />
@@ -63,9 +63,9 @@ export default function App() {
                       {/* 404 fallback */}
                       <Route path="*" element={<NotFound />} />
                     </Routes>
-                  </Router>
-                </NotificationProvider>
-              </AuthProvider>
+                  </NotificationProvider>
+                </AuthProvider>
+              </Router>
             </QueryClientProvider>
           </ThemeProvider>
         </HelmetProvider>
