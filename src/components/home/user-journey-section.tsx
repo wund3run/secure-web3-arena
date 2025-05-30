@@ -148,3 +148,6 @@ export function UserJourneySection() {
     </section>
   );
 }
+
+// Ensure default export
+export default UserJourneySection;

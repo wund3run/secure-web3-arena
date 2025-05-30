@@ -31,7 +31,11 @@ const FaqSection = React.lazy(() =>
 const UserJourneySection = React.lazy(() => 
   import("@/components/home/user-journey-section").then(module => ({
     default: module.UserJourneySection
-  }))
+  })).catch(error => {
+    console.error('Failed to load UserJourneySection:', error);
+    // Return a fallback component
+    return { default: () => <div className="py-16 bg-muted/20"><div className="container px-4 md:px-6"><div className="text-center"><h2 className="text-3xl font-bold mb-4">Choose Your Path</h2><p className="text-muted-foreground">Content temporarily unavailable</p></div></div></div> };
+  })
 );
 
 const QuickStartSection = React.lazy(() => 
@@ -150,7 +154,9 @@ export default function Index() {
           
           {/* Below-the-fold content - lazy loaded with enhanced loading states */}
           <LazySection fallback={<SectionLoadingFallback />}>
-            <UserJourneySection />
+            <Suspense fallback={<SectionLoadingFallback />}>
+              <UserJourneySection />
+            </Suspense>
           </LazySection>
           
           <LazySection fallback={<SectionLoadingFallback />}>
