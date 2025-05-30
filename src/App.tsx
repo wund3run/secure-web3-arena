@@ -1,76 +1,86 @@
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from 'sonner';
+
+// Providers
+import { QueryProvider } from '@/providers/QueryProvider';
 import { AuthProvider } from '@/contexts/auth/AuthContext';
+import { NotificationProvider } from '@/contexts/NotificationContext';
 import { StripeProvider } from '@/components/payment/StripeProvider';
-import { ErrorBoundary } from '@/components/monitoring/ErrorBoundary';
-import { SecurityHeaders } from '@/components/security/SecurityHeaders';
-import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
-import { Toaster } from '@/components/ui/sonner';
-import Index from '@/pages/Index';
+
+// Components
+import { ThemeProvider } from '@/components/theme-provider';
+import { AppErrorBoundary } from '@/components/error/AppErrorBoundary';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+
+// Pages
+import LandingPage from '@/pages/LandingPage';
 import AuthPage from '@/pages/AuthPage';
 import AuthCallback from '@/pages/AuthCallback';
-import { PrivacyPolicy } from '@/components/legal/PrivacyPolicy';
-import { TermsOfService } from '@/components/legal/TermsOfService';
-
-// Import other existing pages
-import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import Dashboard from '@/pages/Dashboard';
 import AdminDashboard from '@/pages/AdminDashboard';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: 1,
-    },
-  },
-});
+import PrivacyPolicy from '@/pages/PrivacyPolicy';
+import TermsOfService from '@/pages/TermsOfService';
 
 function App() {
   return (
-    <HelmetProvider>
-      <ErrorBoundary>
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <StripeProvider>
-              <Router>
-                <SecurityHeaders />
-                <GoogleAnalytics />
-                
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/auth" element={<AuthPage />} />
-                  <Route path="/auth/callback" element={<AuthCallback />} />
-                  <Route path="/privacy" element={<PrivacyPolicy />} />
-                  <Route path="/terms" element={<TermsOfService />} />
-                  
-                  {/* Protected Routes */}
-                  <Route 
-                    path="/admin/*" 
-                    element={
-                      <ProtectedRoute>
-                        <AdminDashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  
-                  {/* Add other protected routes here */}
-                </Routes>
-                
-                <Toaster 
-                  position="top-right"
-                  toastOptions={{
-                    duration: 4000,
-                  }}
-                />
-              </Router>
-            </StripeProvider>
-          </AuthProvider>
-        </QueryClientProvider>
-      </ErrorBoundary>
-    </HelmetProvider>
+    <AppErrorBoundary>
+      <HelmetProvider>
+        <QueryProvider>
+          <ThemeProvider defaultTheme="light" storageKey="hawkly-ui-theme">
+            <AuthProvider>
+              <NotificationProvider>
+                <StripeProvider>
+                  <Router>
+                    <div className="min-h-screen bg-background">
+                      <Routes>
+                        {/* Public routes */}
+                        <Route path="/" element={<LandingPage />} />
+                        <Route path="/auth" element={<AuthPage />} />
+                        <Route path="/auth/callback" element={<AuthCallback />} />
+                        <Route path="/privacy" element={<PrivacyPolicy />} />
+                        <Route path="/terms" element={<TermsOfService />} />
+                        
+                        {/* Protected routes */}
+                        <Route 
+                          path="/dashboard" 
+                          element={
+                            <ProtectedRoute>
+                              <Dashboard />
+                            </ProtectedRoute>
+                          } 
+                        />
+                        <Route 
+                          path="/admin/dashboard" 
+                          element={
+                            <ProtectedRoute requiredRole="admin">
+                              <AdminDashboard />
+                            </ProtectedRoute>
+                          } 
+                        />
+                        
+                        {/* Fallback route */}
+                        <Route path="*" element={<Navigate to="/" replace />} />
+                      </Routes>
+                    </div>
+                    
+                    {/* Global toast notifications */}
+                    <Toaster 
+                      position="top-right"
+                      expand={true}
+                      richColors
+                      closeButton
+                    />
+                  </Router>
+                </StripeProvider>
+              </NotificationProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </QueryProvider>
+      </HelmetProvider>
+    </AppErrorBoundary>
   );
 }
 

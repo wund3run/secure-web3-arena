@@ -13,7 +13,21 @@ import { NotificationList } from './NotificationList';
 
 export const NotificationBell = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { unreadCount, markAllAsRead } = useNotifications();
+  
+  // Handle case where NotificationProvider might not be available
+  let notifications, unreadCount, markAllAsRead;
+  
+  try {
+    const notificationContext = useNotifications();
+    notifications = notificationContext.notifications;
+    unreadCount = notificationContext.unreadCount;
+    markAllAsRead = notificationContext.markAllAsRead;
+  } catch (error) {
+    console.warn('NotificationProvider not found, using fallback');
+    notifications = [];
+    unreadCount = 0;
+    markAllAsRead = () => {};
+  }
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
