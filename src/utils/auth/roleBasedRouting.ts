@@ -8,6 +8,14 @@ export interface RouteConfig {
   requiresAuth: boolean;
 }
 
+export interface NavigationItem {
+  title: string;
+  href: string;
+  description?: string;
+  children?: NavigationItem[];
+  allowedRoles?: ('auditor' | 'project_owner' | 'admin' | 'general' | 'visitor')[];
+}
+
 const routes: RouteConfig[] = [
   { path: '/', allowedRoles: ['auditor', 'project_owner', 'admin', 'general', 'visitor'], requiresAuth: false },
   { path: '/auth', allowedRoles: ['visitor'], requiresAuth: false },
@@ -89,4 +97,32 @@ export const canPerformAction = (
   };
   
   return permissions[action]?.includes(role) || false;
+};
+
+export const getFilteredNavigation = (
+  user: User | null,
+  navigationItems: NavigationItem[],
+  userProfile?: UserProfile | null
+): NavigationItem[] => {
+  const userRole = getUserRole(user, userProfile);
+  
+  return navigationItems.filter(item => {
+    // If no role restrictions, show to everyone
+    if (!item.allowedRoles) return true;
+    
+    // Check if user role is allowed
+    return item.allowedRoles.includes(userRole);
+  }).map(item => {
+    // Filter children if they exist
+    if (item.children) {
+      return {
+        ...item,
+        children: item.children.filter(child => {
+          if (!child.allowedRoles) return true;
+          return child.allowedRoles.includes(userRole);
+        })
+      };
+    }
+    return item;
+  });
 };

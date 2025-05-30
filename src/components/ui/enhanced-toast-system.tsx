@@ -36,4 +36,8 @@ export class EnhancedToastSystem {
   ) {
     return toast.promise(promise, options);
   }
+
+  static formValidationError(title: string, description?: string) {
+    toast.error(title, { description });
+  }
 }

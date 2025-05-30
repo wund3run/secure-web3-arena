@@ -22,11 +22,10 @@ export class AccessibilityErrorHandler {
     
     switch (error.severity) {
       case 'high':
-        EnhancedToastSystem.error(
-          "Critical Accessibility Issue",
-          message,
-          error.suggestion ? () => this.showSuggestion(error) : undefined
-        );
+        EnhancedToastSystem.error("Critical Accessibility Issue", message);
+        if (error.suggestion) {
+          this.showSuggestion(error);
+        }
         break;
       case 'medium':
         EnhancedToastSystem.warning("Accessibility Warning", message);

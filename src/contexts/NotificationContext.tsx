@@ -6,14 +6,19 @@ interface Notification {
   type: 'success' | 'error' | 'warning' | 'info';
   title: string;
   message?: string;
+  category: 'audit' | 'payment' | 'message' | 'system';
   timestamp: Date;
   read: boolean;
+  actionUrl?: string;
+  actionLabel?: string;
 }
 
 interface NotificationContextType {
   notifications: Notification[];
   addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void;
   markAsRead: (id: string) => void;
+  markAllAsRead: () => void;
+  removeNotification: (id: string) => void;
   clearNotification: (id: string) => void;
   clearAll: () => void;
   unreadCount: number;
@@ -51,6 +56,16 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     );
   }, []);
 
+  const markAllAsRead = useCallback(() => {
+    setNotifications(prev => 
+      prev.map(notification => ({ ...notification, read: true }))
+    );
+  }, []);
+
+  const removeNotification = useCallback((id: string) => {
+    setNotifications(prev => prev.filter(notification => notification.id !== id));
+  }, []);
+
   const clearNotification = useCallback((id: string) => {
     setNotifications(prev => prev.filter(notification => notification.id !== id));
   }, []);
@@ -65,6 +80,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     notifications,
     addNotification,
     markAsRead,
+    markAllAsRead,
+    removeNotification,
     clearNotification,
     clearAll,
     unreadCount,
