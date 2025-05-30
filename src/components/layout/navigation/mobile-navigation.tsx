@@ -13,6 +13,7 @@ interface NavigationLink {
   href: string;
   description?: string;
   children?: NavigationLink[];
+  requiresAuth?: boolean;
 }
 
 interface MobileNavigationProps {
@@ -53,6 +54,15 @@ export function MobileNavigation({
     }
   };
 
+  // Filter navigation items based on authentication status
+  const filteredNavigationLinks = navigationLinks.filter(item => {
+    // If item requires auth and user is not authenticated, hide it
+    if (item.requiresAuth && !isAuthenticated) {
+      return false;
+    }
+    return true;
+  });
+
   return (
     <div className="md:hidden">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -66,7 +76,7 @@ export function MobileNavigation({
             <SheetTitle>Navigation Menu</SheetTitle>
           </SheetHeader>
           <nav className="flex flex-col space-y-4 mt-6">
-            {navigationLinks.map((item) => {
+            {filteredNavigationLinks.map((item) => {
               if (item.children) {
                 return (
                   <Collapsible key={item.title}>

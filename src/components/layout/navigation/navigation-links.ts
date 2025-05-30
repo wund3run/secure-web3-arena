@@ -4,53 +4,51 @@ export interface NavigationLink {
   href: string;
   description?: string;
   children?: NavigationLink[];
+  requiresAuth?: boolean; // New property to indicate if authentication is required
 }
 
 export const navigationLinks: NavigationLink[] = [
   {
     title: "Services",
     href: "/marketplace",
+    requiresAuth: true, // Only show to authenticated users
     children: [
       {
-        title: "Browse Auditors",
+        title: "Security Audits",
         href: "/marketplace",
-        description: "Find verified security auditors for your project"
+        description: "Comprehensive smart contract security reviews"
       },
       {
-        title: "Request Audit",
-        href: "/request-audit",
-        description: "Submit your project for professional security review"
+        title: "Code Reviews",
+        href: "/marketplace",
+        description: "Expert code analysis and feedback"
       },
       {
-        title: "Join as Auditor",
-        href: "/service-provider-onboarding",
-        description: "Become a certified security auditor on our platform"
+        title: "Penetration Testing",
+        href: "/marketplace",
+        description: "Advanced security vulnerability testing"
       },
       {
-        title: "Pricing",
-        href: "/pricing",
-        description: "Transparent pricing for all audit services"
+        title: "Consulting",
+        href: "/marketplace",
+        description: "Strategic security guidance and planning"
       }
     ]
   },
   {
     title: "Resources",
     href: "/resources",
+    requiresAuth: true, // Only show to authenticated users
     children: [
-      {
-        title: "Web3 Security",
-        href: "/web3-security",
-        description: "Learn about blockchain and smart contract security"
-      },
-      {
-        title: "Documentation",
-        href: "/docs",
-        description: "Platform guides and API documentation"
-      },
       {
         title: "Security Guides",
         href: "/guides",
-        description: "Best practices for Web3 security"
+        description: "Best practices and security guidelines"
+      },
+      {
+        title: "Knowledge Base",
+        href: "/knowledge-base",
+        description: "Comprehensive security documentation"
       },
       {
         title: "Tutorials",
@@ -58,71 +56,63 @@ export const navigationLinks: NavigationLink[] = [
         description: "Step-by-step security tutorials"
       },
       {
-        title: "Knowledge Base",
-        href: "/knowledge-base",
-        description: "Comprehensive security knowledge repository"
-      },
-      {
-        title: "FAQ",
-        href: "/faq",
-        description: "Frequently asked questions"
+        title: "Templates",
+        href: "/templates",
+        description: "Ready-to-use security templates"
       }
     ]
   },
   {
     title: "Tools",
-    href: "/ai-tools",
+    href: "/security-insights",
+    requiresAuth: true, // Only show to authenticated users
     children: [
       {
-        title: "AI Security Tools",
+        title: "Security Insights",
+        href: "/security-insights",
+        description: "Real-time vulnerability analysis"
+      },
+      {
+        title: "AI Tools",
         href: "/ai-tools",
-        description: "AI-powered security analysis and testing tools"
+        description: "AI-powered security analysis tools"
       },
       {
-        title: "Platform Analysis",
-        href: "/platform-report",
-        description: "Comprehensive platform security assessment"
-      },
-      {
-        title: "Vulnerability Database",
+        title: "Vulnerability Scanner",
         href: "/vulnerabilities",
-        description: "Known vulnerabilities and exploits database"
+        description: "Automated security scanning"
       },
       {
-        title: "Audit Templates",
-        href: "/templates",
-        description: "Standardized audit templates and checklists"
+        title: "Platform Reports",
+        href: "/platform-report",
+        description: "Comprehensive security reports"
       }
     ]
   },
   {
     title: "Community",
     href: "/community",
+    requiresAuth: true, // Only show to authenticated users
     children: [
       {
         title: "Forum",
         href: "/forum",
-        description: "Connect with security professionals worldwide"
+        description: "Community discussions and support"
       },
       {
         title: "Events",
         href: "/events",
-        description: "Security conferences and workshops"
+        description: "Security events and workshops"
       },
       {
         title: "Challenges",
         href: "/challenges",
-        description: "Security challenges and CTF competitions"
+        description: "Security challenges and competitions"
       },
       {
         title: "Leaderboard",
         href: "/leaderboard",
-        description: "Top auditors and community contributors"
-      },
-      {
-        title: "Blog",
-        href: "/blog",
-        description: "Latest insights and security updates"
+        description: "Top security experts rankings"
       }
     ]
   }

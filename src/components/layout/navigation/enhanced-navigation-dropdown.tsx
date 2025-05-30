@@ -1,6 +1,7 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/auth";
 import { navigationLinks } from "./navigation-links";
 import { EnhancedNavigationDropdownItem } from "./enhanced-navigation-dropdown-item";
 import { ChevronDown } from "lucide-react";
@@ -14,12 +15,22 @@ export function EnhancedNavigationDropdown({
   activeDropdown, 
   handleDropdownToggle 
 }: EnhancedNavigationDropdownProps) {
+  const { user } = useAuth();
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Filter navigation items based on authentication status
+  const filteredNavigationLinks = navigationLinks.filter(item => {
+    // If item requires auth and user is not authenticated, hide it
+    if (item.requiresAuth && !user) {
+      return false;
+    }
+    return true;
+  });
 
   // Enhanced click outside detection with better event handling
   useEffect(() => {
@@ -66,7 +77,7 @@ export function EnhancedNavigationDropdown({
       role="navigation" 
       aria-label="Main navigation"
     >
-      {navigationLinks.map((item) => {
+      {filteredNavigationLinks.map((item) => {
         if (item.children) {
           return (
             <div key={item.title} className="relative">

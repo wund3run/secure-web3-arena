@@ -2,7 +2,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/auth";
-import { getFilteredNavigation } from "@/utils/auth/roleBasedRouting";
 import { navigationLinks } from "./navigation-links";
 import { NavigationDropdownItem } from "./navigation-dropdown-item";
 import { ChevronDown } from "lucide-react";
@@ -18,8 +17,24 @@ export function RoleFilteredNavigation({
 }: RoleFilteredNavigationProps) {
   const { user, userProfile } = useAuth();
   
-  // Filter navigation items based on user role
-  const filteredNavigation = getFilteredNavigation(user, navigationLinks, userProfile);
+  // Filter navigation items based on authentication requirements
+  const filteredNavigation = navigationLinks.filter(item => {
+    // If item requires auth and user is not authenticated, hide it
+    if (item.requiresAuth && !user) {
+      return false;
+    }
+    return true;
+  }).map(item => {
+    // Filter children if they exist
+    if (item.children) {
+      const filteredChildren = item.children.filter(child => {
+        // Apply same logic to children if needed
+        return true; // For now, show all children if parent is visible
+      });
+      return { ...item, children: filteredChildren };
+    }
+    return item;
+  });
 
   return (
     <nav 

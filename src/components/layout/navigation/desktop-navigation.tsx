@@ -1,6 +1,7 @@
 
 import React, { useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/auth";
 import { navigationLinks } from "./navigation-links";
 import { NavigationDropdownItem } from "./navigation-dropdown-item";
 import { ChevronDown } from "lucide-react";
@@ -14,7 +15,17 @@ export function DesktopNavigation({
   activeDropdown, 
   handleDropdownToggle 
 }: DesktopNavigationProps) {
+  const { user } = useAuth();
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  // Filter navigation items based on authentication status
+  const filteredNavigationLinks = navigationLinks.filter(item => {
+    // If item requires auth and user is not authenticated, hide it
+    if (item.requiresAuth && !user) {
+      return false;
+    }
+    return true;
+  });
 
   // Enhanced click outside detection
   useEffect(() => {
@@ -46,7 +57,7 @@ export function DesktopNavigation({
       role="navigation" 
       aria-label="Main navigation"
     >
-      {navigationLinks.map((item) => {
+      {filteredNavigationLinks.map((item) => {
         if (item.children) {
           return (
             <div key={item.title} className="relative">

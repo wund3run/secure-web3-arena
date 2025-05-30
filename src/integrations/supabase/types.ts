@@ -39,6 +39,42 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_matching_preferences: {
+        Row: {
+          budget_flexibility: number | null
+          communication_style: string | null
+          complexity_preference: string | null
+          created_at: string | null
+          id: string
+          preferred_auditor_experience: string | null
+          timeline_flexibility: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          budget_flexibility?: number | null
+          communication_style?: string | null
+          complexity_preference?: string | null
+          created_at?: string | null
+          id?: string
+          preferred_auditor_experience?: string | null
+          timeline_flexibility?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          budget_flexibility?: number | null
+          communication_style?: string | null
+          complexity_preference?: string | null
+          created_at?: string | null
+          id?: string
+          preferred_auditor_experience?: string | null
+          timeline_flexibility?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       ai_matching_scores: {
         Row: {
           audit_request_id: string
@@ -295,15 +331,19 @@ export type Database = {
           ai_matching_completed: boolean | null
           assigned_auditor_id: string | null
           audit_scope: string | null
+          auto_assign_enabled: boolean | null
           blockchain: string
           budget: number | null
           client_id: string
+          communication_preference: string | null
           contract_count: number | null
           created_at: string
           deadline: string | null
           escrow_contract_id: string | null
           id: string
           lines_of_code: number | null
+          matching_score: number | null
+          preferred_auditor_location: string | null
           previous_audits: boolean | null
           priority_score: number | null
           project_description: string | null
@@ -312,20 +352,25 @@ export type Database = {
           specific_concerns: string | null
           status: string | null
           updated_at: string
+          urgency_level: string | null
         }
         Insert: {
           ai_matching_completed?: boolean | null
           assigned_auditor_id?: string | null
           audit_scope?: string | null
+          auto_assign_enabled?: boolean | null
           blockchain: string
           budget?: number | null
           client_id: string
+          communication_preference?: string | null
           contract_count?: number | null
           created_at?: string
           deadline?: string | null
           escrow_contract_id?: string | null
           id?: string
           lines_of_code?: number | null
+          matching_score?: number | null
+          preferred_auditor_location?: string | null
           previous_audits?: boolean | null
           priority_score?: number | null
           project_description?: string | null
@@ -334,20 +379,25 @@ export type Database = {
           specific_concerns?: string | null
           status?: string | null
           updated_at?: string
+          urgency_level?: string | null
         }
         Update: {
           ai_matching_completed?: boolean | null
           assigned_auditor_id?: string | null
           audit_scope?: string | null
+          auto_assign_enabled?: boolean | null
           blockchain?: string
           budget?: number | null
           client_id?: string
+          communication_preference?: string | null
           contract_count?: number | null
           created_at?: string
           deadline?: string | null
           escrow_contract_id?: string | null
           id?: string
           lines_of_code?: number | null
+          matching_score?: number | null
+          preferred_auditor_location?: string | null
           previous_audits?: boolean | null
           priority_score?: number | null
           project_description?: string | null
@@ -356,6 +406,7 @@ export type Database = {
           specific_concerns?: string | null
           status?: string | null
           updated_at?: string
+          urgency_level?: string | null
         }
         Relationships: [
           {
@@ -429,7 +480,14 @@ export type Database = {
           languages_spoken: string[] | null
           linkedin_url: string | null
           max_concurrent_audits: number | null
+          max_project_size: number | null
+          min_project_size: number | null
           portfolio_url: string | null
+          preferred_project_types: string[] | null
+          repeat_client_rate: number | null
+          response_time_hours: number | null
+          specialization_tags: string[] | null
+          success_rate: number | null
           timezone: string | null
           total_audits_completed: number | null
           updated_at: string | null
@@ -454,7 +512,14 @@ export type Database = {
           languages_spoken?: string[] | null
           linkedin_url?: string | null
           max_concurrent_audits?: number | null
+          max_project_size?: number | null
+          min_project_size?: number | null
           portfolio_url?: string | null
+          preferred_project_types?: string[] | null
+          repeat_client_rate?: number | null
+          response_time_hours?: number | null
+          specialization_tags?: string[] | null
+          success_rate?: number | null
           timezone?: string | null
           total_audits_completed?: number | null
           updated_at?: string | null
@@ -479,7 +544,14 @@ export type Database = {
           languages_spoken?: string[] | null
           linkedin_url?: string | null
           max_concurrent_audits?: number | null
+          max_project_size?: number | null
+          min_project_size?: number | null
           portfolio_url?: string | null
+          preferred_project_types?: string[] | null
+          repeat_client_rate?: number | null
+          response_time_hours?: number | null
+          specialization_tags?: string[] | null
+          success_rate?: number | null
           timezone?: string | null
           total_audits_completed?: number | null
           updated_at?: string | null
@@ -489,6 +561,201 @@ export type Database = {
           years_experience?: number
         }
         Relationships: []
+      }
+      auditor_reviews: {
+        Row: {
+          audit_request_id: string | null
+          auditor_id: string | null
+          client_id: string | null
+          communication_rating: number | null
+          created_at: string | null
+          id: string
+          rating: number | null
+          review_text: string | null
+          technical_quality_rating: number | null
+          timeliness_rating: number | null
+          would_recommend: boolean | null
+        }
+        Insert: {
+          audit_request_id?: string | null
+          auditor_id?: string | null
+          client_id?: string | null
+          communication_rating?: number | null
+          created_at?: string | null
+          id?: string
+          rating?: number | null
+          review_text?: string | null
+          technical_quality_rating?: number | null
+          timeliness_rating?: number | null
+          would_recommend?: boolean | null
+        }
+        Update: {
+          audit_request_id?: string | null
+          auditor_id?: string | null
+          client_id?: string | null
+          communication_rating?: number | null
+          created_at?: string | null
+          id?: string
+          rating?: number | null
+          review_text?: string | null
+          technical_quality_rating?: number | null
+          timeliness_rating?: number | null
+          would_recommend?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auditor_reviews_audit_request_id_fkey"
+            columns: ["audit_request_id"]
+            isOneToOne: false
+            referencedRelation: "audit_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      auditor_skills: {
+        Row: {
+          auditor_id: string | null
+          created_at: string | null
+          id: string
+          proficiency_level: number | null
+          skill_name: string
+        }
+        Insert: {
+          auditor_id?: string | null
+          created_at?: string | null
+          id?: string
+          proficiency_level?: number | null
+          skill_name: string
+        }
+        Update: {
+          auditor_id?: string | null
+          created_at?: string | null
+          id?: string
+          proficiency_level?: number | null
+          skill_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auditor_skills_auditor_id_fkey"
+            columns: ["auditor_id"]
+            isOneToOne: false
+            referencedRelation: "auditor_profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      certifications: {
+        Row: {
+          certificate_url: string | null
+          certification_type: Database["public"]["Enums"]["certification_type"]
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          issued_at: string
+          metadata: Json | null
+          user_id: string
+          verification_code: string | null
+        }
+        Insert: {
+          certificate_url?: string | null
+          certification_type: Database["public"]["Enums"]["certification_type"]
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          issued_at?: string
+          metadata?: Json | null
+          user_id: string
+          verification_code?: string | null
+        }
+        Update: {
+          certificate_url?: string | null
+          certification_type?: Database["public"]["Enums"]["certification_type"]
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          issued_at?: string
+          metadata?: Json | null
+          user_id?: string
+          verification_code?: string | null
+        }
+        Relationships: []
+      }
+      compliance_checks: {
+        Row: {
+          created_at: string
+          findings: Json | null
+          framework: Database["public"]["Enums"]["compliance_framework"]
+          id: string
+          last_checked_at: string | null
+          next_check_at: string | null
+          project_id: string
+          recommendations: Json | null
+          score: number | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          findings?: Json | null
+          framework: Database["public"]["Enums"]["compliance_framework"]
+          id?: string
+          last_checked_at?: string | null
+          next_check_at?: string | null
+          project_id: string
+          recommendations?: Json | null
+          score?: number | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          findings?: Json | null
+          framework?: Database["public"]["Enums"]["compliance_framework"]
+          id?: string
+          last_checked_at?: string | null
+          next_check_at?: string | null
+          project_id?: string
+          recommendations?: Json | null
+          score?: number | null
+          status?: string
+        }
+        Relationships: []
+      }
+      conversations: {
+        Row: {
+          audit_request_id: string | null
+          auditor_id: string | null
+          client_id: string | null
+          created_at: string | null
+          id: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          audit_request_id?: string | null
+          auditor_id?: string | null
+          client_id?: string | null
+          created_at?: string | null
+          id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          audit_request_id?: string | null
+          auditor_id?: string | null
+          client_id?: string | null
+          created_at?: string | null
+          id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_audit_request_id_fkey"
+            columns: ["audit_request_id"]
+            isOneToOne: false
+            referencedRelation: "audit_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       dispute_comments: {
         Row: {
@@ -717,6 +984,94 @@ export type Database = {
         }
         Relationships: []
       }
+      insurance_policies: {
+        Row: {
+          coverage_amount: number
+          created_at: string
+          effective_date: string
+          expiry_date: string
+          id: string
+          policy_number: string
+          premium_amount: number
+          provider_name: string
+          status: Database["public"]["Enums"]["insurance_status"]
+          subscription_id: string
+          terms: Json | null
+        }
+        Insert: {
+          coverage_amount: number
+          created_at?: string
+          effective_date: string
+          expiry_date: string
+          id?: string
+          policy_number: string
+          premium_amount: number
+          provider_name: string
+          status?: Database["public"]["Enums"]["insurance_status"]
+          subscription_id: string
+          terms?: Json | null
+        }
+        Update: {
+          coverage_amount?: number
+          created_at?: string
+          effective_date?: string
+          expiry_date?: string
+          id?: string
+          policy_number?: string
+          premium_amount?: number
+          provider_name?: string
+          status?: Database["public"]["Enums"]["insurance_status"]
+          subscription_id?: string
+          terms?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_policies_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          content: string
+          conversation_id: string | null
+          created_at: string | null
+          id: string
+          message_type: string | null
+          read_at: string | null
+          sender_id: string | null
+        }
+        Insert: {
+          content: string
+          conversation_id?: string | null
+          created_at?: string | null
+          id?: string
+          message_type?: string | null
+          read_at?: string | null
+          sender_id?: string | null
+        }
+        Update: {
+          content?: string
+          conversation_id?: string | null
+          created_at?: string | null
+          id?: string
+          message_type?: string | null
+          read_at?: string | null
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       milestones: {
         Row: {
           amount: number
@@ -764,6 +1119,53 @@ export type Database = {
           },
         ]
       }
+      monitoring_services: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          last_scan_at: string | null
+          monitoring_type: Database["public"]["Enums"]["monitoring_type"]
+          next_scan_at: string | null
+          project_id: string
+          scan_frequency_hours: number | null
+          subscription_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_scan_at?: string | null
+          monitoring_type?: Database["public"]["Enums"]["monitoring_type"]
+          next_scan_at?: string | null
+          project_id: string
+          scan_frequency_hours?: number | null
+          subscription_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_scan_at?: string | null
+          monitoring_type?: Database["public"]["Enums"]["monitoring_type"]
+          next_scan_at?: string | null
+          project_id?: string
+          scan_frequency_hours?: number | null
+          subscription_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "monitoring_services_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       multisig_approvals: {
         Row: {
           approved_at: string
@@ -803,6 +1205,39 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          action_url: string | null
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          title: string
+          type: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action_url?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          title: string
+          type?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action_url?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          title?: string
+          type?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       platform_analytics: {
         Row: {
           date_bucket: string | null
@@ -827,6 +1262,60 @@ export type Database = {
           metric_name?: string
           metric_value?: number | null
           recorded_at?: string | null
+        }
+        Relationships: []
+      }
+      platform_metrics: {
+        Row: {
+          id: string
+          metadata: Json | null
+          metric_type: string
+          metric_value: number | null
+          recorded_at: string | null
+        }
+        Insert: {
+          id?: string
+          metadata?: Json | null
+          metric_type: string
+          metric_value?: number | null
+          recorded_at?: string | null
+        }
+        Update: {
+          id?: string
+          metadata?: Json | null
+          metric_type?: string
+          metric_value?: number | null
+          recorded_at?: string | null
+        }
+        Relationships: []
+      }
+      predictive_analytics: {
+        Row: {
+          analysis_type: string
+          confidence_score: number | null
+          created_at: string
+          id: string
+          prediction_data: Json
+          user_id: string
+          valid_until: string | null
+        }
+        Insert: {
+          analysis_type: string
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          prediction_data: Json
+          user_id: string
+          valid_until?: string | null
+        }
+        Update: {
+          analysis_type?: string
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          prediction_data?: Json
+          user_id?: string
+          valid_until?: string | null
         }
         Relationships: []
       }
@@ -952,6 +1441,92 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          features: Json | null
+          id: string
+          monthly_cost: number | null
+          started_at: string
+          status: Database["public"]["Enums"]["subscription_status"]
+          tier: Database["public"]["Enums"]["subscription_tier"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          features?: Json | null
+          id?: string
+          monthly_cost?: number | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          tier?: Database["public"]["Enums"]["subscription_tier"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          features?: Json | null
+          id?: string
+          monthly_cost?: number | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          tier?: Database["public"]["Enums"]["subscription_tier"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      threat_intelligence: {
+        Row: {
+          description: string
+          detected_at: string
+          id: string
+          is_resolved: boolean
+          metadata: Json | null
+          monitoring_service_id: string
+          recommendation: string | null
+          resolved_at: string | null
+          threat_level: Database["public"]["Enums"]["threat_level"]
+          threat_type: string
+        }
+        Insert: {
+          description: string
+          detected_at?: string
+          id?: string
+          is_resolved?: boolean
+          metadata?: Json | null
+          monitoring_service_id: string
+          recommendation?: string | null
+          resolved_at?: string | null
+          threat_level: Database["public"]["Enums"]["threat_level"]
+          threat_type: string
+        }
+        Update: {
+          description?: string
+          detected_at?: string
+          id?: string
+          is_resolved?: boolean
+          metadata?: Json | null
+          monitoring_service_id?: string
+          recommendation?: string | null
+          resolved_at?: string | null
+          threat_level?: Database["public"]["Enums"]["threat_level"]
+          threat_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "threat_intelligence_monitoring_service_id_fkey"
+            columns: ["monitoring_service_id"]
+            isOneToOne: false
+            referencedRelation: "monitoring_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       transactions: {
         Row: {
           amount: number
@@ -1076,22 +1651,42 @@ export type Database = {
         Args: { dispute_id: string; user_id: string; comment: string }
         Returns: string
       }
-      calculate_expertise_match: {
-        Args: {
-          auditor_skills: string[]
-          auditor_blockchains: string[]
-          request_blockchain: string
-          request_category: string
-        }
+      calculate_auditor_match_score: {
+        Args: { p_audit_request_id: string; p_auditor_id: string }
         Returns: number
+      }
+      calculate_expertise_match: {
+        Args:
+          | Record<PropertyKey, never>
+          | {
+              auditor_skills: string[]
+              auditor_blockchains: string[]
+              request_blockchain: string
+              request_category: string
+            }
+        Returns: undefined
       }
       get_user_profile: {
         Args: Record<PropertyKey, never> | { user_id: number }
         Returns: undefined
       }
       get_user_role: {
+        Args: Record<PropertyKey, never> | { user_id: string }
+        Returns: string
+      }
+      get_user_subscription: {
         Args: { user_id: string }
-        Returns: Database["public"]["Enums"]["user_role"]
+        Returns: {
+          id: string
+          tier: Database["public"]["Enums"]["subscription_tier"]
+          status: Database["public"]["Enums"]["subscription_status"]
+          features: Json
+          expires_at: string
+        }[]
+      }
+      has_subscription_feature: {
+        Args: { user_id: string; feature_name: string }
+        Returns: boolean
       }
       is_admin: {
         Args: Record<PropertyKey, never> | { user_id: string }
@@ -1107,6 +1702,12 @@ export type Database = {
       }
     }
     Enums: {
+      certification_type:
+        | "basic_auditor"
+        | "advanced_auditor"
+        | "security_specialist"
+        | "compliance_expert"
+      compliance_framework: "gdpr" | "soc2" | "iso27001" | "hipaa" | "pci_dss"
       dispute_status: "opened" | "in_review" | "resolved" | "closed"
       escrow_status:
         | "pending"
@@ -1115,6 +1716,11 @@ export type Database = {
         | "disputed"
         | "refunded"
         | "cancelled"
+      insurance_status: "pending" | "active" | "claimed" | "expired"
+      monitoring_type: "continuous" | "scheduled" | "on_demand"
+      subscription_status: "active" | "cancelled" | "suspended" | "trial"
+      subscription_tier: "basic" | "professional" | "enterprise" | "custom"
+      threat_level: "low" | "medium" | "high" | "critical"
       transaction_type:
         | "deposit"
         | "milestone_payment"
@@ -1237,6 +1843,13 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      certification_type: [
+        "basic_auditor",
+        "advanced_auditor",
+        "security_specialist",
+        "compliance_expert",
+      ],
+      compliance_framework: ["gdpr", "soc2", "iso27001", "hipaa", "pci_dss"],
       dispute_status: ["opened", "in_review", "resolved", "closed"],
       escrow_status: [
         "pending",
@@ -1246,6 +1859,11 @@ export const Constants = {
         "refunded",
         "cancelled",
       ],
+      insurance_status: ["pending", "active", "claimed", "expired"],
+      monitoring_type: ["continuous", "scheduled", "on_demand"],
+      subscription_status: ["active", "cancelled", "suspended", "trial"],
+      subscription_tier: ["basic", "professional", "enterprise", "custom"],
+      threat_level: ["low", "medium", "high", "critical"],
       transaction_type: [
         "deposit",
         "milestone_payment",
