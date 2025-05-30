@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/auth/AuthContext";
+import { NotificationProvider } from "@/contexts/NotificationContext";
 import { HelmetProvider } from "react-helmet-async";
 import { AppErrorBoundary } from "@/components/error/AppErrorBoundary";
 import { GlobalComponents } from "@/components/app/GlobalComponents";
@@ -22,6 +23,7 @@ const Audits = lazy(() => import("./pages/Audits"));
 const AuditDetail = lazy(() => import("./pages/AuditDetail"));
 const AuditorParameters = lazy(() => import("./pages/AuditorParameters"));
 const TestingDashboard = lazy(() => import("./pages/TestingDashboard"));
+const SecuritySettings = lazy(() => import("./pages/SecuritySettings"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,34 +46,45 @@ function App() {
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <TooltipProvider>
-              <BrowserRouter>
-                <div className="min-h-screen bg-background font-sans antialiased">
-                  <Suspense fallback={
-                    <div className="min-h-screen flex items-center justify-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                    </div>
-                  }>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/auth" element={<Auth />} />
-                      <Route path="/auth/callback" element={<AuthCallback />} />
-                      <Route path="/admin" element={<AdminDashboard />} />
-                      <Route path="/marketplace" element={<Marketplace />} />
-                      <Route path="/audit-request" element={<AuditRequest />} />
-                      <Route path="/audits" element={<Audits />} />
-                      <Route path="/audits/:id" element={<AuditDetail />} />
-                      <Route path="/auditor-parameters" element={<AuditorParameters />} />
-                      <Route path="/testing-dashboard" element={<TestingDashboard />} />
-                    </Routes>
-                  </Suspense>
-                  <GlobalComponents />
-                  <Toaster />
-                </div>
-              </BrowserRouter>
-            </TooltipProvider>
+            <NotificationProvider>
+              <TooltipProvider>
+                <BrowserRouter>
+                  <div className="min-h-screen bg-background font-sans antialiased">
+                    <Suspense fallback={
+                      <div className="min-h-screen flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                      </div>
+                    }>
+                      <Routes>
+                        {/* Public Routes */}
+                        <Route path="/" element={<Index />} />
+                        <Route path="/auth" element={<Auth />} />
+                        <Route path="/auth/callback" element={<AuthCallback />} />
+                        <Route path="/marketplace" element={<Marketplace />} />
+                        <Route path="/audits" element={<Audits />} />
+                        <Route path="/audits/:id" element={<AuditDetail />} />
+                        
+                        {/* Protected Routes */}
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/security-settings" element={<SecuritySettings />} />
+                        <Route path="/audit-request" element={<AuditRequest />} />
+                        <Route path="/auditor-parameters" element={<AuditorParameters />} />
+                        
+                        {/* Admin Routes */}
+                        <Route path="/admin" element={<AdminDashboard />} />
+                        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                        
+                        {/* Development Routes */}
+                        <Route path="/testing-dashboard" element={<TestingDashboard />} />
+                      </Routes>
+                    </Suspense>
+                    <GlobalComponents />
+                    <Toaster />
+                  </div>
+                </BrowserRouter>
+              </TooltipProvider>
+            </NotificationProvider>
           </AuthProvider>
         </QueryClientProvider>
       </HelmetProvider>
