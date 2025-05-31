@@ -12,7 +12,7 @@ const AuditRequestHeader: React.FC = () => {
   return (
     <div className="text-center mb-10">
       <div className="flex justify-center mb-6 animate-in fade-in slide-in-from-top-5">
-        <HawklyLogo variant="large" className="hover-lift cursor-pointer transition-all" />
+        <HawklyLogo variant="full" textSize="text-2xl" className="hover-lift cursor-pointer transition-all" />
       </div>
       <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#8A73E2] to-[#33C3F0] animate-in fade-in slide-in-from-bottom-5">
         Request a Security Audit

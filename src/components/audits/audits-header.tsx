@@ -10,7 +10,7 @@ export function AuditsHeader() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-4">
-            <HawklyLogo variant="large" />
+            <HawklyLogo variant="full" textSize="text-2xl" />
           </div>
           <div className="inline-flex items-center justify-center bg-[#8A73E2]/10 px-4 py-2 rounded-full text-[#8A73E2] mb-4 mt-4">
             <ShieldCheck className="h-5 w-5 mr-2" />
