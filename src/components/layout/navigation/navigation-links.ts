@@ -4,33 +4,33 @@ export interface NavigationLink {
   href: string;
   description?: string;
   children?: NavigationLink[];
-  requiresAuth?: boolean; // New property to indicate if authentication is required
+  requiresAuth?: boolean;
 }
 
 export const navigationLinks: NavigationLink[] = [
   {
     title: "Services",
     href: "/marketplace",
-    requiresAuth: true, // Only show to authenticated users
+    requiresAuth: true,
     children: [
       {
         title: "Security Audits",
-        href: "/marketplace",
+        href: "/security-audits",
         description: "Comprehensive smart contract security reviews"
       },
       {
         title: "Code Reviews",
-        href: "/marketplace",
+        href: "/code-reviews",
         description: "Expert code analysis and feedback"
       },
       {
         title: "Penetration Testing",
-        href: "/marketplace",
+        href: "/penetration-testing",
         description: "Advanced security vulnerability testing"
       },
       {
         title: "Consulting",
-        href: "/marketplace",
+        href: "/consulting",
         description: "Strategic security guidance and planning"
       }
     ]
@@ -38,11 +38,11 @@ export const navigationLinks: NavigationLink[] = [
   {
     title: "Resources",
     href: "/resources",
-    requiresAuth: true, // Only show to authenticated users
+    requiresAuth: true,
     children: [
       {
         title: "Security Guides",
-        href: "/guides",
+        href: "/security-guides",
         description: "Best practices and security guidelines"
       },
       {
@@ -65,7 +65,7 @@ export const navigationLinks: NavigationLink[] = [
   {
     title: "Tools",
     href: "/security-insights",
-    requiresAuth: true, // Only show to authenticated users
+    requiresAuth: true,
     children: [
       {
         title: "Security Insights",
@@ -79,12 +79,12 @@ export const navigationLinks: NavigationLink[] = [
       },
       {
         title: "Vulnerability Scanner",
-        href: "/vulnerabilities",
+        href: "/vulnerability-scanner",
         description: "Automated security scanning"
       },
       {
         title: "Platform Reports",
-        href: "/platform-report",
+        href: "/platform-reports",
         description: "Comprehensive security reports"
       }
     ]
@@ -92,7 +92,7 @@ export const navigationLinks: NavigationLink[] = [
   {
     title: "Community",
     href: "/community",
-    requiresAuth: true, // Only show to authenticated users
+    requiresAuth: true,
     children: [
       {
         title: "Forum",

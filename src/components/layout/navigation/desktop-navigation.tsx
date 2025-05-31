@@ -51,6 +51,11 @@ export function DesktopNavigation({
     }
   }, [activeDropdown, handleDropdownToggle]);
 
+  // Don't render navigation if user is not authenticated
+  if (!user) {
+    return null;
+  }
+
   return (
     <nav 
       className="hidden md:flex items-center space-x-6 ml-8" 

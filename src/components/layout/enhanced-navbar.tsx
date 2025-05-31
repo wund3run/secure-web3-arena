@@ -37,24 +37,23 @@ export function EnhancedNavbar() {
             </Link>
           </div>
 
-          <div className="flex items-center space-x-4">
-            {user && (
-              <>
-                <Button variant="ghost" asChild>
-                  <Link to="/marketplace">Marketplace</Link>
-                </Button>
-                <Button variant="ghost" asChild>
-                  <Link to="/request-audit">Request Audit</Link>
-                </Button>
-                <Button variant="ghost" asChild>
-                  <Link to="/audits">Active Audits</Link>
-                </Button>
-                <Button variant="ghost" asChild>
-                  <Link to="/dashboard">Dashboard</Link>
-                </Button>
-              </>
-            )}
-          </div>
+          {/* Only show these navigation items when user is authenticated */}
+          {user && (
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" asChild>
+                <Link to="/marketplace">Marketplace</Link>
+              </Button>
+              <Button variant="ghost" asChild>
+                <Link to="/request-audit">Request Audit</Link>
+              </Button>
+              <Button variant="ghost" asChild>
+                <Link to="/audits">Active Audits</Link>
+              </Button>
+              <Button variant="ghost" asChild>
+                <Link to="/dashboard">Dashboard</Link>
+              </Button>
+            </div>
+          )}
 
           <div className="flex items-center space-x-3">
             {user && <NotificationBell />}
