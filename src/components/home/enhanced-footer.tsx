@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -12,7 +11,8 @@ export function EnhancedFooter() {
             <img 
               src="/lovable-uploads/315b0088-3d48-449e-bd7e-5e51c332a1e6.png" 
               alt="Hawkly Logo"
-              className="h-16 w-auto object-contain"
+              className="h-20 w-auto object-contain bg-transparent"
+              style={{ backgroundColor: 'transparent' }}
             />
           </Link>
           <p className="text-muted-foreground text-sm mb-4">

@@ -1,4 +1,3 @@
-
 import { Shield, Twitter, Github, MessageSquare, Globe, AlertCircle, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { routeExists, getFallbackRoute } from "@/utils/navigation";
@@ -38,7 +37,8 @@ export function Footer() {
               <img 
                 src="/lovable-uploads/315b0088-3d48-449e-bd7e-5e51c332a1e6.png" 
                 alt="Hawkly Logo"
-                className="h-24 w-auto object-contain"
+                className="h-28 w-auto object-contain bg-transparent"
+                style={{ backgroundColor: 'transparent' }}
               />
             </div>
             <p className="mt-4 text-muted-foreground">

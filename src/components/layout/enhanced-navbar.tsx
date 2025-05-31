@@ -29,9 +29,10 @@ export function EnhancedNavbar() {
           <div className="flex items-center">
             <Link to="/" className="flex-shrink-0">
               <img
-                className="h-12 w-12 object-contain"
+                className="h-16 w-16 object-contain bg-transparent"
                 src="/lovable-uploads/04363a2f-c38a-4f57-8d7d-24793bf99bd3.png"
                 alt="Hawkly Logo"
+                style={{ backgroundColor: 'transparent' }}
               />
             </Link>
           </div>
