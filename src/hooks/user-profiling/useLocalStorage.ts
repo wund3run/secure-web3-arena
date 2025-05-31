@@ -1,28 +1,41 @@
 
 import { UserPreferences, UserBehaviorProfile } from '@/types/user-profiling';
 
-export function getLocalPreferences(): UserPreferences | null {
+const PREFERENCES_KEY = 'hawkly_user_preferences';
+const BEHAVIOR_KEY = 'hawkly_behavior_profile';
+
+export const getLocalPreferences = (): UserPreferences | null => {
   try {
-    const stored = localStorage.getItem('hawkly_user_preferences');
+    const stored = localStorage.getItem(PREFERENCES_KEY);
     return stored ? JSON.parse(stored) : null;
-  } catch {
+  } catch (error) {
+    console.error('Error loading preferences:', error);
     return null;
   }
-}
+};
 
-export function getLocalBehaviorProfile(): UserBehaviorProfile | null {
+export const savePreferences = (preferences: UserPreferences): void => {
   try {
-    const stored = localStorage.getItem('hawkly_behavior_profile');
+    localStorage.setItem(PREFERENCES_KEY, JSON.stringify(preferences));
+  } catch (error) {
+    console.error('Error saving preferences:', error);
+  }
+};
+
+export const getLocalBehaviorProfile = (): UserBehaviorProfile | null => {
+  try {
+    const stored = localStorage.getItem(BEHAVIOR_KEY);
     return stored ? JSON.parse(stored) : null;
-  } catch {
+  } catch (error) {
+    console.error('Error loading behavior profile:', error);
     return null;
   }
-}
+};
 
-export function savePreferences(preferences: UserPreferences): void {
-  localStorage.setItem('hawkly_user_preferences', JSON.stringify(preferences));
-}
-
-export function saveBehaviorProfile(behaviorProfile: UserBehaviorProfile): void {
-  localStorage.setItem('hawkly_behavior_profile', JSON.stringify(behaviorProfile));
-}
+export const saveBehaviorProfile = (profile: UserBehaviorProfile): void => {
+  try {
+    localStorage.setItem(BEHAVIOR_KEY, JSON.stringify(profile));
+  } catch (error) {
+    console.error('Error saving behavior profile:', error);
+  }
+};

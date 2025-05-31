@@ -3,15 +3,18 @@ import React from "react";
 import { Helmet } from "react-helmet-async";
 import { Navbar } from "@/components/layout/navbar";
 import { EnhancedFooter } from "@/components/home/enhanced-footer";
-import { SupportButton } from "@/components/ui/support-button";
+import { SupportButtonEnhanced } from "@/components/ui/support-button-enhanced";
+import { SkipLink } from "@/components/ui/skip-link";
 import { IndexPageLayout } from "@/components/home/index-page-layout";
 import { useIndexPageAnalytics } from "@/components/home/index-page-analytics";
+import { AdaptiveInterface } from "@/components/adaptive-interface";
+import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
 
 export default function Index() {
   useIndexPageAnalytics();
 
   return (
-    <>
+    <AccessibilityProvider>
       <Helmet>
         <title>Hawkly | Next-Generation Web3 Security Platform</title>
         <meta
@@ -27,11 +30,16 @@ export default function Index() {
       </Helmet>
       
       <div className="min-h-screen bg-background flex flex-col">
+        <SkipLink targetId="main-content" />
         <Navbar />
-        <IndexPageLayout />
+        <main id="main-content">
+          <AdaptiveInterface variant="full">
+            <IndexPageLayout />
+          </AdaptiveInterface>
+        </main>
         <EnhancedFooter />
-        <SupportButton />
+        <SupportButtonEnhanced />
       </div>
-    </>
+    </AccessibilityProvider>
   );
 }

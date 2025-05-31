@@ -1,40 +1,34 @@
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { UserBehaviorProfile } from '@/types/user-profiling';
-import { createDefaultBehaviorProfile } from './userProfilingUtils';
 import { saveBehaviorProfile } from './useLocalStorage';
 
-export function useBehaviorTracking(userId?: string) {
+export const useBehaviorTracking = (userId?: string) => {
   const [behaviorProfile, setBehaviorProfile] = useState<UserBehaviorProfile | null>(null);
 
-  const trackBehavior = (action: string, metadata?: Record<string, any>) => {
-    const currentBehavior = behaviorProfile || createDefaultBehaviorProfile(userId);
-    
-    const updatedBehavior: UserBehaviorProfile = {
-      ...currentBehavior,
-      lastVisit: new Date().toISOString(),
-      visitCount: currentBehavior.visitCount + 1,
-      completedActions: [...currentBehavior.completedActions, action],
-      updatedAt: new Date().toISOString(),
-    };
-
-    // Track page visit
-    if (action === 'page_visit' && metadata?.page) {
-      const page = metadata.page;
-      const updatedPages = [...updatedBehavior.mostVisitedPages];
-      if (!updatedPages.includes(page)) {
-        updatedPages.push(page);
-      }
-      updatedBehavior.mostVisitedPages = updatedPages.slice(-10); // Keep last 10
-    }
-
-    setBehaviorProfile(updatedBehavior);
-    saveBehaviorProfile(updatedBehavior);
-  };
+  const trackBehavior = useCallback((action: string, page?: string) => {
+    setBehaviorProfile(current => {
+      if (!current) return current;
+      
+      const updated = {
+        ...current,
+        completedActions: [...new Set([...current.completedActions, action])],
+        mostVisitedPages: page 
+          ? [...new Set([...current.mostVisitedPages, page])]
+          : current.mostVisitedPages,
+        engagementScore: current.engagementScore + 1,
+        lastVisit: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      saveBehaviorProfile(updated);
+      return updated;
+    });
+  }, []);
 
   return {
     behaviorProfile,
     setBehaviorProfile,
-    trackBehavior,
+    trackBehavior
   };
-}
+};
