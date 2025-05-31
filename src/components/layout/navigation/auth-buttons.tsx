@@ -2,8 +2,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogIn, User, LogOut } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/auth";
+import { ModeToggle } from "@/components/theme/ModeToggle";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 interface AuthButtonsProps {
   isAuthenticated: boolean;
@@ -11,57 +21,46 @@ interface AuthButtonsProps {
 }
 
 export function AuthButtons({ isAuthenticated, onSignOut }: AuthButtonsProps) {
-  const { getUserType } = useAuth();
-  
-  const handleSignOut = () => {
-    onSignOut();
-  };
-
-  const getDashboardPath = () => {
-    if (!isAuthenticated) return "/dashboard";
-    
-    try {
-      const userType = getUserType();
-      return userType === 'auditor' ? '/dashboard/auditor' : '/dashboard/project';
-    } catch (error) {
-      console.error('Error determining user type:', error);
-      return '/dashboard';
-    }
-  };
+  const { user, userProfile } = useAuth();
 
   return (
-    <div className="hidden md:flex items-center justify-end space-x-2" role="navigation" aria-label="Authentication">
+    <div className="hidden md:flex items-center space-x-3">
+      {isAuthenticated && <NotificationBell />}
+      
       {!isAuthenticated ? (
-        <Button variant="outline" asChild className="relative group">
-          <Link to="/auth" aria-label="Sign in to your account">
-            <LogIn className="mr-2 h-4 w-4" />
-            Sign In
-            <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full rounded-full"></span>
-          </Link>
-        </Button>
-      ) : (
         <>
-          <Button variant="outline" asChild className="relative group">
-            <Link to={getDashboardPath()} aria-label="Go to your dashboard">
-              <User className="mr-2 h-4 w-4" />
-              Dashboard
-              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full rounded-full"></span>
-            </Link>
+          <Button variant="outline" asChild>
+            <Link to="/auth">Sign In</Link>
           </Button>
-          <Button 
-            variant="ghost" 
-            onClick={handleSignOut}
-            aria-label="Sign out of your account"
-            className="relative group"
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            <span className="relative">
-              Sign Out
-              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full rounded-full"></span>
-            </span>
+          <Button asChild>
+            <Link to="/auth">Get Started</Link>
           </Button>
         </>
+      ) : (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={userProfile?.avatar_url} alt={user?.email || "User Avatar"} />
+                <AvatarFallback>{user?.email?.[0]?.toUpperCase() || "U"}</AvatarFallback>
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuItem asChild>
+              <Link to="/profile">Profile</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/settings">Settings</Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={onSignOut}>Logout</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
+
+      <ModeToggle />
     </div>
   );
 }

@@ -79,11 +79,13 @@ export function SimplifiedNavbar() {
             <HawklyLogo asLink={false} showText={false} variant="default" />
           </Link>
           
-          {/* Desktop Navigation */}
-          <DesktopNavigation 
-            activeDropdown={activeDropdown} 
-            handleDropdownToggle={handleDropdownToggle} 
-          />
+          {/* Desktop Navigation - only show if user is authenticated */}
+          {user && (
+            <DesktopNavigation 
+              activeDropdown={activeDropdown} 
+              handleDropdownToggle={handleDropdownToggle} 
+            />
+          )}
         </div>
         
         {/* Desktop Auth Buttons */}

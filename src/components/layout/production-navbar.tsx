@@ -76,11 +76,13 @@ export function ProductionNavbar() {
             <HawklyLogo asLink={false} showText={false} variant="default" />
           </Link>
           
-          {/* Enhanced Desktop Navigation */}
-          <EnhancedNavigationDropdown 
-            activeDropdown={activeDropdown} 
-            handleDropdownToggle={handleDropdownToggle} 
-          />
+          {/* Enhanced Desktop Navigation - only show if user is authenticated */}
+          {user && (
+            <EnhancedNavigationDropdown 
+              activeDropdown={activeDropdown} 
+              handleDropdownToggle={handleDropdownToggle} 
+            />
+          )}
         </div>
         
         {/* Desktop Auth Buttons */}
@@ -96,8 +98,8 @@ export function ProductionNavbar() {
         />
       </div>
       
-      {/* Breadcrumb navigation for deep pages */}
-      {location.pathname !== '/' && <BreadcrumbTrail />}
+      {/* Breadcrumb navigation for deep pages - only show if user is authenticated */}
+      {location.pathname !== '/' && user && <BreadcrumbTrail />}
     </header>
   );
 }
