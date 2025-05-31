@@ -11,29 +11,31 @@ interface AppInitializerProps {
  */
 export const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
   const [appLoading, setAppLoading] = useState(true);
-  const [assetsPreloaded, setAssetsPreloaded] = useState(false);
 
   useEffect(() => {
     // Track time for performance metrics
     const startTime = performance.now();
     
-    // Use shorter timeout for faster perceived performance
+    // Reduce timeout significantly for faster perceived performance
     const showContent = () => {
       const loadTime = performance.now() - startTime;
       console.debug(`[Perf] App initialization: ${Math.round(loadTime)}ms`);
       setAppLoading(false);
     };
     
-    // Show content quickly (300ms is often perceived as "instant")
-    const timer = setTimeout(showContent, 300);
+    // Show content much faster (100ms is perceived as instant)
+    const timer = setTimeout(showContent, 100);
     
     // Use requestIdleCallback for non-critical resource preloading
     const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
     
-    // Preload critical assets without blocking render
+    // Preload only the most critical assets without blocking render
     idleCallback(() => {
-      // Preconnect to domains that will be used
-      const preconnectDomains = [window.location.origin];
+      // Preconnect to critical domains only
+      const preconnectDomains = [
+        'https://fonts.googleapis.com',
+        'https://fonts.gstatic.com'
+      ];
       
       preconnectDomains.forEach(domain => {
         if (!document.querySelector(`link[href="${domain}"][rel="preconnect"]`)) {
@@ -44,51 +46,10 @@ export const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
           document.head.appendChild(link);
         }
       });
-      
-      // Preload important images and scripts in background
-      const criticalPaths = [
-        { path: '/src/assets/logo.svg', as: 'image' },
-        { path: '/vendor.js', as: 'script' }
-      ];
-      
-      Promise.all(criticalPaths.map(resource => {
-        return new Promise<void>((resolve) => {
-          try {
-            const isImage = resource.as === 'image';
-            if (isImage) {
-              const img = new Image();
-              img.onload = () => resolve();
-              img.onerror = () => resolve();
-              img.src = `${window.location.origin}${resource.path}`;
-            } else {
-              const preloadLink = document.createElement('link');
-              preloadLink.rel = 'preload';
-              preloadLink.href = `${window.location.origin}${resource.path}`;
-              preloadLink.as = resource.as;
-              preloadLink.onload = () => resolve();
-              preloadLink.onerror = () => resolve();
-              document.head.appendChild(preloadLink);
-            }
-          } catch (e) {
-            resolve();
-          }
-        });
-      }))
-      .then(() => {
-        setAssetsPreloaded(true);
-      })
-      .catch(err => {
-        console.warn('Asset preloading failed:', err);
-        setAssetsPreloaded(true);
-      });
     });
     
     return () => {
       clearTimeout(timer);
-      // Clean up only the preconnect links we added
-      document.querySelectorAll('link[rel="preconnect"][data-auto-added="true"]').forEach(link => {
-        document.head.removeChild(link);
-      });
     };
   }, []);
 

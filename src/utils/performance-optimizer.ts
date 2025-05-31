@@ -1,4 +1,3 @@
-
 import { toast } from "sonner";
 
 class PerformanceOptimizer {
@@ -16,14 +15,11 @@ class PerformanceOptimizer {
   init() {
     if (typeof window === 'undefined') return;
 
-    // Monitor Core Web Vitals with reduced noise
+    // Monitor Core Web Vitals with minimal overhead
     this.initWebVitalsMonitoring();
     
     // Monitor navigation timing
     this.initNavigationMonitoring();
-    
-    // Monitor resource loading with less aggressive alerts
-    this.initResourceMonitoring();
   }
 
   private initWebVitalsMonitoring() {
@@ -36,7 +32,7 @@ class PerformanceOptimizer {
           }
         });
         
-        this.observer.observe({ entryTypes: ['navigation', 'paint', 'largest-contentful-paint'] });
+        this.observer.observe({ entryTypes: ['navigation', 'paint'] });
       } catch (error) {
         // Silently handle browsers that don't support performance monitoring
       }
@@ -51,24 +47,15 @@ class PerformanceOptimizer {
           this.recordMetric('page-load-time', navigation.loadEventEnd - navigation.fetchStart);
           this.recordMetric('dom-content-loaded', navigation.domContentLoadedEventEnd - navigation.fetchStart);
           this.recordMetric('first-byte', navigation.responseStart - navigation.fetchStart);
+          
+          // Log performance for debugging
+          console.log('Page Load Metrics:', {
+            'Total Load Time': Math.round(navigation.loadEventEnd - navigation.fetchStart) + 'ms',
+            'DOM Ready': Math.round(navigation.domContentLoadedEventEnd - navigation.fetchStart) + 'ms',
+            'First Byte': Math.round(navigation.responseStart - navigation.fetchStart) + 'ms'
+          });
         }
       });
-    }
-  }
-
-  private initResourceMonitoring() {
-    if (typeof window !== 'undefined') {
-      // Monitor slow resources with higher threshold
-      const checkSlowResources = () => {
-        const resources = performance.getEntriesByType('resource');
-        const slowResources = resources.filter(resource => resource.duration > 5000); // Increased threshold
-        
-        if (slowResources.length > 3) { // Only warn if multiple slow resources
-          console.warn('Multiple slow resources detected:', slowResources);
-        }
-      };
-      
-      setTimeout(checkSlowResources, 10000); // Check later to avoid initial load noise
     }
   }
 
@@ -80,38 +67,33 @@ class PerformanceOptimizer {
     const values = this.metrics.get(name)!;
     values.push(value);
     
-    // Keep only last 50 measurements
-    if (values.length > 50) {
+    // Keep only last 10 measurements
+    if (values.length > 10) {
       values.shift();
     }
 
-    // Check performance thresholds with relaxed limits
+    // Check performance thresholds with reasonable limits
     this.checkPerformanceThresholds(name, value);
   }
 
   private checkPerformanceThresholds(name: string, value: number) {
-    // More relaxed thresholds to reduce noise
+    // Reasonable thresholds to reduce noise
     const thresholds = {
-      'page-load-time': 5000, // Increased from 3000ms
-      'first-byte': 1000, // Increased from 600ms
-      'dom-content-loaded': 3000 // Increased from 1500ms
+      'page-load-time': 4000, // 4 seconds
+      'first-byte': 800, // 800ms
+      'dom-content-loaded': 2000 // 2 seconds
     };
 
     const threshold = thresholds[name as keyof typeof thresholds];
     if (threshold && value > threshold) {
-      // Only show in development and less frequently
+      // Only show in development and throttle notifications
       if (process.env.NODE_ENV === 'development') {
-        // Throttle notifications to once every 30 seconds
         const lastWarning = localStorage.getItem(`perf-warning-${name}`);
         const now = Date.now();
         
-        if (!lastWarning || now - parseInt(lastWarning) > 30000) {
+        if (!lastWarning || now - parseInt(lastWarning) > 60000) {
           localStorage.setItem(`perf-warning-${name}`, now.toString());
-          
-          toast.warning("Performance Notice", {
-            description: `${name.replace(/-/g, ' ')} is slower than optimal (${Math.round(value)}ms)`,
-            duration: 3000
-          });
+          console.warn(`Performance Notice: ${name.replace(/-/g, ' ')} took ${Math.round(value)}ms`);
         }
       }
     }
@@ -134,11 +116,13 @@ class PerformanceOptimizer {
     return result;
   }
 
-  // Optimize images with lazy loading and responsive loading
+  // Optimize images with lazy loading
   optimizeImages() {
     if (typeof window === 'undefined') return;
 
     const images = document.querySelectorAll('img[data-src]');
+    if (images.length === 0) return;
+
     const imageObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -148,6 +132,9 @@ class PerformanceOptimizer {
           imageObserver.unobserve(img);
         }
       });
+    }, {
+      rootMargin: '50px 0px',
+      threshold: 0.01
     });
 
     images.forEach(img => imageObserver.observe(img));

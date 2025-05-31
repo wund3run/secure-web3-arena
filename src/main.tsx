@@ -14,7 +14,13 @@ root.render(
   </React.StrictMode>
 );
 
-// Hide initial loader when app is ready
+// Hide initial loader immediately when app is ready
 if (document.querySelector('.initial-loader')) {
   document.body.classList.add('app-loaded');
 }
+
+// Preload critical routes after initial render
+setTimeout(() => {
+  import('./pages/Home');
+  import('./pages/Index');
+}, 1000);
