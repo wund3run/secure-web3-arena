@@ -6,7 +6,10 @@ import { Separator } from '@/components/ui/separator';
 
 export default function Terms() {
   return (
-    <StandardLayout>
+    <StandardLayout
+      title="Terms of Service"
+      description="Read Hawkly's terms of service and understand your rights and responsibilities when using our Web3 security marketplace platform."
+    >
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <Card>
           <CardHeader>

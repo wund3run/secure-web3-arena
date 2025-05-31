@@ -9,7 +9,7 @@ export interface Notification {
   actionUrl?: string;
   actionLabel?: string;
   userId: string;
-  category: 'audit' | 'message' | 'system' | 'payment';
+  category: 'audit' | 'message' | 'system' | 'payment' | 'realtime' | 'audit_progress';
 }
 
 export interface NotificationContextType {
@@ -20,4 +20,5 @@ export interface NotificationContextType {
   markAllAsRead: () => void;
   removeNotification: (id: string) => void;
   clearAll: () => void;
+  refreshNotifications: () => void;
 }

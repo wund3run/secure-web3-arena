@@ -98,6 +98,14 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
     setNotifications([]);
   };
 
+  const refreshNotifications = () => {
+    // Refresh notifications from server if needed
+    if (user?.id) {
+      const loaded = loadNotifications();
+      setNotifications(loaded);
+    }
+  };
+
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
@@ -110,6 +118,7 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
         markAllAsRead,
         removeNotification,
         clearAll,
+        refreshNotifications,
       }}
     >
       <NotificationHandlers />

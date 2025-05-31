@@ -6,7 +6,10 @@ import { Separator } from '@/components/ui/separator';
 
 export default function Privacy() {
   return (
-    <StandardLayout>
+    <StandardLayout
+      title="Privacy Policy"
+      description="Learn how Hawkly protects your privacy and handles your personal data on our Web3 security marketplace platform."
+    >
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <Card>
           <CardHeader>
