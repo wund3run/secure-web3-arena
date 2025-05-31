@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { navigationLinksStructure } from '@/components/layout/navigation/navigation-links.tsx';
+import { navigationLinks } from '@/components/layout/navigation/navigation-links.tsx';
 import { getFallbackRoute, routeExists } from '@/utils/navigation';
 
 type RouteStatus = 'valid' | 'invalid' | 'checking';
@@ -24,8 +24,8 @@ export function useRouteChecker() {
     const allResults: RouteCheckResult[] = [];
     const invalid: string[] = [];
     
-    // Check all navigation links using the structured object
-    const processLinks = (links: typeof navigationLinksStructure.marketplace, section: string) => {
+    // Check all navigation links using the navigationLinks array
+    const processLinks = (links: typeof navigationLinks, section: string) => {
       links.forEach(link => {
         const route = link.href;
         const isValid = routeExists(route);
@@ -39,13 +39,28 @@ export function useRouteChecker() {
         if (!isValid) {
           invalid.push(route);
         }
+
+        // Check children if they exist
+        if (link.children) {
+          link.children.forEach(childLink => {
+            const childRoute = childLink.href;
+            const isChildValid = routeExists(childRoute);
+            allResults.push({
+              route: childRoute,
+              title: childLink.title,
+              section: `${section} > ${link.title}`,
+              status: isChildValid ? 'valid' : 'invalid'
+            });
+            
+            if (!isChildValid) {
+              invalid.push(childRoute);
+            }
+          });
+        }
       });
     };
     
-    processLinks(navigationLinksStructure.marketplace, 'Marketplace');
-    processLinks(navigationLinksStructure.audits, 'Audits');
-    processLinks(navigationLinksStructure.resources, 'Resources');
-    processLinks(navigationLinksStructure.dashboards, 'Dashboards');
+    processLinks(navigationLinks, 'Navigation');
     
     setResults(allResults);
     setInvalidRoutes(invalid);
