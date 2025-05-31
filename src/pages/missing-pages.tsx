@@ -206,3 +206,57 @@ export function Tutorials() {
     </StandardLayout>
   );
 }
+
+// Placeholder component for missing pages
+function PlaceholderPage({ title, description }: { title: string; description: string }) {
+  return (
+    <StandardLayout title={title} description={description}>
+      <div className="container py-12">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-4">{title}</h1>
+          <p className="text-xl text-muted-foreground mb-8">{description}</p>
+          <Card className="max-w-2xl mx-auto">
+            <CardContent className="p-8">
+              <div className="text-center text-muted-foreground">
+                <FileText className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                <p className="text-lg mb-4">This page is under construction.</p>
+                <p>We're working hard to bring you amazing content. Check back soon!</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </StandardLayout>
+  );
+}
+
+// Export all the missing page components
+export const Achievements = () => <PlaceholderPage title="Achievements" description="Track your security audit achievements and milestones" />;
+export const AdminAudits = () => <PlaceholderPage title="Admin Audits" description="Manage platform audit operations" />;
+export const AdminDashboard = () => <PlaceholderPage title="Admin Dashboard" description="Administrative platform overview" />;
+export const AdminDisputes = () => <PlaceholderPage title="Admin Disputes" description="Manage platform disputes and resolutions" />;
+export const AdminFinance = () => <PlaceholderPage title="Admin Finance" description="Financial operations and reporting" />;
+export const AdminProviders = () => <PlaceholderPage title="Admin Providers" description="Manage service providers" />;
+export const AdminReports = () => <PlaceholderPage title="Admin Reports" description="Platform analytics and reports" />;
+export const AdminSecurity = () => <PlaceholderPage title="Admin Security" description="Platform security management" />;
+export const AdminServices = () => <PlaceholderPage title="Admin Services" description="Manage platform services" />;
+export const AdminSettings = () => <PlaceholderPage title="Admin Settings" description="Platform configuration settings" />;
+export const AdminUsers = () => <PlaceholderPage title="Admin Users" description="User management and administration" />;
+export const AuditGuidelines = () => <PlaceholderPage title="Audit Guidelines" description="Security audit best practices and guidelines" />;
+export const AuditorDashboard = () => <PlaceholderPage title="Auditor Dashboard" description="Auditor workspace and tools" />;
+export const Blog = () => <PlaceholderPage title="Blog" description="Latest Web3 security insights and news" />;
+export const CancellationRefund = () => <PlaceholderPage title="Cancellation & Refund" description="Cancellation and refund policies" />;
+export const Challenges = () => <PlaceholderPage title="Challenges" description="Security challenges and competitions" />;
+export const ContactProvider = () => <PlaceholderPage title="Contact Provider" description="Get in touch with service providers" />;
+export const Events = () => <PlaceholderPage title="Events" description="Web3 security events and workshops" />;
+export const Forum = () => <PlaceholderPage title="Forum" description="Community discussions and support" />;
+export const Leaderboard = () => <PlaceholderPage title="Leaderboard" description="Top auditors and security experts" />;
+export const PlatformReport = () => <PlaceholderPage title="Platform Report" description="Platform performance and analytics" />;
+export const Privacy = () => <PlaceholderPage title="Privacy Policy" description="How we protect your privacy" />;
+export const ProjectDashboard = () => <PlaceholderPage title="Project Dashboard" description="Manage your security projects" />;
+export const SecurityInsights = () => <PlaceholderPage title="Security Insights" description="Advanced security analytics and insights" />;
+export const SecurityPolicy = () => <PlaceholderPage title="Security Policy" description="Platform security policies and procedures" />;
+export const ShippingDelivery = () => <PlaceholderPage title="Shipping & Delivery" description="Service delivery information" />;
+export const SubmitService = () => <PlaceholderPage title="Submit Service" description="Submit your security service" />;
+export const Terms = () => <PlaceholderPage title="Terms of Service" description="Platform terms and conditions" />;
+export const UserDashboard = () => <PlaceholderPage title="User Dashboard" description="Your personalized dashboard" />;

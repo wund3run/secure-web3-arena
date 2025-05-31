@@ -2,31 +2,19 @@
 import { UserBehaviorProfile } from '@/types/user-profiling';
 
 export const getUserSegment = (
-  behaviorProfile: UserBehaviorProfile | null,
+  behaviorProfile: UserBehaviorProfile | null, 
   userType?: string
 ): string => {
   if (!behaviorProfile) return 'first_time_visitor';
   
   const { visitCount, engagementScore, completedActions } = behaviorProfile;
   
-  // First time visitors
-  if (visitCount <= 1) return 'first_time_visitor';
-  
-  // Explorer segment
-  if (visitCount <= 5 && engagementScore < 30) return 'explorer';
-  
-  // Returning clients
-  if (userType === 'project_owner' && completedActions.includes('audit_request_created')) {
-    return 'returning_client';
-  }
-  
-  // Active auditors
-  if (userType === 'auditor' && completedActions.includes('audit_completed')) {
-    return 'active_auditor';
-  }
-  
-  // Power users
-  if (visitCount > 20 && engagementScore > 70) return 'power_user';
+  // Determine segment based on behavior patterns
+  if (visitCount === 1) return 'first_time_visitor';
+  if (visitCount < 5) return 'browsing_prospect';
+  if (completedActions.includes('audit_request_created')) return 'returning_client';
+  if (userType === 'auditor' && engagementScore > 50) return 'active_auditor';
+  if (visitCount > 20 && engagementScore > 100) return 'power_user';
   
   return 'returning_visitor';
 };
