@@ -1,12 +1,8 @@
+
 import { Shield, Twitter, Github, MessageSquare, Globe, AlertCircle, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
-import { routeExists, getFallbackRoute } from "@/utils/navigation";
 
 export function Footer() {
-  const handleNavigation = (path: string) => {
-    return routeExists(path) ? path : getFallbackRoute(path);
-  };
-
   return (
     <footer className="bg-background border-t border-border/40 pt-12 pb-6" role="contentinfo">
       {/* Beta Platform Notice */}
@@ -79,6 +75,7 @@ export function Footer() {
               <li><Link to="/audits" className="text-muted-foreground hover:text-foreground">Find Auditors</Link></li>
               <li><Link to="/submit-service" className="text-muted-foreground hover:text-foreground">Create Listing</Link></li>
               <li><Link to="/request-audit" className="text-muted-foreground hover:text-foreground">Security Requests</Link></li>
+              <li><Link to="/pricing" className="text-muted-foreground hover:text-foreground">Pricing</Link></li>
             </ul>
           </div>
           
@@ -86,11 +83,11 @@ export function Footer() {
           <div className="col-span-1">
             <h3 className="font-medium mb-4 text-lg">COMMUNITY</h3>
             <ul className="space-y-3">
-              <li><Link to="/leaderboard" className="text-muted-foreground hover:text-foreground">Leaderboard</Link></li>
-              <li><Link to="/achievements" className="text-muted-foreground hover:text-foreground">Achievements</Link></li>
-              <li><Link to="/events" className="text-muted-foreground hover:text-foreground">Security Events</Link></li>
-              <li><Link to="/forum" className="text-muted-foreground hover:text-foreground">Community Forum</Link></li>
+              <li><Link to="/community" className="text-muted-foreground hover:text-foreground">Join Community</Link></li>
+              <li><Link to="/forum" className="text-muted-foreground hover:text-foreground">Discussion Forum</Link></li>
+              <li><Link to="/events" className="text-muted-foreground hover:text-foreground">Events & Workshops</Link></li>
               <li><Link to="/challenges" className="text-muted-foreground hover:text-foreground">Security Challenges</Link></li>
+              <li><Link to="/leaderboard" className="text-muted-foreground hover:text-foreground">Expert Leaderboard</Link></li>
             </ul>
           </div>
           
@@ -101,8 +98,8 @@ export function Footer() {
               <li><Link to="/docs" className="text-muted-foreground hover:text-foreground">Documentation</Link></li>
               <li><Link to="/blog" className="text-muted-foreground hover:text-foreground">Security Blog</Link></li>
               <li><Link to="/vulnerabilities" className="text-muted-foreground hover:text-foreground">Vulnerability Database</Link></li>
-              <li><Link to="/audit-guidelines" className="text-muted-foreground hover:text-foreground">Security Guidelines</Link></li>
               <li><Link to="/resources" className="text-muted-foreground hover:text-foreground">Resource Center</Link></li>
+              <li><Link to="/support" className="text-muted-foreground hover:text-foreground">Support Center</Link></li>
             </ul>
           </div>
         </div>
@@ -113,6 +110,12 @@ export function Footer() {
               &copy; {new Date().getFullYear()} Hawkly. All rights reserved.
             </div>
             <div className="flex flex-wrap justify-center gap-6">
+              <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground">
+                About
+              </Link>
+              <Link to="/careers" className="text-sm text-muted-foreground hover:text-foreground">
+                Careers
+              </Link>
               <Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground">
                 Terms
               </Link>

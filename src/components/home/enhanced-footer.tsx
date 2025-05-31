@@ -39,7 +39,6 @@ export function EnhancedFooter() {
         <div>
           <h3 className="font-medium mb-3">Resources</h3>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/audit-guidelines" className="text-muted-foreground hover:text-foreground transition-colors">Audit Guidelines</Link></li>
             <li><Link to="/docs" className="text-muted-foreground hover:text-foreground transition-colors">Documentation</Link></li>
             <li><Link to="/blog" className="text-muted-foreground hover:text-foreground transition-colors">Security Blog</Link></li>
             <li><Link to="/tutorials" className="text-muted-foreground hover:text-foreground transition-colors">Video Tutorials</Link></li>
@@ -52,12 +51,11 @@ export function EnhancedFooter() {
         <div>
           <h3 className="font-medium mb-3">Community</h3>
           <ul className="space-y-2 text-sm">
+            <li><Link to="/community" className="text-muted-foreground hover:text-foreground transition-colors">Join Community</Link></li>
             <li><Link to="/forum" className="text-muted-foreground hover:text-foreground transition-colors">Discussion Forum</Link></li>
             <li><Link to="/events" className="text-muted-foreground hover:text-foreground transition-colors">Events & Workshops</Link></li>
             <li><Link to="/challenges" className="text-muted-foreground hover:text-foreground transition-colors">Security Challenges</Link></li>
             <li><Link to="/leaderboard" className="text-muted-foreground hover:text-foreground transition-colors">Expert Leaderboard</Link></li>
-            <li><Link to="/achievements" className="text-muted-foreground hover:text-foreground transition-colors">Achievements</Link></li>
-            <li><Link to="/community" className="text-muted-foreground hover:text-foreground transition-colors">Join Community</Link></li>
           </ul>
         </div>
         
@@ -67,7 +65,6 @@ export function EnhancedFooter() {
             <li><Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">About Us</Link></li>
             <li><Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">Contact Support</Link></li>
             <li><Link to="/careers" className="text-muted-foreground hover:text-foreground transition-colors">Careers</Link></li>
-            <li><Link to="/platform-report" className="text-muted-foreground hover:text-foreground transition-colors">Platform Report</Link></li>
             <li><Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">Terms of Service</Link></li>
             <li><Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link></li>
             <li><Link to="/security-policy" className="text-muted-foreground hover:text-foreground transition-colors">Security Policy</Link></li>

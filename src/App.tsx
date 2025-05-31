@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -23,6 +22,17 @@ import AuditorOnboarding from '@/pages/onboarding/AuditorOnboarding';
 import SecuritySettings from '@/pages/SecuritySettings';
 import Terms from '@/pages/Terms';
 import Privacy from '@/pages/Privacy';
+import Documentation from '@/pages/Documentation';
+import Blog from '@/pages/Blog';
+import Vulnerabilities from '@/pages/Vulnerabilities';
+import Resources from '@/pages/Resources';
+import Contact from '@/pages/Contact';
+import Support from '@/pages/Support';
+import Community from '@/pages/Community';
+import About from '@/pages/About';
+import Careers from '@/pages/Careers';
+import Pricing from '@/pages/Pricing';
+import FAQ from '@/pages/FAQ';
 import { RoleBasedRoute } from '@/components/auth/RoleBasedRoute';
 import { UserProfileDetector } from '@/components/user-profiling/UserProfileDetector';
 import SecurityAudits from './pages/SecurityAudits';
@@ -102,10 +112,16 @@ function App() {
                   <Route path="/consulting" element={<Consulting />} />
                   
                   {/* Resource Routes */}
+                  <Route path="/docs" element={<Documentation />} />
+                  <Route path="/documentation" element={<Documentation />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/vulnerabilities" element={<Vulnerabilities />} />
+                  <Route path="/resources" element={<Resources />} />
                   <Route path="/security-guides" element={<SecurityGuides />} />
                   <Route path="/knowledge-base" element={<KnowledgeBase />} />
                   <Route path="/tutorials" element={<Tutorials />} />
                   <Route path="/templates" element={<Templates />} />
+                  <Route path="/faq" element={<FAQ />} />
                   
                   {/* Tool Routes */}
                   <Route path="/security-insights" element={<SecurityInsights />} />
@@ -114,10 +130,18 @@ function App() {
                   <Route path="/platform-reports" element={<PlatformReports />} />
                   
                   {/* Community Routes */}
+                  <Route path="/community" element={<Community />} />
                   <Route path="/forum" element={<Forum />} />
                   <Route path="/events" element={<Events />} />
                   <Route path="/challenges" element={<Challenges />} />
                   <Route path="/leaderboard" element={<Leaderboard />} />
+                  
+                  {/* Company Routes */}
+                  <Route path="/about" element={<About />} />
+                  <Route path="/careers" element={<Careers />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/support" element={<Support />} />
+                  <Route path="/pricing" element={<Pricing />} />
                   
                   {/* Additional Routes */}
                   <Route path="/submit-service" element={<SubmitService />} />
