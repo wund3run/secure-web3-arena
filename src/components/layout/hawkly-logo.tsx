@@ -22,16 +22,16 @@ export function HawklyLogo({
   asLink = true
 }: HawklyLogoProps) {
   const sizeClasses = {
-    small: 'w-12 h-12',
-    default: 'w-16 h-16',
-    large: 'w-20 h-20',
-    full: 'w-24 h-24'
+    small: 'w-8 h-8',
+    default: 'w-12 h-12',
+    large: 'w-16 h-16',
+    full: 'w-20 h-20'
   };
 
   const logoContent = (
     <div className={`flex items-center space-x-3 ${className}`} onClick={onClick}>
       <img 
-        src="/lovable-uploads/10aaac58-f359-40ad-aa82-5cbed0580c02.png" 
+        src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
         alt="Hawkly Logo"
         className={`${sizeClasses[variant]} object-contain bg-transparent`}
         style={{ backgroundColor: 'transparent' }}

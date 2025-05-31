@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { HawklyLogo } from "./hawkly-logo";
 import { useAuth } from "@/contexts/auth";
 import { EnhancedNavigationDropdown } from "./navigation/enhanced-navigation-dropdown";
 import { MobileNavigation } from "./navigation/mobile-navigation";
@@ -73,7 +72,12 @@ export function ProductionNavbar() {
             className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded-md p-1"
             aria-label="Hawkly Home"
           >
-            <HawklyLogo asLink={false} showText={false} variant="default" />
+            <img 
+              src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+              alt="Hawkly Logo"
+              className="h-12 w-12 object-contain bg-transparent"
+              style={{ backgroundColor: 'transparent' }}
+            />
           </Link>
           
           {/* Enhanced Desktop Navigation - only show if user is authenticated */}

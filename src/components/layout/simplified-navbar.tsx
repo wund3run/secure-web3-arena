@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { HawklyLogo } from "./hawkly-logo";
 import { useAuth } from "@/contexts/auth";
 import { navigationLinks } from "./navigation/navigation-links";
 import { DesktopNavigation } from "./navigation/desktop-navigation";
@@ -76,7 +75,12 @@ export function SimplifiedNavbar() {
             className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded"
             aria-label="Home page"
           >
-            <HawklyLogo asLink={false} showText={false} variant="default" />
+            <img 
+              src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+              alt="Hawkly Logo"
+              className="h-12 w-12 object-contain bg-transparent"
+              style={{ backgroundColor: 'transparent' }}
+            />
           </Link>
           
           {/* Desktop Navigation - only show if user is authenticated */}

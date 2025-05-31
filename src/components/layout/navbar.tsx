@@ -11,9 +11,9 @@ export function Navbar() {
         <div className="mr-8">
           <Link to="/" className="flex items-center space-x-2">
             <img 
-              src="/lovable-uploads/d96077a4-3ebd-4779-9a3e-a504ff6822f1.png" 
+              src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
               alt="Hawkly Logo"
-              className="h-10 w-auto object-contain"
+              className="h-12 w-12 object-contain"
             />
           </Link>
         </div>
