@@ -12,7 +12,12 @@ const AuditRequestHeader: React.FC = () => {
   return (
     <div className="text-center mb-10">
       <div className="flex justify-center mb-6 animate-in fade-in slide-in-from-top-5">
-        <HawklyLogo variant="full" textSize="text-2xl" className="hover-lift cursor-pointer transition-all" />
+        <img 
+          src="/lovable-uploads/457a4f30-ef00-4983-ad81-9841ef293c46.png" 
+          alt="Hawkly Logo"
+          className="w-24 h-24 object-contain bg-transparent hover-lift cursor-pointer transition-all"
+          style={{ backgroundColor: 'transparent' }}
+        />
       </div>
       <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#8A73E2] to-[#33C3F0] animate-in fade-in slide-in-from-bottom-5">
         Request a Security Audit

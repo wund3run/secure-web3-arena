@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -9,7 +10,7 @@ export function EnhancedFooter() {
         <div className="col-span-2 md:col-span-1">
           <Link to="/" aria-label="Hawkly Home page" className="inline-block mb-4">
             <img 
-              src="/lovable-uploads/315b0088-3d48-449e-bd7e-5e51c332a1e6.png" 
+              src="/lovable-uploads/d96077a4-3ebd-4779-9a3e-a504ff6822f1.png" 
               alt="Hawkly Logo"
               className="h-20 w-auto object-contain bg-transparent"
               style={{ backgroundColor: 'transparent' }}

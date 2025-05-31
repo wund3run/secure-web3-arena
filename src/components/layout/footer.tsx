@@ -35,7 +35,7 @@ export function Footer() {
           <div className="col-span-1">
             <div className="flex justify-center md:justify-start mb-6">
               <img 
-                src="/lovable-uploads/315b0088-3d48-449e-bd7e-5e51c332a1e6.png" 
+                src="/lovable-uploads/d96077a4-3ebd-4779-9a3e-a504ff6822f1.png" 
                 alt="Hawkly Logo"
                 className="h-28 w-auto object-contain bg-transparent"
                 style={{ backgroundColor: 'transparent' }}

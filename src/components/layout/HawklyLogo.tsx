@@ -31,7 +31,7 @@ export function HawklyLogo({
   const logoContent = (
     <div className={`flex items-center space-x-3 ${className}`} onClick={onClick}>
       <img 
-        src="/lovable-uploads/04363a2f-c38a-4f57-8d7d-24793bf99bd3.png" 
+        src="/lovable-uploads/457a4f30-ef00-4983-ad81-9841ef293c46.png" 
         alt="Hawkly Logo"
         className={`${sizeClasses[variant]} object-contain bg-transparent`}
         style={{ backgroundColor: 'transparent' }}

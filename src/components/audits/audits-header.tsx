@@ -2,7 +2,6 @@
 import { Award, FileText, ShieldCheck, ArrowRight, CheckCircle, Shield, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { HawklyLogo } from "@/components/layout/hawkly-logo";
 
 export function AuditsHeader() {
   return (
@@ -10,7 +9,12 @@ export function AuditsHeader() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-6">
           <div className="flex justify-center mb-4">
-            <HawklyLogo variant="full" textSize="text-2xl" />
+            <img 
+              src="/lovable-uploads/457a4f30-ef00-4983-ad81-9841ef293c46.png" 
+              alt="Hawkly Logo"
+              className="w-24 h-24 object-contain bg-transparent"
+              style={{ backgroundColor: 'transparent' }}
+            />
           </div>
           <div className="inline-flex items-center justify-center bg-[#8A73E2]/10 px-4 py-2 rounded-full text-[#8A73E2] mb-4 mt-4">
             <ShieldCheck className="h-5 w-5 mr-2" />
