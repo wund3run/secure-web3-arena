@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -403,276 +404,6 @@ export const PlatformReports = () => (
     ]}
   />
 );
-
-// Updated existing components with March 2025 enhancements
-export const Templates = () => {
-  const templates = [
-    {
-      title: "DeFi Protocol Audit Template",
-      description: "Comprehensive security checklist for DeFi applications including flash loan protection, oracle security, and liquidity risks - Updated March 2025",
-      category: "DeFi",
-      downloadCount: "3.2k",
-      rating: 4.9,
-      lastUpdated: "March 2025",
-      new: true
-    },
-    {
-      title: "AI-Enhanced Smart Contract Template",
-      description: "Advanced template incorporating AI-powered vulnerability detection patterns and automated security checks",
-      category: "AI Security",
-      downloadCount: "2.8k",
-      rating: 4.9,
-      lastUpdated: "March 2025",
-      new: true
-    },
-    {
-      title: "NFT Smart Contract Template",
-      description: "Security guidelines for NFT and token contracts covering minting, royalties, and marketplace integrations",
-      category: "NFT",
-      downloadCount: "2.1k",
-      rating: 4.8,
-      lastUpdated: "March 2025"
-    },
-    {
-      title: "DAO Governance Audit",
-      description: "Security framework for decentralized governance including voting mechanisms and proposal systems",
-      category: "DAO",
-      downloadCount: "1.7k",
-      rating: 4.7,
-      lastUpdated: "February 2025"
-    },
-    {
-      title: "Cross-Chain Bridge Template",
-      description: "Multi-chain security assessment template covering bridge architecture and cross-chain risks",
-      category: "Bridge",
-      downloadCount: "1.4k",
-      rating: 4.9,
-      lastUpdated: "March 2025"
-    },
-    {
-      title: "Layer 2 Security Checklist",
-      description: "Specialized template for L2 solutions including rollup security and state verification",
-      category: "Layer 2",
-      downloadCount: "1.1k",
-      rating: 4.6,
-      lastUpdated: "March 2025"
-    },
-    {
-      title: "Staking Protocol Audit",
-      description: "Security framework for staking mechanisms, slashing conditions, and reward distribution",
-      category: "Staking",
-      downloadCount: "956",
-      rating: 4.8,
-      lastUpdated: "February 2025"
-    }
-  ];
-
-  return (
-    <StandardLayout 
-      title="Security Templates" 
-      description="Professional audit templates used by top security experts - Updated March 2025"
-    >
-      <div className="container py-12">
-        <div className="text-center mb-12">
-          <Badge variant="secondary" className="mb-4">Updated March 2025</Badge>
-          <h1 className="text-4xl font-bold mb-4">Security Audit Templates</h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Professional templates and checklists used by top security auditors. 
-            Start your security assessment with battle-tested frameworks updated for 2025.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {templates.map((template, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="text-lg">{template.title}</CardTitle>
-                    {template.new && (
-                      <Badge variant="default" className="mt-2 mb-2">New for 2025</Badge>
-                    )}
-                    <CardDescription className="mt-2">{template.description}</CardDescription>
-                  </div>
-                  <Badge variant="secondary">{template.category}</Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Users className="h-4 w-4" />
-                      {template.downloadCount}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      {template.rating}
-                    </span>
-                  </div>
-                </div>
-                <div className="text-xs text-muted-foreground mb-4">
-                  Updated: {template.lastUpdated}
-                </div>
-                <Button size="sm" className="w-full">
-                  Download Template <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <div className="text-center">
-          <Button asChild size="lg">
-            <Link to="/request-audit">
-              Get Professional Audit <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-      </div>
-    </StandardLayout>
-  );
-};
-
-export const Tutorials = () => {
-  const tutorials = [
-    {
-      title: "Smart Contract Security Fundamentals for 2025",
-      description: "Updated guide covering the latest vulnerability patterns, including MEV attacks, AI-assisted exploits, and advanced reentrancy scenarios",
-      duration: "45 min",
-      level: "Beginner",
-      views: "18.7k",
-      instructor: "Dr. Elena Rodriguez",
-      publishDate: "March 2025",
-      new: true
-    },
-    {
-      title: "AI-Powered Security Analysis Techniques",
-      description: "Learn to leverage GPT-4 and other AI tools for automated vulnerability detection and smart contract analysis",
-      duration: "60 min",
-      level: "Intermediate",
-      views: "15.2k",
-      instructor: "Dr. Jennifer Wu",
-      publishDate: "March 2025",
-      new: true
-    },
-    {
-      title: "Advanced DeFi Security Patterns",
-      description: "Deep dive into flash loan attacks, oracle manipulation, and cross-protocol vulnerabilities in the current DeFi landscape",
-      duration: "85 min", 
-      level: "Advanced",
-      views: "12.3k",
-      instructor: "Marcus Chen",
-      publishDate: "March 2025"
-    },
-    {
-      title: "Layer 2 Security Architecture",
-      description: "Comprehensive coverage of rollup security, state verification, and cross-layer communication vulnerabilities",
-      duration: "65 min",
-      level: "Intermediate", 
-      views: "9.8k",
-      instructor: "Sarah Kim",
-      publishDate: "February 2025"
-    },
-    {
-      title: "Cross-Chain Bridge Security Analysis",
-      description: "Security considerations for multi-chain applications, bridge vulnerabilities, and secure cross-chain communication",
-      duration: "70 min",
-      level: "Advanced",
-      views: "8.1k",
-      instructor: "Ahmed Hassan",
-      publishDate: "February 2025"
-    },
-    {
-      title: "AI-Powered Security Auditing Tools",
-      description: "Learn to use the latest AI tools for vulnerability detection, including GPT-4 powered analysis and automated testing",
-      duration: "55 min",
-      level: "Intermediate",
-      views: "15.2k",
-      instructor: "Dr. Jennifer Wu",
-      publishDate: "March 2025"
-    },
-    {
-      title: "Zero-Knowledge Protocol Security",
-      description: "Security analysis of ZK-SNARK and ZK-STARK implementations, privacy-preserving protocols, and circuit vulnerabilities",
-      duration: "90 min",
-      level: "Expert",
-      views: "6.4k",
-      instructor: "Dr. Alex Thompson",
-      publishDate: "March 2025"
-    }
-  ];
-
-  return (
-    <StandardLayout 
-      title="Security Tutorials" 
-      description="Master Web3 security with expert-led video tutorials - Updated March 2025"
-    >
-      <div className="container py-12">
-        <div className="text-center mb-12">
-          <Badge variant="secondary" className="mb-4">Updated March 2025</Badge>
-          <h1 className="text-4xl font-bold mb-4">Web3 Security Learning Center</h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Master Web3 security with our comprehensive video tutorials and hands-on guides. 
-            Learn from real-world exploits and cutting-edge security practices updated for 2025.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {tutorials.map((tutorial, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg mb-4 flex items-center justify-center">
-                  <Video className="h-12 w-12 text-primary" />
-                </div>
-                {tutorial.new && (
-                  <Badge variant="default" className="mb-2 w-fit">New for 2025</Badge>
-                )}
-                <CardTitle className="text-lg">{tutorial.title}</CardTitle>
-                <CardDescription>{tutorial.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
-                      {tutorial.duration}
-                    </span>
-                    <Badge variant={tutorial.level === 'Beginner' ? 'secondary' : tutorial.level === 'Intermediate' ? 'default' : tutorial.level === 'Advanced' ? 'destructive' : 'outline'}>
-                      {tutorial.level}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <span>{tutorial.instructor}</span>
-                    <span>{tutorial.views} views</span>
-                  </div>
-                  <div className="text-xs text-muted-foreground">{tutorial.publishDate}</div>
-                </div>
-                <Button className="w-full mt-4">
-                  Watch Tutorial <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-8 text-center">
-          <h3 className="text-2xl font-bold mb-4">Ready to Apply Your Knowledge?</h3>
-          <p className="text-muted-foreground mb-6">
-            Put your security skills to work with real projects or get your own code audited by our expert community.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild>
-              <Link to="/marketplace">Find Audit Work</Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link to="/request-audit">Get Code Audited</Link>
-            </Button>
-          </div>
-        </div>
-      </div>
-    </StandardLayout>
-  );
-};
 
 // Placeholder component for other missing pages
 function PlaceholderPage({ 
@@ -1128,6 +859,71 @@ export const UserDashboard = () => (
       "Communication Center",
       "Resource Library Access",
       "Profile Settings"
+    ]}
+  />
+);
+
+// Additional exports for pages that might be missing
+export const Privacy = () => (
+  <PlaceholderPage 
+    title="Privacy Policy" 
+    description="How we protect and handle your personal information on our platform"
+    icon={Lock}
+    comingSoon={false}
+    features={[
+      "Data Collection Practices",
+      "Information Security Measures",
+      "User Rights and Controls",
+      "Third-party Integrations",
+      "Cookie Usage Policy"
+    ]}
+  />
+);
+
+export const Terms = () => (
+  <PlaceholderPage 
+    title="Terms of Service" 
+    description="Legal terms and conditions for using our security audit platform"
+    icon={FileText}
+    comingSoon={false}
+    features={[
+      "Platform Usage Rules",
+      "Service Provider Guidelines",
+      "Payment and Billing Terms",
+      "Intellectual Property Rights",
+      "Dispute Resolution Process"
+    ]}
+  />
+);
+
+export const SecurityPolicy = () => (
+  <PlaceholderPage 
+    title="Security Policy" 
+    description="Our commitment to maintaining the highest security standards for our platform"
+    icon={Shield}
+    comingSoon={false}
+    features={[
+      "Security Infrastructure",
+      "Data Protection Measures",
+      "Incident Response Procedures",
+      "Vulnerability Disclosure",
+      "Compliance Certifications"
+    ]}
+  />
+);
+
+export const KnowledgeBase = () => (
+  <PlaceholderPage 
+    title="Knowledge Base" 
+    description="Comprehensive documentation and resources for Web3 security"
+    icon={BookOpen}
+    comingSoon={false}
+    features={[
+      "Security Best Practices",
+      "Platform Documentation",
+      "Troubleshooting Guides",
+      "Video Tutorials",
+      "Community Q&A"
     ]}
   />
 );
