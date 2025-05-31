@@ -14,7 +14,6 @@ export const initializeTestSuites = () => {
       testFunction: async () => {
         const homeLink = document.querySelector('a[href="/"]');
         if (!homeLink) throw new Error('Home link not found in navigation');
-        return true;
       }
     },
     {
@@ -24,7 +23,6 @@ export const initializeTestSuites = () => {
       testFunction: async () => {
         const marketplaceLink = document.querySelector('a[href="/marketplace"]');
         if (!marketplaceLink) throw new Error('Marketplace link not found in navigation');
-        return true;
       }
     }
   ];
@@ -40,7 +38,6 @@ export const initializeTestSuites = () => {
         if (!logoText || !logoText.textContent?.includes('Hawkly')) {
           throw new Error('Hawkly logo text not found or incorrect');
         }
-        return true;
       }
     },
     {
@@ -50,7 +47,6 @@ export const initializeTestSuites = () => {
       testFunction: async () => {
         const logoSvg = document.querySelector('svg[viewBox="0 0 24 24"]');
         if (!logoSvg) throw new Error('Logo SVG icon not found');
-        return true;
       }
     }
   ];
@@ -65,7 +61,6 @@ export const initializeTestSuites = () => {
         // Check if error boundary is properly wrapping the app
         const appContainer = document.querySelector('.min-h-screen');
         if (!appContainer) throw new Error('App container not found - error boundary may not be active');
-        return true;
       }
     }
   ];
@@ -79,7 +74,6 @@ export const initializeTestSuites = () => {
       testFunction: async () => {
         const stored = localStorage.getItem('hawkly_analytics_events');
         if (!stored) throw new Error('Analytics system not initialized - no events stored');
-        return true;
       }
     }
   ];
@@ -93,7 +87,6 @@ export const initializeTestSuites = () => {
       testFunction: async () => {
         const inputs = document.querySelectorAll('input, textarea, select');
         if (inputs.length === 0) throw new Error('No form inputs found on page');
-        return true;
       }
     }
   ];
@@ -112,7 +105,6 @@ export const initializeTestSuites = () => {
             throw new Error(`Page load time too slow: ${loadTime}ms`);
           }
         }
-        return true;
       }
     }
   ];
