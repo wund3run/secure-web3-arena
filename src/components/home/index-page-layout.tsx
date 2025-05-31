@@ -8,11 +8,11 @@ import { SimplifiedHero } from "@/components/home/simplified-hero";
 import { TrustIndicators } from "@/components/home/trust-indicators";
 import { ValuePropositionSection } from "@/components/home/value-proposition-section";
 import { HowItWorksSection } from "@/components/home/how-it-works-section";
+import { UserJourneySection } from "@/components/home/user-journey-section";
 
 // Lazy-loaded sections
 import {
   FaqSection,
-  UserJourneySection,
   QuickStartSection
 } from "./index-page-sections";
 
@@ -35,19 +35,18 @@ export function IndexPageLayout() {
       {/* How it works section */}
       <HowItWorksSection />
       
-      {/* Below-the-fold content - lazy loaded with enhanced loading states */}
-      <LazySection fallback={<SectionLoadingFallback />}>
-        <Suspense fallback={<SectionLoadingFallback />}>
-          <UserJourneySection />
-        </Suspense>
-      </LazySection>
+      {/* User journey section - Choose Your Path */}
+      <UserJourneySection />
       
+      {/* Below-the-fold content - lazy loaded with enhanced loading states */}
       <LazySection fallback={<SectionLoadingFallback />}>
         <QuickStartSection />
       </LazySection>
       
       <LazySection fallback={<SectionLoadingFallback height="h-80" />}>
-        <FaqSection />
+        <Suspense fallback={<SectionLoadingFallback height="h-80" />}>
+          <FaqSection />
+        </Suspense>
       </LazySection>
       
       {/* Trust indicators moved to the end */}
