@@ -5,24 +5,21 @@ interface AppLoadingProps {
   message?: string;
 }
 
+// Ultra-minimal loading state for fastest possible render
 const AppLoadingState: React.FC<AppLoadingProps> = ({
   message = "Loading...",
 }) => {
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center bg-background z-50">
-      <div className="flex flex-col items-center justify-center p-4 text-center">
-        {/* Simplified loading with just the new logo */}
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="flex flex-col items-center">
         <img 
           src="/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png" 
-          alt="Hawkly Logo"
-          className="h-16 w-16 object-contain mb-4"
+          alt="Hawkly"
+          className="h-16 w-16 mb-4"
           loading="eager"
         />
-        
-        {/* Simple spinner */}
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-2"></div>
-        
-        <p className="text-sm text-muted-foreground">{message}</p>
+        <div className="w-8 h-8 border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin mb-2"></div>
+        <p className="text-sm text-gray-600">{message}</p>
       </div>
     </div>
   );
