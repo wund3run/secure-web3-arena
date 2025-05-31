@@ -25,8 +25,9 @@ import Templates from './pages/Templates';
 import Tutorials from './pages/Tutorials';
 import SecurityGuides from './pages/SecurityGuides';
 import KnowledgeBase from './pages/KnowledgeBase';
-import AITools from './pages/AITools';
+import AiTools from './pages/AiTools';
 import Forum from './pages/Forum';
+import SecurityInsights from './pages/SecurityInsights';
 import { 
   PenetrationTesting, 
   Consulting, 
@@ -39,8 +40,7 @@ import {
   ContactProvider,
   Terms,
   Privacy,
-  SecurityPolicy,
-  SecurityInsights
+  SecurityPolicy
 } from './pages/missing-pages';
 
 // Create a query client instance
@@ -82,7 +82,7 @@ function App() {
                 
                 {/* Tool Routes */}
                 <Route path="/security-insights" element={<SecurityInsights />} />
-                <Route path="/ai-tools" element={<AITools />} />
+                <Route path="/ai-tools" element={<AiTools />} />
                 <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
                 <Route path="/platform-reports" element={<PlatformReports />} />
                 
