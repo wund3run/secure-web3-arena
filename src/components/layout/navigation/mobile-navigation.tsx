@@ -7,6 +7,7 @@ import { Menu, LogIn, User, LogOut } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
 import { useAuth } from "@/contexts/auth";
+import { toast } from "sonner";
 
 interface NavigationLink {
   title: string;
@@ -37,9 +38,16 @@ export function MobileNavigation({
     setIsOpen(false);
   };
 
-  const handleSignOut = () => {
-    onSignOut();
-    setIsOpen(false);
+  const handleSignOut = async () => {
+    try {
+      console.log("Mobile navigation sign out...");
+      await onSignOut();
+      setIsOpen(false);
+      toast.success("Successfully signed out");
+    } catch (error) {
+      console.error("Mobile sign out error:", error);
+      toast.error("Failed to sign out");
+    }
   };
 
   const getDashboardPath = () => {
@@ -144,7 +152,7 @@ export function MobileNavigation({
                   <Button 
                     variant="ghost" 
                     onClick={handleSignOut}
-                    className="w-full justify-start"
+                    className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign Out

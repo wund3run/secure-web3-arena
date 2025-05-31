@@ -13,7 +13,6 @@ export function useAuthProvider(): AuthContextProps {
 
   const signIn = async (email: string, password: string) => {
     setError(null);
-    const originalLoading = loading;
     
     try {
       const data = await authService.signIn(email, password);
@@ -50,10 +49,15 @@ export function useAuthProvider(): AuthContextProps {
     setError(null);
     
     try {
+      console.log('Auth provider: Starting sign out process...');
       await authService.signOut();
+      
+      // Clear all auth state
       setUser(null);
       setSession(null);
       setUserProfile(null);
+      
+      console.log('Auth provider: Sign out completed successfully');
     } catch (err: any) {
       console.error('Sign out error:', err);
       setError(err.message);

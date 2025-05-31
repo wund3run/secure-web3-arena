@@ -8,6 +8,7 @@ import { MobileNavigation } from "./navigation/mobile-navigation";
 import { AuthButtons } from "./navigation/auth-buttons";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { X } from "lucide-react";
+import { toast } from "sonner";
 
 export function SimplifiedNavbar() {
   const { user, signOut } = useAuth();
@@ -45,6 +46,17 @@ export function SimplifiedNavbar() {
   
   const handleDropdownToggle = (dropdown: string) => {
     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      console.log("Initiating sign out...");
+      await signOut();
+      toast.success("Successfully signed out");
+    } catch (error) {
+      console.error("Sign out failed:", error);
+      toast.error("Failed to sign out. Please try again.");
+    }
   };
   
   return (
@@ -93,7 +105,7 @@ export function SimplifiedNavbar() {
         </div>
         
         {/* Desktop Auth Buttons */}
-        <AuthButtons isAuthenticated={!!user} onSignOut={signOut} />
+        <AuthButtons isAuthenticated={!!user} onSignOut={handleSignOut} />
         
         {/* Mobile Menu */}
         <MobileNavigation 
@@ -101,7 +113,7 @@ export function SimplifiedNavbar() {
           isOpen={isMobileMenuOpen} 
           setIsOpen={setIsMobileMenuOpen}
           isAuthenticated={!!user}
-          onSignOut={signOut}
+          onSignOut={handleSignOut}
         />
       </div>
     </header>

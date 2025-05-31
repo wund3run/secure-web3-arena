@@ -14,6 +14,8 @@ import {
 import { useAuth } from "@/contexts/auth";
 import { ModeToggle } from "@/components/theme/ModeToggle";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { LogOut, User, Settings } from "lucide-react";
+import { toast } from "sonner";
 
 interface AuthButtonsProps {
   isAuthenticated: boolean;
@@ -22,6 +24,16 @@ interface AuthButtonsProps {
 
 export function AuthButtons({ isAuthenticated, onSignOut }: AuthButtonsProps) {
   const { user, userProfile } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await onSignOut();
+      toast.success("Successfully signed out");
+    } catch (error) {
+      console.error("Sign out error:", error);
+      toast.error("Failed to sign out");
+    }
+  };
 
   return (
     <div className="hidden md:flex items-center space-x-3">
@@ -46,16 +58,35 @@ export function AuthButtons({ isAuthenticated, onSignOut }: AuthButtonsProps) {
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">
+                  {userProfile?.full_name || user?.email}
+                </p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  {user?.email}
+                </p>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link to="/profile">Profile</Link>
+              <Link to="/dashboard" className="flex items-center">
+                <User className="mr-2 h-4 w-4" />
+                Dashboard
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link to="/settings">Settings</Link>
+              <Link to="/security-settings" className="flex items-center">
+                <Settings className="mr-2 h-4 w-4" />
+                Settings
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={onSignOut}>Logout</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleSignOut} className="flex items-center text-red-600">
+              <LogOut className="mr-2 h-4 w-4" />
+              Sign Out
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )}
