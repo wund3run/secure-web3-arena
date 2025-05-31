@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -19,6 +18,9 @@ import AuditorOnboarding from '@/pages/onboarding/AuditorOnboarding';
 import SecuritySettings from '@/pages/SecuritySettings';
 import { RoleBasedRoute } from '@/components/auth/RoleBasedRoute';
 import { UserProfileDetector } from '@/components/user-profiling/UserProfileDetector';
+import SecurityAudits from './pages/SecurityAudits';
+import CodeReviews from './pages/CodeReviews';
+import { PenetrationTesting, Consulting, SecurityGuides, AITools, VulnerabilityScanner, PlatformReports } from './pages/missing-pages';
 
 // Create a query client instance
 const queryClient = new QueryClient();
@@ -44,6 +46,20 @@ function App() {
                 <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
                 <Route path="/auditor-onboarding" element={<AuditorOnboarding />} />
                 <Route path="/security-settings" element={<SecuritySettings />} />
+                
+                {/* New Service Routes */}
+                <Route path="/security-audits" element={<SecurityAudits />} />
+                <Route path="/code-reviews" element={<CodeReviews />} />
+                <Route path="/penetration-testing" element={<PenetrationTesting />} />
+                <Route path="/consulting" element={<Consulting />} />
+                
+                {/* Resource Routes */}
+                <Route path="/security-guides" element={<SecurityGuides />} />
+                
+                {/* Tool Routes */}
+                <Route path="/ai-tools" element={<AITools />} />
+                <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
+                <Route path="/platform-reports" element={<PlatformReports />} />
               </Routes>
             </NotificationProvider>
           </AuthProvider>
