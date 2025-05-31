@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '@/contexts/auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,15 +17,220 @@ import {
   Target,
   FileText,
   Settings,
-  Activity
+  Activity,
+  BookOpen,
+  Zap
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function RoleBasedDashboardContent() {
   const { user, userProfile, getUserType } = useAuth();
   const userType = getUserType();
+  const isNewUser = !userProfile?.projects_completed || userProfile.projects_completed === 0;
 
-  // General user dashboard
+  // New user onboarding content for auditors
+  if (userType === "auditor" && isNewUser) {
+    return (
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="border-blue-200 bg-blue-50">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Complete Your Profile</CardTitle>
+            <Target className="h-4 w-4 text-blue-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-700">25%</div>
+            <p className="text-xs text-blue-600">Profile completion</p>
+            <div className="mt-4">
+              <Button asChild className="w-full" size="sm">
+                <Link to="/auditor-onboarding">Complete Profile</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Available Audits</CardTitle>
+            <Shield className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">12</div>
+            <p className="text-xs text-muted-foreground">
+              Waiting for auditors
+            </p>
+            <div className="mt-4">
+              <Button variant="outline" asChild className="w-full" size="sm">
+                <Link to="/audits">Browse Audits</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Learning Center</CardTitle>
+            <BookOpen className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">New</div>
+            <p className="text-xs text-muted-foreground">
+              Auditing resources available
+            </p>
+            <div className="mt-4">
+              <Button variant="ghost" asChild className="w-full" size="sm">
+                <Link to="/guidelines">View Resources</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="col-span-full">
+          <CardHeader>
+            <CardTitle>Quick Start Guide</CardTitle>
+            <CardDescription>Follow these steps to get started as an auditor</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center gap-4 p-3 border rounded-lg">
+                <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">1</div>
+                <div className="flex-1">
+                  <p className="font-medium">Complete your auditor profile</p>
+                  <p className="text-sm text-muted-foreground">Add your skills, experience, and certifications</p>
+                </div>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/auditor-onboarding">Start</Link>
+                </Button>
+              </div>
+              <div className="flex items-center gap-4 p-3 border rounded-lg">
+                <div className="w-6 h-6 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-bold">2</div>
+                <div className="flex-1">
+                  <p className="font-medium">Review audit guidelines</p>
+                  <p className="text-sm text-muted-foreground">Learn best practices and standards</p>
+                </div>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/guidelines">Learn</Link>
+                </Button>
+              </div>
+              <div className="flex items-center gap-4 p-3 border rounded-lg">
+                <div className="w-6 h-6 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-bold">3</div>
+                <div className="flex-1">
+                  <p className="font-medium">Find your first audit</p>
+                  <p className="text-sm text-muted-foreground">Browse available projects and submit proposals</p>
+                </div>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/audits">Browse</Link>
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // New user onboarding content for project owners
+  if (userType === "project_owner" && isNewUser) {
+    return (
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="border-green-200 bg-green-50">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Request Your First Audit</CardTitle>
+            <Zap className="h-4 w-4 text-green-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-700">Ready</div>
+            <p className="text-xs text-green-600">
+              Start securing your project
+            </p>
+            <div className="mt-4">
+              <Button asChild className="w-full" size="sm">
+                <Link to="/request-audit">Request Audit</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Expert Auditors</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">50+</div>
+            <p className="text-xs text-muted-foreground">
+              Verified security experts
+            </p>
+            <div className="mt-4">
+              <Button variant="outline" asChild className="w-full" size="sm">
+                <Link to="/marketplace">Browse Auditors</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Security Resources</CardTitle>
+            <Shield className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">Free</div>
+            <p className="text-xs text-muted-foreground">
+              Security best practices
+            </p>
+            <div className="mt-4">
+              <Button variant="ghost" asChild className="w-full" size="sm">
+                <Link to="/resources">Learn More</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="col-span-full">
+          <CardHeader>
+            <CardTitle>Get Started in 3 Easy Steps</CardTitle>
+            <CardDescription>Secure your Web3 project with our expert auditors</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center gap-4 p-3 border rounded-lg">
+                <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">1</div>
+                <div className="flex-1">
+                  <p className="font-medium">Submit audit request</p>
+                  <p className="text-sm text-muted-foreground">Tell us about your project and security needs</p>
+                </div>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/request-audit">Start</Link>
+                </Button>
+              </div>
+              <div className="flex items-center gap-4 p-3 border rounded-lg">
+                <div className="w-6 h-6 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-bold">2</div>
+                <div className="flex-1">
+                  <p className="font-medium">Review auditor proposals</p>
+                  <p className="text-sm text-muted-foreground">Get matched with qualified security experts</p>
+                </div>
+                <Button variant="outline" size="sm" disabled>
+                  Coming Soon
+                </Button>
+              </div>
+              <div className="flex items-center gap-4 p-3 border rounded-lg">
+                <div className="w-6 h-6 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-bold">3</div>
+                <div className="flex-1">
+                  <p className="font-medium">Receive detailed report</p>
+                  <p className="text-sm text-muted-foreground">Get actionable security recommendations</p>
+                </div>
+                <Button variant="outline" size="sm" disabled>
+                  Coming Soon
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // General user dashboard (visitors, etc.)
   if (userType === "general" || userType === "visitor") {
     return (
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

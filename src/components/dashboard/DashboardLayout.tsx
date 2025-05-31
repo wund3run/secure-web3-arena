@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/auth';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RoleBasedDashboardContent } from './role-based-dashboard-content';
 import { DashboardWidgets } from './DashboardWidgets';
+import { WelcomeMessage } from './WelcomeMessage';
 import LoadingState from '@/components/ui/loading-state';
 import { UserStats } from './stats/UserStats';
 import { Button } from '@/components/ui/button';
@@ -32,10 +33,14 @@ export function DashboardLayout({ dashboardType = '' }: DashboardLayoutProps) {
   const userType = getUserType();
   const isAuditor = userType === 'auditor';
   const isAdmin = userType === 'admin';
+  const isNewUser = !userProfile?.projects_completed || userProfile.projects_completed === 0;
   
   return (
     <div className="container py-8 max-w-7xl">
       <div className="flex flex-col space-y-6">
+        {/* Welcome message for new users */}
+        {isNewUser && <WelcomeMessage />}
+        
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-2">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">
