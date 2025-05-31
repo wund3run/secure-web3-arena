@@ -73,7 +73,7 @@ export function ProductionNavbar() {
             className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded-md p-1"
             aria-label="Hawkly Home"
           >
-            <HawklyLogo asLink={false} />
+            <HawklyLogo asLink={false} showText={false} variant="default" />
           </Link>
           
           {/* Enhanced Desktop Navigation */}

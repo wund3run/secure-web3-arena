@@ -76,7 +76,7 @@ export function SimplifiedNavbar() {
             className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded"
             aria-label="Home page"
           >
-            <HawklyLogo asLink={false} />
+            <HawklyLogo asLink={false} showText={false} variant="default" />
           </Link>
           
           {/* Desktop Navigation */}

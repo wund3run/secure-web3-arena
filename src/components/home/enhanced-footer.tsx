@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { HawklyLogo } from "@/components/layout/hawkly-logo";
 
 export function EnhancedFooter() {
   return (
@@ -10,7 +9,11 @@ export function EnhancedFooter() {
       <div className="container grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
         <div className="col-span-2 md:col-span-1">
           <Link to="/" aria-label="Hawkly Home page" className="inline-block mb-4">
-            <HawklyLogo />
+            <img 
+              src="/lovable-uploads/315b0088-3d48-449e-bd7e-5e51c332a1e6.png" 
+              alt="Hawkly Logo"
+              className="h-16 w-auto object-contain"
+            />
           </Link>
           <p className="text-muted-foreground text-sm mb-4">
             The premier Web3 security marketplace connecting projects with expert auditors.

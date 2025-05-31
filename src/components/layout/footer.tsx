@@ -1,6 +1,6 @@
+
 import { Shield, Twitter, Github, MessageSquare, Globe, AlertCircle, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
-import { HawklyLogo } from "./hawkly-logo";
 import { routeExists, getFallbackRoute } from "@/utils/navigation";
 
 export function Footer() {
@@ -34,7 +34,13 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Logo and description column */}
           <div className="col-span-1">
-            <HawklyLogo variant="large" textSize="text-lg" />
+            <div className="flex justify-center md:justify-start mb-6">
+              <img 
+                src="/lovable-uploads/315b0088-3d48-449e-bd7e-5e51c332a1e6.png" 
+                alt="Hawkly Logo"
+                className="h-24 w-auto object-contain"
+              />
+            </div>
             <p className="mt-4 text-muted-foreground">
               The leading Web3 security marketplace connecting projects with top security experts. 
               Protecting blockchain assets through expert audits and continuous security monitoring.

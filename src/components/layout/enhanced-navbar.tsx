@@ -27,15 +27,12 @@ export function EnhancedNavbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0 flex items-center space-x-3">
+            <Link to="/" className="flex-shrink-0">
               <img
                 className="h-12 w-12 object-contain"
                 src="/lovable-uploads/04363a2f-c38a-4f57-8d7d-24793bf99bd3.png"
                 alt="Hawkly Logo"
               />
-              <span className="font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent text-lg">
-                Hawkly
-              </span>
             </Link>
           </div>
 
