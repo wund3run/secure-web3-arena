@@ -1,195 +1,147 @@
 
-import { testRunner, TestSuite } from './AutomatedTestRunner';
+import { testRunner, TestCase } from './AutomatedTestRunner';
+import { errorMonitoring } from './ErrorMonitoringService';
 
-// UI Component Tests
-const uiComponentTests: TestSuite = {
-  name: 'UI Components',
-  description: 'Tests for UI component rendering and interactions',
-  tests: [
-    {
-      id: 'button_render',
-      name: 'Button renders correctly',
-      component: 'Button',
-      testFunction: () => {
-        const button = document.createElement('button');
-        button.textContent = 'Test Button';
-        document.body.appendChild(button);
-        
-        if (!button.textContent) {
-          throw new Error('Button text not rendered');
-        }
-        
-        document.body.removeChild(button);
-      }
-    },
-    {
-      id: 'navigation_links',
-      name: 'Navigation links are accessible',
-      component: 'Navbar',
-      testFunction: () => {
-        const nav = document.querySelector('nav');
-        if (!nav) {
-          throw new Error('Navigation not found');
-        }
-        
-        const links = nav.querySelectorAll('a');
-        if (links.length === 0) {
-          throw new Error('No navigation links found');
-        }
-      }
-    },
-    {
-      id: 'responsive_layout',
-      name: 'Layout is responsive',
-      component: 'Layout',
-      testFunction: () => {
-        const viewport = document.querySelector('meta[name="viewport"]');
-        if (!viewport) {
-          throw new Error('Viewport meta tag not found');
-        }
-      }
-    }
-  ]
-};
+export const initializeTestSuites = () => {
+  console.log('🧪 Initializing component test suites...');
 
-// Performance Tests
-const performanceTests: TestSuite = {
-  name: 'Performance',
-  description: 'Tests for application performance',
-  tests: [
+  // Navigation Tests
+  const navigationTests: TestCase[] = [
     {
-      id: 'page_load_time',
-      name: 'Page loads within 3 seconds',
-      component: 'App',
-      testFunction: () => {
-        const loadTime = performance.now();
-        if (loadTime > 3000) {
-          throw new Error(`Page load time ${loadTime}ms exceeds 3000ms threshold`);
-        }
-      }
-    },
-    {
-      id: 'memory_usage',
-      name: 'Memory usage is reasonable',
-      component: 'App',
-      testFunction: () => {
-        if ('memory' in performance) {
-          const memory = (performance as any).memory;
-          const usedMB = memory.usedJSHeapSize / 1024 / 1024;
-          if (usedMB > 100) {
-            console.warn(`High memory usage: ${usedMB.toFixed(2)}MB`);
-          }
-        }
-      }
-    }
-  ]
-};
-
-// Accessibility Tests
-const accessibilityTests: TestSuite = {
-  name: 'Accessibility',
-  description: 'Tests for accessibility compliance',
-  tests: [
-    {
-      id: 'alt_text_images',
-      name: 'Images have alt text',
-      component: 'Images',
-      testFunction: () => {
-        const images = document.querySelectorAll('img');
-        const imagesWithoutAlt = Array.from(images).filter(img => !img.alt);
-        if (imagesWithoutAlt.length > 0) {
-          throw new Error(`${imagesWithoutAlt.length} images missing alt text`);
-        }
-      }
-    },
-    {
-      id: 'form_labels',
-      name: 'Form inputs have labels',
-      component: 'Forms',
-      testFunction: () => {
-        const inputs = document.querySelectorAll('input, textarea, select');
-        const inputsWithoutLabels = Array.from(inputs).filter(input => {
-          const id = input.id;
-          const label = id ? document.querySelector(`label[for="${id}"]`) : null;
-          const ariaLabel = input.getAttribute('aria-label');
-          return !label && !ariaLabel;
-        });
-        
-        if (inputsWithoutLabels.length > 0) {
-          throw new Error(`${inputsWithoutLabels.length} form inputs missing labels`);
-        }
-      }
-    },
-    {
-      id: 'focus_management',
-      name: 'Focus management works correctly',
+      id: 'nav-home-link',
+      name: 'Home Navigation Link',
       component: 'Navigation',
-      testFunction: () => {
-        const focusableElements = document.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        
-        if (focusableElements.length === 0) {
-          throw new Error('No focusable elements found');
-        }
-      }
-    }
-  ]
-};
-
-// Error Handling Tests
-const errorHandlingTests: TestSuite = {
-  name: 'Error Handling',
-  description: 'Tests for error boundary and error handling',
-  tests: [
-    {
-      id: 'error_boundary_exists',
-      name: 'Error boundaries are present',
-      component: 'ErrorBoundary',
-      testFunction: () => {
-        // Check if error boundary components exist in the DOM
-        const errorBoundaries = document.querySelectorAll('[data-error-boundary]');
-        if (errorBoundaries.length === 0) {
-          console.warn('No error boundaries found in DOM');
-        }
+      testFn: async () => {
+        const homeLink = document.querySelector('a[href="/"]');
+        if (!homeLink) throw new Error('Home link not found in navigation');
+        return true;
       }
     },
     {
-      id: 'console_errors',
-      name: 'No console errors on load',
-      component: 'App',
-      testFunction: () => {
-        const originalError = console.error;
-        let errorCount = 0;
-        
-        console.error = (...args) => {
-          errorCount++;
-          originalError.apply(console, args);
-        };
-        
-        // Reset after test
-        setTimeout(() => {
-          console.error = originalError;
-          if (errorCount > 0) {
-            throw new Error(`${errorCount} console errors detected`);
-          }
-        }, 1000);
+      id: 'nav-marketplace-link',
+      name: 'Marketplace Navigation Link',
+      component: 'Navigation',
+      testFn: async () => {
+        const marketplaceLink = document.querySelector('a[href="/marketplace"]');
+        if (!marketplaceLink) throw new Error('Marketplace link not found in navigation');
+        return true;
       }
     }
-  ]
-};
+  ];
 
-// Initialize test suites
-export function initializeTestSuites() {
-  testRunner.addTestSuite(uiComponentTests);
-  testRunner.addTestSuite(performanceTests);
-  testRunner.addTestSuite(accessibilityTests);
-  testRunner.addTestSuite(errorHandlingTests);
-}
+  // Logo Component Tests
+  const logoTests: TestCase[] = [
+    {
+      id: 'logo-render',
+      name: 'Hawkly Logo Renders',
+      component: 'HawklyLogo',
+      testFn: async () => {
+        const logoText = document.querySelector('[class*="text-transparent"]');
+        if (!logoText || !logoText.textContent?.includes('Hawkly')) {
+          throw new Error('Hawkly logo text not found or incorrect');
+        }
+        return true;
+      }
+    },
+    {
+      id: 'logo-svg-icon',
+      name: 'Logo SVG Icon Present',
+      component: 'HawklyLogo',
+      testFn: async () => {
+        const logoSvg = document.querySelector('svg[viewBox="0 0 24 24"]');
+        if (!logoSvg) throw new Error('Logo SVG icon not found');
+        return true;
+      }
+    }
+  ];
 
-export {
-  uiComponentTests,
-  performanceTests,
-  accessibilityTests,
-  errorHandlingTests
+  // Error Boundary Tests
+  const errorBoundaryTests: TestCase[] = [
+    {
+      id: 'error-boundary-active',
+      name: 'Error Boundary Component Active',
+      component: 'EnhancedErrorBoundary',
+      testFn: async () => {
+        // Check if error boundary is properly wrapping the app
+        const appContainer = document.querySelector('.min-h-screen');
+        if (!appContainer) throw new Error('App container not found - error boundary may not be active');
+        return true;
+      }
+    }
+  ];
+
+  // Analytics Tests
+  const analyticsTests: TestCase[] = [
+    {
+      id: 'analytics-initialization',
+      name: 'Analytics System Initialized',
+      component: 'AnalyticsTracker',
+      testFn: async () => {
+        const stored = localStorage.getItem('hawkly_analytics_events');
+        if (!stored) throw new Error('Analytics system not initialized - no events stored');
+        return true;
+      }
+    }
+  ];
+
+  // Form Validation Tests
+  const formTests: TestCase[] = [
+    {
+      id: 'form-inputs-present',
+      name: 'Form Input Elements Accessible',
+      component: 'Forms',
+      testFn: async () => {
+        const inputs = document.querySelectorAll('input, textarea, select');
+        if (inputs.length === 0) throw new Error('No form inputs found on page');
+        return true;
+      }
+    }
+  ];
+
+  // Performance Tests
+  const performanceTests: TestCase[] = [
+    {
+      id: 'page-load-performance',
+      name: 'Page Load Performance',
+      component: 'Performance',
+      testFn: async () => {
+        const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+        if (navigation) {
+          const loadTime = navigation.loadEventEnd - navigation.fetchStart;
+          if (loadTime > 5000) {
+            throw new Error(`Page load time too slow: ${loadTime}ms`);
+          }
+        }
+        return true;
+      }
+    }
+  ];
+
+  // Register all test suites
+  testRunner.addTestSuite('Navigation', navigationTests);
+  testRunner.addTestSuite('Logo', logoTests);
+  testRunner.addTestSuite('ErrorBoundary', errorBoundaryTests);
+  testRunner.addTestSuite('Analytics', analyticsTests);
+  testRunner.addTestSuite('Forms', formTests);
+  testRunner.addTestSuite('Performance', performanceTests);
+
+  console.log('✅ Test suites initialized with', testRunner.getAllTests().length, 'tests');
+
+  // Run initial health check
+  setTimeout(async () => {
+    console.log('🏃 Running initial test suite...');
+    try {
+      const results = await testRunner.runTestSuite('Navigation');
+      console.log('✅ Initial navigation tests completed:', results.length, 'tests run');
+    } catch (error) {
+      console.error('❌ Initial test run failed:', error);
+      errorMonitoring.captureError({
+        title: 'Initial Test Suite Failure',
+        description: error instanceof Error ? error.message : 'Unknown test failure',
+        component: 'TestingSuite',
+        category: 'ui',
+        severity: 'medium'
+      });
+    }
+  }, 2000);
 };

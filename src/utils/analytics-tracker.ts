@@ -1,3 +1,4 @@
+
 interface AnalyticsEvent {
   event: string;
   category: string;
@@ -15,6 +16,7 @@ class AnalyticsTracker {
   private sessionId: string;
   private events: AnalyticsEvent[] = [];
   private userType: string | null = null;
+  private isInitialized: boolean = false;
 
   constructor() {
     this.sessionId = this.generateSessionId();
@@ -33,7 +35,10 @@ class AnalyticsTracker {
   }
 
   private initializeTracking() {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || this.isInitialized) return;
+
+    this.isInitialized = true;
+    console.log('📊 Analytics tracker initialized');
 
     // Track page views
     this.trackPageView();
@@ -43,21 +48,34 @@ class AnalyticsTracker {
     
     // Track performance events
     this.setupPerformanceTracking();
+
+    // Load previous user type from storage
+    const savedUserType = localStorage.getItem('hawkly_user_type');
+    if (savedUserType) {
+      this.userType = savedUserType;
+    }
   }
 
   setUserType(type: string) {
     this.userType = type;
+    localStorage.setItem('hawkly_user_type', type);
     this.track('user_type_identified', 'user', 'type_set', type);
+    console.log('👤 User type set:', type);
   }
 
   track(event: string, category: string, action: string, label?: string, value?: number) {
+    if (!this.isInitialized) {
+      console.warn('Analytics not initialized, queuing event:', event);
+      return;
+    }
+
     const analyticsEvent: AnalyticsEvent = {
       event,
       category,
       action,
       label,
       value,
-      user_type: this.userType || undefined,
+      user_type: this.userType || 'anonymous',
       page: window.location.pathname,
       timestamp: Date.now(),
       session_id: this.sessionId
@@ -210,10 +228,26 @@ class AnalyticsTracker {
       pages_visited: new Set(events.map(e => e.page)).size,
       interactions: events.filter(e => e.category === 'interaction').length,
       conversions: events.filter(e => e.category === 'business').length,
-      user_type: this.userType
+      user_type: this.userType || 'anonymous',
+      session_id: this.sessionId,
+      initialized: this.isInitialized
     };
     
     return summary;
+  }
+
+  // Health check method
+  isHealthy(): boolean {
+    return this.isInitialized && this.events.length >= 0;
+  }
+
+  // Reset method for testing
+  reset() {
+    this.events = [];
+    this.userType = null;
+    this.sessionId = this.generateSessionId();
+    localStorage.removeItem('hawkly_analytics_events');
+    localStorage.removeItem('hawkly_user_type');
   }
 }
 

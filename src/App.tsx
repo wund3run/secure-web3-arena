@@ -1,10 +1,16 @@
-import React, { Suspense } from 'react';
+
+import React, { Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 import { AuthProvider } from './contexts/auth';
 import { NotificationProvider } from '@/contexts/NotificationContext';
+import { EnhancedErrorBoundary } from './components/error/enhanced-error-boundary';
+
+// Initialize testing and monitoring systems
+import { setupDevelopmentTesting } from './utils/testing';
+import { analyticsTracker } from './utils/analytics-tracker';
 
 // Import all pages
 import Index from './pages/Index';
@@ -80,6 +86,9 @@ import NotFound from './pages/NotFound';
 // Import the new page
 import NotificationTesting from './pages/NotificationTesting';
 
+// Add testing dashboard route
+import { TestingDashboard } from './components/testing/TestingDashboard';
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -90,105 +99,121 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  useEffect(() => {
+    // Initialize error monitoring and testing systems
+    console.log('🚀 Initializing Hawkly Platform monitoring systems...');
+    
+    // Set up development testing framework
+    setupDevelopmentTesting();
+    
+    // Track app initialization
+    analyticsTracker.track('app_initialized', 'system', 'startup');
+    
+    console.log('✅ Monitoring systems active');
+  }, []);
+
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <NotificationProvider>
-            <BrowserRouter>
-              <div className="min-h-screen bg-background font-sans antialiased">
-                <Suspense fallback={<div>Loading...</div>}>
-                  <Routes>
-                    {/* Main pages */}
-                    <Route path="/" element={<Index />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/auth/callback" element={<AuthCallback />} />
-                    <Route path="/marketplace" element={<Marketplace />} />
-                    <Route path="/request-audit" element={<RequestAudit />} />
-                    <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
-                    <Route path="/pricing" element={<Pricing />} />
-                    <Route path="/audits" element={<Audits />} />
-                    <Route path="/audit/:id" element={<AuditDetails />} />
-                    <Route path="/calendar" element={<Calendar />} />
-                    <Route path="/escrow" element={<Escrow />} />
-                    <Route path="/community" element={<Community />} />
-                    
-                    {/* Dashboard routes */}
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/dashboard/*" element={<Dashboard />} />
-                    
-                    {/* Service-specific routes */}
-                    <Route path="/service/:serviceId" element={<ServiceDetails />} />
-                    <Route path="/service/:serviceId/request" element={<AuditRequestForService />} />
-                    
-                    {/* Support and Documentation */}
-                    <Route path="/contact" element={<Contact />} />
-                    <Route path="/support" element={<Support />} />
-                    <Route path="/faq" element={<FAQ />} />
-                    <Route path="/docs" element={<Docs />} />
-                    
-                    {/* Resources and Documentation */}
-                    <Route path="/web3-security" element={<WebSecurity />} />
-                    <Route path="/guides" element={<SecurityGuides />} />
-                    <Route path="/knowledge-base" element={<KnowledgeBase />} />
-                    <Route path="/resources" element={<Resources />} />
-                    
-                    {/* Platform Information */}
-                    <Route path="/competitive-advantages" element={<CompetitiveAdvantages />} />
-                    <Route path="/comprehensive-security" element={<ComprehensiveSecurity />} />
-                    <Route path="/audit-guidelines" element={<AuditGuidelines />} />
-                    <Route path="/distribution-strategy" element={<DistributionStrategy />} />
-                    
-                    {/* Legal */}
-                    <Route path="/terms" element={<Terms />} />
-                    <Route path="/privacy" element={<Privacy />} />
-                    <Route path="/security-policy" element={<SecurityPolicy />} />
-                    
-                    {/* Placeholder pages for future implementation */}
-                    <Route path="/tutorials" element={<Tutorials />} />
-                    <Route path="/templates" element={<Templates />} />
-                    <Route path="/shipping-delivery" element={<ShippingDelivery />} />
-                    <Route path="/cancellation-refund" element={<CancellationRefund />} />
-                    <Route path="/forum" element={<Forum />} />
-                    <Route path="/events" element={<Events />} />
-                    <Route path="/challenges" element={<Challenges />} />
-                    <Route path="/leaderboard" element={<Leaderboard />} />
-                    <Route path="/blog" element={<Blog />} />
-                    <Route path="/achievements" element={<Achievements />} />
-                    <Route path="/security-insights" element={<SecurityInsights />} />
-                    <Route path="/vulnerabilities" element={<Vulnerabilities />} />
-                    <Route path="/platform-report" element={<PlatformReport />} />
-                    <Route path="/submit-service" element={<SubmitService />} />
-                    
-                    {/* Admin routes */}
-                    <Route path="/admin" element={<AdminDashboard />} />
-                    <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                    <Route path="/admin/users" element={<AdminUsers />} />
-                    <Route path="/admin/audits" element={<AdminAudits />} />
-                    <Route path="/admin/finance" element={<AdminFinance />} />
-                    <Route path="/admin/reports" element={<AdminReports />} />
-                    <Route path="/admin/disputes" element={<AdminDisputes />} />
-                    <Route path="/admin/security" element={<AdminSecurity />} />
-                    <Route path="/admin/services" element={<AdminServices />} />
-                    <Route path="/admin/settings" element={<AdminSettings />} />
-                    <Route path="/admin/providers" element={<AdminProviders />} />
-                    
-                    {/* User-specific routes */}
-                    <Route path="/contact-provider" element={<ContactProvider />} />
-                    <Route path="/auditor-dashboard" element={<AuditorDashboard />} />
-                    <Route path="/project-dashboard" element={<ProjectDashboard />} />
-                    <Route path="/user-dashboard" element={<UserDashboard />} />
-                    
-                    {/* Add notification testing route */}
-                    <Route path="/notification-testing" element={<NotificationTesting />} />
-                    
-                    {/* 404 */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </Suspense>
-                <Toaster />
-              </div>
-            </BrowserRouter>
+            <EnhancedErrorBoundary routeFallback={true}>
+              <BrowserRouter>
+                <div className="min-h-screen bg-background font-sans antialiased">
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <Routes>
+                      {/* Main pages */}
+                      <Route path="/" element={<Index />} />
+                      <Route path="/auth" element={<Auth />} />
+                      <Route path="/auth/callback" element={<AuthCallback />} />
+                      <Route path="/marketplace" element={<Marketplace />} />
+                      <Route path="/request-audit" element={<RequestAudit />} />
+                      <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
+                      <Route path="/pricing" element={<Pricing />} />
+                      <Route path="/audits" element={<Audits />} />
+                      <Route path="/audit/:id" element={<AuditDetails />} />
+                      <Route path="/calendar" element={<Calendar />} />
+                      <Route path="/escrow" element={<Escrow />} />
+                      <Route path="/community" element={<Community />} />
+                      
+                      {/* Dashboard routes */}
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/dashboard/*" element={<Dashboard />} />
+                      
+                      {/* Service-specific routes */}
+                      <Route path="/service/:serviceId" element={<ServiceDetails />} />
+                      <Route path="/service/:serviceId/request" element={<AuditRequestForService />} />
+                      
+                      {/* Support and Documentation */}
+                      <Route path="/contact" element={<Contact />} />
+                      <Route path="/support" element={<Support />} />
+                      <Route path="/faq" element={<FAQ />} />
+                      <Route path="/docs" element={<Docs />} />
+                      
+                      {/* Resources and Documentation */}
+                      <Route path="/web3-security" element={<WebSecurity />} />
+                      <Route path="/guides" element={<SecurityGuides />} />
+                      <Route path="/knowledge-base" element={<KnowledgeBase />} />
+                      <Route path="/resources" element={<Resources />} />
+                      
+                      {/* Platform Information */}
+                      <Route path="/competitive-advantages" element={<CompetitiveAdvantages />} />
+                      <Route path="/comprehensive-security" element={<ComprehensiveSecurity />} />
+                      <Route path="/audit-guidelines" element={<AuditGuidelines />} />
+                      <Route path="/distribution-strategy" element={<DistributionStrategy />} />
+                      
+                      {/* Legal */}
+                      <Route path="/terms" element={<Terms />} />
+                      <Route path="/privacy" element={<Privacy />} />
+                      <Route path="/security-policy" element={<SecurityPolicy />} />
+                      
+                      {/* Placeholder pages for future implementation */}
+                      <Route path="/tutorials" element={<Tutorials />} />
+                      <Route path="/templates" element={<Templates />} />
+                      <Route path="/shipping-delivery" element={<ShippingDelivery />} />
+                      <Route path="/cancellation-refund" element={<CancellationRefund />} />
+                      <Route path="/forum" element={<Forum />} />
+                      <Route path="/events" element={<Events />} />
+                      <Route path="/challenges" element={<Challenges />} />
+                      <Route path="/leaderboard" element={<Leaderboard />} />
+                      <Route path="/blog" element={<Blog />} />
+                      <Route path="/achievements" element={<Achievements />} />
+                      <Route path="/security-insights" element={<SecurityInsights />} />
+                      <Route path="/vulnerabilities" element={<Vulnerabilities />} />
+                      <Route path="/platform-report" element={<PlatformReport />} />
+                      <Route path="/submit-service" element={<SubmitService />} />
+                      
+                      {/* Admin routes */}
+                      <Route path="/admin" element={<AdminDashboard />} />
+                      <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                      <Route path="/admin/users" element={<AdminUsers />} />
+                      <Route path="/admin/audits" element={<AdminAudits />} />
+                      <Route path="/admin/finance" element={<AdminFinance />} />
+                      <Route path="/admin/reports" element={<AdminReports />} />
+                      <Route path="/admin/disputes" element={<AdminDisputes />} />
+                      <Route path="/admin/security" element={<AdminSecurity />} />
+                      <Route path="/admin/services" element={<AdminServices />} />
+                      <Route path="/admin/settings" element={<AdminSettings />} />
+                      <Route path="/admin/providers" element={<AdminProviders />} />
+                      
+                      {/* User-specific routes */}
+                      <Route path="/contact-provider" element={<ContactProvider />} />
+                      <Route path="/auditor-dashboard" element={<AuditorDashboard />} />
+                      <Route path="/project-dashboard" element={<ProjectDashboard />} />
+                      <Route path="/user-dashboard" element={<UserDashboard />} />
+                      
+                      {/* Testing and Monitoring routes */}
+                      <Route path="/notification-testing" element={<NotificationTesting />} />
+                      <Route path="/testing-dashboard" element={<TestingDashboard />} />
+                      
+                      {/* 404 */}
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </Suspense>
+                  <Toaster />
+                </div>
+              </BrowserRouter>
+            </EnhancedErrorBoundary>
           </NotificationProvider>
         </AuthProvider>
       </QueryClientProvider>
