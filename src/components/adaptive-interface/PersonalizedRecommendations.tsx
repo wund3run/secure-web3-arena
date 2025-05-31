@@ -15,11 +15,10 @@ export function PersonalizedRecommendations({
   isAuthenticated 
 }: AdaptiveInterfaceProps) {
   const { 
-    getRecommendations, 
+    recommendations, 
     getRecommendationPriority 
   } = usePersonalizedRecommendations({ userSegment, userType, preferences, behaviorProfile });
 
-  const recommendations = getRecommendations();
   const priority = getRecommendationPriority();
 
   if (!recommendations.length) return null;

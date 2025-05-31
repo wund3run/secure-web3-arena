@@ -21,12 +21,11 @@ export function AdaptiveContent({
     getLayoutVariant, 
     getContentPriority, 
     shouldShowFeature,
-    getPersonalizedMessages 
+    personalizedMessages 
   } = useAdaptiveContent({ userSegment, userType, preferences, behaviorProfile });
 
   const layoutVariant = getLayoutVariant();
   const contentPriority = getContentPriority();
-  const personalizedMessages = getPersonalizedMessages();
 
   // Show contextual help for beginners
   const showContextualHelp = preferences?.experienceLevel === 'beginner' && 

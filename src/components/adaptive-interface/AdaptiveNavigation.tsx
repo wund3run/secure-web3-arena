@@ -11,12 +11,11 @@ export function AdaptiveNavigation({
 }: AdaptiveInterfaceProps) {
   const { 
     getAdaptedMenuItems, 
-    getQuickActions, 
+    quickActions, 
     shouldHighlightItem 
   } = useNavigationAdaptation({ userSegment, userType, preferences, behaviorProfile });
 
   const adaptedMenuItems = getAdaptedMenuItems();
-  const quickActions = getQuickActions();
 
   // This component enhances existing navigation rather than replacing it
   return (

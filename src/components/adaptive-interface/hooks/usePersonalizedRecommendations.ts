@@ -9,12 +9,12 @@ export function usePersonalizedRecommendations({
   behaviorProfile 
 }: AdaptiveInterfaceProps) {
   
-  const getRecommendations = useMemo((): Recommendation[] => {
-    const recommendations: Recommendation[] = [];
+  const recommendations = useMemo((): Recommendation[] => {
+    const recs: Recommendation[] = [];
     
     // Recommendations based on user segment
     if (userSegment === 'first_time_visitor') {
-      recommendations.push({
+      recs.push({
         id: 'explore_services',
         title: 'Explore Security Services',
         description: 'Discover our comprehensive Web3 security audit services',
@@ -27,7 +27,7 @@ export function usePersonalizedRecommendations({
     }
     
     if (userSegment === 'returning_client') {
-      recommendations.push({
+      recs.push({
         id: 'request_new_audit',
         title: 'Request New Audit',
         description: 'Start a new security audit for your latest project',
@@ -40,7 +40,7 @@ export function usePersonalizedRecommendations({
     }
     
     if (userType === 'auditor' && userSegment === 'active_auditor') {
-      recommendations.push({
+      recs.push({
         id: 'view_opportunities',
         title: 'New Audit Opportunities',
         description: 'Check out fresh audit requests matching your expertise',
@@ -55,7 +55,7 @@ export function usePersonalizedRecommendations({
     // Recommendations based on user behavior
     const mostVisited = behaviorProfile?.mostVisitedPages || [];
     if (mostVisited.includes('/marketplace') && !mostVisited.includes('/request-audit')) {
-      recommendations.push({
+      recs.push({
         id: 'try_requesting_audit',
         title: 'Try Requesting an Audit',
         description: 'You\'ve been browsing services - ready to request your first audit?',
@@ -69,7 +69,7 @@ export function usePersonalizedRecommendations({
     
     // Experience level based recommendations
     if (preferences?.experienceLevel === 'beginner') {
-      recommendations.push({
+      recs.push({
         id: 'learning_resources',
         title: 'Web3 Security Learning Hub',
         description: 'Learn about smart contract security best practices',
@@ -81,15 +81,15 @@ export function usePersonalizedRecommendations({
       });
     }
     
-    return recommendations.sort((a, b) => b.relevanceScore - a.relevanceScore);
+    return recs.sort((a, b) => b.relevanceScore - a.relevanceScore);
   }, [userSegment, userType, preferences, behaviorProfile]);
 
   const getRecommendationPriority = () => {
-    return getRecommendations().map(rec => rec.priority);
+    return recommendations.map(rec => rec.priority);
   };
 
   return {
-    getRecommendations,
+    recommendations,
     getRecommendationPriority
   };
 }

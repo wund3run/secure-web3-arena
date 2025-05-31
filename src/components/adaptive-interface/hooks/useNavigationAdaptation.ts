@@ -36,7 +36,7 @@ export function useNavigationAdaptation({
     return baseItems;
   };
 
-  const getQuickActions = useMemo((): QuickAction[] => {
+  const quickActions = useMemo((): QuickAction[] => {
     const actions: QuickAction[] = [];
     
     // Add quick actions based on user behavior and most visited pages
@@ -85,7 +85,7 @@ export function useNavigationAdaptation({
 
   return {
     getAdaptedMenuItems,
-    getQuickActions,
+    quickActions,
     shouldHighlightItem
   };
 }

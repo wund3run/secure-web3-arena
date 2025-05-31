@@ -46,7 +46,7 @@ export function useAdaptiveContent({
     return featureMap[feature] || false;
   };
 
-  const getPersonalizedMessages = useMemo((): { 
+  const personalizedMessages = useMemo((): { 
     welcome?: PersonalizedMessage;
     helpTip?: string;
   } => {
@@ -56,20 +56,20 @@ export function useAdaptiveContent({
       messages.welcome = {
         title: 'Welcome to Hawkly!',
         message: 'Discover the future of Web3 security. Let us help you get started.',
-        type: 'welcome'
+        type: 'welcome' as const
       };
       messages.helpTip = 'Start by exploring our marketplace or learning about our audit process.';
     } else if (userSegment === 'returning_client') {
       messages.welcome = {
         title: 'Welcome back!',
         message: 'Ready for your next security audit? Check out our latest auditor matches.',
-        type: 'welcome'
+        type: 'welcome' as const
       };
     } else if (userSegment === 'active_auditor') {
       messages.welcome = {
         title: 'New opportunities await',
         message: 'There are fresh audit requests that match your expertise.',
-        type: 'info'
+        type: 'info' as const
       };
     }
     
@@ -80,6 +80,6 @@ export function useAdaptiveContent({
     getLayoutVariant,
     getContentPriority,
     shouldShowFeature,
-    getPersonalizedMessages
+    personalizedMessages
   };
 }
