@@ -16,9 +16,6 @@ const FAQ_CATEGORIES = [
     id: "security-services",
     title: "Security Services",
     icon: Shield,
-    color: "from-blue-600 to-cyan-600",
-    bgColor: "bg-blue-500/10",
-    borderColor: "border-blue-500/20",
     faqs: [
       {
         question: "What types of security services does Hawkly offer?",
@@ -38,9 +35,6 @@ const FAQ_CATEGORIES = [
     id: "auditor-process",
     title: "Auditor Verification",
     icon: Users,
-    color: "from-purple-600 to-pink-600",
-    bgColor: "bg-purple-500/10",
-    borderColor: "border-purple-500/20",
     faqs: [
       {
         question: "How are security auditors verified on Hawkly?",
@@ -60,9 +54,6 @@ const FAQ_CATEGORIES = [
     id: "platform-security",
     title: "Platform & Payments",
     icon: Lock,
-    color: "from-green-600 to-teal-600",
-    bgColor: "bg-green-500/10",
-    borderColor: "border-green-500/20",
     faqs: [
       {
         question: "How secure is the escrow payment system?",
@@ -93,52 +84,46 @@ export function FaqSection() {
   })).filter(category => category.faqs.length > 0);
 
   return (
-    <section className="py-20 bg-muted/20 relative overflow-hidden">
-      {/* Subtle background elements */}
-      <div className="absolute inset-0 opacity-3">
-        <div className="absolute top-40 left-20 w-64 h-64 bg-primary/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-40 right-20 w-48 h-48 bg-secondary/20 rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+    <section className="py-24 bg-gradient-to-b from-background to-muted/30">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-primary/10 px-6 py-3 rounded-full border border-primary/20 mb-6">
-            <MessageCircle className="h-5 w-5 text-primary" />
-            <span className="text-sm font-medium">Security Q&A Hub</span>
+          <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full border border-primary/20 mb-6">
+            <MessageCircle className="h-4 w-4 text-primary" />
+            <span className="text-sm font-medium text-primary">Security Q&A Hub</span>
           </div>
           
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-primary">
+            <span className="bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
               Security Questions
             </span>{" "}
             <span className="text-foreground">Answered</span>
           </h2>
           
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
             Get instant answers to your Web3 security questions. From audit processes to platform features, 
             we've got comprehensive answers from our security experts.
           </p>
 
-          {/* Enhanced Search */}
-          <div className="max-w-md mx-auto relative">
+          {/* Search */}
+          <div className="max-w-lg mx-auto relative">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
             <Input
               placeholder="Search security questions..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 pr-4 py-3 text-lg bg-background border-primary/20 focus:border-primary/40 rounded-xl"
+              className="pl-12 pr-4 py-3 text-lg bg-background/80 backdrop-blur-sm border-border/50 focus:border-primary/50 rounded-2xl shadow-sm"
             />
           </div>
         </div>
 
         {/* Category Filters */}
         <div className="flex justify-center mb-12">
-          <div className="flex gap-2 p-1 bg-muted/30 rounded-xl border">
+          <div className="flex gap-2 p-1 bg-background/60 backdrop-blur-sm rounded-2xl border border-border/50 shadow-sm">
             <Button
               variant={activeCategory === null ? "default" : "ghost"}
               onClick={() => setActiveCategory(null)}
-              className="rounded-lg px-6"
+              className="rounded-xl px-6 h-10"
             >
               All Categories
             </Button>
@@ -147,7 +132,7 @@ export function FaqSection() {
                 key={category.id}
                 variant={activeCategory === category.id ? "default" : "ghost"}
                 onClick={() => setActiveCategory(activeCategory === category.id ? null : category.id)}
-                className="rounded-lg px-6 flex items-center gap-2"
+                className="rounded-xl px-6 h-10 flex items-center gap-2"
               >
                 <category.icon className="h-4 w-4" />
                 {category.title}
@@ -157,20 +142,20 @@ export function FaqSection() {
         </div>
 
         {/* FAQ Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {filteredFaqs
             .filter(category => !activeCategory || category.id === activeCategory)
             .map((category) => (
-            <Card key={category.id} className={`${category.bgColor} border overflow-hidden group hover:shadow-lg transition-all duration-300`}>
+            <Card key={category.id} className="group hover:shadow-lg transition-all duration-300 border-border/50 bg-background/60 backdrop-blur-sm">
               <CardContent className="p-0">
                 {/* Category Header */}
-                <div className={`p-6 ${category.bgColor} border-b`}>
+                <div className="p-6 border-b border-border/50">
                   <div className="flex items-center gap-3">
-                    <div className={`p-3 rounded-xl bg-gradient-to-r ${category.color} shadow-lg`}>
-                      <category.icon className="h-6 w-6 text-white" />
+                    <div className="p-3 rounded-xl bg-primary/10 border border-primary/20">
+                      <category.icon className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold">{category.title}</h3>
+                      <h3 className="text-xl font-semibold">{category.title}</h3>
                       <p className="text-sm text-muted-foreground">
                         {category.faqs.length} questions
                       </p>
@@ -185,10 +170,10 @@ export function FaqSection() {
                       <AccordionItem 
                         key={index} 
                         value={`${category.id}-${index}`} 
-                        className="border rounded-lg overflow-hidden hover:border-primary/30 transition-colors"
+                        className="border border-border/30 rounded-xl overflow-hidden hover:border-primary/30 transition-colors bg-background/40"
                       >
-                        <AccordionTrigger className="text-left font-medium px-4 py-4 hover:bg-muted/30 transition-colors group">
-                          <span className="group-hover:text-primary transition-colors">
+                        <AccordionTrigger className="text-left font-medium px-4 py-4 hover:bg-muted/20 transition-colors group no-underline">
+                          <span className="group-hover:text-primary transition-colors pr-4">
                             {faq.question}
                           </span>
                         </AccordionTrigger>
@@ -214,7 +199,7 @@ export function FaqSection() {
             <p className="text-muted-foreground mb-6">
               Try adjusting your search or browse all categories
             </p>
-            <Button variant="outline" onClick={() => setSearchTerm("")}>
+            <Button variant="outline" onClick={() => setSearchTerm("")} className="rounded-xl">
               Clear Search
             </Button>
           </div>
@@ -222,11 +207,11 @@ export function FaqSection() {
 
         {/* Call to Action */}
         <div className="mt-16">
-          <Card className="bg-muted/20 border overflow-hidden">
+          <Card className="border-border/50 bg-gradient-to-r from-primary/5 to-purple-500/5 backdrop-blur-sm">
             <CardContent className="p-8 text-center">
               <div className="flex justify-center mb-6">
-                <div className="p-4 bg-primary rounded-2xl">
-                  <Zap className="h-8 w-8 text-white" />
+                <div className="p-4 bg-primary/10 rounded-2xl border border-primary/20">
+                  <Zap className="h-8 w-8 text-primary" />
                 </div>
               </div>
               
@@ -237,13 +222,13 @@ export function FaqSection() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+                <Button asChild size="lg" className="bg-primary hover:bg-primary/90 rounded-xl">
                   <a href="/faq" className="flex items-center gap-2">
                     View Complete FAQ
                     <ExternalLink className="h-4 w-4" />
                   </a>
                 </Button>
-                <Button asChild variant="outline" size="lg">
+                <Button asChild variant="outline" size="lg" className="rounded-xl">
                   <a href="/contact" className="flex items-center gap-2">
                     Contact Support Team
                     <MessageCircle className="h-4 w-4" />
