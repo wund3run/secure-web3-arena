@@ -1,200 +1,312 @@
 
-import React from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Navbar } from '@/components/layout/navbar';
-import { Footer } from '@/components/layout/footer';
-import { BookOpen, Download, ExternalLink, Clock, User } from 'lucide-react';
+import React, { useState } from 'react';
+import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { 
+  BookOpen,
+  Star,
+  Clock,
+  Users,
+  Search,
+  Filter,
+  ArrowRight,
+  Shield,
+  Zap,
+  Code,
+  Database,
+  Globe,
+  AlertTriangle
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export default function SecurityGuides() {
+const SecurityGuides = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [sortBy, setSortBy] = useState('popular');
+
   const guides = [
     {
-      title: "Smart Contract Security Checklist 2025",
-      description: "Complete checklist for securing smart contracts with the latest best practices and vulnerability prevention techniques.",
-      category: "Smart Contracts",
-      difficulty: "Intermediate",
-      readTime: "15 min",
-      author: "Hawkly Security Team",
-      downloadUrl: "/guides/smart-contract-checklist-2025.pdf",
-      topics: ["Access Control", "Reentrancy Prevention", "Gas Optimization", "Testing Strategies"]
-    },
-    {
-      title: "DeFi Protocol Security Framework",
-      description: "Comprehensive framework for securing DeFi protocols against flash loan attacks, oracle manipulation, and MEV exploitation.",
-      category: "DeFi",
-      difficulty: "Advanced",
+      id: 1,
+      title: "Web3 Security Fundamentals 2025",
+      description: "Complete guide to Web3 security covering smart contracts, DeFi protocols, NFTs, and emerging threats in the 2025 landscape",
+      category: "Fundamentals",
       readTime: "25 min",
-      author: "Dr. Sarah Chen",
-      downloadUrl: "/guides/defi-security-framework.pdf",
-      topics: ["Flash Loan Protection", "Oracle Security", "MEV Mitigation", "Governance Security"]
+      views: "45.2k",
+      rating: 4.9,
+      lastUpdated: "March 2025",
+      new: true,
+      icon: Shield,
+      tags: ["Basics", "Security", "Smart Contracts", "2025"],
+      difficulty: "Beginner"
     },
     {
-      title: "NFT Security Best Practices",
-      description: "Essential security considerations for NFT projects, including metadata protection and marketplace integration security.",
-      category: "NFTs",
-      difficulty: "Beginner",
-      readTime: "10 min", 
-      author: "Alex Rodriguez",
-      downloadUrl: "/guides/nft-security-guide.pdf",
-      topics: ["Metadata Security", "Royalty Protection", "Transfer Safety", "Marketplace Integration"]
-    },
-    {
-      title: "Cross-Chain Bridge Security",
-      description: "Security analysis and best practices for cross-chain bridges and multi-chain applications.",
-      category: "Cross-Chain",
-      difficulty: "Advanced",
-      readTime: "30 min",
-      author: "Michael Thompson",
-      downloadUrl: "/guides/bridge-security-guide.pdf",
-      topics: ["Validator Security", "Message Verification", "Multi-Sig Management", "Emergency Procedures"]
-    },
-    {
-      title: "Web3 Frontend Security",
-      description: "Securing Web3 frontend applications, wallet integration, and user interaction security.",
-      category: "Frontend",
-      difficulty: "Intermediate",
-      readTime: "20 min",
-      author: "Emma Wilson",
-      downloadUrl: "/guides/frontend-security-guide.pdf",
-      topics: ["Wallet Security", "Transaction Safety", "Phishing Prevention", "UI/UX Security"]
-    },
-    {
-      title: "Governance Attack Prevention",
-      description: "Protecting DAO governance mechanisms from manipulation and ensuring fair decision-making processes.",
-      category: "Governance",
-      difficulty: "Advanced",
+      id: 2,
+      title: "AI-Enhanced Security Analysis Guide",
+      description: "Comprehensive guide to using AI tools like GPT-4, Claude, and specialized ML models for automated vulnerability detection",
+      category: "AI Security",
       readTime: "35 min",
-      author: "David Kim",
-      downloadUrl: "/guides/governance-security-guide.pdf",
-      topics: ["Voting Security", "Proposal Validation", "Sybil Resistance", "Emergency Governance"]
+      views: "32.8k",
+      rating: 4.9,
+      lastUpdated: "March 2025",
+      new: true,
+      icon: Zap,
+      tags: ["AI", "GPT-4", "Automation", "Analysis"],
+      difficulty: "Advanced"
+    },
+    {
+      id: 3,
+      title: "DeFi Security Best Practices 2025",
+      description: "Updated security patterns for DeFi protocols including MEV protection, oracle security, flash loan defense, and cross-protocol risks",
+      category: "DeFi",
+      readTime: "40 min",
+      views: "28.7k",
+      rating: 4.8,
+      lastUpdated: "March 2025",
+      new: true,
+      icon: Database,
+      tags: ["DeFi", "MEV", "Oracles", "Flash Loans"],
+      difficulty: "Advanced"
+    },
+    {
+      id: 4,
+      title: "Layer 2 Security Architecture",
+      description: "Security considerations for rollups, state channels, and sidechains including zk-rollups, optimistic rollups, and cross-layer communication",
+      category: "Layer 2",
+      readTime: "30 min",
+      views: "21.4k",
+      rating: 4.7,
+      lastUpdated: "March 2025",
+      icon: Code,
+      tags: ["L2", "Rollups", "ZK", "Scaling"],
+      difficulty: "Expert"
+    },
+    {
+      id: 5,
+      title: "Cross-Chain Bridge Security",
+      description: "Security framework for multi-chain applications, bridge vulnerabilities, validator networks, and consensus mechanisms",
+      category: "Cross-Chain",
+      readTime: "45 min",
+      views: "18.9k",
+      rating: 4.8,
+      lastUpdated: "February 2025",
+      icon: Globe,
+      tags: ["Bridges", "Multi-chain", "Validators"],
+      difficulty: "Expert"
+    },
+    {
+      id: 6,
+      title: "Smart Contract Vulnerability Patterns",
+      description: "Common vulnerability patterns in 2025 including reentrancy variants, access control issues, and economic exploits",
+      category: "Vulnerabilities",
+      readTime: "50 min",
+      views: "38.1k",
+      rating: 4.9,
+      lastUpdated: "March 2025",
+      icon: AlertTriangle,
+      tags: ["Vulnerabilities", "Exploits", "Patterns"],
+      difficulty: "Intermediate"
     }
   ];
 
+  const categories = [
+    { value: 'all', label: 'All Categories' },
+    { value: 'Fundamentals', label: 'Fundamentals' },
+    { value: 'AI Security', label: 'AI Security' },
+    { value: 'DeFi', label: 'DeFi' },
+    { value: 'Layer 2', label: 'Layer 2' },
+    { value: 'Cross-Chain', label: 'Cross-Chain' },
+    { value: 'Vulnerabilities', label: 'Vulnerabilities' }
+  ];
+
+  const filteredGuides = guides.filter(guide => {
+    const matchesSearch = guide.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         guide.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         guide.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesCategory = selectedCategory === 'all' || guide.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  }).sort((a, b) => {
+    switch (sortBy) {
+      case 'popular': return parseInt(b.views.replace('k', '')) - parseInt(a.views.replace('k', ''));
+      case 'rating': return b.rating - a.rating;
+      case 'recent': return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
+      default: return 0;
+    }
+  });
+
   const getDifficultyColor = (difficulty: string) => {
-    switch(difficulty) {
+    switch (difficulty) {
       case 'Beginner': return 'bg-green-100 text-green-800';
       case 'Intermediate': return 'bg-yellow-100 text-yellow-800';
-      case 'Advanced': return 'bg-red-100 text-red-800';
+      case 'Advanced': return 'bg-orange-100 text-orange-800';
+      case 'Expert': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>Security Guides | Hawkly</title>
-        <meta name="description" content="Comprehensive security guides and best practices for Web3 development, smart contracts, and blockchain applications." />
-      </Helmet>
-      
-      <Navbar />
-      
-      <div className="container mx-auto px-4 py-8">
-        {/* Hero Section */}
+    <StandardLayout
+      title="Security Guides"
+      description="Comprehensive Web3 security guides updated for March 2025"
+    >
+      <div className="container py-12">
+        {/* Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 text-primary mb-6">
-            <BookOpen className="h-4 w-4 mr-2" />
-            <span className="text-sm font-medium">Security Guides</span>
-          </div>
-          
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Security 
-            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"> Guides</span>
-          </h1>
-          
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            In-depth guides and best practices from leading security experts. Stay updated with the latest 
-            security methodologies and protect your Web3 projects effectively.
+          <Badge variant="secondary" className="mb-4">Updated March 2025</Badge>
+          <h1 className="text-4xl font-bold mb-4">Web3 Security Guides</h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Comprehensive security guides covering the latest Web3 threats, 
+            AI-powered analysis techniques, and cutting-edge security practices for 2025.
           </p>
         </div>
 
-        {/* Quick Actions */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          <Link to="/request-audit">
-            <Button>Get Professional Audit</Button>
-          </Link>
-          <Link to="/ai-tools">
-            <Button variant="outline">Try AI Security Tools</Button>
-          </Link>
-          <Link to="/vulnerabilities">
-            <Button variant="outline">View Vulnerability Database</Button>
-          </Link>
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+          <div className="text-center">
+            <div className="text-3xl font-bold text-primary mb-2">100+</div>
+            <div className="text-sm text-muted-foreground">Security Guides</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-primary mb-2">185k</div>
+            <div className="text-sm text-muted-foreground">Total Readers</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-primary mb-2">4.8</div>
+            <div className="text-sm text-muted-foreground">Avg. Rating</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-primary mb-2">98%</div>
+            <div className="text-sm text-muted-foreground">Accuracy Rate</div>
+          </div>
+        </div>
+
+        {/* Filters */}
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              placeholder="Search guides, topics, or technologies..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <SelectTrigger className="w-full md:w-[200px]">
+              <Filter className="h-4 w-4 mr-2" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {categories.map(category => (
+                <SelectItem key={category.value} value={category.value}>
+                  {category.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="w-full md:w-[150px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="popular">Most Popular</SelectItem>
+              <SelectItem value="rating">Highest Rated</SelectItem>
+              <SelectItem value="recent">Most Recent</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Guides Grid */}
-        <div className="grid lg:grid-cols-2 gap-6 mb-16">
-          {guides.map((guide, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex items-start justify-between mb-2">
-                  <Badge variant="secondary">{guide.category}</Badge>
-                  <Badge className={getDifficultyColor(guide.difficulty)}>
-                    {guide.difficulty}
-                  </Badge>
-                </div>
-                <CardTitle className="text-xl mb-2">{guide.title}</CardTitle>
-                <CardDescription>{guide.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {/* Topics */}
-                  <div className="flex flex-wrap gap-2">
-                    {guide.topics.map((topic) => (
-                      <span key={topic} className="px-2 py-1 bg-muted rounded-md text-xs">
-                        {topic}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {filteredGuides.map((guide) => {
+            const Icon = guide.icon;
+            return (
+              <Card key={guide.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <Icon className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {guide.new && (
+                        <Badge variant="default" className="text-xs">New 2025</Badge>
+                      )}
+                      <Badge variant="secondary">{guide.category}</Badge>
+                    </div>
+                  </div>
+                  <CardTitle className="text-lg">{guide.title}</CardTitle>
+                  <CardDescription className="line-clamp-3">{guide.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap gap-1">
+                      {guide.tags.map(tag => (
+                        <Badge key={tag} variant="outline" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                    
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-4 w-4" />
+                        {guide.readTime}
                       </span>
-                    ))}
-                  </div>
-                  
-                  {/* Meta Info */}
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
-                      {guide.readTime}
+                      <span className="flex items-center gap-1">
+                        <Users className="h-4 w-4" />
+                        {guide.views}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        {guide.rating}
+                      </span>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <User className="h-4 w-4" />
-                      {guide.author}
+                    
+                    <div className="flex items-center justify-between">
+                      <Badge className={getDifficultyColor(guide.difficulty)}>
+                        {guide.difficulty}
+                      </Badge>
+                      <span className="text-xs text-muted-foreground">
+                        {guide.lastUpdated}
+                      </span>
                     </div>
-                  </div>
-                  
-                  {/* Actions */}
-                  <div className="flex gap-2">
-                    <Button size="sm" className="flex-1">
-                      <BookOpen className="h-4 w-4 mr-2" />
-                      Read Guide
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      <Download className="h-4 w-4 mr-2" />
-                      Download PDF
+                    
+                    <Button className="w-full">
+                      Read Guide <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
-        {/* Additional Resources */}
-        <div className="bg-muted/50 rounded-lg p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">Need Custom Security Guidance?</h2>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Our security experts can provide personalized guidance and custom security solutions for your specific project needs.
+        {/* CTA Section */}
+        <div className="text-center bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-12">
+          <h2 className="text-3xl font-bold mb-4">Ready to Apply Your Knowledge?</h2>
+          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Put your security expertise to work with real projects or get your own code audited by our expert community.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/contact">
-              <Button>Contact Security Experts</Button>
-            </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/marketplace">
-              <Button variant="outline">Browse Auditor Profiles</Button>
+              <Button size="lg">
+                Find Security Work
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+            <Link to="/request-audit">
+              <Button size="lg" variant="outline">
+                Get Professional Audit
+              </Button>
             </Link>
           </div>
         </div>
       </div>
-      
-      <Footer />
-    </div>
+    </StandardLayout>
   );
-}
+};
+
+export default SecurityGuides;

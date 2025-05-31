@@ -23,24 +23,24 @@ import SecurityAudits from './pages/SecurityAudits';
 import CodeReviews from './pages/CodeReviews';
 import Templates from './pages/Templates';
 import Tutorials from './pages/Tutorials';
-import SecurityInsights from './pages/SecurityInsights';
+import SecurityGuides from './pages/SecurityGuides';
+import KnowledgeBase from './pages/KnowledgeBase';
+import AITools from './pages/AITools';
+import Forum from './pages/Forum';
 import { 
   PenetrationTesting, 
   Consulting, 
-  SecurityGuides, 
-  AITools, 
   VulnerabilityScanner, 
   PlatformReports,
-  Forum,
   Events,
   Challenges,
   Leaderboard,
-  KnowledgeBase,
   SubmitService,
   ContactProvider,
   Terms,
   Privacy,
-  SecurityPolicy
+  SecurityPolicy,
+  SecurityInsights
 } from './pages/missing-pages';
 
 // Create a query client instance
