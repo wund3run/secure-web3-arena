@@ -1,5 +1,5 @@
 
-import { testRunner, TestCase } from './AutomatedTestRunner';
+import { testRunner, TestCase, TestSuite } from './AutomatedTestRunner';
 import { errorMonitoring } from './ErrorMonitoringService';
 
 export const initializeTestSuites = () => {
@@ -11,7 +11,7 @@ export const initializeTestSuites = () => {
       id: 'nav-home-link',
       name: 'Home Navigation Link',
       component: 'Navigation',
-      testFn: async () => {
+      testFunction: async () => {
         const homeLink = document.querySelector('a[href="/"]');
         if (!homeLink) throw new Error('Home link not found in navigation');
         return true;
@@ -21,7 +21,7 @@ export const initializeTestSuites = () => {
       id: 'nav-marketplace-link',
       name: 'Marketplace Navigation Link',
       component: 'Navigation',
-      testFn: async () => {
+      testFunction: async () => {
         const marketplaceLink = document.querySelector('a[href="/marketplace"]');
         if (!marketplaceLink) throw new Error('Marketplace link not found in navigation');
         return true;
@@ -35,7 +35,7 @@ export const initializeTestSuites = () => {
       id: 'logo-render',
       name: 'Hawkly Logo Renders',
       component: 'HawklyLogo',
-      testFn: async () => {
+      testFunction: async () => {
         const logoText = document.querySelector('[class*="text-transparent"]');
         if (!logoText || !logoText.textContent?.includes('Hawkly')) {
           throw new Error('Hawkly logo text not found or incorrect');
@@ -47,7 +47,7 @@ export const initializeTestSuites = () => {
       id: 'logo-svg-icon',
       name: 'Logo SVG Icon Present',
       component: 'HawklyLogo',
-      testFn: async () => {
+      testFunction: async () => {
         const logoSvg = document.querySelector('svg[viewBox="0 0 24 24"]');
         if (!logoSvg) throw new Error('Logo SVG icon not found');
         return true;
@@ -61,7 +61,7 @@ export const initializeTestSuites = () => {
       id: 'error-boundary-active',
       name: 'Error Boundary Component Active',
       component: 'EnhancedErrorBoundary',
-      testFn: async () => {
+      testFunction: async () => {
         // Check if error boundary is properly wrapping the app
         const appContainer = document.querySelector('.min-h-screen');
         if (!appContainer) throw new Error('App container not found - error boundary may not be active');
@@ -76,7 +76,7 @@ export const initializeTestSuites = () => {
       id: 'analytics-initialization',
       name: 'Analytics System Initialized',
       component: 'AnalyticsTracker',
-      testFn: async () => {
+      testFunction: async () => {
         const stored = localStorage.getItem('hawkly_analytics_events');
         if (!stored) throw new Error('Analytics system not initialized - no events stored');
         return true;
@@ -90,7 +90,7 @@ export const initializeTestSuites = () => {
       id: 'form-inputs-present',
       name: 'Form Input Elements Accessible',
       component: 'Forms',
-      testFn: async () => {
+      testFunction: async () => {
         const inputs = document.querySelectorAll('input, textarea, select');
         if (inputs.length === 0) throw new Error('No form inputs found on page');
         return true;
@@ -104,7 +104,7 @@ export const initializeTestSuites = () => {
       id: 'page-load-performance',
       name: 'Page Load Performance',
       component: 'Performance',
-      testFn: async () => {
+      testFunction: async () => {
         const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
         if (navigation) {
           const loadTime = navigation.loadEventEnd - navigation.fetchStart;
@@ -117,21 +117,60 @@ export const initializeTestSuites = () => {
     }
   ];
 
-  // Register all test suites
-  testRunner.addTestSuite('Navigation', navigationTests);
-  testRunner.addTestSuite('Logo', logoTests);
-  testRunner.addTestSuite('ErrorBoundary', errorBoundaryTests);
-  testRunner.addTestSuite('Analytics', analyticsTests);
-  testRunner.addTestSuite('Forms', formTests);
-  testRunner.addTestSuite('Performance', performanceTests);
+  // Create test suites with proper structure
+  const navigationSuite: TestSuite = {
+    name: 'Navigation',
+    description: 'Tests for navigation components',
+    tests: navigationTests
+  };
 
-  console.log('✅ Test suites initialized with', testRunner.getAllTests().length, 'tests');
+  const logoSuite: TestSuite = {
+    name: 'Logo',
+    description: 'Tests for logo component',
+    tests: logoTests
+  };
+
+  const errorBoundarySuite: TestSuite = {
+    name: 'ErrorBoundary',
+    description: 'Tests for error boundary functionality',
+    tests: errorBoundaryTests
+  };
+
+  const analyticsSuite: TestSuite = {
+    name: 'Analytics',
+    description: 'Tests for analytics tracking',
+    tests: analyticsTests
+  };
+
+  const formsSuite: TestSuite = {
+    name: 'Forms',
+    description: 'Tests for form functionality',
+    tests: formTests
+  };
+
+  const performanceSuite: TestSuite = {
+    name: 'Performance',
+    description: 'Tests for performance metrics',
+    tests: performanceTests
+  };
+
+  // Register all test suites
+  testRunner.addTestSuite(navigationSuite);
+  testRunner.addTestSuite(logoSuite);
+  testRunner.addTestSuite(errorBoundarySuite);
+  testRunner.addTestSuite(analyticsSuite);
+  testRunner.addTestSuite(formsSuite);
+  testRunner.addTestSuite(performanceSuite);
+
+  const allSuites = testRunner.getTestSuites();
+  const totalTests = allSuites.reduce((acc, suite) => acc + suite.tests.length, 0);
+  console.log('✅ Test suites initialized with', totalTests, 'tests');
 
   // Run initial health check
   setTimeout(async () => {
     console.log('🏃 Running initial test suite...');
     try {
-      const results = await testRunner.runTestSuite('Navigation');
+      const results = await testRunner.runTestSuite(navigationSuite);
       console.log('✅ Initial navigation tests completed:', results.length, 'tests run');
     } catch (error) {
       console.error('❌ Initial test run failed:', error);
