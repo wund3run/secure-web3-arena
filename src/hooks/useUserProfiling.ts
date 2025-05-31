@@ -1,102 +1,93 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/auth';
-import { UserPreferences, UserJourneyProfile } from '@/types/user-profiling';
-import { toast } from 'sonner';
-import { 
-  getLocalPreferences, 
-  getLocalBehaviorProfile, 
-  savePreferences 
-} from './user-profiling/useLocalStorage';
-import { getUserSegment } from './user-profiling/userProfilingUtils';
-import { determineJourneyStage } from './user-profiling/journeyStageUtils';
 import { useBehaviorTracking } from './user-profiling/useBehaviorTracking';
+import { getUserSegment } from './user-profiling/userProfilingUtils';
+import { getLocalPreferences, savePreferences } from './user-profiling/useLocalStorage';
+import { UserPreferences } from '@/types/user-profiling';
 
-export function useUserProfiling() {
+export const useUserProfiling = () => {
   const { user, userProfile } = useAuth();
-  const [preferences, setPreferences] = useState<UserPreferences | null>(null);
-  const [journeyProfile, setJourneyProfile] = useState<UserJourneyProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-
   const { behaviorProfile, setBehaviorProfile, trackBehavior } = useBehaviorTracking(user?.id);
+  const [preferences, setPreferences] = useState<UserPreferences | null>(null);
 
-  // Load user profiling data
+  // Load preferences on mount
   useEffect(() => {
-    if (user) {
-      loadUserProfilingData();
+    const stored = getLocalPreferences();
+    if (stored) {
+      setPreferences(stored);
     } else {
-      // For anonymous users, load from localStorage
-      loadAnonymousProfile();
+      // Create default preferences
+      const defaultPrefs: UserPreferences = {
+        userId: user?.id || 'anonymous',
+        theme: 'system',
+        language: 'en',
+        notifications: {
+          email: true,
+          push: false,
+          sms: false
+        },
+        accessibility: {
+          reducedMotion: false,
+          highContrast: false,
+          fontSize: 'medium'
+        },
+        privacy: {
+          analytics: true,
+          marketing: false,
+          personalization: true
+        },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      setPreferences(defaultPrefs);
+      savePreferences(defaultPrefs);
     }
-  }, [user]);
+  }, [user?.id]);
 
-  const loadUserProfilingData = async () => {
-    if (!user) return;
-    
-    setLoading(true);
-    try {
-      // Load preferences from localStorage as fallback
-      const localPrefs = getLocalPreferences();
-      if (localPrefs) {
-        setPreferences(localPrefs);
-      }
+  // Initialize behavior profile for new users
+  useEffect(() => {
+    if (user && !behaviorProfile) {
+      const initialProfile = {
+        userId: user.id,
+        visitCount: 1,
+        lastVisit: new Date().toISOString(),
+        totalTimeSpent: 0,
+        averageSessionDuration: 0,
+        pagesVisited: [window.location.pathname],
+        mostVisitedPages: [window.location.pathname],
+        completedActions: [],
+        preferences: {},
+        engagementScore: 1,
+        conversionEvents: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      setBehaviorProfile(initialProfile);
+    }
+  }, [user, behaviorProfile, setBehaviorProfile]);
 
-      // Load behavior profile from localStorage
-      const behaviorData = getLocalBehaviorProfile();
-      if (behaviorData) {
-        setBehaviorProfile(behaviorData);
-      }
-
-      // Determine journey stage
-      const journeyData = determineJourneyStage(behaviorData, user.id);
-      setJourneyProfile(journeyData);
-
-    } catch (error) {
-      console.error('Error loading user profiling data:', error);
-    } finally {
-      setLoading(false);
+  const updatePreferences = (newPreferences: Partial<UserPreferences>) => {
+    if (preferences) {
+      const updated = {
+        ...preferences,
+        ...newPreferences,
+        updatedAt: new Date().toISOString()
+      };
+      setPreferences(updated);
+      savePreferences(updated);
     }
   };
 
-  const loadAnonymousProfile = () => {
-    const localPrefs = getLocalPreferences();
-    const behaviorData = getLocalBehaviorProfile();
-    
-    if (localPrefs) setPreferences(localPrefs);
-    if (behaviorData) setBehaviorProfile(behaviorData);
-    
-    setLoading(false);
-  };
-
-  const updatePreferences = async (updates: Partial<UserPreferences>) => {
-    const updatedPrefs: UserPreferences = {
-      ...preferences,
-      ...updates,
-      id: preferences?.id || crypto.randomUUID(),
-      userId: user?.id || 'anonymous',
-      updatedAt: new Date().toISOString(),
-      createdAt: preferences?.createdAt || new Date().toISOString(),
-    } as UserPreferences;
-
-    setPreferences(updatedPrefs);
-    savePreferences(updatedPrefs);
-    
-    toast.success('Preferences updated successfully');
-  };
-
-  const getSegment = () => {
+  const getUserSegmentValue = () => {
     return getUserSegment(behaviorProfile, userProfile?.user_type);
   };
 
   return {
     preferences,
     behaviorProfile,
-    journeyProfile,
-    loading,
     updatePreferences,
     trackBehavior,
-    getUserSegment: getSegment,
-    getRecommendedActions: () => journeyProfile?.nextRecommendedActions || [],
-    getOpportunities: () => journeyProfile?.opportunities || [],
+    getUserSegment: getUserSegmentValue
   };
-}
+};

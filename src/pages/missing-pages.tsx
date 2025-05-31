@@ -1,548 +1,208 @@
+
 import React from 'react';
-import { PlaceholderPage } from './placeholder-template';
+import { StandardLayout } from '@/components/layout/StandardLayout';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { 
+  BookOpen, 
+  Video, 
   FileText, 
-  Book, 
-  Package,
-  Truck,
-  RefreshCw,
-  MessageSquare,
-  Calendar,
-  Target,
-  Trophy,
-  Newspaper,
-  Award,
-  BarChart3,
-  Monitor,
-  DollarSign,
-  UserCheck,
-  FileCheck,
-  Settings,
+  Code, 
+  Shield, 
+  Zap,
+  ArrowRight,
+  Clock,
   Users,
-  Brain,
-  Lock,
-  User,
-  Code,
-  Gavel,
-  Shield
+  Star
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-// Tutorial and Template Pages
-export const Tutorials = () => {
-  return (
-    <PlaceholderPage
-      title="Security Tutorials"
-      description="Step-by-step tutorials for Web3 security, smart contract development, and vulnerability prevention."
-      icon={<Book className="h-6 w-6" />}
-      features={[
-        "Interactive tutorials",
-        "Code walkthroughs",
-        "Best practice guides",
-        "Security patterns"
-      ]}
-    />
-  );
-};
+// Templates Page
+export function Templates() {
+  const templates = [
+    {
+      title: "DeFi Protocol Audit Template",
+      description: "Comprehensive security checklist for DeFi applications",
+      category: "DeFi",
+      downloadCount: "2.3k",
+      rating: 4.9
+    },
+    {
+      title: "NFT Smart Contract Template",
+      description: "Security guidelines for NFT and token contracts",
+      category: "NFT",
+      downloadCount: "1.8k",
+      rating: 4.8
+    },
+    {
+      title: "DAO Governance Audit",
+      description: "Security framework for decentralized governance",
+      category: "DAO",
+      downloadCount: "1.2k",
+      rating: 4.7
+    },
+    {
+      title: "Cross-Chain Bridge Template",
+      description: "Multi-chain security assessment template",
+      category: "Bridge",
+      downloadCount: "945",
+      rating: 4.9
+    }
+  ];
 
-export const Templates = () => {
   return (
-    <PlaceholderPage
-      title="Security Templates"
-      description="Ready-to-use templates for security audits, smart contracts, and development best practices."
-      icon={<Package className="h-6 w-6" />}
-      features={[
-        "Audit checklists",
-        "Smart contract templates",
-        "Security frameworks",
-        "Testing templates"
-      ]}
-    />
-  );
-};
+    <StandardLayout 
+      title="Security Templates" 
+      description="Download professional security audit templates and checklists"
+    >
+      <div className="container py-12">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold mb-4">Security Audit Templates</h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Professional templates and checklists used by top security auditors. 
+            Start your security assessment with battle-tested frameworks.
+          </p>
+        </div>
 
-// Legal Pages
-export const Terms = () => {
-  return (
-    <PlaceholderPage
-      title="Terms of Service"
-      description="Review our terms of service, user agreements, and platform policies for using Hawkly's security marketplace."
-      icon={<FileText className="h-6 w-6" />}
-      features={[
-        "Service terms",
-        "User agreements",
-        "Platform policies",
-        "Usage guidelines"
-      ]}
-    />
-  );
-};
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          {templates.map((template, index) => (
+            <Card key={index} className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <CardTitle className="text-lg">{template.title}</CardTitle>
+                    <CardDescription className="mt-2">{template.description}</CardDescription>
+                  </div>
+                  <Badge variant="secondary">{template.category}</Badge>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Users className="h-4 w-4" />
+                      {template.downloadCount}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      {template.rating}
+                    </span>
+                  </div>
+                  <Button size="sm">
+                    Download <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-export const Privacy = () => {
-  return (
-    <PlaceholderPage
-      title="Privacy Policy"
-      description="Learn how we protect your data, handle user information, and maintain privacy across our security platform."
-      icon={<Shield className="h-6 w-6" />}
-      features={[
-        "Data protection",
-        "Privacy controls",
-        "Information handling",
-        "Security measures"
-      ]}
-    />
+        <div className="text-center">
+          <Button asChild size="lg">
+            <Link to="/request-audit">
+              Get Professional Audit <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </StandardLayout>
   );
-};
+}
 
-export const SecurityPolicy = () => {
-  return (
-    <PlaceholderPage
-      title="Security Policy"
-      description="Our comprehensive security policy covering platform security, data protection, and vulnerability disclosure."
-      icon={<Lock className="h-6 w-6" />}
-      features={[
-        "Platform security",
-        "Vulnerability disclosure",
-        "Security standards",
-        "Incident response"
-      ]}
-    />
-  );
-};
+// Tutorials Page
+export function Tutorials() {
+  const tutorials = [
+    {
+      title: "Smart Contract Security Fundamentals",
+      description: "Learn the basics of smart contract vulnerabilities and how to prevent them",
+      duration: "45 min",
+      level: "Beginner",
+      views: "12.5k"
+    },
+    {
+      title: "Advanced DeFi Security Patterns",
+      description: "Deep dive into flash loan attacks, oracle manipulation, and MEV protection",
+      duration: "75 min", 
+      level: "Advanced",
+      views: "8.2k"
+    },
+    {
+      title: "Audit Report Reading Guide",
+      description: "How to understand and act on security audit findings",
+      duration: "30 min",
+      level: "Intermediate", 
+      views: "15.3k"
+    },
+    {
+      title: "Building Secure Cross-Chain Applications",
+      description: "Security considerations for multi-chain and bridge applications",
+      duration: "60 min",
+      level: "Advanced",
+      views: "6.7k"
+    }
+  ];
 
-export const AuditGuidelines = () => {
   return (
-    <PlaceholderPage
-      title="Audit Guidelines"
-      description="Comprehensive guidelines for security auditors, including standards, processes, and best practices for Web3 audits."
-      icon={<FileCheck className="h-6 w-6" />}
-      features={[
-        "Audit standards",
-        "Process guidelines",
-        "Quality assurance",
-        "Best practices"
-      ]}
-    />
-  );
-};
+    <StandardLayout 
+      title="Security Tutorials" 
+      description="Learn Web3 security from industry experts"
+    >
+      <div className="container py-12">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold mb-4">Security Learning Center</h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Master Web3 security with our comprehensive video tutorials and hands-on guides. 
+            Learn from real-world exploits and best practices.
+          </p>
+        </div>
 
-// Shipping and Delivery (for services)
-export const ShippingDelivery = () => {
-  return (
-    <PlaceholderPage
-      title="Service Delivery"
-      description="Information about our audit delivery process, timelines, and what to expect from our security services."
-      icon={<Truck className="h-6 w-6" />}
-      features={[
-        "Delivery timelines",
-        "Report formats",
-        "Communication process",
-        "Quality assurance"
-      ]}
-    />
-  );
-};
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          {tutorials.map((tutorial, index) => (
+            <Card key={index} className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg mb-4 flex items-center justify-center">
+                  <Video className="h-12 w-12 text-primary" />
+                </div>
+                <CardTitle className="text-lg">{tutorial.title}</CardTitle>
+                <CardDescription>{tutorial.description}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      {tutorial.duration}
+                    </span>
+                    <Badge variant={tutorial.level === 'Beginner' ? 'secondary' : tutorial.level === 'Intermediate' ? 'default' : 'destructive'}>
+                      {tutorial.level}
+                    </Badge>
+                  </div>
+                  <span className="text-sm text-muted-foreground">{tutorial.views} views</span>
+                </div>
+                <Button className="w-full">
+                  Watch Tutorial <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-// Cancellation and Refund Policy
-export const CancellationRefund = () => {
-  return (
-    <PlaceholderPage
-      title="Cancellation & Refund Policy"
-      description="Review our policies for audit cancellations, refunds, and service modifications."
-      icon={<RefreshCw className="h-6 w-6" />}
-      features={[
-        "Cancellation terms",
-        "Refund conditions",
-        "Service modifications",
-        "Policy exceptions"
-      ]}
-    />
+        <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-8 text-center">
+          <h3 className="text-2xl font-bold mb-4">Ready to Apply Your Knowledge?</h3>
+          <p className="text-muted-foreground mb-6">
+            Put your security skills to work with real projects or get your own code audited.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild>
+              <Link to="/marketplace">Find Audit Work</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/request-audit">Get Code Audited</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </StandardLayout>
   );
-};
-
-// Community Pages
-export const Forum = () => {
-  return (
-    <PlaceholderPage
-      title="Security Forum"
-      description="Connect with other security professionals, share insights, and discuss the latest Web3 security trends."
-      icon={<MessageSquare className="h-6 w-6" />}
-      features={[
-        "Discussion threads",
-        "Expert insights",
-        "Community Q&A",
-        "Security news"
-      ]}
-    />
-  );
-};
-
-export const Events = () => {
-  return (
-    <PlaceholderPage
-      title="Security Events"
-      description="Join webinars, workshops, and conferences focused on Web3 security and blockchain development."
-      icon={<Calendar className="h-6 w-6" />}
-      features={[
-        "Live webinars",
-        "Workshop recordings",
-        "Conference updates",
-        "Expert sessions"
-      ]}
-    />
-  );
-};
-
-export const Challenges = () => {
-  return (
-    <PlaceholderPage
-      title="Security Challenges"
-      description="Test your skills with security challenges, CTF competitions, and vulnerability hunting exercises."
-      icon={<Target className="h-6 w-6" />}
-      features={[
-        "CTF competitions",
-        "Skill assessments",
-        "Bug bounties",
-        "Learning challenges"
-      ]}
-    />
-  );
-};
-
-export const Leaderboard = () => {
-  return (
-    <PlaceholderPage
-      title="Security Leaderboard"
-      description="Track top performers in security audits, bug bounties, and community contributions."
-      icon={<Trophy className="h-6 w-6" />}
-      features={[
-        "Auditor rankings",
-        "Bug bounty scores",
-        "Community points",
-        "Achievement levels"
-      ]}
-    />
-  );
-};
-
-export const Blog = () => {
-  return (
-    <PlaceholderPage
-      title="Security Blog"
-      description="Stay updated with the latest security insights, research findings, and industry analysis."
-      icon={<Newspaper className="h-6 w-6" />}
-      features={[
-        "Security research",
-        "Industry insights",
-        "Case studies",
-        "Expert opinions"
-      ]}
-    />
-  );
-};
-
-export const Achievements = () => {
-  return (
-    <PlaceholderPage
-      title="Achievements"
-      description="Track your progress and earn badges for completing audits, finding vulnerabilities, and contributing to security."
-      icon={<Award className="h-6 w-6" />}
-      features={[
-        "Achievement badges",
-        "Progress tracking",
-        "Skill certifications",
-        "Recognition system"
-      ]}
-    />
-  );
-};
-
-// Platform and Analysis Pages
-export const SecurityInsights = () => {
-  return (
-    <PlaceholderPage
-      title="Security Insights"
-      description="Advanced analytics and insights about Web3 security trends, vulnerability patterns, and threat intelligence."
-      icon={<Brain className="h-6 w-6" />}
-      features={[
-        "Threat intelligence",
-        "Vulnerability trends",
-        "Risk analytics",
-        "Security metrics"
-      ]}
-    />
-  );
-};
-
-export const Vulnerabilities = () => {
-  return (
-    <PlaceholderPage
-      title="Vulnerability Database"
-      description="Comprehensive database of known vulnerabilities, exploits, and security patterns in Web3 applications."
-      icon={<Lock className="h-6 w-6" />}
-      features={[
-        "CVE database",
-        "Exploit patterns",
-        "Security advisories",
-        "Mitigation guides"
-      ]}
-    />
-  );
-};
-
-export const PlatformReport = () => {
-  return (
-    <PlaceholderPage
-      title="Platform Analytics"
-      description="Comprehensive analytics and reporting dashboard for platform performance and security metrics."
-      icon={<BarChart3 className="h-6 w-6" />}
-      features={[
-        "Security metrics",
-        "Platform analytics",
-        "Performance reports",
-        "Trend analysis"
-      ]}
-    />
-  );
-};
-
-// Admin Pages
-export const AdminDashboard = () => {
-  return (
-    <PlaceholderPage
-      title="Admin Dashboard"
-      description="Administrative dashboard for platform management, user oversight, and system monitoring."
-      icon={<Monitor className="h-6 w-6" />}
-      features={[
-        "User management",
-        "System monitoring",
-        "Audit oversight",
-        "Platform analytics"
-      ]}
-    />
-  );
-};
-
-export const AdminUsers = () => {
-  return (
-    <PlaceholderPage
-      title="User Management"
-      description="Manage user accounts, permissions, and access controls for the security platform."
-      icon={<User className="h-6 w-6" />}
-      features={[
-        "User accounts",
-        "Permission management",
-        "Access controls",
-        "Account verification"
-      ]}
-    />
-  );
-};
-
-export const AdminAudits = () => {
-  return (
-    <PlaceholderPage
-      title="Audit Management"
-      description="Oversee audit processes, quality assurance, and audit lifecycle management."
-      icon={<FileCheck className="h-6 w-6" />}
-      features={[
-        "Audit oversight",
-        "Quality control",
-        "Process management",
-        "Status tracking"
-      ]}
-    />
-  );
-};
-
-export const AdminFinance = () => {
-  return (
-    <PlaceholderPage
-      title="Financial Management"
-      description="Manage payments, escrow, billing, and financial transactions on the platform."
-      icon={<DollarSign className="h-6 w-6" />}
-      features={[
-        "Payment processing",
-        "Escrow management",
-        "Financial reporting",
-        "Transaction monitoring"
-      ]}
-    />
-  );
-};
-
-export const AdminReports = () => {
-  return (
-    <PlaceholderPage
-      title="Report Management"
-      description="Generate and manage platform reports, analytics, and compliance documentation."
-      icon={<FileText className="h-6 w-6" />}
-      features={[
-        "Custom reports",
-        "Analytics dashboard",
-        "Compliance docs",
-        "Data exports"
-      ]}
-    />
-  );
-};
-
-export const AdminDisputes = () => {
-  return (
-    <PlaceholderPage
-      title="Dispute Resolution"
-      description="Manage disputes, arbitration processes, and conflict resolution between users."
-      icon={<Gavel className="h-6 w-6" />}
-      features={[
-        "Dispute tracking",
-        "Arbitration tools",
-        "Resolution process",
-        "Communication logs"
-      ]}
-    />
-  );
-};
-
-export const AdminSecurity = () => {
-  return (
-    <PlaceholderPage
-      title="Security Management"
-      description="Monitor platform security, manage security policies, and oversee threat detection."
-      icon={<Lock className="h-6 w-6" />}
-      features={[
-        "Security monitoring",
-        "Threat detection",
-        "Policy management",
-        "Incident response"
-      ]}
-    />
-  );
-};
-
-export const AdminServices = () => {
-  return (
-    <PlaceholderPage
-      title="Service Management"
-      description="Manage audit services, service providers, and service quality standards."
-      icon={<Settings className="h-6 w-6" />}
-      features={[
-        "Service catalog",
-        "Provider management",
-        "Quality standards",
-        "Service approval"
-      ]}
-    />
-  );
-};
-
-export const AdminSettings = () => {
-  return (
-    <PlaceholderPage
-      title="Platform Settings"
-      description="Configure platform settings, system parameters, and administrative preferences."
-      icon={<Settings className="h-6 w-6" />}
-      features={[
-        "System configuration",
-        "Platform settings",
-        "Admin preferences",
-        "Feature toggles"
-      ]}
-    />
-  );
-};
-
-export const AdminProviders = () => {
-  return (
-    <PlaceholderPage
-      title="Provider Management"
-      description="Manage security service providers, their credentials, and performance metrics."
-      icon={<UserCheck className="h-6 w-6" />}
-      features={[
-        "Provider profiles",
-        "Credential verification",
-        "Performance tracking",
-        "Provider analytics"
-      ]}
-    />
-  );
-};
-
-// Additional Pages
-export const ContactProvider = () => {
-  return (
-    <PlaceholderPage
-      title="Contact Provider"
-      description="Direct communication with security service providers for project discussions and consultations."
-      icon={<MessageSquare className="h-6 w-6" />}
-      features={[
-        "Direct messaging",
-        "Video consultations",
-        "File sharing",
-        "Project discussions"
-      ]}
-    />
-  );
-};
-
-export const AuditorDashboard = () => {
-  return (
-    <PlaceholderPage
-      title="Auditor Dashboard"
-      description="Specialized dashboard for security auditors to manage their audits, clients, and performance."
-      icon={<Monitor className="h-6 w-6" />}
-      features={[
-        "Audit management",
-        "Client communication",
-        "Performance metrics",
-        "Scheduling tools"
-      ]}
-    />
-  );
-};
-
-export const ProjectDashboard = () => {
-  return (
-    <PlaceholderPage
-      title="Project Dashboard"
-      description="Manage your security projects, track audit progress, and coordinate with security teams."
-      icon={<BarChart3 className="h-6 w-6" />}
-      features={[
-        "Project tracking",
-        "Progress monitoring",
-        "Team coordination",
-        "Milestone management"
-      ]}
-    />
-  );
-};
-
-export const UserDashboard = () => {
-  return (
-    <PlaceholderPage
-      title="User Dashboard"
-      description="Personal dashboard for managing your account, projects, and security audit activities."
-      icon={<User className="h-6 w-6" />}
-      features={[
-        "Account management",
-        "Project overview",
-        "Activity tracking",
-        "Notification center"
-      ]}
-    />
-  );
-};
-
-export const SubmitService = () => {
-  return (
-    <PlaceholderPage
-      title="Submit Service"
-      description="Submit your security service for review and approval to join the Hawkly marketplace."
-      icon={<Code className="h-6 w-6" />}
-      features={[
-        "Service submission",
-        "Review process",
-        "Approval workflow",
-        "Provider onboarding"
-      ]}
-    />
-  );
-};
+}

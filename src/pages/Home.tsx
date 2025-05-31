@@ -1,35 +1,45 @@
 
-import React from 'react';
-import { Helmet } from 'react-helmet-async';
-import { SimplifiedNavbar } from '@/components/layout/simplified-navbar';
-import { Footer } from '@/components/layout/footer';
-import { SimplifiedHero } from '@/components/home/simplified-hero';
-import { ValuePropositionSection } from '@/components/home/value-proposition-section';
-import { TrustIndicators } from '@/components/home/trust-indicators';
-import { EnhancedFooter } from '@/components/home/enhanced-footer';
-import { PersonalizedWelcome } from '@/components/user-profiling/PersonalizedWelcome';
+import React from "react";
+import { Helmet } from "react-helmet-async";
+import { Navbar } from "@/components/layout/navbar";
+import { EnhancedFooter } from "@/components/home/enhanced-footer";
+import { SupportButtonEnhanced } from "@/components/ui/support-button-enhanced";
+import { SkipLink } from "@/components/ui/skip-link";
+import { IndexPageLayout } from "@/components/home/index-page-layout";
+import { useIndexPageAnalytics } from "@/components/home/index-page-analytics";
+import { AdaptiveInterface } from "@/components/adaptive-interface";
+import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
 
-const Home = () => {
+export default function Home() {
+  useIndexPageAnalytics();
+
   return (
-    <>
+    <AccessibilityProvider>
       <Helmet>
-        <title>Hawkly | Premier Web3 Security Marketplace</title>
-        <meta name="description" content="Connect with top Web3 security experts. Get your smart contracts audited by verified professionals or offer your security services to leading blockchain projects." />
+        <title>Hawkly | Next-Generation Web3 Security Platform</title>
+        <meta
+          name="description"
+          content="The leading Web3 security marketplace. AI-powered auditor matching, smart contract escrow, and continuous monitoring. Faster, more secure, more affordable than traditional audit firms."
+        />
+        <meta name="keywords" content="web3 security, smart contract audit, blockchain security, DeFi audit, NFT security, crypto audit" />
+        
+        {/* Performance optimizations */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
       </Helmet>
-      <div className="min-h-screen">
-        <SimplifiedNavbar />
-        <main>
-          <div className="container mx-auto px-4 py-6">
-            <PersonalizedWelcome />
-          </div>
-          <SimplifiedHero />
-          <ValuePropositionSection />
-          <TrustIndicators />
+      
+      <div className="min-h-screen bg-background flex flex-col">
+        <SkipLink targetId="main-content" />
+        <Navbar />
+        <main id="main-content">
+          <AdaptiveInterface variant="full">
+            <IndexPageLayout />
+          </AdaptiveInterface>
         </main>
-        <Footer />
+        <EnhancedFooter />
+        <SupportButtonEnhanced />
       </div>
-    </>
+    </AccessibilityProvider>
   );
-};
-
-export default Home;
+}
