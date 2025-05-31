@@ -8,7 +8,7 @@ interface HawklyLogoProps {
   showText?: boolean;
   onClick?: () => void;
   linkTo?: string;
-  variant?: 'small' | 'default' | 'large';
+  variant?: 'small' | 'default' | 'large' | 'full';
   asLink?: boolean;
 }
 
@@ -24,7 +24,8 @@ export function HawklyLogo({
   const sizeClasses = {
     small: 'w-6 h-6',
     default: 'w-8 h-8',
-    large: 'w-12 h-12'
+    large: 'w-12 h-12',
+    full: 'w-16 h-16'
   };
 
   const logoContent = (
