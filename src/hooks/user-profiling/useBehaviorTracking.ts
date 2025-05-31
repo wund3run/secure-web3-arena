@@ -6,9 +6,11 @@ import { saveBehaviorProfile } from './useLocalStorage';
 export const useBehaviorTracking = (userId?: string) => {
   const [behaviorProfile, setBehaviorProfile] = useState<UserBehaviorProfile | null>(null);
 
-  const trackBehavior = useCallback((action: string, page?: string) => {
+  const trackBehavior = useCallback((action: string, metadata?: any) => {
     setBehaviorProfile(current => {
       if (!current) return current;
+      
+      const page = typeof metadata === 'string' ? metadata : metadata?.page || window.location.pathname;
       
       const updated = {
         ...current,
