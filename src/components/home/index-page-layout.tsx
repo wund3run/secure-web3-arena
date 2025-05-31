@@ -6,6 +6,8 @@ import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
 // Core journey components (loaded immediately)
 import { SimplifiedHero } from "@/components/home/simplified-hero";
 import { TrustIndicators } from "@/components/home/trust-indicators";
+import { ValuePropositionSection } from "@/components/home/value-proposition-section";
+import { HowItWorksSection } from "@/components/home/how-it-works-section";
 
 // Lazy-loaded sections
 import {
@@ -26,6 +28,12 @@ export function IndexPageLayout() {
     <div className="flex-grow">
       {/* Above-the-fold content - loaded immediately */}
       <SimplifiedHero />
+      
+      {/* Value proposition section */}
+      <ValuePropositionSection />
+      
+      {/* How it works section */}
+      <HowItWorksSection />
       
       {/* Below-the-fold content - lazy loaded with enhanced loading states */}
       <LazySection fallback={<SectionLoadingFallback />}>
