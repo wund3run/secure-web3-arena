@@ -1,20 +1,30 @@
 
-import React, { memo } from "react";
-import { useVisibility } from "./hooks/useVisibility";
-import { usePerformanceMetrics } from "./hooks/usePerformanceMetrics";
-import { MetricsDashboard } from "./components/MetricsDashboard";
+import React, { useEffect, useState } from 'react';
+import { usePerformanceMonitoring } from '@/hooks/usePerformanceMonitoring';
 
-export const PerformanceMonitor = memo(function PerformanceMonitor() {
-  const { visible, toggleVisibility } = useVisibility();
-  const metrics = usePerformanceMetrics(visible);
-  
-  // Don't render anything if not visible
-  if (!visible) return null;
-  
+export const PerformanceMonitor: React.FC = () => {
+  const { markPerformance } = usePerformanceMonitoring();
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Mark performance milestones
+    markPerformance('app-mounted');
+    
+    // Show performance info in development
+    if (process.env.NODE_ENV === 'development') {
+      const timer = setTimeout(() => setIsVisible(true), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [markPerformance]);
+
+  if (!isVisible || process.env.NODE_ENV === 'production') {
+    return null;
+  }
+
   return (
-    <MetricsDashboard 
-      metrics={metrics} 
-      onClose={toggleVisibility} 
-    />
+    <div className="fixed bottom-4 right-4 bg-black/80 text-white p-2 rounded text-xs z-50">
+      <div>Performance Monitor Active</div>
+      <div>Check console for metrics</div>
+    </div>
   );
-});
+};

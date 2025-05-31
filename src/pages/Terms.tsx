@@ -4,201 +4,107 @@ import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
-const Terms = () => {
+export default function Terms() {
   return (
-    <StandardLayout
-      title="Terms of Service"
-      description="Terms and conditions for using the Hawkly platform"
-    >
-      <div className="container py-12 max-w-4xl">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Terms of Service</h1>
-          <p className="text-muted-foreground">
-            Last updated: March 15, 2025
-          </p>
-        </div>
+    <StandardLayout>
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-3xl">Terms of Service</CardTitle>
+            <p className="text-muted-foreground">Last updated: {new Date().toLocaleDateString()}</p>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <section>
+              <h2 className="text-2xl font-semibold mb-4">1. Agreement to Terms</h2>
+              <p className="text-muted-foreground">
+                By accessing and using Hawkly ("the Platform"), you accept and agree to be bound by the terms and provision of this agreement.
+              </p>
+            </section>
 
-        <div className="space-y-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>1. Acceptance of Terms</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-slate max-w-none">
-              <p>
-                By accessing and using the Hawkly platform ("Service"), you accept and agree to be bound by the terms and provision of this agreement. 
-                If you do not agree to abide by the above, please do not use this service.
-              </p>
-              <p>
-                These Terms of Service ("Terms") govern your use of our Web3 security marketplace platform operated by Hawkly Inc. ("we," "us," or "our").
-              </p>
-            </CardContent>
-          </Card>
+            <Separator />
 
-          <Card>
-            <CardHeader>
-              <CardTitle>2. Description of Service</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-slate max-w-none">
-              <p>
-                Hawkly provides a marketplace platform that connects Web3 projects with security auditors and experts. Our services include:
+            <section>
+              <h2 className="text-2xl font-semibold mb-4">2. Description of Service</h2>
+              <p className="text-muted-foreground mb-4">
+                Hawkly is a Web3 security marketplace that connects blockchain projects with qualified security auditors. Our platform provides:
               </p>
-              <ul>
-                <li>AI-powered auditor matching</li>
-                <li>Smart contract escrow services</li>
-                <li>Security audit management tools</li>
-                <li>Educational resources and community features</li>
-                <li>Continuous security monitoring solutions</li>
+              <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                <li>AI-powered matching between projects and auditors</li>
+                <li>Secure escrow services for audit payments</li>
+                <li>Real-time collaboration tools</li>
+                <li>Comprehensive audit reporting and tracking</li>
               </ul>
-            </CardContent>
-          </Card>
+            </section>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>3. User Accounts and Registration</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-slate max-w-none">
-              <p>
-                To access certain features of our Service, you must register for an account. You agree to:
+            <Separator />
+
+            <section>
+              <h2 className="text-2xl font-semibold mb-4">3. User Responsibilities</h2>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-medium mb-2">Project Owners</h3>
+                  <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
+                    <li>Provide accurate project information</li>
+                    <li>Ensure code accessibility for auditors</li>
+                    <li>Respond promptly to auditor queries</li>
+                    <li>Pay agreed-upon fees through escrow</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium mb-2">Auditors</h3>
+                  <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
+                    <li>Maintain professional qualifications</li>
+                    <li>Provide thorough and accurate audit reports</li>
+                    <li>Meet agreed-upon deadlines</li>
+                    <li>Maintain confidentiality of project information</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+            <Separator />
+
+            <section>
+              <h2 className="text-2xl font-semibold mb-4">4. Payment and Escrow</h2>
+              <p className="text-muted-foreground mb-4">
+                All audit payments are processed through our secure escrow system. Payments are released based on milestone completion and mutual agreement.
               </p>
-              <ul>
-                <li>Provide accurate, current, and complete information during registration</li>
-                <li>Maintain and promptly update your account information</li>
-                <li>Maintain the security of your password and accept responsibility for all activities under your account</li>
-                <li>Notify us immediately of any unauthorized use of your account</li>
+              <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                <li>Platform fees are clearly disclosed before engagement</li>
+                <li>Disputes are handled through our arbitration process</li>
+                <li>Refunds are processed according to our refund policy</li>
               </ul>
-            </CardContent>
-          </Card>
+            </section>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>4. Auditor Verification and Services</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-slate max-w-none">
-              <p>
-                Security auditors on our platform undergo a verification process. However:
-              </p>
-              <ul>
-                <li>We do not guarantee the quality or completeness of any audit services</li>
-                <li>Users are responsible for conducting their own due diligence</li>
-                <li>Audit results and recommendations are provided as-is</li>
-                <li>We are not liable for any losses resulting from audit recommendations or oversights</li>
-              </ul>
-            </CardContent>
-          </Card>
+            <Separator />
 
-          <Card>
-            <CardHeader>
-              <CardTitle>5. Payment and Escrow Services</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-slate max-w-none">
-              <p>
-                Our platform facilitates payments through smart contract escrow systems:
+            <section>
+              <h2 className="text-2xl font-semibold mb-4">5. Intellectual Property</h2>
+              <p className="text-muted-foreground">
+                Users retain ownership of their intellectual property. By using the platform, you grant us a limited license to provide our services.
               </p>
-              <ul>
-                <li>Payments are held in smart contracts until project milestones are met</li>
-                <li>Transaction fees apply to all escrow services</li>
-                <li>Dispute resolution procedures are outlined in our dispute policy</li>
-                <li>Users are responsible for understanding blockchain transaction risks</li>
-              </ul>
-            </CardContent>
-          </Card>
+            </section>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>6. Intellectual Property Rights</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-slate max-w-none">
-              <p>
-                The Service and its original content, features, and functionality are owned by Hawkly Inc. and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.
-              </p>
-              <p>
-                Users retain ownership of their submitted project code and documentation, but grant us necessary licenses to provide our services.
-              </p>
-            </CardContent>
-          </Card>
+            <Separator />
 
-          <Card>
-            <CardHeader>
-              <CardTitle>7. Privacy and Data Protection</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-slate max-w-none">
-              <p>
-                Your privacy is important to us. Our Privacy Policy explains how we collect, use, and protect your information when you use our Service. By using our Service, you agree to the collection and use of information in accordance with our Privacy Policy.
+            <section>
+              <h2 className="text-2xl font-semibold mb-4">6. Limitation of Liability</h2>
+              <p className="text-muted-foreground">
+                Hawkly provides a platform for connecting auditors and projects. While we facilitate the process, the quality and accuracy of audits remain the responsibility of the individual auditors.
               </p>
-            </CardContent>
-          </Card>
+            </section>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>8. Prohibited Uses</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-slate max-w-none">
-              <p>You may not use our Service:</p>
-              <ul>
-                <li>For any unlawful purpose or to solicit others to perform unlawful acts</li>
-                <li>To violate any international, federal, provincial, or state regulations, rules, laws, or local ordinances</li>
-                <li>To infringe upon or violate our intellectual property rights or the intellectual property rights of others</li>
-                <li>To harass, abuse, insult, harm, defame, slander, disparage, intimidate, or discriminate</li>
-                <li>To submit false or misleading information</li>
-                <li>To upload or transmit viruses or any other type of malicious code</li>
-              </ul>
-            </CardContent>
-          </Card>
+            <Separator />
 
-          <Card>
-            <CardHeader>
-              <CardTitle>9. Disclaimers and Limitation of Liability</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-slate max-w-none">
-              <p>
-                THE SERVICE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS. WE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+            <section>
+              <h2 className="text-2xl font-semibold mb-4">7. Contact Information</h2>
+              <p className="text-muted-foreground">
+                For questions about these Terms of Service, please contact us at legal@hawkly.com
               </p>
-              <p>
-                IN NO EVENT SHALL HAWKLY INC. BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF YOUR USE OF THE SERVICE.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>10. Termination</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-slate max-w-none">
-              <p>
-                We may terminate or suspend your account and bar access to the Service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever, including but not limited to a breach of the Terms.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>11. Changes to Terms</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-slate max-w-none">
-              <p>
-                We reserve the right to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>12. Contact Information</CardTitle>
-            </CardHeader>
-            <CardContent className="prose prose-slate max-w-none">
-              <p>
-                If you have any questions about these Terms of Service, please contact us at:
-              </p>
-              <ul>
-                <li>Email: legal@hawkly.com</li>
-                <li>Address: 123 Blockchain Ave, Web3 City, Digital State 12345</li>
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
+            </section>
+          </CardContent>
+        </Card>
       </div>
     </StandardLayout>
   );
-};
-
-export default Terms;
+}
