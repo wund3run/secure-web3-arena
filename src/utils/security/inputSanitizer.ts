@@ -1,4 +1,3 @@
-
 import DOMPurify from 'dompurify';
 
 export class InputSanitizer {
@@ -13,8 +12,7 @@ export class InputSanitizer {
       ALLOWED_ATTR: [],
       KEEP_CONTENT: true,
       RETURN_DOM: false,
-      RETURN_DOM_FRAGMENT: false,
-      RETURN_DOM_IMPORT: false
+      RETURN_DOM_FRAGMENT: false
     });
   }
 

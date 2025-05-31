@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -8,6 +9,7 @@ import { NotificationProvider } from '@/contexts/NotificationContext';
 import { ProductionErrorBoundary } from '@/components/error/ProductionErrorBoundary';
 import { PerformanceMonitor } from '@/components/performance/PerformanceMonitor';
 import { RealtimeNotificationHandler } from '@/components/notifications/RealtimeNotificationHandler';
+import { applySecurityHeaders } from '@/utils/security';
 import Home from '@/pages/Home';
 import Auth from '@/pages/Auth';
 import Marketplace from '@/pages/Marketplace';
