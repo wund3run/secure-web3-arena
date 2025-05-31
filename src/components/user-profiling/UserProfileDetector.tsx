@@ -77,8 +77,7 @@ export function UserProfileDetector() {
 
   // Track form interactions
   useEffect(() => {
-    const trackFormStart = (event: Event) => {
-      const form = event.target as HTMLFormElement;
+    const trackFormStart = (form: HTMLFormElement) => {
       const formName = form.getAttribute('name') || form.className;
       
       trackBehavior('form_start', {
@@ -97,16 +96,18 @@ export function UserProfileDetector() {
       });
     };
 
-    document.addEventListener('focusin', (event) => {
+    const handleFocusIn = (event: Event) => {
       if ((event.target as HTMLElement).matches('form input, form textarea, form select')) {
         const form = (event.target as HTMLElement).closest('form');
-        if (form) trackFormStart({ target: form } as Event);
+        if (form) trackFormStart(form);
       }
-    });
+    };
 
+    document.addEventListener('focusin', handleFocusIn);
     document.addEventListener('submit', trackFormSubmit);
 
     return () => {
+      document.removeEventListener('focusin', handleFocusIn);
       document.removeEventListener('submit', trackFormSubmit);
     };
   }, [trackBehavior]);

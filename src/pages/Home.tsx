@@ -1,11 +1,11 @@
+
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { SimplifiedNavbar } from '@/components/layout/simplified-navbar';
 import { Footer } from '@/components/layout/footer';
-import { Hero } from '@/components/home/hero';
-import { Features } from '@/components/home/features';
-import { Testimonials } from '@/components/home/testimonials';
-import { CallToAction } from '@/components/home/call-to-action';
+import { SimplifiedHero } from '@/components/home/simplified-hero';
+import { ValuePropositionSection } from '@/components/home/value-proposition-section';
+import { TrustIndicators } from '@/components/home/trust-indicators';
 import { EnhancedFooter } from '@/components/home/enhanced-footer';
 import { PersonalizedWelcome } from '@/components/user-profiling/PersonalizedWelcome';
 
@@ -22,10 +22,9 @@ const Home = () => {
           <div className="container mx-auto px-4 py-6">
             <PersonalizedWelcome />
           </div>
-          <Hero />
-          <Features />
-          <Testimonials />
-          <CallToAction />
+          <SimplifiedHero />
+          <ValuePropositionSection />
+          <TrustIndicators />
         </main>
         <Footer />
       </div>
