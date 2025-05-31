@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/auth';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -12,6 +13,13 @@ import {
 import { Shield, FileText, Search, Users, Zap, BookOpen } from 'lucide-react';
 
 export function MainNavigation() {
+  const { user } = useAuth();
+
+  // Don't show navigation menu items if user is not authenticated
+  if (!user) {
+    return null;
+  }
+
   return (
     <NavigationMenu>
       <NavigationMenuList>
