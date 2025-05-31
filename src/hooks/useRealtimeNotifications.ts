@@ -25,7 +25,6 @@ export const useRealtimeNotifications = () => {
           console.log('New notification received:', payload);
           
           addNotification({
-            id: payload.new.id,
             title: payload.new.title,
             message: payload.new.message,
             type: payload.new.type,
