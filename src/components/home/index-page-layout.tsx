@@ -6,20 +6,12 @@ import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
 // Core journey components (loaded immediately)
 import { SimplifiedHero } from "@/components/home/simplified-hero";
 import { TrustIndicators } from "@/components/home/trust-indicators";
-import { ValuePropositionSection } from "@/components/home/value-proposition-section";
 
 // Lazy-loaded sections
 import {
-  InteractiveDemo,
   FaqSection,
   UserJourneySection,
-  QuickStartSection,
-  MarketPositioning,
-  PlatformFeaturesShowcase,
-  CompetitiveAdvantages,
-  NetworkEffectsSection,
-  StrategicPartnershipsSection,
-  GlobalExpansionSection
+  QuickStartSection
 } from "./index-page-sections";
 
 // Enhanced loading fallback component
@@ -34,7 +26,6 @@ export function IndexPageLayout() {
     <div className="flex-grow">
       {/* Above-the-fold content - loaded immediately */}
       <SimplifiedHero />
-      <ValuePropositionSection />
       
       {/* Below-the-fold content - lazy loaded with enhanced loading states */}
       <LazySection fallback={<SectionLoadingFallback />}>
@@ -45,38 +36,6 @@ export function IndexPageLayout() {
       
       <LazySection fallback={<SectionLoadingFallback />}>
         <QuickStartSection />
-      </LazySection>
-      
-      <LazySection fallback={<SectionLoadingFallback height="h-96" />}>
-        <div id="demo">
-          <InteractiveDemo />
-        </div>
-      </LazySection>
-      
-      <LazySection fallback={<SectionLoadingFallback />}>
-        <NetworkEffectsSection />
-      </LazySection>
-      
-      <LazySection fallback={<SectionLoadingFallback />}>
-        <Suspense fallback={<SectionLoadingFallback />}>
-          <MarketPositioning />
-        </Suspense>
-      </LazySection>
-      
-      <LazySection fallback={<SectionLoadingFallback height="h-80" />}>
-        <PlatformFeaturesShowcase />
-      </LazySection>
-      
-      <LazySection fallback={<SectionLoadingFallback />}>
-        <StrategicPartnershipsSection />
-      </LazySection>
-      
-      <LazySection fallback={<SectionLoadingFallback />}>
-        <GlobalExpansionSection />
-      </LazySection>
-      
-      <LazySection fallback={<SectionLoadingFallback />}>
-        <CompetitiveAdvantages />
       </LazySection>
       
       <LazySection fallback={<SectionLoadingFallback height="h-80" />}>
