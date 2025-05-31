@@ -9,7 +9,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
-import { Shield, FileText, Search, Users } from 'lucide-react';
+import { Shield, FileText, Search, Users, Zap, BookOpen } from 'lucide-react';
 
 export function MainNavigation() {
   return (
@@ -22,7 +22,7 @@ export function MainNavigation() {
           </NavigationMenuTrigger>
           <NavigationMenuContent>
             <div className="grid gap-3 p-6 w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-              <div className="row-span-3">
+              <div className="row-span-4">
                 <NavigationMenuLink asChild>
                   <Link
                     className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
@@ -33,7 +33,7 @@ export function MainNavigation() {
                       Security Audits
                     </div>
                     <p className="text-sm leading-tight text-muted-foreground">
-                      Comprehensive smart contract security audits by verified experts
+                      Comprehensive smart contract security audits by verified experts - Updated March 2025
                     </p>
                   </Link>
                 </NavigationMenuLink>
@@ -42,7 +42,7 @@ export function MainNavigation() {
                 <Link to="/code-reviews" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                   <div className="text-sm font-medium leading-none">Code Reviews</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    Expert code review services for Web3 projects
+                    Expert code review services for Web3 projects with AI-enhanced analysis
                   </p>
                 </Link>
               </NavigationMenuLink>
@@ -50,7 +50,7 @@ export function MainNavigation() {
                 <Link to="/penetration-testing" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                   <div className="text-sm font-medium leading-none">Penetration Testing</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    Advanced security testing and vulnerability assessment
+                    Advanced security testing and vulnerability assessment for Web3 applications
                   </p>
                 </Link>
               </NavigationMenuLink>
@@ -58,7 +58,7 @@ export function MainNavigation() {
                 <Link to="/consulting" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                   <div className="text-sm font-medium leading-none">Security Consulting</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    Strategic security guidance and implementation support
+                    Strategic security guidance and implementation support for 2025
                   </p>
                 </Link>
               </NavigationMenuLink>
@@ -68,7 +68,7 @@ export function MainNavigation() {
 
         <NavigationMenuItem>
           <NavigationMenuTrigger className="flex items-center gap-2">
-            <FileText className="h-4 w-4" />
+            <BookOpen className="h-4 w-4" />
             Resources
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -77,7 +77,7 @@ export function MainNavigation() {
                 <Link to="/security-guides" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                   <div className="text-sm font-medium leading-none">Security Guides</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    Comprehensive security guides for Web3 development
+                    Comprehensive security guides for Web3 development updated for March 2025
                   </p>
                 </Link>
               </NavigationMenuLink>
@@ -85,23 +85,23 @@ export function MainNavigation() {
                 <Link to="/knowledge-base" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                   <div className="text-sm font-medium leading-none">Knowledge Base</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    Extensive documentation and best practices
+                    Extensive documentation and best practices for 2025 security landscape
                   </p>
                 </Link>
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link to="/tutorials" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                  <div className="text-sm font-medium leading-none">Tutorials</div>
+                  <div className="text-sm font-medium leading-none">Video Tutorials</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    Step-by-step security tutorials and workshops
+                    Expert-led tutorials covering AI-powered security analysis and latest threats
                   </p>
                 </Link>
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link to="/templates" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                  <div className="text-sm font-medium leading-none">Templates</div>
+                  <div className="text-sm font-medium leading-none">Audit Templates</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    Ready-to-use security audit templates
+                    Professional audit templates and frameworks enhanced with AI analysis
                   </p>
                 </Link>
               </NavigationMenuLink>
@@ -111,7 +111,7 @@ export function MainNavigation() {
 
         <NavigationMenuItem>
           <NavigationMenuTrigger className="flex items-center gap-2">
-            <Search className="h-4 w-4" />
+            <Zap className="h-4 w-4" />
             Tools
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -120,15 +120,15 @@ export function MainNavigation() {
                 <Link to="/security-insights" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                   <div className="text-sm font-medium leading-none">Security Insights</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    AI-powered security analytics and insights
+                    AI-powered security analytics and real-time threat intelligence for 2025
                   </p>
                 </Link>
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link to="/ai-tools" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                  <div className="text-sm font-medium leading-none">AI Tools</div>
+                  <div className="text-sm font-medium leading-none">AI Security Tools</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    Advanced AI-powered security analysis tools
+                    GPT-4 powered analysis, automated vulnerability detection, and ML threat detection
                   </p>
                 </Link>
               </NavigationMenuLink>
@@ -136,7 +136,7 @@ export function MainNavigation() {
                 <Link to="/vulnerability-scanner" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                   <div className="text-sm font-medium leading-none">Vulnerability Scanner</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    Automated vulnerability detection and scanning
+                    Automated vulnerability detection with multi-blockchain support and CI/CD integration
                   </p>
                 </Link>
               </NavigationMenuLink>
@@ -144,7 +144,7 @@ export function MainNavigation() {
                 <Link to="/platform-reports" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                   <div className="text-sm font-medium leading-none">Platform Reports</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    Comprehensive security reports and analytics
+                    Comprehensive security reports, ecosystem analysis, and compliance dashboards
                   </p>
                 </Link>
               </NavigationMenuLink>
@@ -161,33 +161,33 @@ export function MainNavigation() {
             <div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
               <NavigationMenuLink asChild>
                 <Link to="/forum" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                  <div className="text-sm font-medium leading-none">Forum</div>
+                  <div className="text-sm font-medium leading-none">Community Forum</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    Community discussions and knowledge sharing
+                    Technical discussions, vulnerability disclosures, and expert Q&A sessions
                   </p>
                 </Link>
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link to="/events" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                  <div className="text-sm font-medium leading-none">Events</div>
+                  <div className="text-sm font-medium leading-none">Security Events</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    Security events, workshops, and conferences
+                    Workshops, conferences, webinars, and hands-on security training sessions
                   </p>
                 </Link>
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link to="/challenges" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                  <div className="text-sm font-medium leading-none">Challenges</div>
+                  <div className="text-sm font-medium leading-none">Security Challenges</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    Security challenges and skill competitions
+                    CTF challenges, bug bounty training, and skill-building competitions
                   </p>
                 </Link>
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
                 <Link to="/leaderboard" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                  <div className="text-sm font-medium leading-none">Leaderboard</div>
+                  <div className="text-sm font-medium leading-none">Expert Leaderboard</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    Top security experts and contributors
+                    Top security experts, community contributors, and vulnerability discoverers
                   </p>
                 </Link>
               </NavigationMenuLink>

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -20,7 +21,27 @@ import { RoleBasedRoute } from '@/components/auth/RoleBasedRoute';
 import { UserProfileDetector } from '@/components/user-profiling/UserProfileDetector';
 import SecurityAudits from './pages/SecurityAudits';
 import CodeReviews from './pages/CodeReviews';
-import { PenetrationTesting, Consulting, SecurityGuides, AITools, VulnerabilityScanner, PlatformReports } from './pages/missing-pages';
+import Templates from './pages/Templates';
+import Tutorials from './pages/Tutorials';
+import SecurityInsights from './pages/SecurityInsights';
+import { 
+  PenetrationTesting, 
+  Consulting, 
+  SecurityGuides, 
+  AITools, 
+  VulnerabilityScanner, 
+  PlatformReports,
+  Forum,
+  Events,
+  Challenges,
+  Leaderboard,
+  KnowledgeBase,
+  SubmitService,
+  ContactProvider,
+  Terms,
+  Privacy,
+  SecurityPolicy
+} from './pages/missing-pages';
 
 // Create a query client instance
 const queryClient = new QueryClient();
@@ -47,7 +68,7 @@ function App() {
                 <Route path="/auditor-onboarding" element={<AuditorOnboarding />} />
                 <Route path="/security-settings" element={<SecuritySettings />} />
                 
-                {/* New Service Routes */}
+                {/* Service Routes */}
                 <Route path="/security-audits" element={<SecurityAudits />} />
                 <Route path="/code-reviews" element={<CodeReviews />} />
                 <Route path="/penetration-testing" element={<PenetrationTesting />} />
@@ -55,11 +76,30 @@ function App() {
                 
                 {/* Resource Routes */}
                 <Route path="/security-guides" element={<SecurityGuides />} />
+                <Route path="/knowledge-base" element={<KnowledgeBase />} />
+                <Route path="/tutorials" element={<Tutorials />} />
+                <Route path="/templates" element={<Templates />} />
                 
                 {/* Tool Routes */}
+                <Route path="/security-insights" element={<SecurityInsights />} />
                 <Route path="/ai-tools" element={<AITools />} />
                 <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
                 <Route path="/platform-reports" element={<PlatformReports />} />
+                
+                {/* Community Routes */}
+                <Route path="/forum" element={<Forum />} />
+                <Route path="/events" element={<Events />} />
+                <Route path="/challenges" element={<Challenges />} />
+                <Route path="/leaderboard" element={<Leaderboard />} />
+                
+                {/* Additional Routes */}
+                <Route path="/submit-service" element={<SubmitService />} />
+                <Route path="/contact-provider" element={<ContactProvider />} />
+                
+                {/* Legal Routes */}
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/security-policy" element={<SecurityPolicy />} />
               </Routes>
             </NotificationProvider>
           </AuthProvider>
