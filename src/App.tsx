@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/contexts/auth';
+import { NotificationProvider } from '@/contexts/NotificationContext';
 import Home from '@/pages/Home';
 import Auth from '@/pages/Auth';
 import Marketplace from '@/pages/Marketplace';
@@ -29,20 +30,22 @@ function App() {
         <BrowserRouter>
           <Toaster />
           <AuthProvider>
-            <UserProfileDetector />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/marketplace" element={<Marketplace />} />
-              <Route path="/request-audit" element={<RequestAudit />} />
-              <Route path="/audits" element={<Audits />} />
-              <Route path="/audit/:id" element={<AuditDetails />} />
-              <Route path="/dashboard/*" element={<Dashboard />} />
-              <Route path="/admin/*" element={<RoleBasedRoute allowedRoles={["admin"]}><AdminDashboard /></RoleBasedRoute>} />
-              <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
-              <Route path="/auditor-onboarding" element={<AuditorOnboarding />} />
-              <Route path="/security-settings" element={<SecuritySettings />} />
-            </Routes>
+            <NotificationProvider>
+              <UserProfileDetector />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/marketplace" element={<Marketplace />} />
+                <Route path="/request-audit" element={<RequestAudit />} />
+                <Route path="/audits" element={<Audits />} />
+                <Route path="/audit/:id" element={<AuditDetails />} />
+                <Route path="/dashboard/*" element={<Dashboard />} />
+                <Route path="/admin/*" element={<RoleBasedRoute allowedRoles={["admin"]}><AdminDashboard /></RoleBasedRoute>} />
+                <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
+                <Route path="/auditor-onboarding" element={<AuditorOnboarding />} />
+                <Route path="/security-settings" element={<SecuritySettings />} />
+              </Routes>
+            </NotificationProvider>
           </AuthProvider>
         </BrowserRouter>
       </QueryClientProvider>
