@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -149,7 +148,9 @@ export const useAuditDetails = (auditId?: string): UseAuditDetailsReturn => {
       const statusUpdates: AuditStatusUpdate[] = statusUpdatesData.map(update => ({
         ...update,
         status_type: update.status_type as AuditStatusUpdate['status_type'],
-        metadata: update.metadata || {}
+        metadata: typeof update.metadata === 'object' && update.metadata !== null && !Array.isArray(update.metadata) 
+          ? update.metadata as Record<string, unknown>
+          : {}
       }));
 
       // Calculate findings count
