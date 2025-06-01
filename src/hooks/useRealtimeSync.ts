@@ -44,9 +44,13 @@ export const useRealtimeSync = (options?: UseRealtimeSyncOptions) => {
         console.log('User left:', key, leftPresences);
       })
       .on('broadcast', { event: 'notification' }, (payload) => {
+        // Ensure the type is valid, default to 'info' if not
+        const validTypes: Array<'info' | 'success' | 'warning' | 'error'> = ['info', 'success', 'warning', 'error'];
+        const notificationType = validTypes.includes(payload.type) ? payload.type : 'info';
+        
         const notification: RealtimeNotification = {
           id: crypto.randomUUID(),
-          type: payload.type || 'info',
+          type: notificationType,
           message: payload.message || 'New notification',
           timestamp: new Date(),
         };
