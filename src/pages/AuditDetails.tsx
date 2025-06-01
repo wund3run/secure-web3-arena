@@ -32,7 +32,10 @@ const AuditDetails = () => {
 
   if (isLoading) {
     return (
-      <StandardLayout title="Loading Audit Details">
+      <StandardLayout 
+        title="Loading Audit Details" 
+        description="Loading detailed information about your security audit"
+      >
         <LoadingState message="Loading audit details..." />
       </StandardLayout>
     );
@@ -40,7 +43,10 @@ const AuditDetails = () => {
 
   if (!auditData) {
     return (
-      <StandardLayout title="Audit Not Found">
+      <StandardLayout 
+        title="Audit Not Found" 
+        description="The requested audit could not be found"
+      >
         <div className="container py-12 text-center">
           <h1 className="text-2xl font-bold">Audit Not Found</h1>
           <p className="text-muted-foreground">The requested audit could not be found.</p>
@@ -58,7 +64,10 @@ const AuditDetails = () => {
   };
 
   return (
-    <StandardLayout title={auditData.name}>
+    <StandardLayout 
+      title={auditData.name} 
+      description={`Security audit details for ${auditData.name} - Track progress, view vulnerabilities, and collaborate with your audit team`}
+    >
       <div className="container py-8">
         {/* Header */}
         <div className="mb-8">
