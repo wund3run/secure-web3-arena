@@ -1,4 +1,5 @@
 
+import React from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -27,7 +28,7 @@ const Docs = React.lazy(() => import("./pages/Docs"));
 const SecurityInsights = React.lazy(() => import("./pages/SecurityInsights"));
 const Vulnerabilities = React.lazy(() => import("./pages/Vulnerabilities"));
 const Templates = React.lazy(() => import("./pages/Templates"));
-const AITools = React.lazy(() => import("./pages/AITools"));
+const AITools = React.lazy(() => import("./pages/AiTools"));
 const PlatformReport = React.lazy(() => import("./pages/PlatformReport"));
 const Forum = React.lazy(() => import("./pages/Forum"));
 const Events = React.lazy(() => import("./pages/Events"));
@@ -39,7 +40,7 @@ const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const SubmitService = React.lazy(() => import("./pages/SubmitService"));
 const Calendar = React.lazy(() => import("./pages/Calendar"));
 const ContactProvider = React.lazy(() => import("./pages/ContactProvider"));
-const Admin = React.lazy(() => import("./pages/Admin"));
+const AdminDashboard = React.lazy(() => import("./pages/AdminDashboard"));
 const Contact = React.lazy(() => import("./pages/Contact"));
 const Support = React.lazy(() => import("./pages/Support"));
 const Terms = React.lazy(() => import("./pages/Terms"));
@@ -119,7 +120,7 @@ function App() {
                       <Route path="/submit-service" element={<SubmitService />} />
                       <Route path="/calendar" element={<Calendar />} />
                       <Route path="/contact-provider/:id" element={<ContactProvider />} />
-                      <Route path="/admin/*" element={<Admin />} />
+                      <Route path="/admin/*" element={<AdminDashboard />} />
                       <Route path="/contact" element={<Contact />} />
                       <Route path="/support" element={<Support />} />
                       <Route path="/terms" element={<Terms />} />
