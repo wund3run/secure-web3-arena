@@ -53,4 +53,5 @@ export interface AuditRequest {
   ai_matching_completed?: boolean;
   escrow_contract_id?: string;
   priority_score?: number;
+  urgency_level?: string;
 }
