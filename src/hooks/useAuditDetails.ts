@@ -110,34 +110,51 @@ export const useAuditDetails = (auditId?: string) => {
         auditorProfile = auditor;
       }
 
-      // Fetch findings
-      const { data: findings } = await supabase
+      // Fetch findings with proper type casting
+      const { data: findingsData } = await supabase
         .from('audit_findings')
         .select('*')
         .eq('audit_request_id', auditId)
         .order('created_at', { ascending: false });
 
-      // Fetch deliverables
-      const { data: deliverables } = await supabase
+      // Fetch deliverables with proper type casting
+      const { data: deliverablesData } = await supabase
         .from('audit_deliverables')
         .select('*')
         .eq('audit_request_id', auditId)
         .order('created_at', { ascending: false });
 
-      // Fetch status updates
-      const { data: statusUpdates } = await supabase
+      // Fetch status updates with proper type casting
+      const { data: statusUpdatesData } = await supabase
         .from('audit_status_updates')
         .select('*')
         .eq('audit_request_id', auditId)
         .order('created_at', { ascending: false });
 
+      // Cast the data to proper types
+      const findings: AuditFinding[] = (findingsData || []).map(finding => ({
+        ...finding,
+        severity: finding.severity as AuditFinding['severity'],
+        status: finding.status as AuditFinding['status']
+      }));
+
+      const deliverables: AuditDeliverable[] = (deliverablesData || []).map(deliverable => ({
+        ...deliverable,
+        status: deliverable.status as AuditDeliverable['status']
+      }));
+
+      const statusUpdates: AuditStatusUpdate[] = (statusUpdatesData || []).map(update => ({
+        ...update,
+        status_type: update.status_type as AuditStatusUpdate['status_type']
+      }));
+
       // Calculate findings count
       const findingsCount = {
-        critical: findings?.filter(f => f.severity === 'critical').length || 0,
-        high: findings?.filter(f => f.severity === 'high').length || 0,
-        medium: findings?.filter(f => f.severity === 'medium').length || 0,
-        low: findings?.filter(f => f.severity === 'low').length || 0,
-        info: findings?.filter(f => f.severity === 'info').length || 0,
+        critical: findings.filter(f => f.severity === 'critical').length,
+        high: findings.filter(f => f.severity === 'high').length,
+        medium: findings.filter(f => f.severity === 'medium').length,
+        low: findings.filter(f => f.severity === 'low').length,
+        info: findings.filter(f => f.severity === 'info').length,
       };
 
       // Build enhanced audit data
@@ -147,9 +164,9 @@ export const useAuditDetails = (auditId?: string) => {
         completion_percentage: audit.completion_percentage || 0,
         security_score: audit.security_score || 0,
         findings_count: findingsCount,
-        findings: findings || [],
-        deliverables: deliverables || [],
-        status_updates: statusUpdates || [],
+        findings,
+        deliverables,
+        status_updates: statusUpdates,
         client: {
           id: audit.client_id,
           full_name: clientProfile?.full_name || 'Unknown Client',
@@ -208,7 +225,10 @@ export const useAuditDetails = (auditId?: string) => {
       // Update local state
       if (auditData) {
         const updatedFindings = auditData.findings.map(finding =>
-          finding.id === findingId ? { ...finding, status: status as any } : finding
+          finding.id === findingId ? { 
+            ...finding, 
+            status: status as AuditFinding['status'] 
+          } : finding
         );
         setAuditData({
           ...auditData,
@@ -237,16 +257,23 @@ export const useAuditDetails = (auditId?: string) => {
 
       if (error) throw error;
 
+      // Cast the returned data to proper type
+      const newFinding: AuditFinding = {
+        ...data,
+        severity: data.severity as AuditFinding['severity'],
+        status: data.status as AuditFinding['status']
+      };
+
       // Update local state
       if (auditData) {
         setAuditData({
           ...auditData,
-          findings: [data, ...auditData.findings]
+          findings: [newFinding, ...auditData.findings]
         });
       }
 
       toast.success('Finding added successfully');
-      return data;
+      return newFinding;
     } catch (error: any) {
       console.error('Error adding finding:', error);
       toast.error('Failed to add finding');
