@@ -309,6 +309,74 @@ export type Database = {
           },
         ]
       }
+      audit_milestones: {
+        Row: {
+          actual_time_hours: number | null
+          approval_required: boolean | null
+          approved_at: string | null
+          approved_by: string | null
+          audit_request_id: string
+          completed_at: string | null
+          completed_by: string | null
+          created_at: string
+          deliverables: Json | null
+          description: string | null
+          due_date: string | null
+          id: string
+          order_index: number
+          status: string
+          time_estimate_hours: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          actual_time_hours?: number | null
+          approval_required?: boolean | null
+          approved_at?: string | null
+          approved_by?: string | null
+          audit_request_id: string
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          deliverables?: Json | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          order_index: number
+          status?: string
+          time_estimate_hours?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          actual_time_hours?: number | null
+          approval_required?: boolean | null
+          approved_at?: string | null
+          approved_by?: string | null
+          audit_request_id?: string
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          deliverables?: Json | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          order_index?: number
+          status?: string
+          time_estimate_hours?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_milestones_audit_request_id_fkey"
+            columns: ["audit_request_id"]
+            isOneToOne: false
+            referencedRelation: "audit_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_progress: {
         Row: {
           actual_start_date: string | null
@@ -321,7 +389,10 @@ export type Database = {
           id: string
           milestones_completed: number | null
           notes: string | null
+          phase_details: Json | null
           progress_percentage: number | null
+          quality_metrics: Json | null
+          time_tracking: Json | null
           total_milestones: number | null
           updated_at: string | null
         }
@@ -336,7 +407,10 @@ export type Database = {
           id?: string
           milestones_completed?: number | null
           notes?: string | null
+          phase_details?: Json | null
           progress_percentage?: number | null
+          quality_metrics?: Json | null
+          time_tracking?: Json | null
           total_milestones?: number | null
           updated_at?: string | null
         }
@@ -351,7 +425,10 @@ export type Database = {
           id?: string
           milestones_completed?: number | null
           notes?: string | null
+          phase_details?: Json | null
           progress_percentage?: number | null
+          quality_metrics?: Json | null
+          time_tracking?: Json | null
           total_milestones?: number | null
           updated_at?: string | null
         }
@@ -422,6 +499,68 @@ export type Database = {
             columns: ["auditor_id"]
             isOneToOne: false
             referencedRelation: "auditor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_reports: {
+        Row: {
+          approved_by: string | null
+          audit_request_id: string
+          content: Json
+          created_at: string
+          file_url: string | null
+          generated_by: string
+          id: string
+          published_at: string | null
+          report_type: string
+          reviewed_by: string | null
+          status: string
+          template_used: string | null
+          title: string
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          approved_by?: string | null
+          audit_request_id: string
+          content?: Json
+          created_at?: string
+          file_url?: string | null
+          generated_by: string
+          id?: string
+          published_at?: string | null
+          report_type: string
+          reviewed_by?: string | null
+          status?: string
+          template_used?: string | null
+          title: string
+          updated_at?: string
+          version?: string
+        }
+        Update: {
+          approved_by?: string | null
+          audit_request_id?: string
+          content?: Json
+          created_at?: string
+          file_url?: string | null
+          generated_by?: string
+          id?: string
+          published_at?: string | null
+          report_type?: string
+          reviewed_by?: string | null
+          status?: string
+          template_used?: string | null
+          title?: string
+          updated_at?: string
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_reports_audit_request_id_fkey"
+            columns: ["audit_request_id"]
+            isOneToOne: false
+            referencedRelation: "audit_requests"
             referencedColumns: ["id"]
           },
         ]
@@ -571,6 +710,63 @@ export type Database = {
             columns: ["audit_request_id"]
             isOneToOne: false
             referencedRelation: "audit_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_time_tracking: {
+        Row: {
+          activity_type: string
+          audit_request_id: string
+          auditor_id: string
+          billable: boolean | null
+          created_at: string
+          description: string | null
+          duration_minutes: number | null
+          end_time: string | null
+          id: string
+          milestone_id: string | null
+          start_time: string
+        }
+        Insert: {
+          activity_type: string
+          audit_request_id: string
+          auditor_id: string
+          billable?: boolean | null
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          end_time?: string | null
+          id?: string
+          milestone_id?: string | null
+          start_time: string
+        }
+        Update: {
+          activity_type?: string
+          audit_request_id?: string
+          auditor_id?: string
+          billable?: boolean | null
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          end_time?: string | null
+          id?: string
+          milestone_id?: string | null
+          start_time?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_time_tracking_audit_request_id_fkey"
+            columns: ["audit_request_id"]
+            isOneToOne: false
+            referencedRelation: "audit_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_time_tracking_milestone_id_fkey"
+            columns: ["milestone_id"]
+            isOneToOne: false
+            referencedRelation: "audit_milestones"
             referencedColumns: ["id"]
           },
         ]

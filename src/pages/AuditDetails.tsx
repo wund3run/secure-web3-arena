@@ -9,6 +9,9 @@ import { VulnerabilityTracker } from '@/components/audit-details/VulnerabilityTr
 import { ActivityTimeline } from '@/components/audit-details/ActivityTimeline';
 import { CollaborationPanel } from '@/components/audit-details/CollaborationPanel';
 import LoadingState from '@/components/ui/loading-state';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { MessageSquare, Clock, BarChart3, Shield } from 'lucide-react';
 
 const AuditDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,7 +21,10 @@ const AuditDetails = () => {
     activeTab, 
     setActiveTab, 
     handleSendMessage,
-    updateFindingStatus 
+    updateFindingStatus,
+    milestones,
+    reports,
+    timeTracking
   } = useAuditDetails(id);
 
   if (isLoading) {
@@ -79,33 +85,97 @@ const AuditDetails = () => {
     }
   ];
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return 'default';
+      case 'in_progress':
+        return 'secondary';
+      case 'review':
+        return 'outline';
+      default:
+        return 'outline';
+    }
+  };
+
   return (
     <StandardLayout 
       title={auditData.project_name} 
       description={`Security audit details for ${auditData.project_name} - Track progress, view vulnerabilities, and collaborate with your audit team`}
     >
       <div className="container py-8">
-        {/* Header */}
+        {/* Enhanced Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold">{auditData.project_name}</h1>
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-3xl font-bold">{auditData.project_name}</h1>
+                <Badge variant={getStatusColor(auditData.status || 'pending')}>
+                  {auditData.status?.replace('_', ' ') || 'Pending'}
+                </Badge>
+              </div>
               <p className="text-muted-foreground">{auditData.project_description}</p>
+              
+              {/* Enhanced Progress Indicators */}
+              <div className="flex items-center gap-6 mt-4">
+                <div className="flex items-center gap-2">
+                  <BarChart3 className="h-4 w-4 text-primary" />
+                  <span className="text-sm">
+                    <span className="font-medium">{auditData.completion_percentage}%</span> Complete
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-green-500" />
+                  <span className="text-sm">
+                    Security Score: <span className="font-medium">{auditData.security_score}</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-blue-500" />
+                  <span className="text-sm">
+                    Phase: <span className="font-medium">{auditData.current_phase.replace('_', ' ')}</span>
+                  </span>
+                </div>
+                {timeTracking.activeEntry && (
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                    <span className="text-sm font-medium text-green-600">Timer Active</span>
+                  </div>
+                )}
+              </div>
             </div>
+            
             <div className="text-right">
               <div className="text-2xl font-bold text-primary">{auditData.completion_percentage}%</div>
               <div className="text-sm text-muted-foreground">Complete</div>
+              {milestones.milestones.length > 0 && (
+                <div className="text-sm text-muted-foreground mt-1">
+                  {milestones.milestones.filter(m => m.status === 'completed').length} / {milestones.milestones.length} milestones
+                </div>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Main Content Tabs */}
+        {/* Enhanced Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">Progress</TabsTrigger>
-            <TabsTrigger value="vulnerabilities">Vulnerabilities</TabsTrigger>
-            <TabsTrigger value="activity">Activity</TabsTrigger>
-            <TabsTrigger value="collaboration">Collaborate</TabsTrigger>
+            <TabsTrigger value="overview" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Progress
+            </TabsTrigger>
+            <TabsTrigger value="vulnerabilities" className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              Vulnerabilities
+            </TabsTrigger>
+            <TabsTrigger value="activity" className="flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              Activity
+            </TabsTrigger>
+            <TabsTrigger value="collaboration" className="flex items-center gap-2">
+              <MessageSquare className="h-4 w-4" />
+              Collaborate
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="mt-6">

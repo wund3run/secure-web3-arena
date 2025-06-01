@@ -3,8 +3,13 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Clock, AlertTriangle, FileText } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CheckCircle, Clock, AlertTriangle, FileText, Timer, BarChart } from 'lucide-react';
+import { MilestoneManager } from '@/components/audit-progress/MilestoneManager';
+import { TimeTracker } from '@/components/audit-progress/TimeTracker';
+import { ReportGenerator } from '@/components/audit-progress/ReportGenerator';
 import type { EnhancedAuditData } from '@/hooks/useAuditDetails';
+import { useAuth } from '@/contexts/auth';
 
 interface AuditProgressTrackerProps {
   auditData: EnhancedAuditData;
@@ -19,7 +24,9 @@ const phaseSteps = [
 ];
 
 export const AuditProgressTracker: React.FC<AuditProgressTrackerProps> = ({ auditData }) => {
+  const { user } = useAuth();
   const currentPhaseIndex = phaseSteps.findIndex(step => step.phase === auditData.current_phase);
+  const isAuditor = user?.id === auditData.assigned_auditor_id;
   
   const getPhaseStatus = (index: number) => {
     if (index < currentPhaseIndex) return 'completed';
@@ -37,7 +44,7 @@ export const AuditProgressTracker: React.FC<AuditProgressTrackerProps> = ({ audi
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Clock className="h-5 w-5" />
+            <BarChart className="h-5 w-5" />
             Overall Progress
           </CardTitle>
         </CardHeader>
@@ -49,7 +56,7 @@ export const AuditProgressTracker: React.FC<AuditProgressTrackerProps> = ({ audi
             </div>
             <Progress value={auditData.completion_percentage} className="w-full" />
             
-            <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="grid grid-cols-3 gap-4 mt-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">{auditData.security_score}</div>
                 <div className="text-sm text-muted-foreground">Security Score</div>
@@ -57,6 +64,10 @@ export const AuditProgressTracker: React.FC<AuditProgressTrackerProps> = ({ audi
               <div className="text-center">
                 <div className="text-2xl font-bold">{completedDeliverables}/{totalDeliverables}</div>
                 <div className="text-sm text-muted-foreground">Deliverables</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold">{auditData.findings?.length || 0}</div>
+                <div className="text-sm text-muted-foreground">Findings</div>
               </div>
             </div>
           </div>
@@ -108,11 +119,41 @@ export const AuditProgressTracker: React.FC<AuditProgressTrackerProps> = ({ audi
         </CardContent>
       </Card>
 
-      {/* Deliverables Progress */}
+      {/* Enhanced Progress Management */}
+      <Tabs defaultValue="milestones" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="milestones" className="flex items-center gap-2">
+            <CheckCircle className="h-4 w-4" />
+            Milestones
+          </TabsTrigger>
+          <TabsTrigger value="time" className="flex items-center gap-2">
+            <Timer className="h-4 w-4" />
+            Time Tracking
+          </TabsTrigger>
+          <TabsTrigger value="reports" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            Reports
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="milestones" className="mt-6">
+          <MilestoneManager auditRequestId={auditData.id} isAuditor={isAuditor} />
+        </TabsContent>
+
+        <TabsContent value="time" className="mt-6">
+          <TimeTracker auditRequestId={auditData.id} isAuditor={isAuditor} />
+        </TabsContent>
+
+        <TabsContent value="reports" className="mt-6">
+          <ReportGenerator auditRequestId={auditData.id} isAuditor={isAuditor} />
+        </TabsContent>
+      </Tabs>
+
+      {/* Legacy Deliverables Progress */}
       {auditData.deliverables.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Deliverables</CardTitle>
+            <CardTitle>Legacy Deliverables</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
