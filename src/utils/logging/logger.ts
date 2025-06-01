@@ -155,6 +155,14 @@ export const performanceLogger = {
       value,
       ...metadata
     }, 'performance');
+  },
+
+  databaseQuery: (queryName: string, duration: number, metadata?: Record<string, any>) => {
+    Logger.debug('Database query performance', {
+      queryName,
+      duration,
+      ...metadata
+    }, 'database');
   }
 };
 

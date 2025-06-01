@@ -1,5 +1,5 @@
 
-interface PerformanceMetric {
+export interface PerformanceMetric {
   name: string;
   value: number;
   rating: 'good' | 'needs-improvement' | 'poor';
