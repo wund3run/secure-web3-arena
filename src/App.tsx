@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { HelmetProvider } from "react-helmet-async";
+import { AuthProvider } from "@/contexts/auth";
 
 // Lazy load pages
 const Index = React.lazy(() => import("@/pages/Index"));
@@ -57,35 +58,37 @@ function App() {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="light" storageKey="hawkly-ui-theme">
-          <Router>
-            <div className="min-h-screen bg-background font-sans antialiased">
-              <Suspense fallback={<AppLoadingFallback />}>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/marketplace" element={<Marketplace />} />
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="/request-audit" element={<RequestAudit />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/audit/:id" element={<AuditDetails />} />
-                  <Route path="/audits" element={<Audits />} />
-                  <Route path="/settings" element={<Settings />} />
-                </Routes>
-              </Suspense>
-              
-              <Toaster 
-                position="top-right"
-                toastOptions={{
-                  duration: 4000,
-                  style: {
-                    background: 'hsl(var(--background))',
-                    color: 'hsl(var(--foreground))',
-                    border: '1px solid hsl(var(--border))',
-                  },
-                }}
-              />
-            </div>
-          </Router>
+          <AuthProvider>
+            <Router>
+              <div className="min-h-screen bg-background font-sans antialiased">
+                <Suspense fallback={<AppLoadingFallback />}>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/marketplace" element={<Marketplace />} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/request-audit" element={<RequestAudit />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/audit/:id" element={<AuditDetails />} />
+                    <Route path="/audits" element={<Audits />} />
+                    <Route path="/settings" element={<Settings />} />
+                  </Routes>
+                </Suspense>
+                
+                <Toaster 
+                  position="top-right"
+                  toastOptions={{
+                    duration: 4000,
+                    style: {
+                      background: 'hsl(var(--background))',
+                      color: 'hsl(var(--foreground))',
+                      border: '1px solid hsl(var(--border))',
+                    },
+                  }}
+                />
+              </div>
+            </Router>
+          </AuthProvider>
         </ThemeProvider>
       </QueryClientProvider>
     </HelmetProvider>
