@@ -1,165 +1,87 @@
 
 import React from 'react';
-import { ContentPage } from '@/components/content/content-page';
+import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Lock, AlertTriangle, CheckCircle, ArrowRight, BookOpen, Target, Zap } from 'lucide-react';
+import { Shield, AlertTriangle, CheckCircle, ArrowRight, Lock, Zap, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const Web3Security = () => {
-  const securityThreats = [
+export default function Web3Security() {
+  const securityServices = [
     {
-      title: "Reentrancy Attacks",
-      severity: "Critical",
-      description: "Malicious contracts recursively call vulnerable functions before state updates",
-      impact: "$60M+ lost in DAO hack",
-      prevention: "Use checks-effects-interactions pattern"
+      title: "Smart Contract Audits",
+      description: "Comprehensive code review and vulnerability assessment",
+      icon: <Shield className="h-6 w-6" />,
+      features: ["Static Analysis", "Manual Review", "Gas Optimization", "Security Report"]
     },
     {
-      title: "Flash Loan Exploits", 
-      severity: "High",
-      description: "Attackers manipulate market prices using uncollateralized loans",
-      impact: "$320M+ stolen in 2022",
-      prevention: "Implement time-weighted average prices"
+      title: "Penetration Testing",
+      description: "Simulated attacks to identify potential security weaknesses",
+      icon: <Lock className="h-6 w-6" />,
+      features: ["Network Testing", "API Security", "Frontend Analysis", "Attack Simulation"]
     },
     {
-      title: "Oracle Manipulation",
-      severity: "High", 
-      description: "Price feed manipulation leading to incorrect valuations",
-      impact: "$200M+ in DeFi losses",
-      prevention: "Use multiple oracle sources and validation"
-    },
-    {
-      title: "Access Control Bugs",
-      severity: "Medium",
-      description: "Improper permission checks allowing unauthorized actions",
-      impact: "Complete protocol takeover",
-      prevention: "Role-based access control with multi-sig"
+      title: "Continuous Monitoring",
+      description: "24/7 surveillance of your deployed smart contracts",
+      icon: <Zap className="h-6 w-6" />,
+      features: ["Real-time Alerts", "Threat Detection", "Performance Monitoring", "Incident Response"]
     }
   ];
 
-  const securityLayers = [
-    {
-      icon: <Shield className="h-8 w-8 text-blue-600" />,
-      title: "Smart Contract Audits",
-      description: "Comprehensive code review and vulnerability assessment",
-      features: ["Static analysis", "Dynamic testing", "Formal verification"]
-    },
-    {
-      icon: <Lock className="h-8 w-8 text-green-600" />,
-      title: "Access Control Systems", 
-      description: "Multi-signature wallets and role-based permissions",
-      features: ["Multi-sig implementation", "Time locks", "Governance controls"]
-    },
-    {
-      icon: <Target className="h-8 w-8 text-purple-600" />,
-      title: "Monitoring & Detection",
-      description: "Real-time threat detection and incident response",
-      features: ["Anomaly detection", "Alert systems", "Automated responses"]
-    },
-    {
-      icon: <Zap className="h-8 w-8 text-orange-600" />,
-      title: "Emergency Protocols",
-      description: "Circuit breakers and emergency pause mechanisms",
-      features: ["Pause functions", "Upgrade mechanisms", "Recovery procedures"]
-    }
+  const commonVulnerabilities = [
+    { name: "Reentrancy Attacks", severity: "Critical", count: "23%" },
+    { name: "Integer Overflow/Underflow", severity: "High", count: "18%" },
+    { name: "Access Control Issues", severity: "High", count: "15%" },
+    { name: "Front-running", severity: "Medium", count: "12%" },
+    { name: "Timestamp Dependence", severity: "Medium", count: "8%" }
   ];
 
   return (
-    <ContentPage
-      title="Web3 Security Guide"
-      description="Comprehensive guide to blockchain and smart contract security threats, vulnerabilities, and best practices for Web3 developers and projects."
+    <StandardLayout 
+      title="Web3 Security Services" 
+      description="Comprehensive blockchain security solutions for DeFi, NFTs, and Web3 applications"
     >
-      <div className="space-y-12">
+      <div className="container py-12">
         {/* Hero Section */}
-        <div className="text-center space-y-6">
-          <div className="inline-flex items-center gap-2 bg-red-50 text-red-700 px-4 py-2 rounded-full text-sm font-medium">
-            <AlertTriangle className="h-4 w-4" />
-            $3.8B stolen from DeFi protocols in 2022
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Web3 Security Fundamentals
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Protect your blockchain projects from the most common and devastating security vulnerabilities. 
-            Learn from real-world exploits and implement battle-tested security practices.
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold mb-4">Secure Your Web3 Future</h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            Protect your blockchain projects with comprehensive security audits, penetration testing, 
+            and continuous monitoring from certified Web3 security experts.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" asChild>
+            <Button asChild size="lg">
               <Link to="/request-audit">
                 <Shield className="mr-2 h-5 w-5" />
-                Get Security Audit
+                Request Security Audit
               </Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
-              <Link to="/guides">
-                <BookOpen className="mr-2 h-5 w-5" />
-                Security Guides
+              <Link to="/marketplace">
+                Browse Security Experts
               </Link>
             </Button>
           </div>
         </div>
 
-        {/* Security Threats Section */}
-        <section className="space-y-6">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold mb-4">Common Web3 Security Threats</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Understanding these vulnerabilities is the first step to building secure decentralized applications.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 gap-6">
-            {securityThreats.map((threat, index) => (
+        {/* Security Services */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-center mb-8">Our Security Services</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {securityServices.map((service, index) => (
               <Card key={index} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{threat.title}</CardTitle>
-                    <Badge variant={threat.severity === 'Critical' ? 'destructive' : threat.severity === 'High' ? 'default' : 'secondary'}>
-                      {threat.severity}
-                    </Badge>
-                  </div>
-                  <CardDescription>{threat.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-red-600">
-                    <AlertTriangle className="h-4 w-4" />
-                    <span className="font-medium">Impact: {threat.impact}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-green-600">
-                    <CheckCircle className="h-4 w-4" />
-                    <span>{threat.prevention}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        {/* Security Layers Section */}
-        <section className="space-y-6">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold mb-4">Defense in Depth Strategy</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Implement multiple layers of security to protect your Web3 applications from sophisticated attacks.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {securityLayers.map((layer, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex justify-center mb-2">
-                    {layer.icon}
-                  </div>
-                  <CardTitle className="text-lg">{layer.title}</CardTitle>
-                  <CardDescription>{layer.description}</CardDescription>
+                  <div className="text-primary mb-4">{service.icon}</div>
+                  <CardTitle>{service.title}</CardTitle>
+                  <CardDescription>{service.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <ul className="text-sm space-y-1">
-                    {layer.features.map((feature, idx) => (
+                  <ul className="space-y-2">
+                    {service.features.map((feature, idx) => (
                       <li key={idx} className="flex items-center gap-2">
-                        <CheckCircle className="h-3 w-3 text-green-500" />
-                        {feature}
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <span className="text-sm">{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -167,31 +89,69 @@ const Web3Security = () => {
               </Card>
             ))}
           </div>
-        </section>
+        </div>
+
+        {/* Common Vulnerabilities */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-center mb-8">Common Web3 Vulnerabilities</h2>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5 text-orange-500" />
+                Most Frequently Found Security Issues
+              </CardTitle>
+              <CardDescription>
+                Based on analysis of 2,500+ smart contract audits conducted through our platform
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {commonVulnerabilities.map((vuln, index) => (
+                  <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <Badge variant={vuln.severity === 'Critical' ? 'destructive' : vuln.severity === 'High' ? 'secondary' : 'outline'}>
+                        {vuln.severity}
+                      </Badge>
+                      <span className="font-medium">{vuln.name}</span>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Found in {vuln.count} of audits
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* CTA Section */}
-        <section className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">Ready to Secure Your Web3 Project?</h2>
+        <div className="text-center bg-muted/50 rounded-lg p-8">
+          <h2 className="text-2xl font-bold mb-4">Ready to Secure Your Project?</h2>
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Connect with verified security experts on Hawkly to protect your smart contracts and DApps from vulnerabilities.
+            Join 1,200+ Web3 projects that have protected over $350M in digital assets through our security marketplace.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" asChild>
-              <Link to="/marketplace">
-                Find Security Experts
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button variant="outline" size="lg" asChild>
-              <Link to="/ai-tools">
-                Try AI Security Tools
-              </Link>
-            </Button>
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-primary" />
+              <span className="text-sm">500+ Security Experts</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Shield className="h-5 w-5 text-primary" />
+              <span className="text-sm">15+ Blockchain Networks</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-5 w-5 text-primary" />
+              <span className="text-sm">99.8% Client Satisfaction</span>
+            </div>
           </div>
-        </section>
+          <Button asChild size="lg">
+            <Link to="/request-audit">
+              Start Your Security Assessment
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
+          </Button>
+        </div>
       </div>
-    </ContentPage>
+    </StandardLayout>
   );
-};
-
-export default Web3Security;
+}

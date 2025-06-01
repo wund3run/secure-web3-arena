@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -33,6 +34,8 @@ import About from '@/pages/About';
 import Careers from '@/pages/Careers';
 import Pricing from '@/pages/Pricing';
 import FAQ from '@/pages/FAQ';
+import Web3Security from '@/pages/Web3Security';
+import AuditGuidelines from '@/pages/AuditGuidelines';
 import { RoleBasedRoute } from '@/components/auth/RoleBasedRoute';
 import { UserProfileDetector } from '@/components/user-profiling/UserProfileDetector';
 import SecurityAudits from './pages/SecurityAudits';
