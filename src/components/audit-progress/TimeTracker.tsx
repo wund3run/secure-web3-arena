@@ -20,7 +20,7 @@ interface TimeTrackerProps {
 
 export const TimeTracker: React.FC<TimeTrackerProps> = ({ auditRequestId, isAuditor }) => {
   const { timeEntries, activeEntry, loading, startTimer, stopTimer, getTotalTime, getBillableTime } = useTimeTracking(auditRequestId);
-  const { milestones } = useAuditMilestones(auditRequestId);
+  const milestonesData = useAuditMilestones(auditRequestId);
   const [isStartDialogOpen, setIsStartDialogOpen] = useState(false);
   const [timerConfig, setTimerConfig] = useState({
     activity_type: '',
@@ -134,7 +134,7 @@ export const TimeTracker: React.FC<TimeTrackerProps> = ({ auditRequestId, isAudi
                               <SelectValue placeholder="Select milestone" />
                             </SelectTrigger>
                             <SelectContent>
-                              {milestones.milestones.map(milestone => (
+                              {milestonesData.milestones.map(milestone => (
                                 <SelectItem key={milestone.id} value={milestone.id}>
                                   {milestone.title}
                                 </SelectItem>

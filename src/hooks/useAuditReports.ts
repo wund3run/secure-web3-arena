@@ -39,7 +39,27 @@ export const useAuditReports = (auditRequestId: string) => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setReports(data || []);
+      
+      // Type the data properly by ensuring the types match our interface
+      const typedReports: AuditReport[] = (data || []).map(item => ({
+        id: item.id,
+        audit_request_id: item.audit_request_id,
+        report_type: item.report_type as AuditReport['report_type'],
+        title: item.title,
+        version: item.version,
+        status: item.status as AuditReport['status'],
+        content: item.content,
+        file_url: item.file_url,
+        template_used: item.template_used,
+        generated_by: item.generated_by,
+        reviewed_by: item.reviewed_by,
+        approved_by: item.approved_by,
+        published_at: item.published_at,
+        created_at: item.created_at,
+        updated_at: item.updated_at,
+      }));
+      
+      setReports(typedReports);
     } catch (err: any) {
       console.error('Failed to fetch reports:', err);
     } finally {
@@ -55,7 +75,6 @@ export const useAuditReports = (auditRequestId: string) => {
         .from('audit_reports')
         .insert({
           ...report,
-          audit_request_id: auditRequestId,
           generated_by: user.id,
         })
         .select()
@@ -70,7 +89,7 @@ export const useAuditReports = (auditRequestId: string) => {
       toast.error('Failed to create report');
       throw err;
     }
-  }, [user, auditRequestId, fetchReports]);
+  }, [user, fetchReports]);
 
   const updateReport = useCallback(async (reportId: string, updates: Partial<AuditReport>) => {
     if (!user) return;

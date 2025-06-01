@@ -42,7 +42,29 @@ export const useAuditMilestones = (auditRequestId: string) => {
         .order('order_index', { ascending: true });
 
       if (error) throw error;
-      setMilestones(data || []);
+      
+      // Type the data properly by ensuring the types match our interface
+      const typedMilestones: AuditMilestone[] = (data || []).map(item => ({
+        id: item.id,
+        audit_request_id: item.audit_request_id,
+        title: item.title,
+        description: item.description,
+        order_index: item.order_index,
+        status: item.status as AuditMilestone['status'],
+        due_date: item.due_date,
+        completed_at: item.completed_at,
+        completed_by: item.completed_by,
+        approval_required: item.approval_required,
+        approved_by: item.approved_by,
+        approved_at: item.approved_at,
+        deliverables: Array.isArray(item.deliverables) ? item.deliverables : [],
+        time_estimate_hours: item.time_estimate_hours,
+        actual_time_hours: item.actual_time_hours,
+        created_at: item.created_at,
+        updated_at: item.updated_at,
+      }));
+      
+      setMilestones(typedMilestones);
     } catch (err: any) {
       setError(err.message);
       console.error('Failed to fetch milestones:', err);
@@ -57,10 +79,7 @@ export const useAuditMilestones = (auditRequestId: string) => {
     try {
       const { data, error } = await supabase
         .from('audit_milestones')
-        .insert({
-          ...milestone,
-          audit_request_id: auditRequestId,
-        })
+        .insert(milestone)
         .select()
         .single();
 
@@ -73,7 +92,7 @@ export const useAuditMilestones = (auditRequestId: string) => {
       toast.error('Failed to create milestone');
       throw err;
     }
-  }, [user, auditRequestId, fetchMilestones]);
+  }, [user, fetchMilestones]);
 
   const updateMilestone = useCallback(async (milestoneId: string, updates: Partial<AuditMilestone>) => {
     if (!user) return;

@@ -7,6 +7,17 @@ import { useAuditMilestones } from './useAuditMilestones';
 import { useAuditReports } from './useAuditReports';
 import { useTimeTracking } from './useTimeTracking';
 
+export interface AuditStatusUpdate {
+  id: string;
+  audit_request_id: string;
+  status_type: string;
+  title: string;
+  message?: string;
+  metadata?: any;
+  user_id: string;
+  created_at: string;
+}
+
 export interface EnhancedAuditData {
   id: string;
   client_id: string;
@@ -44,7 +55,13 @@ export interface EnhancedAuditData {
   };
   findings: any[];
   deliverables: any[];
-  status_updates: any[];
+  status_updates: AuditStatusUpdate[];
+  findings_count: {
+    critical: number;
+    high: number;
+    medium: number;
+    low: number;
+  };
 }
 
 export const useAuditDetails = (auditId?: string) => {
@@ -116,11 +133,32 @@ export const useAuditDetails = (auditId?: string) => {
 
         if (statusError) throw statusError;
 
+        // Calculate findings count by severity
+        const findingsCount = {
+          critical: findings?.filter(f => f.severity === 'critical').length || 0,
+          high: findings?.filter(f => f.severity === 'high').length || 0,
+          medium: findings?.filter(f => f.severity === 'medium').length || 0,
+          low: findings?.filter(f => f.severity === 'low').length || 0,
+        };
+
+        // Ensure client data has proper structure
+        const clientData = audit.client && typeof audit.client === 'object' && 'id' in audit.client 
+          ? audit.client as { id: string; full_name?: string; avatar_url?: string; }
+          : { id: audit.client_id, full_name: undefined, avatar_url: undefined };
+
+        // Ensure auditor data has proper structure
+        const auditorData = audit.auditor && typeof audit.auditor === 'object' && 'id' in audit.auditor
+          ? audit.auditor as { id: string; full_name?: string; avatar_url?: string; }
+          : audit.assigned_auditor_id ? { id: audit.assigned_auditor_id, full_name: undefined, avatar_url: undefined } : undefined;
+
         setAuditData({
           ...audit,
+          client: clientData,
+          auditor: auditorData,
           findings: findings || [],
           deliverables: deliverables || [],
           status_updates: statusUpdates || [],
+          findings_count: findingsCount,
         });
 
       } catch (error) {

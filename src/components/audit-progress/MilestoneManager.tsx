@@ -68,6 +68,7 @@ export const MilestoneManager: React.FC<MilestoneManagerProps> = ({ auditRequest
 
     try {
       await createMilestone({
+        audit_request_id: auditRequestId,
         title: newMilestone.title,
         description: newMilestone.description,
         order_index: milestones.length + 1,

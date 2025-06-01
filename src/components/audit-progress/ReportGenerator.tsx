@@ -58,6 +58,7 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({ auditRequestId
 
     try {
       await createReport({
+        audit_request_id: auditRequestId,
         report_type: newReport.report_type,
         title: newReport.title,
         version: '1.0',
