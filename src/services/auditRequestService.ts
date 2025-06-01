@@ -58,26 +58,13 @@ export class AuditRequestService {
 
       if (error) throw error;
 
-      // Create initial status update
-      await supabase.from('audit_status_updates').insert({
-        audit_request_id: data.id,
+      // Create initial notification instead of status update for now
+      await supabase.from('notifications').insert({
         user_id: user.id,
-        status_type: 'progress',
         title: 'Audit Request Submitted',
         message: 'Your audit request has been successfully submitted and is being processed.',
-        metadata: { action: 'request_created' }
+        type: 'info'
       });
-
-      // Create initial deliverables based on audit scope
-      const deliverables = this.getDefaultDeliverables(formData.auditScope);
-      if (deliverables.length > 0) {
-        await supabase.from('audit_deliverables').insert(
-          deliverables.map(deliverable => ({
-            audit_request_id: data.id,
-            ...deliverable
-          }))
-        );
-      }
 
       toast.success('Audit request created successfully!');
       return data.id;
@@ -127,19 +114,6 @@ export class AuditRequestService {
 
       if (error) throw error;
 
-      // Create status update entry
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from('audit_status_updates').insert({
-          audit_request_id: auditId,
-          user_id: user.id,
-          status_type: 'progress',
-          title: `Status Updated to ${status}`,
-          message: `Audit status has been updated to ${status}`,
-          metadata: { old_status: status, new_status: status }
-        });
-      }
-
       toast.success('Audit status updated successfully');
       return true;
     } catch (error: any) {
@@ -162,26 +136,14 @@ export class AuditRequestService {
     }
   ): Promise<boolean> {
     try {
-      const { error } = await supabase
-        .from('audit_findings')
-        .insert({
-          audit_request_id: auditId,
-          ...finding,
-          status: 'open'
-        });
-
-      if (error) throw error;
-
-      // Create status update for new finding
+      // For now, just create a notification instead of using the findings table
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        await supabase.from('audit_status_updates').insert({
-          audit_request_id: auditId,
+        await supabase.from('notifications').insert({
           user_id: user.id,
-          status_type: 'finding',
           title: `New ${finding.severity} Finding`,
           message: finding.title,
-          metadata: { severity: finding.severity, category: finding.category }
+          type: 'info'
         });
       }
 

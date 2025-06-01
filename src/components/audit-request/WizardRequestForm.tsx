@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FormProgress from './FormProgress';
@@ -30,6 +29,9 @@ const initialFormData: AuditFormData = {
   specificConcerns: '',
   previousAudits: false,
   previousAuditLinks: '',
+  accountabilityPreference: '',
+  contactName: '',
+  contactEmail: '',
 };
 
 const WizardRequestForm: React.FC = () => {
