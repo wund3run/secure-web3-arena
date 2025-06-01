@@ -1,10 +1,8 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
+import App from "./App";
 import "./index.css";
-
-// Lazy load the main App component to reduce initial bundle size
-const App = React.lazy(() => import("./App"));
 
 // Create root with minimal overhead
 const root = ReactDOM.createRoot(document.getElementById("root")!);
@@ -24,7 +22,7 @@ const AppFallback = () => (
   </div>
 );
 
-// Render with minimal overhead
+// Render with direct import instead of lazy loading
 root.render(
   <React.StrictMode>
     <React.Suspense fallback={<AppFallback />}>
