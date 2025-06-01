@@ -1,290 +1,193 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNotifications } from '@/contexts/NotificationContext';
-import { useAuth } from '@/contexts/auth';
+import { useRealtimeSync } from '@/hooks/useRealtimeSync';
 import { useBrowserNotifications } from '@/hooks/useBrowserNotifications';
-import { Bell, CheckCircle, AlertTriangle, XCircle, Info, Volume2, VolumeX } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Activity, Bell, Wifi, WifiOff, CheckCircle, XCircle } from 'lucide-react';
 
 export const NotificationTestingDashboard = () => {
-  const { addNotification, notifications, unreadCount } = useNotifications();
-  const { user } = useAuth();
-  const { 
-    isSupported, 
-    permission, 
-    requestPermission, 
-    canSendNotifications 
-  } = useBrowserNotifications();
-  const [testResults, setTestResults] = useState<string[]>([]);
+  const { notifications, unreadCount } = useNotifications();
+  const { isConnected, connectionStatus } = useRealtimeSync({ channel: 'dashboard' });
+  const { canSendNotifications, permission } = useBrowserNotifications();
 
-  if (!user) return null;
-
-  const addTestResult = (result: string) => {
-    setTestResults(prev => [result, ...prev.slice(0, 9)]);
-  };
-
-  const testNotificationFlow = async () => {
-    addTestResult('Starting notification flow test...');
-    
-    // Test 1: Basic notification
-    addNotification({
-      title: 'Test Notification',
-      message: 'This is a test notification to verify the system works.',
-      type: 'info',
-      category: 'system',
-      userId: user.id,
-    });
-    addTestResult('✅ Basic notification sent');
-
-    // Test 2: Browser permission
-    if (isSupported) {
-      const granted = await requestPermission();
-      addTestResult(granted ? '✅ Browser permission granted' : '❌ Browser permission denied');
-    } else {
-      addTestResult('❌ Browser notifications not supported');
-    }
-
-    // Test 3: Sound test
-    if ((window as any).playNotificationSound) {
-      (window as any).playNotificationSound();
-      addTestResult('✅ Sound notification triggered');
-    } else {
-      addTestResult('❌ Sound notification not available');
-    }
-
-    // Test 4: Multiple notification types
-    const testTypes: Array<{ type: 'success' | 'warning' | 'error' | 'info', title: string }> = [
-      { type: 'success', title: 'Success Test' },
-      { type: 'warning', title: 'Warning Test' },
-      { type: 'error', title: 'Error Test' },
-    ];
-
-    testTypes.forEach((test, index) => {
-      setTimeout(() => {
-        addNotification({
-          title: test.title,
-          message: `Testing ${test.type} notification type`,
-          type: test.type,
-          category: 'system',
-          userId: user.id,
-        });
-        addTestResult(`✅ ${test.type} notification sent`);
-      }, (index + 1) * 1000);
-    });
-  };
-
-  const testAuditScenario = () => {
-    addTestResult('Testing audit workflow scenario...');
-    
-    const auditId = 'test-audit-123';
-    const scenarios = [
-      { status: 'submitted', type: 'info' as const, message: 'Your audit request has been submitted for review.' },
-      { status: 'in_review', type: 'info' as const, message: 'Your audit is now under review by our team.' },
-      { status: 'assigned', type: 'success' as const, message: 'An auditor has been assigned to your project.' },
-      { status: 'in_progress', type: 'info' as const, message: 'Your audit is now in progress.' },
-      { status: 'completed', type: 'success' as const, message: 'Your audit has been completed!' },
-    ];
-
-    scenarios.forEach((scenario, index) => {
-      setTimeout(() => {
-        addNotification({
-          title: `Audit ${scenario.status.replace('_', ' ').toUpperCase()}`,
-          message: scenario.message,
-          type: scenario.type,
-          category: 'audit',
-          userId: user.id,
-          actionUrl: `/audit/${auditId}`,
-          actionLabel: 'View Audit',
-        });
-        addTestResult(`✅ Audit ${scenario.status} notification sent`);
-      }, index * 1500);
-    });
+  const stats = {
+    total: notifications.length,
+    unread: unreadCount,
+    read: notifications.length - unreadCount,
+    byType: notifications.reduce((acc, notif) => {
+      acc[notif.type] = (acc[notif.type] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>),
+    byCategory: notifications.reduce((acc, notif) => {
+      acc[notif.category] = (acc[notif.category] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>),
   };
 
   return (
-    <Card className="w-full max-w-4xl">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Bell className="h-5 w-5" />
-          Notification System Testing Dashboard
-        </CardTitle>
-        <CardDescription>
-          Test and monitor the notification system functionality
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="testing" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="testing">Testing</TabsTrigger>
-            <TabsTrigger value="status">System Status</TabsTrigger>
-            <TabsTrigger value="results">Test Results</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="testing" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Basic Tests</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <Button 
-                    onClick={testNotificationFlow} 
-                    className="w-full"
-                    variant="outline"
-                  >
-                    Run Full System Test
-                  </Button>
-                  <Button 
-                    onClick={testAuditScenario} 
-                    className="w-full"
-                    variant="outline"
-                  >
-                    Test Audit Workflow
-                  </Button>
-                </CardContent>
-              </Card>
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight">Notification System Dashboard</h2>
+        <p className="text-muted-foreground">
+          Monitor and test the notification system functionality
+        </p>
+      </div>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Quick Tests</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <Button 
-                    onClick={() => addNotification({
-                      title: 'Quick Test',
-                      message: 'Quick notification test',
-                      type: 'info',
-                      category: 'system',
-                      userId: user.id,
-                    })}
-                    size="sm"
-                    variant="outline"
-                    className="w-full"
-                  >
-                    Send Test Notification
-                  </Button>
-                  <Button 
-                    onClick={async () => {
-                      const granted = await requestPermission();
-                      addTestResult(granted ? 'Permission granted' : 'Permission denied');
-                    }}
-                    size="sm"
-                    variant="outline"
-                    className="w-full"
-                  >
-                    Test Browser Permission
-                  </Button>
-                </CardContent>
-              </Card>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <Activity className="h-4 w-4" />
+              System Status
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Real-time</span>
+                <Badge variant={isConnected ? "default" : "destructive"} className="text-xs">
+                  {isConnected ? (
+                    <>
+                      <Wifi className="h-3 w-3 mr-1" />
+                      Connected
+                    </>
+                  ) : (
+                    <>
+                      <WifiOff className="h-3 w-3 mr-1" />
+                      Disconnected
+                    </>
+                  )}
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Browser</span>
+                <Badge variant={canSendNotifications ? "default" : "secondary"} className="text-xs">
+                  {canSendNotifications ? (
+                    <>
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      Enabled
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className="h-3 w-3 mr-1" />
+                      Disabled
+                    </>
+                  )}
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Permission</span>
+                <Badge 
+                  variant={permission === 'granted' ? "default" : "secondary"} 
+                  className="text-xs capitalize"
+                >
+                  {permission}
+                </Badge>
+              </div>
             </div>
-          </TabsContent>
-          
-          <TabsContent value="status" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Browser Support</span>
-                    {isSupported ? 
-                      <CheckCircle className="h-4 w-4 text-green-500" /> : 
-                      <XCircle className="h-4 w-4 text-red-500" />
-                    }
-                  </div>
-                  <Badge variant={isSupported ? "default" : "destructive"}>
-                    {isSupported ? "Supported" : "Not Supported"}
-                  </Badge>
-                </CardContent>
-              </Card>
+          </CardContent>
+        </Card>
 
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Permission</span>
-                    {permission === 'granted' ? 
-                      <CheckCircle className="h-4 w-4 text-green-500" /> : 
-                      permission === 'denied' ?
-                      <XCircle className="h-4 w-4 text-red-500" /> :
-                      <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                    }
-                  </div>
-                  <Badge variant={
-                    permission === 'granted' ? "default" : 
-                    permission === 'denied' ? "destructive" : "secondary"
-                  }>
-                    {permission}
-                  </Badge>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Total Notifications</span>
-                    <Info className="h-4 w-4 text-blue-500" />
-                  </div>
-                  <Badge variant="outline">
-                    {notifications.length}
-                  </Badge>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Unread Count</span>
-                    <Bell className="h-4 w-4 text-orange-500" />
-                  </div>
-                  <Badge variant={unreadCount > 0 ? "destructive" : "outline"}>
-                    {unreadCount}
-                  </Badge>
-                </CardContent>
-              </Card>
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <Bell className="h-4 w-4" />
+              Notification Stats
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Total</span>
+                <span className="text-sm font-medium">{stats.total}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Unread</span>
+                <Badge variant="destructive" className="text-xs">
+                  {stats.unread}
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Read</span>
+                <span className="text-sm font-medium">{stats.read}</span>
+              </div>
             </div>
-          </TabsContent>
-          
-          <TabsContent value="results" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Test Results</CardTitle>
-                <CardDescription>
-                  Latest test results and system logs
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {testResults.length === 0 ? (
-                  <p className="text-muted-foreground text-center py-4">
-                    No test results yet. Run some tests to see results here.
-                  </p>
-                ) : (
-                  <div className="space-y-2 max-h-64 overflow-y-auto">
-                    {testResults.map((result, index) => (
-                      <div 
-                        key={index} 
-                        className="text-sm p-2 bg-muted rounded font-mono"
-                      >
-                        {result}
-                      </div>
-                    ))}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm">Distribution</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">By Type</p>
+                <div className="flex flex-wrap gap-1">
+                  {Object.entries(stats.byType).map(([type, count]) => (
+                    <Badge key={type} variant="outline" className="text-xs">
+                      {type}: {count}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">By Category</p>
+                <div className="flex flex-wrap gap-1">
+                  {Object.entries(stats.byCategory).map(([category, count]) => (
+                    <Badge key={category} variant="secondary" className="text-xs">
+                      {category}: {count}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Activity</CardTitle>
+          <CardDescription>
+            Latest notifications received in this session
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {notifications.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-4">
+              No notifications yet. Use the tester to generate some!
+            </p>
+          ) : (
+            <div className="space-y-2 max-h-60 overflow-y-auto">
+              {notifications.slice(0, 10).map((notification) => (
+                <div
+                  key={notification.id}
+                  className="flex items-start gap-2 p-2 rounded-lg bg-muted/50 border text-xs"
+                >
+                  <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${
+                    notification.type === 'success' ? 'bg-green-500' :
+                    notification.type === 'error' ? 'bg-red-500' :
+                    notification.type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500'
+                  }`} />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium truncate">{notification.title}</p>
+                    <p className="text-muted-foreground truncate">{notification.message}</p>
+                    <p className="text-muted-foreground mt-1">
+                      {notification.timestamp.toLocaleTimeString()}
+                    </p>
                   </div>
-                )}
-                {testResults.length > 0 && (
-                  <Button 
-                    onClick={() => setTestResults([])} 
-                    variant="outline" 
-                    size="sm" 
-                    className="mt-2"
-                  >
-                    Clear Results
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </CardContent>
-    </Card>
+                  <Badge variant="outline" className="text-xs">
+                    {notification.category}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 };

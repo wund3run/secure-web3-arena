@@ -1,106 +1,91 @@
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { RealtimeChannel } from '@supabase/supabase-js';
-import { toast } from 'sonner';
 
-export interface RealtimeConfig {
-  channel: string;
-  event?: string;
-  schema?: string;
-  table?: string;
-  filter?: string;
-}
-
-export interface RealtimeNotification {
+interface RealtimeNotification {
   id: string;
+  type: 'info' | 'success' | 'warning' | 'error';
   message: string;
-  type: 'success' | 'warning' | 'error' | 'info';
   timestamp: Date;
 }
 
-export function useRealtimeSync(config?: RealtimeConfig) {
+interface UseRealtimeSyncOptions {
+  channel: string;
+  events?: string[];
+}
+
+export const useRealtimeSync = (options?: UseRealtimeSyncOptions) => {
   const [isConnected, setIsConnected] = useState(false);
-  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
-  const [connectionStatus, setConnectionStatus] = useState<string>('disconnected');
+  const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('disconnected');
   const [notifications, setNotifications] = useState<RealtimeNotification[]>([]);
-  const channelRef = useRef<RealtimeChannel | null>(null);
+  const [channel, setChannel] = useState<RealtimeChannel | null>(null);
+
+  const clearNotifications = useCallback(() => {
+    setNotifications([]);
+  }, []);
 
   useEffect(() => {
-    if (!config) return;
+    if (!options?.channel) return;
 
-    const channel = supabase.channel(config.channel);
-    channelRef.current = channel;
+    const channelName = `realtime_${options.channel}`;
+    setConnectionStatus('connecting');
 
-    // Set up connection status monitoring
-    channel
-      .on('system', {}, (payload) => {
-        if (payload.extension === 'postgres_changes') {
-          setIsConnected(true);
-          setLastUpdate(new Date());
-          setConnectionStatus('connected');
-        }
+    const realtimeChannel = supabase
+      .channel(channelName)
+      .on('presence', { event: 'sync' }, () => {
+        setIsConnected(true);
+        setConnectionStatus('connected');
+      })
+      .on('presence', { event: 'join' }, ({ key, newPresences }) => {
+        console.log('User joined:', key, newPresences);
+      })
+      .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
+        console.log('User left:', key, leftPresences);
+      })
+      .on('broadcast', { event: 'notification' }, (payload) => {
+        const notification: RealtimeNotification = {
+          id: crypto.randomUUID(),
+          type: payload.type || 'info',
+          message: payload.message || 'New notification',
+          timestamp: new Date(),
+        };
+        setNotifications(prev => [notification, ...prev].slice(0, 50)); // Keep last 50
       })
       .subscribe((status) => {
-        setIsConnected(status === 'SUBSCRIBED');
-        setConnectionStatus(status.toLowerCase());
-        
-        if (status === 'CLOSED') {
-          toast.error('Real-time connection lost', {
-            description: 'Attempting to reconnect...'
-          });
-        } else if (status === 'SUBSCRIBED') {
-          toast.success('Real-time connection established');
+        if (status === 'SUBSCRIBED') {
+          setIsConnected(true);
+          setConnectionStatus('connected');
+        } else if (status === 'CHANNEL_ERROR') {
+          setIsConnected(false);
+          setConnectionStatus('disconnected');
         }
       });
 
+    setChannel(realtimeChannel);
+
     return () => {
-      supabase.removeChannel(channel);
+      realtimeChannel.unsubscribe();
       setIsConnected(false);
       setConnectionStatus('disconnected');
     };
-  }, [config?.channel]);
+  }, [options?.channel]);
 
-  const disconnect = () => {
-    if (channelRef.current) {
-      supabase.removeChannel(channelRef.current);
-      setIsConnected(false);
-      setConnectionStatus('disconnected');
+  const sendNotification = useCallback((type: RealtimeNotification['type'], message: string) => {
+    if (channel) {
+      channel.send({
+        type: 'broadcast',
+        event: 'notification',
+        payload: { type, message }
+      });
     }
-  };
-
-  const reconnect = () => {
-    if (config) {
-      disconnect();
-      // Trigger re-initialization
-      setTimeout(() => {
-        // Effect will handle reconnection
-      }, 1000);
-    }
-  };
-
-  const addNotification = (notification: Omit<RealtimeNotification, 'id' | 'timestamp'>) => {
-    const newNotification: RealtimeNotification = {
-      ...notification,
-      id: crypto.randomUUID(),
-      timestamp: new Date()
-    };
-    
-    setNotifications(prev => [newNotification, ...prev.slice(0, 49)]); // Keep last 50
-  };
-
-  const clearNotifications = () => {
-    setNotifications([]);
-  };
+  }, [channel]);
 
   return {
     isConnected,
-    lastUpdate,
     connectionStatus,
     notifications,
-    disconnect,
-    reconnect,
-    addNotification,
-    clearNotifications
+    clearNotifications,
+    sendNotification,
   };
-}
+};

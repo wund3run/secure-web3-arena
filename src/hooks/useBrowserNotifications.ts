@@ -1,58 +1,56 @@
 
-import { useEffect, useState } from 'react';
-import { useAuth } from '@/contexts/auth';
+import { useState, useEffect, useCallback } from 'react';
 
 export const useBrowserNotifications = () => {
-  const { user } = useAuth();
+  const [canSendNotifications, setCanSendNotifications] = useState(false);
   const [permission, setPermission] = useState<NotificationPermission>('default');
-  const [isSupported, setIsSupported] = useState(false);
 
   useEffect(() => {
-    setIsSupported('Notification' in window);
     if ('Notification' in window) {
       setPermission(Notification.permission);
+      setCanSendNotifications(Notification.permission === 'granted');
     }
   }, []);
 
-  const requestPermission = async () => {
-    if (!isSupported) return false;
-    
-    try {
+  const requestPermission = useCallback(async () => {
+    if ('Notification' in window) {
       const result = await Notification.requestPermission();
       setPermission(result);
-      return result === 'granted';
-    } catch (error) {
-      console.error('Failed to request notification permission:', error);
-      return false;
+      setCanSendNotifications(result === 'granted');
+      return result;
     }
-  };
+    return 'denied';
+  }, []);
 
-  const sendBrowserNotification = (title: string, options?: NotificationOptions) => {
-    if (!isSupported || permission !== 'granted' || !user) return;
-
-    try {
+  const sendBrowserNotification = useCallback((title: string, options?: NotificationOptions) => {
+    if (canSendNotifications && 'Notification' in window) {
       const notification = new Notification(title, {
-        icon: '/hawkly-logo.svg',
-        badge: '/hawkly-logo.svg',
-        tag: 'hawkly-notification',
-        requireInteraction: false,
+        icon: '/manifest.json',
+        badge: '/manifest.json',
+        timestamp: Date.now(),
         ...options,
       });
 
-      // Auto close after 5 seconds
+      notification.onclick = () => {
+        window.focus();
+        if (options?.data?.actionUrl) {
+          window.location.href = options.data.actionUrl;
+        }
+        notification.close();
+      };
+
+      // Auto-close after 5 seconds
       setTimeout(() => notification.close(), 5000);
 
       return notification;
-    } catch (error) {
-      console.error('Failed to send browser notification:', error);
     }
-  };
+    return null;
+  }, [canSendNotifications]);
 
   return {
-    isSupported,
+    canSendNotifications,
     permission,
     requestPermission,
     sendBrowserNotification,
-    canSendNotifications: permission === 'granted',
   };
 };

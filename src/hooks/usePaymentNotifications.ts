@@ -11,52 +11,30 @@ export const usePaymentNotifications = () => {
   useEffect(() => {
     if (!user) return;
 
-    // Payment status notifications
+    // Subscribe to payment-related events
     const paymentChannel = supabase
-      .channel('payment_updates')
+      .channel('payment_notifications')
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'INSERT',
           schema: 'public',
-          table: 'payments',
-          filter: `user_id=eq.${user.id}`,
+          table: 'audit_log',
+          filter: `action=like.%payment%`,
         },
         (payload) => {
-          if (payload.eventType === 'INSERT') {
+          if (payload.new?.action.includes('payment')) {
+            const paymentType = payload.new.action.includes('received') ? 'success' : 'info';
+            
             addNotification({
-              title: 'Payment Initiated',
-              message: `Payment of $${payload.new.amount} has been initiated`,
-              type: 'info',
+              title: 'Payment Update',
+              message: `Payment ${payload.new.action.replace('payment_', '')}`,
+              type: paymentType,
               category: 'payment',
               userId: user.id,
-              actionUrl: '/escrow',
-              actionLabel: 'View Escrow',
+              actionUrl: `/audit/${payload.new.audit_request_id}`,
+              actionLabel: 'View Details',
             });
-          } else if (payload.eventType === 'UPDATE') {
-            const oldStatus = payload.old?.status;
-            const newStatus = payload.new?.status;
-            
-            if (oldStatus !== newStatus) {
-              const statusConfig = {
-                'completed': { type: 'success' as const, message: 'Payment completed successfully' },
-                'failed': { type: 'error' as const, message: 'Payment failed - please try again' },
-                'refunded': { type: 'info' as const, message: 'Payment has been refunded' },
-              };
-
-              const config = statusConfig[newStatus as keyof typeof statusConfig];
-              if (config) {
-                addNotification({
-                  title: 'Payment Update',
-                  message: config.message,
-                  type: config.type,
-                  category: 'payment',
-                  userId: user.id,
-                  actionUrl: '/escrow',
-                  actionLabel: 'View Details',
-                });
-              }
-            }
           }
         }
       )

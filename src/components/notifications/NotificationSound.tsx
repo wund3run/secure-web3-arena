@@ -1,61 +1,64 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Volume2, VolumeX } from 'lucide-react';
+import { toast } from 'sonner';
 
 export const NotificationSound = () => {
-  const [soundEnabled, setSoundEnabled] = React.useState(() => {
-    return localStorage.getItem('notificationSound') !== 'false';
-  });
+  const [soundEnabled, setSoundEnabled] = useState(true);
 
-  const playNotificationSound = () => {
-    if (!soundEnabled) return;
-    
-    try {
-      // Create a simple notification sound using Web Audio API
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
+  useEffect(() => {
+    // Create notification sound functionality
+    const playNotificationSound = () => {
+      if (!soundEnabled) return;
       
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-      oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
-      
-      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.2);
-    } catch (error) {
-      console.error('Failed to play notification sound:', error);
-    }
-  };
+      try {
+        // Create a simple notification sound using Web Audio API
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+        
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.2);
+      } catch (error) {
+        console.warn('Could not play notification sound:', error);
+      }
+    };
+
+    // Make the function globally available
+    (window as any).playNotificationSound = playNotificationSound;
+
+    return () => {
+      delete (window as any).playNotificationSound;
+    };
+  }, [soundEnabled]);
 
   const toggleSound = () => {
-    const newState = !soundEnabled;
-    setSoundEnabled(newState);
-    localStorage.setItem('notificationSound', newState.toString());
-    
-    if (newState) {
-      playNotificationSound(); // Test sound
-    }
+    setSoundEnabled(!soundEnabled);
+    toast.info(soundEnabled ? 'Notification sounds disabled' : 'Notification sounds enabled');
   };
-
-  // Expose the play function globally so other components can use it
-  React.useEffect(() => {
-    (window as any).playNotificationSound = soundEnabled ? playNotificationSound : () => {};
-  }, [soundEnabled]);
 
   return (
     <Button
       variant="ghost"
       size="sm"
       onClick={toggleSound}
-      title={soundEnabled ? 'Disable notification sounds' : 'Enable notification sounds'}
+      className="h-6 w-6 p-0"
     >
-      {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+      {soundEnabled ? (
+        <Volume2 className="h-3 w-3" />
+      ) : (
+        <VolumeX className="h-3 w-3" />
+      )}
     </Button>
   );
 };

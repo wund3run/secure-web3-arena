@@ -34,7 +34,7 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
       const loaded = loadNotifications();
       setNotifications(loaded);
     }
-  }, [user?.id]);
+  }, [user?.id, loadNotifications]);
 
   // Save notifications whenever they change
   useEffect(() => {
@@ -51,7 +51,7 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
       read: false,
     };
     
-    setNotifications(prev => [newNotification, ...prev]);
+    setNotifications(prev => [newNotification, ...prev.slice(0, 99)]); // Keep max 100
     
     // Show toast notification
     toast(notification.title, {
@@ -60,6 +60,9 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
         label: notification.actionLabel || 'View',
         onClick: () => window.location.href = notification.actionUrl!,
       } : undefined,
+      className: notification.type === 'error' ? 'border-red-500' : 
+                 notification.type === 'warning' ? 'border-yellow-500' :
+                 notification.type === 'success' ? 'border-green-500' : 'border-blue-500',
     });
 
     // Send browser notification if enabled
@@ -67,6 +70,7 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
       sendBrowserNotification(notification.title, {
         body: notification.message,
         data: { actionUrl: notification.actionUrl },
+        tag: notification.category, // Group by category
       });
     }
 
