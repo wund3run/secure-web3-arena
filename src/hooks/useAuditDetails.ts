@@ -180,9 +180,9 @@ export const useAuditDetails = (auditId?: string) => {
       // Build enhanced audit data with fallbacks for missing properties
       const enhancedAuditData: EnhancedAuditData = {
         ...audit,
-        current_phase: audit.current_phase || 'initial_review',
-        completion_percentage: audit.completion_percentage || 25,
-        security_score: audit.security_score || 85,
+        current_phase: (audit as any).current_phase || 'initial_review',
+        completion_percentage: (audit as any).completion_percentage || 25,
+        security_score: (audit as any).security_score || 85,
         findings_count: findingsCount,
         findings: mockFindings,
         deliverables: mockDeliverables,
