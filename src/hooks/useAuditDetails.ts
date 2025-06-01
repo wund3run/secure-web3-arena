@@ -31,7 +31,7 @@ export interface AuditStatusUpdate {
   status_type: 'progress' | 'milestone' | 'finding' | 'communication' | 'deliverable';
   title: string;
   message?: string;
-  metadata: any;
+  metadata: Record<string, unknown>;
   created_at: string;
   user_id: string;
 }
@@ -72,16 +72,42 @@ export interface EnhancedAuditData {
   };
 }
 
-export const useAuditDetails = (auditId?: string) => {
+interface UseAuditDetailsReturn {
+  auditData: EnhancedAuditData | null;
+  isLoading: boolean;
+  error: Error | null;
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+  handleSendMessage: (message: string) => Promise<void>;
+  updateFindingStatus: (findingId: string, status: string) => Promise<void>;
+  addFinding: (finding: Omit<AuditFinding, 'id' | 'created_at'>) => Promise<AuditFinding | null>;
+  refetch: () => Promise<void>;
+}
+
+export const useAuditDetails = (auditId?: string): UseAuditDetailsReturn => {
   const [auditData, setAuditData] = useState<EnhancedAuditData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
 
-  const fetchAuditDetails = async () => {
-    if (!auditId) return;
+  const handleError = (error: unknown, context: string) => {
+    console.error(`Error in ${context}:`, error);
+    const errorInstance = error instanceof Error ? error : new Error('Unknown error occurred');
+    setError(errorInstance);
+    toast.error('Error', {
+      description: errorInstance.message
+    });
+  };
+
+  const fetchAuditDetails = async (): Promise<void> => {
+    if (!auditId) {
+      setIsLoading(false);
+      return;
+    }
 
     try {
       setIsLoading(true);
+      setError(null);
 
       // Fetch main audit data
       const { data: audit, error: auditError } = await supabase
@@ -91,61 +117,39 @@ export const useAuditDetails = (auditId?: string) => {
         .single();
 
       if (auditError) throw auditError;
+      if (!audit) throw new Error('Audit not found');
 
-      // Fetch client profile
-      const { data: clientProfile } = await supabase
-        .from('extended_profiles')
-        .select('id, full_name, avatar_url')
-        .eq('id', audit.client_id)
-        .single();
+      // Fetch related data in parallel
+      const [clientResult, auditorResult, findingsResult, deliverablesResult, statusUpdatesResult] = await Promise.all([
+        supabase.from('extended_profiles').select('id, full_name, avatar_url').eq('id', audit.client_id).single(),
+        audit.assigned_auditor_id ? supabase.from('extended_profiles').select('id, full_name, avatar_url').eq('id', audit.assigned_auditor_id).single() : { data: null, error: null },
+        supabase.from('audit_findings').select('*').eq('audit_request_id', auditId).order('created_at', { ascending: false }),
+        supabase.from('audit_deliverables').select('*').eq('audit_request_id', auditId).order('created_at', { ascending: false }),
+        supabase.from('audit_status_updates').select('*').eq('audit_request_id', auditId).order('created_at', { ascending: false })
+      ]);
 
-      // Fetch auditor profile if assigned
-      let auditorProfile = null;
-      if (audit.assigned_auditor_id) {
-        const { data: auditor } = await supabase
-          .from('extended_profiles')
-          .select('id, full_name, avatar_url')
-          .eq('id', audit.assigned_auditor_id)
-          .single();
-        auditorProfile = auditor;
-      }
+      const clientProfile = clientResult.data;
+      const auditorProfile = auditorResult.data;
+      const findingsData = findingsResult.data || [];
+      const deliverablesData = deliverablesResult.data || [];
+      const statusUpdatesData = statusUpdatesResult.data || [];
 
-      // Fetch findings with proper type casting
-      const { data: findingsData } = await supabase
-        .from('audit_findings')
-        .select('*')
-        .eq('audit_request_id', auditId)
-        .order('created_at', { ascending: false });
-
-      // Fetch deliverables with proper type casting
-      const { data: deliverablesData } = await supabase
-        .from('audit_deliverables')
-        .select('*')
-        .eq('audit_request_id', auditId)
-        .order('created_at', { ascending: false });
-
-      // Fetch status updates with proper type casting
-      const { data: statusUpdatesData } = await supabase
-        .from('audit_status_updates')
-        .select('*')
-        .eq('audit_request_id', auditId)
-        .order('created_at', { ascending: false });
-
-      // Cast the data to proper types
-      const findings: AuditFinding[] = (findingsData || []).map(finding => ({
+      // Cast and validate data
+      const findings: AuditFinding[] = findingsData.map(finding => ({
         ...finding,
         severity: finding.severity as AuditFinding['severity'],
         status: finding.status as AuditFinding['status']
       }));
 
-      const deliverables: AuditDeliverable[] = (deliverablesData || []).map(deliverable => ({
+      const deliverables: AuditDeliverable[] = deliverablesData.map(deliverable => ({
         ...deliverable,
         status: deliverable.status as AuditDeliverable['status']
       }));
 
-      const statusUpdates: AuditStatusUpdate[] = (statusUpdatesData || []).map(update => ({
+      const statusUpdates: AuditStatusUpdate[] = statusUpdatesData.map(update => ({
         ...update,
-        status_type: update.status_type as AuditStatusUpdate['status_type']
+        status_type: update.status_type as AuditStatusUpdate['status_type'],
+        metadata: update.metadata || {}
       }));
 
       // Calculate findings count
@@ -180,16 +184,15 @@ export const useAuditDetails = (auditId?: string) => {
       };
 
       setAuditData(enhancedAuditData);
-    } catch (error: any) {
-      console.error('Error fetching audit details:', error);
-      toast.error('Failed to load audit details');
+    } catch (error) {
+      handleError(error, 'fetchAuditDetails');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSendMessage = async (message: string) => {
-    if (!auditId) return;
+  const handleSendMessage = async (message: string): Promise<void> => {
+    if (!auditId) throw new Error('No audit ID provided');
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -205,15 +208,14 @@ export const useAuditDetails = (auditId?: string) => {
         });
 
       if (error) throw error;
-
       toast.success('Message sent successfully');
-    } catch (error: any) {
-      console.error('Error sending message:', error);
-      toast.error('Failed to send message');
+    } catch (error) {
+      handleError(error, 'handleSendMessage');
+      throw error;
     }
   };
 
-  const updateFindingStatus = async (findingId: string, status: string) => {
+  const updateFindingStatus = async (findingId: string, status: string): Promise<void> => {
     try {
       const { error } = await supabase
         .from('audit_findings')
@@ -237,13 +239,13 @@ export const useAuditDetails = (auditId?: string) => {
       }
       
       toast.success('Finding status updated');
-    } catch (error: any) {
-      console.error('Error updating finding status:', error);
-      toast.error('Failed to update finding status');
+    } catch (error) {
+      handleError(error, 'updateFindingStatus');
+      throw error;
     }
   };
 
-  const addFinding = async (finding: Omit<AuditFinding, 'id' | 'created_at'>) => {
+  const addFinding = async (finding: Omit<AuditFinding, 'id' | 'created_at'>): Promise<AuditFinding | null> => {
     try {
       const { data, error } = await supabase
         .from('audit_findings')
@@ -257,7 +259,6 @@ export const useAuditDetails = (auditId?: string) => {
 
       if (error) throw error;
 
-      // Cast the returned data to proper type
       const newFinding: AuditFinding = {
         ...data,
         severity: data.severity as AuditFinding['severity'],
@@ -274,10 +275,9 @@ export const useAuditDetails = (auditId?: string) => {
 
       toast.success('Finding added successfully');
       return newFinding;
-    } catch (error: any) {
-      console.error('Error adding finding:', error);
-      toast.error('Failed to add finding');
-      throw error;
+    } catch (error) {
+      handleError(error, 'addFinding');
+      return null;
     }
   };
 
@@ -348,6 +348,7 @@ export const useAuditDetails = (auditId?: string) => {
   return {
     auditData,
     isLoading,
+    error,
     activeTab,
     setActiveTab,
     handleSendMessage,
