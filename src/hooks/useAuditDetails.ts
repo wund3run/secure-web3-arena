@@ -23,6 +23,7 @@ export interface AuditDeliverable {
   status: 'pending' | 'in_progress' | 'completed' | 'delivered';
   due_date?: string;
   delivered_at?: string;
+  file_url?: string;
 }
 
 export interface AuditStatusUpdate {
@@ -109,62 +110,58 @@ export const useAuditDetails = (auditId?: string) => {
         auditorProfile = auditor;
       }
 
-      // Mock data for new tables until they're properly synced
-      const mockFindings: AuditFinding[] = [
-        {
-          id: '1',
-          severity: 'high',
-          category: 'Access Control',
-          title: 'Missing access control in withdraw function',
-          description: 'The withdraw function lacks proper access control checks',
-          status: 'open',
-          created_at: new Date().toISOString()
-        }
-      ];
+      // Fetch findings
+      const { data: findings, error: findingsError } = await supabase
+        .from('audit_findings')
+        .select('*')
+        .eq('audit_request_id', auditId)
+        .order('created_at', { ascending: false });
 
-      const mockDeliverables: AuditDeliverable[] = [
-        {
-          id: '1',
-          title: 'Initial Security Assessment',
-          description: 'Preliminary analysis of smart contract architecture',
-          status: 'completed'
-        },
-        {
-          id: '2',
-          title: 'Detailed Vulnerability Report',
-          description: 'Comprehensive report of all identified vulnerabilities',
-          status: 'in_progress'
-        }
-      ];
+      if (findingsError) {
+        console.warn('Could not fetch findings:', findingsError);
+      }
 
-      const mockStatusUpdates: AuditStatusUpdate[] = [
-        {
-          id: '1',
-          status_type: 'progress',
-          title: 'Audit Started',
-          message: 'Initial review phase has begun',
-          metadata: {},
-          created_at: new Date().toISOString(),
-          user_id: audit.assigned_auditor_id || 'system'
-        }
-      ];
+      // Fetch deliverables
+      const { data: deliverables, error: deliverablesError } = await supabase
+        .from('audit_deliverables')
+        .select('*')
+        .eq('audit_request_id', auditId)
+        .order('created_at', { ascending: false });
 
-      // Build enhanced audit data with proper fallbacks
+      if (deliverablesError) {
+        console.warn('Could not fetch deliverables:', deliverablesError);
+      }
+
+      // Fetch status updates
+      const { data: statusUpdates, error: statusError } = await supabase
+        .from('audit_status_updates')
+        .select('*')
+        .eq('audit_request_id', auditId)
+        .order('created_at', { ascending: false });
+
+      if (statusError) {
+        console.warn('Could not fetch status updates:', statusError);
+      }
+
+      // Calculate findings count
+      const findingsCount = {
+        critical: findings?.filter(f => f.severity === 'critical').length || 0,
+        high: findings?.filter(f => f.severity === 'high').length || 0,
+        medium: findings?.filter(f => f.severity === 'medium').length || 0,
+        low: findings?.filter(f => f.severity === 'low').length || 0,
+        info: findings?.filter(f => f.severity === 'info').length || 0,
+      };
+
+      // Build enhanced audit data
       const enhancedAuditData: EnhancedAuditData = {
         ...audit,
-        current_phase: 'initial_review',
-        completion_percentage: 25,
-        security_score: 85,
-        findings_count: {
-          critical: 0,
-          high: 1,
-          medium: 2,
-          low: 1,
-          info: 0
-        },
-        findings: mockFindings,
-        deliverables: mockDeliverables,
-        status_updates: mockStatusUpdates,
+        current_phase: audit.current_phase || 'initial_review',
+        completion_percentage: audit.completion_percentage || 0,
+        security_score: audit.security_score || 0,
+        findings_count: findingsCount,
+        findings: findings || [],
+        deliverables: deliverables || [],
+        status_updates: statusUpdates || [],
         client: {
           id: audit.client_id,
           full_name: clientProfile?.full_name || 'Unknown Client',
@@ -213,7 +210,14 @@ export const useAuditDetails = (auditId?: string) => {
 
   const updateFindingStatus = async (findingId: string, status: string) => {
     try {
-      // For now, just update the local state until database tables are available
+      const { error } = await supabase
+        .from('audit_findings')
+        .update({ status })
+        .eq('id', findingId);
+
+      if (error) throw error;
+
+      // Update local state
       if (auditData) {
         const updatedFindings = auditData.findings.map(finding =>
           finding.id === findingId ? { ...finding, status: status as any } : finding
@@ -228,6 +232,36 @@ export const useAuditDetails = (auditId?: string) => {
     } catch (error: any) {
       console.error('Error updating finding status:', error);
       toast.error('Failed to update finding status');
+    }
+  };
+
+  const addFinding = async (finding: Omit<AuditFinding, 'id' | 'created_at'>) => {
+    try {
+      const { data, error } = await supabase
+        .from('audit_findings')
+        .insert({
+          audit_request_id: auditId,
+          ...finding
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Update local state
+      if (auditData) {
+        setAuditData({
+          ...auditData,
+          findings: [data, ...auditData.findings]
+        });
+      }
+
+      toast.success('Finding added successfully');
+      return data;
+    } catch (error: any) {
+      console.error('Error adding finding:', error);
+      toast.error('Failed to add finding');
+      throw error;
     }
   };
 
@@ -247,6 +281,18 @@ export const useAuditDetails = (auditId?: string) => {
           schema: 'public',
           table: 'audit_requests',
           filter: `id=eq.${auditId}`,
+        },
+        () => {
+          fetchAuditDetails();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'audit_findings',
+          filter: `audit_request_id=eq.${auditId}`,
         },
         () => {
           fetchAuditDetails();
@@ -278,6 +324,7 @@ export const useAuditDetails = (auditId?: string) => {
     setActiveTab,
     handleSendMessage,
     updateFindingStatus,
+    addFinding,
     refetch: fetchAuditDetails
   };
 };

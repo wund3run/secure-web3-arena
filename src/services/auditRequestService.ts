@@ -52,13 +52,26 @@ export class AuditRequestService {
           priority_score: 0.5,
           matching_score: 0,
           auto_assign_enabled: true,
+          current_phase: 'initial_review',
+          completion_percentage: 0,
+          security_score: 0,
         })
         .select()
         .single();
 
       if (error) throw error;
 
-      // Create initial notification instead of status update for now
+      // Create initial status update
+      await supabase.from('audit_status_updates').insert({
+        audit_request_id: data.id,
+        status_type: 'progress',
+        title: 'Audit Request Submitted',
+        message: 'Your audit request has been successfully submitted and is being processed.',
+        user_id: user.id,
+        metadata: { initial_submission: true }
+      });
+
+      // Create initial notification
       await supabase.from('notifications').insert({
         user_id: user.id,
         title: 'Audit Request Submitted',
@@ -114,6 +127,19 @@ export class AuditRequestService {
 
       if (error) throw error;
 
+      // Create status update entry
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from('audit_status_updates').insert({
+          audit_request_id: auditId,
+          status_type: 'progress',
+          title: 'Audit Status Updated',
+          message: `Audit status changed to ${status}${phase ? ` (${phase})` : ''}`,
+          user_id: user.id,
+          metadata: { status, phase }
+        });
+      }
+
       toast.success('Audit status updated successfully');
       return true;
     } catch (error: any) {
@@ -136,14 +162,28 @@ export class AuditRequestService {
     }
   ): Promise<boolean> {
     try {
-      // For now, just create a notification instead of using the findings table
+      const { data, error } = await supabase
+        .from('audit_findings')
+        .insert({
+          audit_request_id: auditId,
+          ...finding,
+          status: 'open'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Create status update for the finding
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        await supabase.from('notifications').insert({
-          user_id: user.id,
+        await supabase.from('audit_status_updates').insert({
+          audit_request_id: auditId,
+          status_type: 'finding',
           title: `New ${finding.severity} Finding`,
           message: finding.title,
-          type: 'info'
+          user_id: user.id,
+          metadata: { finding_id: data.id, severity: finding.severity }
         });
       }
 
@@ -156,52 +196,46 @@ export class AuditRequestService {
     }
   }
 
-  private static getDefaultDeliverables(auditScope?: string): Array<{
-    title: string;
-    description: string;
-    status: 'pending';
-    due_date?: string;
-  }> {
-    const baseDeliverables = [
-      {
-        title: 'Initial Security Assessment',
-        description: 'Preliminary analysis of smart contract architecture and potential risk areas',
-        status: 'pending' as const,
-      },
-      {
-        title: 'Detailed Vulnerability Report',
-        description: 'Comprehensive report of all identified security vulnerabilities',
-        status: 'pending' as const,
-      },
-      {
-        title: 'Remediation Guidelines',
-        description: 'Step-by-step instructions for fixing identified issues',
-        status: 'pending' as const,
-      },
-      {
-        title: 'Final Audit Report',
-        description: 'Complete audit summary with security score and recommendations',
-        status: 'pending' as const,
+  static async createDeliverable(
+    auditId: string,
+    deliverable: {
+      title: string;
+      description?: string;
+      due_date?: string;
+    }
+  ): Promise<boolean> {
+    try {
+      const { data, error } = await supabase
+        .from('audit_deliverables')
+        .insert({
+          audit_request_id: auditId,
+          ...deliverable,
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Create status update for the deliverable
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from('audit_status_updates').insert({
+          audit_request_id: auditId,
+          status_type: 'deliverable',
+          title: 'New Deliverable Created',
+          message: deliverable.title,
+          user_id: user.id,
+          metadata: { deliverable_id: data.id }
+        });
       }
-    ];
 
-    // Add scope-specific deliverables
-    if (auditScope === 'full-stack') {
-      baseDeliverables.push({
-        title: 'Frontend Security Analysis',
-        description: 'Security assessment of web application components',
-        status: 'pending' as const,
-      });
+      toast.success('Deliverable created successfully');
+      return true;
+    } catch (error: any) {
+      console.error('Error creating deliverable:', error);
+      toast.error('Failed to create deliverable');
+      return false;
     }
-
-    if (auditScope === 'tokenomics') {
-      baseDeliverables.push({
-        title: 'Economic Model Analysis',
-        description: 'Review of token economics and potential economic attacks',
-        status: 'pending' as const,
-      });
-    }
-
-    return baseDeliverables;
   }
 }

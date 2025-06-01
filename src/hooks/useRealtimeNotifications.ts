@@ -50,6 +50,37 @@ export const useRealtimeNotifications = () => {
         {
           event: 'INSERT',
           schema: 'public',
+          table: 'audit_findings',
+        },
+        (payload) => {
+          // Check if this finding is for an audit involving the current user
+          supabase
+            .from('audit_requests')
+            .select('client_id, assigned_auditor_id, project_name')
+            .eq('id', payload.new.audit_request_id)
+            .single()
+            .then(({ data }) => {
+              if (data && (data.client_id === user.id || data.assigned_auditor_id === user.id)) {
+                addNotification({
+                  title: 'New Security Finding',
+                  message: `A ${payload.new.severity} severity finding was identified in ${data.project_name}`,
+                  type: payload.new.severity === 'critical' || payload.new.severity === 'high' ? 'error' : 'info',
+                  category: 'audit',
+                  userId: user.id,
+                  actionUrl: `/audit/${payload.new.audit_request_id}`,
+                  actionLabel: 'View Finding',
+                });
+                
+                toast.warning(`New ${payload.new.severity} finding identified`);
+              }
+            });
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
           table: 'audit_messages',
         },
         (payload) => {
