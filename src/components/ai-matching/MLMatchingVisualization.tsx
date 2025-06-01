@@ -1,23 +1,9 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar
-} from 'recharts';
-import { Brain, Layers, Sparkles } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { BarChart3, TrendingUp, Target, Zap } from 'lucide-react';
 
 interface MLMatchingVisualizationProps {
   matchResults: any[];
@@ -28,191 +14,134 @@ export const MLMatchingVisualization: React.FC<MLMatchingVisualizationProps> = (
   matchResults, 
   insights 
 }) => {
-  // Generate confidence score trend data
-  const confidenceTrend = matchResults.map((match, index) => ({
-    name: `Match ${index + 1}`,
-    confidence: match.match_score * 100,
-    technical: match.compatibility_breakdown.technical_fit * 100,
-    availability: match.compatibility_breakdown.availability_score * 100
-  }));
-
-  // Generate radar chart data for top match
-  const radarData = matchResults.length > 0 ? [
-    {
-      subject: 'Technical Fit',
-      value: matchResults[0].compatibility_breakdown.technical_fit * 100,
-      fullMark: 100
-    },
-    {
-      subject: 'Availability',
-      value: matchResults[0].compatibility_breakdown.availability_score * 100,
-      fullMark: 100
-    },
-    {
-      subject: 'Experience',
-      value: matchResults[0].compatibility_breakdown.experience_match * 100,
-      fullMark: 100
-    },
-    {
-      subject: 'Budget',
-      value: matchResults[0].compatibility_breakdown.budget_compatibility * 100,
-      fullMark: 100
-    },
-    {
-      subject: 'Quality',
-      value: matchResults[0].compatibility_breakdown.quality_score * 100,
-      fullMark: 100
-    },
-    {
-      subject: 'Workload',
-      value: matchResults[0].compatibility_breakdown.workload_feasibility * 100,
-      fullMark: 100
-    }
-  ] : [];
+  if (!matchResults.length) {
+    return (
+      <Card>
+        <CardContent className="pt-6 text-center">
+          <BarChart3 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+          <p className="text-muted-foreground">No data to visualize yet</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <LineChart className="h-5 w-5" />
-              Confidence Score Analysis
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <Target className="h-4 w-4" />
+              ML Confidence
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={confidenceTrend}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line 
-                    type="monotone" 
-                    dataKey="confidence" 
-                    stroke="#8884d8" 
-                    strokeWidth={2}
-                    name="Overall Confidence"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="technical" 
-                    stroke="#82ca9d" 
-                    strokeWidth={2}
-                    name="Technical Fit"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+            <div className="text-2xl font-bold">
+              {Math.round(matchResults[0]?.ml_confidence_score * 100)}%
             </div>
+            <Progress value={matchResults[0]?.ml_confidence_score * 100} className="mt-2" />
+            <p className="text-xs text-muted-foreground mt-1">Top match confidence</p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Brain className="h-5 w-5" />
-              Top Match Analysis
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" />
+              Success Rate
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <RadarChart data={radarData}>
-                  <PolarGrid />
-                  <PolarAngleAxis dataKey="subject" />
-                  <PolarRadiusAxis />
-                  <Radar
-                    name="Compatibility"
-                    dataKey="value"
-                    stroke="#8884d8"
-                    fill="#8884d8"
-                    fillOpacity={0.3}
-                  />
-                </RadarChart>
-              </ResponsiveContainer>
+            <div className="text-2xl font-bold">
+              {Math.round(matchResults[0]?.success_probability * 100)}%
             </div>
+            <Progress value={matchResults[0]?.success_probability * 100} className="mt-2" />
+            <p className="text-xs text-muted-foreground mt-1">Predicted success</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <Zap className="h-4 w-4" />
+              Quality Score
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {Math.round(matchResults[0]?.estimated_project_outcome.quality_score * 100)}%
+            </div>
+            <Progress value={matchResults[0]?.estimated_project_outcome.quality_score * 100} className="mt-2" />
+            <p className="text-xs text-muted-foreground mt-1">Expected quality</p>
           </CardContent>
         </Card>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Layers className="h-5 w-5" />
-            ML Model Performance
-          </CardTitle>
+          <CardTitle>Match Score Distribution</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-purple-500" />
-                <span className="font-medium">Neural Network Layers</span>
-              </div>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-sm">Input Layer</span>
-                  <Badge variant="outline">256 nodes</Badge>
+          <div className="space-y-3">
+            {matchResults.slice(0, 5).map((result, index) => (
+              <div key={result.auditor_id} className="flex items-center gap-3">
+                <div className="w-16 text-sm font-medium">
+                  #{index + 1}
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-sm">Hidden Layers</span>
-                  <Badge variant="outline">3 x 128 nodes</Badge>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm">Output Layer</span>
-                  <Badge variant="outline">1 node</Badge>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <span className="font-medium">Training Metrics</span>
-              <div className="space-y-3">
-                <div>
+                <div className="flex-1">
                   <div className="flex justify-between mb-1">
-                    <span className="text-sm">Model Accuracy</span>
-                    <span className="text-sm font-medium">94.7%</span>
+                    <span className="text-sm font-medium">
+                      {result.auditor_profile.name}
+                    </span>
+                    <span className="text-sm">
+                      {Math.round(result.ml_confidence_score * 100)}%
+                    </span>
                   </div>
-                  <Progress value={94.7} className="h-2" />
+                  <Progress value={result.ml_confidence_score * 100} className="h-2" />
                 </div>
                 <div>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-sm">Precision</span>
-                    <span className="text-sm font-medium">91.2%</span>
-                  </div>
-                  <Progress value={91.2} className="h-2" />
-                </div>
-                <div>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-sm">Recall</span>
-                    <span className="text-sm font-medium">88.9%</span>
-                  </div>
-                  <Progress value={88.9} className="h-2" />
+                  <Badge variant={index === 0 ? 'default' : 'secondary'}>
+                    {index === 0 ? 'Best' : 'Good'}
+                  </Badge>
                 </div>
               </div>
-            </div>
-
-            <div className="space-y-4">
-              <span className="font-medium">Feature Engineering</span>
-              <div className="space-y-2">
-                <div className="text-sm">
-                  <span className="text-muted-foreground">Features Extracted:</span>
-                  <span className="font-medium ml-2">47</span>
-                </div>
-                <div className="text-sm">
-                  <span className="text-muted-foreground">Dimensionality:</span>
-                  <span className="font-medium ml-2">Reduced 80%</span>
-                </div>
-                <div className="text-sm">
-                  <span className="text-muted-foreground">Data Quality:</span>
-                  <Badge variant="default" className="ml-2">Excellent</Badge>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </CardContent>
       </Card>
+
+      {insights && (
+        <Card>
+          <CardHeader>
+            <CardTitle>AI Insights Summary</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center">
+                <div className="text-lg font-bold">{insights.summary?.total_candidates || 0}</div>
+                <div className="text-xs text-muted-foreground">Candidates</div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-bold">
+                  {Math.round((insights.summary?.average_confidence || 0) * 100)}%
+                </div>
+                <div className="text-xs text-muted-foreground">Avg Score</div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-bold">
+                  {insights.risk_analysis?.overall_risk_level || 'N/A'}
+                </div>
+                <div className="text-xs text-muted-foreground">Risk Level</div>
+              </div>
+              <div className="text-center">
+                <Badge variant="default">
+                  {insights.summary?.recommendation || 'Processing'}
+                </Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

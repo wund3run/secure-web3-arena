@@ -1,195 +1,159 @@
 
 import { useState, useCallback } from 'react';
-import { toast } from 'sonner';
 
 interface AdvancedMatchingCriteria {
   technical_requirements: string[];
-  project_complexity: 'low' | 'medium' | 'high' | 'enterprise';
+  project_complexity: 'low' | 'medium' | 'high';
   budget_range: [number, number];
-  timeline_urgency: 'flexible' | 'normal' | 'urgent' | 'critical';
+  timeline_urgency: 'low' | 'normal' | 'high';
   quality_threshold: number;
-  geographic_preferences?: string[];
-  language_requirements?: string[];
-  certification_requirements?: string[];
   past_performance_weight: number;
   availability_weight: number;
   cost_weight: number;
 }
 
-interface MLMatchingResult {
-  auditor_id: string;
-  auditor_profile: any;
-  ml_confidence_score: number;
-  feature_scores: {
-    technical_compatibility: number;
-    availability_score: number;
-    cost_efficiency: number;
-    quality_indicator: number;
-    risk_assessment: number;
-    timeline_feasibility: number;
+interface ModelMetrics {
+  accuracy: number;
+  precision: number;
+  recall: number;
+  f1_score: number;
+  confidence_interval: [number, number];
+}
+
+interface MatchingReport {
+  summary: {
+    total_candidates: number;
+    qualified_matches: number;
+    average_confidence: number;
+    top_match_score: number;
+    recommendation: string;
   };
-  prediction_confidence: number;
-  success_probability: number;
-  risk_factors: string[];
-  optimization_suggestions: string[];
-  estimated_project_outcome: {
-    completion_probability: number;
-    quality_score: number;
-    timeline_adherence: number;
-    budget_efficiency: number;
+  risk_analysis: {
+    overall_risk_level: 'low' | 'medium' | 'high';
+    primary_concerns: string[];
+    mitigation_strategies: string[];
   };
+  optimization_opportunities: string[];
 }
 
 export const useAdvancedMatching = () => {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [mlResults, setMlResults] = useState<MLMatchingResult[]>([]);
-  const [modelMetrics, setModelMetrics] = useState({
-    accuracy: 0,
-    precision: 0,
-    recall: 0,
-    f1_score: 0,
-    processing_time: 0
-  });
+  const [mlResults, setMlResults] = useState<any[]>([]);
+  const [modelMetrics, setModelMetrics] = useState<ModelMetrics | null>(null);
 
   const runAdvancedMatching = useCallback(async (criteria: AdvancedMatchingCriteria) => {
     setIsProcessing(true);
-    const startTime = Date.now();
-
+    
     try {
       // Simulate advanced ML processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Mock ML model results with sophisticated scoring
-      const mockResults: MLMatchingResult[] = [
+      await new Promise(resolve => setTimeout(resolve, 4000));
+      
+      // Mock results with advanced analytics
+      const results = [
         {
           auditor_id: '1',
           auditor_profile: {
-            name: 'Alice Security Expert',
-            expertise: ['Solidity', 'DeFi', 'Smart Contracts'],
-            experience_years: 5,
-            rating: 4.8,
-            past_audits: 50
+            name: 'CryptoShield Security',
+            rating: 4.9,
+            past_audits: 124,
+            experience_years: 8,
+            expertise: ['Solidity', 'DeFi', 'Zero-Knowledge Proofs'],
           },
           ml_confidence_score: 0.94,
-          feature_scores: {
-            technical_compatibility: 0.92,
-            availability_score: 0.88,
-            cost_efficiency: 0.76,
-            quality_indicator: 0.91,
-            risk_assessment: 0.15,
-            timeline_feasibility: 0.89
-          },
-          prediction_confidence: 0.91,
-          success_probability: 0.88,
-          risk_factors: ['High workload period approaching'],
-          optimization_suggestions: [
-            'Consider flexible timeline for better cost efficiency',
-            'Strong technical match with low risk'
-          ],
+          success_probability: 0.89,
+          risk_factors: [],
+          optimization_suggestions: ['Perfect technical match', 'Excellent track record'],
           estimated_project_outcome: {
             completion_probability: 0.92,
-            quality_score: 0.89,
-            timeline_adherence: 0.85,
-            budget_efficiency: 0.78
-          }
+            quality_score: 0.91,
+            timeline_accuracy: 0.88,
+          },
         },
         {
           auditor_id: '2',
           auditor_profile: {
-            name: 'Bob Audit Master',
-            expertise: ['Rust', 'Solana', 'Security'],
-            experience_years: 7,
-            rating: 4.6,
-            past_audits: 75
+            name: 'BlockSafe Auditors',
+            rating: 4.7,
+            past_audits: 87,
+            experience_years: 6,
+            expertise: ['Smart Contracts', 'NFT Security', 'Upgradeable Contracts'],
           },
           ml_confidence_score: 0.87,
-          feature_scores: {
-            technical_compatibility: 0.85,
-            availability_score: 0.95,
-            cost_efficiency: 0.82,
-            quality_indicator: 0.88,
-            risk_assessment: 0.22,
-            timeline_feasibility: 0.93
-          },
-          prediction_confidence: 0.84,
-          success_probability: 0.81,
-          risk_factors: ['Different blockchain expertise', 'Higher hourly rate'],
-          optimization_suggestions: [
-            'Excellent availability match',
-            'Consider for urgent projects'
-          ],
+          success_probability: 0.82,
+          risk_factors: ['Moderate experience with your specific requirements'],
+          optimization_suggestions: ['Strong general expertise', 'Good availability'],
           estimated_project_outcome: {
-            completion_probability: 0.86,
+            completion_probability: 0.85,
             quality_score: 0.84,
-            timeline_adherence: 0.91,
-            budget_efficiency: 0.73
-          }
-        }
+            timeline_accuracy: 0.86,
+          },
+        },
       ];
 
-      // Sort by ML confidence score
-      const sortedResults = mockResults.sort((a, b) => b.ml_confidence_score - a.ml_confidence_score);
+      setMlResults(results);
       
-      setMlResults(sortedResults);
-      
-      // Mock model performance metrics
+      // Set mock model metrics
       setModelMetrics({
-        accuracy: 0.947,
-        precision: 0.912,
-        recall: 0.889,
-        f1_score: 0.900,
-        processing_time: Date.now() - startTime
+        accuracy: 0.92,
+        precision: 0.88,
+        recall: 0.94,
+        f1_score: 0.91,
+        confidence_interval: [0.87, 0.97],
       });
-
-      toast.success(`Advanced matching completed with ${(sortedResults[0]?.ml_confidence_score * 100).toFixed(1)}% confidence`);
       
-      return sortedResults;
-    } catch (error) {
-      console.error('Advanced matching failed:', error);
-      toast.error('Advanced matching analysis failed');
-      return [];
+      return results;
     } finally {
       setIsProcessing(false);
     }
   }, []);
 
-  const optimizeMatchingParameters = useCallback((feedback: {
-    selected_auditor: string;
-    satisfaction_rating: number;
-    outcome_success: boolean;
-  }) => {
-    // In a real implementation, this would update the ML model with feedback
-    toast.info('Feedback recorded. ML model will be updated for improved future matches.');
-  }, []);
-
-  const generateMatchingReport = useCallback((results: MLMatchingResult[]) => {
-    if (results.length === 0) return null;
+  const generateMatchingReport = useCallback((results: any[]): MatchingReport => {
+    if (results.length === 0) {
+      return {
+        summary: {
+          total_candidates: 0,
+          qualified_matches: 0,
+          average_confidence: 0,
+          top_match_score: 0,
+          recommendation: 'No matches found',
+        },
+        risk_analysis: {
+          overall_risk_level: 'high',
+          primary_concerns: ['No qualified auditors available'],
+          mitigation_strategies: ['Expand search criteria', 'Adjust timeline'],
+        },
+        optimization_opportunities: [],
+      };
+    }
 
     const avgConfidence = results.reduce((sum, r) => sum + r.ml_confidence_score, 0) / results.length;
-    const topMatch = results[0];
-    
+    const topScore = Math.max(...results.map(r => r.ml_confidence_score));
+
     return {
       summary: {
         total_candidates: results.length,
+        qualified_matches: results.filter(r => r.ml_confidence_score > 0.7).length,
         average_confidence: avgConfidence,
-        top_match_score: topMatch.ml_confidence_score,
-        recommendation: topMatch.ml_confidence_score > 0.9 ? 'highly_recommended' : 'recommended'
+        top_match_score: topScore,
+        recommendation: topScore > 0.9 ? 'Excellent match found' : 'Good matches available',
       },
-      model_performance: modelMetrics,
       risk_analysis: {
-        overall_risk_level: topMatch.feature_scores.risk_assessment < 0.3 ? 'low' : 'medium',
-        primary_concerns: topMatch.risk_factors,
-        mitigation_strategies: topMatch.optimization_suggestions
-      }
+        overall_risk_level: topScore > 0.8 ? 'low' : 'medium',
+        primary_concerns: ['Timeline constraints', 'Budget considerations'],
+        mitigation_strategies: ['Early engagement recommended', 'Clear scope definition'],
+      },
+      optimization_opportunities: [
+        'Consider multiple auditor engagement',
+        'Implement continuous monitoring',
+      ],
     };
-  }, [modelMetrics]);
+  }, []);
 
   return {
     isProcessing,
     mlResults,
     modelMetrics,
     runAdvancedMatching,
-    optimizeMatchingParameters,
-    generateMatchingReport
+    generateMatchingReport,
   };
 };
