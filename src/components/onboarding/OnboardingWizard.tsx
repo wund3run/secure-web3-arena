@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 
 export type UserType = 'auditor' | 'project_owner';
 
-interface OnboardingData {
+export interface OnboardingData {
   userType: UserType | null;
   profileData: {
     fullName: string;

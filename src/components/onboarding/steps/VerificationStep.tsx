@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Upload, FileText, Github, Linkedin } from 'lucide-react';
 import type { UserType } from '../OnboardingWizard';
 
@@ -34,157 +33,152 @@ export const VerificationStep: React.FC<VerificationStepProps> = ({
     onChange({ ...data, [field]: value });
   };
 
-  if (userType !== 'auditor') {
-    // Simplified version for project owners
-    return (
-      <div className="space-y-6">
-        <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold">Optional Information</h2>
-          <p className="text-muted-foreground">
-            Help auditors understand your project better
-          </p>
-        </div>
+  const addPortfolioLink = () => {
+    updateField('portfolioLinks', [...data.portfolioLinks, '']);
+  };
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Professional Links</CardTitle>
-            <CardDescription>
-              Share your professional profiles (optional)
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="linkedin">LinkedIn Profile</Label>
-              <div className="flex">
-                <div className="flex items-center px-3 border border-r-0 rounded-l-md bg-muted">
-                  <Linkedin className="h-4 w-4" />
-                </div>
-                <Input
-                  id="linkedin"
-                  value={data.linkedinUrl}
-                  onChange={(e) => updateField('linkedinUrl', e.target.value)}
-                  placeholder="https://linkedin.com/in/username"
-                  className="rounded-l-none"
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+  const updatePortfolioLink = (index: number, value: string) => {
+    const links = [...data.portfolioLinks];
+    links[index] = value;
+    updateField('portfolioLinks', links);
+  };
 
-        <div className="flex justify-between">
-          <Button variant="outline" onClick={onPrev}>
-            Back
-          </Button>
-          <Button onClick={onNext}>
-            Continue
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  const removePortfolioLink = (index: number) => {
+    const links = data.portfolioLinks.filter((_, i) => i !== index);
+    updateField('portfolioLinks', links);
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    updateField('documents', [...data.documents, ...files]);
+  };
 
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold">Verification & Portfolio</h2>
+        <h2 className="text-2xl font-bold">
+          {userType === 'auditor' ? 'Verification & Portfolio' : 'Project Information'}
+        </h2>
         <p className="text-muted-foreground">
-          Build trust with potential clients by sharing your credentials
+          {userType === 'auditor' 
+            ? 'Help us verify your expertise and build trust with clients'
+            : 'Provide additional information about your organization'
+          }
         </p>
       </div>
 
-      <Alert>
-        <FileText className="h-4 w-4" />
-        <AlertDescription>
-          Verification helps build trust with clients and may be required for certain high-value audits.
-          All information is optional but recommended for serious auditors.
-        </AlertDescription>
-      </Alert>
+      {userType === 'auditor' && (
+        <>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Verification Documents
+              </CardTitle>
+              <CardDescription>
+                Upload certificates, credentials, or other verification documents (optional)
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center">
+                <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <p className="text-sm text-muted-foreground mb-4">
+                  Drop files here or click to browse
+                </p>
+                <input
+                  type="file"
+                  multiple
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                  id="file-upload"
+                />
+                <Button asChild variant="outline">
+                  <label htmlFor="file-upload" className="cursor-pointer">
+                    Choose Files
+                  </label>
+                </Button>
+              </div>
+              
+              {data.documents.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="text-sm font-medium mb-2">Uploaded Files:</h4>
+                  <ul className="space-y-1">
+                    {data.documents.map((file, index) => (
+                      <li key={index} className="text-sm text-muted-foreground">
+                        {file.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Portfolio Links</CardTitle>
+              <CardDescription>
+                Share links to your previous work, audit reports, or project showcases
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {data.portfolioLinks.map((link, index) => (
+                <div key={index} className="flex gap-2">
+                  <Input
+                    placeholder="https://example.com/my-audit-report"
+                    value={link}
+                    onChange={(e) => updatePortfolioLink(index, e.target.value)}
+                  />
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => removePortfolioLink(index)}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ))}
+              <Button variant="outline" onClick={addPortfolioLink}>
+                Add Portfolio Link
+              </Button>
+            </CardContent>
+          </Card>
+        </>
+      )}
 
       <Card>
         <CardHeader>
           <CardTitle>Professional Profiles</CardTitle>
           <CardDescription>
-            Connect your professional accounts to build credibility
+            Connect your professional social profiles
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="github">GitHub Username</Label>
-            <div className="flex">
-              <div className="flex items-center px-3 border border-r-0 rounded-l-md bg-muted">
-                <Github className="h-4 w-4" />
-              </div>
-              <Input
-                id="github"
-                value={data.githubUsername}
-                onChange={(e) => updateField('githubUsername', e.target.value)}
-                placeholder="username"
-                className="rounded-l-none"
-              />
-            </div>
+            <Label htmlFor="github" className="flex items-center gap-2">
+              <Github className="h-4 w-4" />
+              GitHub Username
+            </Label>
+            <Input
+              id="github"
+              placeholder="your-username"
+              value={data.githubUsername}
+              onChange={(e) => updateField('githubUsername', e.target.value)}
+            />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="linkedin">LinkedIn Profile</Label>
-            <div className="flex">
-              <div className="flex items-center px-3 border border-r-0 rounded-l-md bg-muted">
-                <Linkedin className="h-4 w-4" />
-              </div>
-              <Input
-                id="linkedin"
-                value={data.linkedinUrl}
-                onChange={(e) => updateField('linkedinUrl', e.target.value)}
-                placeholder="https://linkedin.com/in/username"
-                className="rounded-l-none"
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Portfolio Links</CardTitle>
-          <CardDescription>
-            Share links to your previous audit reports or security research
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {data.portfolioLinks.map((link, index) => (
-              <div key={index} className="flex gap-2">
-                <Input
-                  value={link}
-                  onChange={(e) => {
-                    const newLinks = [...data.portfolioLinks];
-                    newLinks[index] = e.target.value;
-                    updateField('portfolioLinks', newLinks);
-                  }}
-                  placeholder="https://example.com/audit-report"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    const newLinks = data.portfolioLinks.filter((_, i) => i !== index);
-                    updateField('portfolioLinks', newLinks);
-                  }}
-                >
-                  Remove
-                </Button>
-              </div>
-            ))}
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                updateField('portfolioLinks', [...data.portfolioLinks, '']);
-              }}
-            >
-              Add Portfolio Link
-            </Button>
+            <Label htmlFor="linkedin" className="flex items-center gap-2">
+              <Linkedin className="h-4 w-4" />
+              LinkedIn Profile URL
+            </Label>
+            <Input
+              id="linkedin"
+              placeholder="https://linkedin.com/in/your-profile"
+              value={data.linkedinUrl}
+              onChange={(e) => updateField('linkedinUrl', e.target.value)}
+            />
           </div>
         </CardContent>
       </Card>

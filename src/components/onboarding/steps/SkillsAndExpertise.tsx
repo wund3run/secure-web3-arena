@@ -2,10 +2,11 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Slider } from '@/components/ui/slider';
 import type { UserType } from '../OnboardingWizard';
 
 interface SkillsData {
@@ -23,41 +24,15 @@ interface SkillsAndExpertiseProps {
   onPrev: () => void;
 }
 
-const COMMON_SKILLS = [
-  'Smart Contract Auditing',
-  'Solidity',
-  'Rust',
-  'JavaScript/TypeScript',
-  'DeFi Protocols',
-  'NFT Standards',
-  'Gas Optimization',
-  'Security Best Practices',
-  'Formal Verification',
-  'Penetration Testing'
+const commonSkills = [
+  'Solidity', 'Smart Contract Auditing', 'Security Testing', 'Vulnerability Assessment',
+  'Code Review', 'Penetration Testing', 'Blockchain Security', 'DeFi Protocols',
+  'NFT Security', 'Gas Optimization', 'Formal Verification', 'Static Analysis'
 ];
 
-const BLOCKCHAIN_NETWORKS = [
-  'Ethereum',
-  'Polygon',
-  'Binance Smart Chain',
-  'Avalanche',
-  'Solana',
-  'Cardano',
-  'Polkadot',
-  'Cosmos',
-  'Near',
-  'Algorand'
-];
-
-const SPECIALIZATIONS = [
-  'DeFi Security',
-  'NFT Security',
-  'Cross-chain Bridges',
-  'Layer 2 Solutions',
-  'DAO Governance',
-  'Token Economics',
-  'Smart Contract Architecture',
-  'Consensus Mechanisms'
+const blockchainNetworks = [
+  'Ethereum', 'Polygon', 'Binance Smart Chain', 'Solana', 'Avalanche',
+  'Arbitrum', 'Optimism', 'Fantom', 'Cardano', 'Polkadot'
 ];
 
 export const SkillsAndExpertise: React.FC<SkillsAndExpertiseProps> = ({
@@ -67,27 +42,49 @@ export const SkillsAndExpertise: React.FC<SkillsAndExpertiseProps> = ({
   onNext,
   onPrev
 }) => {
-  const toggleSkill = (skill: string, type: 'skills' | 'specializations' | 'blockchainExpertise') => {
-    const current = data[type];
-    const updated = current.includes(skill)
-      ? current.filter(s => s !== skill)
-      : [...current, skill];
-    
-    onChange({ ...data, [type]: updated });
+  const [newSkill, setNewSkill] = React.useState('');
+
+  const addSkill = (skill: string) => {
+    if (skill && !data.skills.includes(skill)) {
+      onChange({ ...data, skills: [...data.skills, skill] });
+    }
+    setNewSkill('');
+  };
+
+  const removeSkill = (skillToRemove: string) => {
+    onChange({ ...data, skills: data.skills.filter(skill => skill !== skillToRemove) });
+  };
+
+  const toggleBlockchain = (blockchain: string) => {
+    const isSelected = data.blockchainExpertise.includes(blockchain);
+    if (isSelected) {
+      onChange({
+        ...data,
+        blockchainExpertise: data.blockchainExpertise.filter(b => b !== blockchain)
+      });
+    } else {
+      onChange({
+        ...data,
+        blockchainExpertise: [...data.blockchainExpertise, blockchain]
+      });
+    }
   };
 
   const updateExperience = (value: number[]) => {
     onChange({ ...data, experience: value[0] });
   };
 
-  if (userType !== 'auditor') {
-    // Simplified version for project owners
+  const isValid = userType === 'auditor' 
+    ? data.skills.length > 0 && data.blockchainExpertise.length > 0
+    : true; // Project owners don't need technical skills
+
+  if (userType === 'project_owner') {
     return (
       <div className="space-y-6">
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-bold">Project Preferences</h2>
           <p className="text-muted-foreground">
-            Help us understand your project needs
+            Tell us about your project to help us find the right auditors
           </p>
         </div>
 
@@ -95,20 +92,21 @@ export const SkillsAndExpertise: React.FC<SkillsAndExpertiseProps> = ({
           <CardHeader>
             <CardTitle>Blockchain Networks</CardTitle>
             <CardDescription>
-              Which networks do you work with?
+              Which blockchain networks is your project built on?
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {BLOCKCHAIN_NETWORKS.map(network => (
-                <Badge
-                  key={network}
-                  variant={data.blockchainExpertise.includes(network) ? "default" : "outline"}
-                  className="cursor-pointer"
-                  onClick={() => toggleSkill(network, 'blockchainExpertise')}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+              {blockchainNetworks.map(blockchain => (
+                <Button
+                  key={blockchain}
+                  variant={data.blockchainExpertise.includes(blockchain) ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => toggleBlockchain(blockchain)}
+                  className="justify-start"
                 >
-                  {network}
-                </Badge>
+                  {blockchain}
+                </Button>
               ))}
             </div>
           </CardContent>
@@ -129,9 +127,9 @@ export const SkillsAndExpertise: React.FC<SkillsAndExpertiseProps> = ({
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold">Your Expertise</h2>
+        <h2 className="text-2xl font-bold">Skills & Expertise</h2>
         <p className="text-muted-foreground">
-          Help clients understand your security audit capabilities
+          Share your technical expertise to showcase your capabilities
         </p>
       </div>
 
@@ -139,19 +137,21 @@ export const SkillsAndExpertise: React.FC<SkillsAndExpertiseProps> = ({
         <CardHeader>
           <CardTitle>Years of Experience</CardTitle>
           <CardDescription>
-            How many years have you been doing security audits?
+            How many years of security auditing experience do you have?
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <Slider
-              value={[data.experience]}
-              onValueChange={updateExperience}
-              max={20}
-              min={0}
-              step={1}
-              className="w-full"
-            />
+            <div className="px-3">
+              <Slider
+                value={[data.experience]}
+                onValueChange={updateExperience}
+                max={20}
+                min={0}
+                step={1}
+                className="w-full"
+              />
+            </div>
             <div className="text-center">
               <span className="text-2xl font-bold">{data.experience}</span>
               <span className="text-muted-foreground ml-1">
@@ -166,66 +166,82 @@ export const SkillsAndExpertise: React.FC<SkillsAndExpertiseProps> = ({
         <CardHeader>
           <CardTitle>Technical Skills</CardTitle>
           <CardDescription>
-            Select the technologies and practices you're proficient in
+            Add your security and blockchain-related skills
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-2">
-            {COMMON_SKILLS.map(skill => (
-              <Badge
-                key={skill}
-                variant={data.skills.includes(skill) ? "default" : "outline"}
-                className="cursor-pointer"
-                onClick={() => toggleSkill(skill, 'skills')}
-              >
-                {skill}
-              </Badge>
-            ))}
+        <CardContent className="space-y-4">
+          <div className="flex gap-2">
+            <Input
+              placeholder="Add a skill..."
+              value={newSkill}
+              onChange={(e) => setNewSkill(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  addSkill(newSkill);
+                }
+              }}
+            />
+            <Button onClick={() => addSkill(newSkill)} disabled={!newSkill}>
+              Add
+            </Button>
           </div>
+
+          <div>
+            <h4 className="text-sm font-medium mb-2">Common Skills</h4>
+            <div className="flex flex-wrap gap-2">
+              {commonSkills.map(skill => (
+                <Button
+                  key={skill}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => addSkill(skill)}
+                  disabled={data.skills.includes(skill)}
+                >
+                  {skill}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {data.skills.length > 0 && (
+            <div>
+              <h4 className="text-sm font-medium mb-2">Your Skills</h4>
+              <div className="flex flex-wrap gap-2">
+                {data.skills.map(skill => (
+                  <Badge key={skill} variant="default" className="flex items-center gap-1">
+                    {skill}
+                    <X 
+                      className="h-3 w-3 cursor-pointer" 
+                      onClick={() => removeSkill(skill)}
+                    />
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Blockchain Networks</CardTitle>
+          <CardTitle>Blockchain Expertise</CardTitle>
           <CardDescription>
             Which blockchain networks do you have experience auditing?
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap gap-2">
-            {BLOCKCHAIN_NETWORKS.map(network => (
-              <Badge
-                key={network}
-                variant={data.blockchainExpertise.includes(network) ? "default" : "outline"}
-                className="cursor-pointer"
-                onClick={() => toggleSkill(network, 'blockchainExpertise')}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {blockchainNetworks.map(blockchain => (
+              <Button
+                key={blockchain}
+                variant={data.blockchainExpertise.includes(blockchain) ? "default" : "outline"}
+                size="sm"
+                onClick={() => toggleBlockchain(blockchain)}
+                className="justify-start"
               >
-                {network}
-              </Badge>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Specializations</CardTitle>
-          <CardDescription>
-            What are your areas of specialization?
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-2">
-            {SPECIALIZATIONS.map(spec => (
-              <Badge
-                key={spec}
-                variant={data.specializations.includes(spec) ? "default" : "outline"}
-                className="cursor-pointer"
-                onClick={() => toggleSkill(spec, 'specializations')}
-              >
-                {spec}
-              </Badge>
+                {blockchain}
+              </Button>
             ))}
           </div>
         </CardContent>
@@ -235,7 +251,7 @@ export const SkillsAndExpertise: React.FC<SkillsAndExpertiseProps> = ({
         <Button variant="outline" onClick={onPrev}>
           Back
         </Button>
-        <Button onClick={onNext} disabled={data.skills.length === 0}>
+        <Button onClick={onNext} disabled={!isValid}>
           Continue
         </Button>
       </div>
