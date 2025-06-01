@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { User, Globe } from 'lucide-react';
 import type { UserType } from '../OnboardingWizard';
 
 interface ProfileData {
@@ -34,29 +35,25 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
     onChange({ ...data, [field]: value });
   };
 
-  const updateSocialLink = (platform: string, url: string) => {
-    onChange({
-      ...data,
-      socialLinks: { ...data.socialLinks, [platform]: url }
-    });
-  };
-
   const isValid = data.fullName.trim() && data.displayName.trim();
 
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold">Set Up Your Profile</h2>
+        <h2 className="text-2xl font-bold">Set up your profile</h2>
         <p className="text-muted-foreground">
-          Tell us about yourself to help others understand your expertise
+          Tell us about yourself to create a compelling {userType === 'auditor' ? 'auditor' : 'project owner'} profile
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Basic Information</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <User className="h-5 w-5" />
+            Basic Information
+          </CardTitle>
           <CardDescription>
-            This information will be visible on your public profile
+            Your basic profile information
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -65,18 +62,20 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
               <Label htmlFor="fullName">Full Name *</Label>
               <Input
                 id="fullName"
+                placeholder="John Doe"
                 value={data.fullName}
                 onChange={(e) => updateField('fullName', e.target.value)}
-                placeholder="Enter your full name"
+                required
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="displayName">Display Name *</Label>
               <Input
                 id="displayName"
+                placeholder="johndoe"
                 value={data.displayName}
                 onChange={(e) => updateField('displayName', e.target.value)}
-                placeholder="How you want to be known"
+                required
               />
             </div>
           </div>
@@ -85,57 +84,27 @@ export const ProfileSetup: React.FC<ProfileSetupProps> = ({
             <Label htmlFor="bio">Bio</Label>
             <Textarea
               id="bio"
+              placeholder={userType === 'auditor' 
+                ? "Tell potential clients about your security expertise and experience..."
+                : "Describe your project or organization..."
+              }
               value={data.bio}
               onChange={(e) => updateField('bio', e.target.value)}
-              placeholder={
-                userType === 'auditor' 
-                  ? "Tell potential clients about your security expertise and experience..."
-                  : "Tell auditors about your project and what you're looking for..."
-              }
-              rows={3}
+              rows={4}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="website">Website</Label>
+            <Label htmlFor="website" className="flex items-center gap-2">
+              <Globe className="h-4 w-4" />
+              Website
+            </Label>
             <Input
               id="website"
-              type="url"
+              placeholder="https://yourwebsite.com"
               value={data.website}
               onChange={(e) => updateField('website', e.target.value)}
-              placeholder="https://your-website.com"
             />
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Social Links</CardTitle>
-          <CardDescription>
-            Connect your social profiles to build trust
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="twitter">Twitter</Label>
-              <Input
-                id="twitter"
-                value={data.socialLinks.twitter || ''}
-                onChange={(e) => updateSocialLink('twitter', e.target.value)}
-                placeholder="https://twitter.com/username"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="linkedin">LinkedIn</Label>
-              <Input
-                id="linkedin"
-                value={data.socialLinks.linkedin || ''}
-                onChange={(e) => updateSocialLink('linkedin', e.target.value)}
-                placeholder="https://linkedin.com/in/username"
-              />
-            </div>
           </div>
         </CardContent>
       </Card>
