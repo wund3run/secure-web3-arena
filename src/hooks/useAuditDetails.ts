@@ -141,13 +141,13 @@ export const useAuditDetails = (auditId?: string) => {
           low: findings?.filter(f => f.severity === 'low').length || 0,
         };
 
-        // Ensure client data has proper structure
-        const clientData = audit.client && typeof audit.client === 'object' && 'id' in audit.client 
+        // Ensure client data has proper structure with null checks
+        const clientData = audit.client && audit.client !== null && typeof audit.client === 'object' && 'id' in audit.client 
           ? audit.client as { id: string; full_name?: string; avatar_url?: string; }
           : { id: audit.client_id, full_name: undefined, avatar_url: undefined };
 
-        // Ensure auditor data has proper structure
-        const auditorData = audit.auditor && typeof audit.auditor === 'object' && 'id' in audit.auditor
+        // Ensure auditor data has proper structure with null checks
+        const auditorData = audit.auditor && audit.auditor !== null && typeof audit.auditor === 'object' && 'id' in audit.auditor
           ? audit.auditor as { id: string; full_name?: string; avatar_url?: string; }
           : audit.assigned_auditor_id ? { id: audit.assigned_auditor_id, full_name: undefined, avatar_url: undefined } : undefined;
 
