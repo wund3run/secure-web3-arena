@@ -1,166 +1,56 @@
 
-import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { HelmetProvider } from 'react-helmet-async';
-import { Toaster } from 'sonner';
-import { AuthProvider } from '@/contexts/auth';
-import { NotificationProvider } from '@/contexts/NotificationContext';
-import { ProductionErrorBoundary } from '@/components/error/ProductionErrorBoundary';
-import { PerformanceMonitor } from '@/components/performance/PerformanceMonitor';
-import { RealtimeNotificationHandler } from '@/components/notifications/RealtimeNotificationHandler';
-import { applySecurityHeaders } from '@/utils/security';
-import Home from '@/pages/Home';
-import Auth from '@/pages/Auth';
-import Marketplace from '@/pages/Marketplace';
-import RequestAudit from '@/pages/RequestAudit';
-import Audits from '@/pages/Audits';
-import AuditDetails from '@/pages/AuditDetails';
-import Dashboard from '@/pages/Dashboard';
-import AdminDashboard from '@/pages/AdminDashboard';
-import ServiceProviderOnboarding from '@/pages/onboarding/ServiceProviderOnboarding';
-import AuditorOnboarding from '@/pages/onboarding/AuditorOnboarding';
-import SecuritySettings from '@/pages/SecuritySettings';
-import Terms from '@/pages/Terms';
-import Privacy from '@/pages/Privacy';
-import Documentation from '@/pages/Documentation';
-import Blog from '@/pages/Blog';
-import Vulnerabilities from '@/pages/Vulnerabilities';
-import Resources from '@/pages/Resources';
-import Contact from '@/pages/Contact';
-import Support from '@/pages/Support';
-import Community from '@/pages/Community';
-import About from '@/pages/About';
-import Careers from '@/pages/Careers';
-import Pricing from '@/pages/Pricing';
-import FAQ from '@/pages/FAQ';
-import Web3Security from '@/pages/Web3Security';
-import AuditGuidelines from '@/pages/AuditGuidelines';
-import { RoleBasedRoute } from '@/components/auth/RoleBasedRoute';
-import { UserProfileDetector } from '@/components/user-profiling/UserProfileDetector';
-import SecurityAudits from './pages/SecurityAudits';
-import CodeReviews from './pages/CodeReviews';
-import Templates from './pages/Templates';
-import Tutorials from './pages/Tutorials';
-import SecurityGuides from './pages/SecurityGuides';
-import KnowledgeBase from './pages/KnowledgeBase';
-import AiTools from './pages/AiTools';
-import Forum from './pages/Forum';
-import SecurityInsights from './pages/SecurityInsights';
-import { 
-  PenetrationTesting, 
-  Consulting, 
-  VulnerabilityScanner, 
-  PlatformReports,
-  Events,
-  Challenges,
-  Leaderboard,
-  SubmitService,
-  ContactProvider,
-  SecurityPolicy
-} from './pages/missing-pages';
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/auth";
+import { NotificationProvider } from "@/contexts/NotificationContext";
+import { ThemeProvider } from "next-themes";
+import { useEffect } from "react";
+import Index from "./pages/Index";
+import { AnalyticsService } from "./services/analyticsService";
+import { MonitoringService } from "./services/monitoringService";
+import { CDNManager } from "./utils/cdn-manager";
+import { Environment } from "./utils/environment";
 
-// Create a query client instance with optimized settings
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      refetchOnWindowFocus: false,
-      retry: (failureCount, error) => {
-        // Don't retry on 4xx errors
-        if (error && typeof error === 'object' && 'status' in error) {
-          const status = (error as any).status;
-          if (status >= 400 && status < 500) return false;
-        }
-        return failureCount < 3;
-      },
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 function App() {
-  // Apply security headers on app initialization
   useEffect(() => {
-    applySecurityHeaders();
+    // Initialize production services
+    if (Environment.analyticsEnabled) {
+      AnalyticsService.init();
+    }
+    
+    if (Environment.monitoringEnabled) {
+      MonitoringService.init();
+    }
+    
+    // Setup CDN optimizations
+    CDNManager.setupDNSPrefetch();
+    CDNManager.preloadCriticalAssets();
+    
+    // Track initial page view
+    AnalyticsService.trackPageView('app_init');
   }, []);
 
   return (
-    <ProductionErrorBoundary>
-      <HelmetProvider>
-        <QueryClientProvider client={queryClient}>
-          <BrowserRouter>
-            <Toaster />
-            <AuthProvider>
-              <NotificationProvider>
-                <UserProfileDetector />
-                <RealtimeNotificationHandler />
-                <PerformanceMonitor />
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <TooltipProvider>
+          <AuthProvider>
+            <NotificationProvider>
+              <Toaster />
+              <BrowserRouter>
                 <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="/marketplace" element={<Marketplace />} />
-                  <Route path="/request-audit" element={<RequestAudit />} />
-                  <Route path="/audits" element={<Audits />} />
-                  <Route path="/audit/:id" element={<AuditDetails />} />
-                  <Route path="/dashboard/*" element={<Dashboard />} />
-                  <Route path="/admin/*" element={<RoleBasedRoute allowedRoles={["admin"]}><AdminDashboard /></RoleBasedRoute>} />
-                  <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
-                  <Route path="/auditor-onboarding" element={<AuditorOnboarding />} />
-                  <Route path="/security-settings" element={<SecuritySettings />} />
-                  
-                  {/* Service Routes */}
-                  <Route path="/security-audits" element={<SecurityAudits />} />
-                  <Route path="/code-reviews" element={<CodeReviews />} />
-                  <Route path="/penetration-testing" element={<PenetrationTesting />} />
-                  <Route path="/consulting" element={<Consulting />} />
-                  
-                  {/* Resource Routes */}
-                  <Route path="/docs" element={<Documentation />} />
-                  <Route path="/documentation" element={<Documentation />} />
-                  <Route path="/blog" element={<Blog />} />
-                  <Route path="/vulnerabilities" element={<Vulnerabilities />} />
-                  <Route path="/resources" element={<Resources />} />
-                  <Route path="/security-guides" element={<SecurityGuides />} />
-                  <Route path="/knowledge-base" element={<KnowledgeBase />} />
-                  <Route path="/tutorials" element={<Tutorials />} />
-                  <Route path="/templates" element={<Templates />} />
-                  <Route path="/faq" element={<FAQ />} />
-                  
-                  {/* Tool Routes */}
-                  <Route path="/security-insights" element={<SecurityInsights />} />
-                  <Route path="/ai-tools" element={<AiTools />} />
-                  <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
-                  <Route path="/platform-reports" element={<PlatformReports />} />
-                  
-                  {/* Community Routes */}
-                  <Route path="/community" element={<Community />} />
-                  <Route path="/forum" element={<Forum />} />
-                  <Route path="/events" element={<Events />} />
-                  <Route path="/challenges" element={<Challenges />} />
-                  <Route path="/leaderboard" element={<Leaderboard />} />
-                  
-                  {/* Company Routes */}
-                  <Route path="/about" element={<About />} />
-                  <Route path="/careers" element={<Careers />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/support" element={<Support />} />
-                  <Route path="/pricing" element={<Pricing />} />
-                  
-                  {/* Additional Routes */}
-                  <Route path="/submit-service" element={<SubmitService />} />
-                  <Route path="/contact-provider" element={<ContactProvider />} />
-                  
-                  {/* Legal Routes */}
-                  <Route path="/terms" element={<Terms />} />
-                  <Route path="/privacy" element={<Privacy />} />
-                  <Route path="/security-policy" element={<SecurityPolicy />} />
+                  <Route path="/*" element={<Index />} />
                 </Routes>
-              </NotificationProvider>
-            </AuthProvider>
-          </BrowserRouter>
-        </QueryClientProvider>
-      </HelmetProvider>
-    </ProductionErrorBoundary>
+              </BrowserRouter>
+            </NotificationProvider>
+          </AuthProvider>
+        </TooltipProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 

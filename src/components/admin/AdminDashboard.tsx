@@ -59,8 +59,10 @@ export const AdminDashboard: React.FC = () => {
       const completedAudits = audits?.filter(a => a.status === 'completed').length || 0;
       const pendingApprovals = audits?.filter(a => a.status === 'pending').length || 0;
 
-      // Mock critical findings count since table doesn't exist in types yet
-      const criticalCount = 2;
+      // Calculate revenue from completed audits
+      const totalRevenue = audits
+        ?.filter(a => a.status === 'completed' && a.budget)
+        ?.reduce((sum, audit) => sum + (audit.budget || 0), 0) || 0;
 
       // Get recent audits with client info
       const { data: recentAuditData } = await supabase
@@ -76,9 +78,9 @@ export const AdminDashboard: React.FC = () => {
       setStats({
         totalUsers: userCount || 0,
         activeAudits,
-        totalRevenue: 50000, // This would come from payment records
+        totalRevenue,
         pendingApprovals,
-        criticalFindings: criticalCount,
+        criticalFindings: 0, // Will be calculated when audit_findings table is available
         completedAudits
       });
 
@@ -123,6 +125,9 @@ export const AdminDashboard: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalUsers}</div>
+            <p className="text-xs text-muted-foreground">
+              Registered platform users
+            </p>
           </CardContent>
         </Card>
 
@@ -133,6 +138,9 @@ export const AdminDashboard: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.activeAudits}</div>
+            <p className="text-xs text-muted-foreground">
+              Audits in progress
+            </p>
           </CardContent>
         </Card>
 
@@ -143,6 +151,9 @@ export const AdminDashboard: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">${stats.totalRevenue.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">
+              From completed audits
+            </p>
           </CardContent>
         </Card>
 
@@ -153,16 +164,9 @@ export const AdminDashboard: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.pendingApprovals}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Critical Findings</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{stats.criticalFindings}</div>
+            <p className="text-xs text-muted-foreground">
+              Awaiting review
+            </p>
           </CardContent>
         </Card>
 
@@ -173,6 +177,9 @@ export const AdminDashboard: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">{stats.completedAudits}</div>
+            <p className="text-xs text-muted-foreground">
+              Successfully finished
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -184,25 +191,31 @@ export const AdminDashboard: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {recentAudits.map((audit) => (
-              <div key={audit.id} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="space-y-1">
-                  <p className="font-medium">{audit.project_name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    Client: {audit.client?.full_name || 'Unknown'}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {audit.blockchain} • {new Date(audit.created_at).toLocaleDateString()}
-                  </p>
-                </div>
-                <div className="text-right space-y-2">
-                  {getStatusBadge(audit.status)}
-                  <p className="text-sm text-muted-foreground">
-                    ${audit.budget?.toLocaleString() || 'TBD'}
-                  </p>
-                </div>
+            {recentAudits.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                No audit requests found
               </div>
-            ))}
+            ) : (
+              recentAudits.map((audit) => (
+                <div key={audit.id} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="space-y-1">
+                    <p className="font-medium">{audit.project_name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      Client: {audit.client?.full_name || 'Unknown'}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {audit.blockchain} • {new Date(audit.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="text-right space-y-2">
+                    {getStatusBadge(audit.status)}
+                    <p className="text-sm text-muted-foreground">
+                      ${audit.budget?.toLocaleString() || 'TBD'}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>
