@@ -27,7 +27,6 @@ export const useBrowserNotifications = () => {
       const notification = new Notification(title, {
         icon: '/manifest.json',
         badge: '/manifest.json',
-        timestamp: Date.now(),
         ...options,
       });
 
