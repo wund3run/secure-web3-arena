@@ -1,174 +1,233 @@
 
 import React from 'react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { ArrowRight, FileText } from "lucide-react";
-import { AuditFormData, AuditFormErrors } from '@/types/audit-request.types';
-import { FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import type { AuditFormData } from '@/types/audit-request.types';
 
 interface ProjectDetailsStepProps {
   formData: AuditFormData;
-  formErrors?: AuditFormErrors;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   projectType: string;
-  setProjectType: React.Dispatch<React.SetStateAction<string>>;
+  setProjectType: (type: string) => void;
   handleEcosystemClick: (ecosystem: string) => void;
   nextStep: () => void;
+  formErrors: Record<string, string>;
 }
+
+const ecosystems = [
+  { name: 'Ethereum', color: 'bg-blue-500' },
+  { name: 'Polygon', color: 'bg-purple-500' },
+  { name: 'Binance Smart Chain', color: 'bg-yellow-500' },
+  { name: 'Avalanche', color: 'bg-red-500' },
+  { name: 'Solana', color: 'bg-green-500' },
+  { name: 'Arbitrum', color: 'bg-indigo-500' },
+  { name: 'Optimism', color: 'bg-pink-500' },
+  { name: 'Other', color: 'bg-gray-500' }
+];
+
+const projectTypes = [
+  { id: 'defi', name: 'DeFi Protocol', description: 'Decentralized Finance applications' },
+  { id: 'nft', name: 'NFT Marketplace', description: 'Non-fungible token platforms' },
+  { id: 'gamefi', name: 'GameFi', description: 'Gaming and metaverse projects' },
+  { id: 'dao', name: 'DAO', description: 'Decentralized Autonomous Organizations' },
+  { id: 'bridge', name: 'Cross-chain Bridge', description: 'Inter-blockchain connectivity' },
+  { id: 'other', name: 'Other', description: 'Custom blockchain project' }
+];
 
 const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
   formData,
-  formErrors = {},
   handleChange,
   projectType,
   setProjectType,
   handleEcosystemClick,
-  nextStep
+  nextStep,
+  formErrors
 }) => {
   return (
-    <div className="space-y-6">
-      <h2 className="text-xl font-semibold mb-4 flex items-center">
-        <FileText className="mr-2 h-5 w-5 text-primary" /> Project Details
-      </h2>
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <FormItem>
-          <FormLabel htmlFor="projectName" className="text-sm font-medium">Project Name *</FormLabel>
-          <FormControl>
-            <Input 
-              id="projectName" 
-              name="projectName" 
-              placeholder="Enter your project name" 
-              value={formData.projectName}
-              onChange={handleChange}
-              className={formErrors.projectName ? "border-destructive" : ""}
-              aria-invalid={!!formErrors.projectName}
-              aria-describedby={formErrors.projectName ? "projectName-error" : undefined}
-            />
-          </FormControl>
-          {formErrors.projectName && (
-            <FormMessage>{formErrors.projectName}</FormMessage>
-          )}
-        </FormItem>
-        
-        <FormItem>
-          <FormLabel htmlFor="contactName" className="text-sm font-medium">Contact Name *</FormLabel>
-          <FormControl>
-            <Input 
-              id="contactName" 
-              name="contactName" 
-              placeholder="Enter your name" 
-              value={formData.contactName}
-              onChange={handleChange}
-              className={formErrors.contactName ? "border-destructive" : ""}
-              aria-invalid={!!formErrors.contactName}
-              aria-describedby={formErrors.contactName ? "contactName-error" : undefined}
-            />
-          </FormControl>
-          {formErrors.contactName && (
-            <FormMessage>{formErrors.contactName}</FormMessage>
-          )}
-        </FormItem>
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-2xl font-bold mb-2">Project Details</h2>
+        <p className="text-muted-foreground">Tell us about your project and security needs</p>
       </div>
-      
-      <FormItem>
-        <FormLabel htmlFor="contactEmail" className="text-sm font-medium">Contact Email *</FormLabel>
-        <FormControl>
-          <Input 
-            id="contactEmail" 
-            name="contactEmail" 
-            type="email" 
-            placeholder="Enter your email address" 
-            value={formData.contactEmail}
-            onChange={handleChange}
-            className={formErrors.contactEmail ? "border-destructive" : ""}
-            aria-invalid={!!formErrors.contactEmail}
-            aria-describedby={formErrors.contactEmail ? "contactEmail-error" : undefined}
-          />
-        </FormControl>
-        {formErrors.contactEmail && (
-          <FormMessage>{formErrors.contactEmail}</FormMessage>
-        )}
-      </FormItem>
-      
-      <div className="space-y-3">
-        <FormLabel className="text-sm font-medium block">Blockchain Ecosystem *</FormLabel>
-        <FormControl>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {["Ethereum", "Solana", "Binance Smart Chain", "Polygon", "Avalanche", "Other"].map((ecosystem) => (
+
+      {/* Project Type Selection */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Project Type</CardTitle>
+          <CardDescription>What type of project are you building?</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {projectTypes.map((type) => (
               <div
-                key={ecosystem}
-                className={`
-                  cursor-pointer rounded-lg border p-3 text-center transition-all
-                  ${formData.blockchain === ecosystem 
-                    ? 'border-primary bg-primary/10 text-primary' 
-                    : 'border-border/40 hover:border-primary/60 hover:bg-muted'}
-                `}
-                onClick={() => handleEcosystemClick(ecosystem)}
+                key={type.id}
+                className={`p-4 border rounded-lg cursor-pointer transition-all hover:border-primary ${
+                  projectType === type.id ? 'border-primary bg-primary/5' : 'border-border'
+                }`}
+                onClick={() => setProjectType(type.id)}
               >
-                <div className="font-medium">{ecosystem}</div>
+                <h3 className="font-semibold">{type.name}</h3>
+                <p className="text-sm text-muted-foreground">{type.description}</p>
               </div>
             ))}
           </div>
-        </FormControl>
-        {formErrors.blockchain && (
-          <FormMessage>{formErrors.blockchain}</FormMessage>
-        )}
-        
-        {formData.blockchain === "Other" && (
-          <FormItem>
-            <FormLabel htmlFor="customBlockchain" className="text-sm font-medium">Blockchain Name *</FormLabel>
-            <FormControl>
-              <Input 
-                id="customBlockchain" 
-                name="customBlockchain" 
-                placeholder="Specify blockchain name" 
+        </CardContent>
+      </Card>
+
+      {/* Project Information */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Project Information</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <Label htmlFor="projectName">Project Name *</Label>
+            <Input
+              id="projectName"
+              name="projectName"
+              value={formData.projectName}
+              onChange={handleChange}
+              placeholder="Enter your project name"
+              className={formErrors.projectName ? 'border-red-500' : ''}
+            />
+            {formErrors.projectName && (
+              <p className="text-sm text-red-500 mt-1">{formErrors.projectName}</p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="projectDescription">Project Description *</Label>
+            <Textarea
+              id="projectDescription"
+              name="projectDescription"
+              value={formData.projectDescription}
+              onChange={handleChange}
+              placeholder="Describe your project, its functionality, and what you're building"
+              rows={4}
+              className={formErrors.projectDescription ? 'border-red-500' : ''}
+            />
+            {formErrors.projectDescription && (
+              <p className="text-sm text-red-500 mt-1">{formErrors.projectDescription}</p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="repositoryUrl">Repository URL (Optional)</Label>
+            <Input
+              id="repositoryUrl"
+              name="repositoryUrl"
+              value={formData.repositoryUrl}
+              onChange={handleChange}
+              placeholder="https://github.com/your-project/repo"
+              type="url"
+            />
+            <p className="text-sm text-muted-foreground mt-1">
+              Private repositories can be shared securely during the audit process
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Blockchain Selection */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Blockchain Ecosystem *</CardTitle>
+          <CardDescription>Which blockchain will your project be deployed on?</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {ecosystems.map((ecosystem) => (
+              <Badge
+                key={ecosystem.name}
+                variant={formData.blockchain === ecosystem.name ? "default" : "outline"}
+                className={`p-3 cursor-pointer justify-center hover:bg-primary/10 ${
+                  formData.blockchain === ecosystem.name ? ecosystem.color + ' text-white' : ''
+                }`}
+                onClick={() => handleEcosystemClick(ecosystem.name)}
+              >
+                {ecosystem.name}
+              </Badge>
+            ))}
+          </div>
+          {formErrors.blockchain && (
+            <p className="text-sm text-red-500 mt-2">{formErrors.blockchain}</p>
+          )}
+          
+          {formData.blockchain === 'Other' && (
+            <div className="mt-4">
+              <Label htmlFor="customBlockchain">Specify Blockchain</Label>
+              <Input
+                id="customBlockchain"
+                name="customBlockchain"
                 value={formData.customBlockchain}
                 onChange={handleChange}
-                className={formErrors.customBlockchain ? "border-destructive" : ""}
-                aria-invalid={!!formErrors.customBlockchain}
-                aria-describedby={formErrors.customBlockchain ? "customBlockchain-error" : undefined}
+                placeholder="Enter blockchain name"
               />
-            </FormControl>
-            {formErrors.customBlockchain && (
-              <FormMessage>{formErrors.customBlockchain}</FormMessage>
-            )}
-          </FormItem>
-        )}
-      </div>
-      
-      <FormItem>
-        <FormLabel htmlFor="projectDescription" className="text-sm font-medium">Project Description *</FormLabel>
-        <FormControl>
-          <Textarea 
-            id="projectDescription" 
-            name="projectDescription" 
-            placeholder="Describe your project, its purpose, and what you're trying to achieve..." 
-            className={`min-h-[120px] ${formErrors.projectDescription ? "border-destructive" : ""}`}
-            value={formData.projectDescription}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Security Concerns */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Security Priorities</CardTitle>
+          <CardDescription>What are your main security concerns?</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Textarea
+            name="specificConcerns"
+            value={formData.specificConcerns}
             onChange={handleChange}
-            aria-invalid={!!formErrors.projectDescription}
-            aria-describedby={formErrors.projectDescription ? "projectDescription-error" : undefined}
-            required
+            placeholder="Describe any specific security concerns, previous vulnerabilities, or areas you want auditors to focus on..."
+            rows={3}
           />
-        </FormControl>
-        {formErrors.projectDescription && (
-          <FormMessage>{formErrors.projectDescription}</FormMessage>
-        )}
-        <FormDescription>
-          A detailed description helps auditors understand your project better.
-        </FormDescription>
-      </FormItem>
-      
-      <div className="flex justify-end mt-8">
-        <Button 
-          type="button" 
-          onClick={nextStep}
-          className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-        >
-          Next Step: Technical Information
-          <ArrowRight className="ml-2 h-4 w-4" />
+        </CardContent>
+      </Card>
+
+      {/* Previous Audits */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Previous Audits</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="previousAudits"
+              checked={formData.previousAudits}
+              onChange={(e) => handleChange({
+                target: { name: 'previousAudits', value: e.target.checked }
+              } as any)}
+              className="rounded"
+            />
+            <Label htmlFor="previousAudits">This project has been audited before</Label>
+          </div>
+          
+          {formData.previousAudits && (
+            <div>
+              <Label htmlFor="previousAuditLinks">Previous Audit Reports</Label>
+              <Textarea
+                name="previousAuditLinks"
+                value={formData.previousAuditLinks}
+                onChange={handleChange}
+                placeholder="Please provide links to previous audit reports or describe the scope of previous audits..."
+                rows={3}
+              />
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-end">
+        <Button onClick={nextStep} size="lg">
+          Continue to Technical Details
         </Button>
       </div>
     </div>

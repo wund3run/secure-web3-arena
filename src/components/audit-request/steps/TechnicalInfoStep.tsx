@@ -1,176 +1,197 @@
 
 import React from 'react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowRight, Code } from "lucide-react";
-import { AuditFormData, AuditFormErrors } from '@/types/audit-request.types';
-import { FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, FileCode, GitBranch, Clock } from 'lucide-react';
+import type { AuditFormData } from '@/types/audit-request.types';
 
 interface TechnicalInfoStepProps {
   formData: AuditFormData;
-  formErrors?: AuditFormErrors;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  handleSelectChange: (name: keyof AuditFormData, value: string) => void;
-  handleCheckboxChange: (name: keyof AuditFormData, checked: boolean) => void;
+  handleSelectChange: (field: keyof AuditFormData, value: string) => void;
+  handleCheckboxChange: (field: keyof AuditFormData, checked: boolean) => void;
   prevStep: () => void;
   nextStep: () => void;
+  formErrors: Record<string, string>;
 }
+
+const contractCountOptions = [
+  { value: "1-5", label: "1-5 contracts", description: "Small project" },
+  { value: "6-15", label: "6-15 contracts", description: "Medium project" },
+  { value: "16-30", label: "16-30 contracts", description: "Large project" },
+  { value: "30+", label: "30+ contracts", description: "Enterprise project" }
+];
+
+const linesOfCodeOptions = [
+  { value: "< 1,000", label: "< 1,000 lines", description: "Simple implementation" },
+  { value: "1,000 - 5,000", label: "1,000 - 5,000 lines", description: "Standard project" },
+  { value: "5,000 - 15,000", label: "5,000 - 15,000 lines", description: "Complex project" },
+  { value: "15,000+", label: "15,000+ lines", description: "Very complex project" }
+];
+
+const auditScopeOptions = [
+  { value: "smart-contracts", label: "Smart Contracts Only", description: "Focus on contract logic and security" },
+  { value: "full-stack", label: "Full Stack Review", description: "Frontend, backend, and smart contracts" },
+  { value: "infrastructure", label: "Infrastructure Review", description: "Deployment and infrastructure security" },
+  { value: "tokenomics", label: "Tokenomics Analysis", description: "Economic model and token mechanics" }
+];
 
 const TechnicalInfoStep: React.FC<TechnicalInfoStepProps> = ({
   formData,
-  formErrors = {},
-  handleChange,
   handleSelectChange,
   handleCheckboxChange,
   prevStep,
-  nextStep
+  nextStep,
+  formErrors
 }) => {
   return (
-    <div className="space-y-6">
-      <h2 className="text-xl font-semibold mb-4 flex items-center">
-        <Code className="mr-2 h-5 w-5 text-primary" /> Technical Information
-      </h2>
-      
-      <div className="space-y-2">
-        <FormItem>
-          <FormLabel htmlFor="repositoryUrl" className="text-sm font-medium">
-            Repository URL <span className="text-muted-foreground text-xs">(Private repos will require access arrangements)</span>
-          </FormLabel>
-          <FormControl>
-            <Input 
-              id="repositoryUrl" 
-              name="repositoryUrl" 
-              placeholder="https://github.com/your-organization/your-repo" 
-              value={formData.repositoryUrl}
-              onChange={handleChange}
-              className={formErrors.repositoryUrl ? "border-destructive" : ""}
-              aria-invalid={!!formErrors.repositoryUrl}
-              aria-describedby={formErrors.repositoryUrl ? "repositoryUrl-error" : undefined}
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-2xl font-bold mb-2">Technical Information</h2>
+        <p className="text-muted-foreground">Help us understand the scope and complexity of your project</p>
+      </div>
+
+      {/* Project Scale */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileCode className="h-5 w-5" />
+            Project Scale
+          </CardTitle>
+          <CardDescription>Tell us about the size and complexity of your codebase</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div>
+            <Label className="text-base font-medium">Number of Smart Contracts *</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+              {contractCountOptions.map((option) => (
+                <div
+                  key={option.value}
+                  className={`p-4 border rounded-lg cursor-pointer transition-all hover:border-primary ${
+                    formData.contractCount === option.value ? 'border-primary bg-primary/5' : 'border-border'
+                  }`}
+                  onClick={() => handleSelectChange('contractCount', option.value)}
+                >
+                  <div className="font-medium">{option.label}</div>
+                  <div className="text-sm text-muted-foreground">{option.description}</div>
+                </div>
+              ))}
+            </div>
+            {formErrors.contractCount && (
+              <p className="text-sm text-red-500 mt-2">{formErrors.contractCount}</p>
+            )}
+          </div>
+
+          <div>
+            <Label className="text-base font-medium">Lines of Code *</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+              {linesOfCodeOptions.map((option) => (
+                <div
+                  key={option.value}
+                  className={`p-4 border rounded-lg cursor-pointer transition-all hover:border-primary ${
+                    formData.linesOfCode === option.value ? 'border-primary bg-primary/5' : 'border-border'
+                  }`}
+                  onClick={() => handleSelectChange('linesOfCode', option.value)}
+                >
+                  <div className="font-medium">{option.label}</div>
+                  <div className="text-sm text-muted-foreground">{option.description}</div>
+                </div>
+              ))}
+            </div>
+            {formErrors.linesOfCode && (
+              <p className="text-sm text-red-500 mt-2">{formErrors.linesOfCode}</p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Audit Scope */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <GitBranch className="h-5 w-5" />
+            Audit Scope
+          </CardTitle>
+          <CardDescription>What aspects of your project need auditing?</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {auditScopeOptions.map((option) => (
+              <div
+                key={option.value}
+                className={`p-4 border rounded-lg cursor-pointer transition-all hover:border-primary ${
+                  formData.auditScope === option.value ? 'border-primary bg-primary/5' : 'border-border'
+                }`}
+                onClick={() => handleSelectChange('auditScope', option.value)}
+              >
+                <div className="font-medium">{option.label}</div>
+                <div className="text-sm text-muted-foreground mt-1">{option.description}</div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Advanced Options */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Advanced Audit Options</CardTitle>
+          <CardDescription>Additional audit features and services</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center space-x-3">
+            <input
+              type="checkbox"
+              id="collaborativeAudit"
+              checked={formData.collaborativeAudit}
+              onChange={(e) => handleCheckboxChange('collaborativeAudit', e.target.checked)}
+              className="rounded"
             />
-          </FormControl>
-          {formErrors.repositoryUrl && (
-            <FormMessage>{formErrors.repositoryUrl}</FormMessage>
-          )}
-          <FormDescription>
-            We'll keep your code confidential and can sign an NDA if required.
-          </FormDescription>
-        </FormItem>
-      </div>
+            <div>
+              <Label htmlFor="collaborativeAudit" className="font-medium">Collaborative Audit</Label>
+              <p className="text-sm text-muted-foreground">Work directly with auditors during the process</p>
+            </div>
+          </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <FormItem>
-          <FormLabel htmlFor="contractCount" className="text-sm font-medium">Number of Smart Contracts *</FormLabel>
-          <FormControl>
-            <Select 
-              value={formData.contractCount} 
-              onValueChange={(value) => handleSelectChange("contractCount", value)}
-            >
-              <SelectTrigger 
-                className={formErrors.contractCount ? "border-destructive" : ""} 
-                aria-invalid={!!formErrors.contractCount}
-              >
-                <SelectValue placeholder="Select number of contracts" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1-3">1-3 contracts</SelectItem>
-                <SelectItem value="4-10">4-10 contracts</SelectItem>
-                <SelectItem value="11-20">11-20 contracts</SelectItem>
-                <SelectItem value="20+">More than 20 contracts</SelectItem>
-              </SelectContent>
-            </Select>
-          </FormControl>
-          {formErrors.contractCount && (
-            <FormMessage>{formErrors.contractCount}</FormMessage>
-          )}
-        </FormItem>
-        
-        <FormItem>
-          <FormLabel htmlFor="linesOfCode" className="text-sm font-medium">Approximate Lines of Code *</FormLabel>
-          <FormControl>
-            <Select 
-              value={formData.linesOfCode} 
-              onValueChange={(value) => handleSelectChange("linesOfCode", value)}
-            >
-              <SelectTrigger 
-                className={formErrors.linesOfCode ? "border-destructive" : ""}
-                aria-invalid={!!formErrors.linesOfCode}
-              >
-                <SelectValue placeholder="Select code size" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="<1000">Less than 1,000 lines</SelectItem>
-                <SelectItem value="1000-5000">1,000 - 5,000 lines</SelectItem>
-                <SelectItem value="5001-15000">5,001 - 15,000 lines</SelectItem>
-                <SelectItem value="15000+">More than 15,000 lines</SelectItem>
-              </SelectContent>
-            </Select>
-          </FormControl>
-          {formErrors.linesOfCode && (
-            <FormMessage>{formErrors.linesOfCode}</FormMessage>
-          )}
-        </FormItem>
-      </div>
+          <div className="flex items-center space-x-3">
+            <input
+              type="checkbox"
+              id="continuousAuditing"
+              checked={formData.continuousAuditing}
+              onChange={(e) => handleCheckboxChange('continuousAuditing', e.target.checked)}
+              className="rounded"
+            />
+            <div>
+              <Label htmlFor="continuousAuditing" className="font-medium">Continuous Auditing</Label>
+              <p className="text-sm text-muted-foreground">Ongoing security monitoring after deployment</p>
+            </div>
+          </div>
 
-      <FormItem>
-        <FormLabel htmlFor="auditScope" className="text-sm font-medium">Audit Scope *</FormLabel>
-        <FormControl>
-          <Textarea 
-            id="auditScope" 
-            name="auditScope" 
-            placeholder="Describe which parts of your codebase need to be audited and any specific areas of focus..." 
-            className={`min-h-[120px] ${formErrors.auditScope ? "border-destructive" : ""}`}
-            value={formData.auditScope}
-            onChange={handleChange}
-            aria-invalid={!!formErrors.auditScope}
-            aria-describedby={formErrors.auditScope ? "auditScope-error" : undefined}
-            required
-          />
-        </FormControl>
-        {formErrors.auditScope && (
-          <FormMessage>{formErrors.auditScope}</FormMessage>
-        )}
-        <FormDescription>
-          Clearly defining the scope helps ensure the audit focuses on the most critical components.
-        </FormDescription>
-      </FormItem>
+          <div className="flex items-center space-x-3">
+            <input
+              type="checkbox"
+              id="hybridModel"
+              checked={formData.hybridModel}
+              onChange={(e) => handleCheckboxChange('hybridModel', e.target.checked)}
+              className="rounded"
+            />
+            <div>
+              <Label htmlFor="hybridModel" className="font-medium">AI + Human Hybrid</Label>
+              <p className="text-sm text-muted-foreground">Combine automated tools with expert review</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-      <div className="flex items-start space-x-2 mt-4">
-        <Checkbox 
-          id="previousAudits"
-          checked={formData.previousAudits}
-          onCheckedChange={(checked) => handleCheckboxChange("previousAudits", checked === true)}
-        />
-        <div className="grid gap-1.5 leading-none">
-          <label
-            htmlFor="previousAudits"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            Previous audits conducted
-          </label>
-          <p className="text-sm text-muted-foreground">
-            Check this if your code has been audited before. You'll be able to upload previous audit reports in the next step.
-          </p>
-        </div>
-      </div>
-      
-      <div className="flex justify-between mt-8">
-        <Button 
-          type="button" 
-          onClick={prevStep}
-          variant="outline"
-        >
+      <div className="flex justify-between">
+        <Button variant="outline" onClick={prevStep}>
+          <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
-        <Button 
-          type="button" 
-          onClick={nextStep}
-          className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-        >
-          Next Step: Requirements
-          <ArrowRight className="ml-2 h-4 w-4" />
+        <Button onClick={nextStep}>
+          Continue to Requirements
         </Button>
       </div>
     </div>

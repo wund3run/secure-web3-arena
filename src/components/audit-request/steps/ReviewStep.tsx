@@ -1,18 +1,10 @@
 
 import React from 'react';
-import { Button } from "@/components/ui/button";
-import { AuditFormData } from "@/types/audit-request.types";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { 
-  CheckCircle2, 
-  Users, 
-  Clock, 
-  Layers, 
-  FileCode, 
-  Star, 
-  CheckSquare 
-} from "lucide-react";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, CheckCircle, Clock, DollarSign, FileText, Shield, Users } from 'lucide-react';
+import type { AuditFormData } from '@/types/audit-request.types';
 
 interface ReviewStepProps {
   formData: AuditFormData;
@@ -20,218 +12,205 @@ interface ReviewStepProps {
   isSubmitting: boolean;
 }
 
-export default function ReviewStep({ 
-  formData, 
-  prevStep,
-  isSubmitting 
-}: ReviewStepProps) {
-  // Helper function to format the blockchain text
-  const formatBlockchain = () => {
-    if (formData.blockchain === "Other" && formData.customBlockchain) {
-      return formData.customBlockchain;
-    }
-    return formData.blockchain;
-  };
-
-  // Get specialized audit type display name
-  const getSpecializedAuditName = () => {
-    const specializedTypes: Record<string, string> = {
-      'zk-proofs': 'Zero-Knowledge Proofs',
-      'layer2': 'Layer 2 Solutions',
-      'ai-driven': 'AI-Driven Smart Contracts',
-      'cross-chain': 'Cross-Chain Applications',
-      'defi': 'DeFi Protocol',
-      'nft': 'NFT Projects'
-    };
-    
-    return formData.specializedAuditType ? 
-      specializedTypes[formData.specializedAuditType] || formData.specializedAuditType : 
-      'Standard Audit';
-  };
-
-  // Get accountability preference display name
-  const getAccountabilityName = () => {
-    const accountabilityTypes: Record<string, string> = {
-      'standard': 'Standard Rating',
-      'mutual': 'Mutual Rating System',
-      'staking': 'Stake-Based Accountability',
-      'reputation': 'Reputation-Weighted'
-    };
-    
-    return accountabilityTypes[formData.accountabilityPreference || 'standard'] || 'Standard Rating';
-  };
-
+const ReviewStep: React.FC<ReviewStepProps> = ({ formData, prevStep, isSubmitting }) => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold mb-1">Review Your Request</h2>
-        <p className="text-muted-foreground">Please review your audit request details before submitting.</p>
+        <h2 className="text-2xl font-bold mb-2">Review Your Request</h2>
+        <p className="text-muted-foreground">Please review all details before submitting your audit request</p>
       </div>
-      
-      <div className="space-y-6">
-        {/* Project Information */}
+
+      {/* Project Overview */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            Project Overview
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <Label>Project Name</Label>
+            <p className="font-medium">{formData.projectName}</p>
+          </div>
+          <div>
+            <Label>Description</Label>
+            <p className="text-muted-foreground">{formData.projectDescription}</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <div>
+              <Label>Blockchain</Label>
+              <Badge variant="secondary">{formData.blockchain}</Badge>
+            </div>
+            {formData.repositoryUrl && (
+              <div>
+                <Label>Repository</Label>
+                <p className="text-sm text-muted-foreground">Provided</p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Technical Details */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            Technical Scope
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <Label>Contracts</Label>
+              <p className="font-medium">{formData.contractCount}</p>
+            </div>
+            <div>
+              <Label>Lines of Code</Label>
+              <p className="font-medium">{formData.linesOfCode}</p>
+            </div>
+            <div>
+              <Label>Audit Scope</Label>
+              <p className="font-medium">{formData.auditScope}</p>
+            </div>
+            <div>
+              <Label>Audit Type</Label>
+              <p className="font-medium">{formData.specializedAuditType}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Requirements */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Clock className="h-5 w-5" />
+            Requirements
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <Label>Timeline</Label>
+              <p className="font-medium">{formData.deadline}</p>
+            </div>
+            <div>
+              <Label>Budget</Label>
+              <p className="font-medium">{formData.budget}</p>
+            </div>
+            <div>
+              <Label>Communication</Label>
+              <p className="font-medium capitalize">{formData.preferredCommunication}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Additional Options */}
+      {(formData.collaborativeAudit || formData.continuousAuditing || formData.hybridModel) && (
         <Card>
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="text-xl font-bold">{formData.projectName}</h3>
-              <Badge className="bg-primary">{formatBlockchain()}</Badge>
-            </div>
-            <p className="text-muted-foreground mb-4 whitespace-pre-wrap">{formData.projectDescription}</p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="font-medium block">Repository URL:</span>
-                <span className="text-muted-foreground">{formData.repositoryUrl || "Not provided"}</span>
-              </div>
-              <div>
-                <span className="font-medium block">Contract Count:</span>
-                <span className="text-muted-foreground">{formData.contractCount}</span>
-              </div>
-              <div>
-                <span className="font-medium block">Lines of Code:</span>
-                <span className="text-muted-foreground">{formData.linesOfCode}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* Contact Information */}
-        <Card>
-          <CardContent className="p-6">
-            <h3 className="font-bold mb-4">Contact Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="font-medium block">Contact Name:</span>
-                <span className="text-muted-foreground">{formData.contactName}</span>
-              </div>
-              <div>
-                <span className="font-medium block">Contact Email:</span>
-                <span className="text-muted-foreground">{formData.contactEmail}</span>
-              </div>
-              <div>
-                <span className="font-medium block">Preferred Communication:</span>
-                <span className="text-muted-foreground">{formData.preferredCommunication || "Not specified"}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* Audit Requirements */}
-        <Card>
-          <CardContent className="p-6">
-            <h3 className="font-bold mb-4">Audit Requirements</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-              <div>
-                <span className="font-medium block">Timeline:</span>
-                <span className="text-muted-foreground">{formData.deadline}</span>
-              </div>
-              <div>
-                <span className="font-medium block">Budget:</span>
-                <span className="text-muted-foreground">{formData.budget}</span>
-              </div>
-            </div>
-            
-            <div className="mt-4">
-              <span className="font-medium block">Audit Scope:</span>
-              <p className="text-muted-foreground mt-1 whitespace-pre-wrap">{formData.auditScope}</p>
-            </div>
-            
-            <div className="mt-4">
-              <span className="font-medium block">Specific Concerns:</span>
-              <p className="text-muted-foreground mt-1 whitespace-pre-wrap">{formData.specificConcerns}</p>
-            </div>
-            
-            <div className="mt-4">
-              <span className="font-medium">Prior Audits:</span>
-              <span className="text-muted-foreground ml-1">
-                {formData.previousAudits ? "Yes" : "No"}
-              </span>
-              {formData.previousAudits && formData.previousAuditLinks && (
-                <div className="mt-1">
-                  <span className="font-medium block">Previous Audit Links:</span>
-                  <span className="text-muted-foreground">{formData.previousAuditLinks}</span>
-                </div>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Additional Services
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {formData.collaborativeAudit && (
+                <Badge variant="outline">Collaborative Audit</Badge>
+              )}
+              {formData.continuousAuditing && (
+                <Badge variant="outline">Continuous Monitoring</Badge>
+              )}
+              {formData.hybridModel && (
+                <Badge variant="outline">AI + Human Hybrid</Badge>
               )}
             </div>
           </CardContent>
         </Card>
+      )}
 
-        {/* Enhanced Audit Options */}
+      {/* Security Concerns */}
+      {formData.specificConcerns && (
         <Card>
-          <CardContent className="p-6">
-            <h3 className="font-bold mb-4 flex items-center">
-              Enhanced Audit Features
-              <Badge variant="outline" className="ml-2 bg-primary/10 text-primary border-primary/20">
-                New
-              </Badge>
-            </h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div className="flex items-center space-x-2">
-                <Users className="h-4 w-4 text-primary" />
-                <span className="font-medium">Collaborative Audit:</span>
-                <span className="text-muted-foreground">
-                  {formData.collaborativeAudit ? "Enabled" : "Disabled"}
-                </span>
-                {formData.collaborativeAudit && <CheckCircle2 className="h-4 w-4 text-green-500" />}
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <Clock className="h-4 w-4 text-web3-teal" />
-                <span className="font-medium">Continuous Auditing:</span>
-                <span className="text-muted-foreground">
-                  {formData.continuousAuditing ? "Enabled" : "Disabled"}
-                </span>
-                {formData.continuousAuditing && <CheckCircle2 className="h-4 w-4 text-green-500" />}
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <Layers className="h-4 w-4 text-web3-orange" />
-                <span className="font-medium">Hybrid Model:</span>
-                <span className="text-muted-foreground">
-                  {formData.hybridModel ? "Enabled" : "Disabled"}
-                </span>
-                {formData.hybridModel && <CheckCircle2 className="h-4 w-4 text-green-500" />}
-              </div>
-            </div>
-            
-            <div className="space-y-2 mt-4">
-              <div className="flex items-center space-x-2">
-                <FileCode className="h-4 w-4 text-web3-purple" />
-                <span className="font-medium">Specialized Audit Type:</span>
-                <span className="text-muted-foreground">
-                  {getSpecializedAuditName()}
-                </span>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <Star className="h-4 w-4 text-secondary" />
-                <span className="font-medium">Accountability Model:</span>
-                <span className="text-muted-foreground">
-                  {getAccountabilityName()}
-                </span>
-              </div>
-            </div>
+          <CardHeader>
+            <CardTitle>Security Priorities</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">{formData.specificConcerns}</p>
           </CardContent>
         </Card>
-      </div>
+      )}
 
-      <div className="flex justify-between space-x-4 pt-4">
-        <Button 
-          type="button" 
-          variant="outline" 
-          onClick={prevStep}
-          disabled={isSubmitting}
-        >
+      {/* Previous Audits */}
+      {formData.previousAudits && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Previous Audits</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-2 mb-2">
+              <CheckCircle className="h-4 w-4 text-green-500" />
+              <span>This project has been audited before</span>
+            </div>
+            {formData.previousAuditLinks && (
+              <p className="text-muted-foreground text-sm">{formData.previousAuditLinks}</p>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Submit Section */}
+      <Card className="border-primary/20 bg-primary/5">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <DollarSign className="h-5 w-5" />
+            What Happens Next?
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-start gap-3">
+            <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium mt-0.5">1</div>
+            <div>
+              <p className="font-medium">AI Matching</p>
+              <p className="text-sm text-muted-foreground">Our AI will match you with the best auditors for your project</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium mt-0.5">2</div>
+            <div>
+              <p className="font-medium">Proposals & Selection</p>
+              <p className="text-sm text-muted-foreground">Review proposals from qualified auditors and select your preferred team</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium mt-0.5">3</div>
+            <div>
+              <p className="font-medium">Audit Execution</p>
+              <p className="text-sm text-muted-foreground">Work with your chosen auditor through our secure platform</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-between">
+        <Button variant="outline" onClick={prevStep} disabled={isSubmitting}>
+          <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
-        <Button 
-          type="submit"
-          disabled={isSubmitting}
-        >
-          Submit Audit Request
+        <Button type="submit" size="lg" disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : 'Submit Audit Request'}
         </Button>
       </div>
     </div>
   );
-}
+};
+
+const Label: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <span className="text-sm font-medium text-muted-foreground">{children}</span>
+);
+
+export default ReviewStep;

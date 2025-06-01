@@ -1,45 +1,67 @@
 
 import React from 'react';
+import { CheckCircle, Circle } from 'lucide-react';
 
 interface FormProgressProps {
   formStep: number;
-  showAIMatching?: boolean;
+  showAIMatching: boolean;
 }
 
-const FormProgress: React.FC<FormProgressProps> = ({ formStep, showAIMatching = false }) => {
-  const getStepName = (step: number) => {
-    switch (step) {
-      case 1: return 'Project Details';
-      case 2: return 'Technical Information';
-      case 3: return 'Requirements';
-      case 4: return 'Review & Submit';
-      default: return '';
-    }
-  };
+const steps = [
+  { number: 1, title: 'Project Details', description: 'Basic project information' },
+  { number: 2, title: 'Technical Info', description: 'Scope and complexity' },
+  { number: 3, title: 'Requirements', description: 'Timeline and budget' },
+  { number: 4, title: 'Review', description: 'Final review and submit' }
+];
 
-  const totalSteps = 4;
-  
-  // If currently showing AI matching, highlight the progress differently
-  const progressWidth = showAIMatching 
-    ? '75%' // Show 3/4 progress during AI matching (between step 3 and 4)
-    : `${(formStep / totalSteps) * 100}%`;
-    
-  const stepText = showAIMatching ? 'AI Matching' : `Step ${formStep} of ${totalSteps}`;
-  const stepName = showAIMatching ? 'Finding Perfect Auditors' : getStepName(formStep);
+const FormProgress: React.FC<FormProgressProps> = ({ formStep, showAIMatching }) => {
+  if (showAIMatching) {
+    return (
+      <div className="mb-8">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-primary">AI Matching in Progress</h2>
+          <p className="text-muted-foreground">Finding the perfect auditors for your project...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mb-8">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm font-medium">{stepText}</span>
-        <span className="text-sm text-muted-foreground">
-          {stepName}
-        </span>
-      </div>
-      <div className="w-full bg-muted rounded-full h-2">
-        <div 
-          className="bg-gradient-to-r from-primary to-secondary h-2 rounded-full transition-all duration-300"
-          style={{ width: progressWidth }}
-        ></div>
+      <div className="flex items-center justify-between max-w-2xl mx-auto">
+        {steps.map((step, index) => (
+          <div key={step.number} className="flex items-center">
+            <div className="flex flex-col items-center">
+              <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors ${
+                formStep >= step.number 
+                  ? 'bg-primary border-primary text-primary-foreground' 
+                  : 'border-muted-foreground text-muted-foreground'
+              }`}>
+                {formStep > step.number ? (
+                  <CheckCircle className="w-5 h-5" />
+                ) : (
+                  <span className="text-sm font-medium">{step.number}</span>
+                )}
+              </div>
+              <div className="mt-2 text-center">
+                <div className={`text-sm font-medium ${
+                  formStep >= step.number ? 'text-primary' : 'text-muted-foreground'
+                }`}>
+                  {step.title}
+                </div>
+                <div className="text-xs text-muted-foreground hidden sm:block">
+                  {step.description}
+                </div>
+              </div>
+            </div>
+            
+            {index < steps.length - 1 && (
+              <div className={`w-12 sm:w-24 h-0.5 mx-2 ${
+                formStep > step.number ? 'bg-primary' : 'bg-muted'
+              }`} />
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
