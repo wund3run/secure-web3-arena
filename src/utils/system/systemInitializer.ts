@@ -3,7 +3,8 @@ import { Logger } from '../logging/logger';
 import { PerformanceMonitor } from '../monitoring/performanceMonitor';
 import { MonitoringService } from '@/services/monitoringService';
 import { initializeCriticalSyncs } from '../dataSync/syncManager';
-import { CacheManager } from '../database/cacheManager';
+import { HealthChecker } from './healthChecker';
+import { MaintenanceManager } from './maintenanceManager';
 
 export class SystemInitializer {
   private static initialized = false;
@@ -19,21 +20,17 @@ export class SystemInitializer {
     try {
       Logger.info('Starting system initialization', {}, 'system');
 
-      // Initialize monitoring first
-      MonitoringService.init();
-      PerformanceMonitor.init();
+      // Initialize core monitoring systems
+      await this.initializeMonitoring();
 
       // Initialize data synchronization
-      initializeCriticalSyncs();
+      await this.initializeDataSync();
 
-      // Set up cleanup handlers
-      this.setupCleanupHandlers();
+      // Set up system maintenance
+      this.setupMaintenance();
 
-      // Initialize cache warming for critical data
-      await this.warmupCriticalCaches();
-
-      // Perform initial system health check
-      await this.performSystemHealthCheck();
+      // Perform initial health check
+      await this.performInitialHealthCheck();
 
       this.initialized = true;
       Logger.info('System initialization completed successfully', {}, 'system');
@@ -48,101 +45,43 @@ export class SystemInitializer {
     }
   }
 
-  private static setupCleanupHandlers(): void {
-    // Cleanup on page unload
+  private static async initializeMonitoring(): Promise<void> {
+    MonitoringService.init();
+    PerformanceMonitor.init();
+    Logger.info('Monitoring systems initialized', {}, 'system');
+  }
+
+  private static async initializeDataSync(): Promise<void> {
+    initializeCriticalSyncs();
+    Logger.info('Data synchronization initialized', {}, 'system');
+  }
+
+  private static setupMaintenance(): void {
+    // Set up cleanup handlers
     window.addEventListener('beforeunload', () => {
       this.cleanup();
     });
 
-    // Cleanup on visibility change (when tab becomes hidden)
+    // Start periodic maintenance (every 30 minutes)
+    MaintenanceManager.startPeriodicMaintenance();
+
+    // Maintenance on visibility change
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
-        this.performMaintenanceTasks();
+        MaintenanceManager.performMaintenance();
       }
     });
 
-    Logger.debug('Cleanup handlers set up', {}, 'system');
+    Logger.info('Maintenance systems set up', {}, 'system');
   }
 
-  private static async warmupCriticalCaches(): Promise<void> {
-    try {
-      // You can add specific cache warming logic here
-      // For example, preload frequently accessed audit requests
-      Logger.info('Cache warmup completed', {}, 'system');
-    } catch (error) {
-      Logger.error('Cache warmup failed', {
-        metadata: { error: error instanceof Error ? error.message : 'Unknown error' }
-      }, 'system');
-    }
-  }
-
-  private static async performSystemHealthCheck(): Promise<void> {
-    const healthChecks = {
-      supabaseConnection: false,
-      cacheSystem: false,
-      performanceMonitoring: false
-    };
-
-    try {
-      // Test Supabase connection
-      // You would add actual connection test here
-      healthChecks.supabaseConnection = true;
-
-      // Test cache system
-      CacheManager.set('health_check', 'ok', { ttl: 1 });
-      const cacheTest = await CacheManager.get('health_check');
-      healthChecks.cacheSystem = cacheTest === 'ok';
-      CacheManager.invalidate('health_check');
-
-      // Test performance monitoring
-      PerformanceMonitor.recordMetric({
-        name: 'health_check',
-        value: 1,
-        unit: 'count',
-        category: 'timing'
-      });
-      healthChecks.performanceMonitoring = true;
-
-      const allHealthy = Object.values(healthChecks).every(check => check);
-
-      Logger.info('System health check completed', {
-        metadata: { healthChecks, status: allHealthy ? 'healthy' : 'degraded' }
-      }, 'system');
-
-      if (!allHealthy) {
-        Logger.warn('Some system components are not healthy', {
-          metadata: { healthChecks }
-        }, 'system');
-      }
-
-    } catch (error) {
-      Logger.error('System health check failed', {
-        metadata: { 
-          error: error instanceof Error ? error.message : 'Unknown error',
-          healthChecks 
-        }
-      }, 'system');
-    }
-  }
-
-  private static performMaintenanceTasks(): void {
-    Logger.debug('Performing maintenance tasks', {}, 'system');
-
-    // Clean up old logs
-    const oldLogs = Logger.getLogs().filter(log => 
-      Date.now() - new Date(log.timestamp).getTime() > 24 * 60 * 60 * 1000 // 24 hours
-    );
+  private static async performInitialHealthCheck(): Promise<void> {
+    const { overall, results } = await HealthChecker.performComprehensiveCheck();
     
-    if (oldLogs.length > 0) {
-      Logger.clearLogs();
-      Logger.info(`Cleaned up ${oldLogs.length} old log entries`, {}, 'system');
-    }
-
-    // Clean cache statistics
-    const cacheStats = CacheManager.getStats();
-    if (cacheStats.expiredEntries > 0) {
-      // The cache manager should auto-clean, but we can log stats
-      Logger.debug('Cache statistics', { metadata: cacheStats }, 'system');
+    if (overall !== 'healthy') {
+      Logger.warn('System health check shows issues', {
+        metadata: { overall, issues: results.filter(r => r.status !== 'healthy') }
+      }, 'system');
     }
   }
 
@@ -152,13 +91,13 @@ export class SystemInitializer {
     Logger.info('Starting system cleanup', {}, 'system');
 
     try {
-      // Cleanup performance monitoring
+      // Stop maintenance
+      MaintenanceManager.stopPeriodicMaintenance();
+
+      // Cleanup monitoring
       PerformanceMonitor.cleanup();
 
-      // Clear caches
-      CacheManager.clear();
-
-      // Generate final performance report
+      // Generate final reports
       const performanceReport = PerformanceMonitor.generatePerformanceReport();
       Logger.info('Final performance report', {
         metadata: performanceReport
@@ -181,21 +120,22 @@ export class SystemInitializer {
   static async getSystemStatus(): Promise<{
     initialized: boolean;
     uptime: number;
-    cacheStats: any;
-    performanceReport: any;
+    health: any;
   }> {
+    const health = this.initialized 
+      ? await HealthChecker.performComprehensiveCheck()
+      : { overall: 'not_initialized', results: [] };
+
     return {
       initialized: this.initialized,
       uptime: performance.now(),
-      cacheStats: CacheManager.getStats(),
-      performanceReport: PerformanceMonitor.generatePerformanceReport()
+      health
     };
   }
 }
 
 // Auto-initialize on module load
 if (typeof window !== 'undefined') {
-  // Initialize after DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       SystemInitializer.initialize().catch(console.error);
