@@ -82,28 +82,34 @@ export const useAuditDetails = (auditId?: string) => {
     try {
       setIsLoading(true);
 
-      // Fetch main audit data with related information
+      // Fetch main audit data
       const { data: audit, error: auditError } = await supabase
         .from('audit_requests')
-        .select(`
-          *,
-          client:client_id (
-            id,
-            full_name,
-            avatar_url
-          ),
-          auditor:assigned_auditor_id (
-            id,
-            full_name,
-            avatar_url
-          )
-        `)
+        .select('*')
         .eq('id', auditId)
         .single();
 
       if (auditError) throw auditError;
 
-      // Mock data for new tables until Supabase types are updated
+      // Fetch client profile
+      const { data: clientProfile } = await supabase
+        .from('extended_profiles')
+        .select('id, full_name, avatar_url')
+        .eq('id', audit.client_id)
+        .single();
+
+      // Fetch auditor profile if assigned
+      let auditorProfile = null;
+      if (audit.assigned_auditor_id) {
+        const { data: auditor } = await supabase
+          .from('extended_profiles')
+          .select('id, full_name, avatar_url')
+          .eq('id', audit.assigned_auditor_id)
+          .single();
+        auditorProfile = auditor;
+      }
+
+      // Mock data for new tables until they're properly synced
       const mockFindings: AuditFinding[] = [
         {
           id: '1',
@@ -143,12 +149,13 @@ export const useAuditDetails = (auditId?: string) => {
         }
       ];
 
+      // Build enhanced audit data with proper fallbacks
       const enhancedAuditData: EnhancedAuditData = {
         ...audit,
-        current_phase: audit.current_phase || 'initial_review',
-        completion_percentage: audit.completion_percentage || 25,
-        security_score: audit.security_score || 85,
-        findings_count: audit.findings_count || {
+        current_phase: 'initial_review',
+        completion_percentage: 25,
+        security_score: 85,
+        findings_count: {
           critical: 0,
           high: 1,
           medium: 2,
@@ -158,6 +165,16 @@ export const useAuditDetails = (auditId?: string) => {
         findings: mockFindings,
         deliverables: mockDeliverables,
         status_updates: mockStatusUpdates,
+        client: {
+          id: audit.client_id,
+          full_name: clientProfile?.full_name || 'Unknown Client',
+          avatar_url: clientProfile?.avatar_url
+        },
+        auditor: auditorProfile ? {
+          id: auditorProfile.id,
+          full_name: auditorProfile.full_name || 'Unknown Auditor',
+          avatar_url: auditorProfile.avatar_url
+        } : undefined
       };
 
       setAuditData(enhancedAuditData);
