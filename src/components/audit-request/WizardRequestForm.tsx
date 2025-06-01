@@ -1,10 +1,11 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import FormProgress from './FormProgress';
-import ProjectDetailsStep from './steps/ProjectDetailsStep';
-import TechnicalInfoStep from './steps/TechnicalInfoStep';
-import RequirementsStep from './steps/RequirementsStep';
-import ReviewStep from './steps/ReviewStep';
+import { FormProgress } from './FormProgress';
+import { ProjectDetailsStep } from './steps/ProjectDetailsStep';
+import { TechnicalInfoStep } from './steps/TechnicalInfoStep';
+import { RequirementsStep } from './steps/RequirementsStep';
+import { ReviewStep } from './steps/ReviewStep';
 import AIMatchingJourney from './AIMatchingJourney';
 import { AuditRequestService } from '@/services/auditRequestService';
 import { toast } from 'sonner';

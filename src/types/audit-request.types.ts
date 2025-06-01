@@ -9,6 +9,7 @@ export interface AuditFormData {
   linesOfCode: string;
   deadline: string;
   budget: string;
+  customBudget?: string;
   auditScope: string;
   specificConcerns: string;
   previousAudits: boolean;
