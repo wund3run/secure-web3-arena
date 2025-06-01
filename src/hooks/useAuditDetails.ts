@@ -1,177 +1,254 @@
 
 import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-// Mock data for demonstration
-const mockAuditData = {
-  id: 'audit-123',
-  name: 'DeFi Protocol Security Audit',
-  status: 'in-progress',
-  progress: 60,
-  startDate: '2023-05-15',
-  dueDate: '2023-06-10',
-  client: {
-    name: 'DeFi Innovations Inc.',
-    logo: ''
-  },
-  description: 'Comprehensive security audit of smart contract ecosystem for DeFi lending protocol',
-  securityScore: 76,
-  riskCategories: [
-    { name: 'Access Controls', score: 85, maxScore: 100, riskLevel: 'low', description: 'Good access control implementation with minor improvements needed' },
-    { name: 'Smart Contract Logic', score: 62, maxScore: 100, riskLevel: 'medium', description: 'Several logic issues found that require attention' },
-    { name: 'Oracle Integration', score: 45, maxScore: 100, riskLevel: 'high', description: 'Critical vulnerabilities in price feed implementations' },
-    { name: 'Gas Optimization', score: 90, maxScore: 100, riskLevel: 'low', description: 'Efficient gas usage with minor optimization opportunities' }
-  ],
-  vulnerabilities: [
-    { name: 'Reentrancy', count: 2, severity: 'critical' },
-    { name: 'Access Control', count: 3, severity: 'high' },
-    { name: 'Input Validation', count: 5, severity: 'medium' },
-    { name: 'Oracle Manipulation', count: 1, severity: 'high' },
-    { name: 'Front-Running', count: 2, severity: 'medium' },
-    { name: 'Integer Overflow', count: 0, severity: 'low' },
-    { name: 'Gas Optimization', count: 7, severity: 'info' }
-  ],
-  learningResources: [
-    {
-      title: 'Understanding Reentrancy Attacks',
-      description: 'Learn about reentrancy vulnerabilities and how to prevent them in your smart contracts',
-      type: 'article',
-      url: '#',
-      readingTime: '5 min',
-      level: 'intermediate'
-    },
-    {
-      title: 'Best Practices for Oracle Integration',
-      description: 'A comprehensive guide to securely integrating price oracles in DeFi applications',
-      type: 'guide',
-      url: '#',
-      readingTime: '12 min',
-      level: 'advanced'
-    }
-  ],
-  messages: [
-    {
-      id: 'm1',
-      sender: {
-        id: 'auditor1',
-        name: 'Alex Chen',
-        avatar: '',
-        role: 'auditor'
-      },
-      content: "I've completed the initial analysis of your lending pool contract. I found a potential reentrancy vulnerability in the withdraw function.",
-      timestamp: '10:30 AM',
-      status: 'read'
-    },
-    {
-      id: 'm2',
-      sender: {
-        id: 'client1',
-        name: 'Sarah Kim',
-        avatar: '',
-        role: 'client'
-      },
-      content: "Thanks for the update. Can you provide more details about this vulnerability?",
-      timestamp: '10:45 AM',
-      status: 'read'
-    },
-    {
-      id: 'm3',
-      sender: {
-        id: 'system',
-        name: 'System',
-        role: 'system'
-      },
-      content: "Alex Chen has shared a code snippet",
-      timestamp: '11:02 AM'
-    },
-    {
-      id: 'm4',
-      sender: {
-        id: 'auditor1',
-        name: 'Alex Chen',
-        avatar: '',
-        role: 'auditor'
-      },
-      content: "Here's the vulnerable code section. The issue is that the contract updates the user's balance after sending ETH, which could allow an attacker to call back into the withdraw function before the balance is updated.",
-      timestamp: '11:02 AM',
-      attachments: [
-        {
-          name: 'vulnerable-code.sol',
-          url: '#',
-          type: 'code',
-          size: '4.2 KB'
-        }
-      ],
-      status: 'read'
-    }
-  ],
-  participants: [
-    {
-      id: 'auditor1',
-      name: 'Alex Chen',
-      avatar: '',
-      role: 'Lead Auditor',
-      status: 'online'
-    },
-    {
-      id: 'auditor2',
-      name: 'Maria Garcia',
-      avatar: '',
-      role: 'Security Researcher',
-      status: 'away'
-    },
-    {
-      id: 'client1',
-      name: 'Sarah Kim',
-      avatar: '',
-      role: 'Project Manager',
-      status: 'online'
-    },
-    {
-      id: 'client2',
-      name: 'Jason Wei',
-      avatar: '',
-      role: 'Lead Developer',
-      status: 'offline'
-    }
-  ]
-};
+export interface AuditFinding {
+  id: string;
+  severity: 'critical' | 'high' | 'medium' | 'low' | 'info';
+  category: string;
+  title: string;
+  description: string;
+  location?: string;
+  code_snippet?: string;
+  recommendation?: string;
+  status: 'open' | 'acknowledged' | 'fixed' | 'false_positive';
+  created_at: string;
+}
 
-export const useAuditDetails = (auditId: string | undefined) => {
+export interface AuditDeliverable {
+  id: string;
+  title: string;
+  description?: string;
+  status: 'pending' | 'in_progress' | 'completed' | 'delivered';
+  due_date?: string;
+  delivered_at?: string;
+}
+
+export interface AuditStatusUpdate {
+  id: string;
+  status_type: 'progress' | 'milestone' | 'finding' | 'communication' | 'deliverable';
+  title: string;
+  message?: string;
+  metadata: any;
+  created_at: string;
+  user_id: string;
+}
+
+export interface EnhancedAuditData {
+  id: string;
+  project_name: string;
+  project_description?: string;
+  blockchain: string;
+  status: string;
+  current_phase: string;
+  completion_percentage: number;
+  security_score: number;
+  findings_count: {
+    critical: number;
+    high: number;
+    medium: number;
+    low: number;
+    info: number;
+  };
+  client_id: string;
+  assigned_auditor_id?: string;
+  created_at: string;
+  estimated_completion?: string;
+  actual_start_date?: string;
+  findings: AuditFinding[];
+  deliverables: AuditDeliverable[];
+  status_updates: AuditStatusUpdate[];
+  client: {
+    id: string;
+    full_name?: string;
+    avatar_url?: string;
+  };
+  auditor?: {
+    id: string;
+    full_name?: string;
+    avatar_url?: string;
+  };
+}
+
+export const useAuditDetails = (auditId?: string) => {
+  const [auditData, setAuditData] = useState<EnhancedAuditData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [auditData, setAuditData] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('overview');
 
-  useEffect(() => {
-    const fetchAuditData = async () => {
-      setIsLoading(true);
-      try {
-        // In a real app, fetch from API: await api.getAuditDetails(auditId);
-        setTimeout(() => {
-          setAuditData(mockAuditData);
-          setIsLoading(false);
-        }, 1000);
-      } catch (error) {
-        console.error("Error fetching audit data:", error);
-        toast.error("Failed to load audit details");
-        setIsLoading(false);
-      }
-    };
-    
-    fetchAuditData();
-  }, [auditId]);
+  const fetchAuditDetails = async () => {
+    if (!auditId) return;
 
-  const handleSendMessage = (message: string) => {
-    toast.success("Message sent successfully");
-    // In a real app, send to API and update state
-    console.log("Sending message:", message);
+    try {
+      setIsLoading(true);
+
+      // Fetch main audit data with related information
+      const { data: audit, error: auditError } = await supabase
+        .from('audit_requests')
+        .select(`
+          *,
+          client:client_id (
+            id,
+            full_name,
+            avatar_url
+          ),
+          auditor:assigned_auditor_id (
+            id,
+            full_name,
+            avatar_url
+          )
+        `)
+        .eq('id', auditId)
+        .single();
+
+      if (auditError) throw auditError;
+
+      // Fetch findings
+      const { data: findings, error: findingsError } = await supabase
+        .from('audit_findings')
+        .select('*')
+        .eq('audit_request_id', auditId)
+        .order('created_at', { ascending: false });
+
+      if (findingsError) throw findingsError;
+
+      // Fetch deliverables
+      const { data: deliverables, error: deliverablesError } = await supabase
+        .from('audit_deliverables')
+        .select('*')
+        .eq('audit_request_id', auditId)
+        .order('due_date', { ascending: true });
+
+      if (deliverablesError) throw deliverablesError;
+
+      // Fetch status updates
+      const { data: statusUpdates, error: updatesError } = await supabase
+        .from('audit_status_updates')
+        .select('*')
+        .eq('audit_request_id', auditId)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (updatesError) throw updatesError;
+
+      const enhancedAuditData: EnhancedAuditData = {
+        ...audit,
+        findings: findings || [],
+        deliverables: deliverables || [],
+        status_updates: statusUpdates || [],
+      };
+
+      setAuditData(enhancedAuditData);
+    } catch (error: any) {
+      console.error('Error fetching audit details:', error);
+      toast.error('Failed to load audit details');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  const handleSendMessage = async (message: string) => {
+    if (!auditId) return;
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
+      const { error } = await supabase
+        .from('audit_messages')
+        .insert({
+          audit_request_id: auditId,
+          sender_id: user.id,
+          content: message,
+          message_type: 'text'
+        });
+
+      if (error) throw error;
+
+      toast.success('Message sent successfully');
+    } catch (error: any) {
+      console.error('Error sending message:', error);
+      toast.error('Failed to send message');
+    }
+  };
+
+  const updateFindingStatus = async (findingId: string, status: string) => {
+    try {
+      const { error } = await supabase
+        .from('audit_findings')
+        .update({ status })
+        .eq('id', findingId);
+
+      if (error) throw error;
+
+      // Refresh audit data
+      await fetchAuditDetails();
+      toast.success('Finding status updated');
+    } catch (error: any) {
+      console.error('Error updating finding status:', error);
+      toast.error('Failed to update finding status');
+    }
+  };
+
+  // Set up real-time subscriptions
+  useEffect(() => {
+    if (!auditId) return;
+
+    fetchAuditDetails();
+
+    // Subscribe to audit updates
+    const auditChannel = supabase
+      .channel(`audit_${auditId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'audit_requests',
+          filter: `id=eq.${auditId}`,
+        },
+        () => {
+          fetchAuditDetails();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'audit_findings',
+          filter: `audit_request_id=eq.${auditId}`,
+        },
+        () => {
+          fetchAuditDetails();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'audit_status_updates',
+          filter: `audit_request_id=eq.${auditId}`,
+        },
+        () => {
+          fetchAuditDetails();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(auditChannel);
+    };
+  }, [auditId]);
+
   return {
-    isLoading,
     auditData,
+    isLoading,
     activeTab,
     setActiveTab,
-    handleSendMessage
+    handleSendMessage,
+    updateFindingStatus,
+    refetch: fetchAuditDetails
   };
 };
