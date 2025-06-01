@@ -3,7 +3,8 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, CheckCircle, Clock, DollarSign, FileText, Shield, Users } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { CheckCircle, Edit, Globe, FileCode, Calendar, DollarSign, MessageSquare, Shield } from 'lucide-react';
 import type { AuditFormData } from '@/types/audit-request.types';
 
 interface ReviewStepProps {
@@ -12,205 +13,264 @@ interface ReviewStepProps {
   isSubmitting: boolean;
 }
 
-const ReviewStep: React.FC<ReviewStepProps> = ({ formData, prevStep, isSubmitting }) => {
+export const ReviewStep: React.FC<ReviewStepProps> = ({
+  formData,
+  prevStep,
+  isSubmitting
+}) => {
   return (
-    <div className="space-y-8">
-      <div>
+    <div className="space-y-6">
+      <div className="text-center">
         <h2 className="text-2xl font-bold mb-2">Review Your Request</h2>
-        <p className="text-muted-foreground">Please review all details before submitting your audit request</p>
+        <p className="text-muted-foreground">
+          Please review all details before submitting your audit request
+        </p>
       </div>
 
-      {/* Project Overview */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            Project Overview
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label>Project Name</Label>
-            <p className="font-medium">{formData.projectName}</p>
-          </div>
-          <div>
-            <Label>Description</Label>
-            <p className="text-muted-foreground">{formData.projectDescription}</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <div>
-              <Label>Blockchain</Label>
-              <Badge variant="secondary">{formData.blockchain}</Badge>
-            </div>
-            {formData.repositoryUrl && (
-              <div>
-                <Label>Repository</Label>
-                <p className="text-sm text-muted-foreground">Provided</p>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Technical Details */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5" />
-            Technical Scope
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div>
-              <Label>Contracts</Label>
-              <p className="font-medium">{formData.contractCount}</p>
-            </div>
-            <div>
-              <Label>Lines of Code</Label>
-              <p className="font-medium">{formData.linesOfCode}</p>
-            </div>
-            <div>
-              <Label>Audit Scope</Label>
-              <p className="font-medium">{formData.auditScope}</p>
-            </div>
-            <div>
-              <Label>Audit Type</Label>
-              <p className="font-medium">{formData.specializedAuditType}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Requirements */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Clock className="h-5 w-5" />
-            Requirements
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <Label>Timeline</Label>
-              <p className="font-medium">{formData.deadline}</p>
-            </div>
-            <div>
-              <Label>Budget</Label>
-              <p className="font-medium">{formData.budget}</p>
-            </div>
-            <div>
-              <Label>Communication</Label>
-              <p className="font-medium capitalize">{formData.preferredCommunication}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Additional Options */}
-      {(formData.collaborativeAudit || formData.continuousAuditing || formData.hybridModel) && (
+      <div className="grid gap-6">
+        {/* Project Overview */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              Additional Services
+              <Globe className="h-5 w-5" />
+              Project Overview
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {formData.collaborativeAudit && (
-                <Badge variant="outline">Collaborative Audit</Badge>
-              )}
-              {formData.continuousAuditing && (
-                <Badge variant="outline">Continuous Monitoring</Badge>
-              )}
-              {formData.hybridModel && (
-                <Badge variant="outline">AI + Human Hybrid</Badge>
+          <CardContent className="space-y-3">
+            <div>
+              <div className="font-medium text-sm text-muted-foreground">Project Name</div>
+              <div className="font-semibold">{formData.projectName}</div>
+            </div>
+            
+            <div>
+              <div className="font-medium text-sm text-muted-foreground">Description</div>
+              <div className="text-sm">{formData.projectDescription}</div>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <div className="font-medium text-sm text-muted-foreground">Blockchain</div>
+                <Badge variant="outline">
+                  {formData.blockchain === 'Other' ? formData.customBlockchain : formData.blockchain}
+                </Badge>
+              </div>
+              
+              {formData.repositoryUrl && (
+                <div>
+                  <div className="font-medium text-sm text-muted-foreground">Repository</div>
+                  <a 
+                    href={formData.repositoryUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-sm text-primary hover:underline"
+                  >
+                    View Code Repository
+                  </a>
+                </div>
               )}
             </div>
           </CardContent>
         </Card>
-      )}
 
-      {/* Security Concerns */}
-      {formData.specificConcerns && (
+        {/* Technical Details */}
         <Card>
           <CardHeader>
-            <CardTitle>Security Priorities</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <FileCode className="h-5 w-5" />
+              Technical Details
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">{formData.specificConcerns}</p>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Previous Audits */}
-      {formData.previousAudits && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Previous Audits</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2 mb-2">
-              <CheckCircle className="h-4 w-4 text-green-500" />
-              <span>This project has been audited before</span>
+          <CardContent className="space-y-3">
+            <div className="grid md:grid-cols-3 gap-4">
+              <div>
+                <div className="font-medium text-sm text-muted-foreground">Smart Contracts</div>
+                <Badge variant="outline">{formData.contractCount}</Badge>
+              </div>
+              
+              <div>
+                <div className="font-medium text-sm text-muted-foreground">Lines of Code</div>
+                <Badge variant="outline">{formData.linesOfCode}</Badge>
+              </div>
+              
+              <div>
+                <div className="font-medium text-sm text-muted-foreground">Audit Type</div>
+                <Badge variant="outline">{formData.specializedAuditType}</Badge>
+              </div>
             </div>
-            {formData.previousAuditLinks && (
-              <p className="text-muted-foreground text-sm">{formData.previousAuditLinks}</p>
+
+            {formData.auditScope && (
+              <div>
+                <div className="font-medium text-sm text-muted-foreground">Audit Scope</div>
+                <div className="text-sm">{formData.auditScope}</div>
+              </div>
+            )}
+
+            {(formData.collaborativeAudit || formData.continuousAuditing || formData.hybridModel) && (
+              <div>
+                <div className="font-medium text-sm text-muted-foreground">Enhanced Options</div>
+                <div className="flex gap-2 flex-wrap">
+                  {formData.collaborativeAudit && (
+                    <Badge variant="secondary">Collaborative Process</Badge>
+                  )}
+                  {formData.continuousAuditing && (
+                    <Badge variant="secondary">Continuous Monitoring</Badge>
+                  )}
+                  {formData.hybridModel && (
+                    <Badge variant="secondary">Hybrid Model</Badge>
+                  )}
+                </div>
+              </div>
             )}
           </CardContent>
         </Card>
-      )}
 
-      {/* Submit Section */}
-      <Card className="border-primary/20 bg-primary/5">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <DollarSign className="h-5 w-5" />
-            What Happens Next?
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex items-start gap-3">
-            <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium mt-0.5">1</div>
-            <div>
-              <p className="font-medium">AI Matching</p>
-              <p className="text-sm text-muted-foreground">Our AI will match you with the best auditors for your project</p>
+        {/* Requirements */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calendar className="h-5 w-5" />
+              Requirements & Preferences
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <div className="font-medium text-sm text-muted-foreground">Timeline</div>
+                <Badge variant="outline" className="flex items-center gap-1">
+                  <Calendar className="h-3 w-3" />
+                  {formData.deadline}
+                </Badge>
+              </div>
+              
+              <div>
+                <div className="font-medium text-sm text-muted-foreground">Budget</div>
+                <Badge variant="outline" className="flex items-center gap-1">
+                  <DollarSign className="h-3 w-3" />
+                  {formData.budget}
+                </Badge>
+              </div>
             </div>
-          </div>
-          <div className="flex items-start gap-3">
-            <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium mt-0.5">2</div>
-            <div>
-              <p className="font-medium">Proposals & Selection</p>
-              <p className="text-sm text-muted-foreground">Review proposals from qualified auditors and select your preferred team</p>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <div className="font-medium text-sm text-muted-foreground">Communication</div>
+                <Badge variant="outline" className="flex items-center gap-1">
+                  <MessageSquare className="h-3 w-3" />
+                  {formData.preferredCommunication}
+                </Badge>
+              </div>
+              
+              <div>
+                <div className="font-medium text-sm text-muted-foreground">Accountability</div>
+                <Badge variant="outline" className="flex items-center gap-1">
+                  <Shield className="h-3 w-3" />
+                  {formData.accountabilityPreference}
+                </Badge>
+              </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Security History */}
+        {(formData.previousAudits || formData.specificConcerns) && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                Security History & Concerns
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {formData.previousAudits && (
+                <div>
+                  <div className="font-medium text-sm text-muted-foreground">Previous Audits</div>
+                  <Badge variant="outline">Previously Audited</Badge>
+                  {formData.previousAuditLinks && (
+                    <div className="text-sm mt-1">{formData.previousAuditLinks}</div>
+                  )}
+                </div>
+              )}
+              
+              {formData.specificConcerns && (
+                <div>
+                  <div className="font-medium text-sm text-muted-foreground">Specific Concerns</div>
+                  <div className="text-sm">{formData.specificConcerns}</div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Contact Information */}
+        {(formData.contactName || formData.contactEmail) && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Contact Information</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-4">
+                {formData.contactName && (
+                  <div>
+                    <div className="font-medium text-sm text-muted-foreground">Contact Name</div>
+                    <div>{formData.contactName}</div>
+                  </div>
+                )}
+                
+                {formData.contactEmail && (
+                  <div>
+                    <div className="font-medium text-sm text-muted-foreground">Contact Email</div>
+                    <div>{formData.contactEmail}</div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      <Separator />
+
+      <div className="bg-muted/50 p-6 rounded-lg">
+        <div className="flex items-start gap-3">
+          <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+          <div>
+            <h3 className="font-semibold mb-2">Ready to Submit</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Your audit request will be processed by our AI matching system to find the most suitable auditors. 
+              You'll receive notifications when auditors show interest in your project.
+            </p>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li>• AI will match you with qualified auditors within 24 hours</li>
+              <li>• You'll receive proposals from interested auditors</li>
+              <li>• Escrow protection for secure payments</li>
+              <li>• Real-time progress tracking and communication</li>
+            </ul>
           </div>
-          <div className="flex items-start gap-3">
-            <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium mt-0.5">3</div>
-            <div>
-              <p className="font-medium">Audit Execution</p>
-              <p className="text-sm text-muted-foreground">Work with your chosen auditor through our secure platform</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <div className="flex justify-between">
         <Button variant="outline" onClick={prevStep} disabled={isSubmitting}>
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back
+          <Edit className="h-4 w-4 mr-2" />
+          Edit Request
         </Button>
-        <Button type="submit" size="lg" disabled={isSubmitting}>
-          {isSubmitting ? 'Submitting...' : 'Submit Audit Request'}
+        
+        <Button 
+          type="submit" 
+          disabled={isSubmitting}
+          size="lg"
+          className="bg-green-600 hover:bg-green-700"
+        >
+          {isSubmitting ? (
+            <>Submitting...</>
+          ) : (
+            <>
+              <CheckCircle className="h-4 w-4 mr-2" />
+              Submit Audit Request
+            </>
+          )}
         </Button>
       </div>
     </div>
   );
 };
-
-const Label: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <span className="text-sm font-medium text-muted-foreground">{children}</span>
-);
-
-export default ReviewStep;

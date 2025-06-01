@@ -1,11 +1,11 @@
 
 import React from 'react';
 import { useAuditForm } from "@/hooks/useAuditForm";
-import ProjectDetailsStep from './steps/ProjectDetailsStep';
-import TechnicalInfoStep from './steps/TechnicalInfoStep';
-import RequirementsStep from './steps/RequirementsStep';
-import ReviewStep from './steps/ReviewStep';
-import FormProgress from './FormProgress';
+import { ProjectDetailsStep } from './steps/ProjectDetailsStep';
+import { TechnicalInfoStep } from './steps/TechnicalInfoStep';
+import { RequirementsStep } from './steps/RequirementsStep';
+import { ReviewStep } from './steps/ReviewStep';
+import { FormProgress } from './FormProgress';
 import AIMatchingJourney from './AIMatchingJourney';
 import ErrorBoundary from "@/components/ui/error-boundary";
 import LoadingState from "@/components/ui/loading-state";
@@ -81,7 +81,7 @@ const AuditRequestForm = ({ onSubmitSuccess, prefilledData }: AuditRequestFormPr
 
   return (
     <ErrorBoundary>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Progress indicator */}
         <FormProgress formStep={formStep} showAIMatching={showAIMatching} />
 

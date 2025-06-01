@@ -1,11 +1,15 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, FileCode, GitBranch, Clock } from 'lucide-react';
-import type { AuditFormData } from '@/types/audit-request.types';
+import { FileCode, Settings, Shield } from 'lucide-react';
+import type { AuditFormData, AuditFormErrors } from '@/types/audit-request.types';
 
 interface TechnicalInfoStepProps {
   formData: AuditFormData;
@@ -14,188 +18,274 @@ interface TechnicalInfoStepProps {
   handleCheckboxChange: (field: keyof AuditFormData, checked: boolean) => void;
   prevStep: () => void;
   nextStep: () => void;
-  formErrors: Record<string, string>;
+  formErrors: AuditFormErrors;
 }
 
 const contractCountOptions = [
-  { value: "1-5", label: "1-5 contracts", description: "Small project" },
-  { value: "6-15", label: "6-15 contracts", description: "Medium project" },
-  { value: "16-30", label: "16-30 contracts", description: "Large project" },
-  { value: "30+", label: "30+ contracts", description: "Enterprise project" }
+  "1-5", "6-10", "11-20", "21-50", "50+"
 ];
 
 const linesOfCodeOptions = [
-  { value: "< 1,000", label: "< 1,000 lines", description: "Simple implementation" },
-  { value: "1,000 - 5,000", label: "1,000 - 5,000 lines", description: "Standard project" },
-  { value: "5,000 - 15,000", label: "5,000 - 15,000 lines", description: "Complex project" },
-  { value: "15,000+", label: "15,000+ lines", description: "Very complex project" }
+  "< 1,000", "1,000 - 5,000", "5,000 - 10,000", "10,000 - 25,000", "25,000+"
 ];
 
-const auditScopeOptions = [
-  { value: "smart-contracts", label: "Smart Contracts Only", description: "Focus on contract logic and security" },
-  { value: "full-stack", label: "Full Stack Review", description: "Frontend, backend, and smart contracts" },
-  { value: "infrastructure", label: "Infrastructure Review", description: "Deployment and infrastructure security" },
-  { value: "tokenomics", label: "Tokenomics Analysis", description: "Economic model and token mechanics" }
+const auditTypeOptions = [
+  { value: "Standard", label: "Standard Audit", description: "Comprehensive security review" },
+  { value: "Express", label: "Express Audit", description: "Fast-track security assessment" },
+  { value: "Comprehensive", label: "Comprehensive Audit", description: "In-depth analysis with formal verification" },
+  { value: "Continuous", label: "Continuous Monitoring", description: "Ongoing security monitoring" }
 ];
 
-const TechnicalInfoStep: React.FC<TechnicalInfoStepProps> = ({
+export const TechnicalInfoStep: React.FC<TechnicalInfoStepProps> = ({
   formData,
+  handleChange,
   handleSelectChange,
   handleCheckboxChange,
   prevStep,
   nextStep,
   formErrors
 }) => {
+  const isValid = formData.contractCount && formData.linesOfCode;
+
   return (
-    <div className="space-y-8">
-      <div>
+    <div className="space-y-6">
+      <div className="text-center">
         <h2 className="text-2xl font-bold mb-2">Technical Information</h2>
-        <p className="text-muted-foreground">Help us understand the scope and complexity of your project</p>
+        <p className="text-muted-foreground">
+          Help us understand the scope and complexity of your project
+        </p>
       </div>
 
-      {/* Project Scale */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileCode className="h-5 w-5" />
-            Project Scale
-          </CardTitle>
-          <CardDescription>Tell us about the size and complexity of your codebase</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <Label className="text-base font-medium">Number of Smart Contracts *</Label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
-              {contractCountOptions.map((option) => (
-                <div
-                  key={option.value}
-                  className={`p-4 border rounded-lg cursor-pointer transition-all hover:border-primary ${
-                    formData.contractCount === option.value ? 'border-primary bg-primary/5' : 'border-border'
-                  }`}
-                  onClick={() => handleSelectChange('contractCount', option.value)}
+      <div className="grid gap-6">
+        {/* Project Scale */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileCode className="h-5 w-5" />
+              Project Scale
+            </CardTitle>
+            <CardDescription>
+              Provide details about the size and complexity of your codebase
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="contractCount">Number of Smart Contracts *</Label>
+                <Select 
+                  value={formData.contractCount} 
+                  onValueChange={(value) => handleSelectChange('contractCount', value)}
                 >
-                  <div className="font-medium">{option.label}</div>
-                  <div className="text-sm text-muted-foreground">{option.description}</div>
-                </div>
-              ))}
-            </div>
-            {formErrors.contractCount && (
-              <p className="text-sm text-red-500 mt-2">{formErrors.contractCount}</p>
-            )}
-          </div>
-
-          <div>
-            <Label className="text-base font-medium">Lines of Code *</Label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
-              {linesOfCodeOptions.map((option) => (
-                <div
-                  key={option.value}
-                  className={`p-4 border rounded-lg cursor-pointer transition-all hover:border-primary ${
-                    formData.linesOfCode === option.value ? 'border-primary bg-primary/5' : 'border-border'
-                  }`}
-                  onClick={() => handleSelectChange('linesOfCode', option.value)}
-                >
-                  <div className="font-medium">{option.label}</div>
-                  <div className="text-sm text-muted-foreground">{option.description}</div>
-                </div>
-              ))}
-            </div>
-            {formErrors.linesOfCode && (
-              <p className="text-sm text-red-500 mt-2">{formErrors.linesOfCode}</p>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Audit Scope */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <GitBranch className="h-5 w-5" />
-            Audit Scope
-          </CardTitle>
-          <CardDescription>What aspects of your project need auditing?</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {auditScopeOptions.map((option) => (
-              <div
-                key={option.value}
-                className={`p-4 border rounded-lg cursor-pointer transition-all hover:border-primary ${
-                  formData.auditScope === option.value ? 'border-primary bg-primary/5' : 'border-border'
-                }`}
-                onClick={() => handleSelectChange('auditScope', option.value)}
-              >
-                <div className="font-medium">{option.label}</div>
-                <div className="text-sm text-muted-foreground mt-1">{option.description}</div>
+                  <SelectTrigger className={formErrors.contractCount ? 'border-destructive' : ''}>
+                    <SelectValue placeholder="Select contract count" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {contractCountOptions.map((option) => (
+                      <SelectItem key={option} value={option}>
+                        {option} contracts
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {formErrors.contractCount && (
+                  <p className="text-sm text-destructive">{formErrors.contractCount}</p>
+                )}
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
 
-      {/* Advanced Options */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Advanced Audit Options</CardTitle>
-          <CardDescription>Additional audit features and services</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center space-x-3">
-            <input
-              type="checkbox"
-              id="collaborativeAudit"
-              checked={formData.collaborativeAudit}
-              onChange={(e) => handleCheckboxChange('collaborativeAudit', e.target.checked)}
-              className="rounded"
-            />
-            <div>
-              <Label htmlFor="collaborativeAudit" className="font-medium">Collaborative Audit</Label>
-              <p className="text-sm text-muted-foreground">Work directly with auditors during the process</p>
+              <div className="space-y-2">
+                <Label htmlFor="linesOfCode">Lines of Code (Estimate) *</Label>
+                <Select 
+                  value={formData.linesOfCode} 
+                  onValueChange={(value) => handleSelectChange('linesOfCode', value)}
+                >
+                  <SelectTrigger className={formErrors.linesOfCode ? 'border-destructive' : ''}>
+                    <SelectValue placeholder="Select LOC range" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {linesOfCodeOptions.map((option) => (
+                      <SelectItem key={option} value={option}>
+                        {option} lines
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {formErrors.linesOfCode && (
+                  <p className="text-sm text-destructive">{formErrors.linesOfCode}</p>
+                )}
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center space-x-3">
-            <input
-              type="checkbox"
-              id="continuousAuditing"
-              checked={formData.continuousAuditing}
-              onChange={(e) => handleCheckboxChange('continuousAuditing', e.target.checked)}
-              className="rounded"
-            />
-            <div>
-              <Label htmlFor="continuousAuditing" className="font-medium">Continuous Auditing</Label>
-              <p className="text-sm text-muted-foreground">Ongoing security monitoring after deployment</p>
+            <div className="space-y-2">
+              <Label htmlFor="auditScope">Audit Scope & Focus Areas</Label>
+              <Textarea
+                id="auditScope"
+                name="auditScope"
+                placeholder="Describe specific areas you want audited (e.g., token economics, access controls, upgrade mechanisms, external integrations)..."
+                rows={3}
+                value={formData.auditScope}
+                onChange={handleChange}
+              />
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          <div className="flex items-center space-x-3">
-            <input
-              type="checkbox"
-              id="hybridModel"
-              checked={formData.hybridModel}
-              onChange={(e) => handleCheckboxChange('hybridModel', e.target.checked)}
-              className="rounded"
-            />
-            <div>
-              <Label htmlFor="hybridModel" className="font-medium">AI + Human Hybrid</Label>
-              <p className="text-sm text-muted-foreground">Combine automated tools with expert review</p>
+        {/* Audit Type Selection */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Shield className="h-5 w-5" />
+              Audit Type
+            </CardTitle>
+            <CardDescription>
+              Choose the type of security audit that best fits your needs
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-3">
+              {auditTypeOptions.map((type) => (
+                <div
+                  key={type.value}
+                  className={`
+                    p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md
+                    ${formData.specializedAuditType === type.value 
+                      ? 'border-primary bg-primary/5 shadow-sm' 
+                      : 'border-border hover:border-primary/50'
+                    }
+                  `}
+                  onClick={() => handleSelectChange('specializedAuditType', type.value)}
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <div className="font-medium">{type.label}</div>
+                      <div className="text-sm text-muted-foreground mt-1">
+                        {type.description}
+                      </div>
+                    </div>
+                    {formData.specializedAuditType === type.value && (
+                      <Badge variant="default">Selected</Badge>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+
+        {/* Enhanced Audit Options */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5" />
+              Enhanced Options
+            </CardTitle>
+            <CardDescription>
+              Additional services to enhance your audit experience
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="collaborativeAudit"
+                  checked={formData.collaborativeAudit || false}
+                  onCheckedChange={(checked) => handleCheckboxChange('collaborativeAudit', checked as boolean)}
+                />
+                <Label htmlFor="collaborativeAudit" className="text-sm font-medium">
+                  Collaborative Audit Process
+                </Label>
+              </div>
+              <p className="text-sm text-muted-foreground ml-6">
+                Work closely with auditors during the review process
+              </p>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="continuousAuditing"
+                  checked={formData.continuousAuditing || false}
+                  onCheckedChange={(checked) => handleCheckboxChange('continuousAuditing', checked as boolean)}
+                />
+                <Label htmlFor="continuousAuditing" className="text-sm font-medium">
+                  Continuous Monitoring
+                </Label>
+              </div>
+              <p className="text-sm text-muted-foreground ml-6">
+                Ongoing security monitoring after deployment
+              </p>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="hybridModel"
+                  checked={formData.hybridModel || false}
+                  onCheckedChange={(checked) => handleCheckboxChange('hybridModel', checked as boolean)}
+                />
+                <Label htmlFor="hybridModel" className="text-sm font-medium">
+                  Hybrid Audit Model
+                </Label>
+              </div>
+              <p className="text-sm text-muted-foreground ml-6">
+                Combination of automated tools and manual review
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Previous Audits */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Previous Security Work</CardTitle>
+            <CardDescription>
+              Tell us about any previous security assessments
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="previousAudits"
+                checked={formData.previousAudits}
+                onCheckedChange={(checked) => handleCheckboxChange('previousAudits', checked as boolean)}
+              />
+              <Label htmlFor="previousAudits" className="text-sm font-medium">
+                This project has been audited before
+              </Label>
+            </div>
+
+            {formData.previousAudits && (
+              <div className="space-y-2">
+                <Label htmlFor="previousAuditLinks">Previous Audit Reports</Label>
+                <Textarea
+                  id="previousAuditLinks"
+                  name="previousAuditLinks"
+                  placeholder="Please provide links to previous audit reports or details about previous security work..."
+                  rows={3}
+                  value={formData.previousAuditLinks || ''}
+                  onChange={handleChange}
+                />
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="specificConcerns">Specific Security Concerns</Label>
+              <Textarea
+                id="specificConcerns"
+                name="specificConcerns"
+                placeholder="Are there any specific security concerns or areas you want auditors to pay special attention to?"
+                rows={3}
+                value={formData.specificConcerns}
+                onChange={handleChange}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       <div className="flex justify-between">
         <Button variant="outline" onClick={prevStep}>
-          <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
-        <Button onClick={nextStep}>
+        <Button onClick={nextStep} disabled={!isValid} size="lg">
           Continue to Requirements
         </Button>
       </div>
     </div>
   );
 };
-
-export default TechnicalInfoStep;
