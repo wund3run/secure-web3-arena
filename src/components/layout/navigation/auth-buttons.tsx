@@ -12,7 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/auth";
-import { ModeToggle } from "@/components/theme/ModeToggle";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { LogOut, User, Settings } from "lucide-react";
 import { toast } from "sonner";
@@ -40,14 +39,9 @@ export function AuthButtons({ isAuthenticated, onSignOut }: AuthButtonsProps) {
       {isAuthenticated && <NotificationBell />}
       
       {!isAuthenticated ? (
-        <>
-          <Button variant="outline" asChild>
-            <Link to="/auth">Sign In</Link>
-          </Button>
-          <Button asChild>
-            <Link to="/auth">Get Started</Link>
-          </Button>
-        </>
+        <Button variant="outline" asChild>
+          <Link to="/auth">Sign In</Link>
+        </Button>
       ) : (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -90,8 +84,6 @@ export function AuthButtons({ isAuthenticated, onSignOut }: AuthButtonsProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       )}
-
-      <ModeToggle />
     </div>
   );
 }

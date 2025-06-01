@@ -130,17 +130,12 @@ export function MobileNavigation({
             
             <div className="border-t pt-4 mt-4 space-y-2">
               {!isAuthenticated ? (
-                <>
-                  <Button variant="outline" asChild className="w-full justify-start">
-                    <Link to="/auth" onClick={handleLinkClick}>
-                      <LogIn className="mr-2 h-4 w-4" />
-                      Sign In
-                    </Link>
-                  </Button>
-                  <div className="text-xs text-muted-foreground p-2 text-center">
-                    Sign in to access Services, Resources, Tools, and Community features
-                  </div>
-                </>
+                <Button variant="outline" asChild className="w-full justify-start">
+                  <Link to="/auth" onClick={handleLinkClick}>
+                    <LogIn className="mr-2 h-4 w-4" />
+                    Sign In
+                  </Link>
+                </Button>
               ) : (
                 <>
                   <Button variant="outline" asChild className="w-full justify-start">
