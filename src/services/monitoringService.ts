@@ -57,7 +57,7 @@ export class MonitoringService {
     this.errorQueue.push(error);
     
     // In production, send to monitoring service (Sentry, Bugsnag, etc.)
-    if (Environment.isProduction()) {
+    if (Environment.isProduction) {
       this.sendToMonitoringService(error);
     }
   }

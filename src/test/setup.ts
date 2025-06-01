@@ -9,14 +9,18 @@ afterEach(() => {
 });
 
 // Mock IntersectionObserver
-global.IntersectionObserver = vi.fn(() => ({
+global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   disconnect: vi.fn(),
   unobserve: vi.fn(),
+  root: null,
+  rootMargin: '',
+  thresholds: [],
+  takeRecords: vi.fn().mockReturnValue([])
 }));
 
 // Mock ResizeObserver
-global.ResizeObserver = vi.fn(() => ({
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   disconnect: vi.fn(),
   unobserve: vi.fn(),
@@ -38,5 +42,8 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 // Mock requestIdleCallback
-global.requestIdleCallback = vi.fn((cb) => setTimeout(cb, 1));
+global.requestIdleCallback = vi.fn().mockImplementation((cb) => {
+  const id = setTimeout(cb, 1);
+  return id as unknown as number;
+});
 global.cancelIdleCallback = vi.fn();

@@ -36,6 +36,10 @@ export class Environment {
     return this.isProduction;
   }
 
+  static get analyticsEnabled(): boolean {
+    return this.isProduction;
+  }
+
   static get logLevel(): 'debug' | 'info' | 'warn' | 'error' {
     if (this.isDevelopment) return 'debug';
     if (this.isTest) return 'warn';

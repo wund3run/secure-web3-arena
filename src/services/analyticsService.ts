@@ -34,7 +34,7 @@ export class AnalyticsService {
     console.log('Analytics event:', eventData);
     
     // In production, send to your analytics service
-    if (Environment.isProduction()) {
+    if (Environment.isProduction) {
       // Send to analytics provider (Mixpanel, Amplitude, etc.)
     }
   }

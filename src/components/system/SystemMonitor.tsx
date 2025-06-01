@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -151,15 +150,15 @@ export const SystemMonitor: React.FC = () => {
                         <Badge variant={getLogLevelColor(log.level)}>
                           {LogLevel[log.level]}
                         </Badge>
-                        <span className="text-sm font-medium">[{log.component}]</span>
+                        <span className="text-sm font-medium">[{log.context || 'system'}]</span>
                         <span className="text-xs text-muted-foreground">
                           {new Date(log.timestamp).toLocaleTimeString()}
                         </span>
                       </div>
                       <p className="text-sm">{log.message}</p>
-                      {log.context.correlationId && (
+                      {log.correlationId && (
                         <p className="text-xs text-muted-foreground">
-                          ID: {log.context.correlationId}
+                          ID: {log.correlationId}
                         </p>
                       )}
                     </div>

@@ -1,11 +1,11 @@
 
-import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
-
-export interface PerformanceMetric {
+interface PerformanceMetric {
   name: string;
   value: number;
   rating: 'good' | 'needs-improvement' | 'poor';
   timestamp: number;
+  category?: string;
+  metadata?: Record<string, any>;
 }
 
 export class PerformanceMonitor {
@@ -17,28 +17,73 @@ export class PerformanceMonitor {
   }
 
   private initializeWebVitals() {
-    getCLS(this.handleMetric.bind(this));
-    getFID(this.handleMetric.bind(this));
-    getFCP(this.handleMetric.bind(this));
-    getLCP(this.handleMetric.bind(this));
-    getTTFB(this.handleMetric.bind(this));
+    // Simplified web vitals implementation without external dependency
+    this.measurePageLoadTime();
+    this.measureFirstContentfulPaint();
   }
 
-  private handleMetric(metric: any) {
-    const performanceMetric: PerformanceMetric = {
-      name: metric.name,
-      value: metric.value,
-      rating: metric.rating,
-      timestamp: Date.now(),
-    };
+  private measurePageLoadTime() {
+    window.addEventListener('load', () => {
+      const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      if (navigationEntry) {
+        const loadTime = navigationEntry.loadEventEnd - navigationEntry.fetchStart;
+        this.handleMetric({
+          name: 'page-load-time',
+          value: loadTime,
+          rating: loadTime < 2000 ? 'good' : loadTime < 4000 ? 'needs-improvement' : 'poor',
+          timestamp: Date.now()
+        });
+      }
+    });
+  }
 
-    this.metrics.push(performanceMetric);
-    this.observers.forEach(observer => observer(performanceMetric));
+  private measureFirstContentfulPaint() {
+    const observer = new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        if (entry.name === 'first-contentful-paint') {
+          this.handleMetric({
+            name: 'first-contentful-paint',
+            value: entry.startTime,
+            rating: entry.startTime < 1800 ? 'good' : entry.startTime < 3000 ? 'needs-improvement' : 'poor',
+            timestamp: Date.now()
+          });
+        }
+      }
+    });
+
+    try {
+      observer.observe({ entryTypes: ['paint'] });
+    } catch (e) {
+      // Paint timing might not be supported
+    }
+  }
+
+  private handleMetric(metric: PerformanceMetric) {
+    this.metrics.push(metric);
+    this.observers.forEach(observer => observer(metric));
 
     // Log poor performance
     if (metric.rating === 'poor') {
       console.warn(`Poor ${metric.name}: ${metric.value}`);
     }
+  }
+
+  recordPerformanceData(data: {
+    name: string;
+    value: number;
+    category: string;
+    metadata?: Record<string, any>;
+  }) {
+    const metric: PerformanceMetric = {
+      name: data.name,
+      value: data.value,
+      rating: 'good', // Default rating, could be calculated based on thresholds
+      timestamp: Date.now(),
+      category: data.category,
+      metadata: data.metadata
+    };
+    
+    this.handleMetric(metric);
   }
 
   getMetrics(): PerformanceMetric[] {
@@ -75,20 +120,11 @@ export class PerformanceMonitor {
 
     poorMetrics.forEach(metric => {
       switch (metric.name) {
-        case 'LCP':
-          recommendations.push('Optimize Largest Contentful Paint by optimizing images and server response times');
+        case 'page-load-time':
+          recommendations.push('Optimize page load time by reducing bundle size and optimizing images');
           break;
-        case 'FID':
-          recommendations.push('Improve First Input Delay by reducing JavaScript execution time');
-          break;
-        case 'CLS':
-          recommendations.push('Reduce Cumulative Layout Shift by setting size attributes on media');
-          break;
-        case 'FCP':
-          recommendations.push('Optimize First Contentful Paint by reducing render-blocking resources');
-          break;
-        case 'TTFB':
-          recommendations.push('Improve Time to First Byte by optimizing server response time');
+        case 'first-contentful-paint':
+          recommendations.push('Improve First Contentful Paint by reducing render-blocking resources');
           break;
       }
     });
