@@ -61,7 +61,23 @@ export const useRealtimeMessages = ({ conversationId, receiverId }: UseRealtimeM
         .order('created_at', { ascending: true });
 
       if (error) throw error;
-      setMessages(data || []);
+      
+      // Type the data properly by ensuring the types match our interface
+      const typedMessages: ChatMessage[] = (data || []).map(item => ({
+        id: item.id,
+        conversation_id: item.conversation_id,
+        sender_id: item.sender_id,
+        receiver_id: item.receiver_id,
+        content: item.content,
+        message_type: item.message_type as ChatMessage['message_type'],
+        file_attachments: Array.isArray(item.file_attachments) ? item.file_attachments as ChatMessage['file_attachments'] : [],
+        read_at: item.read_at,
+        reply_to_id: item.reply_to_id,
+        created_at: item.created_at,
+        updated_at: item.updated_at
+      }));
+      
+      setMessages(typedMessages);
     } catch (err: any) {
       setError(err.message);
       toast.error('Failed to load messages');
@@ -149,12 +165,26 @@ export const useRealtimeMessages = ({ conversationId, receiverId }: UseRealtimeM
           filter: `conversation_id=eq.${conversationId}`,
         },
         (payload) => {
-          const newMessage = payload.new as ChatMessage;
-          setMessages(prev => [...prev, newMessage]);
+          const newMessage = payload.new;
+          const typedMessage: ChatMessage = {
+            id: newMessage.id,
+            conversation_id: newMessage.conversation_id,
+            sender_id: newMessage.sender_id,
+            receiver_id: newMessage.receiver_id,
+            content: newMessage.content,
+            message_type: newMessage.message_type as ChatMessage['message_type'],
+            file_attachments: Array.isArray(newMessage.file_attachments) ? newMessage.file_attachments as ChatMessage['file_attachments'] : [],
+            read_at: newMessage.read_at,
+            reply_to_id: newMessage.reply_to_id,
+            created_at: newMessage.created_at,
+            updated_at: newMessage.updated_at
+          };
+          
+          setMessages(prev => [...prev, typedMessage]);
           
           // Auto-mark own messages as read
-          if (newMessage.sender_id === user.id) {
-            markAsRead([newMessage.id]);
+          if (typedMessage.sender_id === user.id) {
+            markAsRead([typedMessage.id]);
           }
         }
       )
@@ -167,9 +197,23 @@ export const useRealtimeMessages = ({ conversationId, receiverId }: UseRealtimeM
           filter: `conversation_id=eq.${conversationId}`,
         },
         (payload) => {
-          const updatedMessage = payload.new as ChatMessage;
+          const updatedMessage = payload.new;
+          const typedMessage: ChatMessage = {
+            id: updatedMessage.id,
+            conversation_id: updatedMessage.conversation_id,
+            sender_id: updatedMessage.sender_id,
+            receiver_id: updatedMessage.receiver_id,
+            content: updatedMessage.content,
+            message_type: updatedMessage.message_type as ChatMessage['message_type'],
+            file_attachments: Array.isArray(updatedMessage.file_attachments) ? updatedMessage.file_attachments as ChatMessage['file_attachments'] : [],
+            read_at: updatedMessage.read_at,
+            reply_to_id: updatedMessage.reply_to_id,
+            created_at: updatedMessage.created_at,
+            updated_at: updatedMessage.updated_at
+          };
+          
           setMessages(prev =>
-            prev.map(msg => msg.id === updatedMessage.id ? updatedMessage : msg)
+            prev.map(msg => msg.id === typedMessage.id ? typedMessage : msg)
           );
         }
       )

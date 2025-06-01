@@ -45,8 +45,26 @@ export const useMessageNotifications = () => {
 
       if (error) throw error;
       
-      setNotifications(data || []);
-      setUnreadCount(data?.filter(n => !n.is_read).length || 0);
+      // Type the data properly by ensuring the types match our interface
+      const typedNotifications: MessageNotification[] = (data || []).map(item => ({
+        id: item.id,
+        user_id: item.user_id,
+        message_id: item.message_id,
+        notification_type: item.notification_type as MessageNotification['notification_type'],
+        is_read: item.is_read,
+        sent_at: item.sent_at,
+        read_at: item.read_at,
+        delivery_status: item.delivery_status as MessageNotification['delivery_status'],
+        created_at: item.created_at,
+        chat_message: item.chat_message ? {
+          content: item.chat_message.content,
+          sender_id: item.chat_message.sender_id,
+          message_type: item.chat_message.message_type
+        } : undefined
+      }));
+      
+      setNotifications(typedNotifications);
+      setUnreadCount(typedNotifications.filter(n => !n.is_read).length);
     } catch (err: any) {
       console.error('Failed to fetch notifications:', err);
     } finally {
@@ -117,7 +135,7 @@ export const useMessageNotifications = () => {
           filter: `user_id=eq.${user.id}`,
         },
         async (payload) => {
-          const newNotification = payload.new as MessageNotification;
+          const newNotification = payload.new;
           
           // Fetch the related message data
           const { data: messageData } = await supabase
@@ -126,12 +144,24 @@ export const useMessageNotifications = () => {
             .eq('id', newNotification.message_id)
             .single();
 
-          const enrichedNotification = {
-            ...newNotification,
-            chat_message: messageData,
+          const typedNotification: MessageNotification = {
+            id: newNotification.id,
+            user_id: newNotification.user_id,
+            message_id: newNotification.message_id,
+            notification_type: newNotification.notification_type as MessageNotification['notification_type'],
+            is_read: newNotification.is_read,
+            sent_at: newNotification.sent_at,
+            read_at: newNotification.read_at,
+            delivery_status: newNotification.delivery_status as MessageNotification['delivery_status'],
+            created_at: newNotification.created_at,
+            chat_message: messageData ? {
+              content: messageData.content,
+              sender_id: messageData.sender_id,
+              message_type: messageData.message_type
+            } : undefined
           };
 
-          setNotifications(prev => [enrichedNotification, ...prev]);
+          setNotifications(prev => [typedNotification, ...prev]);
           setUnreadCount(prev => prev + 1);
 
           // Show toast notification
@@ -149,9 +179,21 @@ export const useMessageNotifications = () => {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          const updatedNotification = payload.new as MessageNotification;
+          const updatedNotification = payload.new;
+          const typedNotification: MessageNotification = {
+            id: updatedNotification.id,
+            user_id: updatedNotification.user_id,
+            message_id: updatedNotification.message_id,
+            notification_type: updatedNotification.notification_type as MessageNotification['notification_type'],
+            is_read: updatedNotification.is_read,
+            sent_at: updatedNotification.sent_at,
+            read_at: updatedNotification.read_at,
+            delivery_status: updatedNotification.delivery_status as MessageNotification['delivery_status'],
+            created_at: updatedNotification.created_at
+          };
+          
           setNotifications(prev =>
-            prev.map(n => n.id === updatedNotification.id ? updatedNotification : n)
+            prev.map(n => n.id === typedNotification.id ? typedNotification : n)
           );
         }
       )

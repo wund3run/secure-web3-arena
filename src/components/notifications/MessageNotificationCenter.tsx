@@ -10,7 +10,7 @@ import {
   MessageSquare, 
   File, 
   CheckCircle, 
-  MarkAsRead,
+  Check,
   Trash2 
 } from 'lucide-react';
 import { useMessageNotifications, MessageNotification } from '@/hooks/useMessageNotifications';
@@ -101,7 +101,7 @@ export const MessageNotificationCenter: React.FC = () => {
                   onClick={() => markAsRead(notification.id)}
                   className="h-6 text-xs"
                 >
-                  <MarkAsRead className="h-3 w-3 mr-1" />
+                  <Check className="h-3 w-3 mr-1" />
                   Mark as read
                 </Button>
               )}
