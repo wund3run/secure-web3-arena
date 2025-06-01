@@ -8,7 +8,7 @@ import { EmptyComparison } from "./EmptyComparison";
 import { ServiceCardProps } from "@/types/marketplace-unified";
 import { X } from "lucide-react";
 import { convertToMarketplaceService } from "../comparison-manager/utils/ServiceConverter";
-import { MarketplaceErrorBoundary } from "@/utils/error-handling";
+import { MarketplaceErrorBoundary } from "@/components/marketplace/error-handling/MarketplaceErrorBoundary";
 import { MarketplaceLoadingState } from "../error-handling/MarketplaceLoadingState";
 
 interface ServiceComparisonProps {

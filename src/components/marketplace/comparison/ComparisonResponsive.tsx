@@ -5,7 +5,7 @@ import { ServiceCardProps } from "@/types/marketplace-unified";
 import { ComparisonTable } from "./ComparisonTable";
 import { MobileComparisonTable } from "./MobileComparisonTable";
 import { convertToMarketplaceService } from "../comparison-manager/utils/ServiceConverter";
-import { MarketplaceErrorBoundary } from "@/utils/error-handling";
+import { MarketplaceErrorBoundary } from "@/components/marketplace/error-handling/MarketplaceErrorBoundary";
 import { Button } from "@/components/ui/button";
 import { useAccessibility } from "@/contexts/AccessibilityContext";
 

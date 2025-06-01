@@ -4,7 +4,7 @@ import { ServiceCard } from "@/components/marketplace/card";
 import { ServiceCardProps } from "@/types/marketplace-unified";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
-import { ErrorBoundary } from "@/utils/error-handling";
+import ErrorBoundary from "@/components/ui/error-boundary";
 import { MarketplaceLoadingState } from "@/components/marketplace/error-handling";
 
 interface ServicesGridProps {

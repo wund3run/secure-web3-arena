@@ -5,7 +5,7 @@ import { ContractDetails } from "../ContractDetails";
 import { ContractFilters } from "./ContractFilters";
 import { EmptyContractsList, NoMatchingContracts } from "./EmptyContractsList";
 import { ContractsGridView } from "./ContractsGridView";
-import { ErrorBoundary } from "@/utils/error-handling";
+import ErrorBoundary from "@/components/ui/error-boundary";
 import { ContractsLoadingState } from "./ContractsLoadingState";
 import { memo } from "react";
 import { useContractsFiltering } from "../hooks/useContractsFiltering";

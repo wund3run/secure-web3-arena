@@ -7,7 +7,7 @@ import RequirementsStep from './steps/RequirementsStep';
 import ReviewStep from './steps/ReviewStep';
 import FormProgress from './FormProgress';
 import AIMatchingJourney from './AIMatchingJourney';
-import { ErrorBoundary } from "@/utils/error-handling";
+import ErrorBoundary from "@/components/ui/error-boundary";
 import LoadingState from "@/components/ui/loading-state";
 import { AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
