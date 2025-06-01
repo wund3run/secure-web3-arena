@@ -1,262 +1,248 @@
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Progress } from '@/components/ui/progress';
 import { 
   Play, 
-  TestTube, 
-  Shield, 
-  TrendingUp, 
-  AlertTriangle,
-  CheckCircle,
-  XCircle
+  Pause, 
+  RotateCcw, 
+  CheckCircle, 
+  AlertTriangle, 
+  Activity,
+  Clock,
+  Zap
 } from 'lucide-react';
 import { performanceMonitor, PerformanceMetric } from '@/utils/testing/performance-monitor';
 import { securityScanner, SecurityIssue } from '@/utils/testing/security-scanner';
 
-export const TestingControlPanel = () => {
+interface TestResult {
+  id: string;
+  name: string;
+  status: 'running' | 'passed' | 'failed' | 'pending';
+  duration?: number;
+  error?: string;
+}
+
+export const TestingControlPanel: React.FC = () => {
+  const [isRunning, setIsRunning] = useState(false);
+  const [tests, setTests] = useState<TestResult[]>([]);
   const [performanceMetrics, setPerformanceMetrics] = useState<PerformanceMetric[]>([]);
   const [securityIssues, setSecurityIssues] = useState<SecurityIssue[]>([]);
-  const [isRunningTests, setIsRunningTests] = useState(false);
 
-  const runPerformanceTest = () => {
-    setIsRunningTests(true);
-    const metrics = performanceMonitor.getMetrics();
-    setPerformanceMetrics(metrics);
-    setIsRunningTests(false);
-  };
+  useEffect(() => {
+    // Subscribe to performance metrics
+    const unsubscribe = performanceMonitor.subscribe((metric) => {
+      setPerformanceMetrics(prev => [metric, ...prev.slice(0, 9)]);
+    });
 
-  const runSecurityScan = () => {
-    setIsRunningTests(true);
+    return unsubscribe;
+  }, []);
+
+  const runTests = async () => {
+    setIsRunning(true);
+    
+    // Simulate running tests
+    const mockTests: TestResult[] = [
+      { id: '1', name: 'Component Rendering', status: 'running' },
+      { id: '2', name: 'User Interactions', status: 'pending' },
+      { id: '3', name: 'API Integration', status: 'pending' },
+      { id: '4', name: 'Performance Metrics', status: 'pending' }
+    ];
+    
+    setTests(mockTests);
+
+    // Simulate test execution
+    for (let i = 0; i < mockTests.length; i++) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setTests(prev => prev.map((test, index) => {
+        if (index === i) {
+          return {
+            ...test,
+            status: Math.random() > 0.2 ? 'passed' : 'failed',
+            duration: Math.floor(Math.random() * 500) + 100,
+            error: Math.random() > 0.2 ? undefined : 'Test failed unexpectedly'
+          };
+        }
+        if (index === i + 1) {
+          return { ...test, status: 'running' };
+        }
+        return test;
+      }));
+    }
+
+    // Run security scan
     const issues = securityScanner.scanPage();
     setSecurityIssues(issues);
-    setIsRunningTests(false);
+
+    setIsRunning(false);
   };
 
-  const runAllTests = () => {
-    runPerformanceTest();
-    runSecurityScan();
+  const resetTests = () => {
+    setTests([]);
+    setPerformanceMetrics([]);
+    setSecurityIssues([]);
   };
 
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'critical': return 'destructive';
-      case 'high': return 'destructive';
-      case 'medium': return 'default';
-      case 'low': return 'secondary';
-      default: return 'outline';
+  const getStatusIcon = (status: TestResult['status']) => {
+    switch (status) {
+      case 'running':
+        return <Activity className="h-4 w-4 text-blue-500 animate-spin" />;
+      case 'passed':
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case 'failed':
+        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+      default:
+        return <Clock className="h-4 w-4 text-gray-400" />;
     }
   };
 
-  const getRatingColor = (rating: string) => {
-    switch (rating) {
-      case 'good': return 'text-green-600';
-      case 'needs-improvement': return 'text-yellow-600';
-      case 'poor': return 'text-red-600';
-      default: return 'text-gray-600';
-    }
+  const getStatusBadge = (status: TestResult['status']) => {
+    const variants = {
+      running: 'default',
+      passed: 'default',
+      failed: 'destructive',
+      pending: 'outline'
+    } as const;
+
+    return (
+      <Badge variant={variants[status]} className="text-xs">
+        {status}
+      </Badge>
+    );
   };
+
+  const passedTests = tests.filter(t => t.status === 'passed').length;
+  const failedTests = tests.filter(t => t.status === 'failed').length;
+  const totalTests = tests.length;
+  const progress = totalTests > 0 ? ((passedTests + failedTests) / totalTests) * 100 : 0;
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Testing Control Panel</h1>
-          <p className="text-muted-foreground">
-            Comprehensive testing suite for performance and security
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button onClick={runAllTests} disabled={isRunningTests}>
-            <Play className="h-4 w-4 mr-2" />
-            Run All Tests
-          </Button>
-        </div>
-      </div>
+    <div className="space-y-6">
+      {/* Control Panel */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Zap className="h-5 w-5" />
+            Testing Control Panel
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-2 mb-4">
+            <Button 
+              onClick={runTests} 
+              disabled={isRunning}
+              className="flex items-center gap-2"
+            >
+              {isRunning ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+              {isRunning ? 'Running...' : 'Run Tests'}
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={resetTests}
+              className="flex items-center gap-2"
+            >
+              <RotateCcw className="h-4 w-4" />
+              Reset
+            </Button>
+          </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Performance Metrics</p>
-                <p className="text-2xl font-bold">{performanceMetrics.length}</p>
+          {totalTests > 0 && (
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Progress: {Math.round(progress)}%</span>
+                <span>{passedTests} passed, {failedTests} failed</span>
               </div>
-              <TrendingUp className="h-8 w-8 text-blue-500" />
+              <Progress value={progress} className="h-2" />
             </div>
-          </CardContent>
-        </Card>
+          )}
+        </CardContent>
+      </Card>
 
+      {/* Test Results */}
+      {tests.length > 0 && (
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Security Issues</p>
-                <p className="text-2xl font-bold text-red-500">{securityIssues.length}</p>
-              </div>
-              <Shield className="h-8 w-8 text-red-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Test Status</p>
-                <p className="text-2xl font-bold text-green-500">
-                  {isRunningTests ? 'Running' : 'Ready'}
-                </p>
-              </div>
-              <TestTube className="h-8 w-8 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Tabs defaultValue="performance" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="performance">Performance</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
-          <TabsTrigger value="reports">Reports</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="performance" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                Performance Metrics
-              </CardTitle>
-              <CardDescription>
-                Web Vitals and performance monitoring results
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Button onClick={runPerformanceTest} disabled={isRunningTests}>
-                Run Performance Test
-              </Button>
-              
-              {performanceMetrics.length === 0 ? (
-                <Alert>
-                  <TrendingUp className="h-4 w-4" />
-                  <AlertDescription>
-                    No performance metrics available. Run a test to see results.
-                  </AlertDescription>
-                </Alert>
-              ) : (
-                <div className="space-y-2">
-                  {performanceMetrics.map((metric, index) => (
-                    <Card key={index} className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="font-medium">{metric.name}</h4>
-                          <p className="text-sm text-muted-foreground">
-                            Value: {metric.value.toFixed(2)}ms
-                          </p>
-                        </div>
-                        <Badge className={getRatingColor(metric.rating)}>
-                          {metric.rating}
-                        </Badge>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="security" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Shield className="h-5 w-5" />
-                Security Scan Results
-              </CardTitle>
-              <CardDescription>
-                Automated security vulnerability detection
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Button onClick={runSecurityScan} disabled={isRunningTests}>
-                Run Security Scan
-              </Button>
-              
-              {securityIssues.length === 0 ? (
-                <Alert>
-                  <CheckCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    No security issues detected. Your application appears secure!
-                  </AlertDescription>
-                </Alert>
-              ) : (
-                <div className="space-y-2">
-                  {securityIssues.map((issue, index) => (
-                    <Card key={index} className="p-4">
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-2 flex-1">
-                          <div className="flex items-center gap-2">
-                            <Badge variant={getSeverityColor(issue.severity)}>
-                              {issue.severity}
-                            </Badge>
-                            <Badge variant="outline">{issue.type}</Badge>
-                          </div>
-                          <h4 className="font-medium">{issue.description}</h4>
-                          <p className="text-sm text-muted-foreground">
-                            Recommendation: {issue.recommendation}
-                          </p>
-                          {issue.element && (
-                            <p className="text-xs text-muted-foreground">
-                              Element: {issue.element}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="reports" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Testing Reports</CardTitle>
-              <CardDescription>
-                Comprehensive testing reports and recommendations
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="p-4">
-                  <h4 className="font-medium mb-2">Performance Summary</h4>
-                  <div className="space-y-1 text-sm">
-                    <p>Total Metrics: {performanceMetrics.length}</p>
-                    <p>Good: {performanceMetrics.filter(m => m.rating === 'good').length}</p>
-                    <p>Poor: {performanceMetrics.filter(m => m.rating === 'poor').length}</p>
+          <CardHeader>
+            <CardTitle>Test Results</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {tests.map((test) => (
+                <div key={test.id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    {getStatusIcon(test.status)}
+                    <div>
+                      <div className="font-medium">{test.name}</div>
+                      {test.error && (
+                        <div className="text-sm text-red-600">{test.error}</div>
+                      )}
+                    </div>
                   </div>
-                </Card>
-                
-                <Card className="p-4">
-                  <h4 className="font-medium mb-2">Security Summary</h4>
-                  <div className="space-y-1 text-sm">
-                    <p>Total Issues: {securityIssues.length}</p>
-                    <p>Critical: {securityIssues.filter(i => i.severity === 'critical').length}</p>
-                    <p>High: {securityIssues.filter(i => i.severity === 'high').length}</p>
+                  <div className="flex items-center gap-2">
+                    {test.duration && (
+                      <span className="text-sm text-muted-foreground">
+                        {test.duration}ms
+                      </span>
+                    )}
+                    {getStatusBadge(test.status)}
                   </div>
-                </Card>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Performance Metrics */}
+      {performanceMetrics.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Performance Metrics</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {performanceMetrics.slice(0, 5).map((metric, index) => (
+                <div key={index} className="flex justify-between items-center p-2 border rounded">
+                  <span className="font-medium">{metric.name}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">{metric.value.toFixed(2)}ms</span>
+                    <Badge variant={metric.rating === 'good' ? 'default' : metric.rating === 'needs-improvement' ? 'secondary' : 'destructive'}>
+                      {metric.rating}
+                    </Badge>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Security Issues */}
+      {securityIssues.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Security Issues</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {securityIssues.map((issue, index) => (
+                <div key={index} className="p-3 border rounded-lg">
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="font-medium">{issue.type}</span>
+                    <Badge variant={issue.severity === 'critical' || issue.severity === 'high' ? 'destructive' : 'secondary'}>
+                      {issue.severity}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-1">{issue.description}</p>
+                  <p className="text-sm text-green-600">{issue.recommendation}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

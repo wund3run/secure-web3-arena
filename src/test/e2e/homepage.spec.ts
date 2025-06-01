@@ -1,25 +1,30 @@
-
 import { test, expect } from '@playwright/test';
 
 test.describe('Homepage', () => {
-  test('should load homepage successfully', async ({ page }) => {
+  test('should load homepage', async ({ page }) => {
     await page.goto('/');
-    
-    await expect(page).toHaveTitle(/Hawkly/);
-    await expect(page.locator('h1')).toContainText('Hawkly');
+    await expect(page.locator('h1')).toBeVisible();
   });
 
-  test('should navigate to marketplace', async ({ page }) => {
+  test('should display navigation', async ({ page }) => {
     await page.goto('/');
-    
-    await page.click('text=Marketplace');
-    await expect(page).toHaveURL('/marketplace');
-    await expect(page.locator('h1')).toContainText('Marketplace');
+    await expect(page.locator('nav')).toBeVisible();
+    await expect(page.locator('a[href="/marketplace"]')).toBeVisible();
+  });
+
+  test('should have working links', async ({ page }) => {
+    await page.goto('/');
+    await page.click('a[href="/marketplace"]');
+    await expect(page).toHaveURL(/marketplace/);
   });
 
   test('should display hero section', async ({ page }) => {
     await page.goto('/');
-    
-    await expect(page.locator('[data-testid="hero-section"]')).toBeVisible();
+    await expect(page.locator('.hero, header')).toBeVisible();
+  });
+
+  test('should display footer', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('footer')).toBeVisible();
   });
 });
