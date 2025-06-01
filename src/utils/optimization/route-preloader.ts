@@ -13,13 +13,13 @@ export class RoutePreloader {
       return Promise.resolve();
     }
 
-    // Route component mapping for preloading
+    // Route component mapping for preloading - only include existing pages
     const routeMap: Record<string, () => Promise<any>> = {
       '/dashboard': () => import('@/pages/Dashboard'),
       '/audits': () => import('@/pages/Audits'),
-      '/profile': () => import('@/pages/Profile'),
-      '/settings': () => import('@/pages/Settings'),
-      '/admin': () => import('@/pages/Admin'),
+      '/marketplace': () => import('@/pages/Marketplace'),
+      '/request-audit': () => import('@/pages/RequestAudit'),
+      '/auth': () => import('@/pages/Auth'),
     };
 
     const preloadFunction = routeMap[routePath];
@@ -32,6 +32,32 @@ export class RoutePreloader {
     }
 
     return Promise.resolve();
+  }
+
+  /**
+   * Intelligent route preloading based on current page
+   */
+  intelligentPreload(currentRoute: string): void {
+    const preloadStrategies: Record<string, string[]> = {
+      '/': ['/marketplace', '/request-audit'],
+      '/marketplace': ['/audits', '/dashboard'],
+      '/audits': ['/dashboard', '/marketplace'],
+      '/dashboard': ['/audits', '/marketplace'],
+      '/request-audit': ['/marketplace', '/audits'],
+    };
+
+    const routesToPreload = preloadStrategies[currentRoute] || [];
+    
+    // Use requestIdleCallback for non-blocking preloading
+    const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
+    
+    routesToPreload.forEach((route, index) => {
+      idleCallback(() => {
+        setTimeout(() => {
+          this.preloadRoute(route);
+        }, index * 1000); // Stagger preloads
+      });
+    });
   }
 
   /**
@@ -71,6 +97,13 @@ export class RoutePreloader {
     } catch {
       return false;
     }
+  }
+
+  /**
+   * Get count of preloaded routes
+   */
+  get preloadedCount(): number {
+    return this.preloadedRoutes.size;
   }
 
   cleanup(): void {
