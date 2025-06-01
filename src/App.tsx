@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,6 +9,7 @@ import { AuthProvider } from "@/contexts/auth";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { ErrorProvider } from "@/contexts/ErrorContext";
 import { ProductionErrorBoundary } from "@/components/error/production-error-boundary";
+import { RoleBasedRoute } from "@/components/auth/RoleBasedRoute";
 import { ThemeProvider } from "next-themes";
 import { useEffect } from "react";
 import Index from "./pages/Index";
@@ -56,7 +58,15 @@ const AuditGuidelines = React.lazy(() => import("./pages/AuditGuidelines"));
 const DistributionStrategy = React.lazy(() => import("./pages/DistributionStrategy"));
 const FAQ = React.lazy(() => import("./pages/FAQ"));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 3,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
+    },
+  },
+});
 
 function App() {
   useEffect(() => {
@@ -100,12 +110,7 @@ function App() {
                           <Route path="/" element={<Index />} />
                           <Route path="/auth" element={<Auth />} />
                           <Route path="/marketplace" element={<Marketplace />} />
-                          <Route path="/request-audit" element={<RequestAudit />} />
-                          <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
                           <Route path="/pricing" element={<Pricing />} />
-                          <Route path="/audits" element={<Audits />} />
-                          <Route path="/audit/:id" element={<AuditDetails />} />
-                          <Route path="/escrow" element={<Escrow />} />
                           <Route path="/docs" element={<Docs />} />
                           <Route path="/web3-security" element={<Docs />} />
                           <Route path="/guides" element={<Docs />} />
@@ -123,11 +128,6 @@ function App() {
                           <Route path="/leaderboard" element={<Leaderboard />} />
                           <Route path="/blog" element={<Blog />} />
                           <Route path="/achievements" element={<Achievements />} />
-                          <Route path="/dashboard/*" element={<Dashboard />} />
-                          <Route path="/submit-service" element={<SubmitService />} />
-                          <Route path="/calendar" element={<Calendar />} />
-                          <Route path="/contact-provider/:id" element={<ContactProvider />} />
-                          <Route path="/admin/*" element={<AdminDashboard />} />
                           <Route path="/contact" element={<Contact />} />
                           <Route path="/support" element={<Support />} />
                           <Route path="/terms" element={<Terms />} />
@@ -139,6 +139,58 @@ function App() {
                           <Route path="/comprehensive-security" element={<ComprehensiveSecurity />} />
                           <Route path="/audit-guidelines" element={<AuditGuidelines />} />
                           <Route path="/distribution-strategy" element={<DistributionStrategy />} />
+                          
+                          {/* Protected Routes */}
+                          <Route path="/request-audit" element={
+                            <RoleBasedRoute allowedRoles={['project_owner', 'admin']}>
+                              <RequestAudit />
+                            </RoleBasedRoute>
+                          } />
+                          <Route path="/service-provider-onboarding" element={
+                            <RoleBasedRoute allowedRoles={['auditor', 'admin']}>
+                              <ServiceProviderOnboarding />
+                            </RoleBasedRoute>
+                          } />
+                          <Route path="/audits" element={
+                            <RoleBasedRoute allowedRoles={['auditor', 'project_owner', 'admin']}>
+                              <Audits />
+                            </RoleBasedRoute>
+                          } />
+                          <Route path="/audit/:id" element={
+                            <RoleBasedRoute allowedRoles={['auditor', 'project_owner', 'admin']}>
+                              <AuditDetails />
+                            </RoleBasedRoute>
+                          } />
+                          <Route path="/escrow" element={
+                            <RoleBasedRoute allowedRoles={['auditor', 'project_owner', 'admin']}>
+                              <Escrow />
+                            </RoleBasedRoute>
+                          } />
+                          <Route path="/dashboard/*" element={
+                            <RoleBasedRoute allowedRoles={['auditor', 'project_owner', 'admin']}>
+                              <Dashboard />
+                            </RoleBasedRoute>
+                          } />
+                          <Route path="/submit-service" element={
+                            <RoleBasedRoute allowedRoles={['auditor', 'admin']}>
+                              <SubmitService />
+                            </RoleBasedRoute>
+                          } />
+                          <Route path="/calendar" element={
+                            <RoleBasedRoute allowedRoles={['auditor', 'project_owner', 'admin']}>
+                              <Calendar />
+                            </RoleBasedRoute>
+                          } />
+                          <Route path="/contact-provider/:id" element={
+                            <RoleBasedRoute allowedRoles={['project_owner', 'admin']}>
+                              <ContactProvider />
+                            </RoleBasedRoute>
+                          } />
+                          <Route path="/admin/*" element={
+                            <RoleBasedRoute allowedRoles={['admin']}>
+                              <AdminDashboard />
+                            </RoleBasedRoute>
+                          } />
                           
                           {/* Alias routes for common navigation patterns */}
                           <Route path="/security-audits" element={<Marketplace />} />

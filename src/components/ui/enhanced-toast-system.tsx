@@ -1,97 +1,71 @@
 
-import { toast } from "sonner";
-import { CheckCircle, AlertCircle, XCircle, Info, Wifi, WifiOff } from "lucide-react";
+import { toast } from 'sonner';
 
 export class EnhancedToastSystem {
-  static success(title: string, description?: string) {
+  static success(title: string, description?: string, duration = 4000) {
     return toast.success(title, {
       description,
-      icon: <CheckCircle className="h-4 w-4" />,
-      duration: 4000,
-      className: "border-green-200 bg-green-50 text-green-900"
-    });
-  }
-
-  static error(title: string, description?: string, action?: { label: string; onClick: () => void }) {
-    return toast.error(title, {
-      description,
-      icon: <XCircle className="h-4 w-4" />,
-      duration: 6000,
-      action: action ? {
-        label: action.label,
-        onClick: action.onClick
-      } : undefined,
-      className: "border-red-200 bg-red-50 text-red-900"
-    });
-  }
-
-  static warning(title: string, description?: string) {
-    return toast.warning(title, {
-      description,
-      icon: <AlertCircle className="h-4 w-4" />,
-      duration: 5000,
-      className: "border-yellow-200 bg-yellow-50 text-yellow-900"
-    });
-  }
-
-  static info(title: string, description?: string) {
-    return toast.info(title, {
-      description,
-      icon: <Info className="h-4 w-4" />,
-      duration: 4000,
-      className: "border-blue-200 bg-blue-50 text-blue-900"
-    });
-  }
-
-  static formValidationError() {
-    return toast.error("Form Validation Error", {
-      description: "Please check the form fields and try again",
-      icon: <AlertCircle className="h-4 w-4" />,
-      duration: 5000,
-      className: "border-red-200 bg-red-50 text-red-900"
-    });
-  }
-
-  static networkError(retryAction?: () => void) {
-    return toast.error("Network Error", {
-      description: "Please check your connection and try again",
-      icon: <WifiOff className="h-4 w-4" />,
-      duration: 8000,
-      action: retryAction ? {
-        label: "Retry",
-        onClick: retryAction
-      } : undefined
-    });
-  }
-
-  static sessionExpired() {
-    return toast.warning("Session Expired", {
-      description: "Please sign in again to continue",
-      icon: <AlertCircle className="h-4 w-4" />,
-      duration: 10000,
+      duration,
       action: {
-        label: "Sign In",
-        onClick: () => window.location.href = "/auth"
+        label: 'Dismiss',
+        onClick: () => {}
       }
     });
   }
 
-  static connectionRestored() {
-    return toast.success("Connection Restored", {
-      icon: <Wifi className="h-4 w-4" />,
-      duration: 3000,
-      className: "border-green-200 bg-green-50 text-green-900"
+  static error(title: string, description?: string, duration = 6000) {
+    return toast.error(title, {
+      description,
+      duration,
+      action: {
+        label: 'Retry',
+        onClick: () => window.location.reload()
+      }
+    });
+  }
+
+  static info(title: string, description?: string, duration = 4000) {
+    return toast.info(title, {
+      description,
+      duration
+    });
+  }
+
+  static warning(title: string, description?: string, duration = 5000) {
+    return toast.warning(title, {
+      description,
+      duration
     });
   }
 
   static loading(title: string, description?: string) {
     return toast.loading(title, {
-      description,
-      duration: Infinity
+      description
     });
   }
 
-  static dismiss(toastId: string | number) {
-    toast.dismiss(toastId);
+  static promise<T>(
+    promise: Promise<T>,
+    messages: {
+      loading: string;
+      success: string;
+      error: string;
+    }
+  ) {
+    return toast.promise(promise, messages);
   }
+
+  static payment = {
+    processing: () => this.loading('Processing Payment', 'Please wait while we process your payment...'),
+    success: () => this.success('Payment Successful', 'Your payment has been processed successfully'),
+    failed: (reason?: string) => this.error('Payment Failed', reason || 'Please try again or contact support'),
+    cancelled: () => this.info('Payment Cancelled', 'Your payment was cancelled')
+  };
+
+  static audit = {
+    submitted: () => this.success('Audit Request Submitted', 'We will match you with qualified auditors'),
+    assigned: (auditorName: string) => this.success('Auditor Assigned', `${auditorName} has been assigned to your audit`),
+    completed: () => this.success('Audit Completed', 'Your security audit is now complete'),
+    finding: (severity: string) => this.warning('New Finding', `A ${severity} severity issue was discovered`)
+  };
 }

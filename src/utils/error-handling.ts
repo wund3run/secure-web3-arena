@@ -1,109 +1,91 @@
 
-import { toast } from "sonner";
-import { MarketplaceErrorBoundary, useMarketplaceError } from "@/components/marketplace/error-handling";
-import ErrorBoundary from "@/components/ui/error-boundary";
-import { ComprehensiveErrorBoundary } from "@/components/error/comprehensive-error-boundary";
-import { EnhancedToastSystem } from "@/components/ui/enhanced-toast-system";
-import React from "react";
+import { toast } from 'sonner';
 
-// Re-export components for consistent usage
-export { 
-  MarketplaceErrorBoundary, 
-  ErrorBoundary,
-  ComprehensiveErrorBoundary,
-  useMarketplaceError 
-};
-
-// Categorize errors for better user feedback
-export enum ErrorCategory {
-  Network = "network",
-  Authentication = "auth",
-  Database = "database",
-  Validation = "validation",
-  Unknown = "unknown"
+export interface ErrorLog {
+  id: string;
+  timestamp: Date;
+  error: Error;
+  context: string;
+  userId?: string;
+  url: string;
+  userAgent: string;
 }
 
-// Enhanced centralized error handler with improved categorization
-export const handleError = (error: unknown, context = "application") => {
-  console.error(`Error in ${context}:`, error);
-  
-  let errorMessage = "An unexpected error occurred";
-  let category = ErrorCategory.Unknown;
-  
-  if (error instanceof Error) {
-    errorMessage = error.message;
-    
-    // Categorize common errors
-    if (errorMessage.includes("network") || 
-        errorMessage.includes("fetch") || 
-        errorMessage.includes("connection")) {
-      category = ErrorCategory.Network;
-      EnhancedToastSystem.networkError(() => window.location.reload());
-      return { message: errorMessage, category };
-    } else if (errorMessage.includes("auth") || 
-               errorMessage.includes("unauthorized") || 
-               errorMessage.includes("permission")) {
-      category = ErrorCategory.Authentication;
-      EnhancedToastSystem.sessionExpired();
-      return { message: errorMessage, category };
-    } else if (errorMessage.includes("database") || 
-               errorMessage.includes("query") || 
-               errorMessage.includes("supabase")) {
-      category = ErrorCategory.Database;
-    } else if (errorMessage.includes("validation") || 
-               errorMessage.includes("invalid")) {
-      category = ErrorCategory.Validation;
-    }
-  } else if (typeof error === 'string') {
-    errorMessage = error;
-  }
-  
-  // Show appropriate toast with enhanced system
-  EnhancedToastSystem.error(
-    "Error",
-    errorMessage.substring(0, 100) // Limit very long messages
-  );
-  
-  return {
-    message: errorMessage,
-    category
-  };
-};
+class ErrorLogger {
+  private logs: ErrorLog[] = [];
+  private maxLogs = 100;
 
-// Enhanced async wrapper with retry functionality
-export async function withErrorHandling<T>(
-  asyncFn: () => Promise<T>,
-  context = "operation",
-  customMessage?: string,
-  retries = 0
-): Promise<T | null> {
-  try {
-    return await asyncFn();
-  } catch (error) {
-    const message = customMessage || (error instanceof Error ? error.message : "An unexpected error occurred");
-    const result = handleError(error, context);
-    
-    // Implement retry for network errors
-    if (result.category === ErrorCategory.Network && retries > 0) {
-      console.log(`Retrying ${context} (${retries} attempts left)...`);
-      return withErrorHandling(asyncFn, context, customMessage, retries - 1);
+  log(error: Error, context: string, userId?: string): void {
+    const errorLog: ErrorLog = {
+      id: crypto.randomUUID(),
+      timestamp: new Date(),
+      error,
+      context,
+      userId,
+      url: window.location.href,
+      userAgent: navigator.userAgent
+    };
+
+    this.logs.unshift(errorLog);
+    if (this.logs.length > this.maxLogs) {
+      this.logs.pop();
     }
+
+    console.error(`[ERROR-${context}]`, error, errorLog);
     
-    return null;
+    // In production, send to monitoring service
+    if (process.env.NODE_ENV === 'production') {
+      this.sendToMonitoring(errorLog);
+    }
+  }
+
+  private async sendToMonitoring(errorLog: ErrorLog): Promise<void> {
+    try {
+      // Integration point for Sentry, LogRocket, etc.
+      // await monitoringService.captureException(errorLog);
+    } catch (err) {
+      console.warn('Failed to send error to monitoring service:', err);
+    }
+  }
+
+  getLogs(): ErrorLog[] {
+    return [...this.logs];
+  }
+
+  clearLogs(): void {
+    this.logs = [];
   }
 }
 
-// Create a utility to help standardize error boundary usage
-export const createBoundary = (component: React.ReactNode): React.ReactElement => {
-  return React.createElement(
-    ComprehensiveErrorBoundary,
-    { children: component }
-  );
-};
+export const errorLogger = new ErrorLogger();
 
-// Helper to log errors to an analytics service if needed
-export const logErrorToAnalytics = (error: unknown, context: string) => {
-  // This would connect to your analytics service
-  console.log(`[Analytics] Error in ${context}:`, error);
-  // In production, implement actual analytics logging
-};
+export function logErrorToAnalytics(error: Error, context: string, userId?: string): void {
+  errorLogger.log(error, context, userId);
+}
+
+export function handleAsyncError(
+  asyncFn: () => Promise<void>,
+  context: string,
+  showToast = true
+): void {
+  asyncFn().catch((error) => {
+    logErrorToAnalytics(error, context);
+    if (showToast) {
+      toast.error('An error occurred', {
+        description: error.message || 'Please try again later'
+      });
+    }
+  });
+}
+
+export function withErrorHandling<T extends (...args: any[]) => Promise<any>>(
+  fn: T,
+  context: string
+): T {
+  return ((...args: Parameters<T>) => {
+    return fn(...args).catch((error) => {
+      logErrorToAnalytics(error, context);
+      throw error;
+    });
+  }) as T;
+}
