@@ -16,6 +16,12 @@ export interface LogContext {
   operation?: string;
   duration?: number;
   metadata?: Record<string, any>;
+  // Additional properties for audit-specific logging
+  findingsCount?: number;
+  milestonesCount?: number;
+  oldStatus?: string;
+  newStatus?: string;
+  phase?: string;
 }
 
 export interface LogEntry {
@@ -177,7 +183,8 @@ export const auditLogger = {
       auditId,
       userId,
       operation: 'audit_status_changed',
-      metadata: { oldStatus, newStatus }
+      oldStatus,
+      newStatus
     }, 'audit');
   },
 

@@ -1,3 +1,4 @@
+
 import { Logger } from '../logging/logger';
 
 export interface PerformanceMetric {
@@ -42,11 +43,11 @@ export class PerformanceMonitor {
             
             this.recordMetric({
               name: 'page_load_time',
-              value: navEntry.loadEventEnd - navEntry.navigationStart,
+              value: navEntry.loadEventEnd - navEntry.fetchStart,
               unit: 'ms',
               category: 'timing',
               metadata: {
-                domContentLoaded: navEntry.domContentLoadedEventEnd - navEntry.navigationStart,
+                domContentLoaded: navEntry.domContentLoadedEventEnd - navEntry.fetchStart,
                 firstPaint: this.getFirstPaint(),
                 firstContentfulPaint: this.getFirstContentfulPaint()
               }

@@ -115,7 +115,8 @@ export class DataSyncManager {
 
   // Get changes from server since last sync
   private static async getServerChanges(tableName: string, lastSync: string): Promise<any[]> {
-    const { data, error } = await supabase
+    // Use type assertion for dynamic table names
+    const { data, error } = await (supabase as any)
       .from(tableName)
       .select('*')
       .gte('updated_at', lastSync)
@@ -198,11 +199,11 @@ export class DataSyncManager {
     for (const change of changes) {
       try {
         if (change.operation === 'insert') {
-          await supabase.from(tableName).insert(change.data);
+          await (supabase as any).from(tableName).insert(change.data);
         } else if (change.operation === 'update') {
-          await supabase.from(tableName).update(change.data).eq('id', change.id);
+          await (supabase as any).from(tableName).update(change.data).eq('id', change.id);
         } else if (change.operation === 'delete') {
-          await supabase.from(tableName).delete().eq('id', change.id);
+          await (supabase as any).from(tableName).delete().eq('id', change.id);
         }
       } catch (error) {
         Logger.error(`Failed to push change to server`, {
@@ -264,7 +265,7 @@ export class DataSyncManager {
 
     try {
       // Get sample data from server
-      const { data: serverData, error } = await supabase
+      const { data: serverData, error } = await (supabase as any)
         .from(tableName)
         .select('*')
         .limit(sampleSize)
