@@ -1,135 +1,106 @@
 
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from "@/components/ui/theme-provider"
-import { Toaster } from "@/components/ui/toaster"
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthProvider } from '@/contexts/auth';
-import { PrivateRoute } from '@/components/auth/PrivateRoute';
-import { AccessibilityProvider } from '@/contexts/AccessibilityContext';
-import { EscrowProvider } from '@/contexts/EscrowContext';
-import { SessionManager } from '@/components/auth/SessionManager';
+import React, { Suspense } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider } from "@/components/theme/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
+import { ProductionErrorBoundary } from "@/components/error/production-error-boundary";
+import { OptimizedPerformanceMonitor } from "@/components/performance/OptimizedPerformanceMonitor";
+import { HelmetProvider } from "react-helmet-async";
+import { AuthProvider } from "@/contexts/auth";
+import { EscrowProvider } from "@/contexts/EscrowContext";
 
-// Import existing pages
-import Auth from '@/pages/Auth';
-import AuthCallback from '@/pages/AuthCallback';
-import Onboarding from '@/pages/Onboarding';
+// Optimized lazy loading with preloading hints
+const Index = React.lazy(() => import("@/pages/Index"));
+const Dashboard = React.lazy(() => import("@/pages/Dashboard"));
+const Marketplace = React.lazy(() => import("@/pages/Marketplace"));
+const Auth = React.lazy(() => import("@/pages/Auth"));
+const RequestAudit = React.lazy(() => import("@/pages/RequestAudit"));
+const Profile = React.lazy(() => import("@/pages/Profile"));
+const AuditDetails = React.lazy(() => import("@/pages/AuditDetails"));
+const Audits = React.lazy(() => import("@/pages/Audits"));
+const Settings = React.lazy(() => import("@/pages/Settings"));
 
-// Create a basic placeholder component for missing pages
-const PlaceholderPage = ({ title }: { title: string }) => (
-  <div className="min-h-screen flex items-center justify-center">
-    <div className="text-center">
-      <h1 className="text-4xl font-bold mb-4">{title}</h1>
-      <p className="text-muted-foreground">This page is under development</p>
+// Production-optimized query client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
+      retry: (failureCount, error: any) => {
+        if (error?.status === 404 || error?.status === 403) return false;
+        return failureCount < 2;
+      },
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: 'always',
+    },
+    mutations: {
+      retry: 1,
+    },
+  },
+});
+
+// Enhanced loading fallback
+const AppLoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="flex flex-col items-center space-y-4">
+      <img 
+        src="/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png" 
+        alt="Hawkly"
+        className="h-12 w-12"
+        loading="eager"
+      />
+      <div className="w-8 h-8 border-2 border-border border-t-primary rounded-full animate-spin" />
+      <p className="text-sm text-muted-foreground">Loading...</p>
     </div>
   </div>
 );
 
-// Create QueryClient instance
-const queryClient = new QueryClient();
-
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  useEffect(() => {
-    // Check local storage for theme preference on initial load
-    const storedTheme = localStorage.getItem('theme');
-    if (storedTheme === 'dark') {
-      setIsDarkMode(true);
-    } else if (storedTheme === 'light') {
-      setIsDarkMode(false);
-    } else {
-      // If no preference is stored, you might want to check the system preference
-      const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setIsDarkMode(prefersDarkMode);
-    }
-  }, []);
-
-  // Function to toggle the theme
-  const toggleTheme = () => {
-    const newTheme = !isDarkMode;
-    setIsDarkMode(newTheme);
-    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
-  };
-
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="system" storageKey="ui-theme">
-        <BrowserRouter>
-          <AuthProvider>
-            <EscrowProvider>
-              <AccessibilityProvider>
-                <SessionManager>
+    <HelmetProvider>
+      <ProductionErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider defaultTheme="light" storageKey="hawkly-ui-theme">
+            <AuthProvider>
+              <EscrowProvider>
+                <Router>
                   <div className="min-h-screen bg-background font-sans antialiased">
-                    <Toaster />
-                    <Routes>
-                      {/* Public routes */}
-                      <Route path="/" element={<PlaceholderPage title="Welcome to Hawkly" />} />
-                      <Route path="/marketplace" element={<PlaceholderPage title="Marketplace" />} />
-                      <Route path="/web3-security" element={<PlaceholderPage title="Web3 Security" />} />
-                      <Route path="/pricing" element={<PlaceholderPage title="Pricing" />} />
-                      <Route path="/audits" element={<PlaceholderPage title="Audits" />} />
-                      <Route path="/leaderboard" element={<PlaceholderPage title="Leaderboard" />} />
-                      <Route path="/achievements" element={<PlaceholderPage title="Achievements" />} />
-                      <Route path="/service/:id" element={<PlaceholderPage title="Service Detail" />} />
-                      
-                      {/* Auth routes */}
-                      <Route path="/auth" element={<Auth />} />
-                      <Route path="/auth/callback" element={<AuthCallback />} />
-                      <Route path="/onboarding" element={<Onboarding />} />
-                      
-                      {/* Protected routes */}
-                      <Route path="/request-audit" element={
-                        <PrivateRoute>
-                          <PlaceholderPage title="Request Audit" />
-                        </PrivateRoute>
-                      } />
-                      
-                      <Route path="/dashboard" element={
-                        <PrivateRoute>
-                          <PlaceholderPage title="Dashboard" />
-                        </PrivateRoute>
-                      } />
-                      
-                      <Route path="/dashboard/auditor" element={
-                        <PrivateRoute requiredUserType="auditor">
-                          <PlaceholderPage title="Auditor Dashboard" />
-                        </PrivateRoute>
-                      } />
-                      
-                      <Route path="/dashboard/project" element={
-                        <PrivateRoute requiredUserType="project_owner">
-                          <PlaceholderPage title="Project Dashboard" />
-                        </PrivateRoute>
-                      } />
-                      
-                      <Route path="/escrow" element={
-                        <PrivateRoute>
-                          <PlaceholderPage title="Escrow" />
-                        </PrivateRoute>
-                      } />
-                      
-                      <Route path="/audit/:id" element={
-                        <PrivateRoute>
-                          <PlaceholderPage title="Audit Detail" />
-                        </PrivateRoute>
-                      } />
-                      
-                      {/* Admin routes */}
-                      <Route path="/admin/*" element={
-                        <PrivateRoute requiredUserType="admin">
-                          <PlaceholderPage title="Admin Panel" />
-                        </PrivateRoute>
-                      } />
-                    </Routes>
+                    <Suspense fallback={<AppLoadingFallback />}>
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/marketplace" element={<Marketplace />} />
+                        <Route path="/auth" element={<Auth />} />
+                        <Route path="/request-audit" element={<RequestAudit />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/audit/:id" element={<AuditDetails />} />
+                        <Route path="/audits" element={<Audits />} />
+                        <Route path="/settings" element={<Settings />} />
+                      </Routes>
+                    </Suspense>
+                    
+                    <Toaster 
+                      position="top-right"
+                      toastOptions={{
+                        duration: 4000,
+                        style: {
+                          background: 'hsl(var(--background))',
+                          color: 'hsl(var(--foreground))',
+                          border: '1px solid hsl(var(--border))',
+                        },
+                      }}
+                    />
+                    
+                    <OptimizedPerformanceMonitor />
                   </div>
-                </SessionManager>
-              </AccessibilityProvider>
-            </EscrowProvider>
-          </AuthProvider>
-        </BrowserRouter>
-      </ThemeProvider>
-    </QueryClientProvider>
+                </Router>
+              </EscrowProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </ProductionErrorBoundary>
+    </HelmetProvider>
   );
 }
 
