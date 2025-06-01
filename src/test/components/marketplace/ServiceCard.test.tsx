@@ -3,26 +3,32 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '../../utils/test-utils';
 import { ServiceCard } from '@/components/marketplace/card/ServiceCard';
 
-const mockService = {
-  id: 1,
+const mockServiceProps = {
+  id: "1",
   title: 'Smart Contract Audit',
-  provider: 'Test Auditor',
   description: 'Comprehensive smart contract security audit',
-  price: 1000,
+  provider: {
+    name: 'Test Auditor',
+    reputation: 4.5,
+    level: 'expert' as const,
+    isVerified: true,
+  },
+  pricing: {
+    amount: 1000,
+    currency: 'USD',
+  },
   rating: 4.5,
-  reviewCount: 10,
-  deliveryTime: '3-5 days',
-  category: 'smart-contract' as const,
-  image: '/test-image.jpg',
-  featured: false,
+  completedJobs: 10,
+  category: 'smart-contract',
   tags: ['DeFi', 'Security'],
-  expertise: ['Solidity', 'Security'],
-  tools: ['Slither', 'MythX'],
+  imageUrl: '/test-image.jpg',
+  securityScore: 85,
+  responseTime: '3-5 days',
 };
 
 describe('ServiceCard Component', () => {
   it('renders service information correctly', () => {
-    render(<ServiceCard service={mockService} />);
+    render(<ServiceCard {...mockServiceProps} />);
     
     expect(screen.getByText('Smart Contract Audit')).toBeInTheDocument();
     expect(screen.getByText('Test Auditor')).toBeInTheDocument();
@@ -31,14 +37,14 @@ describe('ServiceCard Component', () => {
   });
 
   it('displays rating correctly', () => {
-    render(<ServiceCard service={mockService} />);
+    render(<ServiceCard {...mockServiceProps} />);
     
     expect(screen.getByText('4.5')).toBeInTheDocument();
     expect(screen.getByText('(10 reviews)')).toBeInTheDocument();
   });
 
   it('shows service tags', () => {
-    render(<ServiceCard service={mockService} />);
+    render(<ServiceCard {...mockServiceProps} />);
     
     expect(screen.getByText('DeFi')).toBeInTheDocument();
     expect(screen.getByText('Security')).toBeInTheDocument();

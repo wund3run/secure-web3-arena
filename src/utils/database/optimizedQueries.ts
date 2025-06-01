@@ -244,7 +244,7 @@ export class OptimizedQueries {
       const result = await queryFn();
       
       const duration = performance.now() - startTime;
-      performanceLogger.databaseQuery(queryName, duration, correlationId);
+      performanceLogger.databaseQuery(queryName, duration, { correlationId });
       
       return result;
     } catch (error) {

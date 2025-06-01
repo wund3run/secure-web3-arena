@@ -44,6 +44,6 @@ Object.defineProperty(window, 'matchMedia', {
 // Mock requestIdleCallback
 global.requestIdleCallback = vi.fn().mockImplementation((cb) => {
   const id = setTimeout(cb, 1);
-  return id as unknown as number;
+  return id;
 });
 global.cancelIdleCallback = vi.fn();
