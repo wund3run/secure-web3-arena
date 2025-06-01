@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -17,6 +16,7 @@ export interface AuditRequest {
   audit_scope?: string;
   previous_audits?: boolean;
   specific_concerns?: string;
+  urgency_level?: string;
   status?: string;
   assigned_auditor_id?: string;
   estimated_hours?: number;
@@ -68,6 +68,7 @@ export const useAuditRequests = () => {
         audit_scope: requestData.audit_scope,
         previous_audits: requestData.previous_audits,
         specific_concerns: requestData.specific_concerns,
+        urgency_level: requestData.urgency_level,
         status: requestData.status || 'pending'
       };
 
