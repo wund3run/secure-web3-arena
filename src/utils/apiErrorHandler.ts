@@ -1,7 +1,14 @@
 
 import { toast } from "sonner";
 import { PostgrestError } from "@supabase/supabase-js";
-import { ErrorCategory } from "./error-handling";
+
+export enum ErrorCategory {
+  Network = 'network',
+  Authentication = 'authentication',
+  Validation = 'validation',
+  Database = 'database',
+  Unknown = 'unknown'
+}
 
 /**
  * Enhanced API error handler with detailed error categorization

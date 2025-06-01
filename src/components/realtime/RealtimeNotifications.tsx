@@ -22,7 +22,9 @@ const getNotificationIcon = (type: string) => {
 };
 
 export function RealtimeNotifications() {
-  const { notifications, isConnected, clearNotifications } = useRealtimeSync();
+  const { notifications, isConnected, clearNotifications } = useRealtimeSync({
+    channel: 'notifications'
+  });
 
   return (
     <Card className="w-full max-w-md">

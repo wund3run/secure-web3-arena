@@ -12,7 +12,7 @@ import { formatDistanceToNow } from 'date-fns';
 export const NotificationDashboardWidget = () => {
   const { notifications, unreadCount } = useNotifications();
   const { canSendNotifications, requestPermission } = useBrowserNotifications();
-  const { isConnected, connectionStatus } = useRealtimeSync();
+  const { isConnected, connectionStatus } = useRealtimeSync({ channel: 'dashboard' });
 
   const recentNotifications = notifications.slice(0, 5);
 

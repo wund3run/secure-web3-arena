@@ -25,10 +25,7 @@ export class AccessibilityErrorHandler {
         EnhancedToastSystem.error(
           "Critical Accessibility Issue",
           message,
-          error.suggestion ? {
-            label: "Learn More",
-            onClick: () => this.showSuggestion(error)
-          } : undefined
+          error.suggestion ? 8000 : 6000
         );
         break;
       case 'medium':

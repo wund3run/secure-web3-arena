@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { RealtimeChannel } from '@supabase/supabase-js';
@@ -11,9 +12,18 @@ export interface RealtimeConfig {
   filter?: string;
 }
 
+export interface RealtimeNotification {
+  id: string;
+  message: string;
+  type: 'success' | 'warning' | 'error' | 'info';
+  timestamp: Date;
+}
+
 export function useRealtimeSync(config?: RealtimeConfig) {
   const [isConnected, setIsConnected] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const [connectionStatus, setConnectionStatus] = useState<string>('disconnected');
+  const [notifications, setNotifications] = useState<RealtimeNotification[]>([]);
   const channelRef = useRef<RealtimeChannel | null>(null);
 
   useEffect(() => {
@@ -28,10 +38,13 @@ export function useRealtimeSync(config?: RealtimeConfig) {
         if (payload.extension === 'postgres_changes') {
           setIsConnected(true);
           setLastUpdate(new Date());
+          setConnectionStatus('connected');
         }
       })
       .subscribe((status) => {
         setIsConnected(status === 'SUBSCRIBED');
+        setConnectionStatus(status.toLowerCase());
+        
         if (status === 'CLOSED') {
           toast.error('Real-time connection lost', {
             description: 'Attempting to reconnect...'
@@ -44,6 +57,7 @@ export function useRealtimeSync(config?: RealtimeConfig) {
     return () => {
       supabase.removeChannel(channel);
       setIsConnected(false);
+      setConnectionStatus('disconnected');
     };
   }, [config?.channel]);
 
@@ -51,6 +65,7 @@ export function useRealtimeSync(config?: RealtimeConfig) {
     if (channelRef.current) {
       supabase.removeChannel(channelRef.current);
       setIsConnected(false);
+      setConnectionStatus('disconnected');
     }
   };
 
@@ -64,10 +79,28 @@ export function useRealtimeSync(config?: RealtimeConfig) {
     }
   };
 
+  const addNotification = (notification: Omit<RealtimeNotification, 'id' | 'timestamp'>) => {
+    const newNotification: RealtimeNotification = {
+      ...notification,
+      id: crypto.randomUUID(),
+      timestamp: new Date()
+    };
+    
+    setNotifications(prev => [newNotification, ...prev.slice(0, 49)]); // Keep last 50
+  };
+
+  const clearNotifications = () => {
+    setNotifications([]);
+  };
+
   return {
     isConnected,
     lastUpdate,
+    connectionStatus,
+    notifications,
     disconnect,
-    reconnect
+    reconnect,
+    addNotification,
+    clearNotifications
   };
 }

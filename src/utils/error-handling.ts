@@ -11,6 +11,14 @@ export interface ErrorLog {
   userAgent: string;
 }
 
+export enum ErrorCategory {
+  Network = 'network',
+  Authentication = 'authentication',
+  Validation = 'validation',
+  Database = 'database',
+  Unknown = 'unknown'
+}
+
 class ErrorLogger {
   private logs: ErrorLog[] = [];
   private maxLogs = 100;
@@ -63,6 +71,30 @@ export function logErrorToAnalytics(error: Error, context: string, userId?: stri
   errorLogger.log(error, context, userId);
 }
 
+export function handleError(error: unknown, context: string = 'application'): void {
+  console.error(`Error in ${context}:`, error);
+  
+  let errorMessage = "An unexpected error occurred";
+  let errorInstance: Error;
+  
+  if (error instanceof Error) {
+    errorInstance = error;
+    errorMessage = error.message;
+  } else if (typeof error === 'string') {
+    errorInstance = new Error(error);
+    errorMessage = error;
+  } else {
+    errorInstance = new Error('An unknown error occurred');
+  }
+  
+  logErrorToAnalytics(errorInstance, context);
+  
+  // Show toast notification
+  toast.error("Error", {
+    description: errorMessage.substring(0, 100) // Truncate long messages
+  });
+}
+
 export function handleAsyncError(
   asyncFn: () => Promise<void>,
   context: string,
@@ -88,4 +120,9 @@ export function withErrorHandling<T extends (...args: any[]) => Promise<any>>(
       throw error;
     });
   }) as T;
+}
+
+export function createBoundary(component: React.ComponentType<any>) {
+  // This is a placeholder for creating error boundaries
+  return component;
 }

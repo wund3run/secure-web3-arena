@@ -55,6 +55,10 @@ export class EnhancedToastSystem {
     return toast.promise(promise, messages);
   }
 
+  static formValidationError() {
+    return this.error('Form Validation Error', 'Please check your input and try again');
+  }
+
   static payment = {
     processing: () => this.loading('Processing Payment', 'Please wait while we process your payment...'),
     success: () => this.success('Payment Successful', 'Your payment has been processed successfully'),

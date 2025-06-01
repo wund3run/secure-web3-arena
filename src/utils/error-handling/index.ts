@@ -4,7 +4,7 @@
  */
 
 // Re-export error categories
-export { ErrorCategory } from "../error-handling";
+export { ErrorCategory } from "../apiErrorHandler";
 
 // Re-export utility functions
 export { 
