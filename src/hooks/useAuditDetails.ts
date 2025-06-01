@@ -141,14 +141,24 @@ export const useAuditDetails = (auditId?: string) => {
           low: findings?.filter(f => f.severity === 'low').length || 0,
         };
 
-        // Ensure client data has proper structure with null checks
-        const clientData = audit.client && audit.client !== null && typeof audit.client === 'object' && 'id' in audit.client 
-          ? audit.client as { id: string; full_name?: string; avatar_url?: string; }
+        // Type guard for client data
+        const isValidClientObject = (client: any): client is { id: string; full_name?: string; avatar_url?: string } => {
+          return client && typeof client === 'object' && typeof client.id === 'string';
+        };
+
+        // Type guard for auditor data
+        const isValidAuditorObject = (auditor: any): auditor is { id: string; full_name?: string; avatar_url?: string } => {
+          return auditor && typeof auditor === 'object' && typeof auditor.id === 'string';
+        };
+
+        // Ensure client data has proper structure with type guards
+        const clientData = isValidClientObject(audit.client)
+          ? audit.client
           : { id: audit.client_id, full_name: undefined, avatar_url: undefined };
 
-        // Ensure auditor data has proper structure with null checks
-        const auditorData = audit.auditor && audit.auditor !== null && typeof audit.auditor === 'object' && 'id' in audit.auditor
-          ? audit.auditor as { id: string; full_name?: string; avatar_url?: string; }
+        // Ensure auditor data has proper structure with type guards
+        const auditorData = isValidAuditorObject(audit.auditor)
+          ? audit.auditor
           : audit.assigned_auditor_id ? { id: audit.assigned_auditor_id, full_name: undefined, avatar_url: undefined } : undefined;
 
         setAuditData({
