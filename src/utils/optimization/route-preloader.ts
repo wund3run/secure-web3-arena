@@ -15,58 +15,66 @@ export class RoutePreloader {
 
     // Route component mapping for preloading
     const routeMap: Record<string, () => Promise<any>> = {
-      '/marketplace': () => import('@/pages/Marketplace'),
-      '/audits': () => import('@/pages/Audits'),
       '/dashboard': () => import('@/pages/Dashboard'),
-      '/request-audit': () => import('@/pages/RequestAudit'),
-      '/service-provider-onboarding': () => import('@/pages/ServiceProviderOnboarding'),
+      '/audits': () => import('@/pages/Audits'),
+      '/profile': () => import('@/pages/Profile'),
+      '/settings': () => import('@/pages/Settings'),
+      '/admin': () => import('@/pages/Admin'),
     };
 
-    const loader = routeMap[routePath];
-    if (!loader) {
-      return Promise.resolve();
-    }
-
-    this.preloadedRoutes.add(routePath);
-    
-    return loader()
-      .then(() => {
-        console.log(`Preloaded route: ${routePath}`);
-      })
-      .catch((error) => {
-        console.warn(`Failed to preload route ${routePath}:`, error);
+    const preloadFunction = routeMap[routePath];
+    if (preloadFunction) {
+      this.preloadedRoutes.add(routePath);
+      return preloadFunction().catch(err => {
+        console.warn(`Failed to preload route ${routePath}:`, err);
         this.preloadedRoutes.delete(routePath);
       });
+    }
+
+    return Promise.resolve();
   }
 
   /**
-   * Intelligent route preloading based on current page
+   * Preload routes based on user hover/focus behavior
    */
-  intelligentPreload(currentRoute: string): void {
-    const preloadStrategies: Record<string, string[]> = {
-      '/': ['/marketplace', '/request-audit'],
-      '/marketplace': ['/audits', '/service-provider-onboarding'],
-      '/audits': ['/dashboard', '/marketplace'],
-      '/dashboard': ['/audits', '/marketplace'],
-      '/request-audit': ['/marketplace', '/audits'],
-      '/service-provider-onboarding': ['/dashboard', '/marketplace']
-    };
-
-    const routesToPreload = preloadStrategies[currentRoute] || [];
-    
-    // Use requestIdleCallback for non-blocking preloading
-    const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
-    
-    routesToPreload.forEach((route, index) => {
-      idleCallback(() => {
-        setTimeout(() => {
-          this.preloadRoute(route);
-        }, index * 1000); // Stagger preloads
-      });
-    });
+  setupLinkPreloading(): void {
+    document.addEventListener('mouseover', this.handleLinkHover.bind(this));
+    document.addEventListener('focusin', this.handleLinkFocus.bind(this));
   }
 
-  get preloadedCount(): number {
-    return this.preloadedRoutes.size;
+  private handleLinkHover(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    const link = target.closest('a[href]') as HTMLAnchorElement;
+    
+    if (link && link.href && this.isInternalLink(link.href)) {
+      const path = new URL(link.href).pathname;
+      this.preloadRoute(path);
+    }
+  }
+
+  private handleLinkFocus(event: FocusEvent): void {
+    const target = event.target as HTMLElement;
+    
+    if (target.tagName === 'A') {
+      const link = target as HTMLAnchorElement;
+      if (link.href && this.isInternalLink(link.href)) {
+        const path = new URL(link.href).pathname;
+        this.preloadRoute(path);
+      }
+    }
+  }
+
+  private isInternalLink(href: string): boolean {
+    try {
+      const url = new URL(href);
+      return url.origin === window.location.origin;
+    } catch {
+      return false;
+    }
+  }
+
+  cleanup(): void {
+    document.removeEventListener('mouseover', this.handleLinkHover);
+    document.removeEventListener('focusin', this.handleLinkFocus);
   }
 }
