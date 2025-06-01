@@ -13,28 +13,28 @@ export interface NavigationLink {
 export const navigationLinks: NavigationLink[] = [
   {
     title: "Services",
-    href: "/services",
+    href: "/marketplace",
     icon: Shield,
-    requiresAuth: true,
+    requiresAuth: false,
     children: [
       {
         title: "Security Audits",
-        href: "/security-audits",
+        href: "/marketplace",
         description: "Comprehensive smart contract security audits by verified experts"
       },
       {
         title: "Code Reviews",
-        href: "/code-reviews",
+        href: "/marketplace",
         description: "Expert code review services for Web3 projects with AI-enhanced analysis"
       },
       {
         title: "Penetration Testing",
-        href: "/penetration-testing",
+        href: "/marketplace",
         description: "Advanced security testing and vulnerability assessment"
       },
       {
         title: "Security Consulting",
-        href: "/consulting",
+        href: "/marketplace",
         description: "Strategic security guidance and implementation support"
       }
     ]
@@ -43,21 +43,21 @@ export const navigationLinks: NavigationLink[] = [
     title: "Resources",
     href: "/resources",
     icon: BookOpen,
-    requiresAuth: true,
+    requiresAuth: false,
     children: [
       {
         title: "Security Guides",
-        href: "/security-guides",
+        href: "/resources",
         description: "Comprehensive security guides for Web3 development"
       },
       {
         title: "Knowledge Base",
-        href: "/knowledge-base",
+        href: "/docs",
         description: "Extensive documentation and best practices"
       },
       {
         title: "Video Tutorials",
-        href: "/tutorials",
+        href: "/resources",
         description: "Expert-led tutorials covering security analysis"
       },
       {
@@ -69,9 +69,9 @@ export const navigationLinks: NavigationLink[] = [
   },
   {
     title: "Tools",
-    href: "/tools",
+    href: "/ai-tools",
     icon: Zap,
-    requiresAuth: true,
+    requiresAuth: false,
     children: [
       {
         title: "Security Insights",
@@ -85,12 +85,12 @@ export const navigationLinks: NavigationLink[] = [
       },
       {
         title: "Vulnerability Scanner",
-        href: "/vulnerability-scanner",
+        href: "/vulnerabilities",
         description: "Automated vulnerability detection with multi-blockchain support"
       },
       {
         title: "Platform Reports",
-        href: "/platform-reports",
+        href: "/platform-report",
         description: "Comprehensive security reports and compliance dashboards"
       }
     ]
@@ -99,7 +99,7 @@ export const navigationLinks: NavigationLink[] = [
     title: "Community",
     href: "/community",
     icon: Users,
-    requiresAuth: true,
+    requiresAuth: false,
     children: [
       {
         title: "Community Forum",

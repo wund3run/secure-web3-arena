@@ -14,6 +14,45 @@ import { MonitoringService } from "./services/monitoringService";
 import { CDNManager } from "./utils/cdn-manager";
 import { Environment } from "./utils/environment";
 
+// Lazy load pages for better performance
+const Auth = React.lazy(() => import("./pages/Auth"));
+const Marketplace = React.lazy(() => import("./pages/Marketplace"));
+const RequestAudit = React.lazy(() => import("./pages/RequestAudit"));
+const ServiceProviderOnboarding = React.lazy(() => import("./pages/ServiceProviderOnboarding"));
+const Pricing = React.lazy(() => import("./pages/Pricing"));
+const Audits = React.lazy(() => import("./pages/Audits"));
+const AuditDetails = React.lazy(() => import("./pages/AuditDetails"));
+const Escrow = React.lazy(() => import("./pages/Escrow"));
+const Docs = React.lazy(() => import("./pages/Docs"));
+const SecurityInsights = React.lazy(() => import("./pages/SecurityInsights"));
+const Vulnerabilities = React.lazy(() => import("./pages/Vulnerabilities"));
+const Templates = React.lazy(() => import("./pages/Templates"));
+const AITools = React.lazy(() => import("./pages/AITools"));
+const PlatformReport = React.lazy(() => import("./pages/PlatformReport"));
+const Forum = React.lazy(() => import("./pages/Forum"));
+const Events = React.lazy(() => import("./pages/Events"));
+const Challenges = React.lazy(() => import("./pages/Challenges"));
+const Leaderboard = React.lazy(() => import("./pages/Leaderboard"));
+const Blog = React.lazy(() => import("./pages/Blog"));
+const Achievements = React.lazy(() => import("./pages/Achievements"));
+const Dashboard = React.lazy(() => import("./pages/Dashboard"));
+const SubmitService = React.lazy(() => import("./pages/SubmitService"));
+const Calendar = React.lazy(() => import("./pages/Calendar"));
+const ContactProvider = React.lazy(() => import("./pages/ContactProvider"));
+const Admin = React.lazy(() => import("./pages/Admin"));
+const Contact = React.lazy(() => import("./pages/Contact"));
+const Support = React.lazy(() => import("./pages/Support"));
+const Terms = React.lazy(() => import("./pages/Terms"));
+const Privacy = React.lazy(() => import("./pages/Privacy"));
+const SecurityPolicy = React.lazy(() => import("./pages/SecurityPolicy"));
+const Resources = React.lazy(() => import("./pages/Resources"));
+const Community = React.lazy(() => import("./pages/Community"));
+const CompetitiveAdvantages = React.lazy(() => import("./pages/CompetitiveAdvantages"));
+const ComprehensiveSecurity = React.lazy(() => import("./pages/ComprehensiveSecurity"));
+const AuditGuidelines = React.lazy(() => import("./pages/AuditGuidelines"));
+const DistributionStrategy = React.lazy(() => import("./pages/DistributionStrategy"));
+const FAQ = React.lazy(() => import("./pages/FAQ"));
+
 const queryClient = new QueryClient();
 
 function App() {
@@ -44,9 +83,74 @@ function App() {
               <NotificationProvider>
                 <Toaster />
                 <BrowserRouter>
-                  <Routes>
-                    <Route path="/*" element={<Index />} />
-                  </Routes>
+                  <React.Suspense fallback={
+                    <div className="min-h-screen flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+                    </div>
+                  }>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/auth" element={<Auth />} />
+                      <Route path="/marketplace" element={<Marketplace />} />
+                      <Route path="/request-audit" element={<RequestAudit />} />
+                      <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
+                      <Route path="/pricing" element={<Pricing />} />
+                      <Route path="/audits" element={<Audits />} />
+                      <Route path="/audit/:id" element={<AuditDetails />} />
+                      <Route path="/escrow" element={<Escrow />} />
+                      <Route path="/docs" element={<Docs />} />
+                      <Route path="/web3-security" element={<Docs />} />
+                      <Route path="/guides" element={<Docs />} />
+                      <Route path="/tutorials" element={<Docs />} />
+                      <Route path="/knowledge-base" element={<Docs />} />
+                      <Route path="/faq" element={<FAQ />} />
+                      <Route path="/security-insights" element={<SecurityInsights />} />
+                      <Route path="/vulnerabilities" element={<Vulnerabilities />} />
+                      <Route path="/templates" element={<Templates />} />
+                      <Route path="/ai-tools" element={<AITools />} />
+                      <Route path="/platform-report" element={<PlatformReport />} />
+                      <Route path="/forum" element={<Forum />} />
+                      <Route path="/events" element={<Events />} />
+                      <Route path="/challenges" element={<Challenges />} />
+                      <Route path="/leaderboard" element={<Leaderboard />} />
+                      <Route path="/blog" element={<Blog />} />
+                      <Route path="/achievements" element={<Achievements />} />
+                      <Route path="/dashboard/*" element={<Dashboard />} />
+                      <Route path="/submit-service" element={<SubmitService />} />
+                      <Route path="/calendar" element={<Calendar />} />
+                      <Route path="/contact-provider/:id" element={<ContactProvider />} />
+                      <Route path="/admin/*" element={<Admin />} />
+                      <Route path="/contact" element={<Contact />} />
+                      <Route path="/support" element={<Support />} />
+                      <Route path="/terms" element={<Terms />} />
+                      <Route path="/privacy" element={<Privacy />} />
+                      <Route path="/security-policy" element={<SecurityPolicy />} />
+                      <Route path="/resources" element={<Resources />} />
+                      <Route path="/community" element={<Community />} />
+                      <Route path="/competitive-advantages" element={<CompetitiveAdvantages />} />
+                      <Route path="/comprehensive-security" element={<ComprehensiveSecurity />} />
+                      <Route path="/audit-guidelines" element={<AuditGuidelines />} />
+                      <Route path="/distribution-strategy" element={<DistributionStrategy />} />
+                      
+                      {/* Alias routes for common navigation patterns */}
+                      <Route path="/security-audits" element={<Marketplace />} />
+                      <Route path="/code-reviews" element={<Marketplace />} />
+                      <Route path="/penetration-testing" element={<Marketplace />} />
+                      <Route path="/consulting" element={<Marketplace />} />
+                      <Route path="/security-guides" element={<Resources />} />
+                      <Route path="/video-tutorials" element={<Resources />} />
+                      <Route path="/audit-templates" element={<Templates />} />
+                      <Route path="/vulnerability-scanner" element={<AITools />} />
+                      <Route path="/platform-reports" element={<PlatformReport />} />
+                      <Route path="/community-forum" element={<Forum />} />
+                      <Route path="/security-events" element={<Events />} />
+                      <Route path="/security-challenges" element={<Challenges />} />
+                      <Route path="/expert-leaderboard" element={<Leaderboard />} />
+                      
+                      {/* Catch-all route for 404 pages */}
+                      <Route path="*" element={<Index />} />
+                    </Routes>
+                  </React.Suspense>
                 </BrowserRouter>
               </NotificationProvider>
             </AuthProvider>
