@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/auth";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { ThemeProvider } from "next-themes";
@@ -35,22 +36,24 @@ function App() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <TooltipProvider>
-          <AuthProvider>
-            <NotificationProvider>
-              <Toaster />
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/*" element={<Index />} />
-                </Routes>
-              </BrowserRouter>
-            </NotificationProvider>
-          </AuthProvider>
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <TooltipProvider>
+            <AuthProvider>
+              <NotificationProvider>
+                <Toaster />
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/*" element={<Index />} />
+                  </Routes>
+                </BrowserRouter>
+              </NotificationProvider>
+            </AuthProvider>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 
