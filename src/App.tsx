@@ -2,7 +2,7 @@
 import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ThemeProvider } from "@/components/theme/theme-provider";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { ProductionErrorBoundary } from "@/components/error/production-error-boundary";
 import { OptimizedPerformanceMonitor } from "@/components/performance/OptimizedPerformanceMonitor";
