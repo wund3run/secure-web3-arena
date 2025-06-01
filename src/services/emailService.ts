@@ -59,4 +59,42 @@ export class EmailService {
       templateData: { dashboardUrl }
     });
   }
+
+  static async sendAuditorAssignmentNotification(
+    clientEmail: string, 
+    auditorName: string, 
+    projectName: string,
+    dashboardUrl: string
+  ): Promise<boolean> {
+    return this.sendEmail({
+      to: clientEmail,
+      subject: `Auditor Assigned: ${projectName}`,
+      template: 'audit_status',
+      templateData: {
+        projectName,
+        status: 'Auditor Assigned',
+        message: `${auditorName} has been assigned to audit your project.`,
+        actionUrl: dashboardUrl
+      }
+    });
+  }
+
+  static async sendMilestoneCompletionNotification(
+    userEmail: string,
+    milestone: string,
+    projectName: string,
+    dashboardUrl: string
+  ): Promise<boolean> {
+    return this.sendEmail({
+      to: userEmail,
+      subject: `Milestone Complete: ${projectName}`,
+      template: 'audit_status',
+      templateData: {
+        projectName,
+        status: 'Milestone Complete',
+        message: `The milestone "${milestone}" has been completed.`,
+        actionUrl: dashboardUrl
+      }
+    });
+  }
 }

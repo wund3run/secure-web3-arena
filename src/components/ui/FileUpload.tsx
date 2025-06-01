@@ -14,6 +14,7 @@ interface FileUploadProps {
   bucket?: string;
   folder?: string;
   multiple?: boolean;
+  auditId?: string;
 }
 
 export const FileUpload: React.FC<FileUploadProps> = ({
@@ -22,7 +23,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   maxSize = 10,
   bucket = 'audit-files',
   folder = 'uploads',
-  multiple = false
+  multiple = false,
+  auditId
 }) => {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -38,38 +40,45 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
-      // Generate unique filename
+      // Generate unique filename with audit ID structure
       const fileExt = file.name.split('.').pop();
-      const fileName = `${folder}/${user.id}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const timestamp = Date.now();
+      const randomId = Math.random().toString(36).substring(7);
+      
+      let fileName: string;
+      if (auditId) {
+        fileName = `${auditId}/${folder}/${timestamp}-${randomId}.${fileExt}`;
+      } else {
+        fileName = `${folder}/${user.id}/${timestamp}-${randomId}.${fileExt}`;
+      }
 
-      // Simulate upload progress
-      const progressInterval = setInterval(() => {
-        setUploadProgress(prev => {
-          if (prev >= 90) {
-            clearInterval(progressInterval);
-            return 90;
-          }
-          return prev + 10;
+      // Upload file to Supabase Storage
+      const { data, error: uploadError } = await supabase.storage
+        .from(bucket)
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false
         });
-      }, 100);
 
-      // For now, just simulate successful upload since storage bucket may not exist
-      setTimeout(() => {
-        clearInterval(progressInterval);
-        setUploadProgress(100);
-        const mockUrl = `https://example.com/uploads/${fileName}`;
-        onUpload(mockUrl, file.name);
-        toast.success('File uploaded successfully');
-        setUploading(false);
-        setTimeout(() => setUploadProgress(0), 1000);
-      }, 1000);
+      if (uploadError) throw uploadError;
 
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from(bucket)
+        .getPublicUrl(data.path);
+
+      setUploadProgress(100);
+      onUpload(publicUrl, file.name);
+      toast.success('File uploaded successfully');
+      
+      setTimeout(() => setUploadProgress(0), 1000);
     } catch (error: any) {
       console.error('Upload error:', error);
       setError(error.message || 'Failed to upload file');
       toast.error('File upload failed');
-      setUploading(false);
       setTimeout(() => setUploadProgress(0), 1000);
+    } finally {
+      setUploading(false);
     }
   };
 

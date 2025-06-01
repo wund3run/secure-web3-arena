@@ -52,6 +52,9 @@ export class AuditRequestService {
           priority_score: 0.5,
           matching_score: 0,
           auto_assign_enabled: true,
+          current_phase: 'initial_review',
+          completion_percentage: 0,
+          security_score: 0,
         })
         .select()
         .single();
@@ -64,6 +67,16 @@ export class AuditRequestService {
         title: 'Audit Request Submitted',
         message: 'Your audit request has been successfully submitted and is being processed.',
         type: 'info'
+      });
+
+      // Create initial status update
+      await supabase.from('audit_status_updates').insert({
+        audit_request_id: data.id,
+        status_type: 'progress',
+        title: 'Audit Request Created',
+        message: 'Your audit request has been submitted and is awaiting review.',
+        user_id: user.id,
+        metadata: { source: 'system' }
       });
 
       toast.success('Audit request created successfully!');
@@ -105,8 +118,7 @@ export class AuditRequestService {
   static async updateAuditStatus(auditId: string, status: string, phase?: string): Promise<boolean> {
     try {
       const updateData: any = { status };
-      // Note: current_phase will be available once types are regenerated
-      // if (phase) updateData.current_phase = phase;
+      if (phase) updateData.current_phase = phase;
 
       const { error } = await supabase
         .from('audit_requests')
@@ -137,9 +149,16 @@ export class AuditRequestService {
     }
   ): Promise<boolean> {
     try {
-      // Mock implementation until types are regenerated
-      console.log('Adding finding (mock):', { auditId, finding });
-      
+      const { error } = await supabase
+        .from('audit_findings')
+        .insert({
+          audit_request_id: auditId,
+          ...finding,
+          status: 'open'
+        });
+
+      if (error) throw error;
+
       // Create notification for the finding
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -148,6 +167,16 @@ export class AuditRequestService {
           title: `New ${finding.severity} Finding`,
           message: finding.title,
           type: finding.severity === 'critical' || finding.severity === 'high' ? 'error' : 'warning'
+        });
+
+        // Create status update
+        await supabase.from('audit_status_updates').insert({
+          audit_request_id: auditId,
+          status_type: 'finding',
+          title: `${finding.severity} Finding Identified`,
+          message: finding.title,
+          user_id: user.id,
+          metadata: { severity: finding.severity, category: finding.category }
         });
       }
 
@@ -169,8 +198,15 @@ export class AuditRequestService {
     }
   ): Promise<boolean> {
     try {
-      // Mock implementation until types are regenerated
-      console.log('Creating deliverable (mock):', { auditId, deliverable });
+      const { error } = await supabase
+        .from('audit_deliverables')
+        .insert({
+          audit_request_id: auditId,
+          ...deliverable,
+          status: 'pending'
+        });
+
+      if (error) throw error;
 
       // Create notification for the deliverable
       const { data: { user } } = await supabase.auth.getUser();
@@ -180,6 +216,16 @@ export class AuditRequestService {
           title: 'New Deliverable Created',
           message: deliverable.title,
           type: 'info'
+        });
+
+        // Create status update
+        await supabase.from('audit_status_updates').insert({
+          audit_request_id: auditId,
+          status_type: 'deliverable',
+          title: 'New Deliverable Added',
+          message: deliverable.title,
+          user_id: user.id,
+          metadata: { deliverable_type: 'audit_report' }
         });
       }
 

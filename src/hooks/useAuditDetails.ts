@@ -110,83 +110,46 @@ export const useAuditDetails = (auditId?: string) => {
         auditorProfile = auditor;
       }
 
-      // Mock data for new tables until Supabase types are regenerated
-      const mockFindings: AuditFinding[] = [
-        {
-          id: '1',
-          severity: 'high',
-          category: 'Access Control',
-          title: 'Missing owner verification',
-          description: 'Contract lacks proper owner verification in critical functions',
-          status: 'open',
-          created_at: new Date().toISOString()
-        },
-        {
-          id: '2',
-          severity: 'medium',
-          category: 'Reentrancy',
-          title: 'Potential reentrancy vulnerability',
-          description: 'External call before state change could allow reentrancy',
-          status: 'open',
-          created_at: new Date().toISOString()
-        }
-      ];
+      // Fetch findings
+      const { data: findings } = await supabase
+        .from('audit_findings')
+        .select('*')
+        .eq('audit_request_id', auditId)
+        .order('created_at', { ascending: false });
 
-      const mockDeliverables: AuditDeliverable[] = [
-        {
-          id: '1',
-          title: 'Initial Security Assessment',
-          description: 'Comprehensive review of smart contract architecture',
-          status: 'completed'
-        },
-        {
-          id: '2',
-          title: 'Final Audit Report',
-          description: 'Detailed report with findings and recommendations',
-          status: 'in_progress'
-        }
-      ];
+      // Fetch deliverables
+      const { data: deliverables } = await supabase
+        .from('audit_deliverables')
+        .select('*')
+        .eq('audit_request_id', auditId)
+        .order('created_at', { ascending: false });
 
-      const mockStatusUpdates: AuditStatusUpdate[] = [
-        {
-          id: '1',
-          status_type: 'progress',
-          title: 'Audit Started',
-          message: 'Initial code review has begun',
-          metadata: {},
-          created_at: new Date().toISOString(),
-          user_id: audit.assigned_auditor_id || 'system'
-        },
-        {
-          id: '2',
-          status_type: 'finding',
-          title: 'Security Issue Identified',
-          message: 'High severity access control issue found',
-          metadata: { severity: 'high' },
-          created_at: new Date().toISOString(),
-          user_id: audit.assigned_auditor_id || 'system'
-        }
-      ];
+      // Fetch status updates
+      const { data: statusUpdates } = await supabase
+        .from('audit_status_updates')
+        .select('*')
+        .eq('audit_request_id', auditId)
+        .order('created_at', { ascending: false });
 
-      // Calculate findings count from mock data
+      // Calculate findings count
       const findingsCount = {
-        critical: mockFindings.filter(f => f.severity === 'critical').length,
-        high: mockFindings.filter(f => f.severity === 'high').length,
-        medium: mockFindings.filter(f => f.severity === 'medium').length,
-        low: mockFindings.filter(f => f.severity === 'low').length,
-        info: mockFindings.filter(f => f.severity === 'info').length,
+        critical: findings?.filter(f => f.severity === 'critical').length || 0,
+        high: findings?.filter(f => f.severity === 'high').length || 0,
+        medium: findings?.filter(f => f.severity === 'medium').length || 0,
+        low: findings?.filter(f => f.severity === 'low').length || 0,
+        info: findings?.filter(f => f.severity === 'info').length || 0,
       };
 
-      // Build enhanced audit data with fallbacks for missing properties
+      // Build enhanced audit data
       const enhancedAuditData: EnhancedAuditData = {
         ...audit,
-        current_phase: (audit as any).current_phase || 'initial_review',
-        completion_percentage: (audit as any).completion_percentage || 25,
-        security_score: (audit as any).security_score || 85,
+        current_phase: audit.current_phase || 'initial_review',
+        completion_percentage: audit.completion_percentage || 0,
+        security_score: audit.security_score || 0,
         findings_count: findingsCount,
-        findings: mockFindings,
-        deliverables: mockDeliverables,
-        status_updates: mockStatusUpdates,
+        findings: findings || [],
+        deliverables: deliverables || [],
+        status_updates: statusUpdates || [],
         client: {
           id: audit.client_id,
           full_name: clientProfile?.full_name || 'Unknown Client',
@@ -235,7 +198,14 @@ export const useAuditDetails = (auditId?: string) => {
 
   const updateFindingStatus = async (findingId: string, status: string) => {
     try {
-      // Mock update for now since table doesn't exist in types yet
+      const { error } = await supabase
+        .from('audit_findings')
+        .update({ status })
+        .eq('id', findingId);
+
+      if (error) throw error;
+
+      // Update local state
       if (auditData) {
         const updatedFindings = auditData.findings.map(finding =>
           finding.id === findingId ? { ...finding, status: status as any } : finding
@@ -255,22 +225,28 @@ export const useAuditDetails = (auditId?: string) => {
 
   const addFinding = async (finding: Omit<AuditFinding, 'id' | 'created_at'>) => {
     try {
-      const newFinding: AuditFinding = {
-        ...finding,
-        id: Math.random().toString(36).substring(7),
-        created_at: new Date().toISOString()
-      };
+      const { data, error } = await supabase
+        .from('audit_findings')
+        .insert({
+          audit_request_id: auditId,
+          ...finding,
+          status: 'open'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
 
       // Update local state
       if (auditData) {
         setAuditData({
           ...auditData,
-          findings: [newFinding, ...auditData.findings]
+          findings: [data, ...auditData.findings]
         });
       }
 
       toast.success('Finding added successfully');
-      return newFinding;
+      return data;
     } catch (error: any) {
       console.error('Error adding finding:', error);
       toast.error('Failed to add finding');
@@ -304,7 +280,31 @@ export const useAuditDetails = (auditId?: string) => {
         {
           event: '*',
           schema: 'public',
-          table: 'audit_messages',
+          table: 'audit_findings',
+          filter: `audit_request_id=eq.${auditId}`,
+        },
+        () => {
+          fetchAuditDetails();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'audit_deliverables',
+          filter: `audit_request_id=eq.${auditId}`,
+        },
+        () => {
+          fetchAuditDetails();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'audit_status_updates',
           filter: `audit_request_id=eq.${auditId}`,
         },
         () => {

@@ -129,6 +129,106 @@ export type Database = {
           },
         ]
       }
+      audit_deliverables: {
+        Row: {
+          audit_request_id: string
+          created_at: string
+          delivered_at: string | null
+          description: string | null
+          due_date: string | null
+          file_url: string | null
+          id: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          audit_request_id: string
+          created_at?: string
+          delivered_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          file_url?: string | null
+          id?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          audit_request_id?: string
+          created_at?: string
+          delivered_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          file_url?: string | null
+          id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_deliverables_audit_request_id_fkey"
+            columns: ["audit_request_id"]
+            isOneToOne: false
+            referencedRelation: "audit_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_findings: {
+        Row: {
+          audit_request_id: string
+          category: string
+          code_snippet: string | null
+          created_at: string
+          description: string
+          id: string
+          location: string | null
+          recommendation: string | null
+          severity: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          audit_request_id: string
+          category: string
+          code_snippet?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          location?: string | null
+          recommendation?: string | null
+          severity: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          audit_request_id?: string
+          category?: string
+          code_snippet?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          location?: string | null
+          recommendation?: string | null
+          severity?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_findings_audit_request_id_fkey"
+            columns: ["audit_request_id"]
+            isOneToOne: false
+            referencedRelation: "audit_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_log: {
         Row: {
           action: string
@@ -336,8 +436,10 @@ export type Database = {
           budget: number | null
           client_id: string
           communication_preference: string | null
+          completion_percentage: number | null
           contract_count: number | null
           created_at: string
+          current_phase: string | null
           deadline: string | null
           escrow_contract_id: string | null
           id: string
@@ -349,6 +451,7 @@ export type Database = {
           project_description: string | null
           project_name: string
           repository_url: string | null
+          security_score: number | null
           specific_concerns: string | null
           status: string | null
           updated_at: string
@@ -363,8 +466,10 @@ export type Database = {
           budget?: number | null
           client_id: string
           communication_preference?: string | null
+          completion_percentage?: number | null
           contract_count?: number | null
           created_at?: string
+          current_phase?: string | null
           deadline?: string | null
           escrow_contract_id?: string | null
           id?: string
@@ -376,6 +481,7 @@ export type Database = {
           project_description?: string | null
           project_name: string
           repository_url?: string | null
+          security_score?: number | null
           specific_concerns?: string | null
           status?: string | null
           updated_at?: string
@@ -390,8 +496,10 @@ export type Database = {
           budget?: number | null
           client_id?: string
           communication_preference?: string | null
+          completion_percentage?: number | null
           contract_count?: number | null
           created_at?: string
+          current_phase?: string | null
           deadline?: string | null
           escrow_contract_id?: string | null
           id?: string
@@ -403,6 +511,7 @@ export type Database = {
           project_description?: string | null
           project_name?: string
           repository_url?: string | null
+          security_score?: number | null
           specific_concerns?: string | null
           status?: string | null
           updated_at?: string
@@ -421,6 +530,47 @@ export type Database = {
             columns: ["escrow_contract_id"]
             isOneToOne: false
             referencedRelation: "escrow_contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_status_updates: {
+        Row: {
+          audit_request_id: string
+          created_at: string
+          id: string
+          message: string | null
+          metadata: Json | null
+          status_type: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          audit_request_id: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          metadata?: Json | null
+          status_type: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          audit_request_id?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          metadata?: Json | null
+          status_type?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_status_updates_audit_request_id_fkey"
+            columns: ["audit_request_id"]
+            isOneToOne: false
+            referencedRelation: "audit_requests"
             referencedColumns: ["id"]
           },
         ]
