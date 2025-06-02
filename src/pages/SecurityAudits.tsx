@@ -193,14 +193,14 @@ const SecurityAudits = () => {
               </div>
               <div className="text-center">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <FileText className="h-8 w-8 text-primary" />
+                  <Zap className="h-8 w-8 text-primary" />
                 </div>
                 <h4 className="font-semibold mb-1">SWC Registry</h4>
-                <p className="text-sm text-muted-foreground">Smart Contract Weaknesses</p>
+                <p className="text-sm text-muted-foreground">Smart Contract Weakness</p>
               </div>
               <div className="text-center">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Zap className="h-8 w-8 text-primary" />
+                  <Users className="h-8 w-8 text-primary" />
                 </div>
                 <h4 className="font-semibold mb-1">NIST Framework</h4>
                 <p className="text-sm text-muted-foreground">Cybersecurity Standards</p>
@@ -216,25 +216,15 @@ const SecurityAudits = () => {
           </CardContent>
         </Card>
 
-        {/* CTA Section */}
-        <div className="text-center bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-12">
-          <h2 className="text-3xl font-bold mb-4">Ready to Secure Your Project?</h2>
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join over 2,000 projects that have secured their applications with our expert security audits.
+        {/* CTA */}
+        <div className="text-center bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-8">
+          <h2 className="text-2xl font-bold mb-4">Ready to Secure Your Project?</h2>
+          <p className="text-muted-foreground mb-6">
+            Join 1,200+ projects that have secured their Web3 applications with our expert audits.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/request-audit">
-              <Button size="lg">
-                Start Your Security Audit
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Link to="/contact">
-              <Button size="lg" variant="outline">
-                Talk to Security Expert
-              </Button>
-            </Link>
-          </div>
+          <Link to="/request-audit">
+            <Button size="lg">Start Security Audit</Button>
+          </Link>
         </div>
       </div>
     </StandardLayout>

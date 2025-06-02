@@ -1,4 +1,3 @@
-
 import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -45,6 +44,17 @@ const ProfileCompletion = React.lazy(() => import("@/pages/ProfileCompletion"));
 const Resources = React.lazy(() => import("@/pages/Resources"));
 const FAQ = React.lazy(() => import("@/pages/FAQ"));
 const Support = React.lazy(() => import("@/pages/Support"));
+
+// New pages for complete navigation
+const SecurityAudits = React.lazy(() => import("@/pages/SecurityAudits"));
+const Web3Security = React.lazy(() => import("@/pages/Web3Security"));
+const Vulnerabilities = React.lazy(() => import("@/pages/Vulnerabilities"));
+const WebSecurity = React.lazy(() => import("@/pages/WebSecurity"));
+const Community = React.lazy(() => import("@/pages/Community"));
+const Forum = React.lazy(() => import("@/pages/Forum"));
+const Events = React.lazy(() => import("@/pages/Events"));
+const Leaderboard = React.lazy(() => import("@/pages/Leaderboard"));
+const SubmitService = React.lazy(() => import("@/pages/SubmitService"));
 
 // Production Dashboard
 const ProductionDashboard = React.lazy(() => import("@/pages/ProductionDashboard"));
@@ -133,6 +143,30 @@ function App() {
                       
                       {/* Escrow Management */}
                       <Route path="/escrow" element={<Escrow />} />
+                      
+                      {/* New Security Service Pages */}
+                      <Route path="/security-audits" element={<SecurityAudits />} />
+                      <Route path="/web3-security" element={<Web3Security />} />
+                      <Route path="/vulnerabilities" element={<Vulnerabilities />} />
+                      <Route path="/web-security" element={<WebSecurity />} />
+                      
+                      {/* Community Pages */}
+                      <Route path="/community" element={<Community />} />
+                      <Route path="/forum" element={<Forum />} />
+                      <Route path="/events" element={<Events />} />
+                      <Route path="/leaderboard" element={<Leaderboard />} />
+                      <Route path="/challenges" element={<Events />} />
+                      
+                      {/* Service Provider Pages */}
+                      <Route path="/submit-service" element={<SubmitService />} />
+                      
+                      {/* Alias routes for common navigation patterns */}
+                      <Route path="/security-insights" element={<Vulnerabilities />} />
+                      <Route path="/security-guides" element={<Resources />} />
+                      <Route path="/knowledge-base" element={<Resources />} />
+                      <Route path="/docs" element={<Resources />} />
+                      <Route path="/tutorials" element={<Resources />} />
+                      <Route path="/templates" element={<Resources />} />
                       
                       {/* Footer pages */}
                       <Route path="/about" element={<About />} />
