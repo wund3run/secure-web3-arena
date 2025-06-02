@@ -33,6 +33,10 @@ const Privacy = React.lazy(() => import("@/pages/Privacy"));
 // Messaging page
 const MessagingPage = React.lazy(() => import("@/pages/MessagingPage"));
 
+// New launch readiness pages
+const PricingINR = React.lazy(() => import("@/pages/PricingINR"));
+const LaunchReadiness = React.lazy(() => import("@/pages/LaunchReadiness"));
+
 // Production-optimized query client
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -96,6 +100,10 @@ function App() {
                       
                       {/* Messaging */}
                       <Route path="/messages" element={<MessagingPage />} />
+                      
+                      {/* New launch readiness pages */}
+                      <Route path="/pricing-inr" element={<PricingINR />} />
+                      <Route path="/launch-readiness" element={<LaunchReadiness />} />
                       
                       {/* Footer pages */}
                       <Route path="/about" element={<About />} />

@@ -3,44 +3,50 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
-import { CheckCircle, ArrowRight } from 'lucide-react';
+import { CheckCircle, ArrowRight, IndianRupee } from 'lucide-react';
 
 const PRICING_TIERS = [
   {
     name: "Smart Contract Audit",
     price: "From $2,500",
+    priceINR: "From ₹2,08,250",
     description: "Perfect for individual contracts",
     features: [
       "Manual security review",
       "Automated vulnerability scanning", 
       "Detailed security report",
-      "Remediation guidance"
+      "Remediation guidance",
+      "5-7 day delivery"
     ],
     popular: false
   },
   {
     name: "Protocol Audit",
-    price: "From $15,000", 
+    price: "From $15,000",
+    priceINR: "From ₹12,49,500", 
     description: "Comprehensive for DeFi protocols",
     features: [
       "Multi-contract audit",
       "Economic model review",
       "Gas optimization",
       "Post-audit support",
-      "Priority matching"
+      "Priority matching",
+      "3-5 day delivery"
     ],
     popular: true
   },
   {
     name: "Enterprise Security",
     price: "Custom",
+    priceINR: "Custom Pricing",
     description: "End-to-end security solutions",
     features: [
       "Continuous monitoring",
       "Dedicated security team",
       "Custom security frameworks",
       "Compliance assistance",
-      "24/7 support"
+      "24/7 support",
+      "1-3 day delivery"
     ],
     popular: false
   }
@@ -53,7 +59,7 @@ export function PricingPreview() {
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">Transparent Pricing</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            No hidden fees. Pay only when you're satisfied with the audit results.
+            Professional Web3 security audits with clear pricing. No hidden fees.
           </p>
         </div>
 
@@ -74,7 +80,11 @@ export function PricingPreview() {
               <CardContent className="p-6">
                 <div className="text-center mb-6">
                   <h3 className="text-xl font-bold mb-2">{tier.name}</h3>
-                  <div className="text-3xl font-bold text-primary mb-2">{tier.price}</div>
+                  <div className="text-2xl font-bold text-primary mb-1">{tier.price}</div>
+                  <div className="flex items-center justify-center text-lg text-muted-foreground mb-2">
+                    <IndianRupee className="h-4 w-4 mr-1" />
+                    {tier.priceINR}
+                  </div>
                   <p className="text-muted-foreground text-sm">{tier.description}</p>
                 </div>
 
