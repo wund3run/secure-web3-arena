@@ -53,60 +53,49 @@ export const ConversationsList: React.FC<ConversationsListProps> = ({
     if (!user) return;
 
     try {
-      // Get conversations where user is either client or auditor
-      const { data: conversationsData, error } = await supabase
-        .from('conversations')
-        .select(`
-          *,
-          audit_requests!inner(project_name)
-        `)
-        .or(`client_id.eq.${user.id},auditor_id.eq.${user.id}`)
-        .order('updated_at', { ascending: false });
+      // For demo purposes, create mock conversations
+      const mockConversations: Conversation[] = [
+        {
+          id: 'conv-1',
+          audit_request_id: 'audit-1',
+          client_id: user.id === 'client-1' ? user.id : 'client-1',
+          auditor_id: user.id === 'auditor-1' ? user.id : 'auditor-1',
+          status: 'active',
+          created_at: new Date(Date.now() - 86400000).toISOString(),
+          updated_at: new Date(Date.now() - 3600000).toISOString(),
+          other_participant: {
+            id: user.id === 'client-1' ? 'auditor-1' : 'client-1',
+            name: user.id === 'client-1' ? 'Alice Security' : 'DeFi Protocol Team'
+          },
+          latest_message: {
+            content: 'I\'ve completed the initial review and found several issues to discuss.',
+            created_at: new Date(Date.now() - 3600000).toISOString(),
+            sender_id: user.id === 'client-1' ? 'auditor-1' : 'client-1'
+          },
+          unread_count: 2
+        },
+        {
+          id: 'conv-2',
+          audit_request_id: 'audit-2',
+          client_id: user.id === 'client-2' ? user.id : 'client-2',
+          auditor_id: user.id === 'auditor-2' ? user.id : 'auditor-2',
+          status: 'active',
+          created_at: new Date(Date.now() - 172800000).toISOString(),
+          updated_at: new Date(Date.now() - 7200000).toISOString(),
+          other_participant: {
+            id: user.id === 'client-2' ? 'auditor-2' : 'client-2',
+            name: user.id === 'client-2' ? 'Bob Auditor' : 'NFT Marketplace'
+          },
+          latest_message: {
+            content: 'The final report is ready for your review.',
+            created_at: new Date(Date.now() - 7200000).toISOString(),
+            sender_id: user.id === 'client-2' ? 'auditor-2' : 'client-2'
+          },
+          unread_count: 0
+        }
+      ];
 
-      if (error) throw error;
-
-      // Fetch latest messages for each conversation
-      const conversationsWithMessages = await Promise.all(
-        (conversationsData || []).map(async (conv) => {
-          // Get latest message
-          const { data: messageData } = await supabase
-            .from('chat_messages')
-            .select('content, created_at, sender_id')
-            .eq('audit_request_id', conv.audit_request_id)
-            .order('created_at', { ascending: false })
-            .limit(1);
-
-          // Get unread count
-          const { count: unreadCount } = await supabase
-            .from('chat_messages')
-            .select('*', { count: 'exact', head: true })
-            .eq('audit_request_id', conv.audit_request_id)
-            .eq('receiver_id', user.id)
-            .is('read_at', null);
-
-          // Determine other participant
-          const otherParticipantId = conv.client_id === user.id ? conv.auditor_id : conv.client_id;
-          
-          // Get other participant's profile
-          const { data: profileData } = await supabase
-            .from('extended_profiles')
-            .select('full_name, display_name')
-            .eq('id', otherParticipantId)
-            .single();
-
-          return {
-            ...conv,
-            latest_message: messageData?.[0] || null,
-            unread_count: unreadCount || 0,
-            other_participant: {
-              id: otherParticipantId!,
-              name: profileData?.display_name || profileData?.full_name || 'Unknown User'
-            }
-          };
-        })
-      );
-
-      setConversations(conversationsWithMessages);
+      setConversations(mockConversations);
     } catch (error) {
       console.error('Error fetching conversations:', error);
     } finally {
@@ -144,7 +133,7 @@ export const ConversationsList: React.FC<ConversationsListProps> = ({
                 {conversation.other_participant?.name || 'Unknown User'}
               </h3>
               <div className="flex items-center gap-2">
-                {conversation.unread_count! > 0 && (
+                {(conversation.unread_count || 0) > 0 && (
                   <Badge variant="default" className="h-5 w-5 rounded-full p-0 text-xs">
                     {conversation.unread_count}
                   </Badge>

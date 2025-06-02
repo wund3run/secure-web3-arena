@@ -58,7 +58,7 @@ export const useAIMatching = () => {
         .from('auditor_profiles')
         .select(`
           *,
-          extended_profiles!inner(full_name, bio)
+          extended_profiles(full_name, bio)
         `)
         .eq('availability_status', 'available')
         .lt('current_audit_count', 'max_concurrent_audits');
@@ -70,7 +70,7 @@ export const useAIMatching = () => {
       for (const auditor of auditors || []) {
         // Calculate expertise match
         const blockchainMatch = auditor.blockchain_expertise?.includes(auditRequest.blockchain) ? 1.0 : 0.3;
-        const experienceScore = Math.min(auditor.years_experience / 5, 1.0); // Cap at 5 years for full score
+        const experienceScore = Math.min(auditor.years_experience / 5, 1.0);
         const expertiseMatch = (blockchainMatch + experienceScore) / 2;
 
         // Calculate availability score
@@ -80,7 +80,7 @@ export const useAIMatching = () => {
         // Calculate budget compatibility
         const budgetMin = auditor.hourly_rate_min || 0;
         const budgetMax = auditor.hourly_rate_max || budgetMin * 2;
-        const estimatedCost = (budgetMin + budgetMax) / 2 * 40; // Assume 40 hours
+        const estimatedCost = (budgetMin + budgetMax) / 2 * 40;
         const budgetCompatibility = auditRequest.budget >= estimatedCost ? 1.0 : auditRequest.budget / estimatedCost;
 
         // Calculate timeline feasibility
@@ -90,7 +90,7 @@ export const useAIMatching = () => {
 
         // Calculate reputation weight
         const successRate = auditor.success_rate || 1.0;
-        const ratingScore = (auditor.hourly_rate_min || 0) > 0 ? 1.0 : 0.8; // Prefer auditors with set rates
+        const ratingScore = (auditor.hourly_rate_min || 0) > 0 ? 1.0 : 0.8;
         const reputationWeight = (successRate + ratingScore) / 2;
 
         // Calculate overall compatibility score
@@ -120,25 +120,25 @@ export const useAIMatching = () => {
             specialization_tags: auditor.specialization_tags || [],
             hourly_rate_min: auditor.hourly_rate_min || 0,
             hourly_rate_max: auditor.hourly_rate_max || 0,
-            average_rating: 4.5, // Mock data
+            average_rating: 4.5,
             total_audits_completed: auditor.total_audits_completed || 0,
           }
         };
 
         scores.push(score);
 
-        // Store in database
+        // Store in database using correct column names
         await supabase
           .from('ai_matching_scores')
           .upsert({
             audit_request_id: auditRequestId,
             auditor_id: auditor.user_id,
-            compatibility_score: compatibilityScore,
-            expertise_match: expertiseMatch,
+            overall_score: compatibilityScore,
+            expertise_score: expertiseMatch,
             availability_score: availabilityScore,
-            budget_compatibility: budgetCompatibility,
-            timeline_feasibility: timelineFeasibility,
-            reputation_weight: reputationWeight,
+            budget_compatibility_score: budgetCompatibility,
+            timeline_compatibility_score: timelineFeasibility,
+            past_performance_score: reputationWeight,
           });
       }
 
@@ -164,22 +164,22 @@ export const useAIMatching = () => {
         .from('ai_matching_scores')
         .select(`
           *,
-          auditor_profiles!inner(*, extended_profiles!inner(full_name, bio))
+          auditor_profiles(*, extended_profiles(full_name, bio))
         `)
         .eq('audit_request_id', auditRequestId)
-        .order('compatibility_score', { ascending: false });
+        .order('overall_score', { ascending: false });
 
       if (error) throw error;
 
       const formattedResults: MatchingScore[] = (data || []).map(item => ({
         id: item.id,
         auditor_id: item.auditor_id,
-        compatibility_score: item.compatibility_score,
-        expertise_match: item.expertise_match,
+        compatibility_score: item.overall_score,
+        expertise_match: item.expertise_score,
         availability_score: item.availability_score,
-        budget_compatibility: item.budget_compatibility,
-        timeline_feasibility: item.timeline_feasibility,
-        reputation_weight: item.reputation_weight,
+        budget_compatibility: item.budget_compatibility_score,
+        timeline_feasibility: item.timeline_compatibility_score,
+        reputation_weight: item.past_performance_score,
         calculated_at: item.calculated_at,
         auditor_profile: {
           full_name: item.auditor_profiles?.extended_profiles?.full_name || 'Anonymous Auditor',
@@ -189,7 +189,7 @@ export const useAIMatching = () => {
           specialization_tags: item.auditor_profiles?.specialization_tags || [],
           hourly_rate_min: item.auditor_profiles?.hourly_rate_min || 0,
           hourly_rate_max: item.auditor_profiles?.hourly_rate_max || 0,
-          average_rating: 4.5, // Mock data
+          average_rating: 4.5,
           total_audits_completed: item.auditor_profiles?.total_audits_completed || 0,
         }
       }));

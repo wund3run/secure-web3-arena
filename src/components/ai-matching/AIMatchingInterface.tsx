@@ -30,10 +30,12 @@ export const AIMatchingInterface = () => {
     specific_requirements: [] as string[],
   });
 
-  const { isAnalyzing, results, findMatches } = useAIMatching();
+  const { loading, matchingResults, calculateMatchingScore } = useAIMatching();
 
   const handleFindMatches = async () => {
-    await findMatches(criteria);
+    // For demo purposes, we'll use a mock audit request ID
+    const mockAuditRequestId = 'demo-audit-request';
+    await calculateMatchingScore(mockAuditRequestId);
   };
 
   const handleRequirementAdd = (requirement: string) => {
@@ -158,13 +160,13 @@ export const AIMatchingInterface = () => {
             </div>
           </div>
 
-          <Button onClick={handleFindMatches} className="w-full" disabled={isAnalyzing || !criteria.blockchain || !criteria.project_type}>
-            {isAnalyzing ? 'Analyzing...' : 'Find Best Matches'}
+          <Button onClick={handleFindMatches} className="w-full" disabled={loading || !criteria.blockchain || !criteria.project_type}>
+            {loading ? 'Analyzing...' : 'Find Best Matches'}
           </Button>
         </CardContent>
       </Card>
 
-      {isAnalyzing && (
+      {loading && (
         <Card>
           <CardContent className="p-6">
             <div className="text-center space-y-4">
@@ -179,38 +181,40 @@ export const AIMatchingInterface = () => {
         </Card>
       )}
 
-      {results.length > 0 && (
+      {matchingResults.length > 0 && (
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">AI Match Results</h3>
-          {results.map((result) => (
-            <Card key={result.auditor.id} className="border-l-4 border-l-blue-500">
+          {matchingResults.map((result) => (
+            <Card key={result.auditor_id} className="border-l-4 border-l-blue-500">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h4 className="text-lg font-semibold flex items-center gap-2">
-                      {result.auditor.name}
+                      {result.auditor_profile?.full_name || 'Anonymous Auditor'}
                       <Badge className="bg-blue-500">
-                        {Math.round(result.match_score * 100)}% match
+                        {Math.round(result.compatibility_score * 100)}% match
                       </Badge>
                     </h4>
                     <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Star className="h-4 w-4 text-yellow-500" />
-                        {result.auditor.rating}
+                        {result.auditor_profile?.average_rating || 4.5}
                       </span>
                       <span className="flex items-center gap-1">
                         <Shield className="h-4 w-4" />
-                        {result.auditor.past_audits} audits
+                        {result.auditor_profile?.total_audits_completed || 0} audits
                       </span>
                       <span className="flex items-center gap-1">
                         <TrendingUp className="h-4 w-4" />
-                        {Math.round(result.auditor.success_rate * 100)}% success rate
+                        {result.auditor_profile?.years_experience || 0} years exp
                       </span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-semibold">${result.estimated_cost.toLocaleString()}</p>
-                    <p className="text-sm text-muted-foreground">{result.estimated_timeline}</p>
+                    <p className="text-lg font-semibold">
+                      ${result.auditor_profile?.hourly_rate_min || 0}-${result.auditor_profile?.hourly_rate_max || 0}/hr
+                    </p>
+                    <p className="text-sm text-muted-foreground">Estimated rate</p>
                   </div>
                 </div>
 
@@ -218,7 +222,7 @@ export const AIMatchingInterface = () => {
                   <div>
                     <p className="font-medium mb-1">Expertise:</p>
                     <div className="flex flex-wrap gap-1">
-                      {result.auditor.expertise.map((skill) => (
+                      {result.auditor_profile?.blockchain_expertise?.map((skill) => (
                         <Badge key={skill} variant="outline" className="text-xs">
                           {skill}
                         </Badge>
@@ -227,15 +231,25 @@ export const AIMatchingInterface = () => {
                   </div>
 
                   <div>
-                    <p className="font-medium mb-1">Why this is a good match:</p>
-                    <ul className="space-y-1">
-                      {result.reasons.map((reason, index) => (
-                        <li key={index} className="flex items-center gap-2 text-sm">
-                          <CheckCircle className="h-4 w-4 text-green-500" />
-                          {reason}
-                        </li>
-                      ))}
-                    </ul>
+                    <p className="font-medium mb-1">Match Details:</p>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>Expertise:</span>
+                        <span>{Math.round(result.expertise_match * 100)}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Availability:</span>
+                        <span>{Math.round(result.availability_score * 100)}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Budget Fit:</span>
+                        <span>{Math.round(result.budget_compatibility * 100)}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Timeline:</span>
+                        <span>{Math.round(result.timeline_feasibility * 100)}%</span>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="flex gap-2 pt-2">

@@ -8,7 +8,7 @@ export interface ChatMessage {
   id: string;
   sender_id: string;
   receiver_id: string;
-  audit_request_id?: string;
+  conversation_id?: string;
   content: string;
   message_type: string;
   file_attachments: any[];
@@ -41,7 +41,23 @@ export const useRealtimeMessages = ({ conversationId, receiverId }: UseRealtimeM
         .order('created_at', { ascending: true });
 
       if (error) throw error;
-      setMessages(data || []);
+      
+      // Transform the data to match our interface
+      const transformedMessages: ChatMessage[] = (data || []).map(msg => ({
+        id: msg.id,
+        sender_id: msg.sender_id,
+        receiver_id: msg.receiver_id,
+        conversation_id: msg.conversation_id,
+        content: msg.content,
+        message_type: msg.message_type,
+        file_attachments: Array.isArray(msg.file_attachments) ? msg.file_attachments : [],
+        read_at: msg.read_at,
+        reply_to_id: msg.reply_to_id,
+        created_at: msg.created_at,
+        updated_at: msg.updated_at,
+      }));
+      
+      setMessages(transformedMessages);
     } catch (error) {
       console.error('Error fetching messages:', error);
       toast.error('Failed to load messages');
@@ -68,7 +84,7 @@ export const useRealtimeMessages = ({ conversationId, receiverId }: UseRealtimeM
           message_type: messageType,
           file_attachments: attachments,
           reply_to_id: replyToId,
-          audit_request_id: conversationId
+          conversation_id: conversationId
         });
 
       if (error) throw error;
@@ -97,7 +113,6 @@ export const useRealtimeMessages = ({ conversationId, receiverId }: UseRealtimeM
   const sendTypingIndicator = useCallback((isTyping: boolean) => {
     if (!user || !receiverId) return;
 
-    // Use Supabase realtime presence for typing indicators
     const channel = supabase.channel(`typing_${conversationId}`);
     
     if (isTyping) {
@@ -126,7 +141,20 @@ export const useRealtimeMessages = ({ conversationId, receiverId }: UseRealtimeM
         table: 'chat_messages',
         filter: `or(and(sender_id.eq.${user.id},receiver_id.eq.${receiverId}),and(sender_id.eq.${receiverId},receiver_id.eq.${user.id}))`
       }, (payload) => {
-        setMessages(prev => [...prev, payload.new as ChatMessage]);
+        const newMessage: ChatMessage = {
+          id: payload.new.id,
+          sender_id: payload.new.sender_id,
+          receiver_id: payload.new.receiver_id,
+          conversation_id: payload.new.conversation_id,
+          content: payload.new.content,
+          message_type: payload.new.message_type,
+          file_attachments: Array.isArray(payload.new.file_attachments) ? payload.new.file_attachments : [],
+          read_at: payload.new.read_at,
+          reply_to_id: payload.new.reply_to_id,
+          created_at: payload.new.created_at,
+          updated_at: payload.new.updated_at,
+        };
+        setMessages(prev => [...prev, newMessage]);
       })
       .on('postgres_changes', {
         event: 'UPDATE',
@@ -134,8 +162,21 @@ export const useRealtimeMessages = ({ conversationId, receiverId }: UseRealtimeM
         table: 'chat_messages',
         filter: `or(and(sender_id.eq.${user.id},receiver_id.eq.${receiverId}),and(sender_id.eq.${receiverId},receiver_id.eq.${user.id}))`
       }, (payload) => {
+        const updatedMessage: ChatMessage = {
+          id: payload.new.id,
+          sender_id: payload.new.sender_id,
+          receiver_id: payload.new.receiver_id,
+          conversation_id: payload.new.conversation_id,
+          content: payload.new.content,
+          message_type: payload.new.message_type,
+          file_attachments: Array.isArray(payload.new.file_attachments) ? payload.new.file_attachments : [],
+          read_at: payload.new.read_at,
+          reply_to_id: payload.new.reply_to_id,
+          created_at: payload.new.created_at,
+          updated_at: payload.new.updated_at,
+        };
         setMessages(prev => prev.map(msg => 
-          msg.id === payload.new.id ? payload.new as ChatMessage : msg
+          msg.id === updatedMessage.id ? updatedMessage : msg
         ));
       })
       .subscribe((status) => {

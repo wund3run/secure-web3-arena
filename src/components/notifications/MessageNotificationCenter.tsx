@@ -19,7 +19,7 @@ interface MessageNotification {
   message?: {
     content: string;
     sender_id: string;
-    audit_request_id: string;
+    conversation_id: string;
     sender_profile?: {
       full_name: string;
     };
@@ -49,7 +49,7 @@ export const MessageNotificationCenter: React.FC = () => {
           chat_messages!inner(
             content,
             sender_id,
-            audit_request_id,
+            conversation_id,
             extended_profiles!inner(full_name)
           )
         `)
@@ -64,7 +64,7 @@ export const MessageNotificationCenter: React.FC = () => {
         message: {
           content: notification.chat_messages.content,
           sender_id: notification.chat_messages.sender_id,
-          audit_request_id: notification.chat_messages.audit_request_id,
+          conversation_id: notification.chat_messages.conversation_id,
           sender_profile: {
             full_name: notification.chat_messages.extended_profiles?.full_name || 'Unknown User'
           }
