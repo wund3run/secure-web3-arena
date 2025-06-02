@@ -18,7 +18,12 @@ const AuditDetails = React.lazy(() => import("@/pages/AuditDetails"));
 const Audits = React.lazy(() => import("@/pages/Audits"));
 const Settings = React.lazy(() => import("@/pages/Settings"));
 
-// Add the new pages
+// Enhanced pages
+const EnhancedRequestAudit = React.lazy(() => import("@/pages/EnhancedRequestAudit"));
+const EnhancedMarketplace = React.lazy(() => import("@/pages/EnhancedMarketplace"));
+const EnhancedAuth = React.lazy(() => import("@/pages/EnhancedAuth"));
+
+// Footer pages
 const About = React.lazy(() => import("@/pages/About"));
 const Contact = React.lazy(() => import("@/pages/Contact"));
 const Careers = React.lazy(() => import("@/pages/Careers"));
@@ -80,7 +85,12 @@ function App() {
                     <Route path="/audits" element={<Audits />} />
                     <Route path="/settings" element={<Settings />} />
                     
-                    {/* New footer pages */}
+                    {/* Enhanced pages with better UX */}
+                    <Route path="/enhanced-request-audit" element={<EnhancedRequestAudit />} />
+                    <Route path="/enhanced-marketplace" element={<EnhancedMarketplace />} />
+                    <Route path="/enhanced-auth" element={<EnhancedAuth />} />
+                    
+                    {/* Footer pages */}
                     <Route path="/about" element={<About />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/careers" element={<Careers />} />
