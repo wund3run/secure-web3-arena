@@ -1,3 +1,4 @@
+
 import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -40,6 +41,17 @@ const LaunchReadiness = React.lazy(() => import("@/pages/LaunchReadiness"));
 // Profile completion
 const ProfileCompletion = React.lazy(() => import("@/pages/ProfileCompletion"));
 
+// New pages for better navigation
+const Resources = React.lazy(() => import("@/pages/Resources"));
+const FAQ = React.lazy(() => import("@/pages/FAQ"));
+const Support = React.lazy(() => import("@/pages/Support"));
+
+// Production Dashboard
+const ProductionDashboard = React.lazy(() => import("@/pages/ProductionDashboard"));
+
+// Escrow page
+const Escrow = React.lazy(() => import("@/pages/Escrow"));
+
 // Enhanced loading fallback
 const AppLoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
@@ -55,11 +67,6 @@ const AppLoadingFallback = () => (
     </div>
   </div>
 );
-
-// New pages for better navigation
-const Resources = React.lazy(() => import("@/pages/Resources"));
-const FAQ = React.lazy(() => import("@/pages/FAQ"));
-const Support = React.lazy(() => import("@/pages/Support"));
 
 // Production-optimized query client
 const queryClient = new QueryClient({
@@ -120,6 +127,12 @@ function App() {
                       <Route path="/resources" element={<Resources />} />
                       <Route path="/faq" element={<FAQ />} />
                       <Route path="/support" element={<Support />} />
+                      
+                      {/* Production Dashboard */}
+                      <Route path="/production-dashboard" element={<ProductionDashboard />} />
+                      
+                      {/* Escrow Management */}
+                      <Route path="/escrow" element={<Escrow />} />
                       
                       {/* Footer pages */}
                       <Route path="/about" element={<About />} />

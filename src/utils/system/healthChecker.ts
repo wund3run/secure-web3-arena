@@ -1,121 +1,210 @@
 
+import { supabase } from '@/integrations/supabase/client';
 import { Logger } from '../logging/logger';
-import { CacheManager } from '../database/cacheManager';
-import { PerformanceMonitor } from '../monitoring/performanceMonitor';
 
-export interface HealthCheckResult {
-  component: string;
-  status: 'healthy' | 'degraded' | 'failed';
-  details?: any;
+interface HealthCheckResult {
+  service: string;
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  responseTime: number;
+  details?: string;
 }
 
 export class HealthChecker {
   static async performComprehensiveCheck(): Promise<{
-    overall: 'healthy' | 'degraded' | 'failed';
+    overall: 'healthy' | 'degraded' | 'unhealthy';
     results: HealthCheckResult[];
   }> {
-    const results: HealthCheckResult[] = [];
+    const checks = [
+      this.checkDatabase(),
+      this.checkAuth(),
+      this.checkAPI(),
+      this.checkStorage(),
+      this.checkRealtime()
+    ];
 
-    // Test cache system
-    results.push(await this.checkCacheSystem());
-
-    // Test performance monitoring
-    results.push(await this.checkPerformanceMonitoring());
-
-    // Test Supabase connection (simplified)
-    results.push(await this.checkSupabaseConnection());
-
-    // Determine overall health
-    const failed = results.filter(r => r.status === 'failed').length;
-    const degraded = results.filter(r => r.status === 'degraded').length;
-
-    let overall: 'healthy' | 'degraded' | 'failed' = 'healthy';
-    if (failed > 0) {
-      overall = 'failed';
-    } else if (degraded > 0) {
-      overall = 'degraded';
-    }
+    const results = await Promise.all(checks);
+    const overall = this.calculateOverallHealth(results);
 
     Logger.info('Health check completed', {
-      metadata: { 
-        overall, 
-        totalChecks: results.length,
-        failed,
-        degraded
-      }
-    }, 'system');
+      metadata: { overall, unhealthyServices: results.filter(r => r.status !== 'healthy').length }
+    }, 'health');
 
     return { overall, results };
   }
 
-  private static async checkCacheSystem(): Promise<HealthCheckResult> {
+  private static async checkDatabase(): Promise<HealthCheckResult> {
+    const startTime = performance.now();
+    
     try {
-      const testKey = 'health_check_test';
-      const testValue = 'test_value';
+      const { error } = await supabase
+        .from('extended_profiles')
+        .select('id')
+        .limit(1);
 
-      CacheManager.set(testKey, testValue, { ttl: 1 });
-      const retrieved = await CacheManager.get(testKey);
-      CacheManager.invalidate(testKey);
+      const responseTime = performance.now() - startTime;
 
-      if (retrieved === testValue) {
+      if (error) {
         return {
-          component: 'cache_system',
-          status: 'healthy',
-          details: { test: 'passed' }
-        };
-      } else {
-        return {
-          component: 'cache_system',
-          status: 'failed',
-          details: { test: 'cache_retrieval_failed' }
+          service: 'database',
+          status: 'unhealthy',
+          responseTime,
+          details: error.message
         };
       }
+
+      return {
+        service: 'database',
+        status: responseTime < 500 ? 'healthy' : 'degraded',
+        responseTime
+      };
     } catch (error) {
       return {
-        component: 'cache_system',
-        status: 'failed',
-        details: { error: error instanceof Error ? error.message : 'Unknown error' }
+        service: 'database',
+        status: 'unhealthy',
+        responseTime: performance.now() - startTime,
+        details: error instanceof Error ? error.message : 'Unknown error'
       };
     }
   }
 
-  private static async checkPerformanceMonitoring(): Promise<HealthCheckResult> {
+  private static async checkAuth(): Promise<HealthCheckResult> {
+    const startTime = performance.now();
+    
     try {
-      PerformanceMonitor.recordMetric({
-        name: 'health_check_test',
-        value: 1,
-        unit: 'count',
-        category: 'timing'
+      const { data, error } = await supabase.auth.getSession();
+      const responseTime = performance.now() - startTime;
+
+      if (error) {
+        return {
+          service: 'authentication',
+          status: 'degraded',
+          responseTime,
+          details: error.message
+        };
+      }
+
+      return {
+        service: 'authentication',
+        status: 'healthy',
+        responseTime
+      };
+    } catch (error) {
+      return {
+        service: 'authentication',
+        status: 'unhealthy',
+        responseTime: performance.now() - startTime,
+        details: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  private static async checkAPI(): Promise<HealthCheckResult> {
+    const startTime = performance.now();
+    
+    try {
+      // Test a simple API call
+      const response = await fetch('/api/health', { method: 'HEAD' });
+      const responseTime = performance.now() - startTime;
+
+      if (!response.ok && response.status !== 404) {
+        return {
+          service: 'api',
+          status: 'degraded',
+          responseTime,
+          details: `HTTP ${response.status}`
+        };
+      }
+
+      return {
+        service: 'api',
+        status: responseTime < 1000 ? 'healthy' : 'degraded',
+        responseTime
+      };
+    } catch (error) {
+      return {
+        service: 'api',
+        status: 'unhealthy',
+        responseTime: performance.now() - startTime,
+        details: error instanceof Error ? error.message : 'Network error'
+      };
+    }
+  }
+
+  private static async checkStorage(): Promise<HealthCheckResult> {
+    const startTime = performance.now();
+    
+    try {
+      // Test storage connectivity
+      const { data, error } = await supabase.storage.listBuckets();
+      const responseTime = performance.now() - startTime;
+
+      if (error) {
+        return {
+          service: 'storage',
+          status: 'degraded',
+          responseTime,
+          details: error.message
+        };
+      }
+
+      return {
+        service: 'storage',
+        status: 'healthy',
+        responseTime
+      };
+    } catch (error) {
+      return {
+        service: 'storage',
+        status: 'unhealthy',
+        responseTime: performance.now() - startTime,
+        details: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  private static async checkRealtime(): Promise<HealthCheckResult> {
+    const startTime = performance.now();
+    
+    try {
+      // Test realtime connection
+      const channel = supabase.channel('health-check');
+      const responseTime = performance.now() - startTime;
+
+      await new Promise<void>((resolve) => {
+        channel.subscribe((status) => {
+          if (status === 'SUBSCRIBED') {
+            resolve();
+          }
+        });
+        
+        // Timeout after 5 seconds
+        setTimeout(resolve, 5000);
       });
 
+      supabase.removeChannel(channel);
+
       return {
-        component: 'performance_monitoring',
-        status: 'healthy',
-        details: { test: 'metric_recorded' }
+        service: 'realtime',
+        status: responseTime < 2000 ? 'healthy' : 'degraded',
+        responseTime
       };
     } catch (error) {
       return {
-        component: 'performance_monitoring',
-        status: 'failed',
-        details: { error: error instanceof Error ? error.message : 'Unknown error' }
+        service: 'realtime',
+        status: 'unhealthy',
+        responseTime: performance.now() - startTime,
+        details: error instanceof Error ? error.message : 'Unknown error'
       };
     }
   }
 
-  private static async checkSupabaseConnection(): Promise<HealthCheckResult> {
-    try {
-      // Simple connectivity check - you would implement actual Supabase ping here
-      return {
-        component: 'supabase_connection',
-        status: 'healthy',
-        details: { test: 'connection_available' }
-      };
-    } catch (error) {
-      return {
-        component: 'supabase_connection',
-        status: 'failed',
-        details: { error: error instanceof Error ? error.message : 'Unknown error' }
-      };
-    }
+  private static calculateOverallHealth(results: HealthCheckResult[]): 'healthy' | 'degraded' | 'unhealthy' {
+    const unhealthyCount = results.filter(r => r.status === 'unhealthy').length;
+    const degradedCount = results.filter(r => r.status === 'degraded').length;
+
+    if (unhealthyCount > 0) return 'unhealthy';
+    if (degradedCount > 1) return 'degraded';
+    if (degradedCount > 0) return 'degraded';
+    return 'healthy';
   }
 }
