@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { AIMatchingInterface } from '@/components/ai-matching/AIMatchingInterface';
+import { RealisticAIMatching } from '@/components/ai-matching/RealisticAIMatching';
 import { AdvancedMatchingDashboard } from '@/components/ai-matching/AdvancedMatchingDashboard';
 import { IntelligentMatching } from '@/components/matching/intelligent-matching';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -58,23 +58,23 @@ const AIMatching = () => {
               </Card>
             </div>
 
-            <Tabs defaultValue="basic" className="space-y-6">
+            <Tabs defaultValue="realistic" className="space-y-6">
               <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="basic">Basic Matching</TabsTrigger>
+                <TabsTrigger value="realistic">Smart Matching</TabsTrigger>
                 <TabsTrigger value="advanced">Advanced AI</TabsTrigger>
-                <TabsTrigger value="intelligent">Intelligent Search</TabsTrigger>
+                <TabsTrigger value="intelligent">Browse Auditors</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="basic">
+              <TabsContent value="realistic">
                 <Card>
                   <CardHeader>
-                    <CardTitle>AI-Powered Auditor Matching</CardTitle>
+                    <CardTitle>Smart Auditor Matching</CardTitle>
                     <CardDescription>
-                      Find the perfect auditor using our intelligent matching system
+                      Find the perfect auditor using our intelligent matching system with real data
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <AIMatchingInterface />
+                    <RealisticAIMatching />
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -86,9 +86,9 @@ const AIMatching = () => {
               <TabsContent value="intelligent">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Intelligent Auditor Discovery</CardTitle>
+                    <CardTitle>Browse Top Auditors</CardTitle>
                     <CardDescription>
-                      Browse curated matches based on your project profile
+                      Explore our curated selection of verified security professionals
                     </CardDescription>
                   </CardHeader>
                   <CardContent>

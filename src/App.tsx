@@ -37,6 +37,25 @@ const MessagingPage = React.lazy(() => import("@/pages/MessagingPage"));
 const PricingINR = React.lazy(() => import("@/pages/PricingINR"));
 const LaunchReadiness = React.lazy(() => import("@/pages/LaunchReadiness"));
 
+// Profile completion
+const ProfileCompletion = React.lazy(() => import("@/pages/ProfileCompletion"));
+
+// Enhanced loading fallback
+const AppLoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="flex flex-col items-center space-y-4">
+      <img 
+        src="/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png" 
+        alt="Hawkly"
+        className="h-12 w-12"
+        loading="eager"
+      />
+      <div className="w-8 h-8 border-2 border-border border-t-primary rounded-full animate-spin" />
+      <p className="text-sm text-muted-foreground">Loading...</p>
+    </div>
+  </div>
+);
+
 // Production-optimized query client
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,22 +74,6 @@ const queryClient = new QueryClient({
     },
   },
 });
-
-// Enhanced loading fallback
-const AppLoadingFallback = () => (
-  <div className="min-h-screen flex items-center justify-center bg-background">
-    <div className="flex flex-col items-center space-y-4">
-      <img 
-        src="/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png" 
-        alt="Hawkly"
-        className="h-12 w-12"
-        loading="eager"
-      />
-      <div className="w-8 h-8 border-2 border-border border-t-primary rounded-full animate-spin" />
-      <p className="text-sm text-muted-foreground">Loading...</p>
-    </div>
-  </div>
-);
 
 function App() {
   return (
@@ -104,6 +107,9 @@ function App() {
                       {/* New launch readiness pages */}
                       <Route path="/pricing-inr" element={<PricingINR />} />
                       <Route path="/launch-readiness" element={<LaunchReadiness />} />
+                      
+                      {/* Profile completion */}
+                      <Route path="/profile-completion" element={<ProfileCompletion />} />
                       
                       {/* Footer pages */}
                       <Route path="/about" element={<About />} />
