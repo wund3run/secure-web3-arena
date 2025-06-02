@@ -62,6 +62,16 @@ const ProductionDashboard = React.lazy(() => import("@/pages/ProductionDashboard
 // Escrow page
 const Escrow = React.lazy(() => import("@/pages/Escrow"));
 
+// Add new lazy loaded components
+const CodeReviews = React.lazy(() => import("@/pages/CodeReviews"));
+const PenetrationTesting = React.lazy(() => import("@/pages/PenetrationTesting"));
+const Consulting = React.lazy(() => import("@/pages/Consulting"));
+const AITools = React.lazy(() => import("@/pages/AITools"));
+const VulnerabilityScanner = React.lazy(() => import("@/pages/VulnerabilityScanner"));
+const ServiceProviderOnboarding = React.lazy(() => import("@/pages/ServiceProviderOnboarding"));
+const DashboardAuditor = React.lazy(() => import("@/pages/DashboardAuditor"));
+const DashboardProject = React.lazy(() => import("@/pages/DashboardProject"));
+
 // Enhanced loading fallback
 const AppLoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
@@ -159,6 +169,25 @@ function App() {
                       
                       {/* Service Provider Pages */}
                       <Route path="/submit-service" element={<SubmitService />} />
+                      
+                      {/* NEW PAGES - Missing Service Pages */}
+                      <Route path="/code-reviews" element={<CodeReviews />} />
+                      <Route path="/penetration-testing" element={<PenetrationTesting />} />
+                      <Route path="/consulting" element={<Consulting />} />
+                      <Route path="/ai-tools" element={<AITools />} />
+                      <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
+                      <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
+                      
+                      {/* Dashboard Pages */}
+                      <Route path="/dashboard/auditor" element={<DashboardAuditor />} />
+                      <Route path="/dashboard/project" element={<DashboardProject />} />
+                      
+                      {/* Security Settings */}
+                      <Route path="/security-settings" element={<Settings />} />
+                      <Route path="/security-policy" element={<SecurityPolicy />} />
+                      
+                      {/* Pricing */}
+                      <Route path="/pricing" element={<Pricing />} />
                       
                       {/* Alias routes for common navigation patterns */}
                       <Route path="/security-insights" element={<Vulnerabilities />} />

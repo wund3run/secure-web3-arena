@@ -2,6 +2,7 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { SimplifiedNavbar } from "@/components/layout/simplified-navbar";
+import { Link } from "react-router-dom";
 
 export default function Marketplace() {
   return (
@@ -51,12 +52,12 @@ export default function Marketplace() {
             
             <div className="text-center mt-12">
               <p className="text-muted-foreground mb-4">Ready to secure your project?</p>
-              <a 
-                href="/request-audit" 
+              <Link 
+                to="/request-audit" 
                 className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
               >
                 Request Security Audit
-              </a>
+              </Link>
             </div>
           </div>
         </main>
