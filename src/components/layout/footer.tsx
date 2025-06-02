@@ -11,14 +11,14 @@ export function Footer() {
           <div className="flex items-start gap-3">
             <AlertCircle className="h-6 w-6 text-amber-500 flex-shrink-0 mt-1" />
             <div>
-              <h2 className="text-lg font-medium text-amber-800">Beta Platform Notice</h2>
+              <h2 className="text-lg font-medium text-amber-800">Beta Platform Notice - March 2025</h2>
               <p className="mt-1 text-amber-700">
-                Hawkly is currently in beta. While we continuously improve the platform, some features may not be fully operational or may contain bugs. 
+                Hawkly is currently in beta testing phase. While we continuously improve the platform, some features may not be fully operational. 
                 We appreciate your feedback during this phase. Please review our {" "}
                 <Link to="/terms" className="text-primary underline hover:text-primary/80">Terms of Service</Link>{" "}
                 and {" "}
-                <Link to="/security-policy" className="text-primary underline hover:text-primary/80">Security Policy</Link>{" "}
-                for limitations and capabilities.
+                <Link to="/privacy" className="text-primary underline hover:text-primary/80">Privacy Policy</Link>{" "}
+                for current limitations and capabilities.
               </p>
             </div>
           </div>
@@ -72,22 +72,10 @@ export function Footer() {
             <h3 className="font-medium mb-4 text-lg">MARKETPLACE</h3>
             <ul className="space-y-3">
               <li><Link to="/marketplace" className="text-muted-foreground hover:text-foreground">Browse Services</Link></li>
-              <li><Link to="/audits" className="text-muted-foreground hover:text-foreground">Find Auditors</Link></li>
-              <li><Link to="/submit-service" className="text-muted-foreground hover:text-foreground">Create Listing</Link></li>
-              <li><Link to="/request-audit" className="text-muted-foreground hover:text-foreground">Security Requests</Link></li>
-              <li><Link to="/pricing" className="text-muted-foreground hover:text-foreground">Pricing</Link></li>
-            </ul>
-          </div>
-          
-          {/* Community column */}
-          <div className="col-span-1">
-            <h3 className="font-medium mb-4 text-lg">COMMUNITY</h3>
-            <ul className="space-y-3">
-              <li><Link to="/community" className="text-muted-foreground hover:text-foreground">Join Community</Link></li>
-              <li><Link to="/forum" className="text-muted-foreground hover:text-foreground">Discussion Forum</Link></li>
-              <li><Link to="/events" className="text-muted-foreground hover:text-foreground">Events & Workshops</Link></li>
-              <li><Link to="/challenges" className="text-muted-foreground hover:text-foreground">Security Challenges</Link></li>
-              <li><Link to="/leaderboard" className="text-muted-foreground hover:text-foreground">Expert Leaderboard</Link></li>
+              <li><Link to="/audits" className="text-muted-foreground hover:text-foreground">Security Audits</Link></li>
+              <li><Link to="/request-audit" className="text-muted-foreground hover:text-foreground">Request Audit</Link></li>
+              <li><Link to="/pricing-inr" className="text-muted-foreground hover:text-foreground">Pricing (INR)</Link></li>
+              <li><Link to="/launch-readiness" className="text-muted-foreground hover:text-foreground">Launch Status</Link></li>
             </ul>
           </div>
           
@@ -95,11 +83,23 @@ export function Footer() {
           <div className="col-span-1">
             <h3 className="font-medium mb-4 text-lg">RESOURCES</h3>
             <ul className="space-y-3">
-              <li><Link to="/docs" className="text-muted-foreground hover:text-foreground">Documentation</Link></li>
-              <li><Link to="/blog" className="text-muted-foreground hover:text-foreground">Security Blog</Link></li>
-              <li><Link to="/vulnerabilities" className="text-muted-foreground hover:text-foreground">Vulnerability Database</Link></li>
-              <li><Link to="/resources" className="text-muted-foreground hover:text-foreground">Resource Center</Link></li>
+              <li><Link to="/resources" className="text-muted-foreground hover:text-foreground">Security Guides</Link></li>
+              <li><Link to="/security-insights" className="text-muted-foreground hover:text-foreground">Security Insights</Link></li>
+              <li><Link to="/faq" className="text-muted-foreground hover:text-foreground">FAQ</Link></li>
               <li><Link to="/support" className="text-muted-foreground hover:text-foreground">Support Center</Link></li>
+              <li><Link to="/about" className="text-muted-foreground hover:text-foreground">About Hawkly</Link></li>
+            </ul>
+          </div>
+          
+          {/* Company column */}
+          <div className="col-span-1">
+            <h3 className="font-medium mb-4 text-lg">COMPANY</h3>
+            <ul className="space-y-3">
+              <li><Link to="/community" className="text-muted-foreground hover:text-foreground">Join Community</Link></li>
+              <li><Link to="/careers" className="text-muted-foreground hover:text-foreground">Careers</Link></li>
+              <li><Link to="/contact" className="text-muted-foreground hover:text-foreground">Contact</Link></li>
+              <li><Link to="/terms" className="text-muted-foreground hover:text-foreground">Terms of Service</Link></li>
+              <li><Link to="/privacy" className="text-muted-foreground hover:text-foreground">Privacy Policy</Link></li>
             </ul>
           </div>
         </div>
@@ -107,7 +107,7 @@ export function Footer() {
         <div className="mt-12 pt-6 border-t border-border/40">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} Hawkly. All rights reserved.
+              &copy; {new Date().getFullYear()} Hawkly. All rights reserved. • Last updated: March 2025
             </div>
             <div className="flex flex-wrap justify-center gap-6">
               <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground">
@@ -121,9 +121,6 @@ export function Footer() {
               </Link>
               <Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground">
                 Privacy
-              </Link>
-              <Link to="/security-policy" className="text-sm text-muted-foreground hover:text-foreground">
-                Security Policy
               </Link>
               <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground">
                 Contact

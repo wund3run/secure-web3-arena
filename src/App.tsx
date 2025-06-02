@@ -56,6 +56,11 @@ const AppLoadingFallback = () => (
   </div>
 );
 
+// New pages for better navigation
+const Resources = React.lazy(() => import("@/pages/Resources"));
+const FAQ = React.lazy(() => import("@/pages/FAQ"));
+const Support = React.lazy(() => import("@/pages/Support"));
+
 // Production-optimized query client
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -110,6 +115,11 @@ function App() {
                       
                       {/* Profile completion */}
                       <Route path="/profile-completion" element={<ProfileCompletion />} />
+                      
+                      {/* New navigation support pages */}
+                      <Route path="/resources" element={<Resources />} />
+                      <Route path="/faq" element={<FAQ />} />
+                      <Route path="/support" element={<Support />} />
                       
                       {/* Footer pages */}
                       <Route path="/about" element={<About />} />
