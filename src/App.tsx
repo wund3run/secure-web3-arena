@@ -1,4 +1,3 @@
-
 import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -6,6 +5,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/auth";
+import { NotificationProvider } from "@/contexts/NotificationContext";
 
 // Lazy load pages
 const Index = React.lazy(() => import("@/pages/Index"));
@@ -74,50 +74,52 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="light" storageKey="hawkly-ui-theme">
           <AuthProvider>
-            <Router>
-              <div className="min-h-screen bg-background font-sans antialiased">
-                <Suspense fallback={<AppLoadingFallback />}>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/marketplace" element={<Marketplace />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/request-audit" element={<RequestAudit />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/audit/:id" element={<AuditDetails />} />
-                    <Route path="/audits" element={<Audits />} />
-                    <Route path="/settings" element={<Settings />} />
-                    
-                    {/* Enhanced pages with better UX */}
-                    <Route path="/enhanced-request-audit" element={<EnhancedRequestAudit />} />
-                    <Route path="/enhanced-marketplace" element={<EnhancedMarketplace />} />
-                    <Route path="/enhanced-auth" element={<EnhancedAuth />} />
-                    
-                    {/* Messaging */}
-                    <Route path="/messages" element={<MessagingPage />} />
-                    
-                    {/* Footer pages */}
-                    <Route path="/about" element={<About />} />
-                    <Route path="/contact" element={<Contact />} />
-                    <Route path="/careers" element={<Careers />} />
-                    <Route path="/terms" element={<Terms />} />
-                    <Route path="/privacy" element={<Privacy />} />
-                  </Routes>
-                </Suspense>
-                
-                <Toaster 
-                  position="top-right"
-                  toastOptions={{
-                    duration: 4000,
-                    style: {
-                      background: 'hsl(var(--background))',
-                      color: 'hsl(var(--foreground))',
-                      border: '1px solid hsl(var(--border))',
-                    },
-                  }}
-                />
-              </div>
-            </Router>
+            <NotificationProvider>
+              <Router>
+                <div className="min-h-screen bg-background font-sans antialiased">
+                  <Suspense fallback={<AppLoadingFallback />}>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/marketplace" element={<Marketplace />} />
+                      <Route path="/auth" element={<Auth />} />
+                      <Route path="/request-audit" element={<RequestAudit />} />
+                      <Route path="/profile" element={<Profile />} />
+                      <Route path="/audit/:id" element={<AuditDetails />} />
+                      <Route path="/audits" element={<Audits />} />
+                      <Route path="/settings" element={<Settings />} />
+                      
+                      {/* Enhanced pages with better UX */}
+                      <Route path="/enhanced-request-audit" element={<EnhancedRequestAudit />} />
+                      <Route path="/enhanced-marketplace" element={<EnhancedMarketplace />} />
+                      <Route path="/enhanced-auth" element={<EnhancedAuth />} />
+                      
+                      {/* Messaging */}
+                      <Route path="/messages" element={<MessagingPage />} />
+                      
+                      {/* Footer pages */}
+                      <Route path="/about" element={<About />} />
+                      <Route path="/contact" element={<Contact />} />
+                      <Route path="/careers" element={<Careers />} />
+                      <Route path="/terms" element={<Terms />} />
+                      <Route path="/privacy" element={<Privacy />} />
+                    </Routes>
+                  </Suspense>
+                  
+                  <Toaster 
+                    position="top-right"
+                    toastOptions={{
+                      duration: 4000,
+                      style: {
+                        background: 'hsl(var(--background))',
+                        color: 'hsl(var(--foreground))',
+                        border: '1px solid hsl(var(--border))',
+                      },
+                    }}
+                  />
+                </div>
+              </Router>
+            </NotificationProvider>
           </AuthProvider>
         </ThemeProvider>
       </QueryClientProvider>
