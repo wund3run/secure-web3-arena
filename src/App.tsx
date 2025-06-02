@@ -67,7 +67,7 @@ const Escrow = React.lazy(() => import("@/pages/Escrow"));
 const CodeReviews = React.lazy(() => import("@/pages/CodeReviews"));
 const PenetrationTesting = React.lazy(() => import("@/pages/PenetrationTesting"));
 const Consulting = React.lazy(() => import("@/pages/Consulting"));
-const AITools = React.lazy(() => import("@/pages/AITools"));
+const AiTools = React.lazy(() => import("@/pages/AiTools"));
 const VulnerabilityScanner = React.lazy(() => import("@/pages/VulnerabilityScanner"));
 const ServiceProviderOnboarding = React.lazy(() => import("@/pages/ServiceProviderOnboarding"));
 const DashboardAuditor = React.lazy(() => import("@/pages/DashboardAuditor"));
@@ -179,7 +179,7 @@ function App() {
                       <Route path="/code-reviews" element={<CodeReviews />} />
                       <Route path="/penetration-testing" element={<PenetrationTesting />} />
                       <Route path="/consulting" element={<Consulting />} />
-                      <Route path="/ai-tools" element={<AITools />} />
+                      <Route path="/ai-tools" element={<AiTools />} />
                       <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
                       <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
                       
