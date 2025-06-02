@@ -18,6 +18,13 @@ const AuditDetails = React.lazy(() => import("@/pages/AuditDetails"));
 const Audits = React.lazy(() => import("@/pages/Audits"));
 const Settings = React.lazy(() => import("@/pages/Settings"));
 
+// Add the new pages
+const About = React.lazy(() => import("@/pages/About"));
+const Contact = React.lazy(() => import("@/pages/Contact"));
+const Careers = React.lazy(() => import("@/pages/Careers"));
+const Terms = React.lazy(() => import("@/pages/Terms"));
+const Privacy = React.lazy(() => import("@/pages/Privacy"));
+
 // Production-optimized query client
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -72,6 +79,13 @@ function App() {
                     <Route path="/audit/:id" element={<AuditDetails />} />
                     <Route path="/audits" element={<Audits />} />
                     <Route path="/settings" element={<Settings />} />
+                    
+                    {/* New footer pages */}
+                    <Route path="/about" element={<About />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/careers" element={<Careers />} />
+                    <Route path="/terms" element={<Terms />} />
+                    <Route path="/privacy" element={<Privacy />} />
                   </Routes>
                 </Suspense>
                 
