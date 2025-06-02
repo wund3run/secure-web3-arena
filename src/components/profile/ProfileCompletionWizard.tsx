@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -49,12 +48,21 @@ export const ProfileCompletionWizard: React.FC = () => {
   const { user, userProfile, updateProfile } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  
+  // Helper function to get valid user type
+  const getValidUserType = (profileUserType?: string): 'auditor' | 'project_owner' => {
+    if (profileUserType === 'auditor' || profileUserType === 'project_owner') {
+      return profileUserType;
+    }
+    return 'project_owner'; // Default fallback
+  };
+
   const [profileData, setProfileData] = useState<ProfileData>({
     fullName: userProfile?.full_name || '',
     displayName: userProfile?.display_name || '',
     bio: userProfile?.bio || '',
     website: userProfile?.website || '',
-    userType: userProfile?.user_type || 'project_owner',
+    userType: getValidUserType(userProfile?.user_type),
     skills: userProfile?.skills || [],
     specializations: userProfile?.specializations || [],
     yearsExperience: userProfile?.years_of_experience || 0,
