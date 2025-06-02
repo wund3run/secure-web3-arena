@@ -30,6 +30,9 @@ const Careers = React.lazy(() => import("@/pages/Careers"));
 const Terms = React.lazy(() => import("@/pages/Terms"));
 const Privacy = React.lazy(() => import("@/pages/Privacy"));
 
+// Messaging page
+const MessagingPage = React.lazy(() => import("@/pages/MessagingPage"));
+
 // Production-optimized query client
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -89,6 +92,9 @@ function App() {
                     <Route path="/enhanced-request-audit" element={<EnhancedRequestAudit />} />
                     <Route path="/enhanced-marketplace" element={<EnhancedMarketplace />} />
                     <Route path="/enhanced-auth" element={<EnhancedAuth />} />
+                    
+                    {/* Messaging */}
+                    <Route path="/messages" element={<MessagingPage />} />
                     
                     {/* Footer pages */}
                     <Route path="/about" element={<About />} />

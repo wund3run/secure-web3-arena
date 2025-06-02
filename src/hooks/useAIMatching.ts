@@ -3,156 +3,211 @@ import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-interface AuditorProfile {
+export interface MatchingScore {
   id: string;
-  name: string;
-  expertise: string[];
-  experience_years: number;
-  rating: number;
-  hourly_rate: number;
-  availability: 'available' | 'busy' | 'unavailable';
-  specializations: string[];
-  past_audits: number;
-  success_rate: number;
+  auditor_id: string;
+  compatibility_score: number;
+  expertise_match: number;
+  availability_score: number;
+  budget_compatibility: number;
+  timeline_feasibility: number;
+  reputation_weight: number;
+  calculated_at: string;
+  auditor_profile?: {
+    full_name: string;
+    bio: string;
+    years_experience: number;
+    blockchain_expertise: string[];
+    specialization_tags: string[];
+    hourly_rate_min: number;
+    hourly_rate_max: number;
+    average_rating: number;
+    total_audits_completed: number;
+  };
 }
 
-interface MatchingCriteria {
+export interface AuditRequest {
+  id: string;
+  project_name: string;
   blockchain: string;
-  project_type: string;
-  budget_range: [number, number];
-  timeline: string;
-  complexity: 'low' | 'medium' | 'high';
-  specific_requirements: string[];
-}
-
-interface MatchingResult {
-  auditor: AuditorProfile;
-  match_score: number;
-  reasons: string[];
-  estimated_cost: number;
-  estimated_timeline: string;
+  budget: number;
+  deadline: string;
+  audit_scope: string;
+  contract_count: number;
+  lines_of_code: number;
 }
 
 export const useAIMatching = () => {
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [results, setResults] = useState<MatchingResult[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [matchingResults, setMatchingResults] = useState<MatchingScore[]>([]);
 
-  const findMatches = useCallback(async (criteria: MatchingCriteria): Promise<MatchingResult[]> => {
-    setIsAnalyzing(true);
-    
+  const calculateMatchingScore = useCallback(async (auditRequestId: string) => {
+    setLoading(true);
     try {
-      // Simulate AI matching algorithm with mock data
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const mockAuditors: AuditorProfile[] = [
-        {
-          id: '1',
-          name: 'Sarah Chen',
-          expertise: ['Solidity', 'DeFi', 'Smart Contracts'],
-          experience_years: 5,
-          rating: 4.9,
-          hourly_rate: 150,
-          availability: 'available',
-          specializations: ['DeFi Protocols', 'Layer 2 Solutions'],
-          past_audits: 45,
-          success_rate: 0.98,
-        },
-        {
-          id: '2',
-          name: 'Marcus Rodriguez',
-          expertise: ['Rust', 'Solana', 'Security Analysis'],
-          experience_years: 7,
-          rating: 4.8,
-          hourly_rate: 180,
-          availability: 'available',
-          specializations: ['Cross-chain Bridges', 'NFT Platforms'],
-          past_audits: 67,
-          success_rate: 0.96,
-        },
-        {
-          id: '3',
-          name: 'Dr. Emily Watson',
-          expertise: ['Cryptography', 'Formal Verification', 'Protocol Design'],
-          experience_years: 10,
-          rating: 5.0,
-          hourly_rate: 250,
-          availability: 'busy',
-          specializations: ['Core Protocol Audits', 'Cryptographic Implementations'],
-          past_audits: 89,
-          success_rate: 0.99,
-        },
-      ];
+      // Fetch audit request details
+      const { data: auditRequest, error: auditError } = await supabase
+        .from('audit_requests')
+        .select('*')
+        .eq('id', auditRequestId)
+        .single();
 
-      // AI matching algorithm simulation
-      const matchingResults: MatchingResult[] = mockAuditors.map(auditor => {
-        let matchScore = 0.7; // Base score
-        const reasons: string[] = [];
+      if (auditError) throw auditError;
 
-        // Blockchain expertise matching
-        if (auditor.expertise.some(exp => exp.toLowerCase().includes(criteria.blockchain.toLowerCase()))) {
-          matchScore += 0.15;
-          reasons.push(`Expertise in ${criteria.blockchain}`);
-        }
+      // Fetch available auditors
+      const { data: auditors, error: auditorsError } = await supabase
+        .from('auditor_profiles')
+        .select(`
+          *,
+          extended_profiles!inner(full_name, bio)
+        `)
+        .eq('availability_status', 'available')
+        .lt('current_audit_count', 'max_concurrent_audits');
 
-        // Experience weighting
-        if (auditor.experience_years >= 5) {
-          matchScore += 0.1;
-          reasons.push(`${auditor.experience_years} years of experience`);
-        }
+      if (auditorsError) throw auditorsError;
 
-        // Rating bonus
-        if (auditor.rating >= 4.8) {
-          matchScore += 0.05;
-          reasons.push(`High rating (${auditor.rating}/5.0)`);
-        }
+      const scores: MatchingScore[] = [];
 
-        // Availability check
-        if (auditor.availability === 'available') {
-          matchScore += 0.1;
-          reasons.push('Currently available');
-        } else if (auditor.availability === 'busy') {
-          matchScore -= 0.1;
-          reasons.push('Limited availability');
-        }
+      for (const auditor of auditors || []) {
+        // Calculate expertise match
+        const blockchainMatch = auditor.blockchain_expertise?.includes(auditRequest.blockchain) ? 1.0 : 0.3;
+        const experienceScore = Math.min(auditor.years_experience / 5, 1.0); // Cap at 5 years for full score
+        const expertiseMatch = (blockchainMatch + experienceScore) / 2;
 
-        // Budget matching
-        const estimatedCost = auditor.hourly_rate * 40; // Estimate 40 hours
-        if (estimatedCost <= criteria.budget_range[1] && estimatedCost >= criteria.budget_range[0]) {
-          matchScore += 0.1;
-          reasons.push('Within budget range');
-        }
+        // Calculate availability score
+        const capacityScore = (auditor.max_concurrent_audits - auditor.current_audit_count) / auditor.max_concurrent_audits;
+        const availabilityScore = capacityScore;
 
-        return {
-          auditor,
-          match_score: Math.min(matchScore, 1.0),
-          reasons,
-          estimated_cost: estimatedCost,
-          estimated_timeline: auditor.availability === 'available' ? '2-3 weeks' : '4-6 weeks',
+        // Calculate budget compatibility
+        const budgetMin = auditor.hourly_rate_min || 0;
+        const budgetMax = auditor.hourly_rate_max || budgetMin * 2;
+        const estimatedCost = (budgetMin + budgetMax) / 2 * 40; // Assume 40 hours
+        const budgetCompatibility = auditRequest.budget >= estimatedCost ? 1.0 : auditRequest.budget / estimatedCost;
+
+        // Calculate timeline feasibility
+        const avgCompletionTime = auditor.average_completion_time_days || 30;
+        const requestedDays = Math.ceil((new Date(auditRequest.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+        const timelineFeasibility = requestedDays >= avgCompletionTime ? 1.0 : requestedDays / avgCompletionTime;
+
+        // Calculate reputation weight
+        const successRate = auditor.success_rate || 1.0;
+        const ratingScore = (auditor.hourly_rate_min || 0) > 0 ? 1.0 : 0.8; // Prefer auditors with set rates
+        const reputationWeight = (successRate + ratingScore) / 2;
+
+        // Calculate overall compatibility score
+        const compatibilityScore = (
+          expertiseMatch * 0.3 +
+          availabilityScore * 0.2 +
+          budgetCompatibility * 0.2 +
+          timelineFeasibility * 0.15 +
+          reputationWeight * 0.15
+        );
+
+        const score: MatchingScore = {
+          id: `${auditRequestId}_${auditor.user_id}`,
+          auditor_id: auditor.user_id,
+          compatibility_score: compatibilityScore,
+          expertise_match: expertiseMatch,
+          availability_score: availabilityScore,
+          budget_compatibility: budgetCompatibility,
+          timeline_feasibility: timelineFeasibility,
+          reputation_weight: reputationWeight,
+          calculated_at: new Date().toISOString(),
+          auditor_profile: {
+            full_name: auditor.extended_profiles?.full_name || 'Anonymous Auditor',
+            bio: auditor.extended_profiles?.bio || '',
+            years_experience: auditor.years_experience,
+            blockchain_expertise: auditor.blockchain_expertise || [],
+            specialization_tags: auditor.specialization_tags || [],
+            hourly_rate_min: auditor.hourly_rate_min || 0,
+            hourly_rate_max: auditor.hourly_rate_max || 0,
+            average_rating: 4.5, // Mock data
+            total_audits_completed: auditor.total_audits_completed || 0,
+          }
         };
-      }).sort((a, b) => b.match_score - a.match_score);
 
-      setResults(matchingResults);
-      toast.success(`Found ${matchingResults.length} potential matches`);
-      
-      return matchingResults;
+        scores.push(score);
+
+        // Store in database
+        await supabase
+          .from('ai_matching_scores')
+          .upsert({
+            audit_request_id: auditRequestId,
+            auditor_id: auditor.user_id,
+            compatibility_score: compatibilityScore,
+            expertise_match: expertiseMatch,
+            availability_score: availabilityScore,
+            budget_compatibility: budgetCompatibility,
+            timeline_feasibility: timelineFeasibility,
+            reputation_weight: reputationWeight,
+          });
+      }
+
+      // Sort by compatibility score
+      scores.sort((a, b) => b.compatibility_score - a.compatibility_score);
+      setMatchingResults(scores);
+
+      toast.success(`Found ${scores.length} matching auditors`);
+      return scores;
+
     } catch (error) {
-      console.error('AI matching failed:', error);
-      toast.error('Failed to find matches');
+      console.error('Error calculating matching scores:', error);
+      toast.error('Failed to calculate matching scores');
       return [];
     } finally {
-      setIsAnalyzing(false);
+      setLoading(false);
     }
   }, []);
 
-  const refineMatches = useCallback(async (feedback: { auditorId: string; rating: number; notes: string }[]) => {
-    // In a real implementation, this would use machine learning to improve matching
-    toast.info('Thanks for your feedback! This will help improve future matches.');
+  const getMatchingResults = useCallback(async (auditRequestId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('ai_matching_scores')
+        .select(`
+          *,
+          auditor_profiles!inner(*, extended_profiles!inner(full_name, bio))
+        `)
+        .eq('audit_request_id', auditRequestId)
+        .order('compatibility_score', { ascending: false });
+
+      if (error) throw error;
+
+      const formattedResults: MatchingScore[] = (data || []).map(item => ({
+        id: item.id,
+        auditor_id: item.auditor_id,
+        compatibility_score: item.compatibility_score,
+        expertise_match: item.expertise_match,
+        availability_score: item.availability_score,
+        budget_compatibility: item.budget_compatibility,
+        timeline_feasibility: item.timeline_feasibility,
+        reputation_weight: item.reputation_weight,
+        calculated_at: item.calculated_at,
+        auditor_profile: {
+          full_name: item.auditor_profiles?.extended_profiles?.full_name || 'Anonymous Auditor',
+          bio: item.auditor_profiles?.extended_profiles?.bio || '',
+          years_experience: item.auditor_profiles?.years_experience || 0,
+          blockchain_expertise: item.auditor_profiles?.blockchain_expertise || [],
+          specialization_tags: item.auditor_profiles?.specialization_tags || [],
+          hourly_rate_min: item.auditor_profiles?.hourly_rate_min || 0,
+          hourly_rate_max: item.auditor_profiles?.hourly_rate_max || 0,
+          average_rating: 4.5, // Mock data
+          total_audits_completed: item.auditor_profiles?.total_audits_completed || 0,
+        }
+      }));
+
+      setMatchingResults(formattedResults);
+      return formattedResults;
+
+    } catch (error) {
+      console.error('Error fetching matching results:', error);
+      toast.error('Failed to load matching results');
+      return [];
+    }
   }, []);
 
   return {
-    isAnalyzing,
-    results,
-    findMatches,
-    refineMatches,
+    loading,
+    matchingResults,
+    calculateMatchingScore,
+    getMatchingResults,
   };
 };

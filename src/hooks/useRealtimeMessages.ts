@@ -1,126 +1,85 @@
 
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/auth';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 export interface ChatMessage {
   id: string;
-  conversation_id: string;
   sender_id: string;
   receiver_id: string;
+  audit_request_id?: string;
   content: string;
-  message_type: 'text' | 'file' | 'milestone_update' | 'system';
-  file_attachments: Array<{
-    name: string;
-    url: string;
-    type: string;
-    size: number;
-  }>;
-  read_at?: string;
+  message_type: string;
+  file_attachments: any[];
+  read_at: string | null;
   reply_to_id?: string;
   created_at: string;
   updated_at: string;
 }
 
-export interface MessageNotification {
-  id: string;
-  user_id: string;
-  message_id: string;
-  notification_type: 'message' | 'file_shared' | 'milestone_update' | 'audit_update';
-  is_read: boolean;
-  sent_at: string;
-  read_at?: string;
-  delivery_status: 'pending' | 'sent' | 'delivered' | 'failed';
-  created_at: string;
-}
-
 interface UseRealtimeMessagesProps {
   conversationId: string;
-  receiverId?: string;
+  receiverId: string;
 }
 
 export const useRealtimeMessages = ({ conversationId, receiverId }: UseRealtimeMessagesProps) => {
   const { user } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [typingUsers, setTypingUsers] = useState<string[]>([]);
 
-  // Fetch initial messages
   const fetchMessages = useCallback(async () => {
-    if (!user || !conversationId) return;
+    if (!user || !receiverId) return;
 
     try {
-      setLoading(true);
       const { data, error } = await supabase
         .from('chat_messages')
         .select('*')
-        .eq('conversation_id', conversationId)
+        .or(`and(sender_id.eq.${user.id},receiver_id.eq.${receiverId}),and(sender_id.eq.${receiverId},receiver_id.eq.${user.id})`)
         .order('created_at', { ascending: true });
 
       if (error) throw error;
-      
-      // Type the data properly by ensuring the types match our interface
-      const typedMessages: ChatMessage[] = (data || []).map(item => ({
-        id: item.id,
-        conversation_id: item.conversation_id,
-        sender_id: item.sender_id,
-        receiver_id: item.receiver_id,
-        content: item.content,
-        message_type: item.message_type as ChatMessage['message_type'],
-        file_attachments: Array.isArray(item.file_attachments) ? item.file_attachments as ChatMessage['file_attachments'] : [],
-        read_at: item.read_at,
-        reply_to_id: item.reply_to_id,
-        created_at: item.created_at,
-        updated_at: item.updated_at
-      }));
-      
-      setMessages(typedMessages);
-    } catch (err: any) {
-      setError(err.message);
+      setMessages(data || []);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
       toast.error('Failed to load messages');
     } finally {
       setLoading(false);
     }
-  }, [user, conversationId]);
+  }, [user, receiverId]);
 
-  // Send a new message
   const sendMessage = useCallback(async (
-    content: string, 
-    messageType: ChatMessage['message_type'] = 'text',
-    fileAttachments: ChatMessage['file_attachments'] = [],
+    content: string,
+    messageType: string = 'text',
+    attachments: any[] = [],
     replyToId?: string
   ) => {
-    if (!user || !receiverId || !conversationId) return;
+    if (!user || !receiverId || !content.trim()) return;
 
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('chat_messages')
         .insert({
-          conversation_id: conversationId,
           sender_id: user.id,
           receiver_id: receiverId,
-          content,
+          content: content.trim(),
           message_type: messageType,
-          file_attachments: fileAttachments,
+          file_attachments: attachments,
           reply_to_id: replyToId,
-        })
-        .select()
-        .single();
+          audit_request_id: conversationId
+        });
 
       if (error) throw error;
-      return data;
-    } catch (err: any) {
+    } catch (error) {
+      console.error('Error sending message:', error);
       toast.error('Failed to send message');
-      throw err;
     }
   }, [user, receiverId, conversationId]);
 
-  // Mark messages as read
   const markAsRead = useCallback(async (messageIds: string[]) => {
-    if (!user) return;
+    if (!user || messageIds.length === 0) return;
 
     try {
       const { error } = await supabase
@@ -130,131 +89,82 @@ export const useRealtimeMessages = ({ conversationId, receiverId }: UseRealtimeM
         .eq('receiver_id', user.id);
 
       if (error) throw error;
-    } catch (err: any) {
-      console.error('Failed to mark messages as read:', err);
+    } catch (error) {
+      console.error('Error marking messages as read:', error);
     }
   }, [user]);
 
-  // Send typing indicator
-  const sendTypingIndicator = useCallback(async (isTyping: boolean) => {
-    if (!user || !conversationId) return;
+  const sendTypingIndicator = useCallback((isTyping: boolean) => {
+    if (!user || !receiverId) return;
 
-    const channel = supabase.channel(`conversation_${conversationId}`);
-    await channel.send({
-      type: 'broadcast',
-      event: 'typing',
-      payload: {
+    // Use Supabase realtime presence for typing indicators
+    const channel = supabase.channel(`typing_${conversationId}`);
+    
+    if (isTyping) {
+      channel.track({
         user_id: user.id,
-        is_typing: isTyping,
-        timestamp: new Date().toISOString(),
-      },
-    });
-  }, [user, conversationId]);
+        typing: true,
+        timestamp: Date.now()
+      });
+    } else {
+      channel.untrack();
+    }
+  }, [user, receiverId, conversationId]);
 
   // Set up real-time subscriptions
   useEffect(() => {
-    if (!user || !conversationId) return;
+    if (!user || !receiverId) return;
 
-    const channel = supabase.channel(`conversation_${conversationId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'chat_messages',
-          filter: `conversation_id=eq.${conversationId}`,
-        },
-        (payload) => {
-          const newMessage = payload.new;
-          const typedMessage: ChatMessage = {
-            id: newMessage.id,
-            conversation_id: newMessage.conversation_id,
-            sender_id: newMessage.sender_id,
-            receiver_id: newMessage.receiver_id,
-            content: newMessage.content,
-            message_type: newMessage.message_type as ChatMessage['message_type'],
-            file_attachments: Array.isArray(newMessage.file_attachments) ? newMessage.file_attachments as ChatMessage['file_attachments'] : [],
-            read_at: newMessage.read_at,
-            reply_to_id: newMessage.reply_to_id,
-            created_at: newMessage.created_at,
-            updated_at: newMessage.updated_at
-          };
-          
-          setMessages(prev => [...prev, typedMessage]);
-          
-          // Auto-mark own messages as read
-          if (typedMessage.sender_id === user.id) {
-            markAsRead([typedMessage.id]);
-          }
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'chat_messages',
-          filter: `conversation_id=eq.${conversationId}`,
-        },
-        (payload) => {
-          const updatedMessage = payload.new;
-          const typedMessage: ChatMessage = {
-            id: updatedMessage.id,
-            conversation_id: updatedMessage.conversation_id,
-            sender_id: updatedMessage.sender_id,
-            receiver_id: updatedMessage.receiver_id,
-            content: updatedMessage.content,
-            message_type: updatedMessage.message_type as ChatMessage['message_type'],
-            file_attachments: Array.isArray(updatedMessage.file_attachments) ? updatedMessage.file_attachments as ChatMessage['file_attachments'] : [],
-            read_at: updatedMessage.read_at,
-            reply_to_id: updatedMessage.reply_to_id,
-            created_at: updatedMessage.created_at,
-            updated_at: updatedMessage.updated_at
-          };
-          
-          setMessages(prev =>
-            prev.map(msg => msg.id === typedMessage.id ? typedMessage : msg)
-          );
-        }
-      )
-      .on('broadcast', { event: 'typing' }, ({ payload }) => {
-        if (payload.user_id !== user.id) {
-          setTypingUsers(prev => 
-            payload.is_typing 
-              ? [...prev.filter(id => id !== payload.user_id), payload.user_id]
-              : prev.filter(id => id !== payload.user_id)
-          );
-          
-          // Clear typing indicator after 3 seconds
-          if (payload.is_typing) {
-            setTimeout(() => {
-              setTypingUsers(prev => prev.filter(id => id !== payload.user_id));
-            }, 3000);
-          }
-        }
+    fetchMessages();
+
+    // Subscribe to new messages
+    const messagesChannel = supabase
+      .channel('messages')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'chat_messages',
+        filter: `or(and(sender_id.eq.${user.id},receiver_id.eq.${receiverId}),and(sender_id.eq.${receiverId},receiver_id.eq.${user.id}))`
+      }, (payload) => {
+        setMessages(prev => [...prev, payload.new as ChatMessage]);
+      })
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'chat_messages',
+        filter: `or(and(sender_id.eq.${user.id},receiver_id.eq.${receiverId}),and(sender_id.eq.${receiverId},receiver_id.eq.${user.id}))`
+      }, (payload) => {
+        setMessages(prev => prev.map(msg => 
+          msg.id === payload.new.id ? payload.new as ChatMessage : msg
+        ));
       })
       .subscribe((status) => {
         setIsConnected(status === 'SUBSCRIBED');
       });
 
-    // Fetch initial messages
-    fetchMessages();
+    // Subscribe to typing indicators
+    const typingChannel = supabase
+      .channel(`typing_${conversationId}`)
+      .on('presence', { event: 'sync' }, () => {
+        const state = typingChannel.presenceState();
+        const typingUserIds = Object.keys(state).filter(id => id !== user.id);
+        setTypingUsers(typingUserIds);
+      })
+      .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
-      setIsConnected(false);
+      supabase.removeChannel(messagesChannel);
+      supabase.removeChannel(typingChannel);
     };
-  }, [user, conversationId, fetchMessages, markAsRead]);
+  }, [user, receiverId, fetchMessages, conversationId]);
 
   return {
     messages,
     loading,
-    error,
     isConnected,
     typingUsers,
     sendMessage,
     markAsRead,
     sendTypingIndicator,
-    refetch: fetchMessages,
   };
 };
