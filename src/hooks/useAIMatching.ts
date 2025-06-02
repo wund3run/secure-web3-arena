@@ -56,18 +56,24 @@ export const useAIMatching = () => {
       // Fetch available auditors
       const { data: auditors, error: auditorsError } = await supabase
         .from('auditor_profiles')
-        .select(`
-          *,
-          extended_profiles(full_name, bio)
-        `)
+        .select('*')
         .eq('availability_status', 'available')
         .lt('current_audit_count', 'max_concurrent_audits');
 
       if (auditorsError) throw auditorsError;
 
+      // Fetch extended profiles for auditors
+      const auditorIds = auditors?.map(a => a.user_id) || [];
+      const { data: extendedProfiles } = await supabase
+        .from('extended_profiles')
+        .select('*')
+        .in('id', auditorIds);
+
       const scores: MatchingScore[] = [];
 
       for (const auditor of auditors || []) {
+        const extendedProfile = extendedProfiles?.find(p => p.id === auditor.user_id);
+        
         // Calculate expertise match
         const blockchainMatch = auditor.blockchain_expertise?.includes(auditRequest.blockchain) ? 1.0 : 0.3;
         const experienceScore = Math.min(auditor.years_experience / 5, 1.0);
@@ -113,8 +119,8 @@ export const useAIMatching = () => {
           reputation_weight: reputationWeight,
           calculated_at: new Date().toISOString(),
           auditor_profile: {
-            full_name: auditor.extended_profiles?.full_name || 'Anonymous Auditor',
-            bio: auditor.extended_profiles?.bio || '',
+            full_name: extendedProfile?.full_name || 'Anonymous Auditor',
+            bio: extendedProfile?.bio || '',
             years_experience: auditor.years_experience,
             blockchain_expertise: auditor.blockchain_expertise || [],
             specialization_tags: auditor.specialization_tags || [],
@@ -162,37 +168,51 @@ export const useAIMatching = () => {
     try {
       const { data, error } = await supabase
         .from('ai_matching_scores')
-        .select(`
-          *,
-          auditor_profiles(*, extended_profiles(full_name, bio))
-        `)
+        .select('*')
         .eq('audit_request_id', auditRequestId)
         .order('overall_score', { ascending: false });
 
       if (error) throw error;
 
-      const formattedResults: MatchingScore[] = (data || []).map(item => ({
-        id: item.id,
-        auditor_id: item.auditor_id,
-        compatibility_score: item.overall_score,
-        expertise_match: item.expertise_score,
-        availability_score: item.availability_score,
-        budget_compatibility: item.budget_compatibility_score,
-        timeline_feasibility: item.timeline_compatibility_score,
-        reputation_weight: item.past_performance_score,
-        calculated_at: item.calculated_at,
-        auditor_profile: {
-          full_name: item.auditor_profiles?.extended_profiles?.full_name || 'Anonymous Auditor',
-          bio: item.auditor_profiles?.extended_profiles?.bio || '',
-          years_experience: item.auditor_profiles?.years_experience || 0,
-          blockchain_expertise: item.auditor_profiles?.blockchain_expertise || [],
-          specialization_tags: item.auditor_profiles?.specialization_tags || [],
-          hourly_rate_min: item.auditor_profiles?.hourly_rate_min || 0,
-          hourly_rate_max: item.auditor_profiles?.hourly_rate_max || 0,
-          average_rating: 4.5,
-          total_audits_completed: item.auditor_profiles?.total_audits_completed || 0,
-        }
-      }));
+      // Fetch auditor profiles separately
+      const auditorIds = data?.map(item => item.auditor_id) || [];
+      const { data: auditorProfiles } = await supabase
+        .from('auditor_profiles')
+        .select('*')
+        .in('user_id', auditorIds);
+
+      const { data: extendedProfiles } = await supabase
+        .from('extended_profiles')
+        .select('*')
+        .in('id', auditorIds);
+
+      const formattedResults: MatchingScore[] = (data || []).map(item => {
+        const auditorProfile = auditorProfiles?.find(p => p.user_id === item.auditor_id);
+        const extendedProfile = extendedProfiles?.find(p => p.id === item.auditor_id);
+
+        return {
+          id: item.id,
+          auditor_id: item.auditor_id,
+          compatibility_score: item.overall_score,
+          expertise_match: item.expertise_score,
+          availability_score: item.availability_score,
+          budget_compatibility: item.budget_compatibility_score,
+          timeline_feasibility: item.timeline_compatibility_score,
+          reputation_weight: item.past_performance_score,
+          calculated_at: item.calculated_at,
+          auditor_profile: {
+            full_name: extendedProfile?.full_name || 'Anonymous Auditor',
+            bio: extendedProfile?.bio || '',
+            years_experience: auditorProfile?.years_experience || 0,
+            blockchain_expertise: auditorProfile?.blockchain_expertise || [],
+            specialization_tags: auditorProfile?.specialization_tags || [],
+            hourly_rate_min: auditorProfile?.hourly_rate_min || 0,
+            hourly_rate_max: auditorProfile?.hourly_rate_max || 0,
+            average_rating: 4.5,
+            total_audits_completed: auditorProfile?.total_audits_completed || 0,
+          }
+        };
+      });
 
       setMatchingResults(formattedResults);
       return formattedResults;

@@ -42,34 +42,44 @@ export const MessageNotificationCenter: React.FC = () => {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
+      const { data: notificationData, error } = await supabase
         .from('message_notifications')
-        .select(`
-          *,
-          chat_messages!inner(
-            content,
-            sender_id,
-            conversation_id,
-            extended_profiles!inner(full_name)
-          )
-        `)
+        .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(50);
 
       if (error) throw error;
 
-      const formattedNotifications = (data || []).map(notification => ({
-        ...notification,
-        message: {
-          content: notification.chat_messages.content,
-          sender_id: notification.chat_messages.sender_id,
-          conversation_id: notification.chat_messages.conversation_id,
-          sender_profile: {
-            full_name: notification.chat_messages.extended_profiles?.full_name || 'Unknown User'
-          }
-        }
-      }));
+      // Fetch related chat messages and sender profiles separately
+      const messageIds = notificationData?.map(n => n.message_id).filter(Boolean) || [];
+      const { data: messages } = await supabase
+        .from('chat_messages')
+        .select('*')
+        .in('id', messageIds);
+
+      const senderIds = messages?.map(m => m.sender_id).filter(Boolean) || [];
+      const { data: senderProfiles } = await supabase
+        .from('extended_profiles')
+        .select('*')
+        .in('id', senderIds);
+
+      const formattedNotifications = (notificationData || []).map(notification => {
+        const message = messages?.find(m => m.id === notification.message_id);
+        const senderProfile = message ? senderProfiles?.find(p => p.id === message.sender_id) : null;
+
+        return {
+          ...notification,
+          message: message ? {
+            content: message.content,
+            sender_id: message.sender_id,
+            conversation_id: message.conversation_id,
+            sender_profile: {
+              full_name: senderProfile?.full_name || 'Unknown User'
+            }
+          } : undefined
+        };
+      });
 
       setNotifications(formattedNotifications);
     } catch (error) {
