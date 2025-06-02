@@ -1,3 +1,4 @@
+
 import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -62,7 +63,7 @@ const ProductionDashboard = React.lazy(() => import("@/pages/ProductionDashboard
 // Escrow page
 const Escrow = React.lazy(() => import("@/pages/Escrow"));
 
-// Add new lazy loaded components
+// Service pages
 const CodeReviews = React.lazy(() => import("@/pages/CodeReviews"));
 const PenetrationTesting = React.lazy(() => import("@/pages/PenetrationTesting"));
 const Consulting = React.lazy(() => import("@/pages/Consulting"));
@@ -71,6 +72,10 @@ const VulnerabilityScanner = React.lazy(() => import("@/pages/VulnerabilityScann
 const ServiceProviderOnboarding = React.lazy(() => import("@/pages/ServiceProviderOnboarding"));
 const DashboardAuditor = React.lazy(() => import("@/pages/DashboardAuditor"));
 const DashboardProject = React.lazy(() => import("@/pages/DashboardProject"));
+
+// Security and Pricing pages
+const SecurityPolicy = React.lazy(() => import("@/pages/SecurityPolicy"));
+const Pricing = React.lazy(() => import("@/pages/Pricing"));
 
 // Enhanced loading fallback
 const AppLoadingFallback = () => (
@@ -170,7 +175,7 @@ function App() {
                       {/* Service Provider Pages */}
                       <Route path="/submit-service" element={<SubmitService />} />
                       
-                      {/* NEW PAGES - Missing Service Pages */}
+                      {/* Service Pages */}
                       <Route path="/code-reviews" element={<CodeReviews />} />
                       <Route path="/penetration-testing" element={<PenetrationTesting />} />
                       <Route path="/consulting" element={<Consulting />} />
