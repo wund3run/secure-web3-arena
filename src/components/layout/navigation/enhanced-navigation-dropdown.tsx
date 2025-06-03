@@ -1,9 +1,9 @@
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/auth";
 import { navigationLinks } from "./navigation-links";
-import { EnhancedNavigationDropdownItem } from "./enhanced-navigation-dropdown-item";
+import { NavigationDropdownItem } from "./navigation-dropdown-item";
 import { ChevronDown } from "lucide-react";
 
 interface EnhancedNavigationDropdownProps {
@@ -17,25 +17,11 @@ export function EnhancedNavigationDropdown({
 }: EnhancedNavigationDropdownProps) {
   const { user } = useAuth();
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-  const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // Filter navigation items based on authentication status
-  const filteredNavigationLinks = navigationLinks.filter(item => {
-    // If item requires auth and user is not authenticated, hide it
-    if (item.requiresAuth && !user) {
-      return false;
-    }
-    return true;
-  });
-
-  // Enhanced click outside detection with better event handling
+  // Enhanced click outside detection
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (!activeDropdown || !isClient) return;
+      if (!activeDropdown) return;
       
       const dropdownElement = dropdownRefs.current[activeDropdown];
       const triggerElement = document.querySelector(`[data-dropdown="${activeDropdown}"]`);
@@ -50,26 +36,24 @@ export function EnhancedNavigationDropdown({
       }
     };
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && activeDropdown) {
-        handleDropdownToggle(activeDropdown);
-      }
-    };
-
-    if (activeDropdown && isClient) {
+    if (activeDropdown) {
       document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleKeyDown);
-      
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-        document.removeEventListener('keydown', handleKeyDown);
-      };
+      return () => document.removeEventListener('mousedown', handleClickOutside);
     }
-  }, [activeDropdown, handleDropdownToggle, isClient]);
+  }, [activeDropdown, handleDropdownToggle]);
 
-  if (!isClient) {
-    return null; // Prevent SSR issues
-  }
+  // Filter navigation items based on authentication status but show core items for all
+  const filteredNavigationLinks = navigationLinks.filter(item => {
+    // Show core navigation items for all users
+    if (['Services', 'Resources', 'Community'].includes(item.title)) {
+      return true;
+    }
+    // Show auth-specific items only for authenticated users
+    if (item.requiresAuth && !user) {
+      return false;
+    }
+    return true;
+  });
 
   return (
     <nav 
@@ -84,14 +68,14 @@ export function EnhancedNavigationDropdown({
               <button
                 data-dropdown={item.title}
                 onClick={() => handleDropdownToggle(item.title)}
-                className="navigation-trigger flex items-center text-sm font-medium hover:text-primary transition-all duration-200 py-2 px-3 rounded-md hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                className="navigation-trigger flex items-center text-sm font-medium hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 aria-expanded={activeDropdown === item.title}
                 aria-haspopup="true"
                 type="button"
               >
                 {item.title}
                 <ChevronDown 
-                  className={`ml-1 h-3 w-3 transition-transform duration-300 ${
+                  className={`ml-1 h-3 w-3 transition-transform duration-200 ${
                     activeDropdown === item.title ? 'rotate-180' : ''
                   }`} 
                 />
@@ -100,16 +84,14 @@ export function EnhancedNavigationDropdown({
               {activeDropdown === item.title && (
                 <div 
                   ref={(el) => (dropdownRefs.current[item.title] = el)}
-                  className="absolute top-full left-0 mt-2 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl z-[9999] animate-in fade-in-0 zoom-in-95 duration-300"
+                  className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-[10000] animate-in fade-in-0 zoom-in-95 duration-200"
                   role="menu"
                   style={{ 
                     backgroundColor: 'white',
-                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)',
+                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
                     border: '1px solid #e5e7eb',
-                    borderRadius: '0.75rem',
-                    minWidth: '320px',
-                    maxHeight: '80vh',
-                    overflowY: 'auto'
+                    borderRadius: '0.5rem',
+                    minWidth: '288px'
                   }}
                   onKeyDown={(e) => {
                     if (e.key === 'Escape') {
@@ -117,18 +99,24 @@ export function EnhancedNavigationDropdown({
                     }
                   }}
                 >
-                  <div className="py-2">
-                    {item.children.map((child, index) => (
-                      <EnhancedNavigationDropdownItem
-                        key={child.href}
-                        href={child.href}
-                        title={child.title}
-                        description={child.description}
-                        onNavigate={() => handleDropdownToggle(item.title)}
-                        isFirst={index === 0}
-                        isLast={index === item.children!.length - 1}
-                      />
-                    ))}
+                  <div className="py-1">
+                    {item.children.map((child, index) => {
+                      // Filter child items based on auth status
+                      if (child.requiresAuth && !user) {
+                        return null;
+                      }
+                      return (
+                        <NavigationDropdownItem
+                          key={child.href}
+                          href={child.href}
+                          title={child.title}
+                          description={child.description}
+                          onNavigate={() => handleDropdownToggle(item.title)}
+                          isFirst={index === 0}
+                          isLast={index === item.children!.length - 1}
+                        />
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -140,7 +128,7 @@ export function EnhancedNavigationDropdown({
           <Link
             key={item.href}
             to={item.href}
-            className="text-sm font-medium hover:text-primary transition-all duration-200 py-2 px-3 rounded-md hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className="text-sm font-medium hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             {item.title}
           </Link>

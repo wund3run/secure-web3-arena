@@ -1,126 +1,117 @@
 
-import { Shield, BookOpen, Zap, Users } from 'lucide-react';
-
-export interface NavigationLink {
-  title: string;
-  href: string;
-  description?: string;
-  icon?: any;
-  children?: NavigationLink[];
-  requiresAuth?: boolean;
-}
-
-export const navigationLinks: NavigationLink[] = [
+export const navigationLinks = [
   {
     title: "Services",
     href: "/marketplace",
-    icon: Shield,
-    requiresAuth: false,
     children: [
       {
-        title: "Security Audits",
+        title: "Browse Services",
         href: "/marketplace",
-        description: "Comprehensive smart contract security audits by verified experts"
+        description: "Find security experts for your project"
+      },
+      {
+        title: "Security Audits",
+        href: "/security-audits",
+        description: "Comprehensive smart contract audits"
       },
       {
         title: "Code Reviews",
-        href: "/marketplace",
-        description: "Expert code review services for Web3 projects with AI-enhanced analysis"
+        href: "/code-reviews",
+        description: "Expert code analysis and review"
       },
       {
         title: "Penetration Testing",
-        href: "/marketplace",
-        description: "Advanced security testing and vulnerability assessment"
+        href: "/penetration-testing",
+        description: "Advanced security testing"
       },
       {
         title: "Security Consulting",
-        href: "/marketplace",
-        description: "Strategic security guidance and implementation support"
+        href: "/consulting",
+        description: "Strategic security guidance"
+      },
+      {
+        title: "Request Audit",
+        href: "/request-audit",
+        description: "Submit your project for review"
       }
     ]
   },
   {
     title: "Resources",
     href: "/resources",
-    icon: BookOpen,
-    requiresAuth: false,
     children: [
       {
         title: "Security Guides",
         href: "/resources",
-        description: "Comprehensive security guides for Web3 development"
+        description: "Best practices and tutorials"
       },
       {
-        title: "Knowledge Base",
-        href: "/docs",
-        description: "Extensive documentation and best practices"
-      },
-      {
-        title: "Video Tutorials",
-        href: "/resources",
-        description: "Expert-led tutorials covering security analysis"
-      },
-      {
-        title: "Audit Templates",
-        href: "/templates",
-        description: "Professional audit templates and frameworks"
-      }
-    ]
-  },
-  {
-    title: "Tools",
-    href: "/ai-tools",
-    icon: Zap,
-    requiresAuth: false,
-    children: [
-      {
-        title: "Security Insights",
-        href: "/security-insights",
-        description: "AI-powered security analytics and threat intelligence"
-      },
-      {
-        title: "AI Security Tools",
-        href: "/ai-tools",
-        description: "GPT-4 powered analysis and automated vulnerability detection"
-      },
-      {
-        title: "Vulnerability Scanner",
+        title: "Vulnerability Database",
         href: "/vulnerabilities",
-        description: "Automated vulnerability detection with multi-blockchain support"
+        description: "Known security issues and fixes"
       },
       {
-        title: "Platform Reports",
-        href: "/platform-report",
-        description: "Comprehensive security reports and compliance dashboards"
+        title: "Audit Reports",
+        href: "/audits",
+        description: "Browse completed security audits",
+        requiresAuth: true
+      },
+      {
+        title: "Documentation",
+        href: "/docs",
+        description: "Platform guides and API docs"
+      },
+      {
+        title: "FAQ",
+        href: "/faq",
+        description: "Frequently asked questions"
+      },
+      {
+        title: "Support",
+        href: "/support",
+        description: "Get help from our team"
       }
     ]
   },
   {
     title: "Community",
     href: "/community",
-    icon: Users,
-    requiresAuth: false,
     children: [
       {
-        title: "Community Forum",
+        title: "Join Community",
+        href: "/community",
+        description: "Connect with security experts"
+      },
+      {
+        title: "Forum",
         href: "/forum",
-        description: "Technical discussions and expert Q&A sessions"
+        description: "Discuss security topics"
       },
       {
-        title: "Security Events",
+        title: "Events",
         href: "/events",
-        description: "Workshops, conferences, and training sessions"
+        description: "Security meetups and workshops"
       },
       {
-        title: "Security Challenges",
-        href: "/challenges",
-        description: "CTF challenges and skill-building competitions"
-      },
-      {
-        title: "Expert Leaderboard",
+        title: "Leaderboard",
         href: "/leaderboard",
-        description: "Top security experts and community contributors"
+        description: "Top security contributors"
+      },
+      {
+        title: "Careers",
+        href: "/careers",
+        description: "Join the Hawkly team"
       }
     ]
+  },
+  {
+    title: "Dashboard",
+    href: "/dashboard",
+    requiresAuth: true
+  },
+  {
+    title: "My Audits",
+    href: "/audits",
+    requiresAuth: true
   }
 ];

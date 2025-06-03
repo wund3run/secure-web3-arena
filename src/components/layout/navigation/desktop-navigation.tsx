@@ -18,9 +18,13 @@ export function DesktopNavigation({
   const { user } = useAuth();
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
-  // Filter navigation items based on authentication status
+  // Filter navigation items - show core navigation for all users
   const filteredNavigationLinks = navigationLinks.filter(item => {
-    // If item requires auth and user is not authenticated, hide it
+    // Show core navigation items for all users
+    if (['Services', 'Resources', 'Community'].includes(item.title)) {
+      return true;
+    }
+    // Show auth-specific items only for authenticated users
     if (item.requiresAuth && !user) {
       return false;
     }
@@ -50,11 +54,6 @@ export function DesktopNavigation({
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
   }, [activeDropdown, handleDropdownToggle]);
-
-  // Don't render navigation if user is not authenticated
-  if (!user) {
-    return null;
-  }
 
   return (
     <nav 
@@ -101,17 +100,23 @@ export function DesktopNavigation({
                   }}
                 >
                   <div className="py-1">
-                    {item.children.map((child, index) => (
-                      <NavigationDropdownItem
-                        key={child.href}
-                        href={child.href}
-                        title={child.title}
-                        description={child.description}
-                        onNavigate={() => handleDropdownToggle(item.title)}
-                        isFirst={index === 0}
-                        isLast={index === item.children!.length - 1}
-                      />
-                    ))}
+                    {item.children.map((child, index) => {
+                      // Filter child items based on auth status
+                      if (child.requiresAuth && !user) {
+                        return null;
+                      }
+                      return (
+                        <NavigationDropdownItem
+                          key={child.href}
+                          href={child.href}
+                          title={child.title}
+                          description={child.description}
+                          onNavigate={() => handleDropdownToggle(item.title)}
+                          isFirst={index === 0}
+                          isLast={index === item.children!.length - 1}
+                        />
+                      );
+                    })}
                   </div>
                 </div>
               )}

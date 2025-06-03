@@ -45,12 +45,12 @@ export function ProductionNavbar() {
       className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
       role="banner"
     >
-      {showAlert && (
+      {showAlert && user && (
         <Alert className="rounded-none border-t-0 border-l-0 border-r-0 border-b bg-primary text-primary-foreground">
           <div className="container flex items-center justify-between py-1">
             <AlertDescription>
               <span className="text-sm">
-                <strong>Platform Status:</strong> Welcome to Hawkly - Your Web3 Security Marketplace
+                <strong>Welcome back!</strong> Access all security services from your dashboard
               </span>
             </AlertDescription>
             <button 
@@ -68,7 +68,7 @@ export function ProductionNavbar() {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center">
           <Link 
-            to="/" 
+            to={user ? "/dashboard" : "/"} 
             className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded-md p-1"
             aria-label="Hawkly Home"
           >
@@ -80,13 +80,11 @@ export function ProductionNavbar() {
             />
           </Link>
           
-          {/* Enhanced Desktop Navigation - only show if user is authenticated */}
-          {user && (
-            <EnhancedNavigationDropdown 
-              activeDropdown={activeDropdown} 
-              handleDropdownToggle={handleDropdownToggle} 
-            />
-          )}
+          {/* Enhanced Desktop Navigation - show for all users but with different items */}
+          <EnhancedNavigationDropdown 
+            activeDropdown={activeDropdown} 
+            handleDropdownToggle={handleDropdownToggle} 
+          />
         </div>
         
         {/* Desktop Auth Buttons */}
@@ -102,7 +100,7 @@ export function ProductionNavbar() {
         />
       </div>
       
-      {/* Breadcrumb navigation for deep pages - only show if user is authenticated */}
+      {/* Breadcrumb navigation for deep pages - show for authenticated users */}
       {location.pathname !== '/' && user && <BreadcrumbTrail />}
     </header>
   );

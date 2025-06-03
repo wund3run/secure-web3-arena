@@ -64,15 +64,15 @@ export function SimplifiedNavbar() {
       className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
       role="banner"
     >
-      {showAlert && (
-        <Alert className="rounded-none border-t-0 border-l-0 border-r-0 border-b bg-primary text-primary-foreground">
+      {showAlert && !user && (
+        <Alert className="rounded-none border-t-0 border-l-0 border-r-0 border-b bg-gradient-to-r from-primary/10 to-secondary/10 text-foreground">
           <div className="container flex items-center justify-between py-1">
             <AlertDescription>
               <span className="text-sm">
-                <strong>Platform Status:</strong> This is a development version. You may encounter some incomplete features.
+                <strong>Welcome to Hawkly!</strong> Sign up today to access expert Web3 security services
               </span>
             </AlertDescription>
-            <button onClick={() => setShowAlert(false)} className="text-primary-foreground/80 hover:text-primary-foreground">
+            <button onClick={() => setShowAlert(false)} className="text-muted-foreground hover:text-foreground transition-colors">
               <X size={18} />
               <span className="sr-only">Close</span>
             </button>
@@ -95,13 +95,11 @@ export function SimplifiedNavbar() {
             />
           </Link>
           
-          {/* Desktop Navigation - only show if user is authenticated */}
-          {user && (
-            <DesktopNavigation 
-              activeDropdown={activeDropdown} 
-              handleDropdownToggle={handleDropdownToggle} 
-            />
-          )}
+          {/* Desktop Navigation - show basic navigation for all users */}
+          <DesktopNavigation 
+            activeDropdown={activeDropdown} 
+            handleDropdownToggle={handleDropdownToggle} 
+          />
         </div>
         
         {/* Desktop Auth Buttons */}

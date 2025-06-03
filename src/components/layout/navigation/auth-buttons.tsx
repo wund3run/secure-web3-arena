@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/auth";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
-import { LogOut, User, Settings } from "lucide-react";
+import { LogOut, User, Settings, LayoutDashboard, FileText, Shield } from "lucide-react";
 import { toast } from "sonner";
 
 interface AuthButtonsProps {
@@ -22,7 +22,7 @@ interface AuthButtonsProps {
 }
 
 export function AuthButtons({ isAuthenticated, onSignOut }: AuthButtonsProps) {
-  const { user, userProfile } = useAuth();
+  const { user, userProfile, getUserType } = useAuth();
 
   const handleSignOut = async () => {
     try {
@@ -34,25 +34,44 @@ export function AuthButtons({ isAuthenticated, onSignOut }: AuthButtonsProps) {
     }
   };
 
+  const getDashboardPath = () => {
+    if (!isAuthenticated) return "/dashboard";
+    
+    try {
+      const userType = getUserType();
+      return userType === 'auditor' ? '/dashboard/auditor' : '/dashboard/project';
+    } catch (error) {
+      console.error('Error determining user type:', error);
+      return '/dashboard';
+    }
+  };
+
   return (
     <div className="hidden md:flex items-center space-x-3">
       {isAuthenticated && <NotificationBell />}
       
       {!isAuthenticated ? (
-        <Button variant="outline" asChild>
-          <Link to="/auth">Sign In</Link>
-        </Button>
+        <div className="flex items-center space-x-2">
+          <Link to="/auth">
+            <Button variant="ghost">Sign In</Button>
+          </Link>
+          <Link to="/request-audit">
+            <Button>Get Started</Button>
+          </Link>
+        </div>
       ) : (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button variant="ghost" className="h-10 w-10 p-0 hover:bg-muted/50">
               <Avatar className="h-8 w-8">
                 <AvatarImage src={userProfile?.avatar_url} alt={user?.email || "User Avatar"} />
-                <AvatarFallback>{user?.email?.[0]?.toUpperCase() || "U"}</AvatarFallback>
+                <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                  {user?.email?.[0]?.toUpperCase() || "U"}
+                </AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuContent align="end" className="w-64">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">
@@ -65,19 +84,37 @@ export function AuthButtons({ isAuthenticated, onSignOut }: AuthButtonsProps) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link to="/dashboard" className="flex items-center">
-                <User className="mr-2 h-4 w-4" />
+              <Link to={getDashboardPath()} className="flex items-center">
+                <LayoutDashboard className="mr-2 h-4 w-4" />
                 Dashboard
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
+              <Link to="/audits" className="flex items-center">
+                <FileText className="mr-2 h-4 w-4" />
+                My Audits
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/profile" className="flex items-center">
+                <User className="mr-2 h-4 w-4" />
+                Profile
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
               <Link to="/security-settings" className="flex items-center">
+                <Shield className="mr-2 h-4 w-4" />
+                Security Settings
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/settings" className="flex items-center">
                 <Settings className="mr-2 h-4 w-4" />
                 Settings
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleSignOut} className="flex items-center text-red-600">
+            <DropdownMenuItem onClick={handleSignOut} className="flex items-center text-red-600 hover:text-red-700 hover:bg-red-50">
               <LogOut className="mr-2 h-4 w-4" />
               Sign Out
             </DropdownMenuItem>
