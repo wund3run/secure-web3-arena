@@ -1,67 +1,124 @@
 
 import React from "react";
-import { Helmet } from "react-helmet-async";
-import { SimplifiedNavbar } from "@/components/layout/simplified-navbar";
+import { StandardLayout } from "@/components/layout/StandardLayout";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Shield, Code, Bug, Users, Star, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Marketplace() {
+  const services = [
+    {
+      title: "Smart Contract Audits",
+      description: "Comprehensive security audits for smart contracts across all major blockchains",
+      price: "Starting from ₹2,08,250",
+      icon: <Shield className="h-6 w-6 text-blue-500" />,
+      features: ["Manual code review", "Automated testing", "Detailed report", "Post-audit support"]
+    },
+    {
+      title: "Code Reviews",
+      description: "Expert code analysis and security recommendations for your Web3 project",
+      price: "Starting from ₹83,300",
+      icon: <Code className="h-6 w-6 text-green-500" />,
+      features: ["Line-by-line analysis", "Best practices", "Optimization tips", "Documentation review"]
+    },
+    {
+      title: "Penetration Testing",
+      description: "Advanced security testing to identify vulnerabilities in your application",
+      price: "Starting from ₹2,91,550",
+      icon: <Bug className="h-6 w-6 text-red-500" />,
+      features: ["Real-world attacks", "Infrastructure testing", "Exploit development", "Remediation guide"]
+    }
+  ];
+
+  const stats = [
+    { label: "Security Experts", value: "500+", icon: <Users className="h-5 w-5" /> },
+    { label: "Projects Secured", value: "2,000+", icon: <Shield className="h-5 w-5" /> },
+    { label: "Average Rating", value: "4.9", icon: <Star className="h-5 w-5" /> },
+    { label: "Success Rate", value: "99.8%", icon: <TrendingUp className="h-5 w-5" /> }
+  ];
+
   return (
-    <>
-      <Helmet>
-        <title>Security Marketplace | Hawkly</title>
-        <meta name="description" content="Browse verified Web3 security experts and audit services." />
-      </Helmet>
-      
-      <div className="min-h-screen bg-background">
-        <SimplifiedNavbar />
-        
-        <main className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h1 className="text-4xl font-bold mb-4">Security Marketplace</h1>
-              <p className="text-xl text-muted-foreground">
-                Connect with verified Web3 security experts for comprehensive audit services
-              </p>
+    <StandardLayout
+      title="Security Marketplace"
+      description="Browse verified Web3 security experts and audit services - March 2025"
+    >
+      <div className="container py-12">
+        <div className="text-center mb-16">
+          <Badge variant="secondary" className="mb-4">Verified Experts</Badge>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            Security Marketplace
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Connect with verified Web3 security experts for comprehensive audit services. 
+            Protect your blockchain assets with industry-leading security expertise.
+          </p>
+        </div>
+
+        {/* Stats Section */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+          {stats.map((stat, index) => (
+            <div key={index} className="text-center">
+              <div className="flex justify-center mb-2 text-primary">{stat.icon}</div>
+              <div className="text-2xl font-bold">{stat.value}</div>
+              <div className="text-sm text-muted-foreground">{stat.label}</div>
             </div>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="border rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-3">Smart Contract Audits</h3>
-                <p className="text-muted-foreground mb-4">
-                  Comprehensive security audits for smart contracts across all major blockchains
-                </p>
-                <div className="text-sm text-primary font-medium">Starting from $2,500</div>
-              </div>
-              
-              <div className="border rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-3">Code Reviews</h3>
-                <p className="text-muted-foreground mb-4">
-                  Expert code analysis and security recommendations for your Web3 project
-                </p>
-                <div className="text-sm text-primary font-medium">Starting from $1,000</div>
-              </div>
-              
-              <div className="border rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-3">Penetration Testing</h3>
-                <p className="text-muted-foreground mb-4">
-                  Advanced security testing to identify vulnerabilities in your application
-                </p>
-                <div className="text-sm text-primary font-medium">Starting from $3,500</div>
-              </div>
-            </div>
-            
-            <div className="text-center mt-12">
-              <p className="text-muted-foreground mb-4">Ready to secure your project?</p>
-              <Link 
-                to="/request-audit" 
-                className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-              >
+          ))}
+        </div>
+
+        {/* Services Grid */}
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
+          {services.map((service, index) => (
+            <Card key={index} className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-3">
+                  {service.icon}
+                  <CardTitle className="text-xl">{service.title}</CardTitle>
+                </div>
+                <CardDescription className="text-base">{service.description}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="text-2xl font-bold text-primary">{service.price}</div>
+                  <ul className="space-y-2">
+                    {service.features.map((feature, idx) => (
+                      <li key={idx} className="text-sm text-muted-foreground flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button className="w-full" asChild>
+                    <Link to="/request-audit">Get Started</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* CTA Section */}
+        <div className="text-center bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-8">
+          <h2 className="text-2xl font-bold mb-4">Ready to Secure Your Project?</h2>
+          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+            Join thousands of projects that trust our security experts. Get started with a comprehensive 
+            security audit today and protect your blockchain assets.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/request-audit">
+              <Button size="lg" className="bg-gradient-to-r from-primary to-secondary">
                 Request Security Audit
-              </Link>
-            </div>
+              </Button>
+            </Link>
+            <Link to="/pricing-inr">
+              <Button size="lg" variant="outline">
+                View Pricing (INR)
+              </Button>
+            </Link>
           </div>
-        </main>
+        </div>
       </div>
-    </>
+    </StandardLayout>
   );
 }

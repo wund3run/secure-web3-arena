@@ -59,6 +59,12 @@ export function CommunityFooter() {
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
+          <Link to="/pricing-inr">
+            <Button size="lg" variant="outline" className="group border-primary">
+              View Pricing (INR)
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
