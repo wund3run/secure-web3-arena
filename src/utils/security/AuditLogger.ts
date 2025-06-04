@@ -92,9 +92,10 @@ export class AuditLogger {
     }
 
     this.isProcessing = true;
+    let batch: AuditEvent[] = [];
     
     try {
-      const batch = this.eventQueue.splice(0, this.batchSize);
+      batch = this.eventQueue.splice(0, this.batchSize);
       await this.sendToBackend(batch);
     } catch (error) {
       console.error('Failed to process audit log batch:', error);
