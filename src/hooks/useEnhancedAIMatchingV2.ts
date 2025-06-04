@@ -4,49 +4,19 @@ import { toast } from 'sonner';
 import { tensorflowMatchingEngine } from '@/utils/ai/tensorflowMatchingEngine';
 import { HuggingFaceIntegration } from '@/utils/ai/huggingFaceIntegration';
 import { Logger } from '@/utils/logging/logger';
-
-interface EnhancedMatchingCriteria {
-  blockchain: string;
-  project_type: string;
-  project_description: string;
-  budget_range: [number, number];
-  timeline: string;
-  complexity: 'low' | 'medium' | 'high';
-  specific_requirements: string[];
-  quality_threshold: number;
-  experience_preference: 'junior' | 'mid' | 'senior' | 'expert';
-  audit_type: string[];
-}
-
-interface AuditorProfile {
-  id: string;
-  name: string;
-  description: string;
-  expertise: string[];
-  experience_years: number;
-  rating: number;
-  hourly_rate: number;
-  availability: 'available' | 'busy' | 'unavailable';
-  specializations: string[];
-  past_audits: number;
-  success_rate: number;
-  response_time_avg: number;
-  blockchain_expertise: string[];
-}
-
-interface EnhancedMatchResult {
-  auditor: AuditorProfile;
-  tf_confidence_score: number;
-  semantic_score: number;
-  combined_score: number;
-  recommendation_reason: string;
-  feature_importance: Record<string, number>;
-  precision_metrics: {
-    precision: number;
-    recall: number;
-    f1_score: number;
-  };
-}
+import { 
+  EnhancedMatchingCriteria, 
+  AuditorProfile, 
+  EnhancedMatchResult 
+} from './useEnhancedAIMatchingV2/types';
+import {
+  calculateBlockchainExpertiseScore,
+  calculateSkillMatchScore,
+  mapComplexityToScore,
+  calculateTimelineUrgency,
+  mapBlockchainToScore,
+  mapExperienceToScore
+} from './useEnhancedAIMatchingV2/utils';
 
 export const useEnhancedAIMatchingV2 = () => {
   const [isInitializing, setIsInitializing] = useState(false);
@@ -151,7 +121,7 @@ export const useEnhancedAIMatchingV2 = () => {
           semantic_score: semanticScore,
           combined_score: combinedScore,
           recommendation_reason: semanticResult?.recommendationReason || 'Standard matching algorithm applied',
-          feature_importance: tfPrediction.featureImportance,
+          feature_importance: tfPrediction?.featureImportance || {},
           precision_metrics: {
             precision: modelMetrics?.precision || 0,
             recall: modelMetrics?.recall || 0,
@@ -201,45 +171,5 @@ export const useEnhancedAIMatchingV2 = () => {
   };
 };
 
-// Helper functions moved outside the hook to avoid them being recreated on every render
-const calculateBlockchainExpertiseScore = (auditor: AuditorProfile, criteria: EnhancedMatchingCriteria): number => {
-  return auditor.blockchain_expertise.includes(criteria.blockchain) ? 1 : 0.3;
-};
-
-const calculateSkillMatchScore = (auditor: AuditorProfile, criteria: EnhancedMatchingCriteria): number => {
-  const matchingSkills = auditor.expertise.filter(skill => 
-    criteria.specific_requirements.some(req => 
-      req.toLowerCase().includes(skill.toLowerCase())
-    )
-  );
-  return matchingSkills.length / Math.max(criteria.specific_requirements.length, 1);
-};
-
-const mapComplexityToScore = (complexity: string): number => {
-  const mapping = { low: 0.3, medium: 0.6, high: 1.0 };
-  return mapping[complexity as keyof typeof mapping] || 0.5;
-};
-
-const calculateTimelineUrgency = (timeline: string): number => {
-  // Parse timeline and convert to urgency score
-  if (timeline.includes('week')) return 1.0;
-  if (timeline.includes('month')) return 0.6;
-  return 0.3;
-};
-
-const mapBlockchainToScore = (blockchain: string): number => {
-  // Map blockchain types to numeric scores
-  const mapping: Record<string, number> = {
-    ethereum: 0.9,
-    solana: 0.8,
-    polygon: 0.7,
-    arbitrum: 0.6,
-    optimism: 0.5
-  };
-  return mapping[blockchain.toLowerCase()] || 0.5;
-};
-
-const mapExperienceToScore = (experience: string): number => {
-  const mapping = { junior: 0.3, mid: 0.5, senior: 0.8, expert: 1.0 };
-  return mapping[experience as keyof typeof mapping] || 0.5;
-};
+// Re-export types for convenience
+export type { EnhancedMatchingCriteria, AuditorProfile, EnhancedMatchResult };
