@@ -1,4 +1,3 @@
-
 /**
  * Advanced image optimization with AVIF/WebP conversion and intelligent loading
  */
@@ -21,6 +20,34 @@ export class AdvancedImageOptimizer {
     this.setupModernFormatDetection();
     this.preloadCriticalImages();
     this.setupImageErrorHandling();
+  }
+
+  /**
+   * Setup modern format detection and browser capabilities
+   */
+  private setupModernFormatDetection(): void {
+    // Detect browser capabilities for modern image formats
+    this.detectFormatSupport();
+  }
+
+  /**
+   * Detect browser support for modern image formats
+   */
+  private async detectFormatSupport(): Promise<void> {
+    const formats = ['avif', 'webp'];
+    const supportMap = new Map<string, boolean>();
+
+    for (const format of formats) {
+      try {
+        const supported = await this.supportsFormat(format.toUpperCase() as 'AVIF' | 'WebP');
+        supportMap.set(format, supported);
+      } catch {
+        supportMap.set(format, false);
+      }
+    }
+
+    // Store support information for later use
+    (window as any).__imageFormatSupport = Object.fromEntries(supportMap);
   }
 
   /**

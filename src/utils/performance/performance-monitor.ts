@@ -1,15 +1,33 @@
 
 // Performance monitoring and optimization utilities
 
+export interface PerformanceData {
+  name: string;
+  value: number;
+  category: string;
+  metadata?: Record<string, any>;
+}
+
 export class PerformanceMonitor {
   private static instance: PerformanceMonitor;
   private metrics: Map<string, number[]> = new Map();
+  private performanceData: PerformanceData[] = [];
 
   static getInstance(): PerformanceMonitor {
     if (!PerformanceMonitor.instance) {
       PerformanceMonitor.instance = new PerformanceMonitor();
     }
     return PerformanceMonitor.instance;
+  }
+
+  recordPerformanceData(data: PerformanceData): void {
+    this.performanceData.push({
+      ...data,
+      timestamp: Date.now()
+    } as any);
+    
+    // Also record as metric
+    this.recordMetric(data.name, data.value);
   }
 
   measureComponentRender<T extends (...args: any[]) => any>(
