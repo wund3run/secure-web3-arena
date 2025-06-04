@@ -263,9 +263,24 @@ export class WCAGValidator {
   private addViolation(violation: WCAGViolation) {
     this.violations.push(violation);
     
+    // Map WCAG rule IDs to appropriate accessibility error types
+    let errorType: AccessibilityError['type'] = 'aria'; // default
+    
+    if (violation.rule.id.includes('1.4.3')) {
+      errorType = 'color-contrast';
+    } else if (violation.rule.id.includes('2.1.1')) {
+      errorType = 'keyboard';
+    } else if (violation.rule.id.includes('2.4.7')) {
+      errorType = 'focus';
+    } else if (violation.rule.id.includes('4.1.2') || violation.rule.id.includes('1.1.1') || violation.rule.id.includes('3.3.2')) {
+      errorType = 'aria';
+    } else {
+      errorType = 'screen-reader';
+    }
+    
     // Report to accessibility error handler
     handleAccessibilityError(
-      'wcag-violation',
+      errorType,
       violation.message,
       violation.element,
       violation.severity === 'error' ? 'high' : 'medium',
