@@ -294,15 +294,15 @@ export const TensorFlowMatchingDashboard: React.FC = () => {
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm">Precision Target (>90%)</span>
-                    <Badge variant={modelMetrics?.precision > 0.9 ? 'default' : 'secondary'}>
-                      {modelMetrics?.precision > 0.9 ? 'Met' : 'Below Target'}
+                    <span className="text-sm">Precision Target ({'>'}90%)</span>
+                    <Badge variant={modelMetrics?.precision && modelMetrics.precision > 0.9 ? 'default' : 'secondary'}>
+                      {modelMetrics?.precision && modelMetrics.precision > 0.9 ? 'Met' : 'Below Target'}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm">Recall Target (>90%)</span>
-                    <Badge variant={modelMetrics?.recall > 0.9 ? 'default' : 'secondary'}>
-                      {modelMetrics?.recall > 0.9 ? 'Met' : 'Below Target'}
+                    <span className="text-sm">Recall Target ({'>'}90%)</span>
+                    <Badge variant={modelMetrics?.recall && modelMetrics.recall > 0.9 ? 'default' : 'secondary'}>
+                      {modelMetrics?.recall && modelMetrics.recall > 0.9 ? 'Met' : 'Below Target'}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
@@ -333,15 +333,15 @@ export const TensorFlowMatchingDashboard: React.FC = () => {
               <CardContent>
                 <div className="space-y-3">
                   {Object.entries(demoResults[0].feature_importance)
-                    .sort(([,a], [,b]) => b - a)
+                    .sort(([,a], [,b]) => (b as number) - (a as number))
                     .slice(0, 8)
                     .map(([feature, importance]) => (
                       <div key={feature}>
                         <div className="flex justify-between text-sm mb-1">
                           <span className="capitalize">{feature.replace(/_/g, ' ')}</span>
-                          <span>{(importance * 100).toFixed(1)}%</span>
+                          <span>{((importance as number) * 100).toFixed(1)}%</span>
                         </div>
-                        <Progress value={importance * 100} />
+                        <Progress value={(importance as number) * 100} />
                       </div>
                     ))}
                 </div>
