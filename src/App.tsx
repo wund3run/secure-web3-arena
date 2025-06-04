@@ -1,4 +1,3 @@
-
 import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -112,6 +111,9 @@ const queryClient = new QueryClient({
   },
 });
 
+// Add the new UX enhancements page import
+const UXEnhancements = React.lazy(() => import("@/pages/UXEnhancements"));
+
 function App() {
   return (
     <HelmetProvider>
@@ -201,6 +203,9 @@ function App() {
                       <Route path="/docs" element={<Resources />} />
                       <Route path="/tutorials" element={<Resources />} />
                       <Route path="/templates" element={<Resources />} />
+                      
+                      {/* New UX Enhancements route */}
+                      <Route path="/ux-enhancements" element={<UXEnhancements />} />
                       
                       {/* Footer pages */}
                       <Route path="/about" element={<About />} />
