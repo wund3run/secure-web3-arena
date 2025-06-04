@@ -229,10 +229,10 @@ export class AuditLogger {
     const tags = [eventType];
     
     // Add contextual tags based on details
-    if (details.admin_action) tags.push('admin');
-    if (details.failed_attempt) tags.push('failure');
-    if (details.suspicious_activity) tags.push('suspicious');
-    if (details.automated) tags.push('automated');
+    if (details.admin_action) tags.push('admin_related');
+    if (details.failed_attempt) tags.push('failed_attempt');
+    if (details.suspicious_activity) tags.push('suspicious_activity');
+    if (details.automated) tags.push('automated_action');
     
     return tags;
   }
