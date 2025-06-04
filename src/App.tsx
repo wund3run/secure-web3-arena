@@ -155,6 +155,12 @@ function App() {
                       <Route path="/faq" element={<FAQ />} />
                       <Route path="/support" element={<Support />} />
                       
+                      {/* Performance Optimization Route */}
+                      <Route path="/performance-optimization" element={<PerformanceOptimization />} />
+                      
+                      {/* UX Enhancements Route */}
+                      <Route path="/ux-enhancements" element={<UXEnhancements />} />
+                      
                       {/* Production Dashboard */}
                       <Route path="/production-dashboard" element={<ProductionDashboard />} />
                       
@@ -203,9 +209,6 @@ function App() {
                       <Route path="/docs" element={<Resources />} />
                       <Route path="/tutorials" element={<Resources />} />
                       <Route path="/templates" element={<Resources />} />
-                      
-                      {/* New UX Enhancements route */}
-                      <Route path="/ux-enhancements" element={<UXEnhancements />} />
                       
                       {/* Footer pages */}
                       <Route path="/about" element={<About />} />

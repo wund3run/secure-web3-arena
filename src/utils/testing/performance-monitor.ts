@@ -1,136 +1,88 @@
-
-export interface PerformanceMetric {
+/**
+ * Performance monitoring and testing utilities
+ */
+export interface PerformanceData {
   name: string;
   value: number;
-  rating: 'good' | 'needs-improvement' | 'poor';
-  timestamp: number;
-  category?: string;
+  category: string;
   metadata?: Record<string, any>;
 }
 
 export class PerformanceMonitor {
-  private metrics: PerformanceMetric[] = [];
-  private observers: ((metric: PerformanceMetric) => void)[] = [];
+  private static instance: PerformanceMonitor;
+  private metrics: PerformanceData[] = [];
 
-  constructor() {
-    this.initializeWebVitals();
+  static getInstance(): PerformanceMonitor {
+    if (!PerformanceMonitor.instance) {
+      PerformanceMonitor.instance = new PerformanceMonitor();
+    }
+    return PerformanceMonitor.instance;
   }
 
-  private initializeWebVitals() {
-    // Simplified web vitals implementation without external dependency
-    this.measurePageLoadTime();
-    this.measureFirstContentfulPaint();
-  }
-
-  private measurePageLoadTime() {
-    window.addEventListener('load', () => {
-      const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-      if (navigationEntry) {
-        const loadTime = navigationEntry.loadEventEnd - navigationEntry.fetchStart;
-        this.handleMetric({
-          name: 'page-load-time',
-          value: loadTime,
-          rating: loadTime < 2000 ? 'good' : loadTime < 4000 ? 'needs-improvement' : 'poor',
-          timestamp: Date.now()
-        });
-      }
-    });
-  }
-
-  private measureFirstContentfulPaint() {
-    const observer = new PerformanceObserver((list) => {
-      for (const entry of list.getEntries()) {
-        if (entry.name === 'first-contentful-paint') {
-          this.handleMetric({
-            name: 'first-contentful-paint',
-            value: entry.startTime,
-            rating: entry.startTime < 1800 ? 'good' : entry.startTime < 3000 ? 'needs-improvement' : 'poor',
-            timestamp: Date.now()
-          });
-        }
+  recordPerformanceData(data: PerformanceData): void {
+    this.metrics.push({
+      ...data,
+      metadata: {
+        ...data.metadata,
+        timestamp: Date.now()
       }
     });
 
-    try {
-      observer.observe({ entryTypes: ['paint'] });
-    } catch (e) {
-      // Paint timing might not be supported
+    // Keep only recent metrics
+    if (this.metrics.length > 1000) {
+      this.metrics.shift();
+    }
+
+    // Log performance issues
+    if (this.isPerformanceIssue(data)) {
+      console.warn(`Performance issue detected: ${data.name}`, data);
     }
   }
 
-  private handleMetric(metric: PerformanceMetric) {
-    this.metrics.push(metric);
-    this.observers.forEach(observer => observer(metric));
-
-    // Log poor performance
-    if (metric.rating === 'poor') {
-      console.warn(`Poor ${metric.name}: ${metric.value}`);
-    }
-  }
-
-  recordPerformanceData(data: {
-    name: string;
-    value: number;
-    category: string;
-    metadata?: Record<string, any>;
-  }) {
-    const metric: PerformanceMetric = {
-      name: data.name,
-      value: data.value,
-      rating: 'good', // Default rating, could be calculated based on thresholds
-      timestamp: Date.now(),
-      category: data.category,
-      metadata: data.metadata
+  private isPerformanceIssue(data: PerformanceData): boolean {
+    const thresholds: Record<string, number> = {
+      'component_render': 16, // 16ms for 60fps
+      'api_request': 1000, // 1 second
+      'database_query': 500, // 500ms
+      'bundle_load': 2000 // 2 seconds
     };
-    
-    this.handleMetric(metric);
+
+    const threshold = thresholds[data.category];
+    return threshold && data.value > threshold;
   }
 
-  getMetrics(): PerformanceMetric[] {
-    return [...this.metrics];
+  getMetricsByCategory(category: string): PerformanceData[] {
+    return this.metrics.filter(metric => metric.category === category);
   }
 
-  subscribe(observer: (metric: PerformanceMetric) => void) {
-    this.observers.push(observer);
-    return () => {
-      const index = this.observers.indexOf(observer);
-      if (index > -1) {
-        this.observers.splice(index, 1);
-      }
-    };
+  getAverageMetric(name: string): number {
+    const relevantMetrics = this.metrics.filter(metric => metric.name === name);
+    if (relevantMetrics.length === 0) return 0;
+
+    const sum = relevantMetrics.reduce((acc, metric) => acc + metric.value, 0);
+    return sum / relevantMetrics.length;
   }
 
-  getPerformanceReport() {
-    const report = {
-      summary: {
-        totalMetrics: this.metrics.length,
-        goodMetrics: this.metrics.filter(m => m.rating === 'good').length,
-        poorMetrics: this.metrics.filter(m => m.rating === 'poor').length,
-      },
-      metrics: this.metrics,
-      recommendations: this.generateRecommendations(),
-    };
+  generatePerformanceReport(): Record<string, any> {
+    const categories = [...new Set(this.metrics.map(m => m.category))];
+    const report: Record<string, any> = {};
+
+    categories.forEach(category => {
+      const categoryMetrics = this.getMetricsByCategory(category);
+      report[category] = {
+        count: categoryMetrics.length,
+        averageValue: categoryMetrics.reduce((acc, m) => acc + m.value, 0) / categoryMetrics.length,
+        maxValue: Math.max(...categoryMetrics.map(m => m.value)),
+        minValue: Math.min(...categoryMetrics.map(m => m.value))
+      };
+    });
 
     return report;
   }
 
-  private generateRecommendations(): string[] {
-    const recommendations: string[] = [];
-    const poorMetrics = this.metrics.filter(m => m.rating === 'poor');
-
-    poorMetrics.forEach(metric => {
-      switch (metric.name) {
-        case 'page-load-time':
-          recommendations.push('Optimize page load time by reducing bundle size and optimizing images');
-          break;
-        case 'first-contentful-paint':
-          recommendations.push('Improve First Contentful Paint by reducing render-blocking resources');
-          break;
-      }
-    });
-
-    return [...new Set(recommendations)];
+  clearMetrics(): void {
+    this.metrics = [];
   }
 }
 
-export const performanceMonitor = new PerformanceMonitor();
+export const performanceMonitor = PerformanceMonitor.getInstance();

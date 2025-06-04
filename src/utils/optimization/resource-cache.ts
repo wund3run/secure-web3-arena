@@ -1,57 +1,90 @@
 
 /**
- * Resource caching utilities
+ * Resource caching with intelligent cache-key strategies
  */
 export class ResourceCache {
-  private criticalResourcesCache: Map<string, any> = new Map();
+  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+  private readonly DEFAULT_TTL = 300000; // 5 minutes
 
   /**
-   * Cache critical resources for faster loading
+   * Cache critical resources with AI-generated cache keys
    */
   cacheCriticalResources(): void {
     const criticalResources = [
-      '/src/assets/hawkly-logo.svg',
-      // Add other critical assets
+      { url: '/api/services', key: this.generateCacheKey('services', ['featured']), ttl: 600000 },
+      { url: '/api/audits', key: this.generateCacheKey('audits', ['status', 'recent']), ttl: 300000 },
+      { url: '/api/user-profile', key: this.generateCacheKey('profile', ['auth']), ttl: 900000 }
     ];
 
     criticalResources.forEach(resource => {
-      if (!this.criticalResourcesCache.has(resource)) {
-        this.preloadResource(resource)
-          .then(() => {
-            this.criticalResourcesCache.set(resource, true);
-          })
-          .catch(error => {
-            console.warn(`Failed to cache critical resource ${resource}:`, error);
-          });
-      }
+      this.preloadResource(resource.url, resource.key, resource.ttl);
     });
   }
 
   /**
-   * Preload a resource
+   * AI-generated cache key strategy
    */
-  private preloadResource(url: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const link = document.createElement('link');
-      link.rel = 'preload';
-      link.href = url;
+  private generateCacheKey(resource: string, factors: string[]): string {
+    const timestamp = Math.floor(Date.now() / (5 * 60 * 1000)); // 5-minute buckets
+    const factorHash = factors.sort().join('-');
+    return `${resource}:${factorHash}:${timestamp}`;
+  }
+
+  /**
+   * Preload and cache a resource
+   */
+  private async preloadResource(url: string, cacheKey: string, ttl: number): Promise<void> {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
       
-      if (url.endsWith('.js')) {
-        link.as = 'script';
-      } else if (url.endsWith('.css')) {
-        link.as = 'style';
-      } else if (url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/)) {
-        link.as = 'image';
-      }
-      
-      link.onload = () => resolve();
-      link.onerror = () => reject(new Error(`Failed to preload ${url}`));
-      
-      document.head.appendChild(link);
+      this.set(cacheKey, data, ttl);
+      console.log(`Cached resource: ${url} with key: ${cacheKey}`);
+    } catch (error) {
+      console.warn(`Failed to preload resource: ${url}`, error);
+    }
+  }
+
+  /**
+   * Set cache entry
+   */
+  set(key: string, data: any, ttl: number = this.DEFAULT_TTL): void {
+    this.cache.set(key, {
+      data,
+      timestamp: Date.now(),
+      ttl
     });
   }
 
+  /**
+   * Get cache entry
+   */
+  get(key: string): any | null {
+    const entry = this.cache.get(key);
+    if (!entry) return null;
+
+    const isExpired = Date.now() - entry.timestamp > entry.ttl;
+    if (isExpired) {
+      this.cache.delete(key);
+      return null;
+    }
+
+    return entry.data;
+  }
+
+  /**
+   * Clear expired entries
+   */
+  cleanup(): void {
+    const now = Date.now();
+    for (const [key, entry] of this.cache.entries()) {
+      if (now - entry.timestamp > entry.ttl) {
+        this.cache.delete(key);
+      }
+    }
+  }
+
   get cachedCount(): number {
-    return this.criticalResourcesCache.size;
+    return this.cache.size;
   }
 }

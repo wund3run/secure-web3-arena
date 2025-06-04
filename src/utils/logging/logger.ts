@@ -1,169 +1,70 @@
 
-import { Environment } from '../environment';
-
-export enum LogLevel {
-  DEBUG = 0,
-  INFO = 1,
-  WARN = 2,
-  ERROR = 3,
-  FATAL = 4
-}
-
-interface LogEntry {
-  timestamp: string;
-  level: LogLevel;
-  message: string;
-  metadata?: Record<string, any>;
-  context?: string;
+/**
+ * Enhanced logging system for performance monitoring
+ */
+export interface LogContext {
   correlationId?: string;
-}
-
-interface TimerEntry {
-  name: string;
-  startTime: number;
+  userId?: string;
   metadata?: Record<string, any>;
 }
 
-class Logger {
-  private static logs: LogEntry[] = [];
-  private static readonly MAX_LOGS = 500;
-  private static timers: Map<string, TimerEntry> = new Map();
+export class Logger {
+  private static correlationId = 0;
 
   static generateCorrelationId(): string {
-    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `req_${Date.now()}_${++this.correlationId}`;
   }
 
-  static startTimer(name: string, metadata?: Record<string, any>): () => void {
-    const timerId = `${name}-${this.generateCorrelationId()}`;
-    this.timers.set(timerId, {
-      name,
-      startTime: performance.now(),
-      metadata
-    });
+  static info(message: string, context: LogContext = {}, category: string = 'general'): void {
+    console.log(`[INFO][${category}] ${message}`, context);
+  }
 
+  static debug(message: string, context: LogContext = {}, category: string = 'general'): void {
+    if (process.env.NODE_ENV === 'development') {
+      console.debug(`[DEBUG][${category}] ${message}`, context);
+    }
+  }
+
+  static error(message: string, context: LogContext = {}): void {
+    console.error(`[ERROR] ${message}`, context);
+  }
+
+  static warn(message: string, context: LogContext = {}): void {
+    console.warn(`[WARN] ${message}`, context);
+  }
+
+  static startTimer(operation: string): () => void {
+    const start = performance.now();
     return () => {
-      const timer = this.timers.get(timerId);
-      if (timer) {
-        const duration = performance.now() - timer.startTime;
-        this.info(`Timer ${name} completed`, {
-          duration: `${duration.toFixed(2)}ms`,
-          ...timer.metadata
-        }, 'performance');
-        this.timers.delete(timerId);
-      }
+      const duration = performance.now() - start;
+      this.info(`${operation} completed`, { duration: Math.round(duration) }, 'performance');
     };
-  }
-
-  static debug(message: string, metadata?: Record<string, any>, context?: string): void {
-    this.log(LogLevel.DEBUG, message, metadata, context);
-  }
-
-  static info(message: string, metadata?: Record<string, any>, context?: string): void {
-    this.log(LogLevel.INFO, message, metadata, context);
-  }
-
-  static warn(message: string, metadata?: Record<string, any>, context?: string): void {
-    this.log(LogLevel.WARN, message, metadata, context);
-  }
-
-  static error(message: string, metadata?: Record<string, any>, context?: string): void {
-    this.log(LogLevel.ERROR, message, metadata, context);
-  }
-
-  static fatal(message: string, metadata?: Record<string, any>, context?: string): void {
-    this.log(LogLevel.FATAL, message, metadata, context);
-  }
-
-  private static log(level: LogLevel, message: string, metadata?: Record<string, any>, context?: string): void {
-    const entry: LogEntry = {
-      timestamp: new Date().toISOString(),
-      level,
-      message,
-      metadata,
-      context,
-      correlationId: this.generateCorrelationId()
-    };
-
-    // Add to internal log store
-    this.logs.unshift(entry);
-    if (this.logs.length > this.MAX_LOGS) {
-      this.logs.pop();
-    }
-
-    // Console output based on environment
-    const shouldLog = this.shouldLog(level);
-    if (shouldLog) {
-      const logMethod = level === LogLevel.DEBUG ? console.log : console[LogLevel[level].toLowerCase() as keyof Console] as Function;
-      const contextStr = context ? `[${context}]` : '';
-      logMethod(`${contextStr} ${message}`, metadata || '');
-    }
-
-    // Send to external logging service in production
-    if (Environment.isProduction && (level === LogLevel.ERROR || level === LogLevel.FATAL)) {
-      this.sendToExternalLogger(entry);
-    }
-  }
-
-  private static shouldLog(level: LogLevel): boolean {
-    const currentLevelIndex = this.getEnvironmentLogLevel();
-    return level >= currentLevelIndex;
-  }
-
-  private static getEnvironmentLogLevel(): LogLevel {
-    if (Environment.isDevelopment) return LogLevel.DEBUG;
-    if (Environment.isTest) return LogLevel.WARN;
-    return LogLevel.ERROR;
-  }
-
-  private static async sendToExternalLogger(entry: LogEntry): Promise<void> {
-    try {
-      // In production, send to logging service (Datadog, Splunk, etc.)
-      // await fetch('/api/logs', { method: 'POST', body: JSON.stringify(entry) });
-    } catch (error) {
-      console.error('Failed to send log to external service:', error);
-    }
-  }
-
-  static getLogs(level?: LogLevel): LogEntry[] {
-    if (level !== undefined) {
-      return this.logs.filter(log => log.level === level);
-    }
-    return [...this.logs];
-  }
-
-  static clearLogs(): void {
-    this.logs = [];
   }
 }
 
-// Specialized loggers
-export const auditLogger = {
-  statusChanged: (auditId: string, oldStatus: string, newStatus: string, userId: string) => {
-    Logger.info('Audit status changed', {
-      auditId,
-      oldStatus,
-      newStatus,
-      userId
-    }, 'audit');
-  }
-};
-
-export const performanceLogger = {
-  recordMetric: (name: string, value: number, metadata?: Record<string, any>) => {
-    Logger.debug('Performance metric recorded', {
-      name,
-      value,
-      ...metadata
-    }, 'performance');
-  },
-
-  databaseQuery: (queryName: string, duration: number, metadata?: Record<string, any>) => {
-    Logger.debug('Database query performance', {
-      queryName,
-      duration,
-      ...metadata
+export class PerformanceLogger {
+  static databaseQuery(queryName: string, duration: number, context: LogContext = {}): void {
+    Logger.info(`DB Query: ${queryName}`, { 
+      ...context, 
+      duration: Math.round(duration),
+      category: 'database'
     }, 'database');
   }
-};
 
-export { Logger, LogLevel as LogLevelType };
+  static apiRequest(endpoint: string, duration: number, status: number): void {
+    Logger.info(`API Request: ${endpoint}`, { 
+      duration: Math.round(duration),
+      status
+    }, 'api');
+  }
+
+  static componentRender(componentName: string, duration: number): void {
+    if (duration > 16) { // Only log if longer than one frame
+      Logger.debug(`Component render: ${componentName}`, { 
+        duration: Math.round(duration)
+      }, 'render');
+    }
+  }
+}
+
+export const performanceLogger = PerformanceLogger;

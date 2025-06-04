@@ -1,70 +1,105 @@
-
-import { EnhancedToastSystem } from "@/components/ui/enhanced-toast-system";
-
+/**
+ * Accessibility error handling and reporting
+ */
 export interface AccessibilityError {
   type: 'focus' | 'keyboard' | 'screen-reader' | 'color-contrast' | 'aria';
-  severity: 'low' | 'medium' | 'high';
-  element?: HTMLElement;
   message: string;
-  suggestion?: string;
+  element: HTMLElement;
+  severity: 'low' | 'medium' | 'high';
+  suggestion: string;
+  timestamp: Date;
 }
 
-export class AccessibilityErrorHandler {
-  private static errors: AccessibilityError[] = [];
-  
-  static reportError(error: AccessibilityError) {
+class AccessibilityErrorHandler {
+  private errors: AccessibilityError[] = [];
+  private readonly MAX_ERRORS = 500;
+
+  handleError(
+    type: AccessibilityError['type'],
+    message: string,
+    element: HTMLElement,
+    severity: AccessibilityError['severity'] = 'medium',
+    suggestion: string = ''
+  ): void {
+    const error: AccessibilityError = {
+      type,
+      message,
+      element,
+      severity,
+      suggestion,
+      timestamp: new Date()
+    };
+
     this.errors.push(error);
-    this.handleError(error);
+
+    // Keep only recent errors
+    if (this.errors.length > this.MAX_ERRORS) {
+      this.errors.shift();
+    }
+
+    // Log to console in development
+    if (process.env.NODE_ENV === 'development') {
+      const logLevel = severity === 'high' ? 'error' : 'warn';
+      console[logLevel](`Accessibility ${severity}: ${message}`, {
+        type,
+        element,
+        suggestion
+      });
+    }
+
+    // Add visual indicator for high severity issues
+    if (severity === 'high') {
+      this.addVisualIndicator(element, type);
+    }
   }
-  
-  private static handleError(error: AccessibilityError) {
-    const message = `Accessibility ${error.type}: ${error.message}`;
+
+  private addVisualIndicator(element: HTMLElement, type: string): void {
+    // Only add indicators in development mode
+    if (process.env.NODE_ENV !== 'development') return;
+
+    element.style.outline = '2px dashed red';
+    element.title = `Accessibility Issue: ${type}`;
     
-    switch (error.severity) {
-      case 'high':
-        EnhancedToastSystem.error(
-          "Critical Accessibility Issue",
-          message,
-          error.suggestion ? 8000 : 6000
-        );
-        break;
-      case 'medium':
-        EnhancedToastSystem.warning("Accessibility Warning", message);
-        break;
-      case 'low':
-        console.warn(`[A11Y] ${message}`);
-        break;
-    }
+    // Remove indicator after 5 seconds
+    setTimeout(() => {
+      element.style.outline = '';
+      element.title = '';
+    }, 5000);
   }
-  
-  private static showSuggestion(error: AccessibilityError) {
-    if (error.suggestion) {
-      EnhancedToastSystem.info("Accessibility Suggestion", error.suggestion);
+
+  getErrors(type?: AccessibilityError['type']): AccessibilityError[] {
+    if (type) {
+      return this.errors.filter(error => error.type === type);
     }
-  }
-  
-  static getErrors(): AccessibilityError[] {
     return [...this.errors];
   }
-  
-  static clearErrors() {
+
+  getErrorsSummary(): Record<string, number> {
+    const summary: Record<string, number> = {};
+    
+    this.errors.forEach(error => {
+      const key = `${error.type}_${error.severity}`;
+      summary[key] = (summary[key] || 0) + 1;
+    });
+
+    return summary;
+  }
+
+  clearErrors(): void {
     this.errors = [];
   }
 }
 
-// Utility function to check common accessibility issues
-export const handleAccessibilityError = (
+const accessibilityErrorHandler = new AccessibilityErrorHandler();
+
+export function handleAccessibilityError(
   type: AccessibilityError['type'],
   message: string,
-  element?: HTMLElement,
+  element: HTMLElement,
   severity: AccessibilityError['severity'] = 'medium',
-  suggestion?: string
-) => {
-  AccessibilityErrorHandler.reportError({
-    type,
-    severity,
-    element,
-    message,
-    suggestion
-  });
-};
+  suggestion: string = ''
+): void {
+  accessibilityErrorHandler.handleError(type, message, element, severity, suggestion);
+}
+
+export { accessibilityErrorHandler };

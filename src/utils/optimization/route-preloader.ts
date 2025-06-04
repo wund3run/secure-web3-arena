@@ -1,113 +1,81 @@
 
 /**
- * Route preloading utilities
+ * Route preloading and code splitting utilities
  */
 export class RoutePreloader {
-  private preloadedRoutes: Set<string> = new Set();
+  private preloadedRoutes = new Set<string>();
+  private userBehaviorData = new Map<string, number>();
 
   /**
-   * Preload route components based on user behavior
-   */
-  preloadRoute(routePath: string): Promise<void> {
-    if (this.preloadedRoutes.has(routePath)) {
-      return Promise.resolve();
-    }
-
-    // Route component mapping for preloading - only include existing pages
-    const routeMap: Record<string, () => Promise<any>> = {
-      '/dashboard': () => import('@/pages/Dashboard'),
-      '/audits': () => import('@/pages/Audits'),
-      '/marketplace': () => import('@/pages/Marketplace'),
-      '/request-audit': () => import('@/pages/RequestAudit'),
-      '/auth': () => import('@/pages/Auth'),
-    };
-
-    const preloadFunction = routeMap[routePath];
-    if (preloadFunction) {
-      this.preloadedRoutes.add(routePath);
-      return preloadFunction().catch(err => {
-        console.warn(`Failed to preload route ${routePath}:`, err);
-        this.preloadedRoutes.delete(routePath);
-      });
-    }
-
-    return Promise.resolve();
-  }
-
-  /**
-   * Intelligent route preloading based on current page
+   * Intelligent route preloading based on user behavior
    */
   intelligentPreload(currentRoute: string): void {
-    const preloadStrategies: Record<string, string[]> = {
-      '/': ['/marketplace', '/request-audit'],
-      '/marketplace': ['/audits', '/dashboard'],
-      '/audits': ['/dashboard', '/marketplace'],
-      '/dashboard': ['/audits', '/marketplace'],
-      '/request-audit': ['/marketplace', '/audits'],
-    };
-
-    const routesToPreload = preloadStrategies[currentRoute] || [];
+    const likelyNextRoutes = this.predictNextRoutes(currentRoute);
     
-    // Use requestIdleCallback for non-blocking preloading
-    const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
-    
-    routesToPreload.forEach((route, index) => {
-      idleCallback(() => {
-        setTimeout(() => {
-          this.preloadRoute(route);
-        }, index * 1000); // Stagger preloads
-      });
+    likelyNextRoutes.forEach(route => {
+      if (!this.preloadedRoutes.has(route)) {
+        this.preloadRoute(route);
+      }
     });
   }
 
   /**
-   * Preload routes based on user hover/focus behavior
+   * Preload a specific route chunk
    */
-  setupLinkPreloading(): void {
-    document.addEventListener('mouseover', this.handleLinkHover.bind(this));
-    document.addEventListener('focusin', this.handleLinkFocus.bind(this));
-  }
-
-  private handleLinkHover(event: MouseEvent): void {
-    const target = event.target as HTMLElement;
-    const link = target.closest('a[href]') as HTMLAnchorElement;
+  private preloadRoute(route: string): void {
+    const routeChunks = this.getRouteChunks(route);
     
-    if (link && link.href && this.isInternalLink(link.href)) {
-      const path = new URL(link.href).pathname;
-      this.preloadRoute(path);
-    }
-  }
-
-  private handleLinkFocus(event: FocusEvent): void {
-    const target = event.target as HTMLElement;
+    routeChunks.forEach(chunk => {
+      const link = document.createElement('link');
+      link.rel = 'modulepreload';
+      link.href = chunk;
+      document.head.appendChild(link);
+    });
     
-    if (target.tagName === 'A') {
-      const link = target as HTMLAnchorElement;
-      if (link.href && this.isInternalLink(link.href)) {
-        const path = new URL(link.href).pathname;
-        this.preloadRoute(path);
-      }
-    }
-  }
-
-  private isInternalLink(href: string): boolean {
-    try {
-      const url = new URL(href);
-      return url.origin === window.location.origin;
-    } catch {
-      return false;
-    }
+    this.preloadedRoutes.add(route);
+    console.log(`Preloaded route: ${route}`);
   }
 
   /**
-   * Get count of preloaded routes
+   * Get chunks for a specific route
    */
-  get preloadedCount(): number {
-    return this.preloadedRoutes.size;
+  private getRouteChunks(route: string): string[] {
+    const chunkMap: Record<string, string[]> = {
+      '/audits': ['/assets/audits-chunk.js'],
+      '/marketplace': ['/assets/marketplace-chunk.js'],
+      '/dashboard': ['/assets/dashboard-chunk.js'],
+      '/admin': ['/assets/admin-chunk.js'],
+      '/auth': ['/assets/auth-chunk.js']
+    };
+    
+    return chunkMap[route] || [];
   }
 
-  cleanup(): void {
-    document.removeEventListener('mouseover', this.handleLinkHover);
-    document.removeEventListener('focusin', this.handleLinkFocus);
+  /**
+   * Predict next routes based on current route and user behavior
+   */
+  private predictNextRoutes(currentRoute: string): string[] {
+    const predictions: Record<string, string[]> = {
+      '/': ['/marketplace', '/audits', '/auth'],
+      '/marketplace': ['/audits', '/dashboard'],
+      '/audits': ['/dashboard', '/marketplace'],
+      '/dashboard': ['/audits', '/marketplace'],
+      '/auth': ['/dashboard', '/marketplace']
+    };
+    
+    return predictions[currentRoute] || [];
+  }
+
+  /**
+   * Track user navigation patterns
+   */
+  trackNavigation(from: string, to: string): void {
+    const transitionKey = `${from}->${to}`;
+    const currentCount = this.userBehaviorData.get(transitionKey) || 0;
+    this.userBehaviorData.set(transitionKey, currentCount + 1);
+  }
+
+  get preloadedCount(): number {
+    return this.preloadedRoutes.size;
   }
 }
