@@ -76,6 +76,10 @@ const DashboardProject = React.lazy(() => import("@/pages/DashboardProject"));
 const SecurityPolicy = React.lazy(() => import("@/pages/SecurityPolicy"));
 const Pricing = React.lazy(() => import("@/pages/Pricing"));
 
+// Add the UX enhancements and Performance Optimization pages
+const UXEnhancements = React.lazy(() => import("@/pages/UXEnhancements"));
+const PerformanceOptimization = React.lazy(() => import("@/pages/PerformanceOptimization"));
+
 // Enhanced loading fallback
 const AppLoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
@@ -110,9 +114,6 @@ const queryClient = new QueryClient({
     },
   },
 });
-
-// Add the new UX enhancements page import
-const UXEnhancements = React.lazy(() => import("@/pages/UXEnhancements"));
 
 function App() {
   return (

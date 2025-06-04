@@ -1,3 +1,4 @@
+
 /**
  * Analytics tracking for performance optimization insights
  */
@@ -5,7 +6,7 @@ class AnalyticsTracker {
   private events: Array<{ event: string; category: string; data: any; timestamp: number }> = [];
   private readonly MAX_EVENTS = 1000;
 
-  track(event: string, category: string, data: any = {}): void {
+  track(category: string, event: string, data: any = {}): void {
     this.events.push({
       event,
       category,

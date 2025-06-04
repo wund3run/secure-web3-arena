@@ -1,210 +1,182 @@
 
-import { supabase } from '@/integrations/supabase/client';
 import { Logger } from '../logging/logger';
+import { CacheManager } from '../database/cacheManager';
 
-interface HealthCheckResult {
-  service: string;
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  responseTime: number;
-  details?: string;
+export interface HealthCheckResult {
+  component: string;
+  status: 'healthy' | 'warning' | 'error';
+  message: string;
+  responseTime?: number;
+  metadata?: Record<string, any>;
 }
 
 export class HealthChecker {
   static async performComprehensiveCheck(): Promise<{
-    overall: 'healthy' | 'degraded' | 'unhealthy';
+    overall: 'healthy' | 'warning' | 'error';
     results: HealthCheckResult[];
   }> {
-    const checks = [
-      this.checkDatabase(),
-      this.checkAuth(),
-      this.checkAPI(),
-      this.checkStorage(),
-      this.checkRealtime()
-    ];
+    const results: HealthCheckResult[] = [];
 
-    const results = await Promise.all(checks);
-    const overall = this.calculateOverallHealth(results);
+    // Check cache system
+    results.push(await this.checkCacheSystem());
+    
+    // Check memory usage
+    results.push(await this.checkMemoryUsage());
+    
+    // Check performance metrics
+    results.push(await this.checkPerformanceMetrics());
+    
+    // Check local storage
+    results.push(await this.checkLocalStorage());
+
+    // Determine overall health
+    const hasError = results.some(r => r.status === 'error');
+    const hasWarning = results.some(r => r.status === 'warning');
+    
+    const overall = hasError ? 'error' : hasWarning ? 'warning' : 'healthy';
 
     Logger.info('Health check completed', {
-      metadata: { overall, unhealthyServices: results.filter(r => r.status !== 'healthy').length }
+      overall,
+      metadata: { 
+        totalChecks: results.length,
+        errors: results.filter(r => r.status === 'error').length,
+        warnings: results.filter(r => r.status === 'warning').length
+      }
     }, 'health');
 
     return { overall, results };
   }
 
-  private static async checkDatabase(): Promise<HealthCheckResult> {
+  private static async checkCacheSystem(): Promise<HealthCheckResult> {
     const startTime = performance.now();
     
     try {
-      const { error } = await supabase
-        .from('extended_profiles')
-        .select('id')
-        .limit(1);
-
+      const stats = CacheManager.getStats();
       const responseTime = performance.now() - startTime;
-
-      if (error) {
-        return {
-          service: 'database',
-          status: 'unhealthy',
-          responseTime,
-          details: error.message
-        };
-      }
-
+      
+      const status = stats.activeEntries > 100 ? 'warning' : 'healthy';
+      
       return {
-        service: 'database',
-        status: responseTime < 500 ? 'healthy' : 'degraded',
-        responseTime
+        component: 'cache_system',
+        status,
+        message: `Cache system operational with ${stats.activeEntries} active entries`,
+        responseTime,
+        metadata: stats
       };
     } catch (error) {
       return {
-        service: 'database',
-        status: 'unhealthy',
+        component: 'cache_system',
+        status: 'error',
+        message: 'Cache system check failed',
         responseTime: performance.now() - startTime,
-        details: error instanceof Error ? error.message : 'Unknown error'
+        metadata: { error: error instanceof Error ? error.message : 'Unknown error' }
       };
     }
   }
 
-  private static async checkAuth(): Promise<HealthCheckResult> {
+  private static async checkMemoryUsage(): Promise<HealthCheckResult> {
     const startTime = performance.now();
     
     try {
-      const { data, error } = await supabase.auth.getSession();
-      const responseTime = performance.now() - startTime;
-
-      if (error) {
-        return {
-          service: 'authentication',
-          status: 'degraded',
-          responseTime,
-          details: error.message
-        };
-      }
-
-      return {
-        service: 'authentication',
-        status: 'healthy',
-        responseTime
-      };
-    } catch (error) {
-      return {
-        service: 'authentication',
-        status: 'unhealthy',
-        responseTime: performance.now() - startTime,
-        details: error instanceof Error ? error.message : 'Unknown error'
-      };
-    }
-  }
-
-  private static async checkAPI(): Promise<HealthCheckResult> {
-    const startTime = performance.now();
-    
-    try {
-      // Test a simple API call
-      const response = await fetch('/api/health', { method: 'HEAD' });
-      const responseTime = performance.now() - startTime;
-
-      if (!response.ok && response.status !== 404) {
-        return {
-          service: 'api',
-          status: 'degraded',
-          responseTime,
-          details: `HTTP ${response.status}`
-        };
-      }
-
-      return {
-        service: 'api',
-        status: responseTime < 1000 ? 'healthy' : 'degraded',
-        responseTime
-      };
-    } catch (error) {
-      return {
-        service: 'api',
-        status: 'unhealthy',
-        responseTime: performance.now() - startTime,
-        details: error instanceof Error ? error.message : 'Network error'
-      };
-    }
-  }
-
-  private static async checkStorage(): Promise<HealthCheckResult> {
-    const startTime = performance.now();
-    
-    try {
-      // Test storage connectivity
-      const { data, error } = await supabase.storage.listBuckets();
-      const responseTime = performance.now() - startTime;
-
-      if (error) {
-        return {
-          service: 'storage',
-          status: 'degraded',
-          responseTime,
-          details: error.message
-        };
-      }
-
-      return {
-        service: 'storage',
-        status: 'healthy',
-        responseTime
-      };
-    } catch (error) {
-      return {
-        service: 'storage',
-        status: 'unhealthy',
-        responseTime: performance.now() - startTime,
-        details: error instanceof Error ? error.message : 'Unknown error'
-      };
-    }
-  }
-
-  private static async checkRealtime(): Promise<HealthCheckResult> {
-    const startTime = performance.now();
-    
-    try {
-      // Test realtime connection
-      const channel = supabase.channel('health-check');
-      const responseTime = performance.now() - startTime;
-
-      await new Promise<void>((resolve) => {
-        channel.subscribe((status) => {
-          if (status === 'SUBSCRIBED') {
-            resolve();
-          }
-        });
+      if ('memory' in performance) {
+        const memory = (performance as any).memory;
+        const usedMB = memory.usedJSHeapSize / 1024 / 1024;
+        const totalMB = memory.totalJSHeapSize / 1024 / 1024;
+        const limitMB = memory.jsHeapSizeLimit / 1024 / 1024;
         
-        // Timeout after 5 seconds
-        setTimeout(resolve, 5000);
-      });
-
-      supabase.removeChannel(channel);
-
-      return {
-        service: 'realtime',
-        status: responseTime < 2000 ? 'healthy' : 'degraded',
-        responseTime
-      };
+        const usagePercent = (usedMB / limitMB) * 100;
+        const status = usagePercent > 80 ? 'error' : usagePercent > 60 ? 'warning' : 'healthy';
+        
+        return {
+          component: 'memory_usage',
+          status,
+          message: `Memory usage: ${usedMB.toFixed(1)}MB (${usagePercent.toFixed(1)}%)`,
+          responseTime: performance.now() - startTime,
+          metadata: { usedMB, totalMB, limitMB, usagePercent }
+        };
+      } else {
+        return {
+          component: 'memory_usage',
+          status: 'warning',
+          message: 'Memory API not available',
+          responseTime: performance.now() - startTime
+        };
+      }
     } catch (error) {
       return {
-        service: 'realtime',
-        status: 'unhealthy',
+        component: 'memory_usage',
+        status: 'error',
+        message: 'Memory check failed',
         responseTime: performance.now() - startTime,
-        details: error instanceof Error ? error.message : 'Unknown error'
+        metadata: { error: error instanceof Error ? error.message : 'Unknown error' }
       };
     }
   }
 
-  private static calculateOverallHealth(results: HealthCheckResult[]): 'healthy' | 'degraded' | 'unhealthy' {
-    const unhealthyCount = results.filter(r => r.status === 'unhealthy').length;
-    const degradedCount = results.filter(r => r.status === 'degraded').length;
+  private static async checkPerformanceMetrics(): Promise<HealthCheckResult> {
+    const startTime = performance.now();
+    
+    try {
+      // Simple performance check
+      const navigationTiming = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      
+      if (navigationTiming) {
+        const loadTime = navigationTiming.loadEventEnd - navigationTiming.fetchStart;
+        const status = loadTime > 5000 ? 'error' : loadTime > 3000 ? 'warning' : 'healthy';
+        
+        return {
+          component: 'performance_metrics',
+          status,
+          message: `Page load time: ${loadTime.toFixed(0)}ms`,
+          responseTime: performance.now() - startTime,
+          metadata: { loadTime }
+        };
+      } else {
+        return {
+          component: 'performance_metrics',
+          status: 'healthy',
+          message: 'Performance metrics not yet available',
+          responseTime: performance.now() - startTime
+        };
+      }
+    } catch (error) {
+      return {
+        component: 'performance_metrics',
+        status: 'error',
+        message: 'Performance metrics check failed',
+        responseTime: performance.now() - startTime,
+        metadata: { error: error instanceof Error ? error.message : 'Unknown error' }
+      };
+    }
+  }
 
-    if (unhealthyCount > 0) return 'unhealthy';
-    if (degradedCount > 1) return 'degraded';
-    if (degradedCount > 0) return 'degraded';
-    return 'healthy';
+  private static async checkLocalStorage(): Promise<HealthCheckResult> {
+    const startTime = performance.now();
+    
+    try {
+      const testKey = 'health_check_test';
+      const testValue = 'test_data';
+      
+      localStorage.setItem(testKey, testValue);
+      const retrieved = localStorage.getItem(testKey);
+      localStorage.removeItem(testKey);
+      
+      const status = retrieved === testValue ? 'healthy' : 'error';
+      
+      return {
+        component: 'local_storage',
+        status,
+        message: status === 'healthy' ? 'Local storage operational' : 'Local storage test failed',
+        responseTime: performance.now() - startTime
+      };
+    } catch (error) {
+      return {
+        component: 'local_storage',
+        status: 'error',
+        message: 'Local storage access failed',
+        responseTime: performance.now() - startTime,
+        metadata: { error: error instanceof Error ? error.message : 'Unknown error' }
+      };
+    }
   }
 }

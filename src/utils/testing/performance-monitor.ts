@@ -1,3 +1,4 @@
+
 /**
  * Performance monitoring and testing utilities
  */
@@ -8,9 +9,18 @@ export interface PerformanceData {
   metadata?: Record<string, any>;
 }
 
+export interface PerformanceMetric {
+  name: string;
+  value: number;
+  category: string;
+  timestamp: string;
+  metadata?: Record<string, any>;
+}
+
 export class PerformanceMonitor {
   private static instance: PerformanceMonitor;
   private metrics: PerformanceData[] = [];
+  private subscribers: ((metric: PerformanceMetric) => void)[] = [];
 
   static getInstance(): PerformanceMonitor {
     if (!PerformanceMonitor.instance) {
@@ -33,10 +43,36 @@ export class PerformanceMonitor {
       this.metrics.shift();
     }
 
+    // Notify subscribers
+    const metric: PerformanceMetric = {
+      ...data,
+      timestamp: new Date().toISOString()
+    };
+    
+    this.subscribers.forEach(subscriber => {
+      try {
+        subscriber(metric);
+      } catch (error) {
+        console.warn('Error in performance metric subscriber:', error);
+      }
+    });
+
     // Log performance issues
     if (this.isPerformanceIssue(data)) {
       console.warn(`Performance issue detected: ${data.name}`, data);
     }
+  }
+
+  subscribe(callback: (metric: PerformanceMetric) => void): () => void {
+    this.subscribers.push(callback);
+    
+    // Return unsubscribe function
+    return () => {
+      const index = this.subscribers.indexOf(callback);
+      if (index > -1) {
+        this.subscribers.splice(index, 1);
+      }
+    };
   }
 
   private isPerformanceIssue(data: PerformanceData): boolean {

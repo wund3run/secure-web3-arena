@@ -1,108 +1,147 @@
 
-import { supabase } from '@/integrations/supabase/client';
+import { Logger } from '../logging/logger';
 
-export interface CacheConfig {
-  ttl: number; // Time to live in seconds
-  key: string;
-  tags?: string[]; // For cache invalidation
+interface CacheEntry<T = any> {
+  data: T;
+  timestamp: number;
+  ttl: number;
+  tags: string[];
+}
+
+interface CacheOptions {
+  ttl?: number; // Time to live in seconds
+  tags?: string[];
 }
 
 export class CacheManager {
-  private static cache = new Map<string, { data: any; timestamp: number; ttl: number; tags: string[] }>();
+  private static cache = new Map<string, CacheEntry>();
   private static readonly DEFAULT_TTL = 300; // 5 minutes
 
-  static async get<T>(key: string): Promise<T | null> {
-    const cached = this.cache.get(key);
-    if (!cached) return null;
+  static set<T>(key: string, data: T, options: CacheOptions = {}): void {
+    const entry: CacheEntry<T> = {
+      data,
+      timestamp: Date.now(),
+      ttl: (options.ttl || this.DEFAULT_TTL) * 1000, // Convert to milliseconds
+      tags: options.tags || []
+    };
 
-    const now = Date.now();
-    const isExpired = (now - cached.timestamp) / 1000 > cached.ttl;
+    this.cache.set(key, entry);
+    Logger.debug('Cache entry set', { key, ttl: entry.ttl }, 'cache');
+  }
 
+  static get<T>(key: string): T | null {
+    const entry = this.cache.get(key);
+    if (!entry) return null;
+
+    const isExpired = Date.now() - entry.timestamp > entry.ttl;
     if (isExpired) {
       this.cache.delete(key);
+      Logger.debug('Cache entry expired', { key }, 'cache');
       return null;
     }
 
-    console.log(`Cache hit for key: ${key}`);
-    return cached.data as T;
+    Logger.debug('Cache hit', { key }, 'cache');
+    return entry.data as T;
   }
 
-  static set<T>(key: string, data: T, config: Partial<CacheConfig> = {}): void {
-    const ttl = config.ttl || this.DEFAULT_TTL;
-    const tags = config.tags || [];
+  static has(key: string): boolean {
+    const entry = this.cache.get(key);
+    if (!entry) return false;
 
-    this.cache.set(key, {
-      data,
-      timestamp: Date.now(),
-      ttl,
-      tags
-    });
-
-    console.log(`Cache set for key: ${key}, TTL: ${ttl}s`);
-  }
-
-  static invalidate(key: string): void {
-    this.cache.delete(key);
-    console.log(`Cache invalidated for key: ${key}`);
-  }
-
-  static invalidateByTag(tag: string): void {
-    const keysToInvalidate: string[] = [];
-    
-    for (const [key, value] of this.cache.entries()) {
-      if (value.tags.includes(tag)) {
-        keysToInvalidate.push(key);
-      }
+    const isExpired = Date.now() - entry.timestamp > entry.ttl;
+    if (isExpired) {
+      this.cache.delete(key);
+      return false;
     }
 
-    keysToInvalidate.forEach(key => {
-      this.cache.delete(key);
-      console.log(`Cache invalidated for key: ${key} (tag: ${tag})`);
-    });
+    return true;
+  }
+
+  static delete(key: string): boolean {
+    const deleted = this.cache.delete(key);
+    if (deleted) {
+      Logger.debug('Cache entry deleted', { key }, 'cache');
+    }
+    return deleted;
   }
 
   static clear(): void {
+    const size = this.cache.size;
     this.cache.clear();
-    console.log('Cache cleared');
+    Logger.info('Cache cleared', { entriesCleared: size }, 'cache');
   }
 
-  static getStats() {
-    const entries = Array.from(this.cache.entries());
-    const now = Date.now();
+  static invalidateByTag(tag: string): void {
+    let invalidatedCount = 0;
     
+    for (const [key, entry] of this.cache.entries()) {
+      if (entry.tags.includes(tag)) {
+        this.cache.delete(key);
+        invalidatedCount++;
+      }
+    }
+
+    Logger.info('Cache invalidated by tag', { tag, invalidatedCount }, 'cache');
+  }
+
+  static getStats(): {
+    totalEntries: number;
+    activeEntries: number;
+    memoryUsage: string;
+  } {
+    const totalEntries = this.cache.size;
+    let activeEntries = 0;
+    let memoryEstimate = 0;
+
+    for (const [key, entry] of this.cache.entries()) {
+      const isExpired = Date.now() - entry.timestamp > entry.ttl;
+      if (!isExpired) {
+        activeEntries++;
+      }
+      
+      // Rough memory estimate
+      memoryEstimate += key.length + JSON.stringify(entry.data).length;
+    }
+
     return {
-      totalEntries: entries.length,
-      activeEntries: entries.filter(([_, value]) => 
-        (now - value.timestamp) / 1000 <= value.ttl
-      ).length,
-      expiredEntries: entries.filter(([_, value]) => 
-        (now - value.timestamp) / 1000 > value.ttl
-      ).length,
-      memoryUsage: this.estimateMemoryUsage()
+      totalEntries,
+      activeEntries,
+      memoryUsage: `${Math.round(memoryEstimate / 1024)} KB`
     };
   }
 
-  private static estimateMemoryUsage(): string {
-    const size = JSON.stringify(Array.from(this.cache.entries())).length;
-    return `${(size / 1024).toFixed(2)} KB`;
+  static cleanup(): void {
+    let cleanedCount = 0;
+    
+    for (const [key, entry] of this.cache.entries()) {
+      const isExpired = Date.now() - entry.timestamp > entry.ttl;
+      if (isExpired) {
+        this.cache.delete(key);
+        cleanedCount++;
+      }
+    }
+
+    if (cleanedCount > 0) {
+      Logger.debug('Cache cleanup completed', { cleanedCount }, 'cache');
+    }
   }
 }
 
-// Cached query wrapper for Supabase
+// Helper function for cached queries
 export async function cachedQuery<T>(
   key: string,
   queryFn: () => Promise<T>,
-  config: Partial<CacheConfig> = {}
+  options: CacheOptions = {}
 ): Promise<T> {
-  // Try to get from cache first
-  const cached = await CacheManager.get<T>(key);
+  // Check cache first
+  const cached = CacheManager.get<T>(key);
   if (cached !== null) {
     return cached;
   }
 
   // Execute query and cache result
-  const data = await queryFn();
-  CacheManager.set(key, data, config);
+  const result = await queryFn();
+  CacheManager.set(key, result, options);
   
-  return data;
+  return result;
 }
