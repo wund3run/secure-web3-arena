@@ -11,14 +11,14 @@ export class SystemInitializer {
 
   static async initialize(): Promise<void> {
     if (this.initialized) {
-      Logger.warn('System already initialized', {}, 'system');
+      Logger.warn('System already initialized', { category: 'system' });
       return;
     }
 
     const stopTimer = Logger.startTimer('system_initialization');
 
     try {
-      Logger.info('Starting system initialization', {}, 'system');
+      Logger.info('Starting system initialization', { category: 'system' });
 
       // Initialize core monitoring systems
       await this.initializeMonitoring();
@@ -33,12 +33,13 @@ export class SystemInitializer {
       await this.performInitialHealthCheck();
 
       this.initialized = true;
-      Logger.info('System initialization completed successfully', {}, 'system');
+      Logger.info('System initialization completed successfully', { category: 'system' });
 
     } catch (error) {
       Logger.fatal('System initialization failed', {
-        metadata: { error: error instanceof Error ? error.message : 'Unknown error' }
-      }, 'system');
+        error: error instanceof Error ? error.message : 'Unknown error',
+        category: 'system'
+      });
       throw error;
     } finally {
       stopTimer();
@@ -48,12 +49,12 @@ export class SystemInitializer {
   private static async initializeMonitoring(): Promise<void> {
     MonitoringService.init();
     PerformanceMonitor.init();
-    Logger.info('Monitoring systems initialized', {}, 'system');
+    Logger.info('Monitoring systems initialized', { category: 'system' });
   }
 
   private static async initializeDataSync(): Promise<void> {
     initializeCriticalSyncs();
-    Logger.info('Data synchronization initialized', {}, 'system');
+    Logger.info('Data synchronization initialized', { category: 'system' });
   }
 
   private static setupMaintenance(): void {
@@ -72,7 +73,7 @@ export class SystemInitializer {
       }
     });
 
-    Logger.info('Maintenance systems set up', {}, 'system');
+    Logger.info('Maintenance systems set up', { category: 'system' });
   }
 
   private static async performInitialHealthCheck(): Promise<void> {
@@ -80,15 +81,17 @@ export class SystemInitializer {
     
     if (overall !== 'healthy') {
       Logger.warn('System health check shows issues', {
-        metadata: { overall, issues: results.filter(r => r.status !== 'healthy') }
-      }, 'system');
+        overall, 
+        issues: results.filter(r => r.status !== 'healthy'),
+        category: 'system'
+      });
     }
   }
 
   static cleanup(): void {
     if (!this.initialized) return;
 
-    Logger.info('Starting system cleanup', {}, 'system');
+    Logger.info('Starting system cleanup', { category: 'system' });
 
     try {
       // Stop maintenance
@@ -100,16 +103,18 @@ export class SystemInitializer {
       // Generate final reports
       const performanceReport = PerformanceMonitor.generatePerformanceReport();
       Logger.info('Final performance report', {
-        metadata: performanceReport
-      }, 'system');
+        ...performanceReport,
+        category: 'system'
+      });
 
       this.initialized = false;
-      Logger.info('System cleanup completed', {}, 'system');
+      Logger.info('System cleanup completed', { category: 'system' });
 
     } catch (error) {
       Logger.error('System cleanup failed', {
-        metadata: { error: error instanceof Error ? error.message : 'Unknown error' }
-      }, 'system');
+        error: error instanceof Error ? error.message : 'Unknown error',
+        category: 'system'
+      });
     }
   }
 

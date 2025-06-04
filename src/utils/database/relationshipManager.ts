@@ -27,8 +27,10 @@ export class DatabaseRelationshipManager {
 
         if (insertError) {
           Logger.error('Failed to create extended profile', {
-            metadata: { userId, error: insertError.message }
-          }, 'database');
+            userId, 
+            error: insertError.message,
+            category: 'database'
+          });
           throw insertError;
         }
       }
@@ -36,8 +38,10 @@ export class DatabaseRelationshipManager {
       return true;
     } catch (error) {
       Logger.error('Extended profile relationship error', {
-        metadata: { userId, error: error instanceof Error ? error.message : 'Unknown error' }
-      }, 'database');
+        userId, 
+        error: error instanceof Error ? error.message : 'Unknown error',
+        category: 'database'
+      });
       return false;
     }
   }
@@ -64,8 +68,10 @@ export class DatabaseRelationshipManager {
 
     if (error) {
       Logger.error('Failed to fetch auditor with profile', {
-        metadata: { auditorId, error: error.message }
-      }, 'database');
+        auditorId, 
+        error: error.message,
+        category: 'database'
+      });
     }
 
     return { data, error };
@@ -94,8 +100,10 @@ export class DatabaseRelationshipManager {
 
     if (error) {
       Logger.error('Failed to fetch audit request with relations', {
-        metadata: { requestId, error: error.message }
-      }, 'database');
+        requestId, 
+        error: error.message,
+        category: 'database'
+      });
     }
 
     return { data, error };
@@ -115,8 +123,10 @@ export class DatabaseRelationshipManager {
 
     if (error) {
       Logger.error('Failed to create audit request', {
-        metadata: { clientId, error: error.message }
-      }, 'database');
+        clientId, 
+        error: error.message,
+        category: 'database'
+      });
     }
 
     return { data, error };

@@ -1,4 +1,3 @@
-
 import { Logger } from '../logging/logger';
 
 export interface PerformanceMetric {
@@ -31,7 +30,7 @@ export class PerformanceMonitor {
     // Start periodic metric collection
     this.startPeriodicCollection();
 
-    Logger.info('Performance monitoring initialized', {}, 'performance');
+    Logger.info('Performance monitoring initialized', { category: 'performance' });
   }
 
   private static setupNavigationObserver(): void {
@@ -113,7 +112,7 @@ export class PerformanceMonitor {
         this.observers.push(observer);
       } catch (e) {
         // longtask might not be supported
-        Logger.debug('Long task observer not supported', {}, 'performance');
+        Logger.debug('Long task observer not supported', { category: 'performance' });
       }
     }
   }
@@ -201,13 +200,11 @@ export class PerformanceMonitor {
     if (this.isSignificantMetric(fullMetric)) {
       Logger.warn(`Performance issue detected: ${metric.name}`, {
         operation: 'performance_issue',
-        metadata: {
-          value: metric.value,
-          unit: metric.unit,
-          category: metric.category,
-          ...metric.metadata
-        }
-      }, 'performance');
+        value: metric.value,
+        unit: metric.unit,
+        category: metric.category,
+        ...metric.metadata
+      });
     }
   }
 
@@ -293,7 +290,7 @@ export class PerformanceMonitor {
     this.observers.forEach(observer => observer.disconnect());
     this.observers = [];
     this.metrics = [];
-    Logger.info('Performance monitoring cleaned up', {}, 'performance');
+    Logger.info('Performance monitoring cleaned up', { category: 'performance' });
   }
 }
 

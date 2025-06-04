@@ -16,20 +16,21 @@ export class MaintenanceManager {
     }, intervalMs);
 
     Logger.info('Periodic maintenance started', {
-      metadata: { intervalMs }
-    }, 'system');
+      intervalMs,
+      category: 'system'
+    });
   }
 
   static stopPeriodicMaintenance(): void {
     if (this.maintenanceInterval) {
       clearInterval(this.maintenanceInterval);
       this.maintenanceInterval = null;
-      Logger.info('Periodic maintenance stopped', {}, 'system');
+      Logger.info('Periodic maintenance stopped', { category: 'system' });
     }
   }
 
   static performMaintenance(): void {
-    Logger.debug('Starting maintenance tasks', {}, 'system');
+    Logger.debug('Starting maintenance tasks', { category: 'system' });
 
     try {
       // Clean old logs
@@ -41,11 +42,12 @@ export class MaintenanceManager {
       // Generate performance report
       this.generatePerformanceReport();
 
-      Logger.info('Maintenance tasks completed', {}, 'system');
+      Logger.info('Maintenance tasks completed', { category: 'system' });
     } catch (error) {
       Logger.error('Maintenance tasks failed', {
-        metadata: { error: error instanceof Error ? error.message : 'Unknown error' }
-      }, 'system');
+        error: error instanceof Error ? error.message : 'Unknown error',
+        category: 'system'
+      });
     }
   }
 
@@ -57,15 +59,16 @@ export class MaintenanceManager {
     
     if (oldLogs.length > 100) { // Only clean if there are many old logs
       Logger.clearLogs();
-      Logger.info(`Cleaned up ${oldLogs.length} old log entries`, {}, 'system');
+      Logger.info(`Cleaned up ${oldLogs.length} old log entries`, { category: 'system' });
     }
   }
 
   private static logCacheStatistics(): void {
     const cacheStats = CacheManager.getStats();
     Logger.debug('Cache statistics', { 
-      metadata: cacheStats 
-    }, 'system');
+      ...cacheStats,
+      category: 'system'
+    });
   }
 
   private static generatePerformanceReport(): void {
@@ -73,15 +76,15 @@ export class MaintenanceManager {
     
     if (performanceReport.summary.significantIssues > 0) {
       Logger.warn('Performance issues detected', {
-        metadata: performanceReport
-      }, 'system');
+        ...performanceReport,
+        category: 'system'
+      });
     } else {
       Logger.debug('Performance report generated', {
-        metadata: {
-          totalMetrics: performanceReport.summary.totalMetrics,
-          recommendations: performanceReport.recommendations.length
-        }
-      }, 'system');
+        totalMetrics: performanceReport.summary.totalMetrics,
+        recommendations: performanceReport.recommendations.length,
+        category: 'system'
+      });
     }
   }
 }
