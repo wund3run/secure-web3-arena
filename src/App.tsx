@@ -1,4 +1,5 @@
-import React, { Suspense, useEffect } from "react";
+
+import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/ui/theme-provider";
@@ -6,7 +7,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/auth";
 import { NotificationProvider } from "@/contexts/NotificationContext";
-import { usePerformanceOptimization } from '@/hooks/performance/usePerformanceOptimization';
 
 // Lazy load pages
 const Index = React.lazy(() => import("@/pages/Index"));
@@ -113,14 +113,6 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  const { trackRouteChange, optimizeCurrentRoute } = usePerformanceOptimization();
-  
-  useEffect(() => {
-    // Track initial route
-    trackRouteChange(window.location.pathname);
-    optimizeCurrentRoute(window.location.pathname);
-  }, [trackRouteChange, optimizeCurrentRoute]);
-
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>

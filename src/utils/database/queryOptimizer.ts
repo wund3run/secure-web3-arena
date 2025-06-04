@@ -1,320 +1,197 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { CacheManager } from './cacheManager';
-import { Logger } from '../logging/logger';
 
 export class QueryOptimizer {
-  private static instance: QueryOptimizer;
-  
-  static getInstance(): QueryOptimizer {
-    if (!QueryOptimizer.instance) {
-      QueryOptimizer.instance = new QueryOptimizer();
+  private static queryCache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+
+  // Cache query results with TTL
+  static async cachedQuery<T>(
+    key: string,
+    queryFn: () => Promise<T>,
+    ttlMinutes: number = 5
+  ): Promise<T> {
+    const cached = this.queryCache.get(key);
+    const now = Date.now();
+
+    if (cached && (now - cached.timestamp) < (cached.ttl * 60 * 1000)) {
+      console.log(`Cache hit for key: ${key}`);
+      return cached.data;
     }
-    return QueryOptimizer.instance;
+
+    console.log(`Cache miss for key: ${key}, executing query`);
+    const data = await queryFn();
+    
+    this.queryCache.set(key, {
+      data,
+      timestamp: now,
+      ttl: ttlMinutes
+    });
+
+    return data;
   }
 
-  /**
-   * AI-optimized queries with intelligent caching and indexing strategies
-   */
-  async getOptimizedAuditRequests(filters: {
-    status?: string;
-    blockchain?: string;
-    clientId?: string;
-    auditorId?: string;
-    limit?: number;
-    offset?: number;
-  } = {}) {
-    const cacheKey = `optimized_audits_${JSON.stringify(filters)}`;
-    
-    return await this.executeOptimizedQuery(
+  // Optimized audit requests query with pagination
+  static async getAuditRequestsOptimized(
+    page: number = 1,
+    limit: number = 20,
+    filters?: {
+      status?: string;
+      blockchain?: string;
+      userId?: string;
+    }
+  ) {
+    const offset = (page - 1) * limit;
+    const cacheKey = `audit_requests_${page}_${limit}_${JSON.stringify(filters)}`;
+
+    return this.cachedQuery(
       cacheKey,
       async () => {
         let query = supabase
           .from('audit_requests')
           .select(`
-            id,
-            project_name,
-            blockchain,
-            status,
-            budget,
-            deadline,
-            completion_percentage,
-            security_score,
-            current_phase,
-            created_at,
-            client:client_id (
-              id,
+            *,
+            profiles:client_id (
               full_name,
               avatar_url
-            ),
-            auditor:assigned_auditor_id (
-              id,
-              full_name,
-              avatar_url,
-              verification_status
             )
           `)
+          .range(offset, offset + limit - 1)
           .order('created_at', { ascending: false });
 
-        // Apply filters efficiently
-        if (filters.status) {
+        if (filters?.status) {
           query = query.eq('status', filters.status);
         }
-        if (filters.blockchain) {
+        if (filters?.blockchain) {
           query = query.eq('blockchain', filters.blockchain);
         }
-        if (filters.clientId) {
-          query = query.eq('client_id', filters.clientId);
+        if (filters?.userId) {
+          query = query.eq('client_id', filters.userId);
         }
-        if (filters.auditorId) {
-          query = query.eq('assigned_auditor_id', filters.auditorId);
-        }
-
-        // Apply pagination
-        const limit = filters.limit || 20;
-        const offset = filters.offset || 0;
-        query = query.range(offset, offset + limit - 1);
 
         const { data, error, count } = await query;
         if (error) throw error;
 
-        return { data: data || [], count: count || 0 };
+        return { data, count };
       },
-      { ttl: 60, tags: ['audit_requests'] }
+      2 // Cache for 2 minutes
     );
   }
 
-  /**
-   * Optimized auditor search with intelligent scoring
-   */
-  async getOptimizedAuditors(searchParams: {
-    blockchain?: string;
-    expertise?: string[];
-    hourlyRateMax?: number;
-    availabilityStatus?: string;
-    minRating?: number;
-    limit?: number;
-  } = {}) {
-    const cacheKey = `optimized_auditors_${JSON.stringify(searchParams)}`;
-    
-    return await this.executeOptimizedQuery(
+  // Optimized services query
+  static async getServicesOptimized(
+    category?: string,
+    featured?: boolean
+  ) {
+    const cacheKey = `services_${category}_${featured}`;
+
+    return this.cachedQuery(
       cacheKey,
       async () => {
         let query = supabase
-          .from('auditor_profiles')
+          .from('services')
           .select(`
-            user_id,
-            years_experience,
-            hourly_rate_min,
-            hourly_rate_max,
-            verification_status,
-            availability_status,
-            blockchain_expertise,
-            specialization_tags,
-            total_audits_completed,
-            success_rate,
-            average_completion_time_days,
-            profiles:user_id (
+            *,
+            profiles:provider_id (
               full_name,
               avatar_url
             )
           `)
-          .eq('verification_status', 'verified');
+          .eq('verification_status', 'approved');
 
-        // Apply intelligent filters
-        if (searchParams.blockchain) {
-          query = query.contains('blockchain_expertise', [searchParams.blockchain]);
+        if (category) {
+          query = query.eq('category', category);
         }
-        if (searchParams.expertise && searchParams.expertise.length > 0) {
-          query = query.overlaps('specialization_tags', searchParams.expertise);
-        }
-        if (searchParams.hourlyRateMax) {
-          query = query.lte('hourly_rate_min', searchParams.hourlyRateMax);
-        }
-        if (searchParams.availabilityStatus) {
-          query = query.eq('availability_status', searchParams.availabilityStatus);
-        }
-        if (searchParams.minRating) {
-          query = query.gte('success_rate', searchParams.minRating);
+        if (featured !== undefined) {
+          query = query.eq('featured', featured);
         }
 
-        // Intelligent ordering by composite score
-        query = query.order('success_rate', { ascending: false })
-                    .order('total_audits_completed', { ascending: false })
-                    .limit(searchParams.limit || 50);
+        query = query.order('average_rating', { ascending: false });
 
         const { data, error } = await query;
         if (error) throw error;
 
-        return data || [];
+        return data;
       },
-      { ttl: 300, tags: ['auditors'] }
+      10 // Cache for 10 minutes
     );
   }
 
-  /**
-   * Materialized view simulation for dashboard analytics
-   */
-  async getDashboardAnalytics(userId: string, userRole: string) {
-    const cacheKey = `dashboard_analytics_${userId}_${userRole}`;
+  // Clear cache for specific keys or all
+  static clearCache(keyPattern?: string) {
+    if (keyPattern) {
+      const keysToDelete = Array.from(this.queryCache.keys()).filter(key => 
+        key.includes(keyPattern)
+      );
+      keysToDelete.forEach(key => this.queryCache.delete(key));
+      console.log(`Cleared ${keysToDelete.length} cache entries matching: ${keyPattern}`);
+    } else {
+      this.queryCache.clear();
+      console.log('Cleared all cache entries');
+    }
+  }
+
+  // Get cache statistics
+  static getCacheStats() {
+    const entries = Array.from(this.queryCache.entries());
+    const now = Date.now();
     
-    return await this.executeOptimizedQuery(
-      cacheKey,
-      async () => {
-        // Execute parallel queries for better performance
-        const [auditStats, recentActivity, notifications] = await Promise.all([
-          this.getAuditStatsOptimized(userId, userRole),
-          this.getRecentActivityOptimized(userId),
-          this.getNotificationsOptimized(userId)
-        ]);
-
-        return {
-          auditStats,
-          recentActivity,
-          notifications,
-          generatedAt: new Date().toISOString()
-        };
-      },
-      { ttl: 120, tags: [`dashboard_${userId}`] }
-    );
-  }
-
-  private async getAuditStatsOptimized(userId: string, userRole: string) {
-    const isAuditor = userRole === 'auditor';
-    const filterField = isAuditor ? 'assigned_auditor_id' : 'client_id';
-
-    const { data, error } = await supabase
-      .from('audit_requests')
-      .select('status, completion_percentage, security_score, created_at')
-      .eq(filterField, userId);
-
-    if (error) throw error;
-
-    // Process stats in memory for better performance
-    const stats = (data || []).reduce((acc, audit) => {
-      acc.total++;
-      acc.byStatus[audit.status] = (acc.byStatus[audit.status] || 0) + 1;
-      acc.totalCompletion += audit.completion_percentage || 0;
-      acc.totalSecurityScore += audit.security_score || 0;
-      return acc;
-    }, {
-      total: 0,
-      byStatus: {} as Record<string, number>,
-      totalCompletion: 0,
-      totalSecurityScore: 0
-    });
-
     return {
-      ...stats,
-      avgCompletion: stats.total > 0 ? stats.totalCompletion / stats.total : 0,
-      avgSecurityScore: stats.total > 0 ? stats.totalSecurityScore / stats.total : 0
-    };
-  }
-
-  private async getRecentActivityOptimized(userId: string) {
-    const { data, error } = await supabase
-      .from('audit_status_updates')
-      .select(`
-        id,
-        status_type,
-        title,
-        message,
-        created_at,
-        audit_request:audit_request_id (
-          id,
-          project_name
-        )
-      `)
-      .or(`user_id.eq.${userId},audit_request_id.in.(select id from audit_requests where client_id = '${userId}' or assigned_auditor_id = '${userId}')`)
-      .order('created_at', { ascending: false })
-      .limit(10);
-
-    if (error) throw error;
-    return data || [];
-  }
-
-  private async getNotificationsOptimized(userId: string) {
-    const { data, error } = await supabase
-      .from('notifications')
-      .select('id, title, message, type, created_at, is_read')
-      .eq('user_id', userId)
-      .eq('is_read', false)
-      .order('created_at', { ascending: false })
-      .limit(20);
-
-    if (error) throw error;
-    return data || [];
-  }
-
-  private async executeOptimizedQuery<T>(
-    cacheKey: string,
-    queryFn: () => Promise<T>,
-    cacheConfig: { ttl: number; tags: string[] }
-  ): Promise<T> {
-    // Try cache first
-    const cached = await CacheManager.get<T>(cacheKey);
-    if (cached !== null) {
-      Logger.debug('Cache hit for optimized query', { cacheKey });
-      return cached;
-    }
-
-    // Execute query with performance monitoring
-    const startTime = performance.now();
-    try {
-      const result = await queryFn();
-      const duration = performance.now() - startTime;
-      
-      // Cache successful results
-      CacheManager.set(cacheKey, result, cacheConfig);
-      
-      // Log performance metrics
-      Logger.info('Optimized query executed', {
-        cacheKey,
-        duration: Math.round(duration),
-        cached: false
-      });
-
-      return result;
-    } catch (error) {
-      const duration = performance.now() - startTime;
-      Logger.error('Optimized query failed', {
-        cacheKey,
-        duration: Math.round(duration),
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-      throw error;
-    }
-  }
-
-  /**
-   * Generate query optimization report
-   */
-  generateOptimizationReport(): {
-    cacheHitRate: number;
-    averageQueryTime: number;
-    slowQueries: Array<{ query: string; avgTime: number; frequency: number }>;
-    recommendations: string[];
-  } {
-    const cacheStats = CacheManager.getStats();
-    const recommendations: string[] = [];
-
-    // Analyze cache performance
-    const hitRate = cacheStats.activeEntries / cacheStats.totalEntries;
-    if (hitRate < 0.7) {
-      recommendations.push('Cache hit rate is low. Consider increasing TTL values or improving cache key strategies.');
-    }
-
-    if (cacheStats.expiredEntries > cacheStats.activeEntries * 0.3) {
-      recommendations.push('High number of expired cache entries. Consider optimizing cache TTL values.');
-    }
-
-    return {
-      cacheHitRate: hitRate,
-      averageQueryTime: 0, // Would be calculated from actual metrics
-      slowQueries: [], // Would be populated from query logs
-      recommendations
+      totalEntries: entries.length,
+      activeEntries: entries.filter(([_, value]) => 
+        (now - value.timestamp) < (value.ttl * 60 * 1000)
+      ).length,
+      expiredEntries: entries.filter(([_, value]) => 
+        (now - value.timestamp) >= (value.ttl * 60 * 1000)
+      ).length
     };
   }
 }
 
-export const queryOptimizer = QueryOptimizer.getInstance();
+// Batch operations for better performance
+export class BatchOperations {
+  static async batchCreateNotifications(notifications: Array<{
+    user_id: string;
+    title: string;
+    message: string;
+    type?: string;
+    action_url?: string;
+  }>) {
+    try {
+      const { data, error } = await supabase
+        .from('notifications')
+        .insert(notifications);
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Batch notification creation failed:', error);
+      throw error;
+    }
+  }
+
+  static async batchUpdateAuditProgress(updates: Array<{
+    id: string;
+    progress_percentage?: number;
+    current_phase?: string;
+    notes?: string;
+  }>) {
+    try {
+      const results = await Promise.all(
+        updates.map(update => 
+          supabase
+            .from('audit_progress')
+            .update({
+              ...update,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', update.id)
+        )
+      );
+
+      return results;
+    } catch (error) {
+      console.error('Batch audit progress update failed:', error);
+      throw error;
+    }
+  }
+}
