@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { componentTagger } from "lovable-tagger";
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -28,40 +29,139 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         manualChunks: {
+          // Vendor chunks for better caching
           'react-vendor': ['react', 'react-dom'],
           'router-vendor': ['react-router-dom'],
+          
+          // UI component chunks
           'ui-components': [
             '@radix-ui/react-progress',
-            '@radix-ui/react-slider',
-            '@radix-ui/react-tooltip'
+            '@radix-ui/react-slider', 
+            '@radix-ui/react-tooltip',
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-dropdown-menu'
           ],
+          
+          // Form handling chunk
           'form-components': [
             '@hookform/resolvers',
             'react-hook-form',
             'zod'
           ],
+          
+          // Charts and visualization
           'charts': ['recharts'],
-          'auth': ['@supabase/supabase-js']
+          
+          // Authentication and database
+          'auth': ['@supabase/supabase-js'],
+          
+          // Admin features - separate chunk for code splitting
+          'admin-features': [
+            '/src/components/admin',
+            '/src/pages/admin'
+          ],
+          
+          // Performance utilities
+          'performance-utils': [
+            '/src/utils/performance',
+            '/src/utils/optimization'
+          ],
+          
+          // Security features
+          'security': [
+            '/src/utils/security',
+            '/src/components/auth'
+          ]
+        },
+        
+        // Advanced chunking strategy
+        chunkFileNames: (chunkInfo) => {
+          if (chunkInfo.isDynamicEntry) {
+            return 'chunks/dynamic/[name]-[hash].js';
+          }
+          return 'chunks/[name]-[hash].js';
+        },
+        
+        entryFileNames: 'entries/[name]-[hash].js',
+        assetFileNames: (assetInfo) => {
+          const extType = assetInfo.name?.split('.').pop();
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType || '')) {
+            return 'assets/images/[name]-[hash][extname]';
+          }
+          if (/woff2?|eot|ttf|otf/i.test(extType || '')) {
+            return 'assets/fonts/[name]-[hash][extname]';
+          }
+          return 'assets/[name]-[hash][extname]';
         }
+      },
+      
+      // Optimize external dependencies
+      external: (id) => {
+        // Don't externalize dependencies that should be bundled
+        return false;
       }
     },
+    
+    // Enhanced build settings for performance
     chunkSizeWarningLimit: 1000,
     minify: 'esbuild', // Faster minification
     cssMinify: 'esbuild',
     assetsInlineLimit: 4096, // Inline small assets
+    
+    // Enable tree-shaking
+    treeshake: {
+      moduleSideEffects: false,
+      propertyReadSideEffects: false,
+      unknownGlobalSideEffects: false
+    }
   },
+  
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom'],
-    exclude: [],
+    include: [
+      'react', 
+      'react-dom', 
+      'react-router-dom',
+      '@supabase/supabase-js',
+      'recharts'
+    ],
+    exclude: [
+      // Exclude large dependencies that should be loaded on demand
+    ],
     force: false // Only force when needed
   },
+  
   assetsInclude: ['**/*.svg'], // Ensure SVGs are properly handled
+  
   css: {
-    devSourcemap: mode === 'development'
+    devSourcemap: mode === 'development',
+    postcss: {
+      plugins: mode === 'production' ? [
+        require('cssnano')({
+          preset: 'default',
+        })
+      ] : []
+    }
   },
+  
   esbuild: {
     target: 'esnext',
     format: 'esm',
-    platform: 'browser'
+    platform: 'browser',
+    treeShaking: true,
+    
+    // Production optimizations
+    ...(mode === 'production' && {
+      drop: ['console', 'debugger'],
+      minifyIdentifiers: true,
+      minifySyntax: true,
+      minifyWhitespace: true
+    })
+  },
+  
+  // Experimental features for better performance
+  experimental: {
+    buildAdvancedBaseOptions: {
+      buildTarget: 'esnext'
+    }
   }
 }));
