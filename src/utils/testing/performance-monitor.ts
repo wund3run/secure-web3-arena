@@ -15,6 +15,7 @@ export interface PerformanceMetric {
   category: string;
   timestamp: string;
   metadata?: Record<string, any>;
+  rating?: 'good' | 'needs-improvement' | 'poor';
 }
 
 export class PerformanceMonitor {
@@ -43,10 +44,14 @@ export class PerformanceMonitor {
       this.metrics.shift();
     }
 
+    // Determine rating based on performance thresholds
+    const rating = this.getRating(data);
+
     // Notify subscribers
     const metric: PerformanceMetric = {
       ...data,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      rating
     };
     
     this.subscribers.forEach(subscriber => {
@@ -61,6 +66,22 @@ export class PerformanceMonitor {
     if (this.isPerformanceIssue(data)) {
       console.warn(`Performance issue detected: ${data.name}`, data);
     }
+  }
+
+  private getRating(data: PerformanceData): 'good' | 'needs-improvement' | 'poor' {
+    const thresholds = {
+      'component_render': { good: 16, poor: 50 },
+      'api_request': { good: 500, poor: 2000 },
+      'database_query': { good: 200, poor: 1000 },
+      'bundle_load': { good: 1000, poor: 3000 }
+    };
+
+    const threshold = thresholds[data.category as keyof typeof thresholds];
+    if (!threshold) return 'good';
+
+    if (data.value <= threshold.good) return 'good';
+    if (data.value <= threshold.poor) return 'needs-improvement';
+    return 'poor';
   }
 
   subscribe(callback: (metric: PerformanceMetric) => void): () => void {

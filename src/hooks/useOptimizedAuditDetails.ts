@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth';
 import { OptimizedQueries } from '@/utils/database/optimizedQueries';
-import { Logger, auditLogger } from '@/utils/logging/logger';
+import { Logger, AuditLogger } from '@/utils/logging/logger';
 import { DataSyncManager } from '@/utils/dataSync/syncManager';
 
 export const useOptimizedAuditDetails = (auditId?: string) => {
@@ -20,7 +20,11 @@ export const useOptimizedAuditDetails = (auditId?: string) => {
 
     const fetchOptimizedData = async () => {
       const correlationId = Logger.generateCorrelationId();
-      const stopTimer = Logger.startTimer('fetch_audit_details', { auditId: id, userId: user.id });
+      const stopTimer = Logger.startTimer('fetch_audit_details', { 
+        correlationId,
+        auditId: id, 
+        userId: user.id 
+      });
 
       try {
         setIsLoading(true);
@@ -30,7 +34,7 @@ export const useOptimizedAuditDetails = (auditId?: string) => {
           correlationId,
           auditId: id,
           userId: user.id
-        }, 'audit');
+        });
 
         const data = await OptimizedQueries.getAuditDetailsOptimized(id);
         
@@ -51,7 +55,7 @@ export const useOptimizedAuditDetails = (auditId?: string) => {
           auditId: id,
           findingsCount: data.findings.length,
           milestonesCount: data.milestones.length
-        }, 'audit');
+        });
 
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to load audit details';
@@ -62,7 +66,7 @@ export const useOptimizedAuditDetails = (auditId?: string) => {
           auditId: id,
           userId: user.id,
           metadata: { error: errorMessage }
-        }, 'audit');
+        });
       } finally {
         setIsLoading(false);
         stopTimer();
@@ -97,7 +101,7 @@ export const useOptimizedAuditDetails = (auditId?: string) => {
         oldStatus,
         newStatus,
         phase
-      }, 'audit');
+      });
 
       // Queue local change for sync
       DataSyncManager.queueLocalChange('audit_requests', 'update', {
@@ -117,7 +121,7 @@ export const useOptimizedAuditDetails = (auditId?: string) => {
       // Invalidate cache
       OptimizedQueries.invalidateAuditCache(id);
 
-      auditLogger.statusChanged(id, oldStatus, newStatus, user.id);
+      AuditLogger.statusChanged(id, oldStatus, newStatus, user.id);
       return true;
 
     } catch (error) {
@@ -125,7 +129,7 @@ export const useOptimizedAuditDetails = (auditId?: string) => {
         correlationId,
         auditId: id,
         metadata: { error: error instanceof Error ? error.message : 'Unknown error' }
-      }, 'audit');
+      });
       return false;
     }
   };

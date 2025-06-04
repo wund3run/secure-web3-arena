@@ -46,7 +46,7 @@ export function useUserBehavior() {
     const segment = determineUserSegment(behavior);
     setUserSegment(segment);
     
-    analyticsTracker.track('personalization', 'system', 'content_generated', segment);
+    analyticsTracker.track('personalization', 'content_generated', { segment });
   }, []);
 
   return {

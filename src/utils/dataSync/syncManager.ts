@@ -14,7 +14,7 @@ interface SyncStatus {
   pendingChanges: number;
 }
 
-class DataSyncManager {
+class SyncManager {
   private syncConfigs = new Map<string, SyncConfig>();
   private syncStatuses = new Map<string, SyncStatus>();
   private pendingChanges = new Map<string, any[]>();
@@ -24,7 +24,7 @@ class DataSyncManager {
     Logger.info('Initializing data sync', {
       tableName: config.tableName,
       metadata: { syncInterval: config.syncInterval }
-    }, 'sync');
+    });
 
     this.syncConfigs.set(config.tableName, config);
     this.syncStatuses.set(config.tableName, {
@@ -59,7 +59,7 @@ class DataSyncManager {
     Logger.debug('Local change queued', {
       tableName,
       metadata: { operation, pendingCount: changes.length }
-    }, 'sync');
+    });
   }
 
   private async performSync(tableName: string): Promise<void> {
@@ -72,7 +72,7 @@ class DataSyncManager {
       Logger.debug('Starting sync', {
         tableName,
         metadata: { pendingChanges: status.pendingChanges }
-      }, 'sync');
+      });
 
       // Simulate sync operation
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -88,14 +88,14 @@ class DataSyncManager {
       Logger.info('Sync completed', {
         tableName,
         metadata: { lastSync: status.lastSync }
-      }, 'sync');
+      });
 
     } catch (error) {
       status.status = 'error';
       Logger.error('Sync failed', {
         tableName,
         metadata: { error: error instanceof Error ? error.message : 'Unknown error' }
-      }, 'sync');
+      });
     }
   }
 
@@ -112,7 +112,7 @@ class DataSyncManager {
 
     Logger.info('Data sync stopped', {
       tableName
-    }, 'sync');
+    });
   }
 
   getSyncStatus(tableName: string): SyncStatus | null {
@@ -120,7 +120,7 @@ class DataSyncManager {
   }
 }
 
-export const DataSyncManager = new DataSyncManager();
+export const DataSyncManager = new SyncManager();
 
 export function initializeCriticalSyncs(): void {
   // Initialize sync for critical data
@@ -138,5 +138,5 @@ export function initializeCriticalSyncs(): void {
     syncInterval: 15000
   });
 
-  Logger.info('Critical data syncs initialized', {}, 'sync');
+  Logger.info('Critical data syncs initialized', {});
 }
