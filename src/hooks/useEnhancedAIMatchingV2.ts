@@ -126,17 +126,17 @@ export const useEnhancedAIMatchingV2 = () => {
           response_time_avg: auditor.response_time_avg,
           hourly_rate: auditor.hourly_rate,
           past_audits: auditor.past_audits,
-          blockchain_expertise_score: this.calculateBlockchainExpertiseScore(auditor, criteria),
-          skill_match_score: this.calculateSkillMatchScore(auditor, criteria),
+          blockchain_expertise_score: calculateBlockchainExpertiseScore(auditor, criteria),
+          skill_match_score: calculateSkillMatchScore(auditor, criteria),
           availability_score: auditor.availability === 'available' ? 1 : auditor.availability === 'busy' ? 0.5 : 0
         };
 
         const projectFeatures = {
-          complexity_score: this.mapComplexityToScore(criteria.complexity),
+          complexity_score: mapComplexityToScore(criteria.complexity),
           budget_range: criteria.budget_range[1],
-          timeline_urgency: this.calculateTimelineUrgency(criteria.timeline),
-          blockchain_type: this.mapBlockchainToScore(criteria.blockchain),
-          required_expertise_level: this.mapExperienceToScore(criteria.experience_preference)
+          timeline_urgency: calculateTimelineUrgency(criteria.timeline),
+          blockchain_type: mapBlockchainToScore(criteria.blockchain),
+          required_expertise_level: mapExperienceToScore(criteria.experience_preference)
         };
 
         const tfPrediction = await tensorflowMatchingEngine.predictMatch(auditorFeatures, projectFeatures);
@@ -181,49 +181,6 @@ export const useEnhancedAIMatchingV2 = () => {
     }
   }, [huggingFaceIntegration, modelMetrics]);
 
-  // Helper methods
-  const calculateBlockchainExpertiseScore = (auditor: AuditorProfile, criteria: EnhancedMatchingCriteria): number => {
-    return auditor.blockchain_expertise.includes(criteria.blockchain) ? 1 : 0.3;
-  };
-
-  const calculateSkillMatchScore = (auditor: AuditorProfile, criteria: EnhancedMatchingCriteria): number => {
-    const matchingSkills = auditor.expertise.filter(skill => 
-      criteria.specific_requirements.some(req => 
-        req.toLowerCase().includes(skill.toLowerCase())
-      )
-    );
-    return matchingSkills.length / Math.max(criteria.specific_requirements.length, 1);
-  };
-
-  const mapComplexityToScore = (complexity: string): number => {
-    const mapping = { low: 0.3, medium: 0.6, high: 1.0 };
-    return mapping[complexity as keyof typeof mapping] || 0.5;
-  };
-
-  const calculateTimelineUrgency = (timeline: string): number => {
-    // Parse timeline and convert to urgency score
-    if (timeline.includes('week')) return 1.0;
-    if (timeline.includes('month')) return 0.6;
-    return 0.3;
-  };
-
-  const mapBlockchainToScore = (blockchain: string): number => {
-    // Map blockchain types to numeric scores
-    const mapping: Record<string, number> = {
-      ethereum: 0.9,
-      solana: 0.8,
-      polygon: 0.7,
-      arbitrum: 0.6,
-      optimism: 0.5
-    };
-    return mapping[blockchain.toLowerCase()] || 0.5;
-  };
-
-  const mapExperienceToScore = (experience: string): number => {
-    const mapping = { junior: 0.3, mid: 0.5, senior: 0.8, expert: 1.0 };
-    return mapping[experience as keyof typeof mapping] || 0.5;
-  };
-
   // Initialize on mount
   useEffect(() => {
     initializeAI();
@@ -242,4 +199,47 @@ export const useEnhancedAIMatchingV2 = () => {
     findEnhancedMatches,
     initializeAI
   };
+};
+
+// Helper functions moved outside the hook to avoid them being recreated on every render
+const calculateBlockchainExpertiseScore = (auditor: AuditorProfile, criteria: EnhancedMatchingCriteria): number => {
+  return auditor.blockchain_expertise.includes(criteria.blockchain) ? 1 : 0.3;
+};
+
+const calculateSkillMatchScore = (auditor: AuditorProfile, criteria: EnhancedMatchingCriteria): number => {
+  const matchingSkills = auditor.expertise.filter(skill => 
+    criteria.specific_requirements.some(req => 
+      req.toLowerCase().includes(skill.toLowerCase())
+    )
+  );
+  return matchingSkills.length / Math.max(criteria.specific_requirements.length, 1);
+};
+
+const mapComplexityToScore = (complexity: string): number => {
+  const mapping = { low: 0.3, medium: 0.6, high: 1.0 };
+  return mapping[complexity as keyof typeof mapping] || 0.5;
+};
+
+const calculateTimelineUrgency = (timeline: string): number => {
+  // Parse timeline and convert to urgency score
+  if (timeline.includes('week')) return 1.0;
+  if (timeline.includes('month')) return 0.6;
+  return 0.3;
+};
+
+const mapBlockchainToScore = (blockchain: string): number => {
+  // Map blockchain types to numeric scores
+  const mapping: Record<string, number> = {
+    ethereum: 0.9,
+    solana: 0.8,
+    polygon: 0.7,
+    arbitrum: 0.6,
+    optimism: 0.5
+  };
+  return mapping[blockchain.toLowerCase()] || 0.5;
+};
+
+const mapExperienceToScore = (experience: string): number => {
+  const mapping = { junior: 0.3, mid: 0.5, senior: 0.8, expert: 1.0 };
+  return mapping[experience as keyof typeof mapping] || 0.5;
 };
