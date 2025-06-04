@@ -226,7 +226,7 @@ export class AuditLogger {
   }
 
   private generateTags(eventType: AuditEventType, details: Record<string, any>): string[] {
-    const tags = [eventType];
+    const tags: string[] = [eventType];
     
     // Add contextual tags based on details
     if (details.admin_action) tags.push('admin_related');
