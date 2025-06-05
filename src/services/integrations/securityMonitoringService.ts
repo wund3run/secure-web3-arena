@@ -157,7 +157,9 @@ export class SecurityMonitoringService {
         contractAddress: event.contract_address,
         network: event.network,
         timestamp: event.created_at,
-        metadata: event.metadata || {}
+        metadata: (event.metadata && typeof event.metadata === 'object' && !Array.isArray(event.metadata)) 
+          ? event.metadata as Record<string, any>
+          : {}
       }));
 
       return {
