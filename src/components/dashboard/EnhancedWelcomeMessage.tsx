@@ -52,14 +52,15 @@ export const EnhancedWelcomeMessage = () => {
         subtitle: "Ready to secure the future of Web3?",
         description: "As a security auditor, you're joining an elite community dedicated to protecting the Web3 ecosystem. Your expertise will help identify vulnerabilities and ensure project safety.",
         quickTips: [
-          "Complete your profile to get better audit matches",
-          "Showcase your expertise with certifications",
-          "Respond quickly to build your reputation"
+          "Complete your auditor profile to get better project matches",
+          "Showcase your certifications and past audit experience",
+          "Respond quickly to opportunities to build your reputation",
+          "Use our guidelines to maintain audit quality standards"
         ],
         nextSteps: [
           { text: "Complete your auditor profile", href: "/profile", icon: <Target className="h-4 w-4" />, priority: "high" },
           { text: "Browse available audits", href: "/marketplace", icon: <Shield className="h-4 w-4" />, priority: "medium" },
-          { text: "View auditor resources", href: "/resources/auditors", icon: <BookOpen className="h-4 w-4" />, priority: "low" }
+          { text: "View auditor guidelines", href: "/guidelines", icon: <BookOpen className="h-4 w-4" />, priority: "low" }
         ],
         badgeText: "Security Expert",
         badgeColor: "bg-blue-500"
