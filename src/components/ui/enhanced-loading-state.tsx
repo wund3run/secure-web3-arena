@@ -8,7 +8,7 @@ interface EnhancedLoadingStateProps {
   message?: string;
   submessage?: string;
   progress?: number;
-  variant?: 'default' | 'card' | 'fullscreen' | 'inline';
+  variant?: 'default' | 'card' | 'fullscreen' | 'inline' | 'skeleton';
   size?: 'sm' | 'md' | 'lg';
   showProgress?: boolean;
   icon?: 'spinner' | 'shield' | 'clock' | 'check';
@@ -71,6 +71,27 @@ export const EnhancedLoadingState: React.FC<EnhancedLoadingStateProps> = ({
   );
 
   switch (variant) {
+    case 'skeleton':
+      return (
+        <div className="space-y-3 p-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className={`animate-pulse rounded bg-muted ${
+                size === 'sm' ? 'h-3' : size === 'md' ? 'h-4' : 'h-5'
+              }`}
+              style={{ 
+                width: `${100 - (i * 15)}%`,
+                animationDelay: `${i * 150}ms`
+              }}
+            />
+          ))}
+          {message && (
+            <div className="text-sm text-muted-foreground mt-2">{message}</div>
+          )}
+        </div>
+      );
+      
     case 'fullscreen':
       return (
         <div className="min-h-screen flex items-center justify-center bg-background">
