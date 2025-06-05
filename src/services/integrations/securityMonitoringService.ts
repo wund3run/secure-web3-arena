@@ -147,10 +147,23 @@ export class SecurityMonitoringService {
       const totalAlerts = data?.length || 0;
       const criticalAlerts = data?.filter(alert => alert.severity === 'critical').length || 0;
 
+      // Transform the data to match SecurityAlert interface
+      const recentAlerts: SecurityAlert[] = (data || []).map(event => ({
+        id: event.id,
+        severity: event.severity as SecurityAlert['severity'],
+        type: event.type as SecurityAlert['type'],
+        title: event.title,
+        description: event.description,
+        contractAddress: event.contract_address,
+        network: event.network,
+        timestamp: event.created_at,
+        metadata: event.metadata || {}
+      }));
+
       return {
         totalAlerts,
         criticalAlerts,
-        recentAlerts: data || [],
+        recentAlerts,
         monitoredContracts: 0 // Would be calculated from monitoring_services table
       };
     } catch (error) {

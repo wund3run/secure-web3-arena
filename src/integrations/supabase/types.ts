@@ -1017,6 +1017,33 @@ export type Database = {
           },
         ]
       }
+      ceramic_profiles: {
+        Row: {
+          created_at: string
+          did: string
+          id: string
+          profile_data: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          did: string
+          id?: string
+          profile_data?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          did?: string
+          id?: string
+          profile_data?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       certifications: {
         Row: {
           certificate_url: string | null
@@ -1139,6 +1166,39 @@ export type Database = {
           recommendations?: Json | null
           score?: number | null
           status?: string
+        }
+        Relationships: []
+      }
+      compliance_reports: {
+        Row: {
+          compliance_score: number
+          contract_address: string
+          created_at: string
+          findings: Json | null
+          generated_at: string
+          id: string
+          network: string
+          risk_level: string
+        }
+        Insert: {
+          compliance_score: number
+          contract_address: string
+          created_at?: string
+          findings?: Json | null
+          generated_at?: string
+          id?: string
+          network: string
+          risk_level: string
+        }
+        Update: {
+          compliance_score?: number
+          contract_address?: string
+          created_at?: string
+          findings?: Json | null
+          generated_at?: string
+          id?: string
+          network?: string
+          risk_level?: string
         }
         Relationships: []
       }
@@ -1906,6 +1966,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      security_events: {
+        Row: {
+          contract_address: string | null
+          created_at: string
+          description: string
+          id: string
+          metadata: Json | null
+          network: string
+          severity: string
+          title: string
+          type: string
+        }
+        Insert: {
+          contract_address?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          metadata?: Json | null
+          network: string
+          severity: string
+          title: string
+          type: string
+        }
+        Update: {
+          contract_address?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          metadata?: Json | null
+          network?: string
+          severity?: string
+          title?: string
+          type?: string
+        }
+        Relationships: []
       }
       services: {
         Row: {
