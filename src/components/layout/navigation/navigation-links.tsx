@@ -1,90 +1,90 @@
 
 export const navigationLinks = [
   {
-    label: "Services",
+    title: "Services",
     href: "/marketplace",
     children: [
       {
-        label: "Browse Services",
+        title: "Browse Services",
         href: "/marketplace",
         description: "Find security experts for your project"
       },
       {
-        label: "Security Audits",
+        title: "Security Audits",
         href: "/security-audits",
         description: "Comprehensive smart contract audits"
       },
       {
-        label: "Code Reviews",
+        title: "Code Reviews",
         href: "/code-reviews",
         description: "Expert code analysis and review"
       },
       {
-        label: "Penetration Testing",
+        title: "Penetration Testing",
         href: "/penetration-testing",
         description: "Advanced security testing"
       },
       {
-        label: "Security Consulting",
+        title: "Security Consulting",
         href: "/consulting",
         description: "Strategic security guidance"
       },
       {
-        label: "Request Audit",
+        title: "Request Audit",
         href: "/request-audit",
         description: "Submit your project for review"
       }
     ]
   },
   {
-    label: "Resources",
+    title: "Resources",
     href: "/resources",
     children: [
       {
-        label: "Security Guides",
+        title: "Security Guides",
         href: "/resources",
         description: "Best practices and tutorials"
       },
       {
-        label: "Vulnerability Database",
+        title: "Vulnerability Database",
         href: "/vulnerabilities",
         description: "Known security issues and fixes"
       },
       {
-        label: "Audit Reports",
+        title: "Audit Reports",
         href: "/audits",
         description: "Browse completed security audits",
         requiresAuth: true
       },
       {
-        label: "Documentation",
+        title: "Documentation",
         href: "/docs",
         description: "Platform guides and API docs"
       },
       {
-        label: "FAQ",
+        title: "FAQ",
         href: "/faq",
         description: "Frequently asked questions"
       },
       {
-        label: "Support",
+        title: "Support",
         href: "/support",
         description: "Get help from our team"
       }
     ]
   },
   {
-    label: "Tools",
+    title: "Tools",
     href: "/security-monitoring",
     children: [
       {
-        label: "Security Monitoring",
+        title: "Security Monitoring",
         href: "/security-monitoring",
         description: "Real-time security monitoring dashboard",
         requiresAuth: true
       },
       {
-        label: "Enterprise Control",
+        title: "Enterprise Control",
         href: "/enterprise-control",
         description: "Enterprise security management center",
         requiresAuth: true
@@ -92,43 +92,43 @@ export const navigationLinks = [
     ]
   },
   {
-    label: "Community",
+    title: "Community",
     href: "/community",
     children: [
       {
-        label: "Join Community",
+        title: "Join Community",
         href: "/community",
         description: "Connect with security experts"
       },
       {
-        label: "Forum",
+        title: "Forum",
         href: "/forum",
         description: "Discuss security topics"
       },
       {
-        label: "Events",
+        title: "Events",
         href: "/events",
         description: "Security meetups and workshops"
       },
       {
-        label: "Leaderboard",
+        title: "Leaderboard",
         href: "/leaderboard",
         description: "Top security contributors"
       },
       {
-        label: "Careers",
+        title: "Careers",
         href: "/careers",
         description: "Join the Hawkly team"
       }
     ]
   },
   {
-    label: "Dashboard",
+    title: "Dashboard",
     href: "/dashboard",
     requiresAuth: true
   },
   {
-    label: "My Audits",
+    title: "My Audits",
     href: "/audits",
     requiresAuth: true
   }
