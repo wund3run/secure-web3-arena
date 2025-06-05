@@ -36,6 +36,7 @@ import Challenges from "./pages/Challenges";
 import Achievements from "./pages/Achievements";
 import ContactProvider from "./pages/ContactProvider";
 import CancellationRefund from "./pages/CancellationRefund";
+import ResetPassword from "./pages/ResetPassword";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -59,6 +60,7 @@ const App = () => {
                   {/* Public routes */}
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<Auth />} />
+                  <Route path="/auth/reset-password" element={<ResetPassword />} />
                   <Route path="/marketplace" element={<Marketplace />} />
                   <Route path="/request-audit" element={<RequestAudit />} />
                   <Route path="/audits" element={<Audits />} />
