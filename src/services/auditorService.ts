@@ -44,7 +44,7 @@ export class AuditorService {
         .from('audit_requests')
         .select(`
           *,
-          extended_profiles!inner(
+          extended_profiles!audit_requests_client_id_fkey(
             full_name
           )
         `)
@@ -79,7 +79,7 @@ export class AuditorService {
         .from('audit_requests')
         .select(`
           *,
-          extended_profiles!inner(
+          extended_profiles!audit_requests_client_id_fkey(
             full_name
           )
         `)
