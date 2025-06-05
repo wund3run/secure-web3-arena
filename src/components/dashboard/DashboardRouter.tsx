@@ -3,7 +3,7 @@ import React from 'react';
 import { useAuth } from '@/contexts/auth';
 import { ProjectOwnerDashboard } from './enhanced/ProjectOwnerDashboard';
 import { AuditorDashboard } from './enhanced/AuditorDashboard';
-import { AdminDashboard } from './enhanced/AdminDashboard';
+import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { LoadingDashboard } from './LoadingDashboard';
 import { UnauthenticatedDashboard } from './UnauthenticatedDashboard';
 
