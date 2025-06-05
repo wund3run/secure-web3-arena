@@ -1,6 +1,6 @@
 
 export interface NavigationLink {
-  title: string;
+  label: string;
   href: string;
   description?: string;
   children?: NavigationLink[];
@@ -9,108 +9,118 @@ export interface NavigationLink {
 
 export const navigationLinks: NavigationLink[] = [
   {
-    title: "Services",
+    label: "Services",
     href: "/marketplace",
     requiresAuth: true,
     children: [
       {
-        title: "Security Audits",
+        label: "Security Audits",
         href: "/security-audits",
         description: "Comprehensive smart contract security reviews"
       },
       {
-        title: "Code Reviews",
+        label: "Code Reviews",
         href: "/code-reviews",
         description: "Expert code analysis and feedback"
       },
       {
-        title: "Penetration Testing",
+        label: "Penetration Testing",
         href: "/penetration-testing",
         description: "Advanced security vulnerability testing"
       },
       {
-        title: "Consulting",
+        label: "Consulting",
         href: "/consulting",
         description: "Strategic security guidance and planning"
       }
     ]
   },
   {
-    title: "Resources",
+    label: "Resources",
     href: "/resources",
     requiresAuth: true,
     children: [
       {
-        title: "Security Guides",
+        label: "Security Guides",
         href: "/security-guides",
         description: "Best practices and security guidelines"
       },
       {
-        title: "Knowledge Base",
+        label: "Knowledge Base",
         href: "/knowledge-base",
         description: "Comprehensive security documentation"
       },
       {
-        title: "Tutorials",
+        label: "Tutorials",
         href: "/tutorials",
         description: "Step-by-step security tutorials"
       },
       {
-        title: "Templates",
+        label: "Templates",
         href: "/templates",
         description: "Ready-to-use security templates"
       }
     ]
   },
   {
-    title: "Tools",
+    label: "Tools",
     href: "/security-insights",
     requiresAuth: true,
     children: [
       {
-        title: "Security Insights",
+        label: "Security Insights",
         href: "/security-insights",
         description: "Real-time vulnerability analysis"
       },
       {
-        title: "AI Tools",
+        label: "Security Monitoring",
+        href: "/security-monitoring",
+        description: "Continuous security monitoring dashboard"
+      },
+      {
+        label: "Enterprise Control",
+        href: "/enterprise-control",
+        description: "Enterprise security management center"
+      },
+      {
+        label: "AI Tools",
         href: "/ai-tools",
         description: "AI-powered security analysis tools"
       },
       {
-        title: "Vulnerability Scanner",
+        label: "Vulnerability Scanner",
         href: "/vulnerability-scanner",
         description: "Automated security scanning"
       },
       {
-        title: "Platform Reports",
+        label: "Platform Reports",
         href: "/platform-reports",
         description: "Comprehensive security reports"
       }
     ]
   },
   {
-    title: "Community",
+    label: "Community",
     href: "/community",
     requiresAuth: true,
     children: [
       {
-        title: "Forum",
+        label: "Forum",
         href: "/forum",
         description: "Community discussions and support"
       },
       {
-        title: "Events",
+        label: "Events",
         href: "/events",
         description: "Security events and workshops"
       },
       {
-        title: "Challenges",
+        label: "Challenges",
         href: "/challenges",
         description: "Security challenges and competitions"
       },
       {
-        title: "Leaderboard",
+        label: "Leaderboard",
         href: "/leaderboard",
         description: "Top security experts rankings"
       }

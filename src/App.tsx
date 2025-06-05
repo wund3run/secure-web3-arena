@@ -1,244 +1,232 @@
-import React, { Suspense } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/auth";
-import { NotificationProvider } from "@/contexts/NotificationContext";
+import { RouteGuard } from "@/components/auth/RouteGuard";
+import { GlobalErrorBoundary } from "@/components/error/GlobalErrorBoundary";
 
-// Lazy load pages
-const Index = React.lazy(() => import("@/pages/Index"));
-const Dashboard = React.lazy(() => import("@/pages/Dashboard"));
-const Marketplace = React.lazy(() => import("@/pages/Marketplace"));
-const Auth = React.lazy(() => import("@/pages/Auth"));
-const RequestAudit = React.lazy(() => import("@/pages/RequestAudit"));
-const Profile = React.lazy(() => import("@/pages/Profile"));
-const AuditDetails = React.lazy(() => import("@/pages/AuditDetails"));
-const Audits = React.lazy(() => import("@/pages/Audits"));
-const Settings = React.lazy(() => import("@/pages/Settings"));
+// Import all pages
+import Index from "./pages/Index";
+import Marketplace from "./pages/Marketplace";
+import RequestAudit from "./pages/RequestAudit";
+import SecurityMonitoringPage from "./pages/SecurityMonitoringPage";
+import EnterpriseControlPage from "./pages/EnterpriseControlPage";
+import Audits from "./pages/Audits";
+import AuditDetail from "./pages/AuditDetail";
+import Pricing from "./pages/Pricing";
+import Resources from "./pages/Resources";
+import Community from "./pages/Community";
+import Contact from "./pages/Contact";
+import Dashboard from "./pages/Dashboard";
+import Auth from "./pages/Auth";
+import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
+import Messages from "./pages/Messages";
+import Escrow from "./pages/Escrow";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminUsers from "./pages/AdminUsers";
+import AdminAudits from "./pages/AdminAudits";
+import AdminReports from "./pages/AdminReports";
+import AdminServices from "./pages/AdminServices";
+import AdminProviders from "./pages/AdminProviders";
+import AdminSettings from "./pages/AdminSettings";
+import Challenges from "./pages/Challenges";
+import Achievements from "./pages/Achievements";
+import ContactProvider from "./pages/ContactProvider";
+import CancellationRefund from "./pages/CancellationRefund";
 
-// Enhanced pages
-const EnhancedRequestAudit = React.lazy(() => import("@/pages/EnhancedRequestAudit"));
-const EnhancedMarketplace = React.lazy(() => import("@/pages/EnhancedMarketplace"));
-const EnhancedAuth = React.lazy(() => import("@/pages/EnhancedAuth"));
-
-// Footer pages
-const About = React.lazy(() => import("@/pages/About"));
-const Contact = React.lazy(() => import("@/pages/Contact"));
-const Careers = React.lazy(() => import("@/pages/Careers"));
-const Terms = React.lazy(() => import("@/pages/Terms"));
-const Privacy = React.lazy(() => import("@/pages/Privacy"));
-
-// Messaging page
-const MessagingPage = React.lazy(() => import("@/pages/MessagingPage"));
-
-// New launch readiness pages
-const PricingINR = React.lazy(() => import("@/pages/PricingINR"));
-const LaunchReadiness = React.lazy(() => import("@/pages/LaunchReadiness"));
-
-// Profile completion
-const ProfileCompletion = React.lazy(() => import("@/pages/ProfileCompletion"));
-
-// New pages for better navigation
-const Resources = React.lazy(() => import("@/pages/Resources"));
-const FAQ = React.lazy(() => import("@/pages/FAQ"));
-const Support = React.lazy(() => import("@/pages/Support"));
-
-// New pages for complete navigation
-const SecurityAudits = React.lazy(() => import("@/pages/SecurityAudits"));
-const Web3Security = React.lazy(() => import("@/pages/Web3Security"));
-const Vulnerabilities = React.lazy(() => import("@/pages/Vulnerabilities"));
-const WebSecurity = React.lazy(() => import("@/pages/WebSecurity"));
-const Community = React.lazy(() => import("@/pages/Community"));
-const Forum = React.lazy(() => import("@/pages/Forum"));
-const Events = React.lazy(() => import("@/pages/Events"));
-const Leaderboard = React.lazy(() => import("@/pages/Leaderboard"));
-const SubmitService = React.lazy(() => import("@/pages/SubmitService"));
-
-// Production Dashboard
-const ProductionDashboard = React.lazy(() => import("@/pages/ProductionDashboard"));
-
-// Escrow page
-const Escrow = React.lazy(() => import("@/pages/Escrow"));
-
-// Service pages
-const CodeReviews = React.lazy(() => import("@/pages/CodeReviews"));
-const PenetrationTesting = React.lazy(() => import("@/pages/PenetrationTesting"));
-const Consulting = React.lazy(() => import("@/pages/Consulting"));
-const AiTools = React.lazy(() => import("@/pages/AiTools"));
-const VulnerabilityScanner = React.lazy(() => import("@/pages/VulnerabilityScanner"));
-const ServiceProviderOnboarding = React.lazy(() => import("@/pages/ServiceProviderOnboarding"));
-const DashboardAuditor = React.lazy(() => import("@/pages/DashboardAuditor"));
-const DashboardProject = React.lazy(() => import("@/pages/DashboardProject"));
-
-// Security and Pricing pages
-const SecurityPolicy = React.lazy(() => import("@/pages/SecurityPolicy"));
-const Pricing = React.lazy(() => import("@/pages/Pricing"));
-
-// Add the UX enhancements and Performance Optimization pages
-const UXEnhancements = React.lazy(() => import("@/pages/UXEnhancements"));
-const PerformanceOptimization = React.lazy(() => import("@/pages/PerformanceOptimization"));
-
-// Enhanced loading fallback
-const AppLoadingFallback = () => (
-  <div className="min-h-screen flex items-center justify-center bg-background">
-    <div className="flex flex-col items-center space-y-4">
-      <img 
-        src="/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png" 
-        alt="Hawkly"
-        className="h-12 w-12"
-        loading="eager"
-      />
-      <div className="w-8 h-8 border-2 border-border border-t-primary rounded-full animate-spin" />
-      <p className="text-sm text-muted-foreground">Loading...</p>
-    </div>
-  </div>
-);
-
-// Production-optimized query client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
-      retry: (failureCount, error: any) => {
-        if (error?.status === 404 || error?.status === 403) return false;
-        return failureCount < 2;
-      },
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: 'always',
-    },
-    mutations: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
       retry: 1,
     },
   },
 });
 
-function App() {
+const App = () => {
   return (
-    <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme="light" storageKey="hawkly-ui-theme">
+    <GlobalErrorBoundary>
+      <HelmetProvider>
+        <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <NotificationProvider>
-              <Router>
-                <div className="min-h-screen bg-background font-sans antialiased">
-                  <Suspense fallback={<AppLoadingFallback />}>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/marketplace" element={<Marketplace />} />
-                      <Route path="/auth" element={<Auth />} />
-                      <Route path="/request-audit" element={<RequestAudit />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/audit/:id" element={<AuditDetails />} />
-                      <Route path="/audits" element={<Audits />} />
-                      <Route path="/settings" element={<Settings />} />
-                      
-                      {/* Enhanced pages with better UX */}
-                      <Route path="/enhanced-request-audit" element={<EnhancedRequestAudit />} />
-                      <Route path="/enhanced-marketplace" element={<EnhancedMarketplace />} />
-                      <Route path="/enhanced-auth" element={<EnhancedAuth />} />
-                      
-                      {/* Messaging */}
-                      <Route path="/messages" element={<MessagingPage />} />
-                      
-                      {/* New launch readiness pages */}
-                      <Route path="/pricing-inr" element={<PricingINR />} />
-                      <Route path="/launch-readiness" element={<LaunchReadiness />} />
-                      
-                      {/* Profile completion */}
-                      <Route path="/profile-completion" element={<ProfileCompletion />} />
-                      
-                      {/* New navigation support pages */}
-                      <Route path="/resources" element={<Resources />} />
-                      <Route path="/faq" element={<FAQ />} />
-                      <Route path="/support" element={<Support />} />
-                      
-                      {/* Performance Optimization Route */}
-                      <Route path="/performance-optimization" element={<PerformanceOptimization />} />
-                      
-                      {/* UX Enhancements Route */}
-                      <Route path="/ux-enhancements" element={<UXEnhancements />} />
-                      
-                      {/* Production Dashboard */}
-                      <Route path="/production-dashboard" element={<ProductionDashboard />} />
-                      
-                      {/* Escrow Management */}
-                      <Route path="/escrow" element={<Escrow />} />
-                      
-                      {/* New Security Service Pages */}
-                      <Route path="/security-audits" element={<SecurityAudits />} />
-                      <Route path="/web3-security" element={<Web3Security />} />
-                      <Route path="/vulnerabilities" element={<Vulnerabilities />} />
-                      <Route path="/web-security" element={<WebSecurity />} />
-                      
-                      {/* Community Pages */}
-                      <Route path="/community" element={<Community />} />
-                      <Route path="/forum" element={<Forum />} />
-                      <Route path="/events" element={<Events />} />
-                      <Route path="/leaderboard" element={<Leaderboard />} />
-                      <Route path="/challenges" element={<Events />} />
-                      
-                      {/* Service Provider Pages */}
-                      <Route path="/submit-service" element={<SubmitService />} />
-                      
-                      {/* Service Pages */}
-                      <Route path="/code-reviews" element={<CodeReviews />} />
-                      <Route path="/penetration-testing" element={<PenetrationTesting />} />
-                      <Route path="/consulting" element={<Consulting />} />
-                      <Route path="/ai-tools" element={<AiTools />} />
-                      <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
-                      <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
-                      
-                      {/* Dashboard Pages */}
-                      <Route path="/dashboard/auditor" element={<DashboardAuditor />} />
-                      <Route path="/dashboard/project" element={<DashboardProject />} />
-                      
-                      {/* Security Settings */}
-                      <Route path="/security-settings" element={<Settings />} />
-                      <Route path="/security-policy" element={<SecurityPolicy />} />
-                      
-                      {/* Pricing */}
-                      <Route path="/pricing" element={<Pricing />} />
-                      
-                      {/* Alias routes for common navigation patterns */}
-                      <Route path="/security-insights" element={<Vulnerabilities />} />
-                      <Route path="/security-guides" element={<Resources />} />
-                      <Route path="/knowledge-base" element={<Resources />} />
-                      <Route path="/docs" element={<Resources />} />
-                      <Route path="/tutorials" element={<Resources />} />
-                      <Route path="/templates" element={<Resources />} />
-                      
-                      {/* Footer pages */}
-                      <Route path="/about" element={<About />} />
-                      <Route path="/contact" element={<Contact />} />
-                      <Route path="/careers" element={<Careers />} />
-                      <Route path="/terms" element={<Terms />} />
-                      <Route path="/privacy" element={<Privacy />} />
-                    </Routes>
-                  </Suspense>
+            <TooltipProvider>
+              <Toaster />
+              <BrowserRouter>
+                <Routes>
+                  {/* Public routes */}
+                  <Route path="/" element={<Index />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/marketplace" element={<Marketplace />} />
+                  <Route path="/request-audit" element={<RequestAudit />} />
+                  <Route path="/audits" element={<Audits />} />
+                  <Route path="/audits/:id" element={<AuditDetail />} />
+                  <Route path="/pricing" element={<Pricing />} />
+                  <Route path="/resources" element={<Resources />} />
+                  <Route path="/community" element={<Community />} />
+                  <Route path="/contact" element={<Contact />} />
                   
-                  <Toaster 
-                    position="top-right"
-                    toastOptions={{
-                      duration: 4000,
-                      style: {
-                        background: 'hsl(var(--background))',
-                        color: 'hsl(var(--foreground))',
-                        border: '1px solid hsl(var(--border))',
-                      },
-                    }}
+                  {/* Protected routes - require authentication */}
+                  <Route 
+                    path="/dashboard" 
+                    element={
+                      <RouteGuard requireAuth={true}>
+                        <Dashboard />
+                      </RouteGuard>
+                    } 
                   />
-                </div>
-              </Router>
-            </NotificationProvider>
+                  
+                  {/* Security Monitoring - requires authentication */}
+                  <Route 
+                    path="/security-monitoring" 
+                    element={
+                      <RouteGuard requireAuth={true}>
+                        <SecurityMonitoringPage />
+                      </RouteGuard>
+                    } 
+                  />
+                  
+                  {/* Enterprise Control - requires admin or project_owner roles */}
+                  <Route 
+                    path="/enterprise-control" 
+                    element={
+                      <RouteGuard requireAuth={true} allowedRoles={["admin", "project_owner"]}>
+                        <EnterpriseControlPage />
+                      </RouteGuard>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/profile" 
+                    element={
+                      <RouteGuard requireAuth={true}>
+                        <Profile />
+                      </RouteGuard>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/settings" 
+                    element={
+                      <RouteGuard requireAuth={true}>
+                        <Settings />
+                      </RouteGuard>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/messages" 
+                    element={
+                      <RouteGuard requireAuth={true}>
+                        <Messages />
+                      </RouteGuard>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/escrow" 
+                    element={
+                      <RouteGuard requireAuth={true}>
+                        <Escrow />
+                      </RouteGuard>
+                    } 
+                  />
+                  
+                  {/* Admin routes - require admin role */}
+                  <Route 
+                    path="/admin/dashboard" 
+                    element={
+                      <RouteGuard requireAuth={true} allowedRoles={["admin"]}>
+                        <AdminDashboard />
+                      </RouteGuard>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/admin/users" 
+                    element={
+                      <RouteGuard requireAuth={true} allowedRoles={["admin"]}>
+                        <AdminUsers />
+                      </RouteGuard>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/admin/audits" 
+                    element={
+                      <RouteGuard requireAuth={true} allowedRoles={["admin"]}>
+                        <AdminAudits />
+                      </RouteGuard>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/admin/reports" 
+                    element={
+                      <RouteGuard requireAuth={true} allowedRoles={["admin"]}>
+                        <AdminReports />
+                      </RouteGuard>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/admin/services" 
+                    element={
+                      <RouteGuard requireAuth={true} allowedRoles={["admin"]}>
+                        <AdminServices />
+                      </RouteGuard>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/admin/providers" 
+                    element={
+                      <RouteGuard requireAuth={true} allowedRoles={["admin"]}>
+                        <AdminProviders />
+                      </RouteGuard>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/admin/settings" 
+                    element={
+                      <RouteGuard requireAuth={true} allowedRoles={["admin"]}>
+                        <AdminSettings />
+                      </RouteGuard>
+                    } 
+                  />
+                  
+                  {/* Other protected routes */}
+                  <Route 
+                    path="/challenges" 
+                    element={
+                      <RouteGuard requireAuth={true}>
+                        <Challenges />
+                      </RouteGuard>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/achievements" 
+                    element={
+                      <RouteGuard requireAuth={true}>
+                        <Achievements />
+                      </RouteGuard>
+                    } 
+                  />
+                  
+                  <Route path="/contact-provider" element={<ContactProvider />} />
+                  <Route path="/cancellation-refund" element={<CancellationRefund />} />
+                </Routes>
+              </BrowserRouter>
+            </TooltipProvider>
           </AuthProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
-    </HelmetProvider>
+        </QueryClientProvider>
+      </HelmetProvider>
+    </GlobalErrorBoundary>
   );
-}
+};
 
 export default App;
