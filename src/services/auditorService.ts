@@ -40,31 +40,38 @@ export class AuditorService {
   // Get auditor's active audits
   static async getActiveAudits(auditorId: string): Promise<ActiveAudit[]> {
     try {
-      const { data, error } = await supabase
+      const { data: audits, error } = await supabase
         .from('audit_requests')
-        .select(`
-          *,
-          extended_profiles!audit_requests_client_id_fkey(
-            full_name
-          )
-        `)
+        .select('*')
         .eq('assigned_auditor_id', auditorId)
         .in('status', ['in_progress', 'review'])
         .order('deadline', { ascending: true });
 
       if (error) throw error;
 
-      return data?.map(audit => ({
-        id: audit.id,
-        project_name: audit.project_name,
-        client_name: audit.extended_profiles?.full_name || 'Unknown Client',
-        progress: audit.completion_percentage || 0,
-        deadline: audit.deadline,
-        status: audit.status,
-        complexity: audit.urgency_level || 'Medium',
-        current_phase: audit.current_phase || 'In Progress',
-        payment_amount: audit.budget || 0
-      })) || [];
+      if (!audits || audits.length === 0) return [];
+
+      // Get client profiles separately
+      const clientIds = audits.map(audit => audit.client_id).filter(Boolean);
+      const { data: profiles } = await supabase
+        .from('extended_profiles')
+        .select('id, full_name')
+        .in('id', clientIds);
+
+      return audits.map(audit => {
+        const clientProfile = profiles?.find(p => p.id === audit.client_id);
+        return {
+          id: audit.id,
+          project_name: audit.project_name,
+          client_name: clientProfile?.full_name || 'Unknown Client',
+          progress: audit.completion_percentage || 0,
+          deadline: audit.deadline,
+          status: audit.status,
+          complexity: audit.urgency_level || 'Medium',
+          current_phase: audit.current_phase || 'In Progress',
+          payment_amount: audit.budget || 0
+        };
+      });
     } catch (error) {
       console.error('Failed to fetch active audits:', error);
       toast.error('Failed to load active audits');
@@ -75,14 +82,9 @@ export class AuditorService {
   // Get available opportunities for auditor
   static async getOpportunities(auditorId: string): Promise<AuditorOpportunity[]> {
     try {
-      const { data, error } = await supabase
+      const { data: requests, error } = await supabase
         .from('audit_requests')
-        .select(`
-          *,
-          extended_profiles!audit_requests_client_id_fkey(
-            full_name
-          )
-        `)
+        .select('*')
         .eq('status', 'pending')
         .is('assigned_auditor_id', null)
         .order('created_at', { ascending: false })
@@ -90,7 +92,18 @@ export class AuditorService {
 
       if (error) throw error;
 
-      return data?.map(request => {
+      if (!requests || requests.length === 0) return [];
+
+      // Get client profiles separately
+      const clientIds = requests.map(request => request.client_id).filter(Boolean);
+      const { data: profiles } = await supabase
+        .from('extended_profiles')
+        .select('id, full_name')
+        .in('id', clientIds);
+
+      return requests.map(request => {
+        const clientProfile = profiles?.find(p => p.id === request.client_id);
+        
         // Ensure complexity matches the expected type
         const complexityMap: Record<string, 'Low' | 'Medium' | 'High'> = {
           'low': 'Low',
@@ -105,7 +118,7 @@ export class AuditorService {
         return {
           id: request.id,
           project_name: request.project_name,
-          client_name: request.extended_profiles?.full_name || 'Anonymous',
+          client_name: clientProfile?.full_name || 'Anonymous',
           budget: request.budget || 0,
           deadline: request.deadline,
           blockchain: request.blockchain,
@@ -114,7 +127,7 @@ export class AuditorService {
           required_skills: [request.blockchain, 'Smart Contract Audit'],
           estimated_duration: Math.ceil((new Date(request.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
         };
-      }) || [];
+      });
     } catch (error) {
       console.error('Failed to fetch opportunities:', error);
       toast.error('Failed to load opportunities');
