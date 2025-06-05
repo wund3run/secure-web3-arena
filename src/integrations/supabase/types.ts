@@ -129,6 +129,33 @@ export type Database = {
           },
         ]
       }
+      analytics_events: {
+        Row: {
+          created_at: string
+          event_name: string
+          id: string
+          properties: Json | null
+          timestamp: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_name: string
+          id?: string
+          properties?: Json | null
+          timestamp?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_name?: string
+          id?: string
+          properties?: Json | null
+          timestamp?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       audit_deliverables: {
         Row: {
           audit_request_id: string
@@ -1677,6 +1704,59 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      payment_transactions: {
+        Row: {
+          amount: number
+          audit_id: string | null
+          auditor_id: string | null
+          client_id: string | null
+          created_at: string
+          currency: string
+          id: string
+          payment_intent_id: string | null
+          payment_method: string | null
+          platform_fee: number | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          audit_id?: string | null
+          auditor_id?: string | null
+          client_id?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          payment_intent_id?: string | null
+          payment_method?: string | null
+          platform_fee?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          audit_id?: string | null
+          auditor_id?: string | null
+          client_id?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          payment_intent_id?: string | null
+          payment_method?: string | null
+          platform_fee?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_transactions_audit_id_fkey"
+            columns: ["audit_id"]
+            isOneToOne: false
+            referencedRelation: "audit_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       platform_analytics: {
         Row: {

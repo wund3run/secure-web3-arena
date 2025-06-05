@@ -64,12 +64,16 @@ export class AdvancedAnalyticsService {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      await supabase.from('analytics_events').insert({
+      const { error } = await supabase.from('analytics_events').insert({
         event_name: event.event,
         properties: event.properties,
         user_id: user?.id || null,
         timestamp: event.timestamp || new Date().toISOString()
       });
+
+      if (error) {
+        console.error('Error storing analytics event:', error);
+      }
     } catch (error) {
       console.error('Error storing analytics event:', error);
     }
