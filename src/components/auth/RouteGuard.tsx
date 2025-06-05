@@ -39,7 +39,11 @@ export const RouteGuard: React.FC<RouteGuardProps> = ({
     try {
       const currentUserType = getUserType();
       
-      if (!allowedRoles.includes(currentUserType)) {
+      // Only check against allowed roles, ignore other user types like 'general' or 'visitor'
+      const validRoles: ("auditor" | "project_owner" | "admin")[] = ["auditor", "project_owner", "admin"];
+      const userRole = validRoles.includes(currentUserType as any) ? currentUserType as ("auditor" | "project_owner" | "admin") : null;
+      
+      if (!userRole || !allowedRoles.includes(userRole)) {
         return (
           <div className="min-h-screen flex items-center justify-center bg-muted/50">
             <Card className="max-w-md w-full mx-4">
