@@ -44,7 +44,7 @@ export class AuditorService {
         .from('audit_requests')
         .select(`
           *,
-          profiles:client_id (
+          client_profile:extended_profiles!audit_requests_client_id_fkey (
             full_name
           )
         `)
@@ -57,7 +57,7 @@ export class AuditorService {
       return data?.map(audit => ({
         id: audit.id,
         project_name: audit.project_name,
-        client_name: audit.profiles?.full_name || 'Unknown Client',
+        client_name: audit.client_profile?.full_name || 'Unknown Client',
         progress: audit.completion_percentage || 0,
         deadline: audit.deadline,
         status: audit.status,
@@ -79,7 +79,7 @@ export class AuditorService {
         .from('audit_requests')
         .select(`
           *,
-          profiles:client_id (
+          client_profile:extended_profiles!audit_requests_client_id_fkey (
             full_name
           )
         `)
@@ -90,18 +90,31 @@ export class AuditorService {
 
       if (error) throw error;
 
-      return data?.map(request => ({
-        id: request.id,
-        project_name: request.project_name,
-        client_name: request.profiles?.full_name || 'Anonymous',
-        budget: request.budget || 0,
-        deadline: request.deadline,
-        blockchain: request.blockchain,
-        complexity: request.urgency_level || 'Medium',
-        description: request.project_description || '',
-        required_skills: [request.blockchain, 'Smart Contract Audit'],
-        estimated_duration: Math.ceil((new Date(request.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
-      })) || [];
+      return data?.map(request => {
+        // Ensure complexity matches the expected type
+        const complexityMap: Record<string, 'Low' | 'Medium' | 'High'> = {
+          'low': 'Low',
+          'normal': 'Medium',
+          'medium': 'Medium',
+          'high': 'High',
+          'urgent': 'High'
+        };
+        
+        const complexity = complexityMap[request.urgency_level?.toLowerCase() || 'medium'] || 'Medium';
+
+        return {
+          id: request.id,
+          project_name: request.project_name,
+          client_name: request.client_profile?.full_name || 'Anonymous',
+          budget: request.budget || 0,
+          deadline: request.deadline,
+          blockchain: request.blockchain,
+          complexity,
+          description: request.project_description || '',
+          required_skills: [request.blockchain, 'Smart Contract Audit'],
+          estimated_duration: Math.ceil((new Date(request.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+        };
+      }) || [];
     } catch (error) {
       console.error('Failed to fetch opportunities:', error);
       toast.error('Failed to load opportunities');
