@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import type { AuditFormData } from '@/types/audit-request.types';
@@ -25,22 +24,52 @@ export class AuditRequestService {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
+      // Ensure user profile exists in extended_profiles
+      const { data: existingProfile } = await supabase
+        .from('extended_profiles')
+        .select('id')
+        .eq('id', user.id)
+        .single();
+
+      if (!existingProfile) {
+        // Create profile if it doesn't exist
+        const { error: profileError } = await supabase
+          .from('extended_profiles')
+          .insert({
+            id: user.id,
+            full_name: user.user_metadata?.full_name || 'Unknown User',
+            avatar_url: user.user_metadata?.avatar_url || null
+          });
+
+        if (profileError) {
+          console.error('Error creating user profile:', profileError);
+          throw new Error('Failed to create user profile');
+        }
+      }
+
+      // Parse and validate form data
+      const contractCount = formData.contractCount ? parseInt(formData.contractCount.split('-')[0]) || 1 : 1;
+      const linesOfCode = formData.linesOfCode ? parseInt(formData.linesOfCode.replace(/[<>]/g, '').split(' ')[0]) || 1000 : 1000;
+      const budget = formData.budget ? this.parseBudgetRange(formData.budget) : null;
+
       // Map form data to database schema
       const auditData: CreateAuditRequestData = {
         project_name: formData.projectName,
-        project_description: formData.projectDescription,
-        blockchain: formData.blockchain,
-        repository_url: formData.repositoryUrl,
-        contract_count: parseInt(formData.contractCount) || undefined,
-        lines_of_code: parseInt(formData.linesOfCode) || undefined,
-        deadline: formData.deadline,
-        budget: parseFloat(formData.budget) || undefined,
-        audit_scope: formData.auditScope,
-        previous_audits: formData.previousAudits,
-        specific_concerns: formData.specificConcerns,
+        project_description: formData.projectDescription || null,
+        blockchain: formData.blockchain === 'Other' ? formData.customBlockchain || 'Other' : formData.blockchain,
+        repository_url: formData.repositoryUrl || null,
+        contract_count: contractCount,
+        lines_of_code: linesOfCode,
+        deadline: formData.deadline || null,
+        budget: budget,
+        audit_scope: formData.auditScope || null,
+        previous_audits: formData.previousAudits || false,
+        specific_concerns: formData.specificConcerns || null,
         urgency_level: 'normal',
         communication_preference: formData.preferredCommunication || 'email',
       };
+
+      console.log('Submitting audit request with data:', auditData);
 
       const { data, error } = await supabase
         .from('audit_requests')
@@ -59,7 +88,12 @@ export class AuditRequestService {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database error creating audit request:', error);
+        throw error;
+      }
+
+      console.log('Audit request created successfully:', data);
 
       // Create initial notification
       await supabase.from('notifications').insert({
@@ -83,9 +117,29 @@ export class AuditRequestService {
       return data.id;
     } catch (error: any) {
       console.error('Error creating audit request:', error);
-      toast.error('Failed to create audit request');
+      
+      // Provide more specific error messages
+      let errorMessage = 'Failed to create audit request';
+      if (error.message.includes('violates foreign key constraint')) {
+        errorMessage = 'User profile validation failed. Please ensure your account is properly set up.';
+      } else if (error.message.includes('violates not-null constraint')) {
+        errorMessage = 'Missing required information. Please check all required fields.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      toast.error(errorMessage);
       return null;
     }
+  }
+
+  static parseBudgetRange(budget: string): number {
+    // Extract numeric value from budget range strings like "$5,000 - $10,000"
+    const match = budget.match(/\$?([0-9,]+)/);
+    if (match) {
+      return parseInt(match[1].replace(/,/g, ''));
+    }
+    return 5000; // Default fallback
   }
 
   static async getUserAuditRequests(): Promise<any[]> {
