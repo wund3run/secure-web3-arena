@@ -44,7 +44,7 @@ export class AuditorService {
         .from('audit_requests')
         .select(`
           *,
-          client_profile:extended_profiles!audit_requests_client_id_fkey (
+          extended_profiles!inner(
             full_name
           )
         `)
@@ -57,7 +57,7 @@ export class AuditorService {
       return data?.map(audit => ({
         id: audit.id,
         project_name: audit.project_name,
-        client_name: audit.client_profile?.full_name || 'Unknown Client',
+        client_name: audit.extended_profiles?.full_name || 'Unknown Client',
         progress: audit.completion_percentage || 0,
         deadline: audit.deadline,
         status: audit.status,
@@ -79,7 +79,7 @@ export class AuditorService {
         .from('audit_requests')
         .select(`
           *,
-          client_profile:extended_profiles!audit_requests_client_id_fkey (
+          extended_profiles!inner(
             full_name
           )
         `)
@@ -105,7 +105,7 @@ export class AuditorService {
         return {
           id: request.id,
           project_name: request.project_name,
-          client_name: request.client_profile?.full_name || 'Anonymous',
+          client_name: request.extended_profiles?.full_name || 'Anonymous',
           budget: request.budget || 0,
           deadline: request.deadline,
           blockchain: request.blockchain,
