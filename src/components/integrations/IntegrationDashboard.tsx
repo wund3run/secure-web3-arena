@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,7 +12,10 @@ import {
   Settings, 
   CheckCircle,
   AlertCircle,
-  ExternalLink
+  ExternalLink,
+  Building,
+  Globe,
+  Zap
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -23,7 +25,7 @@ interface Integration {
   description: string;
   status: 'connected' | 'disconnected' | 'pending';
   icon: React.ReactNode;
-  category: 'analytics' | 'payments' | 'ai' | 'security' | 'blockchain';
+  category: 'analytics' | 'payments' | 'ai' | 'security' | 'blockchain' | 'enterprise' | 'web3';
   features: string[];
 }
 
@@ -64,6 +66,105 @@ export const IntegrationDashboard = () => {
       icon: <Shield className="h-5 w-5" />,
       category: 'blockchain',
       features: ['Multi-chain Support', 'Real-time Monitoring', 'Enhanced APIs']
+    },
+    {
+      id: 'forta',
+      name: 'Forta Network',
+      description: 'Continuous post-audit monitoring and threat detection',
+      status: 'disconnected',
+      icon: <Shield className="h-5 w-5" />,
+      category: 'security',
+      features: ['Continuous Monitoring', 'Threat Detection', 'Alert Management']
+    },
+    {
+      id: 'defender',
+      name: 'OpenZeppelin Defender',
+      description: 'Security operations and automated defense systems',
+      status: 'disconnected',
+      icon: <Shield className="h-5 w-5" />,
+      category: 'security',
+      features: ['Autotasks', 'Security Operations', 'Incident Response']
+    },
+    {
+      id: 'sentry',
+      name: 'Sentry',
+      description: 'Application monitoring and error tracking',
+      status: 'connected',
+      icon: <Activity className="h-5 w-5" />,
+      category: 'analytics',
+      features: ['Error Tracking', 'Performance Monitoring', 'Release Health']
+    },
+    {
+      id: 'mythril',
+      name: 'Mythril',
+      description: 'Automated security scanning with symbolic execution',
+      status: 'disconnected',
+      icon: <Zap className="h-5 w-5" />,
+      category: 'security',
+      features: ['Symbolic Execution', 'Vulnerability Detection', 'Automated Scanning']
+    },
+    {
+      id: 'thegraph',
+      name: 'The Graph Protocol',
+      description: 'Complex blockchain data queries and indexing',
+      status: 'disconnected',
+      icon: <Globe className="h-5 w-5" />,
+      category: 'web3',
+      features: ['Data Indexing', 'GraphQL Queries', 'Multi-chain Support']
+    },
+    {
+      id: 'walletconnect',
+      name: 'WalletConnect v2',
+      description: 'Enhanced wallet connectivity and multi-chain support',
+      status: 'connected',
+      icon: <Globe className="h-5 w-5" />,
+      category: 'web3',
+      features: ['Multi-chain Wallets', 'dApp Connections', 'Sign Protocol']
+    },
+    {
+      id: 'chainlink',
+      name: 'Chainlink Oracles',
+      description: 'Real-time security scores and price feeds',
+      status: 'disconnected',
+      icon: <Activity className="h-5 w-5" />,
+      category: 'web3',
+      features: ['Price Feeds', 'Security Scores', 'Decentralized Data']
+    },
+    {
+      id: 'chainalysis',
+      name: 'Chainalysis',
+      description: 'Regulatory compliance and risk assessment',
+      status: 'disconnected',
+      icon: <Building className="h-5 w-5" />,
+      category: 'enterprise',
+      features: ['Compliance Checks', 'Risk Assessment', 'AML/KYC']
+    },
+    {
+      id: 'kubernetes',
+      name: 'Kubernetes',
+      description: 'Scalable deployment and container orchestration',
+      status: 'connected',
+      icon: <Settings className="h-5 w-5" />,
+      category: 'enterprise',
+      features: ['Auto-scaling', 'Load Balancing', 'Zero Downtime']
+    },
+    {
+      id: 'tenderly',
+      name: 'Tenderly',
+      description: 'Advanced contract debugging and simulation',
+      status: 'disconnected',
+      icon: <Brain className="h-5 w-5" />,
+      category: 'enterprise',
+      features: ['Transaction Simulation', 'Debug Traces', 'Gas Profiling']
+    },
+    {
+      id: 'ceramic',
+      name: 'Ceramic Network',
+      description: 'Decentralized identity and credential management',
+      status: 'disconnected',
+      icon: <Globe className="h-5 w-5" />,
+      category: 'enterprise',
+      features: ['Decentralized Identity', 'Verifiable Credentials', 'Self-Sovereign']
     }
   ]);
 
@@ -103,7 +204,7 @@ export const IntegrationDashboard = () => {
     );
   };
 
-  const categories = ['all', 'analytics', 'payments', 'ai', 'security', 'blockchain'];
+  const categories = ['all', 'analytics', 'payments', 'ai', 'security', 'blockchain', 'web3', 'enterprise'];
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   const filteredIntegrations = selectedCategory === 'all' 
@@ -116,7 +217,7 @@ export const IntegrationDashboard = () => {
         <div>
           <h1 className="text-3xl font-bold">Integration Dashboard</h1>
           <p className="text-muted-foreground">
-            Manage your third-party integrations and services
+            Comprehensive Web3 SaaS integrations for security, monitoring, and enterprise features
           </p>
         </div>
         <Button>
@@ -126,7 +227,7 @@ export const IntegrationDashboard = () => {
       </div>
 
       <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-8">
           {categories.map(category => (
             <TabsTrigger key={category} value={category} className="capitalize">
               {category}
