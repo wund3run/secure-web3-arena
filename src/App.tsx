@@ -6,6 +6,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/auth";
 import { NotificationProvider } from "@/contexts/NotificationContext";
+import { GlobalErrorBoundary } from "@/components/error/GlobalErrorBoundary";
+import { RouteGuard } from "@/components/auth/RouteGuard";
 
 // Lazy load pages
 const Index = React.lazy(() => import("@/pages/Index"));
@@ -120,121 +122,190 @@ function App() {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="light" storageKey="hawkly-ui-theme">
-          <AuthProvider>
-            <NotificationProvider>
-              <Router>
-                <div className="min-h-screen bg-background font-sans antialiased">
-                  <Suspense fallback={<AppLoadingFallback />}>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/marketplace" element={<Marketplace />} />
-                      <Route path="/auth" element={<Auth />} />
-                      <Route path="/request-audit" element={<RequestAudit />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/audit/:id" element={<AuditDetails />} />
-                      <Route path="/audits" element={<Audits />} />
-                      <Route path="/settings" element={<Settings />} />
-                      
-                      {/* Enhanced pages with better UX */}
-                      <Route path="/enhanced-request-audit" element={<EnhancedRequestAudit />} />
-                      <Route path="/enhanced-marketplace" element={<EnhancedMarketplace />} />
-                      <Route path="/enhanced-auth" element={<EnhancedAuth />} />
-                      
-                      {/* Messaging */}
-                      <Route path="/messages" element={<MessagingPage />} />
-                      
-                      {/* New launch readiness pages */}
-                      <Route path="/pricing-inr" element={<PricingINR />} />
-                      <Route path="/launch-readiness" element={<LaunchReadiness />} />
-                      
-                      {/* Profile completion */}
-                      <Route path="/profile-completion" element={<ProfileCompletion />} />
-                      
-                      {/* New navigation support pages */}
-                      <Route path="/resources" element={<Resources />} />
-                      <Route path="/faq" element={<FAQ />} />
-                      <Route path="/support" element={<Support />} />
-                      
-                      {/* Performance Optimization Route */}
-                      <Route path="/performance-optimization" element={<PerformanceOptimization />} />
-                      
-                      {/* UX Enhancements Route */}
-                      <Route path="/ux-enhancements" element={<UXEnhancements />} />
-                      
-                      {/* Production Dashboard */}
-                      <Route path="/production-dashboard" element={<ProductionDashboard />} />
-                      
-                      {/* Escrow Management */}
-                      <Route path="/escrow" element={<Escrow />} />
-                      
-                      {/* New Security Service Pages */}
-                      <Route path="/security-audits" element={<SecurityAudits />} />
-                      <Route path="/web3-security" element={<Web3Security />} />
-                      <Route path="/vulnerabilities" element={<Vulnerabilities />} />
-                      <Route path="/web-security" element={<WebSecurity />} />
-                      
-                      {/* Community Pages */}
-                      <Route path="/community" element={<Community />} />
-                      <Route path="/forum" element={<Forum />} />
-                      <Route path="/events" element={<Events />} />
-                      <Route path="/leaderboard" element={<Leaderboard />} />
-                      <Route path="/challenges" element={<Events />} />
-                      
-                      {/* Service Provider Pages */}
-                      <Route path="/submit-service" element={<SubmitService />} />
-                      
-                      {/* Service Pages */}
-                      <Route path="/code-reviews" element={<CodeReviews />} />
-                      <Route path="/penetration-testing" element={<PenetrationTesting />} />
-                      <Route path="/consulting" element={<Consulting />} />
-                      <Route path="/ai-tools" element={<AiTools />} />
-                      <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
-                      <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
-                      
-                      {/* Dashboard Pages */}
-                      <Route path="/dashboard/auditor" element={<DashboardAuditor />} />
-                      <Route path="/dashboard/project" element={<DashboardProject />} />
-                      
-                      {/* Security Settings */}
-                      <Route path="/security-settings" element={<Settings />} />
-                      <Route path="/security-policy" element={<SecurityPolicy />} />
-                      
-                      {/* Pricing */}
-                      <Route path="/pricing" element={<Pricing />} />
-                      
-                      {/* Alias routes for common navigation patterns */}
-                      <Route path="/security-insights" element={<Vulnerabilities />} />
-                      <Route path="/security-guides" element={<Resources />} />
-                      <Route path="/knowledge-base" element={<Resources />} />
-                      <Route path="/docs" element={<Resources />} />
-                      <Route path="/tutorials" element={<Resources />} />
-                      <Route path="/templates" element={<Resources />} />
-                      
-                      {/* Footer pages */}
-                      <Route path="/about" element={<About />} />
-                      <Route path="/contact" element={<Contact />} />
-                      <Route path="/careers" element={<Careers />} />
-                      <Route path="/terms" element={<Terms />} />
-                      <Route path="/privacy" element={<Privacy />} />
-                    </Routes>
-                  </Suspense>
-                  
-                  <Toaster 
-                    position="top-right"
-                    toastOptions={{
-                      duration: 4000,
-                      style: {
-                        background: 'hsl(var(--background))',
-                        color: 'hsl(var(--foreground))',
-                        border: '1px solid hsl(var(--border))',
-                      },
-                    }}
-                  />
-                </div>
-              </Router>
-            </NotificationProvider>
-          </AuthProvider>
+          <GlobalErrorBoundary>
+            <AuthProvider>
+              <NotificationProvider>
+                <Router>
+                  <div className="min-h-screen bg-background font-sans antialiased">
+                    <Suspense fallback={<AppLoadingFallback />}>
+                      <Routes>
+                        {/* Public Routes */}
+                        <Route path="/" element={<Index />} />
+                        <Route path="/auth" element={<Auth />} />
+                        <Route path="/marketplace" element={<Marketplace />} />
+                        <Route path="/pricing" element={<Pricing />} />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/contact" element={<Contact />} />
+                        <Route path="/careers" element={<Careers />} />
+                        <Route path="/terms" element={<Terms />} />
+                        <Route path="/privacy" element={<Privacy />} />
+                        
+                        {/* Security & Resources Pages */}
+                        <Route path="/security-audits" element={<SecurityAudits />} />
+                        <Route path="/web3-security" element={<Web3Security />} />
+                        <Route path="/vulnerabilities" element={<Vulnerabilities />} />
+                        <Route path="/web-security" element={<WebSecurity />} />
+                        <Route path="/resources" element={<Resources />} />
+                        <Route path="/faq" element={<FAQ />} />
+                        <Route path="/support" element={<Support />} />
+                        
+                        {/* Community Pages */}
+                        <Route path="/community" element={<Community />} />
+                        <Route path="/forum" element={<Forum />} />
+                        <Route path="/events" element={<Events />} />
+                        <Route path="/leaderboard" element={<Leaderboard />} />
+                        <Route path="/challenges" element={<Events />} />
+                        
+                        {/* Service Pages */}
+                        <Route path="/code-reviews" element={<CodeReviews />} />
+                        <Route path="/penetration-testing" element={<PenetrationTesting />} />
+                        <Route path="/consulting" element={<Consulting />} />
+                        <Route path="/ai-tools" element={<AiTools />} />
+                        <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
+                        
+                        {/* Protected Routes - Require Authentication */}
+                        <Route path="/request-audit" element={
+                          <RouteGuard requireAuth>
+                            <RequestAudit />
+                          </RouteGuard>
+                        } />
+                        
+                        <Route path="/security-monitoring" element={
+                          <RouteGuard requireAuth>
+                            <SecurityMonitoringPage />
+                          </RouteGuard>
+                        } />
+                        
+                        <Route path="/enterprise-control" element={
+                          <RouteGuard requireAuth allowedRoles={["admin", "project_owner"]}>
+                            <EnterpriseControlPage />
+                          </RouteGuard>
+                        } />
+                        
+                        <Route path="/dashboard" element={
+                          <RouteGuard requireAuth>
+                            <Dashboard />
+                          </RouteGuard>
+                        } />
+                        
+                        <Route path="/dashboard/auditor" element={
+                          <RouteGuard requireAuth allowedRoles={["auditor", "admin"]}>
+                            <DashboardAuditor />
+                          </RouteGuard>
+                        } />
+                        
+                        <Route path="/dashboard/project" element={
+                          <RouteGuard requireAuth allowedRoles={["project_owner", "admin"]}>
+                            <DashboardProject />
+                          </RouteGuard>
+                        } />
+                        
+                        <Route path="/escrow" element={
+                          <RouteGuard requireAuth>
+                            <Escrow />
+                          </RouteGuard>
+                        } />
+                        
+                        <Route path="/messages" element={
+                          <RouteGuard requireAuth>
+                            <MessagingPage />
+                          </RouteGuard>
+                        } />
+                        
+                        <Route path="/settings" element={
+                          <RouteGuard requireAuth>
+                            <Settings />
+                          </RouteGuard>
+                        } />
+                        
+                        <Route path="/profile" element={
+                          <RouteGuard requireAuth>
+                            <Profile />
+                          </RouteGuard>
+                        } />
+                        
+                        <Route path="/audits" element={
+                          <RouteGuard requireAuth>
+                            <Audits />
+                          </RouteGuard>
+                        } />
+                        
+                        <Route path="/audit/:id" element={
+                          <RouteGuard requireAuth>
+                            <AuditDetails />
+                          </RouteGuard>
+                        } />
+                        
+                        {/* Service Provider Routes */}
+                        <Route path="/service-provider-onboarding" element={
+                          <RouteGuard requireAuth allowedRoles={["auditor", "admin"]}>
+                            <ServiceProviderOnboarding />
+                          </RouteGuard>
+                        } />
+                        
+                        <Route path="/submit-service" element={
+                          <RouteGuard requireAuth allowedRoles={["auditor", "admin"]}>
+                            <SubmitService />
+                          </RouteGuard>
+                        } />
+
+                        {/* Enhanced pages with better UX */}
+                        <Route path="/enhanced-request-audit" element={
+                          <RouteGuard requireAuth>
+                            <EnhancedRequestAudit />
+                          </RouteGuard>
+                        } />
+                        <Route path="/enhanced-marketplace" element={<EnhancedMarketplace />} />
+                        <Route path="/enhanced-auth" element={<EnhancedAuth />} />
+                        
+                        {/* Launch readiness and profile pages */}
+                        <Route path="/pricing-inr" element={<PricingINR />} />
+                        <Route path="/launch-readiness" element={<LaunchReadiness />} />
+                        <Route path="/profile-completion" element={
+                          <RouteGuard requireAuth>
+                            <ProfileCompletion />
+                          </RouteGuard>
+                        } />
+                        
+                        {/* Performance and UX pages */}
+                        <Route path="/performance-optimization" element={<PerformanceOptimization />} />
+                        <Route path="/ux-enhancements" element={<UXEnhancements />} />
+                        <Route path="/production-dashboard" element={<ProductionDashboard />} />
+                        
+                        {/* Security Settings */}
+                        <Route path="/security-settings" element={
+                          <RouteGuard requireAuth>
+                            <Settings />
+                          </RouteGuard>
+                        } />
+                        <Route path="/security-policy" element={<SecurityPolicy />} />
+                        
+                        {/* Alias routes for common navigation patterns */}
+                        <Route path="/security-insights" element={<Vulnerabilities />} />
+                        <Route path="/security-guides" element={<Resources />} />
+                        <Route path="/knowledge-base" element={<Resources />} />
+                        <Route path="/docs" element={<Resources />} />
+                        <Route path="/tutorials" element={<Resources />} />
+                        <Route path="/templates" element={<Resources />} />
+                      </Routes>
+                    </Suspense>
+                    
+                    <Toaster 
+                      position="top-right"
+                      toastOptions={{
+                        duration: 4000,
+                        style: {
+                          background: 'hsl(var(--background))',
+                          color: 'hsl(var(--foreground))',
+                          border: '1px solid hsl(var(--border))',
+                        },
+                      }}
+                    />
+                  </div>
+                </Router>
+              </NotificationProvider>
+            </AuthProvider>
+          </GlobalErrorBoundary>
         </ThemeProvider>
       </QueryClientProvider>
     </HelmetProvider>
