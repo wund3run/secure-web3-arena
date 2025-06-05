@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { PlatformValidatorWidget } from '@/utils/validation';
-import RouteCheckerPanel from '@/utils/validation/route-checker';
+import { RouteChecker } from '@/utils/validation/route-checker';
 import { Button } from '@/components/ui/button';
 import { Check, Gauge, LayoutGrid, List, Ruler, X } from 'lucide-react';
 
@@ -82,7 +82,7 @@ export function PreLaunchTools() {
 
       {/* Active tool components */}
       {activeTool === 'validator' && <PlatformValidatorWidget onClose={() => setActiveTool(null)} />}
-      {activeTool === 'routes' && <RouteCheckerPanel />}
+      {activeTool === 'routes' && <RouteChecker />}
       {activeTool === 'responsive' && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-card p-3 rounded-lg border shadow-lg">
           <div className="flex items-center space-x-3">
