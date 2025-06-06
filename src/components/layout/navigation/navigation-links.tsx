@@ -74,24 +74,6 @@ export const navigationLinks = [
     ]
   },
   {
-    title: "Tools",
-    href: "/security-monitoring",
-    children: [
-      {
-        title: "Security Monitoring",
-        href: "/security-monitoring",
-        description: "Real-time security monitoring dashboard",
-        requiresAuth: true
-      },
-      {
-        title: "Enterprise Control",
-        href: "/enterprise-control",
-        description: "Enterprise security management center",
-        requiresAuth: true
-      }
-    ]
-  },
-  {
     title: "Community",
     href: "/community",
     children: [

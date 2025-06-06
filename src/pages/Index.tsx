@@ -1,59 +1,64 @@
 
 import React from "react";
-import { StandardizedLayout } from "@/components/layout/StandardizedLayout";
-import { LandingPageSEO } from "@/components/seo/SEOOptimization";
-import { AccessibilityEnhancements } from "@/components/accessibility/AccessibilityEnhancements";
-import { IndexPageLayout } from "@/components/home/index-page-layout";
-import { useServiceWorker } from "@/hooks/useServiceWorker";
-import { useIndexPageAnalytics } from "@/components/home/index-page-analytics";
+import { Helmet } from "react-helmet-async";
+import { SimplifiedNavbar } from "@/components/layout/simplified-navbar";
+import { SkipLink } from "@/components/ui/skip-link";
 
-const Index = () => {
-  useServiceWorker();
-  useIndexPageAnalytics();
+// Lazy load heavy components to improve initial page load
+const EnhancedFooter = React.lazy(() => 
+  import("@/components/home/enhanced-footer").then(m => ({ default: m.EnhancedFooter }))
+);
 
-  const helpItems = [
-    {
-      title: "Getting Started",
-      description: "Learn how to use Hawkly's security marketplace",
-      type: "guide" as const,
-      content: "Start by browsing our verified security auditors or request an audit for your project.",
-      links: [
-        { text: "Browse Auditors", url: "/marketplace" },
-        { text: "Request Audit", url: "/request-audit" }
-      ]
-    },
-    {
-      title: "Security Best Practices",
-      description: "Essential security tips for Web3 projects",
-      type: "tip" as const,
-      content: "Always conduct security audits before launching smart contracts in production.",
-      links: [
-        { text: "Learn More", url: "/resources" }
-      ]
-    }
-  ];
+const IndexPageLayout = React.lazy(() => 
+  import("@/components/home/index-page-layout").then(m => ({ default: m.IndexPageLayout }))
+);
 
+const SupportButtonEnhanced = React.lazy(() => 
+  import("@/components/ui/support-button-enhanced").then(m => ({ default: m.SupportButtonEnhanced }))
+);
+
+// Minimal loading fallback for lazy components
+const ComponentFallback = () => (
+  <div className="w-full h-32 flex items-center justify-center">
+    <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+  </div>
+);
+
+export default function Index() {
   return (
     <>
-      <LandingPageSEO 
-        title="Web3 Security Marketplace - Find Verified Auditors"
-        description="Connect with verified security experts for smart contract audits, code reviews, and blockchain security services. Secure your Web3 project with trusted professionals."
-      />
+      <Helmet>
+        <title>Hawkly | Leading Web3 Security Marketplace</title>
+        <meta
+          name="description"
+          content="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions."
+        />
+        <meta name="keywords" content="web3 security, smart contract audit, blockchain security" />
+        
+        {/* Essential preconnects only */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </Helmet>
       
-      <StandardizedLayout
-        title="Web3 Security Marketplace"
-        description="Connect with verified security experts for comprehensive smart contract audits and blockchain security services"
-        keywords={['web3 security', 'smart contract audit', 'blockchain security', 'cryptocurrency security', 'defi audit']}
-        showBreadcrumbs={false}
-        helpItems={helpItems}
-        pageType="landing"
-        className="relative overflow-hidden"
-      >
-        <IndexPageLayout />
-        <AccessibilityEnhancements />
-      </StandardizedLayout>
+      <div className="min-h-screen bg-background flex flex-col">
+        <SkipLink targetId="main-content" />
+        <SimplifiedNavbar />
+        
+        <main id="main-content">
+          <React.Suspense fallback={<ComponentFallback />}>
+            <IndexPageLayout />
+          </React.Suspense>
+        </main>
+        
+        <React.Suspense fallback={<div className="h-20" />}>
+          <EnhancedFooter />
+        </React.Suspense>
+        
+        <React.Suspense fallback={null}>
+          <SupportButtonEnhanced />
+        </React.Suspense>
+      </div>
     </>
   );
-};
-
-export default Index;
+}

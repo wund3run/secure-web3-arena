@@ -2,13 +2,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/auth";
-import { AuthAwareNavigation } from "./navigation/AuthAwareNavigation";
+import { navigationLinks } from "./navigation/navigation-links";
+import { DesktopNavigation } from "./navigation/desktop-navigation";
 import { MobileNavigation } from "./navigation/mobile-navigation";
 import { AuthButtons } from "./navigation/auth-buttons";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { X } from "lucide-react";
 import { toast } from "sonner";
-import { navigationLinks } from "./navigation/navigation-links";
 
 export function SimplifiedNavbar() {
   const { user, signOut } = useAuth();
@@ -95,8 +95,8 @@ export function SimplifiedNavbar() {
             />
           </Link>
           
-          {/* Auth-aware Desktop Navigation */}
-          <AuthAwareNavigation 
+          {/* Desktop Navigation - show basic navigation for all users */}
+          <DesktopNavigation 
             activeDropdown={activeDropdown} 
             handleDropdownToggle={handleDropdownToggle} 
           />

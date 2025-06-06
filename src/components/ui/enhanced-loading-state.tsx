@@ -1,154 +1,138 @@
 
-import React from 'react';
-import { Loader2, Shield, Clock, CheckCircle } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
+import React from "react";
+import { cn } from "@/lib/utils";
+import { Loader2, Wifi, WifiOff } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface EnhancedLoadingStateProps {
   message?: string;
-  submessage?: string;
-  progress?: number;
-  variant?: 'default' | 'card' | 'fullscreen' | 'inline' | 'skeleton';
+  variant?: 'spinner' | 'skeleton' | 'pulse' | 'dots';
   size?: 'sm' | 'md' | 'lg';
-  showProgress?: boolean;
-  icon?: 'spinner' | 'shield' | 'clock' | 'check';
+  className?: string;
+  showIcon?: boolean;
+  isError?: boolean;
+  retry?: () => void;
 }
 
-export const EnhancedLoadingState: React.FC<EnhancedLoadingStateProps> = ({
+export function EnhancedLoadingState({
   message = "Loading...",
-  submessage,
-  progress,
-  variant = 'default',
+  variant = 'spinner',
   size = 'md',
-  showProgress = false,
-  icon = 'spinner'
-}) => {
-  const iconSizes = {
+  className,
+  showIcon = true,
+  isError = false,
+  retry
+}: EnhancedLoadingStateProps) {
+  const sizeClasses = {
     sm: 'h-4 w-4',
     md: 'h-6 w-6',
     lg: 'h-8 w-8'
   };
 
-  const getIcon = () => {
-    const iconClass = iconSizes[size];
-    
-    switch (icon) {
-      case 'shield':
-        return <Shield className={`${iconClass} text-primary`} />;
-      case 'clock':
-        return <Clock className={`${iconClass} text-muted-foreground`} />;
-      case 'check':
-        return <CheckCircle className={`${iconClass} text-green-600`} />;
-      default:
-        return <Loader2 className={`${iconClass} animate-spin text-primary`} />;
-    }
+  const containerSizeClasses = {
+    sm: 'p-4',
+    md: 'p-6',
+    lg: 'p-8'
   };
 
-  const content = (
-    <div className="flex flex-col items-center space-y-3">
-      {getIcon()}
-      
-      <div className="text-center space-y-1">
-        <div className={`font-medium ${size === 'sm' ? 'text-sm' : size === 'lg' ? 'text-lg' : 'text-base'}`}>
-          {message}
-        </div>
-        {submessage && (
-          <div className={`text-muted-foreground ${size === 'sm' ? 'text-xs' : 'text-sm'}`}>
-            {submessage}
-          </div>
+  if (isError) {
+    return (
+      <div className={cn(
+        "flex flex-col items-center justify-center text-center",
+        containerSizeClasses[size],
+        className
+      )}>
+        <WifiOff className={cn("text-muted-foreground mb-2", sizeClasses[size])} />
+        <p className="text-sm text-muted-foreground mb-2">Connection failed</p>
+        {retry && (
+          <button 
+            onClick={retry}
+            className="text-sm text-primary hover:underline"
+          >
+            Try again
+          </button>
         )}
       </div>
-      
-      {showProgress && typeof progress === 'number' && (
-        <div className="w-full max-w-xs space-y-2">
-          <Progress value={progress} className="h-2" />
-          <div className="text-xs text-muted-foreground text-center">
-            {Math.round(progress)}% complete
-          </div>
-        </div>
+    );
+  }
+
+  if (variant === 'skeleton') {
+    return (
+      <div className={cn("space-y-3", containerSizeClasses[size], className)}>
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-4 w-1/2" />
+      </div>
+    );
+  }
+
+  if (variant === 'pulse') {
+    return (
+      <div className={cn(
+        "flex items-center justify-center",
+        containerSizeClasses[size],
+        className
+      )}>
+        <div className={cn(
+          "rounded-full bg-primary animate-pulse",
+          sizeClasses[size]
+        )} />
+        {message && (
+          <span className="ml-2 text-sm text-muted-foreground animate-pulse">
+            {message}
+          </span>
+        )}
+      </div>
+    );
+  }
+
+  if (variant === 'dots') {
+    return (
+      <div className={cn(
+        "flex items-center justify-center space-x-1",
+        containerSizeClasses[size],
+        className
+      )}>
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            className={cn(
+              "rounded-full bg-primary animate-bounce",
+              size === 'sm' ? 'h-1 w-1' : size === 'md' ? 'h-2 w-2' : 'h-3 w-3'
+            )}
+            style={{
+              animationDelay: `${i * 0.1}s`,
+              animationDuration: '0.6s'
+            }}
+          />
+        ))}
+        {message && (
+          <span className="ml-3 text-sm text-muted-foreground">
+            {message}
+          </span>
+        )}
+      </div>
+    );
+  }
+
+  // Default spinner variant
+  return (
+    <div className={cn(
+      "flex items-center justify-center",
+      containerSizeClasses[size],
+      className
+    )}>
+      {showIcon && (
+        <Loader2 className={cn("animate-spin", sizeClasses[size])} />
+      )}
+      {message && (
+        <span className={cn(
+          "text-sm text-muted-foreground",
+          showIcon && "ml-2"
+        )}>
+          {message}
+        </span>
       )}
     </div>
   );
-
-  switch (variant) {
-    case 'skeleton':
-      return (
-        <div className="space-y-3 p-4">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div
-              key={i}
-              className={`animate-pulse rounded bg-muted ${
-                size === 'sm' ? 'h-3' : size === 'md' ? 'h-4' : 'h-5'
-              }`}
-              style={{ 
-                width: `${100 - (i * 15)}%`,
-                animationDelay: `${i * 150}ms`
-              }}
-            />
-          ))}
-          {message && (
-            <div className="text-sm text-muted-foreground mt-2">{message}</div>
-          )}
-        </div>
-      );
-      
-    case 'fullscreen':
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-background">
-          <div className="p-8">
-            {content}
-          </div>
-        </div>
-      );
-      
-    case 'card':
-      return (
-        <Card className="w-full max-w-md mx-auto">
-          <CardContent className="p-8">
-            {content}
-          </CardContent>
-        </Card>
-      );
-      
-    case 'inline':
-      return (
-        <div className="py-4">
-          {content}
-        </div>
-      );
-      
-    default:
-      return (
-        <div className="flex items-center justify-center p-8">
-          {content}
-        </div>
-      );
-  }
-};
-
-// Specialized loading components for common use cases
-export const AuthLoadingState = () => (
-  <EnhancedLoadingState 
-    message="Verifying credentials..."
-    submessage="Please wait while we authenticate you"
-    variant="card"
-    icon="shield"
-  />
-);
-
-export const DashboardLoadingState = () => (
-  <EnhancedLoadingState 
-    message="Loading dashboard..."
-    submessage="Preparing your workspace"
-    variant="fullscreen"
-    size="lg"
-  />
-);
-
-export const DataLoadingState = ({ entityName = "data" }: { entityName?: string }) => (
-  <EnhancedLoadingState 
-    message={`Loading ${entityName}...`}
-    variant="inline"
-    size="sm"
-  />
-);
+}
