@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -57,18 +58,24 @@ const App = () => {
               <Toaster />
               <BrowserRouter>
                 <Routes>
-                  {/* Public routes */}
+                  {/* Public routes - accessible without authentication */}
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/auth/reset-password" element={<ResetPassword />} />
-                  <Route path="/marketplace" element={<Marketplace />} />
-                  <Route path="/request-audit" element={<RequestAudit />} />
-                  <Route path="/audits" element={<Audits />} />
-                  <Route path="/audits/:id" element={<AuditDetail />} />
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/resources" element={<Resources />} />
                   <Route path="/community" element={<Community />} />
                   <Route path="/contact" element={<Contact />} />
+                  <Route path="/contact-provider" element={<ContactProvider />} />
+                  <Route path="/cancellation-refund" element={<CancellationRefund />} />
+                  
+                  {/* Public marketplace and audit viewing */}
+                  <Route path="/marketplace" element={<Marketplace />} />
+                  <Route path="/audits" element={<Audits />} />
+                  <Route path="/audits/:id" element={<AuditDetail />} />
+                  
+                  {/* Request audit - allow public access to encourage signups */}
+                  <Route path="/request-audit" element={<RequestAudit />} />
                   
                   {/* Protected routes - require authentication */}
                   <Route 
@@ -80,7 +87,7 @@ const App = () => {
                     } 
                   />
                   
-                  {/* Security Monitoring - requires authentication */}
+                  {/* Security tools - requires authentication */}
                   <Route 
                     path="/security-monitoring" 
                     element={
@@ -90,7 +97,7 @@ const App = () => {
                     } 
                   />
                   
-                  {/* Enterprise Control - requires admin or project_owner roles */}
+                  {/* Enterprise features - requires admin or project_owner roles */}
                   <Route 
                     path="/enterprise-control" 
                     element={
@@ -100,6 +107,7 @@ const App = () => {
                     } 
                   />
                   
+                  {/* User management routes */}
                   <Route 
                     path="/profile" 
                     element={
@@ -200,7 +208,7 @@ const App = () => {
                     } 
                   />
                   
-                  {/* Other protected routes */}
+                  {/* Gamification features - require authentication */}
                   <Route 
                     path="/challenges" 
                     element={
@@ -218,9 +226,6 @@ const App = () => {
                       </RouteGuard>
                     } 
                   />
-                  
-                  <Route path="/contact-provider" element={<ContactProvider />} />
-                  <Route path="/cancellation-refund" element={<CancellationRefund />} />
                 </Routes>
               </BrowserRouter>
             </TooltipProvider>
