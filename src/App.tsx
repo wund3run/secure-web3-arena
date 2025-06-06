@@ -1,3 +1,4 @@
+
 import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -23,44 +24,12 @@ const EnhancedRequestAudit = React.lazy(() => import("@/pages/EnhancedRequestAud
 const EnhancedMarketplace = React.lazy(() => import("@/pages/EnhancedMarketplace"));
 const EnhancedAuth = React.lazy(() => import("@/pages/EnhancedAuth"));
 
-// Footer pages
+// Footer and essential pages
 const About = React.lazy(() => import("@/pages/About"));
 const Contact = React.lazy(() => import("@/pages/Contact"));
 const Careers = React.lazy(() => import("@/pages/Careers"));
 const Terms = React.lazy(() => import("@/pages/Terms"));
 const Privacy = React.lazy(() => import("@/pages/Privacy"));
-
-// Messaging page
-const MessagingPage = React.lazy(() => import("@/pages/MessagingPage"));
-
-// New launch readiness pages
-const PricingINR = React.lazy(() => import("@/pages/PricingINR"));
-const LaunchReadiness = React.lazy(() => import("@/pages/LaunchReadiness"));
-
-// Profile completion
-const ProfileCompletion = React.lazy(() => import("@/pages/ProfileCompletion"));
-
-// New pages for better navigation
-const Resources = React.lazy(() => import("@/pages/Resources"));
-const FAQ = React.lazy(() => import("@/pages/FAQ"));
-const Support = React.lazy(() => import("@/pages/Support"));
-
-// New pages for complete navigation
-const SecurityAudits = React.lazy(() => import("@/pages/SecurityAudits"));
-const Web3Security = React.lazy(() => import("@/pages/Web3Security"));
-const Vulnerabilities = React.lazy(() => import("@/pages/Vulnerabilities"));
-const WebSecurity = React.lazy(() => import("@/pages/WebSecurity"));
-const Community = React.lazy(() => import("@/pages/Community"));
-const Forum = React.lazy(() => import("@/pages/Forum"));
-const Events = React.lazy(() => import("@/pages/Events"));
-const Leaderboard = React.lazy(() => import("@/pages/Leaderboard"));
-const SubmitService = React.lazy(() => import("@/pages/SubmitService"));
-
-// Production Dashboard
-const ProductionDashboard = React.lazy(() => import("@/pages/ProductionDashboard"));
-
-// Escrow page
-const Escrow = React.lazy(() => import("@/pages/Escrow"));
 
 // Service pages
 const CodeReviews = React.lazy(() => import("@/pages/CodeReviews"));
@@ -72,13 +41,23 @@ const ServiceProviderOnboarding = React.lazy(() => import("@/pages/ServiceProvid
 const DashboardAuditor = React.lazy(() => import("@/pages/DashboardAuditor"));
 const DashboardProject = React.lazy(() => import("@/pages/DashboardProject"));
 
-// Security and Pricing pages
-const SecurityPolicy = React.lazy(() => import("@/pages/SecurityPolicy"));
-const Pricing = React.lazy(() => import("@/pages/Pricing"));
+// Community and resources
+const Resources = React.lazy(() => import("@/pages/Resources"));
+const FAQ = React.lazy(() => import("@/pages/FAQ"));
+const Support = React.lazy(() => import("@/pages/Support"));
+const SecurityAudits = React.lazy(() => import("@/pages/SecurityAudits"));
+const Web3Security = React.lazy(() => import("@/pages/Web3Security"));
+const Vulnerabilities = React.lazy(() => import("@/pages/Vulnerabilities"));
+const WebSecurity = React.lazy(() => import("@/pages/WebSecurity"));
+const Community = React.lazy(() => import("@/pages/Community"));
+const Forum = React.lazy(() => import("@/pages/Forum"));
+const Events = React.lazy(() => import("@/pages/Events"));
+const Leaderboard = React.lazy(() => import("@/pages/Leaderboard"));
+const SubmitService = React.lazy(() => import("@/pages/SubmitService"));
 
-// Add the UX enhancements and Performance Optimization pages
-const UXEnhancements = React.lazy(() => import("@/pages/UXEnhancements"));
-const PerformanceOptimization = React.lazy(() => import("@/pages/PerformanceOptimization"));
+// Additional missing pages
+const Pricing = React.lazy(() => import("@/pages/Pricing"));
+const SecurityPolicy = React.lazy(() => import("@/pages/SecurityPolicy"));
 
 // Enhanced loading fallback
 const AppLoadingFallback = () => (
@@ -125,65 +104,23 @@ function App() {
               <div className="min-h-screen bg-background font-sans antialiased">
                 <Suspense fallback={<AppLoadingFallback />}>
                   <Routes>
+                    {/* Core application routes */}
                     <Route path="/" element={<Index />} />
+                    <Route path="/auth" element={<Auth />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/marketplace" element={<Marketplace />} />
-                    <Route path="/auth" element={<Auth />} />
                     <Route path="/request-audit" element={<RequestAudit />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/audit/:id" element={<AuditDetails />} />
                     <Route path="/audits" element={<Audits />} />
                     <Route path="/settings" element={<Settings />} />
                     
-                    {/* Enhanced pages with better UX */}
+                    {/* Enhanced pages */}
                     <Route path="/enhanced-request-audit" element={<EnhancedRequestAudit />} />
                     <Route path="/enhanced-marketplace" element={<EnhancedMarketplace />} />
                     <Route path="/enhanced-auth" element={<EnhancedAuth />} />
                     
-                    {/* Messaging */}
-                    <Route path="/messages" element={<MessagingPage />} />
-                    
-                    {/* New launch readiness pages */}
-                    <Route path="/pricing-inr" element={<PricingINR />} />
-                    <Route path="/launch-readiness" element={<LaunchReadiness />} />
-                    
-                    {/* Profile completion */}
-                    <Route path="/profile-completion" element={<ProfileCompletion />} />
-                    
-                    {/* New navigation support pages */}
-                    <Route path="/resources" element={<Resources />} />
-                    <Route path="/faq" element={<FAQ />} />
-                    <Route path="/support" element={<Support />} />
-                    
-                    {/* Performance Optimization Route */}
-                    <Route path="/performance-optimization" element={<PerformanceOptimization />} />
-                    
-                    {/* UX Enhancements Route */}
-                    <Route path="/ux-enhancements" element={<UXEnhancements />} />
-                    
-                    {/* Production Dashboard */}
-                    <Route path="/production-dashboard" element={<ProductionDashboard />} />
-                    
-                    {/* Escrow Management */}
-                    <Route path="/escrow" element={<Escrow />} />
-                    
-                    {/* New Security Service Pages */}
-                    <Route path="/security-audits" element={<SecurityAudits />} />
-                    <Route path="/web3-security" element={<Web3Security />} />
-                    <Route path="/vulnerabilities" element={<Vulnerabilities />} />
-                    <Route path="/web-security" element={<WebSecurity />} />
-                    
-                    {/* Community Pages */}
-                    <Route path="/community" element={<Community />} />
-                    <Route path="/forum" element={<Forum />} />
-                    <Route path="/events" element={<Events />} />
-                    <Route path="/leaderboard" element={<Leaderboard />} />
-                    <Route path="/challenges" element={<Events />} />
-                    
-                    {/* Service Provider Pages */}
-                    <Route path="/submit-service" element={<SubmitService />} />
-                    
-                    {/* Service Pages */}
+                    {/* Service pages */}
                     <Route path="/code-reviews" element={<CodeReviews />} />
                     <Route path="/penetration-testing" element={<PenetrationTesting />} />
                     <Route path="/consulting" element={<Consulting />} />
@@ -191,31 +128,44 @@ function App() {
                     <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
                     <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
                     
-                    {/* Dashboard Pages */}
+                    {/* Dashboard variations */}
                     <Route path="/dashboard/auditor" element={<DashboardAuditor />} />
                     <Route path="/dashboard/project" element={<DashboardProject />} />
                     
-                    {/* Security Settings */}
-                    <Route path="/security-settings" element={<Settings />} />
+                    {/* Security and resources */}
+                    <Route path="/security-audits" element={<SecurityAudits />} />
+                    <Route path="/web3-security" element={<Web3Security />} />
+                    <Route path="/vulnerabilities" element={<Vulnerabilities />} />
+                    <Route path="/web-security" element={<WebSecurity />} />
+                    <Route path="/resources" element={<Resources />} />
+                    <Route path="/faq" element={<FAQ />} />
+                    <Route path="/support" element={<Support />} />
+                    
+                    {/* Community pages */}
+                    <Route path="/community" element={<Community />} />
+                    <Route path="/forum" element={<Forum />} />
+                    <Route path="/events" element={<Events />} />
+                    <Route path="/leaderboard" element={<Leaderboard />} />
+                    <Route path="/submit-service" element={<SubmitService />} />
+                    
+                    {/* Business pages */}
+                    <Route path="/pricing" element={<Pricing />} />
                     <Route path="/security-policy" element={<SecurityPolicy />} />
                     
-                    {/* Pricing */}
-                    <Route path="/pricing" element={<Pricing />} />
+                    {/* Footer pages - Essential for navigation */}
+                    <Route path="/about" element={<About />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/careers" element={<Careers />} />
+                    <Route path="/terms" element={<Terms />} />
+                    <Route path="/privacy" element={<Privacy />} />
                     
-                    {/* Alias routes for common navigation patterns */}
+                    {/* Alias routes for SEO and navigation */}
                     <Route path="/security-insights" element={<Vulnerabilities />} />
                     <Route path="/security-guides" element={<Resources />} />
                     <Route path="/knowledge-base" element={<Resources />} />
                     <Route path="/docs" element={<Resources />} />
                     <Route path="/tutorials" element={<Resources />} />
                     <Route path="/templates" element={<Resources />} />
-                    
-                    {/* Footer pages */}
-                    <Route path="/about" element={<About />} />
-                    <Route path="/contact" element={<Contact />} />
-                    <Route path="/careers" element={<Careers />} />
-                    <Route path="/terms" element={<Terms />} />
-                    <Route path="/privacy" element={<Privacy />} />
                   </Routes>
                 </Suspense>
                 

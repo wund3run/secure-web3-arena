@@ -25,22 +25,6 @@ export function getFallbackRoute(attemptedPath: string): string {
     '/questions': '/faq',
     '/template': '/templates',
     '/resource': '/resources',
-    '/compare': '/competitive-advantages',
-    '/comparison': '/competitive-advantages',
-    '/vs': '/competitive-advantages',
-    '/competitors': '/competitive-advantages',
-    '/advantages': '/competitive-advantages',
-    '/coverage': '/comprehensive-security',
-    '/services': '/comprehensive-security',
-    '/features': '/',
-    '/platform': '/',
-    '/technology': '/docs',
-    '/distribution': '/distribution-strategy',
-    '/growth': '/distribution-strategy',
-    '/scale': '/distribution-strategy',
-    '/partnerships': '/distribution-strategy',
-    '/expansion': '/distribution-strategy',
-    '/strategy': '/distribution-strategy'
   };
 
   // Check for exact matches first
@@ -69,13 +53,53 @@ export function getPageMetadata(path: string) {
       title: 'Security Marketplace',
       description: 'Find verified security auditors for your Web3 project.'
     },
+    '/enhanced-marketplace': {
+      title: 'Enhanced Security Marketplace',
+      description: 'Advanced marketplace with AI-powered matching for Web3 security services.'
+    },
+    '/request-audit': {
+      title: 'Request Security Audit',
+      description: 'Request a comprehensive security audit for your Web3 project.'
+    },
+    '/enhanced-request-audit': {
+      title: 'Enhanced Audit Request',
+      description: 'Advanced audit request form with step-by-step guidance.'
+    },
+    '/auth': {
+      title: 'Sign In | Sign Up',
+      description: 'Access your Hawkly account or create a new one.'
+    },
+    '/enhanced-auth': {
+      title: 'Enhanced Authentication',
+      description: 'Secure sign in and registration for Web3 security professionals.'
+    },
     '/audits': {
       title: 'Security Audits',
       description: 'Browse completed and ongoing security audits.'
     },
-    '/docs': {
-      title: 'Documentation',
-      description: 'Comprehensive guides and API documentation.'
+    '/dashboard': {
+      title: 'Dashboard',
+      description: 'Your personalized security dashboard.'
+    },
+    '/dashboard/auditor': {
+      title: 'Auditor Dashboard',
+      description: 'Manage your audit projects and client communications.'
+    },
+    '/dashboard/project': {
+      title: 'Project Dashboard',
+      description: 'Track your project security audits and reports.'
+    },
+    '/code-reviews': {
+      title: 'Code Reviews',
+      description: 'Professional code review services for Web3 projects.'
+    },
+    '/penetration-testing': {
+      title: 'Penetration Testing',
+      description: 'Comprehensive penetration testing for blockchain applications.'
+    },
+    '/consulting': {
+      title: 'Security Consulting',
+      description: 'Expert Web3 security consulting and advisory services.'
     },
     '/pricing': {
       title: 'Pricing',
@@ -85,53 +109,13 @@ export function getPageMetadata(path: string) {
       title: 'Contact Us',
       description: 'Get in touch with our security experts.'
     },
-    '/support': {
-      title: 'Support Center',
-      description: 'Find help and support resources.'
+    '/about': {
+      title: 'About Hawkly',
+      description: 'Learn about our mission to secure the Web3 ecosystem.'
     },
-    '/competitive-advantages': {
-      title: 'Why Choose Hawkly',
-      description: 'See how Hawkly compares to traditional security audit services.'
-    },
-    '/comprehensive-security': {
-      title: 'Complete Security Coverage',
-      description: 'End-to-end security solutions for every layer of your Web3 application.'
-    },
-    '/audit-guidelines': {
-      title: 'Security Audit Guidelines',
-      description: 'Professional standards and best practices for security audits.'
-    },
-    '/blog': {
-      title: 'Security Blog',
-      description: 'Latest insights, trends, and best practices in Web3 security.'
-    },
-    '/vulnerabilities': {
-      title: 'Vulnerability Database',
-      description: 'Comprehensive database of Web3 security vulnerabilities.'
-    },
-    '/security-insights': {
-      title: 'Security Insights',
-      description: 'Latest trends, vulnerabilities, and security insights for Web3 projects.'
-    },
-    '/forum': {
-      title: 'Security Forum',
-      description: 'Community discussions about Web3 security and best practices.'
-    },
-    '/events': {
-      title: 'Security Events',
-      description: 'Upcoming and past Web3 security events and workshops.'
-    },
-    '/challenges': {
-      title: 'Security Challenges',
-      description: 'Test your skills with hands-on security challenges.'
-    },
-    '/leaderboard': {
-      title: 'Security Leaderboard',
-      description: 'Top-performing security auditors and projects.'
-    },
-    '/achievements': {
-      title: 'Achievements',
-      description: 'Track your progress and unlock achievements.'
+    '/careers': {
+      title: 'Careers',
+      description: 'Join our team of Web3 security professionals.'
     },
     '/terms': {
       title: 'Terms of Service',
@@ -141,10 +125,38 @@ export function getPageMetadata(path: string) {
       title: 'Privacy Policy',
       description: 'Privacy policy for the Hawkly platform.'
     },
-    '/security-policy': {
-      title: 'Security Policy',
-      description: 'Security policy for the Hawkly platform.'
-    }
+    '/support': {
+      title: 'Support Center',
+      description: 'Find help and support resources.'
+    },
+    '/faq': {
+      title: 'Frequently Asked Questions',
+      description: 'Common questions about Hawkly and Web3 security.'
+    },
+    '/resources': {
+      title: 'Security Resources',
+      description: 'Educational resources and guides for Web3 security.'
+    },
+    '/community': {
+      title: 'Security Community',
+      description: 'Join our community of Web3 security professionals.'
+    },
+    '/forum': {
+      title: 'Security Forum',
+      description: 'Community discussions about Web3 security and best practices.'
+    },
+    '/events': {
+      title: 'Security Events',
+      description: 'Upcoming and past Web3 security events and workshops.'
+    },
+    '/leaderboard': {
+      title: 'Security Leaderboard',
+      description: 'Top-performing security auditors and projects.'
+    },
+    '/vulnerabilities': {
+      title: 'Vulnerability Database',
+      description: 'Comprehensive database of Web3 security vulnerabilities.'
+    },
   };
 
   return metadata[path] || {
@@ -162,64 +174,50 @@ export function extractRoutesFromApp(): string[] {
   const routes = [
     '/',
     '/auth',
+    '/enhanced-auth',
     '/marketplace',
+    '/enhanced-marketplace',
     '/request-audit',
+    '/enhanced-request-audit',
     '/service-provider-onboarding',
     '/pricing',
     '/audits',
     '/audit/:id',
-    '/escrow',
-    '/docs',
-    '/web3-security',
-    '/guides',
-    '/tutorials',
-    '/knowledge-base',
-    '/faq',
-    '/security-insights',
-    '/vulnerabilities',
-    '/templates',
-    '/ai-tools',
-    '/platform-report',
-    '/forum',
-    '/events',
-    '/challenges',
-    '/leaderboard',
-    '/blog',
-    '/achievements',
     '/dashboard',
-    '/dashboard/user',
     '/dashboard/auditor',
     '/dashboard/project',
-    '/dashboard/analytics',
-    '/submit-service',
-    '/calendar',
-    '/contact-provider/:id',
-    '/admin',
-    '/admin/dashboard',
-    '/admin/users',
-    '/admin/providers',
-    '/admin/audits',
-    '/admin/reports',
-    '/admin/services',
-    '/admin/disputes',
-    '/admin/security',
-    '/admin/finance',
-    '/admin/settings',
-    '/contact',
+    '/profile',
+    '/settings',
+    '/code-reviews',
+    '/penetration-testing',
+    '/consulting',
+    '/ai-tools',
+    '/vulnerability-scanner',
+    '/security-audits',
+    '/web3-security',
+    '/vulnerabilities',
+    '/web-security',
+    '/resources',
+    '/faq',
     '/support',
+    '/community',
+    '/forum',
+    '/events',
+    '/leaderboard',
+    '/submit-service',
+    '/security-policy',
+    '/about',
+    '/contact',
+    '/careers',
     '/terms',
     '/privacy',
-    '/security-policy',
-    '/resources',
-    '/community',
-    '/competitive-advantages',
-    '/comprehensive-security',
-    '/audit-guidelines',
-    '/distribution-strategy',
-    '/for-project-owners',
-    '/for-auditors',
-    '/for-enterprises',
-    '/for-developers'
+    // Alias routes
+    '/security-insights',
+    '/security-guides',
+    '/knowledge-base',
+    '/docs',
+    '/tutorials',
+    '/templates'
   ];
 
   return routes;
@@ -265,9 +263,10 @@ export function getRouteCategory(path: string): string {
   if (path.startsWith('/admin')) return 'admin';
   if (path.startsWith('/dashboard')) return 'dashboard';
   if (path.startsWith('/audit')) return 'audit';
-  if (['/marketplace', '/request-audit', '/service-provider-onboarding', '/pricing'].includes(path)) return 'marketplace';
-  if (['/docs', '/web3-security', '/guides', '/tutorials', '/knowledge-base', '/faq'].includes(path)) return 'resources';
-  if (['/forum', '/events', '/challenges', '/leaderboard', '/blog'].includes(path)) return 'community';
-  if (['/ai-tools', '/platform-report', '/templates'].includes(path)) return 'tools';
+  if (['/marketplace', '/enhanced-marketplace', '/request-audit', '/enhanced-request-audit', '/service-provider-onboarding', '/pricing'].includes(path)) return 'marketplace';
+  if (['/resources', '/faq', '/support', '/security-audits', '/web3-security', '/vulnerabilities', '/web-security'].includes(path)) return 'resources';
+  if (['/forum', '/events', '/community', '/leaderboard'].includes(path)) return 'community';
+  if (['/ai-tools', '/vulnerability-scanner', '/code-reviews', '/penetration-testing', '/consulting'].includes(path)) return 'tools';
+  if (['/about', '/contact', '/careers', '/terms', '/privacy'].includes(path)) return 'company';
   return 'general';
 }
