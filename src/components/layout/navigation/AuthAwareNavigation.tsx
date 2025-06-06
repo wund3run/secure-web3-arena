@@ -41,7 +41,7 @@ export function AuthAwareNavigation({
   const renderAuthIndicator = (item: NavigationLink) => {
     if (item.requiresAuth && !user) {
       return (
-        <Lock className="ml-1 h-3 w-3 text-muted-foreground" title="Sign in required" />
+        <Lock className="ml-1 h-3 w-3 text-muted-foreground" />
       );
     }
     return null;
