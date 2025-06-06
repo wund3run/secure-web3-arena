@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { Route, Routes, Link } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from '@/contexts/auth/AuthContext';
 import { ErrorProvider } from '@/contexts/ErrorContext';
@@ -26,37 +27,35 @@ import ComprehensiveUserJourney from "./pages/ComprehensiveUserJourney";
 
 function App() {
   return (
-    <Router>
-      <HelmetProvider>
-        <ErrorProvider>
-          <NotificationProvider>
-            <AuthProvider>
-              <UserJourneyTracker />
-              <MessageNotificationHandler />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/services" element={<Services />} />
-                <Route path="/request-audit" element={<RequestAudit />} />
-                <Route path="/marketplace" element={<EnhancedMarketplace />} />
-                <Route path="/marketplace-new" element={<EnhancedMarketplacePage />} />
-                <Route path="/dashboard" element={<AuditDashboard />} />
-                <Route path="/audit/:id" element={<AuditDetailsPage />} />
-                <Route path="/profile" element={<UserProfilePage />} />
-                <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
-                <Route path="/auditor-onboarding" element={<AuditorOnboarding />} />
-                <Route path="/submit-service" element={<SubmitService />} />
-                <Route path="/escrow" element={<EscrowDashboard />} />
-                <Route path="/request-audit-for-service" element={<AuditRequestForService />} />
-                <Route path="/user-journey" element={<UserJourneyMapping />} />
-                <Route path="/journey-analysis" element={<ComprehensiveUserJourney />} />
-              </Routes>
-            </AuthProvider>
-          </NotificationProvider>
-        </ErrorProvider>
-      </HelmetProvider>
-    </Router>
+    <HelmetProvider>
+      <ErrorProvider>
+        <NotificationProvider>
+          <AuthProvider>
+            <UserJourneyTracker />
+            <MessageNotificationHandler />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/request-audit" element={<RequestAudit />} />
+              <Route path="/marketplace" element={<EnhancedMarketplace />} />
+              <Route path="/marketplace-new" element={<EnhancedMarketplacePage />} />
+              <Route path="/dashboard" element={<AuditDashboard />} />
+              <Route path="/audit/:id" element={<AuditDetailsPage />} />
+              <Route path="/profile" element={<UserProfilePage />} />
+              <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
+              <Route path="/auditor-onboarding" element={<AuditorOnboarding />} />
+              <Route path="/submit-service" element={<SubmitService />} />
+              <Route path="/escrow" element={<EscrowDashboard />} />
+              <Route path="/request-audit-for-service" element={<AuditRequestForService />} />
+              <Route path="/user-journey" element={<UserJourneyMapping />} />
+              <Route path="/journey-analysis" element={<ComprehensiveUserJourney />} />
+            </Routes>
+          </AuthProvider>
+        </NotificationProvider>
+      </ErrorProvider>
+    </HelmetProvider>
   );
 }
 
