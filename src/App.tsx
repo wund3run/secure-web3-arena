@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { Route, Routes, Link } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
@@ -29,8 +30,8 @@ function App() {
   return (
     <HelmetProvider>
       <ErrorProvider>
-        <NotificationProvider>
-          <AuthProvider>
+        <AuthProvider>
+          <NotificationProvider>
             <UserJourneyTracker />
             <MessageNotificationHandler />
             <Routes>
@@ -52,11 +53,12 @@ function App() {
               <Route path="/user-journey" element={<UserJourneyMapping />} />
               <Route path="/journey-analysis" element={<ComprehensiveUserJourney />} />
             </Routes>
-          </AuthProvider>
-        </NotificationProvider>
+          </NotificationProvider>
+        </AuthProvider>
       </ErrorProvider>
     </HelmetProvider>
   );
 }
 
 export default App;
+
