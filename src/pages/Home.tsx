@@ -3,6 +3,7 @@ import React from "react";
 import { Helmet } from "react-helmet-async";
 import { SimplifiedNavbar } from "@/components/layout/simplified-navbar";
 import { SkipLink } from "@/components/ui/skip-link";
+import { BrowserRouter } from "react-router-dom";
 
 // Lazy load heavy components
 const EnhancedFooter = React.lazy(() => 
