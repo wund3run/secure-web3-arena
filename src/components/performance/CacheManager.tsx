@@ -16,7 +16,9 @@ export function CacheManager({ children }: CacheManagerProps) {
       const queryCache = queryClient.getQueryCache();
       
       queryCache.getAll().forEach(query => {
-        const { dataUpdatedAt, staleTime = 5 * 60 * 1000 } = query;
+        const { dataUpdatedAt } = query.state;
+        const staleTime = query.options?.staleTime || 5 * 60 * 1000; // Default 5 minutes
+        
         if (now - dataUpdatedAt > staleTime) {
           queryClient.removeQueries({ queryKey: query.queryKey });
         }
