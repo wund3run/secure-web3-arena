@@ -1,18 +1,26 @@
 
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { DashboardRouter } from '@/components/dashboard/DashboardRouter';
-import { CriticalPageErrorBoundary } from '@/components/error/CriticalPageErrorBoundary';
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
+import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
 
 const Dashboard = () => {
   return (
-    <CriticalPageErrorBoundary pageName="Dashboard">
+    <>
       <Helmet>
         <title>Dashboard | Hawkly</title>
-        <meta name="description" content="Your security audit dashboard" />
+        <meta name="description" content="Your personalized security dashboard" />
       </Helmet>
-      <DashboardRouter />
-    </CriticalPageErrorBoundary>
+      
+      <div className="min-h-screen bg-background flex flex-col">
+        <Navbar />
+        <main className="flex-grow">
+          <DashboardLayout />
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 };
 

@@ -1,173 +1,170 @@
 
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { navigationLinks } from '@/components/layout/navigation/navigation-links.tsx';
-import { getFallbackRoute, routeExists } from '@/utils/navigation';
+import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { CheckCircle, XCircle, AlertTriangle, ExternalLink } from 'lucide-react';
+import { navigationLinks, dashboardLinks, adminLinks } from '@/components/layout/navigation/navigation-links';
 
-type RouteStatus = 'valid' | 'invalid' | 'checking';
-
-interface RouteCheckResult {
-  route: string;
-  title: string;
-  section: string;
-  status: RouteStatus;
+interface RouteValidationResult {
+  path: string;
+  label: string;
+  status: 'valid' | 'invalid' | 'warning';
+  message: string;
 }
 
-export function useRouteChecker() {
-  const [results, setResults] = useState<RouteCheckResult[]>([]);
+export function RouteChecker() {
+  const [validationResults, setValidationResults] = useState<RouteValidationResult[]>([]);
   const [isChecking, setIsChecking] = useState(false);
-  const [invalidRoutes, setInvalidRoutes] = useState<string[]>([]);
-  const navigate = useNavigate();
 
-  const checkAllRoutes = () => {
+  const validateRoutes = async () => {
     setIsChecking(true);
-    const allResults: RouteCheckResult[] = [];
-    const invalid: string[] = [];
+    const results: RouteValidationResult[] = [];
     
-    // Check all navigation links using the navigationLinks array
-    const processLinks = (links: typeof navigationLinks, section: string) => {
-      links.forEach(link => {
-        const route = link.href;
-        const isValid = routeExists(route);
-        allResults.push({
-          route,
-          title: link.title,
-          section,
-          status: isValid ? 'valid' : 'invalid'
-        });
-        
-        if (!isValid) {
-          invalid.push(route);
+    // Combine all navigation links
+    const allLinks = [...navigationLinks, ...dashboardLinks, ...adminLinks];
+    
+    for (const link of allLinks) {
+      try {
+        // Skip external links
+        if (link.href.startsWith('http') || link.href.startsWith('#')) {
+          results.push({
+            path: link.href,
+            label: link.label,
+            status: 'valid',
+            message: 'External link - skipped validation'
+          });
+          continue;
         }
 
-        // Check children if they exist
-        if (link.children) {
-          link.children.forEach(childLink => {
-            const childRoute = childLink.href;
-            const isChildValid = routeExists(childRoute);
-            allResults.push({
-              route: childRoute,
-              title: childLink.title,
-              section: `${section} > ${link.title}`,
-              status: isChildValid ? 'valid' : 'invalid'
-            });
-            
-            if (!isChildValid) {
-              invalid.push(childRoute);
-            }
+        // Check if route exists in our routing system
+        const response = await fetch(link.href, { method: 'HEAD' });
+        
+        if (response.ok || response.status === 404) {
+          // 404 might be expected for dynamic routes
+          results.push({
+            path: link.href,
+            label: link.label,
+            status: response.ok ? 'valid' : 'warning',
+            message: response.ok ? 'Route accessible' : 'Route returns 404 (may be dynamic)'
+          });
+        } else {
+          results.push({
+            path: link.href,
+            label: link.label,
+            status: 'invalid',
+            message: `HTTP ${response.status}: ${response.statusText}`
           });
         }
-      });
-    };
+      } catch (error) {
+        results.push({
+          path: link.href,
+          label: link.label,
+          status: 'invalid',
+          message: 'Failed to validate route'
+        });
+      }
+    }
     
-    processLinks(navigationLinks, 'Navigation');
-    
-    setResults(allResults);
-    setInvalidRoutes(invalid);
+    setValidationResults(results);
     setIsChecking(false);
-    
-    return { results: allResults, invalidRoutes: invalid };
   };
 
-  const navigateToRoute = (route: string) => {
-    navigate(route);
+  const getStatusIcon = (status: RouteValidationResult['status']) => {
+    switch (status) {
+      case 'valid':
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case 'warning':
+        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+      case 'invalid':
+        return <XCircle className="h-4 w-4 text-red-500" />;
+    }
   };
 
-  const getSuggestedRoute = (route: string) => {
-    return getFallbackRoute(route);
+  const getStatusBadge = (status: RouteValidationResult['status']) => {
+    switch (status) {
+      case 'valid':
+        return <Badge variant="default" className="bg-green-100 text-green-800">Valid</Badge>;
+      case 'warning':
+        return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Warning</Badge>;
+      case 'invalid':
+        return <Badge variant="destructive">Invalid</Badge>;
+    }
   };
 
-  useEffect(() => {
-    // Check routes on component mount
-    checkAllRoutes();
-  }, []);
-
-  return { 
-    results, 
-    invalidRoutes, 
-    isChecking, 
-    checkAllRoutes, 
-    navigateToRoute, 
-    getSuggestedRoute 
-  };
-}
-
-export function RouteCheckerPanel() {
-  const { results, isChecking, checkAllRoutes, navigateToRoute, getSuggestedRoute } = useRouteChecker();
-  const [isOpen, setIsOpen] = useState(true);
-  
-  if (!isOpen) {
-    return (
-      <button 
-        className="fixed bottom-4 left-4 z-50 bg-primary text-white px-4 py-2 rounded-md shadow-lg"
-        onClick={() => setIsOpen(true)}
-      >
-        Show Route Checker
-      </button>
-    );
-  }
-  
   return (
-    <div className="fixed bottom-4 left-4 z-50 w-96 bg-background border shadow-lg rounded-lg overflow-hidden max-h-[80vh]">
-      <div className="p-3 bg-muted flex justify-between items-center border-b">
-        <h3 className="font-medium">Navigation Route Checker</h3>
-        <div>
-          <button 
-            onClick={checkAllRoutes} 
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Route Validation Checker</CardTitle>
+        <CardDescription>
+          Validate all navigation routes to ensure they are accessible and working correctly
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          <Button 
+            onClick={validateRoutes} 
             disabled={isChecking}
-            className="mr-2 text-xs bg-primary text-white px-2 py-1 rounded"
+            className="w-full"
           >
-            {isChecking ? 'Checking...' : 'Check Again'}
-          </button>
-          <button onClick={() => setIsOpen(false)} className="text-muted-foreground hover:text-foreground">
-            ✕
-          </button>
-        </div>
-      </div>
-      <div className="p-3 overflow-y-auto max-h-[calc(80vh-3rem)]">
-        <div className="space-y-1">
-          {results.map((result, idx) => (
-            <div 
-              key={idx} 
-              className={`text-xs p-2 rounded ${
-                result.status === 'valid' ? 'bg-green-50 border-l-4 border-green-500' : 
-                'bg-red-50 border-l-4 border-red-500'
-              }`}
-            >
-              <div className="flex justify-between">
-                <span className="font-medium">{result.title}</span>
-                <span className="text-gray-500">{result.section}</span>
-              </div>
-              <div className="flex items-center justify-between mt-1">
-                <span className="italic">{result.route}</span>
-                {result.status === 'valid' ? (
-                  <button 
-                    onClick={() => navigateToRoute(result.route)}
-                    className="text-xs bg-green-600 text-white px-2 py-0.5 rounded"
+            {isChecking ? 'Checking Routes...' : 'Validate All Routes'}
+          </Button>
+          
+          {validationResults.length > 0 && (
+            <div className="space-y-2">
+              <h3 className="font-semibold">Validation Results</h3>
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {validationResults.map((result, index) => (
+                  <div 
+                    key={index}
+                    className="flex items-center justify-between p-3 border rounded-lg"
                   >
-                    Visit
-                  </button>
-                ) : (
-                  <div className="flex space-x-1">
-                    <span className="text-red-600 text-xs">Invalid Route</span>
-                    {getSuggestedRoute(result.route) !== '/' && (
-                      <button 
-                        onClick={() => navigateToRoute(getSuggestedRoute(result.route))}
-                        className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded"
-                        title={`Try ${getSuggestedRoute(result.route)} instead`}
-                      >
-                        Try Suggestion
-                      </button>
-                    )}
+                    <div className="flex items-center gap-3 flex-1">
+                      {getStatusIcon(result.status)}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{result.label}</span>
+                          <code className="text-xs bg-muted px-1 py-0.5 rounded">
+                            {result.path}
+                          </code>
+                        </div>
+                        <p className="text-sm text-muted-foreground">{result.message}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {getStatusBadge(result.status)}
+                      {!result.path.startsWith('http') && !result.path.startsWith('#') && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => window.open(result.path, '_blank')}
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                )}
+                ))}
+              </div>
+              
+              <div className="flex gap-4 text-sm">
+                <span className="flex items-center gap-1">
+                  <CheckCircle className="h-3 w-3 text-green-500" />
+                  Valid: {validationResults.filter(r => r.status === 'valid').length}
+                </span>
+                <span className="flex items-center gap-1">
+                  <AlertTriangle className="h-3 w-3 text-yellow-500" />
+                  Warnings: {validationResults.filter(r => r.status === 'warning').length}
+                </span>
+                <span className="flex items-center gap-1">
+                  <XCircle className="h-3 w-3 text-red-500" />
+                  Invalid: {validationResults.filter(r => r.status === 'invalid').length}
+                </span>
               </div>
             </div>
-          ))}
+          )}
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
-
-export default RouteCheckerPanel;

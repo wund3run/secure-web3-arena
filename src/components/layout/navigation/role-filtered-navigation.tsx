@@ -45,24 +45,24 @@ export function RoleFilteredNavigation({
       {filteredNavigation.map((item) => {
         if (item.children && item.children.length > 0) {
           return (
-            <div key={item.title} className="relative">
+            <div key={item.label} className="relative">
               <button
-                data-dropdown={item.title}
-                onClick={() => handleDropdownToggle(item.title)}
+                data-dropdown={item.label}
+                onClick={() => handleDropdownToggle(item.label)}
                 className="navigation-trigger flex items-center text-sm font-medium hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                aria-expanded={activeDropdown === item.title}
+                aria-expanded={activeDropdown === item.label}
                 aria-haspopup="true"
                 type="button"
               >
-                {item.title}
+                {item.label}
                 <ChevronDown 
                   className={`ml-1 h-3 w-3 transition-transform duration-200 ${
-                    activeDropdown === item.title ? 'rotate-180' : ''
+                    activeDropdown === item.label ? 'rotate-180' : ''
                   }`} 
                 />
               </button>
               
-              {activeDropdown === item.title && (
+              {activeDropdown === item.label && (
                 <div 
                   className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-[10000] animate-in fade-in-0 zoom-in-95 duration-200"
                   role="menu"
@@ -79,9 +79,9 @@ export function RoleFilteredNavigation({
                       <NavigationDropdownItem
                         key={child.href}
                         href={child.href}
-                        title={child.title}
+                        title={child.label}
                         description={child.description}
-                        onNavigate={() => handleDropdownToggle(item.title)}
+                        onNavigate={() => handleDropdownToggle(item.label)}
                         isFirst={index === 0}
                         isLast={index === item.children!.length - 1}
                       />
@@ -99,7 +99,7 @@ export function RoleFilteredNavigation({
             to={item.href}
             className="text-sm font-medium hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
-            {item.title}
+            {item.label}
           </Link>
         );
       })}
