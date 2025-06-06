@@ -1,37 +1,34 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./index.css";
+import "./styles/design-tokens.css";
+import { FocusVisibleProvider } from "./components/ui/interactive-elements";
+import { AccessibilityProvider } from "./components/accessibility/AccessibilityEnhancements";
 
-// Create root with minimal overhead
-const root = ReactDOM.createRoot(document.getElementById("root")!);
+// Register the service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('ServiceWorker registration successful with scope:', registration.scope);
+      })
+      .catch(error => {
+        console.error('ServiceWorker registration failed:', error);
+      });
+  });
+}
 
-// Minimal loading fallback
-const AppFallback = () => (
-  <div className="min-h-screen flex items-center justify-center bg-white">
-    <div className="flex flex-col items-center">
-      <img 
-        src="/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png" 
-        alt="Hawkly"
-        className="h-16 w-16 mb-4"
-        loading="eager"
-      />
-      <div className="w-8 h-8 border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
-    </div>
-  </div>
-);
-
-// Render with direct import instead of lazy loading
-root.render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <React.Suspense fallback={<AppFallback />}>
-      <App />
-    </React.Suspense>
+    <BrowserRouter>
+      <AccessibilityProvider>
+        <FocusVisibleProvider>
+          <App />
+        </FocusVisibleProvider>
+      </AccessibilityProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
-
-// Remove the complex preloading logic that was causing delays
-if (document.querySelector('.initial-loader')) {
-  document.body.classList.add('app-loaded');
-}

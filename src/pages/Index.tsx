@@ -1,8 +1,9 @@
 
 import React from "react";
 import { Helmet } from "react-helmet-async";
-import { SimplifiedNavbar } from "@/components/layout/simplified-navbar";
+import { StandardizedLayout } from "@/components/layout/StandardizedLayout";
 import { SkipLink } from "@/components/ui/skip-link";
+import { SEOOptimization } from "@/components/seo/SEOOptimization";
 
 // Lazy load heavy components to improve initial page load
 const EnhancedFooter = React.lazy(() => 
@@ -20,45 +21,40 @@ const SupportButtonEnhanced = React.lazy(() =>
 // Minimal loading fallback for lazy components
 const ComponentFallback = () => (
   <div className="w-full h-32 flex items-center justify-center">
-    <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+    <div className="w-6 h-6 border-2 border-gray-300 border-t-primary rounded-full animate-spin"></div>
   </div>
 );
 
 export default function Index() {
   return (
-    <>
-      <Helmet>
-        <title>Hawkly | Leading Web3 Security Marketplace</title>
-        <meta
-          name="description"
-          content="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions."
-        />
-        <meta name="keywords" content="web3 security, smart contract audit, blockchain security" />
-        
-        {/* Essential preconnects only */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      </Helmet>
+    <StandardizedLayout
+      title="Hawkly | Leading Web3 Security Marketplace"
+      description="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions."
+      keywords="web3 security, smart contract audit, blockchain security"
+      showSimplifiedNavigation={true}
+    >
+      <SEOOptimization 
+        type="website"
+        title="Hawkly | Leading Web3 Security Marketplace"
+        description="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions."
+        imageUrl="/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png"
+      />
       
-      <div className="min-h-screen bg-background flex flex-col">
-        <SkipLink targetId="main-content" />
-        <SimplifiedNavbar />
-        
-        <main id="main-content">
-          <React.Suspense fallback={<ComponentFallback />}>
-            <IndexPageLayout />
-          </React.Suspense>
-        </main>
-        
-        <React.Suspense fallback={<div className="h-20" />}>
-          <EnhancedFooter />
+      <SkipLink targetId="main-content" />
+      
+      <main id="main-content" className="flex-grow">
+        <React.Suspense fallback={<ComponentFallback />}>
+          <IndexPageLayout />
         </React.Suspense>
-        
-        <React.Suspense fallback={null}>
-          <SupportButtonEnhanced />
-        </React.Suspense>
-      </div>
-    </>
+      </main>
+      
+      <React.Suspense fallback={<div className="h-20" />}>
+        <EnhancedFooter />
+      </React.Suspense>
+      
+      <React.Suspense fallback={null}>
+        <SupportButtonEnhanced />
+      </React.Suspense>
+    </StandardizedLayout>
   );
 }

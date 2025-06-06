@@ -1,7 +1,8 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import "./styles/design-tokens.css";
 
 @layer base {
   :root {
@@ -179,14 +180,63 @@
     @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
   }
 
-  /* Skip to content link for keyboard users */
+  /* enhanced accessibility classes */
+  /* Skip to content link for keyboard users - improved implementation */
   .skip-link {
-    @apply bg-white text-primary font-medium py-2 px-4 rounded-md absolute top-0 left-0 -translate-y-full focus:translate-y-0 z-50 focus:outline-none focus:ring-2 focus:ring-primary/50;
+    @apply bg-white text-primary font-medium py-2 px-4 rounded-md absolute top-4 left-1/2 -translate-x-1/2 -translate-y-16 focus:translate-y-0 z-50 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-transform;
   }
-
-  /* Table accessibility */
-  table {
-    @apply border-collapse;
+  
+  /* Enhanced focus styles for keyboard navigation */
+  .keyboard-mode :focus {
+    @apply outline-none ring-2 ring-primary/70 ring-offset-2;
+  }
+  
+  .keyboard-mode :focus-visible {
+    @apply outline-none ring-2 ring-primary/70 ring-offset-2;
+  }
+  
+  /* Add smooth page transitions */
+  .page-transition-enter {
+    opacity: 0;
+  }
+  
+  .page-transition-enter-active {
+    opacity: 1;
+    transition: opacity 200ms;
+  }
+  
+  .page-transition-exit {
+    opacity: 1;
+  }
+  
+  .page-transition-exit-active {
+    opacity: 0;
+    transition: opacity 200ms;
+  }
+  
+  /* Enhanced loading animation */
+  .loading-dot {
+    @apply inline-block mx-0.5 w-2 h-2 rounded-full bg-primary;
+    animation: loading-dot-fade 1.4s infinite ease-in-out both;
+  }
+  
+  .loading-dot:nth-child(1) {
+    animation-delay: -0.32s;
+  }
+  
+  .loading-dot:nth-child(2) {
+    animation-delay: -0.16s;
+  }
+  
+  @keyframes loading-dot-fade {
+    0%, 80%, 100% {
+      transform: scale(0.7);
+      opacity: 0.5;
+    }
+    40% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
   
   /* Interactive elements - new */
