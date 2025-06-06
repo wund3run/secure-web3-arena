@@ -1,215 +1,158 @@
 
-import React from "react";
-import { cn } from "@/lib/utils";
-import { Loader2, Wifi, WifiOff, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { designTokens } from "@/utils/design/tokens";
+import React from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 interface LoadingStateProps {
-  variant?: 'spinner' | 'skeleton' | 'pulse' | 'dots' | 'progress';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: 'default' | 'card' | 'table' | 'form' | 'dashboard';
   message?: string;
   className?: string;
-  fullScreen?: boolean;
-  error?: boolean;
-  onRetry?: () => void;
-  progress?: number; // 0-100 for progress variant
 }
 
-export function EnhancedLoadingState({
-  variant = 'spinner',
-  size = 'md',
-  message,
-  className,
-  fullScreen = false,
-  error = false,
-  onRetry,
-  progress = 0
+export function EnhancedLoadingState({ 
+  variant = 'default', 
+  message = 'Loading...', 
+  className 
 }: LoadingStateProps) {
-  const sizeClasses = {
-    sm: 'h-4 w-4',
-    md: 'h-6 w-6',
-    lg: 'h-8 w-8'
-  };
-
-  const containerClasses = cn(
-    "flex flex-col items-center justify-center gap-3",
-    fullScreen ? "min-h-screen" : "p-8",
-    className
-  );
-
-  if (error) {
+  if (variant === 'card') {
     return (
-      <div className={containerClasses}>
-        <WifiOff className={cn("text-destructive", sizeClasses[size])} />
-        <div className="text-center space-y-2">
-          <p className="text-sm font-medium text-destructive">
-            Connection failed
-          </p>
-          {message && (
-            <p className="text-xs text-muted-foreground">{message}</p>
-          )}
-          {onRetry && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onRetry}
-              className="mt-2"
-            >
-              <RefreshCw className="h-3 w-3 mr-1" />
-              Try again
-            </Button>
-          )}
-        </div>
-      </div>
+      <Card className={cn('w-full', className)}>
+        <CardHeader>
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-4 w-1/2" />
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6" />
+            <Skeleton className="h-4 w-4/6" />
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
-  if (variant === 'skeleton') {
+  if (variant === 'table') {
     return (
-      <div className={cn("space-y-3", className)}>
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div
-            key={i}
-            className={cn(
-              "animate-pulse rounded bg-muted",
-              size === 'sm' ? 'h-3' : size === 'md' ? 'h-4' : 'h-5'
-            )}
-            style={{ 
-              width: `${100 - (i * 15)}%`,
-              animationDelay: `${i * 150}ms`
-            }}
-          />
+      <div className={cn('space-y-4', className)}>
+        <Skeleton className="h-8 w-full" />
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="flex space-x-4">
+            <Skeleton className="h-12 w-12 rounded-full" />
+            <div className="space-y-2 flex-1">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+          </div>
         ))}
       </div>
     );
   }
 
-  if (variant === 'dots') {
+  if (variant === 'form') {
     return (
-      <div className={containerClasses}>
-        <div className="flex space-x-1">
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              className={cn(
-                "rounded-full bg-primary animate-bounce",
-                size === 'sm' ? 'h-1 w-1' : size === 'md' ? 'h-2 w-2' : 'h-3 w-3'
-              )}
-              style={{
-                animationDelay: `${i * 160}ms`,
-                animationDuration: '1s'
-              }}
-            />
-          ))}
-        </div>
-        {message && (
-          <p className="text-sm text-muted-foreground mt-2">{message}</p>
-        )}
-      </div>
-    );
-  }
-
-  if (variant === 'progress') {
-    return (
-      <div className={containerClasses}>
-        <div className="w-full max-w-xs">
-          <div className="flex justify-between text-sm mb-1">
-            <span className="text-muted-foreground">{message || 'Loading...'}</span>
-            <span className="text-muted-foreground">{progress}%</span>
+      <div className={cn('space-y-6', className)}>
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="space-y-2">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-10 w-full" />
           </div>
-          <div className="w-full bg-muted rounded-full h-2">
-            <div
-              className="bg-primary h-2 rounded-full transition-all duration-300 ease-out"
-              style={{ width: `${Math.min(progress, 100)}%` }}
-            />
-          </div>
-        </div>
+        ))}
+        <Skeleton className="h-10 w-32" />
       </div>
     );
   }
 
-  if (variant === 'pulse') {
+  if (variant === 'dashboard') {
     return (
-      <div className={containerClasses}>
-        <div
-          className={cn(
-            "rounded-full bg-primary animate-pulse",
-            sizeClasses[size]
-          )}
-        />
-        {message && (
-          <p className="text-sm text-muted-foreground">{message}</p>
-        )}
+      <div className={cn('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6', className)}>
+        {[...Array(6)].map((_, i) => (
+          <Card key={i}>
+            <CardHeader>
+              <div className="flex items-center space-x-2">
+                <Skeleton className="h-8 w-8 rounded-full" />
+                <Skeleton className="h-6 w-32" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-24 w-full mb-4" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     );
   }
 
-  // Default spinner variant
   return (
-    <div className={containerClasses}>
-      <Loader2 className={cn("animate-spin text-primary", sizeClasses[size])} />
-      {message && (
-        <p className="text-sm text-muted-foreground text-center max-w-sm">
-          {message}
-        </p>
+    <div className={cn('flex items-center justify-center min-h-[200px]', className)}>
+      <div className="text-center space-y-4">
+        <div className="relative">
+          <div className="w-12 h-12 border-4 border-muted border-t-primary rounded-full animate-spin mx-auto" />
+          <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-t-primary/30 rounded-full animate-spin mx-auto" 
+               style={{ animationDirection: 'reverse', animationDuration: '0.8s' }} />
+        </div>
+        <p className="text-muted-foreground animate-pulse">{message}</p>
+      </div>
+    </div>
+  );
+}
+
+interface ContentSkeletonProps {
+  lines?: number;
+  showAvatar?: boolean;
+  showImage?: boolean;
+  className?: string;
+}
+
+export function ContentSkeleton({ 
+  lines = 3, 
+  showAvatar = false, 
+  showImage = false, 
+  className 
+}: ContentSkeletonProps) {
+  return (
+    <div className={cn('space-y-4', className)}>
+      {showAvatar && (
+        <div className="flex items-center space-x-3">
+          <Skeleton className="h-10 w-10 rounded-full" />
+          <div className="space-y-1">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-3 w-16" />
+          </div>
+        </div>
       )}
-    </div>
-  );
-}
-
-// Specialized loading components for common use cases
-export function CardLoadingState({ className }: { className?: string }) {
-  return (
-    <div className={cn("p-6 space-y-4", className)}>
-      <div className="animate-pulse space-y-3">
-        <div className="h-4 bg-muted rounded w-3/4"></div>
-        <div className="h-3 bg-muted rounded w-1/2"></div>
-        <div className="h-3 bg-muted rounded w-2/3"></div>
+      
+      {showImage && <Skeleton className="h-48 w-full rounded-lg" />}
+      
+      <div className="space-y-2">
+        {[...Array(lines)].map((_, i) => (
+          <Skeleton 
+            key={i} 
+            className={cn(
+              'h-4',
+              i === lines - 1 ? 'w-3/4' : 'w-full'
+            )} 
+          />
+        ))}
       </div>
     </div>
   );
 }
 
-export function TableLoadingState({ rows = 5, columns = 4 }: { rows?: number; columns?: number }) {
-  return (
-    <div className="space-y-3">
-      {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="flex space-x-4">
-          {Array.from({ length: columns }).map((_, j) => (
-            <div
-              key={j}
-              className="animate-pulse h-4 bg-muted rounded flex-1"
-              style={{ animationDelay: `${(i * columns + j) * 50}ms` }}
-            />
-          ))}
-        </div>
-      ))}
-    </div>
-  );
+interface ShimmerProps {
+  className?: string;
+  children?: React.ReactNode;
 }
 
-export function ListLoadingState({ items = 6 }: { items?: number }) {
+export function Shimmer({ className, children }: ShimmerProps) {
   return (
-    <div className="space-y-3">
-      {Array.from({ length: items }).map((_, i) => (
-        <div key={i} className="flex items-center space-x-3">
-          <div
-            className="animate-pulse h-10 w-10 bg-muted rounded-full"
-            style={{ animationDelay: `${i * 100}ms` }}
-          />
-          <div className="space-y-2 flex-1">
-            <div
-              className="animate-pulse h-3 bg-muted rounded w-1/3"
-              style={{ animationDelay: `${i * 100 + 50}ms` }}
-            />
-            <div
-              className="animate-pulse h-2 bg-muted rounded w-1/2"
-              style={{ animationDelay: `${i * 100 + 100}ms` }}
-            />
-          </div>
-        </div>
-      ))}
+    <div className={cn('loading-shimmer rounded', className)}>
+      {children}
     </div>
   );
 }
