@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -8,7 +8,7 @@ import { AuthProvider } from "@/contexts/auth";
 import { RouteGuard } from "@/components/auth/RouteGuard";
 import { GlobalErrorBoundary } from "@/components/error/GlobalErrorBoundary";
 
-// Lazy load pages for better performance
+// Import all pages
 import Index from "./pages/Index";
 import Marketplace from "./pages/Marketplace";
 import RequestAudit from "./pages/RequestAudit";
@@ -26,8 +26,6 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Messages from "./pages/Messages";
 import Escrow from "./pages/Escrow";
-
-// Admin pages
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
 import AdminAudits from "./pages/AdminAudits";
@@ -35,12 +33,11 @@ import AdminReports from "./pages/AdminReports";
 import AdminServices from "./pages/AdminServices";
 import AdminProviders from "./pages/AdminProviders";
 import AdminSettings from "./pages/AdminSettings";
-
-// Other pages
 import Challenges from "./pages/Challenges";
 import Achievements from "./pages/Achievements";
 import ContactProvider from "./pages/ContactProvider";
 import CancellationRefund from "./pages/CancellationRefund";
+import ResetPassword from "./pages/ResetPassword";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -61,139 +58,174 @@ const App = () => {
               <Toaster />
               <BrowserRouter>
                 <Routes>
-                  {/* Public routes */}
+                  {/* Public routes - accessible without authentication */}
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<Auth />} />
-                  <Route path="/marketplace" element={<Marketplace />} />
-                  <Route path="/request-audit" element={<RequestAudit />} />
-                  <Route path="/audits" element={<Audits />} />
-                  <Route path="/audits/:id" element={<AuditDetail />} />
+                  <Route path="/auth/reset-password" element={<ResetPassword />} />
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/resources" element={<Resources />} />
                   <Route path="/community" element={<Community />} />
                   <Route path="/contact" element={<Contact />} />
+                  <Route path="/contact-provider" element={<ContactProvider />} />
+                  <Route path="/cancellation-refund" element={<CancellationRefund />} />
                   
-                  {/* Protected routes */}
+                  {/* Public marketplace and audit viewing */}
+                  <Route path="/marketplace" element={<Marketplace />} />
+                  <Route path="/audits" element={<Audits />} />
+                  <Route path="/audits/:id" element={<AuditDetail />} />
+                  
+                  {/* Request audit - allow public access to encourage signups */}
+                  <Route path="/request-audit" element={<RequestAudit />} />
+                  
+                  {/* Protected routes - require authentication */}
                   <Route 
                     path="/dashboard" 
                     element={
-                      <RouteGuard requireAuth>
+                      <RouteGuard requireAuth={true}>
                         <Dashboard />
                       </RouteGuard>
                     } 
                   />
+                  
+                  {/* Security tools - requires authentication */}
                   <Route 
                     path="/security-monitoring" 
                     element={
-                      <RouteGuard requireAuth>
+                      <RouteGuard requireAuth={true}>
                         <SecurityMonitoringPage />
                       </RouteGuard>
                     } 
                   />
+                  
+                  {/* Enterprise features - requires admin or project_owner roles */}
                   <Route 
                     path="/enterprise-control" 
                     element={
-                      <RouteGuard requireAuth allowedRoles={["admin", "project_owner"]}>
+                      <RouteGuard requireAuth={true} allowedRoles={["admin", "project_owner"]}>
                         <EnterpriseControlPage />
                       </RouteGuard>
                     } 
                   />
+                  
+                  {/* User management routes */}
                   <Route 
                     path="/profile" 
                     element={
-                      <RouteGuard requireAuth>
+                      <RouteGuard requireAuth={true}>
                         <Profile />
                       </RouteGuard>
                     } 
                   />
+                  
                   <Route 
                     path="/settings" 
                     element={
-                      <RouteGuard requireAuth>
+                      <RouteGuard requireAuth={true}>
                         <Settings />
                       </RouteGuard>
                     } 
                   />
+                  
                   <Route 
                     path="/messages" 
                     element={
-                      <RouteGuard requireAuth>
+                      <RouteGuard requireAuth={true}>
                         <Messages />
                       </RouteGuard>
                     } 
                   />
+                  
                   <Route 
                     path="/escrow" 
                     element={
-                      <RouteGuard requireAuth>
+                      <RouteGuard requireAuth={true}>
                         <Escrow />
                       </RouteGuard>
                     } 
                   />
-
-                  {/* Admin routes */}
+                  
+                  {/* Admin routes - require admin role */}
                   <Route 
-                    path="/admin" 
+                    path="/admin/dashboard" 
                     element={
-                      <RouteGuard requireAuth allowedRoles={["admin"]}>
+                      <RouteGuard requireAuth={true} allowedRoles={["admin"]}>
                         <AdminDashboard />
                       </RouteGuard>
                     } 
                   />
+                  
                   <Route 
                     path="/admin/users" 
                     element={
-                      <RouteGuard requireAuth allowedRoles={["admin"]}>
+                      <RouteGuard requireAuth={true} allowedRoles={["admin"]}>
                         <AdminUsers />
                       </RouteGuard>
                     } 
                   />
+                  
                   <Route 
                     path="/admin/audits" 
                     element={
-                      <RouteGuard requireAuth allowedRoles={["admin"]}>
+                      <RouteGuard requireAuth={true} allowedRoles={["admin"]}>
                         <AdminAudits />
                       </RouteGuard>
                     } 
                   />
+                  
                   <Route 
                     path="/admin/reports" 
                     element={
-                      <RouteGuard requireAuth allowedRoles={["admin"]}>
+                      <RouteGuard requireAuth={true} allowedRoles={["admin"]}>
                         <AdminReports />
                       </RouteGuard>
                     } 
                   />
+                  
                   <Route 
                     path="/admin/services" 
                     element={
-                      <RouteGuard requireAuth allowedRoles={["admin"]}>
+                      <RouteGuard requireAuth={true} allowedRoles={["admin"]}>
                         <AdminServices />
                       </RouteGuard>
                     } 
                   />
+                  
                   <Route 
                     path="/admin/providers" 
                     element={
-                      <RouteGuard requireAuth allowedRoles={["admin"]}>
+                      <RouteGuard requireAuth={true} allowedRoles={["admin"]}>
                         <AdminProviders />
                       </RouteGuard>
                     } 
                   />
+                  
                   <Route 
                     path="/admin/settings" 
                     element={
-                      <RouteGuard requireAuth allowedRoles={["admin"]}>
+                      <RouteGuard requireAuth={true} allowedRoles={["admin"]}>
                         <AdminSettings />
                       </RouteGuard>
                     } 
                   />
-
-                  {/* Other routes */}
-                  <Route path="/challenges" element={<Challenges />} />
-                  <Route path="/achievements" element={<Achievements />} />
-                  <Route path="/contact-provider" element={<ContactProvider />} />
-                  <Route path="/cancellation-refund" element={<CancellationRefund />} />
+                  
+                  {/* Gamification features - require authentication */}
+                  <Route 
+                    path="/challenges" 
+                    element={
+                      <RouteGuard requireAuth={true}>
+                        <Challenges />
+                      </RouteGuard>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/achievements" 
+                    element={
+                      <RouteGuard requireAuth={true}>
+                        <Achievements />
+                      </RouteGuard>
+                    } 
+                  />
                 </Routes>
               </BrowserRouter>
             </TooltipProvider>

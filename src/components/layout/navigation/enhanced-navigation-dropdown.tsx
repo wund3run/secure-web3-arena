@@ -45,7 +45,7 @@ export function EnhancedNavigationDropdown({
   // Filter navigation items based on authentication status but show core items for all
   const filteredNavigationLinks = navigationLinks.filter(item => {
     // Show core navigation items for all users
-    if (['Services', 'Resources', 'Community'].includes(item.label)) {
+    if (['Services', 'Resources', 'Community'].includes(item.title)) {
       return true;
     }
     // Show auth-specific items only for authenticated users
@@ -64,26 +64,26 @@ export function EnhancedNavigationDropdown({
       {filteredNavigationLinks.map((item) => {
         if (item.children) {
           return (
-            <div key={item.label} className="relative">
+            <div key={item.title} className="relative">
               <button
-                data-dropdown={item.label}
-                onClick={() => handleDropdownToggle(item.label)}
+                data-dropdown={item.title}
+                onClick={() => handleDropdownToggle(item.title)}
                 className="navigation-trigger flex items-center text-sm font-medium hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                aria-expanded={activeDropdown === item.label}
+                aria-expanded={activeDropdown === item.title}
                 aria-haspopup="true"
                 type="button"
               >
-                {item.label}
+                {item.title}
                 <ChevronDown 
                   className={`ml-1 h-3 w-3 transition-transform duration-200 ${
-                    activeDropdown === item.label ? 'rotate-180' : ''
+                    activeDropdown === item.title ? 'rotate-180' : ''
                   }`} 
                 />
               </button>
               
-              {activeDropdown === item.label && (
+              {activeDropdown === item.title && (
                 <div 
-                  ref={(el) => (dropdownRefs.current[item.label] = el)}
+                  ref={(el) => (dropdownRefs.current[item.title] = el)}
                   className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-[10000] animate-in fade-in-0 zoom-in-95 duration-200"
                   role="menu"
                   style={{ 
@@ -95,7 +95,7 @@ export function EnhancedNavigationDropdown({
                   }}
                   onKeyDown={(e) => {
                     if (e.key === 'Escape') {
-                      handleDropdownToggle(item.label);
+                      handleDropdownToggle(item.title);
                     }
                   }}
                 >
@@ -109,9 +109,9 @@ export function EnhancedNavigationDropdown({
                         <NavigationDropdownItem
                           key={child.href}
                           href={child.href}
-                          title={child.label}
+                          title={child.title}
                           description={child.description}
-                          onNavigate={() => handleDropdownToggle(item.label)}
+                          onNavigate={() => handleDropdownToggle(item.title)}
                           isFirst={index === 0}
                           isLast={index === item.children!.length - 1}
                         />
@@ -130,7 +130,7 @@ export function EnhancedNavigationDropdown({
             to={item.href}
             className="text-sm font-medium hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
-            {item.label}
+            {item.title}
           </Link>
         );
       })}

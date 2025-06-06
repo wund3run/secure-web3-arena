@@ -1,113 +1,107 @@
 
-import React from "react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, User, LogOut } from "lucide-react";
-import { HawklyLogo } from "./HawklyLogo";
-import { ModeToggle } from "@/components/theme/ModeToggle";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/auth";
+import { EnhancedNavigationDropdown } from "./navigation/enhanced-navigation-dropdown";
+import { MobileNavigation } from "./navigation/mobile-navigation";
+import { AuthButtons } from "./navigation/auth-buttons";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { BreadcrumbTrail } from "./navigation/breadcrumb-trail";
+import { X } from "lucide-react";
 import { navigationLinks } from "./navigation/navigation-links";
-
-interface NavigationLink {
-  href: string;
-  label: string;
-  description: string;
-  requiresAuth?: boolean;
-  allowedRoles?: string[];
-}
 
 export function ProductionNavbar() {
   const { user, signOut } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [showAlert, setShowAlert] = useState(true);
+  const location = useLocation();
+  
+  // Close dropdown when route changes or clicking outside
+  useEffect(() => {
+    setActiveDropdown(null);
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+  
+  // Enhanced keyboard support
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setActiveDropdown(null);
+        setIsMobileMenuOpen(false);
+      }
+    };
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+  
+  const handleDropdownToggle = (dropdown: string) => {
+    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
   };
-
+  
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        <div className="mr-4 flex">
-          <Link to="/" className="mr-6 flex items-center space-x-2">
-            <HawklyLogo />
+    <header 
+      className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      role="banner"
+    >
+      {showAlert && user && (
+        <Alert className="rounded-none border-t-0 border-l-0 border-r-0 border-b bg-primary text-primary-foreground">
+          <div className="container flex items-center justify-between py-1">
+            <AlertDescription>
+              <span className="text-sm">
+                <strong>Welcome back!</strong> Access all security services from your dashboard
+              </span>
+            </AlertDescription>
+            <button 
+              onClick={() => setShowAlert(false)} 
+              className="text-primary-foreground/80 hover:text-primary-foreground transition-colors"
+              aria-label="Close announcement"
+            >
+              <X size={18} />
+              <span className="sr-only">Close</span>
+            </button>
+          </div>
+        </Alert>
+      )}
+      
+      <div className="container flex h-16 items-center justify-between">
+        <div className="flex items-center">
+          <Link 
+            to={user ? "/dashboard" : "/"} 
+            className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded-md p-1"
+            aria-label="Hawkly Home"
+          >
+            <img 
+              src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+              alt="Hawkly Logo"
+              className="h-12 w-12 object-contain bg-transparent"
+              style={{ backgroundColor: 'transparent' }}
+            />
           </Link>
+          
+          {/* Enhanced Desktop Navigation - show for all users but with different items */}
+          <EnhancedNavigationDropdown 
+            activeDropdown={activeDropdown} 
+            handleDropdownToggle={handleDropdownToggle} 
+          />
         </div>
         
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <nav className="hidden md:flex items-center space-x-6">
-            {navigationLinks.slice(0, 6).map((item) => (
-              <Link
-                key={item.href}
-                to={item.href}
-                className="text-sm font-medium transition-colors hover:text-primary"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-          
-          <div className="flex items-center space-x-2">
-            {user ? (
-              <>
-                <Button variant="ghost" size="sm" asChild>
-                  <Link to="/dashboard">
-                    <User className="mr-2 h-4 w-4" />
-                    Dashboard
-                  </Link>
-                </Button>
-                <Button variant="ghost" size="sm" onClick={handleSignOut}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button variant="ghost" size="sm" asChild>
-                  <Link to="/auth">Sign In</Link>
-                </Button>
-                <Button size="sm" asChild>
-                  <Link to="/auth">Get Started</Link>
-                </Button>
-              </>
-            )}
-            <ModeToggle />
-          </div>
-          
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
-              >
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="pr-0">
-              <Link to="/" className="flex items-center">
-                <HawklyLogo />
-              </Link>
-              <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
-                <div className="flex flex-col space-y-3">
-                  {navigationLinks.map((item) => (
-                    <Link
-                      key={item.href}
-                      to={item.href}
-                      className="text-sm font-medium transition-colors hover:text-primary"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
+        {/* Desktop Auth Buttons */}
+        <AuthButtons isAuthenticated={!!user} onSignOut={signOut} />
+        
+        {/* Enhanced Mobile Navigation */}
+        <MobileNavigation 
+          navigationLinks={navigationLinks} 
+          isOpen={isMobileMenuOpen} 
+          setIsOpen={setIsMobileMenuOpen}
+          isAuthenticated={!!user}
+          onSignOut={signOut}
+        />
       </div>
+      
+      {/* Breadcrumb navigation for deep pages - show for authenticated users */}
+      {location.pathname !== '/' && user && <BreadcrumbTrail />}
     </header>
   );
 }

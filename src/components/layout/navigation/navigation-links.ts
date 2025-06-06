@@ -1,155 +1,165 @@
 
-import { User } from '@supabase/supabase-js';
-
 export interface NavigationLink {
+  title: string;
   href: string;
-  label: string;
-  description: string;
-  requiresAuth?: boolean;
-  allowedRoles?: string[];
+  description?: string;
   children?: NavigationLink[];
+  requiresAuth?: boolean;
+  isPublic?: boolean; // Explicitly public, shown to all users
 }
 
 export const navigationLinks: NavigationLink[] = [
   {
-    href: "/",
-    label: "Home",
-    description: "Return to the main page"
-  },
-  {
+    title: "Services",
     href: "/marketplace",
-    label: "Marketplace",
-    description: "Browse security services and auditors"
+    isPublic: true,
+    children: [
+      {
+        title: "Browse Services",
+        href: "/marketplace",
+        description: "Find security experts for your project",
+        isPublic: true
+      },
+      {
+        title: "Request Audit",
+        href: "/request-audit",
+        description: "Submit your project for security review",
+        isPublic: true
+      },
+      {
+        title: "Security Audits",
+        href: "/security-audits",
+        description: "Comprehensive smart contract security reviews",
+        requiresAuth: true
+      },
+      {
+        title: "Code Reviews",
+        href: "/code-reviews",
+        description: "Expert code analysis and feedback",
+        requiresAuth: true
+      },
+      {
+        title: "Penetration Testing",
+        href: "/penetration-testing",
+        description: "Advanced security vulnerability testing",
+        requiresAuth: true
+      },
+      {
+        title: "Consulting",
+        href: "/consulting",
+        description: "Strategic security guidance and planning",
+        requiresAuth: true
+      }
+    ]
   },
   {
-    href: "/request-audit",
-    label: "Request Audit",
-    description: "Submit your project for security audit"
-  },
-  {
-    href: "/security-monitoring",
-    label: "Security Monitoring",
-    description: "Continuous security monitoring and threat detection",
-    requiresAuth: true
-  },
-  {
-    href: "/enterprise-control",
-    label: "Enterprise Control",
-    description: "Advanced enterprise features and compliance",
-    requiresAuth: true,
-    allowedRoles: ["admin", "project_owner"]
-  },
-  {
-    href: "/audits",
-    label: "Audits",
-    description: "View audit reports and findings"
-  },
-  {
-    href: "/pricing",
-    label: "Pricing",
-    description: "View pricing plans and features"
-  },
-  {
+    title: "Resources",
     href: "/resources",
-    label: "Resources",
-    description: "Documentation, guides, and tutorials"
+    isPublic: true,
+    children: [
+      {
+        title: "Security Guides",
+        href: "/resources",
+        description: "Best practices and security guidelines",
+        isPublic: true
+      },
+      {
+        title: "Knowledge Base",
+        href: "/knowledge-base",
+        description: "Comprehensive security documentation",
+        isPublic: true
+      },
+      {
+        title: "Audit Reports",
+        href: "/audits",
+        description: "Browse completed security audits",
+        isPublic: true
+      },
+      {
+        title: "Tutorials",
+        href: "/tutorials",
+        description: "Step-by-step security tutorials",
+        isPublic: true
+      },
+      {
+        title: "Templates",
+        href: "/templates",
+        description: "Ready-to-use security templates",
+        requiresAuth: true
+      }
+    ]
   },
   {
+    title: "Tools",
+    href: "/security-monitoring",
+    requiresAuth: true,
+    children: [
+      {
+        title: "Security Monitoring",
+        href: "/security-monitoring",
+        description: "Continuous security monitoring dashboard",
+        requiresAuth: true
+      },
+      {
+        title: "Enterprise Control",
+        href: "/enterprise-control",
+        description: "Enterprise security management center",
+        requiresAuth: true
+      },
+      {
+        title: "AI Tools",
+        href: "/ai-tools",
+        description: "AI-powered security analysis tools",
+        requiresAuth: true
+      },
+      {
+        title: "Vulnerability Scanner",
+        href: "/vulnerability-scanner",
+        description: "Automated security scanning",
+        requiresAuth: true
+      }
+    ]
+  },
+  {
+    title: "Community",
     href: "/community",
-    label: "Community",
-    description: "Forums, events, and discussions"
+    isPublic: true,
+    children: [
+      {
+        title: "Join Community",
+        href: "/community",
+        description: "Connect with security experts",
+        isPublic: true
+      },
+      {
+        title: "Forum",
+        href: "/forum",
+        description: "Community discussions and support",
+        isPublic: true
+      },
+      {
+        title: "Events",
+        href: "/events",
+        description: "Security events and workshops",
+        isPublic: true
+      },
+      {
+        title: "Challenges",
+        href: "/challenges",
+        description: "Security challenges and competitions",
+        requiresAuth: true
+      },
+      {
+        title: "Leaderboard",
+        href: "/leaderboard",
+        description: "Top security experts rankings",
+        isPublic: true
+      }
+    ]
   },
   {
-    href: "/contact",
-    label: "Contact",
-    description: "Get in touch with our team"
+    title: "Pricing",
+    href: "/pricing",
+    isPublic: true
   }
 ];
-
-export const dashboardLinks: NavigationLink[] = [
-  {
-    href: "/dashboard",
-    label: "Dashboard",
-    description: "Main dashboard overview"
-  },
-  {
-    href: "/dashboard/auditor",
-    label: "Auditor Dashboard",
-    description: "Auditor-specific dashboard",
-    allowedRoles: ["auditor", "admin"]
-  },
-  {
-    href: "/dashboard/project",
-    label: "Project Dashboard",
-    description: "Project owner dashboard",
-    allowedRoles: ["project_owner", "admin"]
-  },
-  {
-    href: "/escrow",
-    label: "Escrow Management",
-    description: "Manage escrow contracts and payments",
-    requiresAuth: true
-  },
-  {
-    href: "/messages",
-    label: "Messages",
-    description: "Communication center",
-    requiresAuth: true
-  },
-  {
-    href: "/settings",
-    label: "Settings",
-    description: "Account and security settings",
-    requiresAuth: true
-  }
-];
-
-export const adminLinks: NavigationLink[] = [
-  {
-    href: "/admin",
-    label: "Admin Panel",
-    description: "Platform administration",
-    allowedRoles: ["admin"]
-  },
-  {
-    href: "/admin/users",
-    label: "User Management",
-    description: "Manage platform users",
-    allowedRoles: ["admin"]
-  },
-  {
-    href: "/admin/audits",
-    label: "Audit Management",
-    description: "Oversee all audits",
-    allowedRoles: ["admin"]
-  },
-  {
-    href: "/admin/reports",
-    label: "Reports",
-    description: "Platform analytics and reports",
-    allowedRoles: ["admin"]
-  }
-];
-
-// Helper function to filter links based on user permissions
-export const getFilteredLinks = (
-  links: NavigationLink[], 
-  user: any, 
-  userType: string
-): NavigationLink[] => {
-  return links.filter(link => {
-    // If link doesn't require auth, show it
-    if (!link.requiresAuth) return true;
-    
-    // If user is not authenticated but link requires auth, hide it
-    if (!user && link.requiresAuth) return false;
-    
-    // If link has role restrictions, check user role
-    if (link.allowedRoles && link.allowedRoles.length > 0) {
-      return link.allowedRoles.includes(userType);
-    }
-    
-    // If user is authenticated and no specific roles required, show it
-    return true;
-  });
-};
