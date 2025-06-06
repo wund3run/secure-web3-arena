@@ -6,7 +6,7 @@ import { Footer } from '@/components/layout/footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, Filter, Brain, Compare } from 'lucide-react';
+import { Search, Filter, Brain, BarChart3 } from 'lucide-react';
 import { AdvancedSearchPanel } from '@/components/marketplace/advanced-search/AdvancedSearchPanel';
 import { ServiceComparisonTool } from '@/components/marketplace/comparison/ServiceComparisonTool';
 import { SmartMatchingEngine } from '@/components/marketplace/ai-matching/SmartMatchingEngine';
@@ -35,30 +35,35 @@ export default function EnhancedMarketplacePage() {
 
   const handleFiltersChange = (filters: any) => {
     // Transform services data to match ServiceCardProps interface
-    const transformedServices = services.map(service => ({
-      id: service.id,
-      title: service.title,
-      description: service.description,
-      provider: {
-        name: service.provider?.name || 'Unknown Provider',
-        reputation: service.provider?.reputation || 0,
-        level: (service.provider?.level as "rookie" | "verified" | "expert") || 'rookie',
-        isVerified: service.provider?.isVerified || false,
-        avatarUrl: service.provider?.avatarUrl
-      },
-      pricing: {
-        amount: typeof service.price_range === 'object' && service.price_range !== null && 'min' in service.price_range 
-          ? service.price_range.min 
-          : 5000,
-        currency: 'USD'
-      },
-      rating: service.average_rating || 0,
-      completedJobs: service.review_count || 0,
-      category: service.category,
-      tags: service.blockchain_ecosystems || [],
-      responseTime: '24h',
-      securityScore: 85
-    }));
+    const transformedServices = services.map(service => {
+      // Create a mock provider since it doesn't exist in MarketplaceService
+      const mockProvider = {
+        name: 'Service Provider',
+        reputation: 4.5,
+        level: 'verified' as const,
+        isVerified: true,
+        avatarUrl: undefined
+      };
+
+      return {
+        id: service.id,
+        title: service.title,
+        description: service.description,
+        provider: mockProvider,
+        pricing: {
+          amount: typeof service.price_range === 'object' && service.price_range !== null && 'min' in service.price_range 
+            ? service.price_range.min 
+            : 5000,
+          currency: 'USD'
+        },
+        rating: service.average_rating || 0,
+        completedJobs: service.review_count || 0,
+        category: service.category,
+        tags: service.blockchain_ecosystems || [],
+        responseTime: '24h',
+        securityScore: 85
+      };
+    });
 
     // Apply filters
     let filtered = transformedServices;
@@ -125,7 +130,7 @@ export default function EnhancedMarketplacePage() {
               </div>
               {selectedForComparison.length > 0 && (
                 <Button onClick={() => setShowComparison(true)} className="flex items-center gap-2">
-                  <Compare className="h-4 w-4" />
+                  <BarChart3 className="h-4 w-4" />
                   Compare ({selectedForComparison.length})
                 </Button>
               )}
@@ -143,7 +148,7 @@ export default function EnhancedMarketplacePage() {
                   AI Matching
                 </TabsTrigger>
                 <TabsTrigger value="comparison" className="flex items-center gap-2">
-                  <Compare className="h-4 w-4" />
+                  <BarChart3 className="h-4 w-4" />
                   Comparison
                 </TabsTrigger>
                 <TabsTrigger value="collaboration" className="flex items-center gap-2">

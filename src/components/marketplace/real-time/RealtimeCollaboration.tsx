@@ -55,9 +55,11 @@ export const RealtimeCollaboration: React.FC<RealtimeCollaborationProps> = ({
           id: newMessage.id,
           content: newMessage.content,
           sender_id: newMessage.sender_id,
-          sender_name: newMessage.sender_name || 'Unknown',
+          sender_name: 'User', // Fallback since sender_name doesn't exist in schema
           created_at: newMessage.created_at,
-          message_type: newMessage.message_type || 'text'
+          message_type: (newMessage.message_type === 'file' || newMessage.message_type === 'milestone') 
+            ? newMessage.message_type as 'file' | 'milestone'
+            : 'text'
         }]);
       })
       .subscribe((status) => {
@@ -69,7 +71,16 @@ export const RealtimeCollaboration: React.FC<RealtimeCollaborationProps> = ({
       .channel(`presence-${projectId}`)
       .on('presence', { event: 'sync' }, () => {
         const state = presenceChannel.presenceState();
-        const activeParticipants = Object.values(state).flat() as Participant[];
+        // Transform presence state to participants
+        const activeParticipants: Participant[] = Object.values(state)
+          .flat()
+          .map((presence: any) => ({
+            id: presence.id || currentUserId,
+            name: presence.name || 'Current User',
+            role: presence.role || 'client',
+            status: presence.status || 'online',
+            avatar_url: presence.avatar_url
+          }));
         setParticipants(activeParticipants);
       })
       .on('presence', { event: 'join' }, ({ newPresences }) => {
@@ -82,8 +93,8 @@ export const RealtimeCollaboration: React.FC<RealtimeCollaborationProps> = ({
         if (status === 'SUBSCRIBED') {
           await presenceChannel.track({
             id: currentUserId,
-            name: 'Current User', // This would come from user profile
-            role: 'client', // This would come from user role
+            name: 'Current User',
+            role: 'client',
             status: 'online',
             timestamp: new Date().toISOString()
           });
@@ -113,9 +124,11 @@ export const RealtimeCollaboration: React.FC<RealtimeCollaborationProps> = ({
         id: msg.id,
         content: msg.content,
         sender_id: msg.sender_id,
-        sender_name: msg.sender_name || 'Unknown',
+        sender_name: 'User', // Fallback since sender_name doesn't exist in schema
         created_at: msg.created_at,
-        message_type: msg.message_type || 'text'
+        message_type: (msg.message_type === 'file' || msg.message_type === 'milestone') 
+          ? msg.message_type as 'file' | 'milestone'
+          : 'text'
       })) || []);
     } catch (error) {
       console.error('Error loading messages:', error);
@@ -131,7 +144,7 @@ export const RealtimeCollaboration: React.FC<RealtimeCollaborationProps> = ({
         .insert({
           conversation_id: projectId,
           sender_id: currentUserId,
-          receiver_id: projectId, // Using project ID as receiver for group chat
+          receiver_id: projectId,
           content: newMessage,
           message_type: 'text'
         });
