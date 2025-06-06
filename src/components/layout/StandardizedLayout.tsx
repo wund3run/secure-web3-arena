@@ -5,7 +5,6 @@ import { useAuth } from "@/contexts/auth";
 import { SimplifiedNavbar } from "./simplified-navbar";
 import { ProductionNavbar } from "./production-navbar";
 import { Footer } from "./footer";
-import { BrowserRouter as Router } from "react-router-dom";
 
 interface StandardizedLayoutProps {
   title: string;
