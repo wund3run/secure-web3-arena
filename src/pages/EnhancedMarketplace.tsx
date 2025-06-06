@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -126,30 +127,87 @@ export default function EnhancedMarketplace() {
         return;
       }
 
-      // Filter out any entries that don't have valid extended_profiles
-      const validAuditors = (auditorsData || []).filter(auditor => 
-        auditor.extended_profiles && 
-        typeof auditor.extended_profiles === 'object' &&
-        'full_name' in auditor.extended_profiles &&
-        'verification_status' in auditor.extended_profiles
-      ) as AuditorProfile[];
+      // Transform and validate the data
+      const transformedServices: MarketplaceService[] = [];
+      
+      if (auditorsData && Array.isArray(auditorsData)) {
+        for (const rawAuditor of auditorsData) {
+          // Check if extended_profiles exists and has the required properties
+          if (rawAuditor.extended_profiles && 
+              typeof rawAuditor.extended_profiles === 'object' &&
+              'full_name' in rawAuditor.extended_profiles &&
+              'verification_status' in rawAuditor.extended_profiles) {
+            
+            const extendedProfile = rawAuditor.extended_profiles as ExtendedProfile;
+            
+            // Create a properly typed AuditorProfile
+            const auditorProfile: AuditorProfile = {
+              user_id: rawAuditor.user_id,
+              years_experience: rawAuditor.years_experience,
+              hourly_rate_min: rawAuditor.hourly_rate_min,
+              hourly_rate_max: rawAuditor.hourly_rate_max,
+              verification_status: rawAuditor.verification_status,
+              availability_status: rawAuditor.availability_status,
+              blockchain_expertise: rawAuditor.blockchain_expertise || [],
+              specialization_tags: rawAuditor.specialization_tags || [],
+              total_audits_completed: rawAuditor.total_audits_completed || 0,
+              success_rate: rawAuditor.success_rate || 1.0,
+              extended_profiles: extendedProfile
+            };
 
-      // Transform data to match MarketplaceService interface
-      const transformedServices: MarketplaceService[] = validAuditors.map((auditor, index) => ({
-        id: auditor.user_id,
-        title: `Security Audit by ${auditor.extended_profiles.full_name || 'Expert Auditor'}`,
-        description: `Professional security audit with ${auditor.years_experience} years of experience`,
-        category: 'Smart Contract Audit',
-        price_range: {
-          min: auditor.hourly_rate_min || 100,
-          max: auditor.hourly_rate_max || 500,
-          currency: 'USD'
-        },
-        provider: auditor,
-        rating: auditor.success_rate * 5 || 4.8,
-        completed_jobs: auditor.total_audits_completed || 0,
-        tags: auditor.specialization_tags || []
-      }));
+            const service: MarketplaceService = {
+              id: auditorProfile.user_id,
+              title: `Security Audit by ${extendedProfile.full_name || 'Expert Auditor'}`,
+              description: `Professional security audit with ${auditorProfile.years_experience} years of experience`,
+              category: 'Smart Contract Audit',
+              price_range: {
+                min: auditorProfile.hourly_rate_min || 100,
+                max: auditorProfile.hourly_rate_max || 500,
+                currency: 'USD'
+              },
+              provider: auditorProfile,
+              rating: auditorProfile.success_rate * 5 || 4.8,
+              completed_jobs: auditorProfile.total_audits_completed || 0,
+              tags: auditorProfile.specialization_tags || []
+            };
+
+            transformedServices.push(service);
+          }
+        }
+      }
+
+      // If no valid data, add some mock services for demo
+      if (transformedServices.length === 0) {
+        const mockServices: MarketplaceService[] = [
+          {
+            id: 'mock-1',
+            title: 'Smart Contract Security Audit',
+            description: 'Comprehensive security audit for smart contracts',
+            category: 'Smart Contract Audit',
+            price_range: { min: 150, max: 300, currency: 'USD' },
+            provider: {
+              user_id: 'mock-auditor-1',
+              years_experience: 5,
+              hourly_rate_min: 150,
+              hourly_rate_max: 300,
+              verification_status: 'verified',
+              availability_status: 'available',
+              blockchain_expertise: ['Ethereum', 'Polygon'],
+              specialization_tags: ['DeFi', 'Smart Contracts'],
+              total_audits_completed: 25,
+              success_rate: 0.96,
+              extended_profiles: {
+                full_name: 'Expert Security Auditor',
+                verification_status: 'verified'
+              }
+            },
+            rating: 4.8,
+            completed_jobs: 25,
+            tags: ['DeFi', 'Smart Contracts']
+          }
+        ];
+        transformedServices.push(...mockServices);
+      }
 
       setServices(transformedServices);
       setFilteredServices(transformedServices);
