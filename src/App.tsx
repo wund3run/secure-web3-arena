@@ -39,6 +39,16 @@ import ContactProvider from "./pages/ContactProvider";
 import CancellationRefund from "./pages/CancellationRefund";
 import ResetPassword from "./pages/ResetPassword";
 
+// Import new service pages
+import SecurityAudits from "./pages/SecurityAudits";
+import CodeReviews from "./pages/CodeReviews";
+import PenetrationTesting from "./pages/PenetrationTesting";
+import SecurityConsulting from "./pages/SecurityConsulting";
+import KnowledgeBase from "./pages/KnowledgeBase";
+import Tutorials from "./pages/Tutorials";
+import Forum from "./pages/Forum";
+import Events from "./pages/Events";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -76,6 +86,16 @@ const App = () => {
                   
                   {/* Request audit - allow public access to encourage signups */}
                   <Route path="/request-audit" element={<RequestAudit />} />
+                  
+                  {/* Public service pages */}
+                  <Route path="/security-audits" element={<SecurityAudits />} />
+                  <Route path="/code-reviews" element={<CodeReviews />} />
+                  <Route path="/penetration-testing" element={<PenetrationTesting />} />
+                  <Route path="/consulting" element={<SecurityConsulting />} />
+                  <Route path="/knowledge-base" element={<KnowledgeBase />} />
+                  <Route path="/tutorials" element={<Tutorials />} />
+                  <Route path="/forum" element={<Forum />} />
+                  <Route path="/events" element={<Events />} />
                   
                   {/* Protected routes - require authentication */}
                   <Route 

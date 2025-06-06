@@ -3,42 +3,42 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Users, HelpCircle, TrendingUp } from 'lucide-react';
+import { Users, Lightbulb, TrendingUp, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const Forum = () => {
+const SecurityConsulting = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Community Forum | Hawkly</title>
-        <meta name="description" content="Join our community discussions and get support" />
+        <title>Security Consulting | Hawkly</title>
+        <meta name="description" content="Strategic security guidance and planning services" />
       </Helmet>
       
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Community Forum</h1>
+          <h1 className="text-4xl font-bold mb-4">Security Consulting</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Connect with security experts and get answers to your questions
+            Strategic security guidance to build robust and secure blockchain applications
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           <Card>
             <CardHeader>
-              <MessageSquare className="h-12 w-12 text-primary mb-4" />
-              <CardTitle>Discussions</CardTitle>
+              <Lightbulb className="h-12 w-12 text-yellow-600 mb-4" />
+              <CardTitle>Security Strategy</CardTitle>
               <CardDescription>
-                Join ongoing discussions about security topics and best practices
+                Develop comprehensive security strategies tailored to your project needs
               </CardDescription>
             </CardHeader>
           </Card>
           
           <Card>
             <CardHeader>
-              <HelpCircle className="h-12 w-12 text-blue-600 mb-4" />
-              <CardTitle>Get Help</CardTitle>
+              <TrendingUp className="h-12 w-12 text-green-600 mb-4" />
+              <CardTitle>Best Practices</CardTitle>
               <CardDescription>
-                Ask questions and get help from our community of experts
+                Implementation of industry-leading security practices and frameworks
               </CardDescription>
             </CardHeader>
           </Card>
@@ -46,7 +46,7 @@ const Forum = () => {
 
         <div className="text-center">
           <Button asChild size="lg">
-            <Link to="/community">Join Community</Link>
+            <Link to="/request-audit">Request Consultation</Link>
           </Button>
         </div>
       </div>
@@ -54,4 +54,4 @@ const Forum = () => {
   );
 };
 
-export default Forum;
+export default SecurityConsulting;
