@@ -97,7 +97,7 @@ export function UserJourneyTracker() {
       };
 
       auditLogger.log(
-        'user_action',
+        'data_access',
         `Conversion: ${event.action}`,
         conversionData,
         'medium'
