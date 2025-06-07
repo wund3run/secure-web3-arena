@@ -1,374 +1,294 @@
 
-import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell } from "recharts";
-import { Eye, Clock, MousePointer, TrendingUp, Users, Zap, Brain, Target } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import { Users, Mouse, Eye, Clock, TrendingUp, Activity } from 'lucide-react';
 
 interface BehaviorMetric {
-  name: string;
+  metric: string;
   value: number;
   change: number;
-  trend: "up" | "down" | "stable";
+  trend: 'up' | 'down' | 'stable';
 }
 
-interface UserJourneyStep {
-  step: string;
-  users: number;
-  conversionRate: number;
-  averageTime: number;
-  dropoffReasons: string[];
-}
-
-interface HeatmapData {
-  element: string;
-  clicks: number;
-  engagement: number;
-  x: number;
-  y: number;
+interface UserSegment {
+  name: string;
+  count: number;
+  percentage: number;
+  color: string;
+  behavior: string;
 }
 
 export function AdvancedBehaviorAnalytics() {
-  const [timeRange, setTimeRange] = useState("7d");
-  const [activeMetric, setActiveMetric] = useState("engagement");
+  const [isLoading, setIsLoading] = useState(true);
+  const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d'>('7d');
 
-  // Mock data - in real implementation, this would come from analytics service
+  useEffect(() => {
+    // Simulate loading analytics data
+    const loadAnalytics = async () => {
+      setIsLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setIsLoading(false);
+    };
+
+    loadAnalytics();
+  }, [timeRange]);
+
   const behaviorMetrics: BehaviorMetric[] = [
-    { name: "User Engagement", value: 87, change: 12, trend: "up" },
-    { name: "Session Duration", value: 245, change: -8, trend: "down" },
-    { name: "Page Views/Session", value: 4.2, change: 15, trend: "up" },
-    { name: "Bounce Rate", value: 23, change: -18, trend: "up" },
-    { name: "Conversion Rate", value: 3.4, change: 22, trend: "up" },
-    { name: "Feature Adoption", value: 68, change: 9, trend: "up" }
+    { metric: 'Session Duration', value: 4.2, change: +12, trend: 'up' },
+    { metric: 'Page Views/Session', value: 6.8, change: +8, trend: 'up' },
+    { metric: 'Bounce Rate', value: 23.5, change: -15, trend: 'down' },
+    { metric: 'Conversion Rate', value: 3.4, change: +22, trend: 'up' },
   ];
 
-  const userJourneyData: UserJourneyStep[] = [
-    {
-      step: "Landing Page",
-      users: 10000,
-      conversionRate: 100,
-      averageTime: 45,
-      dropoffReasons: ["Load time", "Content relevance"]
-    },
-    {
-      step: "Service Browse",
-      users: 7500,
-      conversionRate: 75,
-      averageTime: 120,
-      dropoffReasons: ["Overwhelming options", "Unclear pricing"]
-    },
-    {
-      step: "Account Creation",
-      users: 3750,
-      conversionRate: 37.5,
-      averageTime: 180,
-      dropoffReasons: ["Complex form", "Email verification"]
-    },
-    {
-      step: "First Purchase",
-      users: 1875,
-      conversionRate: 18.75,
-      averageTime: 300,
-      dropoffReasons: ["Payment issues", "Trust concerns"]
-    },
-    {
-      step: "Return User",
-      users: 1312,
-      conversionRate: 13.12,
-      averageTime: 200,
-      dropoffReasons: ["Poor first experience", "Unmet expectations"]
-    }
+  const userSegments: UserSegment[] = [
+    { name: 'Active Explorers', count: 1247, percentage: 42, color: '#3B82F6', behavior: 'High engagement, explores multiple pages' },
+    { name: 'Quick Browsers', count: 892, percentage: 30, color: '#10B981', behavior: 'Fast sessions, goal-oriented' },
+    { name: 'Deep Researchers', count: 534, percentage: 18, color: '#F59E0B', behavior: 'Long sessions, detailed analysis' },
+    { name: 'Returning Users', count: 298, percentage: 10, color: '#8B5CF6', behavior: 'Frequent visits, familiar with platform' }
   ];
 
-  const engagementTrendData = [
-    { date: "Mon", engagement: 82, sessions: 1250, conversions: 45 },
-    { date: "Tue", engagement: 85, sessions: 1380, conversions: 52 },
-    { date: "Wed", engagement: 79, sessions: 1150, conversions: 38 },
-    { date: "Thu", engagement: 91, sessions: 1520, conversions: 67 },
-    { date: "Fri", engagement: 88, sessions: 1420, conversions: 58 },
-    { date: "Sat", engagement: 76, sessions: 980, conversions: 34 },
-    { date: "Sun", engagement: 83, sessions: 1100, conversions: 41 }
+  const engagementData = [
+    { time: '00:00', users: 45, engagement: 72 },
+    { time: '04:00', users: 23, engagement: 68 },
+    { time: '08:00', users: 156, engagement: 85 },
+    { time: '12:00', users: 234, engagement: 92 },
+    { time: '16:00', users: 189, engagement: 88 },
+    { time: '20:00', users: 167, engagement: 79 },
   ];
 
-  const heatmapData: HeatmapData[] = [
-    { element: "CTA Button", clicks: 1250, engagement: 85, x: 50, y: 30 },
-    { element: "Navigation Menu", clicks: 890, engagement: 65, x: 20, y: 10 },
-    { element: "Service Cards", clicks: 2340, engagement: 92, x: 60, y: 50 },
-    { element: "Footer Links", clicks: 340, engagement: 25, x: 50, y: 90 },
-    { element: "Search Bar", clicks: 780, engagement: 78, x: 80, y: 15 }
-  ];
-
-  const userSegmentData = [
-    { name: "New Users", value: 35, color: "#8884d8" },
-    { name: "Returning Users", value: 45, color: "#82ca9d" },
-    { name: "Power Users", value: 20, color: "#ffc658" }
+  const conversionFunnelData = [
+    { step: 'Landing', users: 1000, rate: 100 },
+    { step: 'Browse Services', users: 750, rate: 75 },
+    { step: 'View Details', users: 450, rate: 60 },
+    { step: 'Start Request', users: 280, rate: 62 },
+    { step: 'Complete', users: 180, rate: 64 },
   ];
 
   const getTrendIcon = (trend: string) => {
-    if (trend === "up") return <TrendingUp className="h-4 w-4 text-green-600" />;
-    if (trend === "down") return <TrendingUp className="h-4 w-4 text-red-600 rotate-180" />;
-    return <div className="h-4 w-4 bg-gray-400 rounded-full" />;
+    if (trend === 'up') return <TrendingUp className="h-4 w-4 text-green-500" />;
+    if (trend === 'down') return <TrendingUp className="h-4 w-4 text-red-500 rotate-180" />;
+    return <Activity className="h-4 w-4 text-gray-500" />;
   };
 
-  const getTrendColor = (trend: string, change: number) => {
-    if (trend === "up" && change > 0) return "text-green-600";
-    if (trend === "down" || change < 0) return "text-red-600";
-    return "text-gray-600";
-  };
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="p-8">
+          <div className="flex items-center gap-4">
+            <Activity className="h-8 w-8 text-blue-500 animate-pulse" />
+            <div>
+              <h3 className="text-xl font-semibold">Loading Advanced Analytics...</h3>
+              <p className="text-muted-foreground">Processing user behavior data</p>
+            </div>
+          </div>
+          <Progress value={75} className="mt-4" />
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Brain className="h-5 w-5" />
-            Advanced Behavior Analytics
-          </CardTitle>
-          <CardDescription>
-            AI-powered insights into user behavior patterns and optimization opportunities
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                Advanced Behavior Analytics
+              </CardTitle>
+              <CardDescription>
+                Deep insights into user behavior patterns and engagement metrics
+              </CardDescription>
+            </div>
+            <div className="flex gap-2">
+              {(['24h', '7d', '30d'] as const).map((range) => (
+                <button
+                  key={range}
+                  onClick={() => setTimeRange(range)}
+                  className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                    timeRange === range
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                  }`}
+                >
+                  {range}
+                </button>
+              ))}
+            </div>
+          </div>
         </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid grid-cols-4">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="journey">User Journey</TabsTrigger>
-              <TabsTrigger value="heatmap">Interaction Heatmap</TabsTrigger>
-              <TabsTrigger value="segments">User Segments</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="overview" className="space-y-6">
-              {/* Key Metrics */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {behaviorMetrics.map((metric) => (
-                  <Card key={metric.name}>
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium">{metric.name}</span>
-                        {getTrendIcon(metric.trend)}
-                      </div>
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-bold">{metric.value}</span>
-                        <span className={`text-sm ${getTrendColor(metric.trend, metric.change)}`}>
-                          {metric.change > 0 ? "+" : ""}{metric.change}%
-                        </span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-
-              {/* Engagement Trend Chart */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Engagement Trends</CardTitle>
-                  <CardDescription>Daily user engagement and conversion patterns</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <AreaChart data={engagementTrendData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" />
-                      <YAxis />
-                      <Tooltip />
-                      <Area type="monotone" dataKey="engagement" stroke="#8884d8" fill="#8884d8" fillOpacity={0.3} />
-                      <Area type="monotone" dataKey="conversions" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.3} />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="journey" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>User Journey Analysis</CardTitle>
-                  <CardDescription>Step-by-step conversion funnel with AI-identified optimization opportunities</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {userJourneyData.map((step, index) => (
-                      <div key={step.step} className="relative">
-                        <div className="flex items-center gap-4 p-4 border rounded-lg">
-                          <div className="flex-shrink-0 w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-sm font-medium">
-                            {index + 1}
-                          </div>
-                          
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-medium">{step.step}</h4>
-                              <div className="flex items-center gap-4 text-sm">
-                                <span>{step.users.toLocaleString()} users</span>
-                                <Badge variant={step.conversionRate > 50 ? "default" : step.conversionRate > 25 ? "secondary" : "destructive"}>
-                                  {step.conversionRate}% conversion
-                                </Badge>
-                              </div>
-                            </div>
-                            
-                            <Progress value={step.conversionRate} className="h-2 mb-2" />
-                            
-                            <div className="flex items-center justify-between text-xs text-muted-foreground">
-                              <div className="flex items-center gap-4">
-                                <span className="flex items-center gap-1">
-                                  <Clock className="h-3 w-3" />
-                                  {step.averageTime}s avg time
-                                </span>
-                              </div>
-                              <div className="flex gap-2">
-                                {step.dropoffReasons.map((reason) => (
-                                  <Badge key={reason} variant="outline" className="text-xs">
-                                    {reason}
-                                  </Badge>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        {index < userJourneyData.length - 1 && (
-                          <div className="flex justify-center py-2">
-                            <div className="w-px h-4 bg-border"></div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="heatmap" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>User Interaction Heatmap</CardTitle>
-                  <CardDescription>Visual representation of user engagement with different page elements</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {/* Heatmap visualization placeholder */}
-                      <div className="relative bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-lg border-2 border-dashed">
-                        <div className="text-center text-muted-foreground mb-4">
-                          <Eye className="h-8 w-8 mx-auto mb-2" />
-                          <p className="text-sm">Visual Heatmap Representation</p>
-                          <p className="text-xs">(Interactive heatmap would be rendered here)</p>
-                        </div>
-                        
-                        {heatmapData.map((item) => (
-                          <div
-                            key={item.element}
-                            className="absolute bg-red-500 rounded-full opacity-60"
-                            style={{
-                              left: `${item.x}%`,
-                              top: `${item.y}%`,
-                              width: `${Math.max(item.clicks / 100, 10)}px`,
-                              height: `${Math.max(item.clicks / 100, 10)}px`,
-                              transform: 'translate(-50%, -50%)'
-                            }}
-                            title={`${item.element}: ${item.clicks} clicks`}
-                          />
-                        ))}
-                      </div>
-                      
-                      {/* Interaction data */}
-                      <div className="space-y-3">
-                        <h4 className="font-medium">Element Interaction Data</h4>
-                        {heatmapData.map((item) => (
-                          <div key={item.element} className="flex items-center justify-between p-3 border rounded">
-                            <div>
-                              <span className="font-medium">{item.element}</span>
-                              <div className="text-xs text-muted-foreground">
-                                {item.clicks} clicks • {item.engagement}% engagement
-                              </div>
-                            </div>
-                            <Progress value={item.engagement} className="w-20 h-2" />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="segments" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>User Segments</CardTitle>
-                    <CardDescription>AI-identified user behavior patterns</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={250}>
-                      <PieChart>
-                        <Pie
-                          data={userSegmentData}
-                          cx="50%"
-                          cy="50%"
-                          outerRadius={80}
-                          fill="#8884d8"
-                          dataKey="value"
-                          label={({ name, value }) => `${name}: ${value}%`}
-                        >
-                          {userSegmentData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Segment Insights</CardTitle>
-                    <CardDescription>AI-generated insights for each user segment</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-3">
-                      <div className="p-3 border rounded">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                          <span className="font-medium">New Users</span>
-                          <Badge variant="outline">35%</Badge>
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          High interest in learning resources, need more onboarding guidance
-                        </p>
-                      </div>
-                      
-                      <div className="p-3 border rounded">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                          <span className="font-medium">Returning Users</span>
-                          <Badge variant="outline">45%</Badge>
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          Active in marketplace, responsive to personalized recommendations
-                        </p>
-                      </div>
-                      
-                      <div className="p-3 border rounded">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                          <span className="font-medium">Power Users</span>
-                          <Badge variant="outline">20%</Badge>
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          High engagement, contribute significantly to platform growth
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
       </Card>
+
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="grid grid-cols-4 w-full">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="segments">User Segments</TabsTrigger>
+          <TabsTrigger value="engagement">Engagement</TabsTrigger>
+          <TabsTrigger value="conversion">Conversion</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-6">
+          {/* Key Metrics */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {behaviorMetrics.map((metric) => (
+              <Card key={metric.metric}>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium">{metric.metric}</span>
+                    {getTrendIcon(metric.trend)}
+                  </div>
+                  <div className="text-2xl font-bold">{metric.value}{metric.metric.includes('Rate') ? '%' : metric.metric.includes('Duration') ? 'min' : ''}</div>
+                  <div className={`text-sm ${metric.change > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {metric.change > 0 ? '+' : ''}{metric.change}% vs last period
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Engagement Over Time */}
+          <Card>
+            <CardHeader>
+              <CardTitle>User Engagement Over Time</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={engagementData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="time" />
+                  <YAxis yAxisId="left" />
+                  <YAxis yAxisId="right" orientation="right" />
+                  <Tooltip />
+                  <Line yAxisId="left" type="monotone" dataKey="users" stroke="#3B82F6" strokeWidth={2} />
+                  <Line yAxisId="right" type="monotone" dataKey="engagement" stroke="#10B981" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="segments" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Segment Pie Chart */}
+            <Card>
+              <CardHeader>
+                <CardTitle>User Segment Distribution</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={userSegments}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      fill="#8884d8"
+                      dataKey="count"
+                      label={({ name, percentage }) => `${name}: ${percentage}%`}
+                    >
+                      {userSegments.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Segment Details */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Segment Analysis</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {userSegments.map((segment) => (
+                  <div key={segment.name} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-3 h-3 rounded-full" 
+                          style={{ backgroundColor: segment.color }}
+                        />
+                        <span className="font-medium">{segment.name}</span>
+                      </div>
+                      <Badge variant="secondary">{segment.count} users</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground pl-5">{segment.behavior}</p>
+                    <Progress value={segment.percentage} className="h-2" />
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="engagement" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader className="text-center">
+                <Mouse className="h-8 w-8 mx-auto mb-2 text-blue-500" />
+                <CardTitle>Click Patterns</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <div className="text-3xl font-bold">2,847</div>
+                <div className="text-sm text-muted-foreground">Total Clicks Today</div>
+                <div className="text-sm text-green-600 mt-1">+18% vs yesterday</div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="text-center">
+                <Eye className="h-8 w-8 mx-auto mb-2 text-green-500" />
+                <CardTitle>Page Views</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <div className="text-3xl font-bold">12,456</div>
+                <div className="text-sm text-muted-foreground">Views This Week</div>
+                <div className="text-sm text-blue-600 mt-1">+24% vs last week</div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="text-center">
+                <Clock className="h-8 w-8 mx-auto mb-2 text-purple-500" />
+                <CardTitle>Session Time</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <div className="text-3xl font-bold">4.2m</div>
+                <div className="text-sm text-muted-foreground">Average Duration</div>
+                <div className="text-sm text-green-600 mt-1">+12% improvement</div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="conversion" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Conversion Funnel Analysis</CardTitle>
+              <CardDescription>Track user journey from landing to conversion</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={conversionFunnelData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="step" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="users" fill="#3B82F6" />
+                  <Bar dataKey="rate" fill="#10B981" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

@@ -1,217 +1,269 @@
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { 
-  CheckCircle, 
-  AlertTriangle, 
-  XCircle, 
-  RefreshCw, 
-  Database,
-  TrendingDown,
-  TrendingUp
-} from 'lucide-react';
+import { AlertTriangle, CheckCircle, Database, RefreshCw, Shield } from 'lucide-react';
 
-interface ConsistencyCheck {
+interface DataIntegrityCheck {
   id: string;
   name: string;
-  status: 'passed' | 'warning' | 'failed';
-  message: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  lastChecked: Date;
-  details?: string;
+  status: 'passed' | 'failed' | 'warning' | 'checking';
+  lastChecked: string;
+  description: string;
+  criticalLevel: 'high' | 'medium' | 'low';
+  affectedRecords?: number;
 }
 
-interface DataQualityMetrics {
-  completeness: number;
-  accuracy: number;
-  consistency: number;
-  timeliness: number;
-  overall: number;
-}
+export function DataConsistencyChecker() {
+  const [isChecking, setIsChecking] = useState(false);
+  const [lastScanTime, setLastScanTime] = useState<Date>(new Date());
 
-export const DataConsistencyChecker = () => {
-  const [checks, setChecks] = useState<ConsistencyCheck[]>([]);
-  const [metrics, setMetrics] = useState<DataQualityMetrics | null>(null);
-  const [isRunning, setIsRunning] = useState(false);
-  const [lastRunTime, setLastRunTime] = useState<Date | null>(null);
+  const [integrityChecks, setIntegrityChecks] = useState<DataIntegrityCheck[]>([
+    {
+      id: 'user-audit-consistency',
+      name: 'User-Audit Relationship Integrity',
+      status: 'passed',
+      lastChecked: '5 minutes ago',
+      description: 'Validates that all audit records have valid user references',
+      criticalLevel: 'high'
+    },
+    {
+      id: 'payment-audit-sync',
+      name: 'Payment-Audit Synchronization',
+      status: 'warning',
+      lastChecked: '12 minutes ago',
+      description: 'Ensures payment records match corresponding audit statuses',
+      criticalLevel: 'high',
+      affectedRecords: 3
+    },
+    {
+      id: 'auditor-availability',
+      name: 'Auditor Availability Data',
+      status: 'passed',
+      lastChecked: '8 minutes ago',
+      description: 'Checks for inconsistencies in auditor availability status',
+      criticalLevel: 'medium'
+    },
+    {
+      id: 'service-pricing',
+      name: 'Service Pricing Validation',
+      status: 'failed',
+      lastChecked: '15 minutes ago',
+      description: 'Validates pricing data across all service listings',
+      criticalLevel: 'medium',
+      affectedRecords: 7
+    },
+    {
+      id: 'analytics-tracking',
+      name: 'Analytics Event Tracking',
+      status: 'passed',
+      lastChecked: '3 minutes ago',
+      description: 'Ensures analytics events are properly recorded and consistent',
+      criticalLevel: 'low'
+    }
+  ]);
 
-  const runConsistencyChecks = async () => {
-    setIsRunning(true);
+  const runFullScan = async () => {
+    setIsChecking(true);
     
-    // Simulate API call to run consistency checks
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    // Update all checks to "checking" status
+    setIntegrityChecks(prev => prev.map(check => ({
+      ...check,
+      status: 'checking' as const
+    })));
+
+    // Simulate checking each component
+    for (let i = 0; i < integrityChecks.length; i++) {
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      setIntegrityChecks(prev => prev.map((check, index) => {
+        if (index === i) {
+          // Simulate random results for demo
+          const statuses: ('passed' | 'warning' | 'failed')[] = ['passed', 'passed', 'passed', 'warning', 'failed'];
+          const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+          
+          return {
+            ...check,
+            status: randomStatus,
+            lastChecked: 'Just now',
+            affectedRecords: randomStatus !== 'passed' ? Math.floor(Math.random() * 10) + 1 : undefined
+          };
+        }
+        return check;
+      }));
+    }
     
-    const mockChecks: ConsistencyCheck[] = [
-      {
-        id: '1',
-        name: 'Audit Metrics Alignment',
-        status: 'passed',
-        message: 'All audit metrics are properly aligned across tables',
-        severity: 'low',
-        lastChecked: new Date(),
-        details: 'Checked 1,247 audit records'
-      },
-      {
-        id: '2',
-        name: 'Revenue Calculations',
-        status: 'warning',
-        message: 'Minor discrepancies in revenue aggregations detected',
-        severity: 'medium',
-        lastChecked: new Date(),
-        details: '3 records with calculation variance < 1%'
-      },
-      {
-        id: '3',
-        name: 'User Activity Timestamps',
-        status: 'passed',
-        message: 'All timestamps are within expected ranges',
-        severity: 'low',
-        lastChecked: new Date()
-      },
-      {
-        id: '4',
-        name: 'KPI Data Sources',
-        status: 'failed',
-        message: 'Data source connection timeout for external metrics',
-        severity: 'high',
-        lastChecked: new Date(),
-        details: 'External API response time exceeded 30s threshold'
-      }
-    ];
-    
-    const mockMetrics: DataQualityMetrics = {
-      completeness: 94.5,
-      accuracy: 98.2,
-      consistency: 91.8,
-      timeliness: 89.3,
-      overall: 93.5
-    };
-    
-    setChecks(mockChecks);
-    setMetrics(mockMetrics);
-    setLastRunTime(new Date());
-    setIsRunning(false);
+    setIsChecking(false);
+    setLastScanTime(new Date());
+
+    // Track data consistency check
+    if ((window as any).trackConversion) {
+      (window as any).trackConversion({
+        action: 'data_consistency_check',
+        category: 'analytics',
+        label: 'full_scan'
+      });
+    }
   };
-
-  useEffect(() => {
-    // Run initial checks
-    runConsistencyChecks();
-  }, []);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'passed': return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'warning': return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-      case 'failed': return <XCircle className="h-4 w-4 text-red-500" />;
-      default: return null;
+      case 'passed':
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case 'warning':
+        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+      case 'failed':
+        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+      case 'checking':
+        return <RefreshCw className="h-4 w-4 text-blue-500 animate-spin" />;
+      default:
+        return <Database className="h-4 w-4 text-gray-500" />;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'passed': return 'bg-green-100 text-green-800 border-green-200';
-      case 'warning': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'failed': return 'bg-red-100 text-red-800 border-red-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'passed':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'warning':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'failed':
+        return 'bg-red-100 text-red-800 border-red-200';
+      case 'checking':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'low': return 'bg-blue-100 text-blue-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'critical': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+  const getCriticalityColor = (level: string) => {
+    switch (level) {
+      case 'high':
+        return 'bg-red-100 text-red-800';
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'low':
+        return 'bg-green-100 text-green-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const getMetricIcon = (value: number) => {
-    if (value >= 95) return <TrendingUp className="h-4 w-4 text-green-500" />;
-    if (value >= 85) return <TrendingUp className="h-4 w-4 text-yellow-500" />;
-    return <TrendingDown className="h-4 w-4 text-red-500" />;
-  };
+  const passedChecks = integrityChecks.filter(check => check.status === 'passed').length;
+  const totalChecks = integrityChecks.length;
+  const healthPercentage = (passedChecks / totalChecks) * 100;
 
   return (
     <div className="space-y-6">
-      <Card>
+      <Card className="border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <Database className="h-5 w-5" />
-              Data Consistency Checker
-            </CardTitle>
-            <Button 
-              onClick={runConsistencyChecks} 
-              disabled={isRunning}
-              size="sm"
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-green-500" />
+                Data Consistency & Integrity Monitor
+              </CardTitle>
+              <CardDescription>
+                Automated validation of data relationships and consistency across the platform
+              </CardDescription>
+            </div>
+            <Button
+              onClick={runFullScan}
+              disabled={isChecking}
+              className="flex items-center gap-2"
             >
-              <RefreshCw className={`h-4 w-4 mr-2 ${isRunning ? 'animate-spin' : ''}`} />
-              {isRunning ? 'Running...' : 'Run Checks'}
+              <RefreshCw className={`h-4 w-4 ${isChecking ? 'animate-spin' : ''}`} />
+              {isChecking ? 'Scanning...' : 'Run Full Scan'}
             </Button>
           </div>
-          {lastRunTime && (
-            <p className="text-sm text-muted-foreground">
-              Last run: {lastRunTime.toLocaleString()}
-            </p>
-          )}
         </CardHeader>
+        
         <CardContent className="space-y-6">
-          {/* Data Quality Metrics */}
-          {metrics && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Data Quality Metrics</h3>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-                {Object.entries(metrics).map(([key, value]) => (
-                  <div key={key} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium capitalize">{key}</span>
-                      {getMetricIcon(value)}
-                    </div>
-                    <Progress value={value} className="h-2" />
-                    <p className="text-sm text-muted-foreground">{value.toFixed(1)}%</p>
-                  </div>
-                ))}
+          {/* Overall Health */}
+          <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg border">
+            <div>
+              <h3 className="text-lg font-semibold">Data Health Score</h3>
+              <p className="text-sm text-muted-foreground">
+                Last scan: {lastScanTime.toLocaleTimeString()}
+              </p>
+            </div>
+            <div className="text-right">
+              <div className="text-3xl font-bold text-green-600">{Math.round(healthPercentage)}%</div>
+              <div className="text-sm text-muted-foreground">
+                {passedChecks}/{totalChecks} checks passed
               </div>
             </div>
-          )}
+          </div>
+          
+          <Progress value={healthPercentage} className="h-3" />
 
-          {/* Consistency Checks */}
+          {/* Individual Checks */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Consistency Checks</h3>
-            <div className="space-y-3">
-              {checks.map(check => (
-                <Alert key={check.id} className={getStatusColor(check.status)}>
+            <h4 className="font-semibold">Integrity Checks</h4>
+            {integrityChecks.map((check) => (
+              <Card key={check.id} className="hover:shadow-sm transition-shadow">
+                <CardContent className="p-4">
                   <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start gap-3 flex-1">
                       {getStatusIcon(check.status)}
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{check.name}</span>
-                          <Badge variant="outline" className={getSeverityColor(check.severity)}>
-                            {check.severity}
+                      <div className="flex-1">
+                        <h5 className="font-medium">{check.name}</h5>
+                        <p className="text-sm text-muted-foreground">{check.description}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Badge className={getStatusColor(check.status)} variant="outline">
+                            {check.status}
                           </Badge>
+                          <Badge className={getCriticalityColor(check.criticalLevel)} variant="secondary">
+                            {check.criticalLevel} priority
+                          </Badge>
+                          {check.affectedRecords && (
+                            <Badge variant="outline" className="text-xs">
+                              {check.affectedRecords} records affected
+                            </Badge>
+                          )}
                         </div>
-                        <AlertDescription>{check.message}</AlertDescription>
-                        {check.details && (
-                          <p className="text-xs text-muted-foreground mt-1">{check.details}</p>
-                        )}
                       </div>
                     </div>
-                    <span className="text-xs text-muted-foreground">
-                      {check.lastChecked.toLocaleTimeString()}
-                    </span>
+                    <div className="text-right text-sm text-muted-foreground">
+                      {check.lastChecked}
+                    </div>
                   </div>
-                </Alert>
-              ))}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Summary Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">
+                {integrityChecks.filter(c => c.status === 'passed').length}
+              </div>
+              <div className="text-sm text-muted-foreground">Passed</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-yellow-600">
+                {integrityChecks.filter(c => c.status === 'warning').length}
+              </div>
+              <div className="text-sm text-muted-foreground">Warnings</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-red-600">
+                {integrityChecks.filter(c => c.status === 'failed').length}
+              </div>
+              <div className="text-sm text-muted-foreground">Failed</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600">
+                {integrityChecks.filter(c => c.criticalLevel === 'high').length}
+              </div>
+              <div className="text-sm text-muted-foreground">Critical</div>
             </div>
           </div>
         </CardContent>
       </Card>
     </div>
   );
-};
+}
