@@ -1,7 +1,6 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./index.css";
 import "./styles/design-tokens.css";
@@ -23,12 +22,10 @@ if ('serviceWorker' in navigator) {
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <AccessibilityProvider>
-        <FocusVisibleProvider>
-          <App />
-        </FocusVisibleProvider>
-      </AccessibilityProvider>
-    </BrowserRouter>
+    <AccessibilityProvider>
+      <FocusVisibleProvider>
+        <App />
+      </FocusVisibleProvider>
+    </AccessibilityProvider>
   </React.StrictMode>
 );
