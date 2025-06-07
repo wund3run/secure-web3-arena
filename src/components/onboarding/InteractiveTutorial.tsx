@@ -1,165 +1,273 @@
 
-import React, { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { CheckCircle, ArrowRight, ArrowLeft, Shield, Users, BarChart3 } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import { Check, ChevronRight, Play, Target, Users, Shield } from 'lucide-react';
 
 interface TutorialStep {
   id: string;
   title: string;
   description: string;
-  content: React.ReactNode;
-  userTypes: ("project_owner" | "auditor" | "admin")[];
+  action: string;
+  completed: boolean;
+  optional?: boolean;
 }
 
 interface InteractiveTutorialProps {
-  userType: "project_owner" | "auditor" | "admin";
+  userType: 'project_owner' | 'auditor' | 'admin';
   onComplete: () => void;
 }
 
 export function InteractiveTutorial({ userType, onComplete }: InteractiveTutorialProps) {
   const [currentStep, setCurrentStep] = useState(0);
-  const [completedSteps, setCompletedSteps] = useState<string[]>([]);
+  const [steps, setSteps] = useState<TutorialStep[]>([]);
 
-  const tutorialSteps: TutorialStep[] = [
-    {
-      id: "welcome",
-      title: "Welcome to Hawkly",
-      description: "Let's get you started with the platform",
-      userTypes: ["project_owner", "auditor", "admin"],
-      content: (
-        <div className="space-y-4">
-          <div className="text-center">
-            <Shield className="h-16 w-16 mx-auto text-primary mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Welcome to the Future of Web3 Security</h3>
-            <p className="text-muted-foreground">
-              Hawkly connects you with top security experts and cutting-edge audit tools
-            </p>
-          </div>
-        </div>
-      )
-    },
-    {
-      id: "dashboard_overview",
-      title: "Your Dashboard",
-      description: "Navigate your personalized control center",
-      userTypes: ["project_owner", "auditor", "admin"],
-      content: (
-        <div className="space-y-4">
-          <BarChart3 className="h-12 w-12 text-primary" />
-          <div>
-            <h4 className="font-semibold mb-2">Dashboard Features</h4>
-            <ul className="space-y-2 text-sm">
-              <li className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-                Real-time project tracking
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-                Performance analytics
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-                Quick action buttons
-              </li>
-            </ul>
-          </div>
-        </div>
-      )
-    },
-    {
-      id: "first_action",
-      title: userType === "project_owner" ? "Request Your First Audit" : "Browse Available Projects",
-      description: userType === "project_owner" ? "Learn how to submit a security audit request" : "Find projects that match your expertise",
-      userTypes: ["project_owner", "auditor"],
-      content: (
-        <div className="space-y-4">
-          <Users className="h-12 w-12 text-primary" />
-          <div>
-            <h4 className="font-semibold mb-2">
-              {userType === "project_owner" ? "Getting Started with Audits" : "Finding the Right Projects"}
-            </h4>
-            <p className="text-sm text-muted-foreground mb-4">
-              {userType === "project_owner" 
-                ? "Submit your project details and get matched with expert auditors"
-                : "Use our advanced filters to find projects that match your skills and interests"
-              }
-            </p>
-            <Button variant="outline" size="sm">
-              {userType === "project_owner" ? "Start Audit Request" : "Browse Projects"}
-            </Button>
-          </div>
-        </div>
-      )
+  useEffect(() => {
+    const tutorialSteps: Record<string, TutorialStep[]> = {
+      project_owner: [
+        {
+          id: 'welcome',
+          title: 'Welcome to Hawkly',
+          description: 'Get your smart contracts audited by top security experts',
+          action: 'Learn about our platform',
+          completed: false
+        },
+        {
+          id: 'profile',
+          title: 'Complete Your Profile',
+          description: 'Add project details and security requirements',
+          action: 'Set up profile',
+          completed: false
+        },
+        {
+          id: 'request',
+          title: 'Submit Audit Request',
+          description: 'Use our AI-powered matching to find the perfect auditor',
+          action: 'Create audit request',
+          completed: false
+        },
+        {
+          id: 'matching',
+          title: 'AI Auditor Matching',
+          description: 'Our AI analyzes your project and recommends suitable auditors',
+          action: 'Review matches',
+          completed: false
+        },
+        {
+          id: 'collaboration',
+          title: 'Collaborate & Track',
+          description: 'Work with auditors and track progress in real-time',
+          action: 'Start collaboration',
+          completed: false
+        }
+      ],
+      auditor: [
+        {
+          id: 'welcome',
+          title: 'Welcome Auditor',
+          description: 'Join the premier security audit marketplace',
+          action: 'Get started',
+          completed: false
+        },
+        {
+          id: 'verification',
+          title: 'Profile Verification',
+          description: 'Verify your credentials and showcase your expertise',
+          action: 'Complete verification',
+          completed: false
+        },
+        {
+          id: 'skills',
+          title: 'Skills Assessment',
+          description: 'Demonstrate your audit capabilities',
+          action: 'Take assessment',
+          completed: false
+        },
+        {
+          id: 'marketplace',
+          title: 'Browse Projects',
+          description: 'Find projects that match your expertise',
+          action: 'Explore marketplace',
+          completed: false
+        },
+        {
+          id: 'tools',
+          title: 'Audit Tools',
+          description: 'Access integrated security tools and templates',
+          action: 'Set up tools',
+          completed: false
+        }
+      ],
+      admin: [
+        {
+          id: 'dashboard',
+          title: 'Admin Dashboard',
+          description: 'Monitor platform health and user activity',
+          action: 'View dashboard',
+          completed: false
+        },
+        {
+          id: 'users',
+          title: 'User Management',
+          description: 'Manage auditors, projects, and verifications',
+          action: 'Manage users',
+          completed: false
+        },
+        {
+          id: 'analytics',
+          title: 'Platform Analytics',
+          description: 'Track performance metrics and user engagement',
+          action: 'View analytics',
+          completed: false
+        },
+        {
+          id: 'security',
+          title: 'Security Monitoring',
+          description: 'Monitor security events and audit logs',
+          action: 'Check security',
+          completed: false
+        }
+      ]
+    };
+
+    setSteps(tutorialSteps[userType] || []);
+  }, [userType]);
+
+  const handleStepAction = (stepIndex: number) => {
+    setSteps(prev => prev.map((step, index) => 
+      index === stepIndex ? { ...step, completed: true } : step
+    ));
+    
+    // Track tutorial progress
+    if ((window as any).trackConversion) {
+      (window as any).trackConversion({
+        action: 'tutorial_step_completed',
+        category: 'onboarding',
+        label: `${userType}_step_${stepIndex}`,
+        metadata: { stepId: steps[stepIndex]?.id }
+      });
     }
-  ];
 
-  const relevantSteps = tutorialSteps.filter(step => 
-    step.userTypes.includes(userType)
-  );
-
-  const progress = ((currentStep + 1) / relevantSteps.length) * 100;
-
-  const handleNext = () => {
-    const currentStepId = relevantSteps[currentStep]?.id;
-    if (currentStepId && !completedSteps.includes(currentStepId)) {
-      setCompletedSteps([...completedSteps, currentStepId]);
-    }
-
-    if (currentStep < relevantSteps.length - 1) {
-      setCurrentStep(currentStep + 1);
+    if (stepIndex < steps.length - 1) {
+      setCurrentStep(stepIndex + 1);
     } else {
-      onComplete();
+      // All steps completed
+      if ((window as any).trackConversion) {
+        (window as any).trackConversion({
+          action: 'tutorial_completed',
+          category: 'onboarding',
+          label: userType,
+          value: 1
+        });
+      }
+      setTimeout(onComplete, 1000);
     }
   };
 
-  const handlePrevious = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+  const completedSteps = steps.filter(step => step.completed).length;
+  const progressPercentage = (completedSteps / steps.length) * 100;
+
+  const getStepIcon = (userType: string) => {
+    switch (userType) {
+      case 'project_owner': return <Target className="h-5 w-5" />;
+      case 'auditor': return <Shield className="h-5 w-5" />;
+      case 'admin': return <Users className="h-5 w-5" />;
+      default: return <Play className="h-5 w-5" />;
     }
   };
-
-  const currentStepData = relevantSteps[currentStep];
-
-  if (!currentStepData) {
-    return null;
-  }
 
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {getStepIcon(userType)}
+            <div>
+              <CardTitle>
+                {userType.replace('_', ' ').toUpperCase()} Tutorial
+              </CardTitle>
+              <CardDescription>
+                Complete these steps to get the most out of Hawkly
+              </CardDescription>
+            </div>
+          </div>
           <Badge variant="secondary">
-            Step {currentStep + 1} of {relevantSteps.length}
+            {completedSteps}/{steps.length} steps
           </Badge>
-          <span className="text-sm text-muted-foreground">{Math.round(progress)}% Complete</span>
         </div>
-        <Progress value={progress} className="h-2 mb-4" />
-        <CardTitle>{currentStepData.title}</CardTitle>
-        <CardDescription>{currentStepData.description}</CardDescription>
+        <Progress value={progressPercentage} className="mt-4" />
       </CardHeader>
-      <CardContent>
-        <div className="mb-6">
-          {currentStepData.content}
-        </div>
-        
-        <div className="flex justify-between">
-          <Button
-            variant="outline"
-            onClick={handlePrevious}
-            disabled={currentStep === 0}
+      
+      <CardContent className="space-y-4">
+        {steps.map((step, index) => (
+          <div
+            key={step.id}
+            className={`p-4 rounded-lg border transition-all ${
+              index === currentStep
+                ? 'border-primary bg-primary/5'
+                : step.completed
+                ? 'border-green-200 bg-green-50 dark:bg-green-950'
+                : 'border-border bg-muted/30'
+            }`}
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Previous
-          </Button>
-          
-          <Button onClick={handleNext}>
-            {currentStep === relevantSteps.length - 1 ? "Complete Tutorial" : "Next"}
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-medium ${
+                  step.completed
+                    ? 'bg-green-500 text-white'
+                    : index === currentStep
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground'
+                }`}>
+                  {step.completed ? <Check className="h-3 w-3" /> : index + 1}
+                </div>
+                <div>
+                  <h4 className="font-medium">{step.title}</h4>
+                  <p className="text-sm text-muted-foreground">{step.description}</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                {step.optional && (
+                  <Badge variant="outline" className="text-xs">
+                    Optional
+                  </Badge>
+                )}
+                {index === currentStep && !step.completed && (
+                  <Button
+                    onClick={() => handleStepAction(index)}
+                    size="sm"
+                    className="ml-2"
+                  >
+                    {step.action}
+                    <ChevronRight className="h-3 w-3 ml-1" />
+                  </Button>
+                )}
+                {step.completed && (
+                  <Badge variant="default" className="bg-green-500">
+                    <Check className="h-3 w-3 mr-1" />
+                    Done
+                  </Badge>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+        
+        {completedSteps === steps.length && (
+          <div className="text-center py-6 border-t">
+            <div className="text-2xl mb-2">🎉</div>
+            <h3 className="text-lg font-semibold mb-2">Tutorial Complete!</h3>
+            <p className="text-muted-foreground mb-4">
+              You're all set to start using Hawkly effectively.
+            </p>
+            <Button onClick={onComplete}>
+              Continue to Platform
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
