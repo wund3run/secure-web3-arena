@@ -176,7 +176,7 @@ export function PerformanceMonitor() {
               </CardHeader>
               <CardContent className="text-center">
                 <div className="text-3xl font-bold text-green-600">1.2s</div>
-                <div className="text-sm text-muted-foreground">Good (< 2.5s)</div>
+                <div className="text-sm text-muted-foreground">Good (&lt; 2.5s)</div>
               </CardContent>
             </Card>
 
@@ -187,7 +187,7 @@ export function PerformanceMonitor() {
               </CardHeader>
               <CardContent className="text-center">
                 <div className="text-3xl font-bold text-blue-600">45ms</div>
-                <div className="text-sm text-muted-foreground">Good (< 100ms)</div>
+                <div className="text-sm text-muted-foreground">Good (&lt; 100ms)</div>
               </CardContent>
             </Card>
 
