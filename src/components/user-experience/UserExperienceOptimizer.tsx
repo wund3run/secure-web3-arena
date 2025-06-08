@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,82 +8,52 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Users, 
   Eye, 
-  Mouse, 
+  MousePointer, 
   Clock, 
-  Star, 
   TrendingUp,
-  RefreshCw,
-  Heart,
-  Target
+  Target,
+  Smartphone,
+  Monitor,
+  Tablet,
+  Globe
 } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-
-interface UXMetrics {
-  userEngagement: number;
-  taskCompletion: number;
-  userSatisfaction: number;
-  pageViews: number;
-  sessionDuration: number;
-  bounceRate: number;
-}
 
 export function UserExperienceOptimizer() {
-  const [metrics, setMetrics] = useState<UXMetrics>({
-    userEngagement: 78,
-    taskCompletion: 85,
-    userSatisfaction: 4.2,
-    pageViews: 1247,
-    sessionDuration: 5.7,
-    bounceRate: 32
+  const [uxMetrics] = useState({
+    userSatisfaction: 87.3,
+    taskCompletionRate: 94.2,
+    averageSessionTime: 12.5,
+    bounceRate: 23.8,
+    conversionRate: 8.7,
+    accessibilityScore: 91.2
   });
 
-  const [userJourneyData, setUserJourneyData] = useState([
-    { step: 'Landing', users: 1000, completion: 95 },
-    { step: 'Browse', users: 950, completion: 80 },
-    { step: 'Request', users: 760, completion: 70 },
-    { step: 'Payment', users: 532, completion: 85 },
-    { step: 'Complete', users: 452, completion: 100 }
+  const [deviceBreakdown] = useState([
+    { device: 'Desktop', percentage: 68.2, users: 2847 },
+    { device: 'Mobile', percentage: 24.1, users: 1006 },
+    { device: 'Tablet', percentage: 7.7, users: 321 }
   ]);
 
-  const [satisfactionData, setSatisfactionData] = useState([
-    { name: 'Very Satisfied', value: 45, color: '#22c55e' },
-    { name: 'Satisfied', value: 35, color: '#84cc16' },
-    { name: 'Neutral', value: 15, color: '#eab308' },
-    { name: 'Dissatisfied', value: 5, color: '#f97316' }
+  const [userFlows] = useState([
+    { 
+      flow: 'Audit Request', 
+      completion: 89.4, 
+      dropOff: 'Payment Info', 
+      improvement: '+5.2%' 
+    },
+    { 
+      flow: 'Auditor Signup', 
+      completion: 76.8, 
+      dropOff: 'Verification', 
+      improvement: '+2.1%' 
+    },
+    { 
+      flow: 'Profile Setup', 
+      completion: 91.3, 
+      dropOff: 'Skills Input', 
+      improvement: '+7.8%' 
+    }
   ]);
-
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  const refreshMetrics = async () => {
-    setIsRefreshing(true);
-    
-    setTimeout(() => {
-      setMetrics({
-        userEngagement: 75 + Math.random() * 20,
-        taskCompletion: 80 + Math.random() * 15,
-        userSatisfaction: 4.0 + Math.random() * 0.8,
-        pageViews: 1200 + Math.random() * 100,
-        sessionDuration: 5.0 + Math.random() * 2,
-        bounceRate: 25 + Math.random() * 15
-      });
-      setIsRefreshing(false);
-    }, 1000);
-  };
-
-  useEffect(() => {
-    const interval = setInterval(refreshMetrics, 45000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const getUXScore = () => {
-    const score = (
-      (metrics.userEngagement / 100) * 25 +
-      (metrics.taskCompletion / 100) * 25 +
-      (metrics.userSatisfaction / 5) * 25 +
-      (Math.max(0, 100 - metrics.bounceRate) / 100) * 25
-    );
-    return Math.round(score);
-  };
 
   return (
     <div className="space-y-6">
@@ -91,41 +61,36 @@ export function UserExperienceOptimizer() {
         <div>
           <h2 className="text-2xl font-bold">User Experience Optimizer</h2>
           <p className="text-muted-foreground">
-            Analyze and optimize user experience across the platform
+            Comprehensive UX analytics and optimization insights
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="default" className="bg-blue-100 text-blue-800">
-            UX Score: {getUXScore()}
-          </Badge>
-          <Button onClick={refreshMetrics} disabled={isRefreshing} variant="outline">
-            <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
-        </div>
+        <Badge variant="default" className="bg-green-100 text-green-800">
+          <Target className="h-3 w-3 mr-1" />
+          {uxMetrics.userSatisfaction}% Satisfaction
+        </Badge>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList className="grid grid-cols-4 w-full">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="journey">User Journey</TabsTrigger>
-          <TabsTrigger value="satisfaction">Satisfaction</TabsTrigger>
-          <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
+          <TabsTrigger value="overview">UX Overview</TabsTrigger>
+          <TabsTrigger value="flows">User Flows</TabsTrigger>
+          <TabsTrigger value="accessibility">Accessibility</TabsTrigger>
+          <TabsTrigger value="optimization">Optimization</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <Users className="h-4 w-4" />
-                  User Engagement
+                  User Satisfaction
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{metrics.userEngagement.toFixed(1)}%</div>
-                <div className="text-xs text-muted-foreground mt-1">Monthly active users</div>
-                <Progress value={metrics.userEngagement} className="mt-2" />
+                <div className="text-2xl font-bold">{uxMetrics.userSatisfaction}%</div>
+                <div className="text-xs text-muted-foreground mt-1">+3.2% from last month</div>
+                <Progress value={uxMetrics.userSatisfaction} className="mt-2" />
               </CardContent>
             </Card>
 
@@ -137,37 +102,9 @@ export function UserExperienceOptimizer() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{metrics.taskCompletion.toFixed(1)}%</div>
-                <div className="text-xs text-muted-foreground mt-1">Successfully completed tasks</div>
-                <Progress value={metrics.taskCompletion} className="mt-2" />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Star className="h-4 w-4" />
-                  User Satisfaction
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{metrics.userSatisfaction.toFixed(1)}/5</div>
-                <div className="text-xs text-muted-foreground mt-1">Average rating</div>
-                <Progress value={(metrics.userSatisfaction / 5) * 100} className="mt-2" />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Eye className="h-4 w-4" />
-                  Page Views
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{metrics.pageViews.toLocaleString()}</div>
-                <div className="text-xs text-muted-foreground mt-1">This month</div>
-                <div className="text-xs text-green-600 mt-1">+12% from last month</div>
+                <div className="text-2xl font-bold">{uxMetrics.taskCompletionRate}%</div>
+                <div className="text-xs text-muted-foreground mt-1">+1.8% from last month</div>
+                <Progress value={uxMetrics.taskCompletionRate} className="mt-2" />
               </CardContent>
             </Card>
 
@@ -175,53 +112,118 @@ export function UserExperienceOptimizer() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <Clock className="h-4 w-4" />
-                  Session Duration
+                  Session Time
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{metrics.sessionDuration.toFixed(1)}m</div>
-                <div className="text-xs text-muted-foreground mt-1">Average session length</div>
-                <div className="text-xs text-green-600 mt-1">+8% from last month</div>
+                <div className="text-2xl font-bold">{uxMetrics.averageSessionTime}m</div>
+                <div className="text-xs text-muted-foreground mt-1">+2.1m from last month</div>
+                <Progress value={(uxMetrics.averageSessionTime / 20) * 100} className="mt-2" />
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Mouse className="h-4 w-4" />
+                  <Eye className="h-4 w-4" />
                   Bounce Rate
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{metrics.bounceRate.toFixed(1)}%</div>
-                <div className="text-xs text-muted-foreground mt-1">Single page visits</div>
-                <Progress value={100 - metrics.bounceRate} className="mt-2" />
+                <div className="text-2xl font-bold">{uxMetrics.bounceRate}%</div>
+                <div className="text-xs text-muted-foreground mt-1">-4.3% from last month</div>
+                <Progress value={100 - uxMetrics.bounceRate} className="mt-2" />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  Conversion Rate
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{uxMetrics.conversionRate}%</div>
+                <div className="text-xs text-muted-foreground mt-1">+0.9% from last month</div>
+                <Progress value={uxMetrics.conversionRate * 10} className="mt-2" />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <Globe className="h-4 w-4" />
+                  Accessibility Score
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{uxMetrics.accessibilityScore}%</div>
+                <div className="text-xs text-muted-foreground mt-1">+2.7% from last month</div>
+                <Progress value={uxMetrics.accessibilityScore} className="mt-2" />
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Device Breakdown</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {deviceBreakdown.map((item, index) => (
+                    <div key={index} className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        {item.device === 'Desktop' && <Monitor className="h-4 w-4" />}
+                        {item.device === 'Mobile' && <Smartphone className="h-4 w-4" />}
+                        {item.device === 'Tablet' && <Tablet className="h-4 w-4" />}
+                        <span className="font-medium">{item.device}</span>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span className="text-sm text-muted-foreground">
+                          {item.users.toLocaleString()} users
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <Progress value={item.percentage} className="w-20 h-2" />
+                          <span className="text-sm font-medium w-12">
+                            {item.percentage}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </div>
         </TabsContent>
 
-        <TabsContent value="journey">
+        <TabsContent value="flows">
           <Card>
             <CardHeader>
-              <CardTitle>User Journey Funnel</CardTitle>
+              <CardTitle>User Flow Analysis</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={userJourneyData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="step" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="users" fill="#8884d8" name="Users" />
-                </BarChart>
-              </ResponsiveContainer>
-              <div className="grid grid-cols-5 gap-4 mt-4">
-                {userJourneyData.map((step, index) => (
-                  <div key={step.step} className="text-center">
-                    <div className="text-lg font-bold">{step.users}</div>
-                    <div className="text-xs text-muted-foreground">{step.step}</div>
-                    <div className="text-xs text-green-600">{step.completion}%</div>
+              <div className="space-y-4">
+                {userFlows.map((flow, index) => (
+                  <div key={index} className="p-4 border rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-medium">{flow.flow}</h3>
+                      <Badge variant="outline" className="text-green-700">
+                        {flow.improvement}
+                      </Badge>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Completion Rate</span>
+                        <span>{flow.completion}%</span>
+                      </div>
+                      <Progress value={flow.completion} className="h-2" />
+                      <div className="text-xs text-muted-foreground">
+                        Main drop-off point: {flow.dropOff}
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -229,131 +231,71 @@ export function UserExperienceOptimizer() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="satisfaction">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Satisfaction Distribution</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={250}>
-                  <PieChart>
-                    <Pie
-                      data={satisfactionData}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                      label={({ name, value }) => `${name}: ${value}%`}
-                    >
-                      {satisfactionData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Satisfaction Metrics</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Overall Rating</span>
-                    <span>{metrics.userSatisfaction.toFixed(1)}/5</span>
+        <TabsContent value="accessibility">
+          <Card>
+            <CardHeader>
+              <CardTitle>Accessibility Analysis</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium text-green-800 mb-2">Strengths</h4>
+                    <ul className="text-sm space-y-1">
+                      <li>✅ Proper heading hierarchy</li>
+                      <li>✅ Alt text for images</li>
+                      <li>✅ Keyboard navigation</li>
+                      <li>✅ Color contrast ratios</li>
+                    </ul>
                   </div>
-                  <Progress value={(metrics.userSatisfaction / 5) * 100} />
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Recommendation Rate</span>
-                    <span>87%</span>
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium text-amber-800 mb-2">Improvements</h4>
+                    <ul className="text-sm space-y-1">
+                      <li>⚠️ Form field labels</li>
+                      <li>⚠️ Focus indicators</li>
+                      <li>⚠️ Screen reader support</li>
+                      <li>⚠️ Skip navigation links</li>
+                    </ul>
                   </div>
-                  <Progress value={87} />
                 </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Return User Rate</span>
-                    <span>73%</span>
-                  </div>
-                  <Progress value={73} />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
-        <TabsContent value="recommendations">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Heart className="h-5 w-5" />
-                  UX Improvements
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="p-3 border rounded-lg">
-                  <div className="font-medium text-sm">Simplify Navigation</div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    Reduce menu complexity and improve information architecture
-                  </div>
-                  <Badge variant="destructive" className="mt-2">High Priority</Badge>
+        <TabsContent value="optimization">
+          <Card>
+            <CardHeader>
+              <CardTitle>Optimization Recommendations</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="p-4 border rounded-lg bg-blue-50">
+                  <h4 className="font-medium text-blue-900 mb-2">High Priority</h4>
+                  <p className="text-sm text-blue-800 mb-2">
+                    Optimize mobile audit request form - 34% of users abandon on mobile devices
+                  </p>
+                  <Button size="sm" variant="outline">Implement Fix</Button>
                 </div>
-                <div className="p-3 border rounded-lg">
-                  <div className="font-medium text-sm">Enhance Mobile Experience</div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    Optimize touch targets and improve mobile responsiveness
-                  </div>
-                  <Badge variant="secondary" className="mt-2">Medium Priority</Badge>
+                
+                <div className="p-4 border rounded-lg bg-green-50">
+                  <h4 className="font-medium text-green-900 mb-2">Medium Priority</h4>
+                  <p className="text-sm text-green-800 mb-2">
+                    Add progress indicators to multi-step forms to reduce drop-off by ~15%
+                  </p>
+                  <Button size="sm" variant="outline">Implement Fix</Button>
                 </div>
-                <div className="p-3 border rounded-lg">
-                  <div className="font-medium text-sm">Add Progress Indicators</div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    Show users their progress through multi-step processes
-                  </div>
-                  <Badge variant="outline" className="mt-2">Low Priority</Badge>
+                
+                <div className="p-4 border rounded-lg bg-yellow-50">
+                  <h4 className="font-medium text-yellow-900 mb-2">Low Priority</h4>
+                  <p className="text-sm text-yellow-800 mb-2">
+                    Improve loading states for better perceived performance
+                  </p>
+                  <Button size="sm" variant="outline">Implement Fix</Button>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5" />
-                  Conversion Optimization
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="p-3 border rounded-lg">
-                  <div className="font-medium text-sm">Optimize CTA Placement</div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    Move primary actions above the fold for better visibility
-                  </div>
-                  <Badge variant="destructive" className="mt-2">High Impact</Badge>
-                </div>
-                <div className="p-3 border rounded-lg">
-                  <div className="font-medium text-sm">Reduce Form Fields</div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    Minimize required fields in registration and request forms
-                  </div>
-                  <Badge variant="secondary" className="mt-2">Medium Impact</Badge>
-                </div>
-                <div className="p-3 border rounded-lg">
-                  <div className="font-medium text-sm">Add Social Proof</div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    Display testimonials and reviews prominently
-                  </div>
-                  <Badge variant="outline" className="mt-2">Low Impact</Badge>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
