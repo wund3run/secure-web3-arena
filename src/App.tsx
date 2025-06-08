@@ -65,6 +65,12 @@ const SecurityCompliance = React.lazy(() => import("@/pages/SecurityCompliance")
 const PerformanceOptimization = React.lazy(() => import("@/pages/PerformanceOptimization"));
 const PlatformOptimization = React.lazy(() => import("@/pages/PlatformOptimization"));
 
+// Analytics and Tools pages
+const Analytics = React.lazy(() => import("@/pages/Analytics"));
+const SystemHealth = React.lazy(() => import("@/pages/SystemHealth"));
+const DatabaseTools = React.lazy(() => import("@/pages/DatabaseTools"));
+const UserExperience = React.lazy(() => import("@/pages/UserExperience"));
+
 // Enhanced loading fallback
 const AppLoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
