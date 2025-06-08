@@ -110,6 +110,9 @@ const queryClient = new QueryClient({
   },
 });
 
+// New UX page
+const UserExperience = React.lazy(() => import("@/pages/UserExperience"));
+
 function App() {
   return (
     <ErrorBoundary>
@@ -170,11 +173,17 @@ function App() {
                         <Route path="/pricing" element={<Pricing />} />
                         <Route path="/security-policy" element={<SecurityPolicy />} />
                         
-                        {/* New Platform Integration Routes */}
+                        {/* Platform Integration Routes */}
                         <Route path="/platform-integration" element={<PlatformIntegration />} />
                         <Route path="/security-compliance" element={<SecurityCompliance />} />
                         <Route path="/performance-optimization" element={<PerformanceOptimization />} />
                         <Route path="/platform-optimization" element={<PlatformOptimization />} />
+                        
+                        {/* Analytics and Tools Routes */}
+                        <Route path="/analytics" element={<Analytics />} />
+                        <Route path="/system-health" element={<SystemHealth />} />
+                        <Route path="/database-tools" element={<DatabaseTools />} />
+                        <Route path="/user-experience" element={<UserExperience />} />
                         
                         {/* Footer pages - Essential for navigation */}
                         <Route path="/about" element={<About />} />
