@@ -5,194 +5,195 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Zap, Image, Code, Database, Wifi, Download, Upload } from 'lucide-react';
+import { 
+  Zap, 
+  TrendingUp, 
+  Cpu, 
+  MemoryStick, 
+  HardDrive, 
+  Network,
+  Target,
+  CheckCircle,
+  AlertTriangle,
+  RefreshCw,
+  Settings,
+  BarChart3
+} from 'lucide-react';
+import { platformOrchestrator } from '@/services/platformOrchestration';
 import { toast } from 'sonner';
 
-interface OptimizationOpportunity {
+interface OptimizationRecommendation {
   id: string;
-  type: 'image' | 'code' | 'data' | 'network';
+  category: 'performance' | 'cache' | 'security' | 'cost';
   title: string;
   description: string;
   impact: 'high' | 'medium' | 'low';
-  effort: 'easy' | 'moderate' | 'complex';
+  effort: 'low' | 'medium' | 'high';
   savings: string;
-  currentSize?: string;
-  optimizedSize?: string;
-  isApplied: boolean;
+  implemented: boolean;
 }
 
 interface ResourceMetric {
   name: string;
   current: number;
-  optimized: number;
+  optimal: number;
   unit: string;
-  category: string;
+  status: 'good' | 'warning' | 'critical';
 }
 
 export function ResourceOptimizer() {
-  const [opportunities, setOpportunities] = useState<OptimizationOpportunity[]>([]);
-  const [resourceMetrics, setResourceMetrics] = useState<ResourceMetric[]>([]);
+  const [recommendations, setRecommendations] = useState<OptimizationRecommendation[]>([]);
+  const [metrics, setMetrics] = useState<ResourceMetric[]>([]);
   const [isOptimizing, setIsOptimizing] = useState(false);
-  const [totalSavings, setTotalSavings] = useState({ size: 0, time: 0 });
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    initializeOptimizations();
+    const initializeOptimizationData = async () => {
+      setIsLoading(true);
+      
+      try {
+        // Get optimization recommendations from platform orchestrator
+        const optimizationData = await platformOrchestrator.optimizeResources();
+        
+        const mockRecommendations: OptimizationRecommendation[] = [
+          {
+            id: '1',
+            category: 'performance',
+            title: 'Enable Component Lazy Loading',
+            description: 'Implement code splitting for non-critical components to reduce initial bundle size by 35%',
+            impact: 'high',
+            effort: 'medium',
+            savings: '2.3s load time',
+            implemented: false
+          },
+          {
+            id: '2',
+            category: 'cache',
+            title: 'Optimize API Response Caching',
+            description: 'Configure intelligent caching strategies for frequently accessed endpoints',
+            impact: 'high',
+            effort: 'low',
+            savings: '67% bandwidth',
+            implemented: false
+          },
+          {
+            id: '3',
+            category: 'performance',
+            title: 'Image Optimization Pipeline',
+            description: 'Implement automatic image compression and modern format conversion',
+            impact: 'medium',
+            effort: 'medium',
+            savings: '45% image size',
+            implemented: true
+          },
+          {
+            id: '4',
+            category: 'security',
+            title: 'Enhanced Security Headers',
+            description: 'Configure additional security headers for improved protection',
+            impact: 'medium',
+            effort: 'low',
+            savings: 'Security score +15',
+            implemented: false
+          },
+          {
+            id: '5',
+            category: 'cost',
+            title: 'Database Query Optimization',
+            description: 'Optimize slow queries and implement connection pooling',
+            impact: 'high',
+            effort: 'high',
+            savings: '$234/month',
+            implemented: false
+          }
+        ];
+
+        const mockMetrics: ResourceMetric[] = [
+          {
+            name: 'CPU Utilization',
+            current: 67,
+            optimal: 45,
+            unit: '%',
+            status: 'warning'
+          },
+          {
+            name: 'Memory Usage',
+            current: 78,
+            optimal: 60,
+            unit: '%',
+            status: 'warning'
+          },
+          {
+            name: 'Network Latency',
+            current: 89,
+            optimal: 50,
+            unit: 'ms',
+            status: 'critical'
+          },
+          {
+            name: 'Cache Hit Rate',
+            current: 73,
+            optimal: 90,
+            unit: '%',
+            status: 'warning'
+          },
+          {
+            name: 'Error Rate',
+            current: 0.8,
+            optimal: 0.1,
+            unit: '%',
+            status: 'warning'
+          }
+        ];
+
+        setRecommendations(mockRecommendations);
+        setMetrics(mockMetrics);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Failed to load optimization data:', error);
+        setIsLoading(false);
+      }
+    };
+
+    initializeOptimizationData();
   }, []);
 
-  const initializeOptimizations = () => {
-    const optimizationOpportunities: OptimizationOpportunity[] = [
-      {
-        id: 'image-compression',
-        type: 'image',
-        title: 'Compress Profile Images',
-        description: 'Reduce profile image file sizes using modern compression',
-        impact: 'high',
-        effort: 'easy',
-        savings: '1.2 MB',
-        currentSize: '2.8 MB',
-        optimizedSize: '1.6 MB',
-        isApplied: false
-      },
-      {
-        id: 'code-splitting',
-        type: 'code',
-        title: 'Implement Code Splitting',
-        description: 'Split large bundles into smaller chunks for faster loading',
-        impact: 'high',
-        effort: 'moderate',
-        savings: '850 KB',
-        currentSize: '2.1 MB',
-        optimizedSize: '1.25 MB',
-        isApplied: false
-      },
-      {
-        id: 'unused-css',
-        type: 'code',
-        title: 'Remove Unused CSS',
-        description: 'Eliminate unused CSS rules to reduce bundle size',
-        impact: 'medium',
-        effort: 'easy',
-        savings: '120 KB',
-        currentSize: '340 KB',
-        optimizedSize: '220 KB',
-        isApplied: false
-      },
-      {
-        id: 'api-caching',
-        type: 'network',
-        title: 'Implement API Response Caching',
-        description: 'Cache frequently requested API responses',
-        impact: 'high',
-        effort: 'moderate',
-        savings: '2.3s avg response time',
-        isApplied: false
-      },
-      {
-        id: 'database-indexing',
-        type: 'data',
-        title: 'Optimize Database Queries',
-        description: 'Add indexes to frequently queried columns',
-        impact: 'medium',
-        effort: 'moderate',
-        savings: '450ms query time',
-        isApplied: false
-      },
-      {
-        id: 'lazy-loading',
-        type: 'code',
-        title: 'Implement Component Lazy Loading',
-        description: 'Load components only when needed',
-        impact: 'medium',
-        effort: 'easy',
-        savings: '680 KB initial bundle',
-        isApplied: false
-      }
-    ];
-
-    const metrics: ResourceMetric[] = [
-      { name: 'JavaScript Bundle', current: 2100, optimized: 1450, unit: 'KB', category: 'code' },
-      { name: 'CSS Bundle', current: 340, optimized: 220, unit: 'KB', category: 'code' },
-      { name: 'Images', current: 2800, optimized: 1600, unit: 'KB', category: 'image' },
-      { name: 'API Calls', current: 45, optimized: 28, unit: 'requests', category: 'network' },
-      { name: 'Database Queries', current: 120, optimized: 85, unit: 'queries', category: 'data' }
-    ];
-
-    setOpportunities(optimizationOpportunities);
-    setResourceMetrics(metrics);
-    
-    // Calculate total potential savings
-    const sizeSavings = optimizationOpportunities
-      .filter(op => op.savings.includes('KB') || op.savings.includes('MB'))
-      .reduce((total, op) => {
-        const match = op.savings.match(/([\d.]+)\s*(KB|MB)/);
-        if (match) {
-          const value = parseFloat(match[1]);
-          const unit = match[2];
-          return total + (unit === 'MB' ? value * 1024 : value);
-        }
-        return total;
-      }, 0);
-
-    setTotalSavings({ size: sizeSavings, time: 3.2 });
-  };
-
-  const applyOptimization = async (optimizationId: string) => {
+  const handleImplementRecommendation = async (id: string) => {
     setIsOptimizing(true);
     
-    try {
-      // Simulate optimization process
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      setOpportunities(prev => 
-        prev.map(op => 
-          op.id === optimizationId 
-            ? { ...op, isApplied: true }
-            : op
+    // Simulate implementation
+    setTimeout(() => {
+      setRecommendations(prev => 
+        prev.map(rec => 
+          rec.id === id ? { ...rec, implemented: true } : rec
         )
       );
-      
-      const optimization = opportunities.find(op => op.id === optimizationId);
-      toast.success(`${optimization?.title} applied successfully!`);
-      
-      // Track optimization
-      if ((window as any).trackConversion) {
-        (window as any).trackConversion({
-          action: 'optimization_applied',
-          category: 'performance',
-          label: optimizationId,
-          metadata: { savings: optimization?.savings }
-        });
-      }
-    } catch (error) {
-      toast.error('Failed to apply optimization');
-    } finally {
       setIsOptimizing(false);
-    }
+      toast.success('Optimization implemented successfully');
+    }, 2000);
   };
 
-  const applyAllOptimizations = async () => {
+  const handleRunOptimization = async () => {
     setIsOptimizing(true);
     
     try {
-      const unappliedOptimizations = opportunities.filter(op => !op.isApplied);
+      // Run comprehensive optimization
+      const results = await platformOrchestrator.optimizeResources();
       
-      for (const optimization of unappliedOptimizations) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setOpportunities(prev => 
-          prev.map(op => 
-            op.id === optimization.id 
-              ? { ...op, isApplied: true }
-              : op
-          )
-        );
-      }
-      
-      toast.success(`Applied ${unappliedOptimizations.length} optimizations!`);
+      setTimeout(() => {
+        // Update metrics to show improvement
+        setMetrics(prev => prev.map(metric => ({
+          ...metric,
+          current: Math.max(metric.optimal, metric.current * 0.8),
+          status: metric.current * 0.8 <= metric.optimal ? 'good' : 'warning'
+        })));
+        
+        setIsOptimizing(false);
+        toast.success('System optimization completed');
+      }, 3000);
     } catch (error) {
-      toast.error('Failed to apply all optimizations');
-    } finally {
       setIsOptimizing(false);
+      toast.error('Optimization failed');
     }
   };
 
@@ -207,257 +208,289 @@ export function ResourceOptimizer() {
 
   const getEffortColor = (effort: string) => {
     switch (effort) {
-      case 'easy': return 'bg-green-100 text-green-800';
-      case 'moderate': return 'bg-yellow-100 text-yellow-800';
-      case 'complex': return 'bg-red-100 text-red-800';
+      case 'high': return 'bg-red-100 text-red-800';
+      case 'medium': return 'bg-yellow-100 text-yellow-800';
+      case 'low': return 'bg-green-100 text-green-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'image': return <Image className="h-4 w-4" />;
-      case 'code': return <Code className="h-4 w-4" />;
-      case 'data': return <Database className="h-4 w-4" />;
-      case 'network': return <Wifi className="h-4 w-4" />;
-      default: return <Zap className="h-4 w-4" />;
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case 'performance': return Zap;
+      case 'cache': return MemoryStick;
+      case 'security': return CheckCircle;
+      case 'cost': return TrendingUp;
+      default: return Target;
     }
   };
 
-  const appliedOptimizations = opportunities.filter(op => op.isApplied).length;
-  const totalOptimizations = opportunities.length;
-  const optimizationProgress = (appliedOptimizations / totalOptimizations) * 100;
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'good': return 'text-green-600';
+      case 'warning': return 'text-yellow-600';
+      case 'critical': return 'text-red-600';
+      default: return 'text-gray-600';
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="animate-pulse">
+          <div className="h-8 bg-muted rounded w-1/3 mb-4"></div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-32 bg-muted rounded"></div>
+            ))}
+          </div>
+          <div className="h-64 bg-muted rounded"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <Card className="border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50">
+      <Card className="border-orange-200 bg-gradient-to-r from-orange-50 to-yellow-50">
         <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Target className="h-5 w-5 text-orange-500" />
+            Resource Optimizer
+          </CardTitle>
+          <CardDescription>
+            AI-powered resource optimization and performance enhancement recommendations
+          </CardDescription>
+        </CardHeader>
+      </Card>
+
+      {/* Quick Actions */}
+      <Card>
+        <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-purple-500" />
-                Resource Optimizer
-              </CardTitle>
-              <CardDescription>
-                Identify and apply performance optimizations to reduce load times
-              </CardDescription>
+              <h3 className="text-lg font-semibold mb-2">System Optimization</h3>
+              <p className="text-muted-foreground">
+                Run comprehensive optimization to improve performance and reduce resource usage
+              </p>
             </div>
-            <Button
-              onClick={applyAllOptimizations}
-              disabled={isOptimizing || appliedOptimizations === totalOptimizations}
+            <Button 
+              onClick={handleRunOptimization}
+              disabled={isOptimizing}
               className="flex items-center gap-2"
             >
-              <Zap className="h-4 w-4" />
-              {isOptimizing ? 'Optimizing...' : 'Apply All'}
+              {isOptimizing ? (
+                <>
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  Optimizing...
+                </>
+              ) : (
+                <>
+                  <Zap className="h-4 w-4" />
+                  Run Optimization
+                </>
+              )}
             </Button>
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">{totalSavings.size.toFixed(0)} KB</div>
-              <div className="text-sm text-muted-foreground">Potential Size Reduction</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">{totalSavings.time}s</div>
-              <div className="text-sm text-muted-foreground">Estimated Time Savings</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">{appliedOptimizations}/{totalOptimizations}</div>
-              <div className="text-sm text-muted-foreground">Optimizations Applied</div>
-            </div>
-          </div>
-          <Progress value={optimizationProgress} className="mt-4" />
         </CardContent>
       </Card>
 
-      <Tabs defaultValue="opportunities" className="space-y-6">
-        <TabsList className="grid grid-cols-3 w-full">
-          <TabsTrigger value="opportunities">Opportunities</TabsTrigger>
-          <TabsTrigger value="metrics">Resource Metrics</TabsTrigger>
-          <TabsTrigger value="impact">Impact Analysis</TabsTrigger>
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="grid grid-cols-4 w-full">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
+          <TabsTrigger value="metrics">Metrics</TabsTrigger>
+          <TabsTrigger value="history">History</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="opportunities" className="space-y-4">
-          {opportunities.map((opportunity) => (
-            <Card key={opportunity.id} className={opportunity.isApplied ? 'border-green-200 bg-green-50' : ''}>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-start gap-3">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      {getTypeIcon(opportunity.type)}
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium flex items-center gap-2">
-                        {opportunity.title}
-                        {opportunity.isApplied && (
-                          <Badge className="bg-green-100 text-green-800">Applied</Badge>
-                        )}
-                      </h4>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {opportunity.description}
-                      </p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <Badge className={getImpactColor(opportunity.impact)} variant="secondary">
-                          {opportunity.impact} impact
-                        </Badge>
-                        <Badge className={getEffortColor(opportunity.effort)} variant="secondary">
-                          {opportunity.effort} effort
-                        </Badge>
-                        <Badge variant="outline">
-                          Saves {opportunity.savings}
-                        </Badge>
-                      </div>
-                      {opportunity.currentSize && opportunity.optimizedSize && (
-                        <div className="text-xs text-muted-foreground mt-2">
-                          {opportunity.currentSize} → {opportunity.optimizedSize}
+        <TabsContent value="overview" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Optimization Score</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-orange-600 mb-2">73%</div>
+                  <p className="text-sm text-muted-foreground">Room for improvement</p>
+                  <Progress value={73} className="mt-3" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Potential Savings</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-sm">Performance</span>
+                    <span className="font-medium">+45%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">Cost Reduction</span>
+                    <span className="font-medium">$847/mo</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">Resource Usage</span>
+                    <span className="font-medium">-32%</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Implementation Status</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    <span className="text-sm">Completed: 1</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                    <span className="text-sm">Pending: 4</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Target className="h-4 w-4 text-blue-500" />
+                    <span className="text-sm">High Impact: 3</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="recommendations" className="space-y-4">
+          {recommendations.map((recommendation) => {
+            const IconComponent = getCategoryIcon(recommendation.category);
+            return (
+              <Card key={recommendation.id}>
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-4 flex-1">
+                      <IconComponent className="h-6 w-6 text-blue-500 mt-1" />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="font-semibold">{recommendation.title}</h3>
+                          {recommendation.implemented && (
+                            <CheckCircle className="h-4 w-4 text-green-500" />
+                          )}
                         </div>
+                        <p className="text-muted-foreground mb-3">{recommendation.description}</p>
+                        <div className="flex gap-2 flex-wrap">
+                          <Badge className={getImpactColor(recommendation.impact)}>
+                            {recommendation.impact} impact
+                          </Badge>
+                          <Badge className={getEffortColor(recommendation.effort)}>
+                            {recommendation.effort} effort
+                          </Badge>
+                          <Badge variant="outline">
+                            Saves: {recommendation.savings}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="ml-4">
+                      {recommendation.implemented ? (
+                        <Badge className="bg-green-100 text-green-800">
+                          Implemented
+                        </Badge>
+                      ) : (
+                        <Button
+                          onClick={() => handleImplementRecommendation(recommendation.id)}
+                          disabled={isOptimizing}
+                          size="sm"
+                        >
+                          Implement
+                        </Button>
                       )}
                     </div>
                   </div>
-                  <Button
-                    onClick={() => applyOptimization(opportunity.id)}
-                    disabled={isOptimizing || opportunity.isApplied}
-                    variant={opportunity.isApplied ? "outline" : "default"}
-                    size="sm"
-                  >
-                    {opportunity.isApplied ? 'Applied' : 'Apply'}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
         </TabsContent>
 
         <TabsContent value="metrics" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Resource Usage Comparison</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={resourceMetrics}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="current" fill="#EF4444" name="Current" />
-                  <Bar dataKey="optimized" fill="#10B981" name="Optimized" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Download className="h-5 w-5" />
-                  Download Optimization
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between">
-                  <span>Bundle Size Reduction</span>
-                  <span className="font-medium text-green-600">-32%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Image Compression</span>
-                  <span className="font-medium text-green-600">-43%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Code Splitting</span>
-                  <span className="font-medium text-green-600">-28%</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Upload className="h-5 w-5" />
-                  Performance Gains
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between">
-                  <span>Page Load Time</span>
-                  <span className="font-medium text-blue-600">-2.3s</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>First Contentful Paint</span>
-                  <span className="font-medium text-blue-600">-0.8s</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Time to Interactive</span>
-                  <span className="font-medium text-blue-600">-1.5s</span>
-                </div>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {metrics.map((metric) => (
+              <Card key={metric.name}>
+                <CardContent className="p-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">{metric.name}</span>
+                      <Badge variant="outline" className={getStatusColor(metric.status)}>
+                        {metric.status}
+                      </Badge>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Current</span>
+                        <span className={getStatusColor(metric.status)}>
+                          {metric.current}{metric.unit}
+                        </span>
+                      </div>
+                      <Progress 
+                        value={(metric.current / (metric.optimal * 2)) * 100} 
+                        className="h-2"
+                      />
+                      <div className="flex justify-between text-sm text-muted-foreground">
+                        <span>Target: {metric.optimal}{metric.unit}</span>
+                        <span>
+                          {metric.current > metric.optimal ? '+' : ''}
+                          {Math.round(((metric.current - metric.optimal) / metric.optimal) * 100)}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </TabsContent>
 
-        <TabsContent value="impact" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card>
-              <CardHeader className="text-center">
-                <Zap className="h-8 w-8 mx-auto mb-2 text-yellow-500" />
-                <CardTitle>Performance Score</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <div className="text-3xl font-bold text-yellow-600">+15</div>
-                <div className="text-sm text-muted-foreground">Lighthouse Score Improvement</div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="text-center">
-                <Download className="h-8 w-8 mx-auto mb-2 text-green-500" />
-                <CardTitle>Data Savings</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <div className="text-3xl font-bold text-green-600">2.1 MB</div>
-                <div className="text-sm text-muted-foreground">Total Size Reduction</div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="text-center">
-                <Wifi className="h-8 w-8 mx-auto mb-2 text-blue-500" />
-                <CardTitle>Network Efficiency</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <div className="text-3xl font-bold text-blue-600">38%</div>
-                <div className="text-sm text-muted-foreground">Fewer Network Requests</div>
-              </CardContent>
-            </Card>
-          </div>
-
+        <TabsContent value="history" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Optimization Impact Summary</CardTitle>
+              <CardTitle>Optimization History</CardTitle>
+              <CardDescription>
+                Track performance improvements and optimization results over time
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 border rounded-lg">
-                  <span>User Experience Improvement</span>
-                  <Badge className="bg-green-100 text-green-800">Significant</Badge>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="text-center p-4 border rounded-lg">
+                    <BarChart3 className="h-8 w-8 mx-auto mb-2 text-blue-500" />
+                    <p className="text-sm font-medium">Performance Gain</p>
+                    <p className="text-2xl font-bold text-blue-600">+23%</p>
+                    <p className="text-xs text-muted-foreground">Last 30 days</p>
+                  </div>
+                  
+                  <div className="text-center p-4 border rounded-lg">
+                    <TrendingUp className="h-8 w-8 mx-auto mb-2 text-green-500" />
+                    <p className="text-sm font-medium">Cost Savings</p>
+                    <p className="text-2xl font-bold text-green-600">$1,247</p>
+                    <p className="text-xs text-muted-foreground">This month</p>
+                  </div>
+                  
+                  <div className="text-center p-4 border rounded-lg">
+                    <Settings className="h-8 w-8 mx-auto mb-2 text-purple-500" />
+                    <p className="text-sm font-medium">Optimizations</p>
+                    <p className="text-2xl font-bold text-purple-600">12</p>
+                    <p className="text-xs text-muted-foreground">Implemented</p>
+                  </div>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 border rounded-lg">
-                  <span>Mobile Performance Boost</span>
-                  <Badge className="bg-blue-100 text-blue-800">High</Badge>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 border rounded-lg">
-                  <span>SEO Score Enhancement</span>
-                  <Badge className="bg-purple-100 text-purple-800">Moderate</Badge>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 border rounded-lg">
-                  <span>Server Load Reduction</span>
-                  <Badge className="bg-yellow-100 text-yellow-800">Moderate</Badge>
-                </div>
+                <Button className="w-full">
+                  Generate Optimization Report
+                </Button>
               </div>
             </CardContent>
           </Card>

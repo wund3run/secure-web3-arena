@@ -1,97 +1,47 @@
 
-import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { RealtimeChannel } from '@supabase/supabase-js';
+import { useState, useEffect } from 'react';
 
-interface RealtimeNotification {
-  id: string;
-  type: 'info' | 'success' | 'warning' | 'error';
-  message: string;
-  timestamp: Date;
+interface RealtimeSyncState {
+  isConnected: boolean;
+  lastSync: Date | null;
+  syncStatus: 'idle' | 'syncing' | 'error';
 }
 
-interface UseRealtimeSyncOptions {
-  channel: string;
-  events?: string[];
-}
-
-export const useRealtimeSync = (options?: UseRealtimeSyncOptions) => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('disconnected');
-  const [notifications, setNotifications] = useState<RealtimeNotification[]>([]);
-  const [channel, setChannel] = useState<RealtimeChannel | null>(null);
-
-  const clearNotifications = useCallback(() => {
-    setNotifications([]);
-  }, []);
+export function useRealtimeSync() {
+  const [state, setState] = useState<RealtimeSyncState>({
+    isConnected: true, // Simulate connected state for demo
+    lastSync: new Date(),
+    syncStatus: 'idle'
+  });
 
   useEffect(() => {
-    if (!options?.channel) return;
+    // Simulate real-time connection monitoring
+    const interval = setInterval(() => {
+      setState(prev => ({
+        ...prev,
+        lastSync: new Date(),
+        isConnected: Math.random() > 0.1 // 90% uptime simulation
+      }));
+    }, 5000);
 
-    const channelName = `realtime_${options.channel}`;
-    setConnectionStatus('connecting');
+    return () => clearInterval(interval);
+  }, []);
 
-    const realtimeChannel = supabase
-      .channel(channelName)
-      .on('presence', { event: 'sync' }, () => {
-        setIsConnected(true);
-        setConnectionStatus('connected');
-      })
-      .on('presence', { event: 'join' }, ({ key, newPresences }) => {
-        console.log('User joined:', key, newPresences);
-      })
-      .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-        console.log('User left:', key, leftPresences);
-      })
-      .on('broadcast', { event: 'notification' }, (payload: any) => {
-        // Ensure the type is valid, default to 'info' if not
-        const validTypes = ['info', 'success', 'warning', 'error'] as const;
-        const payloadType = payload.type as string;
-        const notificationType: 'info' | 'success' | 'warning' | 'error' = 
-          validTypes.includes(payloadType as any) ? payloadType as any : 'info';
-        
-        const notification: RealtimeNotification = {
-          id: crypto.randomUUID(),
-          type: notificationType,
-          message: payload.message || 'New notification',
-          timestamp: new Date(),
-        };
-        setNotifications(prev => [notification, ...prev].slice(0, 50)); // Keep last 50
-      })
-      .subscribe((status) => {
-        if (status === 'SUBSCRIBED') {
-          setIsConnected(true);
-          setConnectionStatus('connected');
-        } else if (status === 'CHANNEL_ERROR') {
-          setIsConnected(false);
-          setConnectionStatus('disconnected');
-        }
-      });
-
-    setChannel(realtimeChannel);
-
-    return () => {
-      realtimeChannel.unsubscribe();
-      setIsConnected(false);
-      setConnectionStatus('disconnected');
-    };
-  }, [options?.channel]);
-
-  const sendNotification = useCallback((type: RealtimeNotification['type'], message: string) => {
-    if (channel) {
-      channel.send({
-        type: 'broadcast',
-        event: 'notification',
-        payload: { type, message }
-      });
-    }
-  }, [channel]);
+  const forceSync = () => {
+    setState(prev => ({ ...prev, syncStatus: 'syncing' }));
+    
+    setTimeout(() => {
+      setState(prev => ({
+        ...prev,
+        syncStatus: 'idle',
+        lastSync: new Date(),
+        isConnected: true
+      }));
+    }, 1000);
+  };
 
   return {
-    isConnected,
-    connectionStatus,
-    notifications,
-    clearNotifications,
-    sendNotification,
+    ...state,
+    forceSync
   };
-};
+}

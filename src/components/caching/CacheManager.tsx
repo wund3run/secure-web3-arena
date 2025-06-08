@@ -5,361 +5,487 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Database, RefreshCw, Trash2, Clock, HardDrive } from 'lucide-react';
+import { 
+  Database, 
+  Zap, 
+  RefreshCw, 
+  Trash2, 
+  Clock, 
+  BarChart3,
+  CheckCircle,
+  AlertTriangle,
+  TrendingUp
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 interface CacheEntry {
   key: string;
   size: number;
-  lastAccessed: Date;
   hitCount: number;
-  type: 'memory' | 'localStorage' | 'sessionStorage' | 'indexedDB';
-  ttl?: number;
-  isExpired: boolean;
+  lastAccessed: Date;
+  expiry?: Date;
+  type: 'api' | 'component' | 'static' | 'user';
+}
+
+interface CacheStats {
+  totalEntries: number;
+  totalSize: number;
+  hitRate: number;
+  missRate: number;
+  evictionCount: number;
 }
 
 export function CacheManager() {
   const [cacheEntries, setCacheEntries] = useState<CacheEntry[]>([]);
-  const [totalCacheSize, setTotalCacheSize] = useState(0);
-  const [cacheHitRate, setCacheHitRate] = useState(85);
-  const [isClearing, setIsClearing] = useState(false);
+  const [stats, setStats] = useState<CacheStats>({
+    totalEntries: 0,
+    totalSize: 0,
+    hitRate: 0,
+    missRate: 0,
+    evictionCount: 0
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedType, setSelectedType] = useState<string>('all');
 
   useEffect(() => {
-    loadCacheData();
+    const initializeCacheData = () => {
+      setIsLoading(true);
+      
+      // Simulate cache data
+      const mockEntries: CacheEntry[] = [
+        {
+          key: 'user_profile_123',
+          size: 2048,
+          hitCount: 156,
+          lastAccessed: new Date(Date.now() - 300000),
+          expiry: new Date(Date.now() + 3600000),
+          type: 'user'
+        },
+        {
+          key: 'api_audits_list',
+          size: 8192,
+          hitCount: 892,
+          lastAccessed: new Date(Date.now() - 120000),
+          expiry: new Date(Date.now() + 1800000),
+          type: 'api'
+        },
+        {
+          key: 'component_marketplace_grid',
+          size: 4096,
+          hitCount: 445,
+          lastAccessed: new Date(Date.now() - 60000),
+          type: 'component'
+        },
+        {
+          key: 'static_images_bundle',
+          size: 16384,
+          hitCount: 1234,
+          lastAccessed: new Date(Date.now() - 30000),
+          type: 'static'
+        }
+      ];
+
+      const mockStats: CacheStats = {
+        totalEntries: mockEntries.length,
+        totalSize: mockEntries.reduce((sum, entry) => sum + entry.size, 0),
+        hitRate: 87.3,
+        missRate: 12.7,
+        evictionCount: 23
+      };
+
+      setCacheEntries(mockEntries);
+      setStats(mockStats);
+      setIsLoading(false);
+    };
+
+    initializeCacheData();
     
-    const interval = setInterval(loadCacheData, 5000);
+    // Update cache stats every 30 seconds
+    const interval = setInterval(initializeCacheData, 30000);
     return () => clearInterval(interval);
   }, []);
 
-  const loadCacheData = () => {
-    const entries: CacheEntry[] = [];
-    let totalSize = 0;
-
-    // Check localStorage
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key) {
-        const value = localStorage.getItem(key);
-        const size = new Blob([value || '']).size;
-        totalSize += size;
-        
-        entries.push({
-          key,
-          size,
-          lastAccessed: new Date(),
-          hitCount: Math.floor(Math.random() * 100),
-          type: 'localStorage',
-          isExpired: false
-        });
-      }
-    }
-
-    // Check sessionStorage
-    for (let i = 0; i < sessionStorage.length; i++) {
-      const key = sessionStorage.key(i);
-      if (key) {
-        const value = sessionStorage.getItem(key);
-        const size = new Blob([value || '']).size;
-        totalSize += size;
-        
-        entries.push({
-          key,
-          size,
-          lastAccessed: new Date(),
-          hitCount: Math.floor(Math.random() * 50),
-          type: 'sessionStorage',
-          isExpired: false
-        });
-      }
-    }
-
-    // Simulate memory cache entries
-    const memoryCacheKeys = ['api_users', 'api_audits', 'api_services', 'component_data'];
-    memoryCacheKeys.forEach(key => {
-      const size = Math.floor(Math.random() * 10000) + 1000;
-      totalSize += size;
-      
-      entries.push({
-        key,
-        size,
-        lastAccessed: new Date(Date.now() - Math.random() * 3600000),
-        hitCount: Math.floor(Math.random() * 200),
-        type: 'memory',
-        ttl: 3600,
-        isExpired: Math.random() > 0.8
-      });
-    });
-
-    setCacheEntries(entries);
-    setTotalCacheSize(totalSize);
-  };
-
-  const clearCache = async (type?: string) => {
-    setIsClearing(true);
-    
-    try {
-      if (!type || type === 'localStorage') {
-        localStorage.clear();
-      }
-      
-      if (!type || type === 'sessionStorage') {
-        sessionStorage.clear();
-      }
-      
-      if (!type || type === 'memory') {
-        // Clear memory cache (simulated)
-        console.log('Memory cache cleared');
-      }
-      
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      loadCacheData();
-      toast.success(`${type ? type : 'All'} cache cleared successfully`);
-    } catch (error) {
-      toast.error('Failed to clear cache');
-    } finally {
-      setIsClearing(false);
+  const handleClearCache = (type?: string) => {
+    if (type) {
+      setCacheEntries(prev => prev.filter(entry => entry.type !== type));
+      toast.success(`${type} cache cleared successfully`);
+    } else {
+      setCacheEntries([]);
+      toast.success('All cache cleared successfully');
     }
   };
 
-  const clearExpiredEntries = async () => {
-    setIsClearing(true);
-    
-    try {
-      // Remove expired entries
-      const expiredEntries = cacheEntries.filter(entry => entry.isExpired);
-      
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      loadCacheData();
-      toast.success(`Cleared ${expiredEntries.length} expired entries`);
-    } catch (error) {
-      toast.error('Failed to clear expired entries');
-    } finally {
-      setIsClearing(false);
-    }
+  const handleRefreshEntry = (key: string) => {
+    setCacheEntries(prev => 
+      prev.map(entry => 
+        entry.key === key 
+          ? { ...entry, lastAccessed: new Date(), hitCount: entry.hitCount + 1 }
+          : entry
+      )
+    );
+    toast.success('Cache entry refreshed');
   };
 
-  const formatSize = (bytes: number) => {
-    if (bytes === 0) return '0 B';
+  const formatBytes = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
+  const formatTimeAgo = (date: Date) => {
+    const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+    
+    if (seconds < 60) return `${seconds}s ago`;
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    return `${Math.floor(seconds / 86400)}d ago`;
+  };
+
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'memory': return 'bg-blue-100 text-blue-800';
-      case 'localStorage': return 'bg-green-100 text-green-800';
-      case 'sessionStorage': return 'bg-yellow-100 text-yellow-800';
-      case 'indexedDB': return 'bg-purple-100 text-purple-800';
+      case 'api': return 'bg-blue-100 text-blue-800';
+      case 'component': return 'bg-green-100 text-green-800';
+      case 'static': return 'bg-purple-100 text-purple-800';
+      case 'user': return 'bg-orange-100 text-orange-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const cacheStats = {
-    totalEntries: cacheEntries.length,
-    expiredEntries: cacheEntries.filter(e => e.isExpired).length,
-    memoryEntries: cacheEntries.filter(e => e.type === 'memory').length,
-    storageEntries: cacheEntries.filter(e => e.type !== 'memory').length
-  };
+  const filteredEntries = selectedType === 'all' 
+    ? cacheEntries 
+    : cacheEntries.filter(entry => entry.type === selectedType);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="animate-pulse">
+          <div className="h-8 bg-muted rounded w-1/3 mb-4"></div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-24 bg-muted rounded"></div>
+            ))}
+          </div>
+          <div className="h-64 bg-muted rounded"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <Card className="border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <Database className="h-5 w-5 text-green-500" />
-                Cache Management
-              </CardTitle>
-              <CardDescription>
-                Monitor and optimize application caching performance
-              </CardDescription>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={() => clearExpiredEntries()}
-                disabled={isClearing}
-                className="flex items-center gap-2"
-              >
-                <Clock className="h-4 w-4" />
-                Clear Expired
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => clearCache()}
-                disabled={isClearing}
-                className="flex items-center gap-2"
-              >
-                <Trash2 className="h-4 w-4" />
-                Clear All
-              </Button>
-              <Button
-                onClick={loadCacheData}
-                disabled={isClearing}
-                className="flex items-center gap-2"
-              >
-                <RefreshCw className={`h-4 w-4 ${isClearing ? 'animate-spin' : ''}`} />
-                Refresh
-              </Button>
-            </div>
-          </div>
+          <CardTitle className="flex items-center gap-2">
+            <Database className="h-5 w-5 text-green-500" />
+            Cache Management System
+          </CardTitle>
+          <CardDescription>
+            Monitor and optimize platform caching for improved performance
+          </CardDescription>
         </CardHeader>
       </Card>
 
-      {/* Cache Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Cache Statistics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-2">
-              <HardDrive className="h-4 w-4 text-blue-500" />
-              <span className="text-sm font-medium">Total Size</span>
+              <Database className="h-4 w-4 text-blue-500" />
+              <span className="text-sm font-medium">Total Entries</span>
             </div>
-            <div className="text-2xl font-bold">{formatSize(totalCacheSize)}</div>
+            <p className="text-2xl font-bold">{stats.totalEntries}</p>
+            <p className="text-xs text-muted-foreground">Active cache entries</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-2">
-              <Database className="h-4 w-4 text-green-500" />
-              <span className="text-sm font-medium">Cache Entries</span>
+              <BarChart3 className="h-4 w-4 text-green-500" />
+              <span className="text-sm font-medium">Cache Size</span>
             </div>
-            <div className="text-2xl font-bold">{cacheStats.totalEntries}</div>
+            <p className="text-2xl font-bold">{formatBytes(stats.totalSize)}</p>
+            <p className="text-xs text-muted-foreground">Total memory usage</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-2">
-              <Clock className="h-4 w-4 text-yellow-500" />
+              <TrendingUp className="h-4 w-4 text-emerald-500" />
               <span className="text-sm font-medium">Hit Rate</span>
             </div>
-            <div className="text-2xl font-bold">{cacheHitRate}%</div>
+            <p className="text-2xl font-bold text-emerald-600">{stats.hitRate}%</p>
+            <Progress value={stats.hitRate} className="h-1 mt-2" />
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-2">
-              <Trash2 className="h-4 w-4 text-red-500" />
-              <span className="text-sm font-medium">Expired</span>
+              <Zap className="h-4 w-4 text-yellow-500" />
+              <span className="text-sm font-medium">Miss Rate</span>
             </div>
-            <div className="text-2xl font-bold">{cacheStats.expiredEntries}</div>
+            <p className="text-2xl font-bold text-yellow-600">{stats.missRate}%</p>
+            <Progress value={stats.missRate} className="h-1 mt-2" />
           </CardContent>
         </Card>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid grid-cols-3 w-full">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
+      <Tabs defaultValue="entries" className="space-y-6">
+        <TabsList className="grid grid-cols-4 w-full">
           <TabsTrigger value="entries">Cache Entries</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="optimization">Optimization</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Cache Distribution</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span>Memory Cache</span>
-                  <Badge className="bg-blue-100 text-blue-800">
-                    {cacheStats.memoryEntries} entries
-                  </Badge>
-                </div>
-                <Progress value={(cacheStats.memoryEntries / cacheStats.totalEntries) * 100} />
-                
-                <div className="flex justify-between items-center">
-                  <span>Storage Cache</span>
-                  <Badge className="bg-green-100 text-green-800">
-                    {cacheStats.storageEntries} entries
-                  </Badge>
-                </div>
-                <Progress value={(cacheStats.storageEntries / cacheStats.totalEntries) * 100} />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Performance Impact</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center p-4">
-                  <div className="text-3xl font-bold text-green-600 mb-2">
-                    {((cacheHitRate / 100) * 2.5).toFixed(1)}s
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Average time saved per request
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        <TabsContent value="entries" className="space-y-6">
+          {/* Filter Controls */}
+          <div className="flex gap-2 flex-wrap">
+            <Button
+              variant={selectedType === 'all' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setSelectedType('all')}
+            >
+              All ({cacheEntries.length})
+            </Button>
+            {['api', 'component', 'static', 'user'].map((type) => (
+              <Button
+                key={type}
+                variant={selectedType === type ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSelectedType(type)}
+              >
+                {type} ({cacheEntries.filter(e => e.type === type).length})
+              </Button>
+            ))}
           </div>
-        </TabsContent>
 
-        <TabsContent value="entries" className="space-y-4">
-          <div className="space-y-2">
-            {cacheEntries.map((entry, index) => (
-              <Card key={index} className={entry.isExpired ? 'border-red-200' : ''}>
+          {/* Cache Entries List */}
+          <div className="space-y-3">
+            {filteredEntries.map((entry) => (
+              <Card key={entry.key}>
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Badge className={getTypeColor(entry.type)} variant="secondary">
-                        {entry.type}
-                      </Badge>
-                      <div>
-                        <div className="font-medium">{entry.key}</div>
-                        <div className="text-sm text-muted-foreground">
-                          Last accessed: {entry.lastAccessed.toLocaleTimeString()}
-                        </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-mono text-sm">{entry.key}</span>
+                        <Badge className={getTypeColor(entry.type)} variant="secondary">
+                          {entry.type}
+                        </Badge>
+                        {entry.expiry && entry.expiry > new Date() && (
+                          <Badge variant="outline" className="text-xs">
+                            <Clock className="h-3 w-3 mr-1" />
+                            Expires in {Math.round((entry.expiry.getTime() - new Date().getTime()) / 60000)}m
+                          </Badge>
+                        )}
+                      </div>
+                      
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span>Size: {formatBytes(entry.size)}</span>
+                        <span>Hits: {entry.hitCount}</span>
+                        <span>Last accessed: {formatTimeAgo(entry.lastAccessed)}</span>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="font-medium">{formatSize(entry.size)}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {entry.hitCount} hits
-                      </div>
+                    
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleRefreshEntry(entry.key)}
+                      >
+                        <RefreshCw className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setCacheEntries(prev => prev.filter(e => e.key !== entry.key));
+                          toast.success('Cache entry removed');
+                        }}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
                     </div>
                   </div>
-                  {entry.isExpired && (
-                    <Badge className="mt-2 bg-red-100 text-red-800" variant="secondary">
-                      Expired
-                    </Badge>
-                  )}
                 </CardContent>
               </Card>
             ))}
           </div>
+
+          {filteredEntries.length === 0 && (
+            <Card>
+              <CardContent className="p-8 text-center">
+                <Database className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <p className="text-muted-foreground">No cache entries found for this filter</p>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="analytics" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Cache Performance</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Hit Rate</span>
+                    <span className="font-medium text-green-600">{stats.hitRate}%</span>
+                  </div>
+                  <Progress value={stats.hitRate} className="h-2" />
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Memory Utilization</span>
+                    <span className="font-medium">67%</span>
+                  </div>
+                  <Progress value={67} className="h-2" />
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Eviction Rate</span>
+                    <span className="font-medium text-orange-600">2.3%</span>
+                  </div>
+                  <Progress value={23} className="h-2" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Cache Health</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 p-3 border rounded-lg">
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                    <div>
+                      <p className="font-medium">Cache Status</p>
+                      <p className="text-sm text-muted-foreground">Healthy - All systems operational</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 p-3 border rounded-lg">
+                    <AlertTriangle className="h-5 w-5 text-yellow-500" />
+                    <div>
+                      <p className="font-medium">Memory Warning</p>
+                      <p className="text-sm text-muted-foreground">Approaching 70% capacity</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 p-3 border rounded-lg">
+                    <TrendingUp className="h-5 w-5 text-blue-500" />
+                    <div>
+                      <p className="font-medium">Performance</p>
+                      <p className="text-sm text-muted-foreground">23% improvement this week</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="optimization" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button 
+                  className="w-full justify-start"
+                  onClick={() => handleClearCache()}
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Clear All Cache
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => handleClearCache('api')}
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Clear API Cache
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => handleClearCache('component')}
+                >
+                  <Zap className="h-4 w-4 mr-2" />
+                  Clear Component Cache
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Optimization Recommendations</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="p-3 border rounded-lg">
+                    <Badge className="bg-green-100 text-green-800 mb-2">High Impact</Badge>
+                    <p className="text-sm font-medium">Enable compression for large API responses</p>
+                    <p className="text-xs text-muted-foreground">Can reduce cache size by 40%</p>
+                  </div>
+                  
+                  <div className="p-3 border rounded-lg">
+                    <Badge className="bg-blue-100 text-blue-800 mb-2">Medium Impact</Badge>
+                    <p className="text-sm font-medium">Implement cache preloading for popular content</p>
+                    <p className="text-xs text-muted-foreground">Improve hit rate by 15%</p>
+                  </div>
+                  
+                  <div className="p-3 border rounded-lg">
+                    <Badge className="bg-yellow-100 text-yellow-800 mb-2">Low Impact</Badge>
+                    <p className="text-sm font-medium">Adjust TTL for static content</p>
+                    <p className="text-xs text-muted-foreground">Optimize memory usage</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="settings" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Cache Performance Trends</CardTitle>
+              <CardTitle>Cache Configuration</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex justify-between items-center p-3 border rounded-lg">
-                  <span>Cache Hit Rate Trend</span>
-                  <span className="text-green-600 font-medium">↗ +5.2% this week</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium">Max Cache Size</label>
+                    <p className="text-sm text-muted-foreground">128 MB</p>
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium">Default TTL</label>
+                    <p className="text-sm text-muted-foreground">1 hour</p>
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium">Eviction Policy</label>
+                    <p className="text-sm text-muted-foreground">LRU (Least Recently Used)</p>
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium">Compression</label>
+                    <p className="text-sm text-muted-foreground">Enabled</p>
+                  </div>
                 </div>
                 
-                <div className="flex justify-between items-center p-3 border rounded-lg">
-                  <span>Memory Usage Optimization</span>
-                  <span className="text-blue-600 font-medium">↘ -12% reduction</span>
-                </div>
-                
-                <div className="flex justify-between items-center p-3 border rounded-lg">
-                  <span>Cache Invalidation Rate</span>
-                  <span className="text-yellow-600 font-medium">→ 3.2% stable</span>
-                </div>
+                <Button className="mt-4">
+                  Update Configuration
+                </Button>
               </div>
             </CardContent>
           </Card>
