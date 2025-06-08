@@ -116,9 +116,6 @@ const queryClient = new QueryClient({
   },
 });
 
-// New UX page
-const UserExperience = React.lazy(() => import("@/pages/UserExperience"));
-
 function App() {
   return (
     <ErrorBoundary>
