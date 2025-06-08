@@ -59,6 +59,12 @@ const SubmitService = React.lazy(() => import("@/pages/SubmitService"));
 const Pricing = React.lazy(() => import("@/pages/Pricing"));
 const SecurityPolicy = React.lazy(() => import("@/pages/SecurityPolicy"));
 
+// New platform integration pages
+const PlatformIntegration = React.lazy(() => import("@/pages/PlatformIntegration"));
+const SecurityCompliance = React.lazy(() => import("@/pages/SecurityCompliance"));
+const PerformanceOptimization = React.lazy(() => import("@/pages/PerformanceOptimization"));
+const PlatformOptimization = React.lazy(() => import("@/pages/PlatformOptimization"));
+
 // Enhanced loading fallback
 const AppLoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
@@ -163,6 +169,12 @@ function App() {
                         {/* Business pages */}
                         <Route path="/pricing" element={<Pricing />} />
                         <Route path="/security-policy" element={<SecurityPolicy />} />
+                        
+                        {/* New Platform Integration Routes */}
+                        <Route path="/platform-integration" element={<PlatformIntegration />} />
+                        <Route path="/security-compliance" element={<SecurityCompliance />} />
+                        <Route path="/performance-optimization" element={<PerformanceOptimization />} />
+                        <Route path="/platform-optimization" element={<PlatformOptimization />} />
                         
                         {/* Footer pages - Essential for navigation */}
                         <Route path="/about" element={<About />} />
