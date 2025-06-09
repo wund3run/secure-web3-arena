@@ -1,50 +1,56 @@
 
-import React from "react";
-import { Helmet } from "react-helmet-async";
-import { UnifiedNavbar } from "./unified-navbar";
-import { EnhancedBreadcrumbs } from "./enhanced-breadcrumbs";
-import { EnhancedFooter } from "@/components/home/enhanced-footer";
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { UnifiedNavbar } from './unified-navbar';
+import { EnhancedBreadcrumbs } from './enhanced-breadcrumbs';
+import { Toaster } from 'sonner';
 
 interface StandardizedLayoutProps {
   children: React.ReactNode;
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   keywords?: string;
   showBreadcrumbs?: boolean;
-  showSimplifiedNavigation?: boolean;
   className?: string;
 }
 
 export function StandardizedLayout({
   children,
-  title,
-  description,
-  keywords,
+  title = "Hawkly | Web3 Security Marketplace",
+  description = "Connect with verified Web3 security experts for smart contract audits.",
+  keywords = "web3 security, smart contract audit, blockchain security",
   showBreadcrumbs = true,
-  showSimplifiedNavigation = false,
   className = ""
 }: StandardizedLayoutProps) {
   return (
-    <>
+    <div className={`min-h-screen flex flex-col bg-background ${className}`}>
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
-        {keywords && <meta name="keywords" content={keywords} />}
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <meta name="keywords" content={keywords} />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#9c88ff" />
       </Helmet>
+
+      <UnifiedNavbar />
       
-      <div className={`min-h-screen bg-background flex flex-col ${className}`}>
-        <UnifiedNavbar />
-        {showBreadcrumbs && <EnhancedBreadcrumbs />}
-        <div className="flex-1">
-          {children}
-        </div>
-        <React.Suspense fallback={<div className="h-20" />}>
-          <EnhancedFooter />
-        </React.Suspense>
-      </div>
-    </>
+      {showBreadcrumbs && <EnhancedBreadcrumbs />}
+      
+      <main className="flex-1">
+        {children}
+      </main>
+
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: 'hsl(var(--card))',
+            color: 'hsl(var(--card-foreground))',
+            border: '1px solid hsl(var(--border))',
+          },
+        }}
+      />
+    </div>
   );
 }

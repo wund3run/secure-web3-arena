@@ -4,7 +4,6 @@ import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/auth";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,319 +13,232 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { Menu, X, Bell, Search } from "lucide-react";
 import { ModeToggle } from "@/components/theme/ModeToggle";
-import { 
-  Menu, 
-  X, 
-  LogOut, 
-  User, 
-  Settings, 
-  LayoutDashboard, 
-  FileText, 
-  Shield,
-  Search,
-  Home,
-  Users
-} from "lucide-react";
-import { toast } from "sonner";
+import { NotificationBell } from '@/components/notifications/NotificationBell';
 
-const navigationItems = [
-  { title: "Home", href: "/", icon: Home, public: true },
-  { title: "Marketplace", href: "/marketplace", icon: Search, public: true },
-  { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard, auth: true },
-  { title: "Audits", href: "/audits", icon: FileText, auth: true },
-  { title: "Request Audit", href: "/request-audit", icon: Shield, auth: true },
-  { title: "Community", href: "/community", icon: Users, public: true },
+interface NavigationLink {
+  label: string;
+  href: string;
+  requiresAuth?: boolean;
+  mobileOnly?: boolean;
+}
+
+const navigationLinks: NavigationLink[] = [
+  { label: "Home", href: "/" },
+  { label: "Marketplace", href: "/marketplace" },
+  { label: "Security Audits", href: "/security-audits" },
+  { label: "Request Audit", href: "/request-audit", requiresAuth: true },
+  { label: "Dashboard", href: "/dashboard", requiresAuth: true },
+  { label: "Active Audits", href: "/audits", requiresAuth: true },
 ];
 
 export function UnifiedNavbar() {
-  const { user, signOut, userProfile, getUserType } = useAuth();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, signOut, userProfile } = useAuth();
   const location = useLocation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  const isAuthenticated = !!user;
-  const userType = getUserType?.() || 'general';
-  const displayName = userProfile?.display_name || userProfile?.full_name || user?.email?.split('@')[0] || 'User';
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Close mobile menu on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      toast.success("Successfully signed out");
-      setIsMobileMenuOpen(false);
-    } catch (error) {
-      console.error("Sign out error:", error);
-      toast.error("Failed to sign out");
-    }
-  };
+  // Filter navigation links based on auth status
+  const filteredLinks = navigationLinks.filter(link => 
+    !link.requiresAuth || (link.requiresAuth && user)
+  );
 
-  const getDashboardPath = () => {
-    return userType === 'auditor' ? '/dashboard/auditor' : '/dashboard/project';
-  };
-
-  const isActiveRoute = (href: string) => {
-    if (href === '/') return location.pathname === '/';
-    return location.pathname.startsWith(href);
-  };
-
-  const getVisibleNavItems = () => {
-    return navigationItems.filter(item => 
-      item.public || (item.auth && isAuthenticated)
-    );
-  };
+  const isAuthPage = location.pathname === '/auth';
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="modern-container">
+    <header 
+      className={`
+        sticky top-0 z-50 w-full border-b transition-all duration-200
+        ${isScrolled 
+          ? 'bg-background/95 backdrop-blur-md shadow-sm' 
+          : 'bg-background/80 backdrop-blur-sm'
+        }
+      `}
+      role="banner"
+    >
+      <div className="container-modern">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center space-x-8">
-            <Link 
-              to={isAuthenticated ? getDashboardPath() : "/"} 
-              className="focus-visible flex-shrink-0"
-              aria-label="Hawkly Home"
-            >
-              <img 
-                src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
-                alt="Hawkly Logo"
-                className="h-12 w-12 object-contain bg-transparent"
-              />
-            </Link>
+          <Link 
+            to={user ? "/dashboard" : "/"} 
+            className="focus-modern flex items-center space-x-2"
+            aria-label="Hawkly Home"
+          >
+            <img 
+              src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+              alt="Hawkly Logo"
+              className="h-12 w-12 object-contain"
+            />
+            <span className="hidden sm:block font-bold text-xl text-primary-600">
+              Hawkly
+            </span>
+          </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-1">
-              {getVisibleNavItems().map((item) => (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  className={`nav-link px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActiveRoute(item.href) 
-                      ? 'nav-link-active bg-primary/10 text-primary' 
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                  }`}
-                >
-                  <item.icon className="h-4 w-4 mr-2 inline" />
-                  {item.title}
-                </Link>
-              ))}
-            </nav>
-          </div>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-1" role="navigation">
+            {filteredLinks.map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                className={`
+                  px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200
+                  focus-modern
+                  ${location.pathname === link.href
+                    ? 'text-primary-600 bg-primary-50'
+                    : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50'
+                  }
+                `}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
 
-          {/* Right Side Actions */}
+          {/* Right side actions */}
           <div className="flex items-center space-x-3">
-            {/* User Context Badge */}
-            {isAuthenticated && (
-              <Badge variant="outline" className="hidden sm:flex bg-primary/5 text-primary border-primary/20">
-                {userType === 'auditor' ? 'Security Expert' : 
-                 userType === 'admin' ? 'Administrator' : 'Project Owner'}
-              </Badge>
+            {/* Search (for authenticated users) */}
+            {user && (
+              <Button variant="ghost" size="icon" className="focus-modern">
+                <Search className="h-5 w-5" />
+                <span className="sr-only">Search</span>
+              </Button>
             )}
 
             {/* Notifications */}
-            {isAuthenticated && <NotificationBell />}
+            {user && <NotificationBell />}
 
-            {/* Auth Actions */}
-            {!isAuthenticated ? (
+            {/* Theme toggle */}
+            <ModeToggle />
+
+            {/* Auth section */}
+            {!user && !isAuthPage ? (
               <div className="hidden md:flex items-center space-x-2">
-                <Button variant="ghost" asChild>
+                <Button variant="ghost" asChild className="focus-modern">
                   <Link to="/auth">Sign In</Link>
                 </Button>
-                <Button asChild className="modern-button modern-button-primary">
-                  <Link to="/request-audit">Get Started</Link>
+                <Button asChild className="btn-modern btn-primary focus-modern">
+                  <Link to="/auth">Get Started</Link>
                 </Button>
               </div>
-            ) : (
+            ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-10 w-10 p-0 focus-visible">
+                  <Button variant="ghost" className="h-10 w-10 p-0 focus-modern">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={userProfile?.avatar_url} alt={displayName} />
-                      <AvatarFallback className="bg-primary/10 text-primary font-medium">
-                        {displayName[0]?.toUpperCase() || "U"}
+                      <AvatarImage 
+                        src={userProfile?.avatar_url} 
+                        alt={userProfile?.full_name || user.email || "User"} 
+                      />
+                      <AvatarFallback className="bg-primary-100 text-primary-600">
+                        {(userProfile?.full_name || user.email || "U")[0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-64">
+                <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium">{displayName}</p>
-                      <p className="text-xs text-muted-foreground">{user.email}</p>
-                      <Badge variant="secondary" className="w-fit text-xs">
-                        {userType === 'auditor' ? 'Security Expert' : 
-                         userType === 'admin' ? 'Administrator' : 'Project Owner'}
-                      </Badge>
+                      <p className="text-sm font-medium">
+                        {userProfile?.full_name || "User"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {user.email}
+                      </p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link to={getDashboardPath()} className="flex items-center">
-                      <LayoutDashboard className="mr-2 h-4 w-4" />
-                      Dashboard
-                    </Link>
+                    <Link to="/profile">Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/profile" className="flex items-center">
-                      <User className="mr-2 h-4 w-4" />
-                      Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/settings" className="flex items-center">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Settings
-                    </Link>
+                    <Link to="/settings">Settings</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
-                    onClick={handleSignOut} 
-                    className="flex items-center text-red-600 hover:text-red-700 hover:bg-red-50"
+                    onClick={signOut}
+                    className="text-red-600 focus:text-red-600"
                   >
-                    <LogOut className="mr-2 h-4 w-4" />
                     Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            )}
+            ) : null}
 
-            <ModeToggle />
-
-            {/* Mobile Menu Trigger */}
+            {/* Mobile menu trigger */}
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
+              <SheetTrigger asChild className="md:hidden">
+                <Button variant="ghost" size="icon" className="focus-modern">
                   <Menu className="h-5 w-5" />
-                  <span className="sr-only">Toggle navigation menu</span>
+                  <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-80 p-0">
-                <MobileNavigationContent 
-                  navigationItems={getVisibleNavItems()}
-                  isAuthenticated={isAuthenticated}
-                  user={user}
-                  userProfile={userProfile}
-                  userType={userType}
-                  displayName={displayName}
-                  onSignOut={handleSignOut}
-                  isActiveRoute={isActiveRoute}
-                  getDashboardPath={getDashboardPath}
-                />
+              <SheetContent side="right" className="w-80">
+                <div className="flex flex-col h-full">
+                  <div className="flex items-center justify-between pb-4 border-b">
+                    <Link to="/" className="flex items-center space-x-2">
+                      <img 
+                        src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+                        alt="Hawkly Logo"
+                        className="h-8 w-8 object-contain"
+                      />
+                      <span className="font-bold text-lg text-primary-600">Hawkly</span>
+                    </Link>
+                  </div>
+
+                  {/* Mobile Navigation */}
+                  <nav className="flex-1 py-6">
+                    <div className="space-y-2">
+                      {filteredLinks.map((link) => (
+                        <Link
+                          key={link.href}
+                          to={link.href}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={`
+                            block px-3 py-2 rounded-md text-base font-medium transition-colors
+                            ${location.pathname === link.href
+                              ? 'text-primary-600 bg-primary-50'
+                              : 'text-neutral-900 hover:text-primary-600 hover:bg-neutral-50'
+                            }
+                          `}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </nav>
+
+                  {/* Mobile auth actions */}
+                  {!user && !isAuthPage && (
+                    <div className="border-t pt-4 space-y-2">
+                      <Button variant="outline" asChild className="w-full">
+                        <Link to="/auth">Sign In</Link>
+                      </Button>
+                      <Button asChild className="w-full btn-modern btn-primary">
+                        <Link to="/auth">Get Started</Link>
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </SheetContent>
             </Sheet>
           </div>
         </div>
       </div>
     </header>
-  );
-}
-
-// Mobile Navigation Content Component
-function MobileNavigationContent({ 
-  navigationItems, 
-  isAuthenticated, 
-  user, 
-  userProfile, 
-  userType, 
-  displayName, 
-  onSignOut, 
-  isActiveRoute,
-  getDashboardPath 
-}: any) {
-  return (
-    <div className="flex flex-col h-full">
-      {/* Mobile Header */}
-      <div className="flex items-center justify-between p-4 border-b">
-        <div className="flex items-center space-x-3">
-          <img 
-            src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
-            alt="Hawkly Logo"
-            className="h-8 w-8 object-contain"
-          />
-          <div>
-            <h2 className="text-lg font-semibold">Hawkly</h2>
-            {isAuthenticated && (
-              <Badge variant="outline" className="text-xs">
-                {userType === 'auditor' ? 'Security Expert' : 
-                 userType === 'admin' ? 'Administrator' : 'Project Owner'}
-              </Badge>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* User Info (if authenticated) */}
-      {isAuthenticated && (
-        <div className="p-4 border-b bg-muted/30">
-          <div className="flex items-center space-x-3">
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={userProfile?.avatar_url} alt={displayName} />
-              <AvatarFallback className="bg-primary/10 text-primary">
-                {displayName[0]?.toUpperCase() || "U"}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              <p className="font-medium text-sm">{displayName}</p>
-              <p className="text-xs text-muted-foreground">{user?.email}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Navigation Items */}
-      <nav className="flex-1 overflow-y-auto p-4">
-        <div className="space-y-2">
-          {navigationItems.map((item: any) => (
-            <Link
-              key={item.href}
-              to={item.href}
-              className={`flex items-center space-x-3 px-3 py-3 rounded-lg transition-colors ${
-                isActiveRoute(item.href)
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-              }`}
-            >
-              <item.icon className="h-5 w-5" />
-              <span className="font-medium">{item.title}</span>
-            </Link>
-          ))}
-        </div>
-      </nav>
-
-      {/* Mobile Footer Actions */}
-      <div className="p-4 border-t space-y-2">
-        {!isAuthenticated ? (
-          <>
-            <Button variant="outline" className="w-full" asChild>
-              <Link to="/auth">Sign In</Link>
-            </Button>
-            <Button className="w-full modern-button modern-button-primary" asChild>
-              <Link to="/request-audit">Get Started</Link>
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button variant="outline" className="w-full justify-start" asChild>
-              <Link to="/profile">
-                <User className="mr-2 h-4 w-4" />
-                Profile Settings
-              </Link>
-            </Button>
-            <Button 
-              variant="outline" 
-              className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50" 
-              onClick={onSignOut}
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign Out
-            </Button>
-          </>
-        )}
-      </div>
-    </div>
   );
 }
