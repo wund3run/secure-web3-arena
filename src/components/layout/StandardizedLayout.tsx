@@ -11,6 +11,7 @@ interface StandardizedLayoutProps {
   description?: string;
   keywords?: string;
   showBreadcrumbs?: boolean;
+  showSimplifiedNavigation?: boolean;
   className?: string;
 }
 
@@ -20,6 +21,7 @@ export function StandardizedLayout({
   description = "Connect with verified Web3 security experts for smart contract audits.",
   keywords = "web3 security, smart contract audit, blockchain security",
   showBreadcrumbs = true,
+  showSimplifiedNavigation = false,
   className = ""
 }: StandardizedLayoutProps) {
   return (
@@ -32,9 +34,9 @@ export function StandardizedLayout({
         <meta name="theme-color" content="#9c88ff" />
       </Helmet>
 
-      <UnifiedNavbar />
+      {!showSimplifiedNavigation && <UnifiedNavbar />}
       
-      {showBreadcrumbs && <EnhancedBreadcrumbs />}
+      {showBreadcrumbs && !showSimplifiedNavigation && <EnhancedBreadcrumbs />}
       
       <main className="flex-1">
         {children}
