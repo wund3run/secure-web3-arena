@@ -8,37 +8,22 @@ interface LoadingSpinnerProps {
   brand?: boolean;
 }
 
-export function LoadingSpinner({ size = 'md', className, brand = false }: LoadingSpinnerProps) {
+export function LoadingSpinner({ size = 'md', className, brand = true }: LoadingSpinnerProps) {
   const sizeClasses = {
-    sm: 'h-4 w-4',
-    md: 'h-6 w-6',
-    lg: 'h-8 w-8'
+    sm: 'h-8 w-8',
+    md: 'h-12 w-12',
+    lg: 'h-16 w-16'
   };
 
-  if (brand) {
-    return (
-      <div className="flex flex-col items-center space-y-4">
-        <img 
-          src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
-          alt="Hawkly Logo"
-          className="h-16 w-16 object-contain bg-transparent animate-pulse"
-          style={{ backgroundColor: 'transparent' }}
-        />
-        <div className={cn('relative', sizeClasses[size], className)}>
-          <div className="absolute inset-0 rounded-full border-2 border-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-cyan animate-spin">
-            <div className="absolute inset-1 rounded-full bg-background" />
-          </div>
-          <div className="absolute inset-2 rounded-full bg-gradient-to-r from-brand-blue via-brand-purple to-brand-cyan opacity-50 animate-pulse" />
-        </div>
-      </div>
-    );
-  }
-
+  // Always show the Hawkly logo for brand consistency
   return (
-    <div className={cn(
-      'animate-spin rounded-full border-2 border-border border-t-primary',
-      sizeClasses[size],
-      className
-    )} />
+    <div className="flex flex-col items-center space-y-4">
+      <img 
+        src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+        alt="Hawkly Logo"
+        className={cn(sizeClasses[size], "object-contain bg-transparent animate-pulse", className)}
+        style={{ backgroundColor: 'transparent' }}
+      />
+    </div>
   );
 }

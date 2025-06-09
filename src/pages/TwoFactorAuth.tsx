@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
-import { HawklyLogo } from "@/components/layout/hawkly-logo";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from '@/contexts/auth';
 
@@ -96,7 +95,12 @@ const TwoFactorAuth = () => {
 
       <div className="w-full max-w-md p-8 space-y-8 bg-white/80 backdrop-blur rounded-xl shadow-lg border border-gray-200">
         <div className="flex flex-col items-center space-y-2">
-          <HawklyLogo />
+          <img 
+            src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+            alt="Hawkly Logo"
+            className="h-16 w-16 object-contain bg-transparent mb-2"
+            style={{ backgroundColor: 'transparent' }}
+          />
           <h1 className="text-2xl font-bold tracking-tight">Two-Factor Authentication</h1>
           <p className="text-muted-foreground text-center">
             We've sent a verification code to your email. Please enter it below to continue.

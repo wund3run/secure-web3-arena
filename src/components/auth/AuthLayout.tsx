@@ -22,7 +22,7 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
             <img 
               src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
               alt="Hawkly Logo"
-              className="mx-auto h-16 w-16 object-contain bg-transparent"
+              className="mx-auto h-20 w-20 object-contain bg-transparent"
               style={{ backgroundColor: 'transparent' }}
             />
             <h2 className="mt-6 text-3xl font-extrabold bg-gradient-to-r from-brand-blue via-brand-purple to-brand-cyan bg-clip-text text-transparent">
