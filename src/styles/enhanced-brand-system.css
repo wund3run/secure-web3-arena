@@ -1,0 +1,185 @@
+
+/* Enhanced Hawkly Brand System */
+:root {
+  /* Enhanced Brand Color Palette */
+  --brand-primary: #8A73E2;
+  --brand-primary-light: #AA95F7;
+  --brand-primary-dark: #6B46C1;
+  --brand-secondary: #33C3F0;
+  --brand-secondary-light: #5CE1FA;
+  --brand-secondary-dark: #0891B2;
+  --brand-accent: #FF5722;
+  --brand-accent-light: #FF8A65;
+  --brand-accent-dark: #D84315;
+  --brand-success: #22C55E;
+  --brand-warning: #F59E0B;
+  --brand-error: #EF4444;
+
+  /* Brand Gradients */
+  --brand-gradient-primary: linear-gradient(135deg, #8A73E2 0%, #33C3F0 100%);
+  --brand-gradient-secondary: linear-gradient(135deg, #33C3F0 0%, #22C55E 100%);
+  --brand-gradient-accent: linear-gradient(135deg, #FF5722 0%, #8A73E2 100%);
+  --brand-gradient-hero: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f4c75 100%);
+  --brand-gradient-card: linear-gradient(135deg, rgba(138, 115, 226, 0.05) 0%, rgba(51, 195, 240, 0.05) 100%);
+  --brand-gradient-subtle: linear-gradient(135deg, rgba(138, 115, 226, 0.02) 0%, rgba(51, 195, 240, 0.02) 100%);
+
+  /* Enhanced Shadows with Brand Colors */
+  --brand-shadow-primary: 0 4px 20px rgba(138, 115, 226, 0.15);
+  --brand-shadow-secondary: 0 4px 20px rgba(51, 195, 240, 0.15);
+  --brand-shadow-accent: 0 4px 20px rgba(255, 87, 34, 0.15);
+  --brand-glow-primary: 0 0 30px rgba(138, 115, 226, 0.3);
+  --brand-glow-secondary: 0 0 30px rgba(51, 195, 240, 0.3);
+
+  /* Background Variations */
+  --bg-brand-subtle: linear-gradient(135deg, rgba(138, 115, 226, 0.03) 0%, rgba(51, 195, 240, 0.03) 100%);
+  --bg-brand-light: linear-gradient(135deg, rgba(138, 115, 226, 0.08) 0%, rgba(51, 195, 240, 0.08) 100%);
+  --bg-brand-medium: linear-gradient(135deg, rgba(138, 115, 226, 0.15) 0%, rgba(51, 195, 240, 0.15) 100%);
+}
+
+/* Utility Classes for Brand Implementation */
+.gradient-primary {
+  background: var(--brand-gradient-primary);
+}
+
+.gradient-secondary {
+  background: var(--brand-gradient-secondary);
+}
+
+.gradient-accent {
+  background: var(--brand-gradient-accent);
+}
+
+.gradient-hero {
+  background: var(--brand-gradient-hero);
+}
+
+.gradient-text {
+  background: var(--brand-gradient-primary);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+}
+
+.brand-shadow-lg {
+  box-shadow: var(--brand-shadow-primary);
+}
+
+.brand-glow {
+  box-shadow: var(--brand-glow-primary);
+}
+
+.brand-card {
+  background: var(--brand-gradient-card);
+  border: 1px solid rgba(138, 115, 226, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.brand-button-primary {
+  background: var(--brand-gradient-primary);
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.brand-button-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--brand-shadow-primary);
+}
+
+.brand-button-secondary {
+  background: var(--brand-gradient-secondary);
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.brand-button-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--brand-shadow-secondary);
+}
+
+.brand-badge {
+  background: var(--brand-gradient-primary);
+  color: white;
+  border: none;
+}
+
+.brand-border {
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              var(--brand-gradient-primary) border-box;
+}
+
+/* Animated gradient backgrounds */
+.animated-gradient {
+  background: var(--brand-gradient-primary);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Enhanced interactive elements */
+.brand-hover-effect {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.brand-hover-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--brand-gradient-primary);
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: -1;
+}
+
+.brand-hover-effect:hover::before {
+  left: 0;
+  opacity: 0.1;
+}
+
+/* Status indicators with brand colors */
+.status-success {
+  background: linear-gradient(135deg, #22C55E, #16A34A);
+  color: white;
+}
+
+.status-warning {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: white;
+}
+
+.status-error {
+  background: linear-gradient(135deg, #EF4444, #DC2626);
+  color: white;
+}
+
+.status-info {
+  background: var(--brand-gradient-secondary);
+  color: white;
+}
+
+/* Enhanced form elements */
+.brand-input {
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              rgba(138, 115, 226, 0.2) border-box;
+  transition: all 0.3s ease;
+}
+
+.brand-input:focus {
+  background: linear-gradient(white, white) padding-box,
+              var(--brand-gradient-primary) border-box;
+  box-shadow: var(--brand-shadow-primary);
+}

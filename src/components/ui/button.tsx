@@ -10,16 +10,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "gradient-primary text-white hover:hawk-shadow-lg hover:-translate-y-0.5 shadow-sm",
+        default: "gradient-primary text-white hover:shadow-[0_8px_30px_rgba(138,115,226,0.3)] hover:-translate-y-0.5 shadow-sm",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary/30 hover:hawk-shadow",
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary/30 hover:shadow-[0_4px_20px_rgba(138,115,226,0.1)]",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm hover:hawk-shadow",
+          "bg-gradient-to-r from-brand-secondary to-brand-secondary-light text-white hover:shadow-[0_8px_30px_rgba(51,195,240,0.3)] hover:-translate-y-0.5 shadow-sm",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        brand: "gradient-primary text-white hover:hawk-shadow-lg hover:-translate-y-1 hover:scale-105",
+        brand: "bg-gradient-to-r from-brand-primary via-brand-secondary to-brand-primary bg-size-200 text-white hover:shadow-[0_8px_40px_rgba(138,115,226,0.4)] hover:-translate-y-1 hover:scale-105 animate-[gradientShift_3s_ease-in-out_infinite]",
+        accent: "bg-gradient-to-r from-brand-accent to-brand-accent-light text-white hover:shadow-[0_8px_30px_rgba(255,87,34,0.3)] hover:-translate-y-0.5 shadow-sm",
       },
       size: {
         default: "h-10 px-4 py-2",
