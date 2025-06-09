@@ -52,7 +52,7 @@ export function useAnalytics() {
           
           const metrics: Partial<PerformanceMetrics> = {
             pageLoadTime: navigation.loadEventEnd - navigation.loadEventStart,
-            timeToInteractive: navigation.domInteractive - navigation.navigationStart
+            timeToInteractive: navigation.domInteractive - navigation.fetchStart
           };
 
           const fcp = paint.find(entry => entry.name === 'first-contentful-paint');
