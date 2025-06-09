@@ -11,7 +11,8 @@ const skeletonVariants = cva(
         default: "bg-muted",
         shimmer: "bg-gradient-to-r from-muted via-muted-foreground/10 to-muted bg-[length:200%_100%] animate-[shimmer_2s_infinite]",
         pulse: "animate-pulse bg-muted",
-        wave: "bg-gradient-to-r from-transparent via-muted to-transparent bg-[length:200%_100%] animate-[wave_2s_infinite]"
+        wave: "bg-gradient-to-r from-transparent via-muted to-transparent bg-[length:200%_100%] animate-[wave_2s_infinite]",
+        card: "bg-muted border border-border/50 shadow-sm"
       },
       speed: {
         slow: "animate-[pulse_3s_ease-in-out_infinite]",
