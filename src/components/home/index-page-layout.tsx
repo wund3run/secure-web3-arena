@@ -10,7 +10,7 @@ import { IntelligentAnalytics } from "@/components/analytics/IntelligentAnalytic
 import { SEOEnhancer } from "@/components/seo/SEOEnhancer";
 import { SmartNavigationEnhancer } from "@/components/navigation/SmartNavigationEnhancer";
 
-// Core journey components (loaded immediately) - update to use enhanced hero
+// Core journey components (loaded immediately)
 import { EnhancedHero } from "@/components/home/EnhancedHero";
 import { TrustIndicators } from "@/components/home/trust-indicators";
 import { ValuePropositionSection } from "@/components/home/value-proposition-section";
@@ -30,7 +30,7 @@ const SectionLoadingFallback = ({ height = "h-64" }: { height?: string }) => (
   </div>
 );
 
-// Progressive loading stages for the homepage - update to use enhanced hero
+// Progressive loading stages for the homepage
 const homePageStages = [
   {
     name: "Enhanced Hero Section",
@@ -99,11 +99,11 @@ export function IndexPageLayout() {
           </div>
         </AdaptiveContentRenderer>
         
-        {/* Smart Navigation Enhancement */}
+        {/* Smart Navigation Enhancement - only show for returning users */}
         <SmartNavigationEnhancer />
         
-        {/* Development Analytics Dashboard */}
-        <IntelligentAnalytics />
+        {/* Development Analytics Dashboard - only for development/admin */}
+        {process.env.NODE_ENV === 'development' && <IntelligentAnalytics />}
       </OptimizedRoute>
     </SmartResourceManager>
   );

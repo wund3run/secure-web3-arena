@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight, CheckCircle, AlertTriangle, ExternalLink } from 'lucide-react';
+import { ArrowRight, CheckCircle, ExternalLink, X } from 'lucide-react';
 import { useAuth } from '@/contexts/auth';
 import { toast } from 'sonner';
 
@@ -29,8 +29,33 @@ export function SmartNavigationEnhancer() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [enhancement, setEnhancement] = useState<NavigationEnhancement | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isDismissed, setIsDismissed] = useState(false);
+
+  // Only show for authenticated users or after some interaction
+  useEffect(() => {
+    const hasVisited = localStorage.getItem('hawkly-has-visited');
+    const isDismissedStored = localStorage.getItem('smart-nav-dismissed');
+    
+    if (isDismissedStored || (!user && !hasVisited)) {
+      return;
+    }
+
+    if (!hasVisited) {
+      localStorage.setItem('hawkly-has-visited', 'true');
+    }
+
+    // Show with a delay to avoid interrupting the user experience
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [user]);
 
   useEffect(() => {
+    if (!isVisible) return;
+
     const generateEnhancement = () => {
       const currentPath = location.pathname;
       
@@ -51,12 +76,6 @@ export function SmartNavigationEnhancer() {
                 href: '/request-audit',
                 priority: 'high' as const,
                 requiresAuth: true
-              },
-              {
-                title: 'Learn About Web3 Security',
-                description: 'Discover best practices and security guidelines',
-                href: '/web3-security',
-                priority: 'medium' as const
               }
             ],
             relatedPages: [
@@ -64,11 +83,6 @@ export function SmartNavigationEnhancer() {
                 title: 'Security Audits',
                 href: '/security-audits',
                 description: 'Comprehensive smart contract security audits'
-              },
-              {
-                title: 'AI Security Tools',
-                href: '/ai-tools',
-                description: 'Advanced AI-powered security analysis'
               }
             ]
           };
@@ -83,19 +97,6 @@ export function SmartNavigationEnhancer() {
                 href: '/request-audit',
                 priority: 'high' as const,
                 requiresAuth: true
-              },
-              {
-                title: 'View Past Audits',
-                description: 'Browse completed security audit reports',
-                href: '/audits',
-                priority: 'medium' as const,
-                requiresAuth: true
-              },
-              {
-                title: 'Compare Services',
-                description: 'See detailed comparison of security services',
-                href: '/security-audits',
-                priority: 'medium' as const
               }
             ],
             relatedPages: [
@@ -103,49 +104,6 @@ export function SmartNavigationEnhancer() {
                 title: 'Code Reviews',
                 href: '/code-reviews',
                 description: 'Expert code analysis and review services'
-              },
-              {
-                title: 'Penetration Testing',
-                href: '/penetration-testing',
-                description: 'Advanced security testing services'
-              }
-            ]
-          };
-          
-        case '/request-audit':
-          return {
-            currentPage: 'Request Audit',
-            suggestedNextSteps: user ? [
-              {
-                title: 'View Dashboard',
-                description: 'Monitor your audit requests and progress',
-                href: '/dashboard',
-                priority: 'high' as const
-              },
-              {
-                title: 'Browse Marketplace',
-                description: 'Find additional security services',
-                href: '/marketplace',
-                priority: 'medium' as const
-              }
-            ] : [
-              {
-                title: 'Sign Up to Continue',
-                description: 'Create an account to submit audit requests',
-                href: '/auth',
-                priority: 'high' as const
-              }
-            ],
-            relatedPages: [
-              {
-                title: 'Security Guidelines',
-                href: '/web3-security',
-                description: 'Best practices for smart contract security'
-              },
-              {
-                title: 'FAQ',
-                href: '/faq',
-                description: 'Common questions about security audits'
               }
             ]
           };
@@ -156,7 +114,7 @@ export function SmartNavigationEnhancer() {
     };
 
     setEnhancement(generateEnhancement());
-  }, [location.pathname, user]);
+  }, [location.pathname, user, isVisible]);
 
   const handleNavigation = (href: string, requiresAuth?: boolean) => {
     if (requiresAuth && !user) {
@@ -165,17 +123,34 @@ export function SmartNavigationEnhancer() {
       return;
     }
     navigate(href);
+    handleDismiss();
   };
 
-  if (!enhancement) return null;
+  const handleDismiss = () => {
+    setIsDismissed(true);
+    setIsVisible(false);
+    localStorage.setItem('smart-nav-dismissed', 'true');
+  };
+
+  if (!enhancement || !isVisible || isDismissed) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 max-w-sm">
+    <div className="fixed bottom-4 right-4 z-40 max-w-sm">
       <Card className="bg-background/95 backdrop-blur-sm border shadow-lg">
         <CardContent className="p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <CheckCircle className="h-4 w-4 text-green-600" />
-            <span className="text-sm font-medium">Smart Navigation</span>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <span className="text-sm font-medium">Quick Actions</span>
+            </div>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleDismiss}
+              className="h-6 w-6 p-0"
+            >
+              <X className="h-3 w-3" />
+            </Button>
           </div>
           
           <div className="space-y-3">
@@ -196,12 +171,7 @@ export function SmartNavigationEnhancer() {
                         {step.description}
                       </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      {step.priority === 'high' && (
-                        <Badge variant="destructive" className="text-xs">High</Badge>
-                      )}
-                      <ArrowRight className="h-3 w-3" />
-                    </div>
+                    <ArrowRight className="h-3 w-3 ml-2" />
                   </Button>
                 ))}
               </div>
@@ -211,7 +181,7 @@ export function SmartNavigationEnhancer() {
               <div>
                 <h4 className="text-sm font-medium mb-2">Related Pages</h4>
                 <div className="space-y-1">
-                  {enhancement.relatedPages.slice(0, 2).map((page, index) => (
+                  {enhancement.relatedPages.slice(0, 1).map((page, index) => (
                     <button
                       key={index}
                       onClick={() => navigate(page.href)}
