@@ -1,130 +1,193 @@
 
-import { Shield, Twitter, Github, MessageSquare, Globe, AlertCircle, Mail } from "lucide-react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Badge } from '@/components/ui/badge';
+import { Shield, Eye, Zap, Users, Github, Twitter, Linkedin, Mail } from 'lucide-react';
 
 export function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="bg-background border-t border-border/40 pt-12 pb-6" role="contentinfo">
-      {/* Beta Platform Notice */}
-      <div className="container mb-10">
-        <div className="p-6 bg-amber-50 rounded-lg border border-amber-200">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="h-6 w-6 text-amber-500 flex-shrink-0 mt-1" />
-            <div>
-              <h2 className="text-lg font-medium text-amber-800">Beta Platform Notice - March 2025</h2>
-              <p className="mt-1 text-amber-700">
-                Hawkly is currently in beta testing phase. While we continuously improve the platform, some features may not be fully operational. 
-                We appreciate your feedback during this phase. Please review our {" "}
-                <Link to="/terms" className="text-primary underline hover:text-primary/80">Terms of Service</Link>{" "}
-                and {" "}
-                <Link to="/privacy" className="text-primary underline hover:text-primary/80">Privacy Policy</Link>{" "}
-                for current limitations and capabilities.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div className="container">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-          {/* Logo and description column */}
-          <div className="col-span-1">
-            <div className="flex justify-center md:justify-start mb-6">
+    <footer className="border-t border-border/40 bg-background/95 backdrop-blur">
+      <div className="container py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          {/* Brand Section */}
+          <div className="space-y-6">
+            <div className="flex items-center space-x-3">
               <img 
-                src="/lovable-uploads/d96077a4-3ebd-4779-9a3e-a504ff6822f1.png" 
-                alt="Hawkly Logo"
-                className="h-28 w-auto object-contain bg-transparent"
-                style={{ backgroundColor: 'transparent' }}
+                src="/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png" 
+                alt="Hawkly"
+                className="h-8 w-8"
               />
+              <span className="text-xl font-bold bg-gradient-to-r from-brand-blue via-brand-purple to-brand-cyan bg-clip-text text-transparent">
+                Hawkly
+              </span>
             </div>
-            <p className="mt-4 text-muted-foreground">
-              The leading Web3 security marketplace connecting projects with top security experts. 
-              Protecting blockchain assets through expert audits and continuous security monitoring.
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              Sharp-eyed security guardians protecting your Web3 assets with vigilant auditing and expert protection services.
             </p>
-            
-            {/* Social links */}
-            <div className="flex items-center space-x-4 mt-6">
-              <a href="https://twitter.com/hawkly" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="text-muted-foreground hover:text-foreground">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="https://github.com/hawkly" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="text-muted-foreground hover:text-foreground">
-                <Github className="h-5 w-5" />
-              </a>
-              <a href="https://discord.gg/hawkly" target="_blank" rel="noopener noreferrer" aria-label="Discord" className="text-muted-foreground hover:text-foreground">
-                <MessageSquare className="h-5 w-5" />
-              </a>
-              <a href="https://hawkly.com" target="_blank" rel="noopener noreferrer" aria-label="Website" className="text-muted-foreground hover:text-foreground">
-                <Globe className="h-5 w-5" />
-              </a>
-            </div>
-            
-            {/* Email */}
-            <div className="mt-6 flex items-center">
-              <Mail className="h-5 w-5 text-muted-foreground mr-2" />
-              <a href="mailto:join@hawkly.com" className="text-muted-foreground hover:text-foreground">
-                join@hawkly.com
-              </a>
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="brand" className="text-xs">
+                <Shield className="h-3 w-3 mr-1" />
+                SOC 2 Guardian
+              </Badge>
+              <Badge variant="outline" className="text-xs border-brand-cyan/30 text-brand-cyan">
+                <Eye className="h-3 w-3 mr-1" />
+                24/7 Vigilant
+              </Badge>
             </div>
           </div>
-          
-          {/* Marketplace column */}
-          <div className="col-span-1">
-            <h3 className="font-medium mb-4 text-lg">MARKETPLACE</h3>
-            <ul className="space-y-3">
-              <li><Link to="/marketplace" className="text-muted-foreground hover:text-foreground">Browse Services</Link></li>
-              <li><Link to="/audits" className="text-muted-foreground hover:text-foreground">Security Audits</Link></li>
-              <li><Link to="/request-audit" className="text-muted-foreground hover:text-foreground">Request Audit</Link></li>
-              <li><Link to="/pricing-inr" className="text-muted-foreground hover:text-foreground">Pricing (INR)</Link></li>
-              <li><Link to="/launch-readiness" className="text-muted-foreground hover:text-foreground">Launch Status</Link></li>
+
+          {/* Services */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-foreground">Services</h3>
+            <ul className="space-y-3 text-sm">
+              <li>
+                <Link to="/security-audits" className="text-muted-foreground hover:text-brand-blue transition-colors duration-200">
+                  Security Audits
+                </Link>
+              </li>
+              <li>
+                <Link to="/code-reviews" className="text-muted-foreground hover:text-brand-purple transition-colors duration-200">
+                  Code Reviews
+                </Link>
+              </li>
+              <li>
+                <Link to="/penetration-testing" className="text-muted-foreground hover:text-brand-cyan transition-colors duration-200">
+                  Penetration Testing
+                </Link>
+              </li>
+              <li>
+                <Link to="/consulting" className="text-muted-foreground hover:text-brand-orange transition-colors duration-200">
+                  Security Consulting
+                </Link>
+              </li>
+              <li>
+                <Link to="/marketplace" className="text-muted-foreground hover:text-brand-blue transition-colors duration-200">
+                  Find Guardians
+                </Link>
+              </li>
             </ul>
           </div>
-          
-          {/* Resources column */}
-          <div className="col-span-1">
-            <h3 className="font-medium mb-4 text-lg">RESOURCES</h3>
-            <ul className="space-y-3">
-              <li><Link to="/resources" className="text-muted-foreground hover:text-foreground">Security Guides</Link></li>
-              <li><Link to="/security-insights" className="text-muted-foreground hover:text-foreground">Security Insights</Link></li>
-              <li><Link to="/faq" className="text-muted-foreground hover:text-foreground">FAQ</Link></li>
-              <li><Link to="/support" className="text-muted-foreground hover:text-foreground">Support Center</Link></li>
-              <li><Link to="/about" className="text-muted-foreground hover:text-foreground">About Hawkly</Link></li>
+
+          {/* Resources */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-foreground">Resources</h3>
+            <ul className="space-y-3 text-sm">
+              <li>
+                <Link to="/resources" className="text-muted-foreground hover:text-brand-blue transition-colors duration-200">
+                  Security Guides
+                </Link>
+              </li>
+              <li>
+                <Link to="/vulnerabilities" className="text-muted-foreground hover:text-brand-purple transition-colors duration-200">
+                  Vulnerability Database
+                </Link>
+              </li>
+              <li>
+                <Link to="/community" className="text-muted-foreground hover:text-brand-cyan transition-colors duration-200">
+                  Guardian Community
+                </Link>
+              </li>
+              <li>
+                <Link to="/faq" className="text-muted-foreground hover:text-brand-orange transition-colors duration-200">
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link to="/support" className="text-muted-foreground hover:text-brand-blue transition-colors duration-200">
+                  Support
+                </Link>
+              </li>
             </ul>
           </div>
-          
-          {/* Company column */}
-          <div className="col-span-1">
-            <h3 className="font-medium mb-4 text-lg">COMPANY</h3>
-            <ul className="space-y-3">
-              <li><Link to="/community" className="text-muted-foreground hover:text-foreground">Join Community</Link></li>
-              <li><Link to="/careers" className="text-muted-foreground hover:text-foreground">Careers</Link></li>
-              <li><Link to="/contact" className="text-muted-foreground hover:text-foreground">Contact</Link></li>
-              <li><Link to="/terms" className="text-muted-foreground hover:text-foreground">Terms of Service</Link></li>
-              <li><Link to="/privacy" className="text-muted-foreground hover:text-foreground">Privacy Policy</Link></li>
+
+          {/* Company */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-foreground">Company</h3>
+            <ul className="space-y-3 text-sm">
+              <li>
+                <Link to="/about" className="text-muted-foreground hover:text-brand-blue transition-colors duration-200">
+                  About Hawkly
+                </Link>
+              </li>
+              <li>
+                <Link to="/careers" className="text-muted-foreground hover:text-brand-purple transition-colors duration-200">
+                  Join Our Flight
+                </Link>
+              </li>
+              <li>
+                <Link to="/pricing" className="text-muted-foreground hover:text-brand-cyan transition-colors duration-200">
+                  Pricing
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-muted-foreground hover:text-brand-orange transition-colors duration-200">
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
-        
-        <div className="mt-12 pt-6 border-t border-border/40">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} Hawkly. All rights reserved. • Last updated: March 2025
+
+        {/* Social & Legal */}
+        <div className="border-t border-border/40 mt-12 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            {/* Social Links */}
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-muted-foreground">Connect with the guardians:</span>
+              <div className="flex space-x-3">
+                <a href="#" className="p-2 rounded-full hover:bg-brand-blue/10 hover:text-brand-blue transition-all duration-200">
+                  <Twitter className="h-4 w-4" />
+                </a>
+                <a href="#" className="p-2 rounded-full hover:bg-brand-purple/10 hover:text-brand-purple transition-all duration-200">
+                  <Github className="h-4 w-4" />
+                </a>
+                <a href="#" className="p-2 rounded-full hover:bg-brand-cyan/10 hover:text-brand-cyan transition-all duration-200">
+                  <Linkedin className="h-4 w-4" />
+                </a>
+                <a href="#" className="p-2 rounded-full hover:bg-brand-orange/10 hover:text-brand-orange transition-all duration-200">
+                  <Mail className="h-4 w-4" />
+                </a>
+              </div>
             </div>
-            <div className="flex flex-wrap justify-center gap-6">
-              <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground">
-                About
+
+            {/* Legal Links */}
+            <div className="flex items-center space-x-6 text-sm text-muted-foreground">
+              <Link to="/privacy" className="hover:text-brand-blue transition-colors duration-200">
+                Privacy Policy
               </Link>
-              <Link to="/careers" className="text-sm text-muted-foreground hover:text-foreground">
-                Careers
+              <Link to="/terms" className="hover:text-brand-purple transition-colors duration-200">
+                Terms of Service
               </Link>
-              <Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground">
-                Terms
-              </Link>
-              <Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground">
-                Privacy
-              </Link>
-              <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground">
-                Contact
-              </Link>
+              <span>&copy; {currentYear} Hawkly. All rights protected.</span>
+            </div>
+          </div>
+
+          {/* Trust Indicators */}
+          <div className="mt-8 pt-6 border-t border-border/20">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                <div className="flex items-center space-x-1">
+                  <Shield className="h-3 w-3 text-brand-blue" />
+                  <span>500+ Expert Guardians</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Eye className="h-3 w-3 text-brand-purple" />
+                  <span>$350M+ Assets Protected</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Zap className="h-3 w-3 text-brand-cyan" />
+                  <span>24h Response Time</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Users className="h-3 w-3 text-brand-orange" />
+                  <span>2,500+ Audits Completed</span>
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground">
+                Vigilantly secured by Web3 security guardians worldwide
+              </div>
             </div>
           </div>
         </div>
