@@ -6,10 +6,6 @@ import { SkipLink } from "@/components/ui/skip-link";
 import { SEOOptimization } from "@/components/seo/SEOOptimization";
 
 // Lazy load heavy components to improve initial page load
-const EnhancedFooter = React.lazy(() => 
-  import("@/components/home/enhanced-footer").then(m => ({ default: m.EnhancedFooter }))
-);
-
 const IndexPageLayout = React.lazy(() => 
   import("@/components/home/index-page-layout").then(m => ({ default: m.IndexPageLayout }))
 );
@@ -21,7 +17,7 @@ const SupportButtonEnhanced = React.lazy(() =>
 // Minimal loading fallback for lazy components
 const ComponentFallback = () => (
   <div className="w-full h-32 flex items-center justify-center">
-    <div className="w-6 h-6 border-2 border-gray-300 border-t-primary rounded-full animate-spin"></div>
+    <div className="w-6 h-6 border-2 border-neutral-300 border-t-primary-600 rounded-full animate-spin"></div>
   </div>
 );
 
@@ -47,10 +43,6 @@ export default function Index() {
           <IndexPageLayout />
         </React.Suspense>
       </main>
-      
-      <React.Suspense fallback={<div className="h-20" />}>
-        <EnhancedFooter />
-      </React.Suspense>
       
       <React.Suspense fallback={null}>
         <SupportButtonEnhanced />
