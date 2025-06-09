@@ -1,130 +1,118 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/auth';
-import { useBehaviorTracking } from './user-profiling/useBehaviorTracking';
-import { getUserSegment } from './user-profiling/userProfilingUtils';
-import { getLocalPreferences, savePreferences } from './user-profiling/useLocalStorage';
-import { UserPreferences, UserJourneyProfile } from '@/types/user-profiling';
 
-export const useUserProfiling = () => {
-  const { user, userProfile } = useAuth();
-  const { behaviorProfile, setBehaviorProfile, trackBehavior } = useBehaviorTracking(user?.id);
-  const [preferences, setPreferences] = useState<UserPreferences | null>(null);
-  const [journeyProfile, setJourneyProfile] = useState<UserJourneyProfile | null>(null);
+export interface UserBehaviorProfile {
+  visitCount: number;
+  averageSessionTime: number;
+  preferredSections: string[];
+  interactionPatterns: Record<string, number>;
+  lastVisit: string;
+  deviceType: 'mobile' | 'tablet' | 'desktop';
+  preferredContentType: 'visual' | 'textual' | 'interactive';
+}
 
-  // Load preferences on mount
+export interface UserPreferences {
+  theme: 'light' | 'dark' | 'auto';
+  language: string;
+  notifications: boolean;
+  autoPlay: boolean;
+  reducedMotion: boolean;
+  compactMode: boolean;
+}
+
+export function useUserProfiling() {
+  const { user } = useAuth();
+  const [behaviorProfile, setBehaviorProfile] = useState<UserBehaviorProfile | null>(null);
+  const [preferences, setPreferences] = useState<UserPreferences>({
+    theme: 'light',
+    language: 'en',
+    notifications: true,
+    autoPlay: false,
+    reducedMotion: false,
+    compactMode: false
+  });
+
+  // Initialize user profiling
   useEffect(() => {
-    const stored = getLocalPreferences();
-    if (stored) {
-      setPreferences(stored);
-    } else {
-      // Create default preferences
-      const defaultPrefs: UserPreferences = {
-        userId: user?.id || 'anonymous',
-        theme: 'system',
-        language: 'en',
-        dashboardLayout: 'cards',
-        experienceLevel: 'intermediate',
-        timezone: 'UTC',
-        preferredCommunication: 'email',
-        urgencyPreference: 'standard',
-        notifications: {
-          email: true,
-          push: false,
-          sms: false
-        },
-        notificationSettings: {
-          auditUpdates: true,
-          newMessages: true,
-          paymentAlerts: true,
-          securityAlerts: true,
-          marketingEmails: false
-        },
-        accessibility: {
-          reducedMotion: false,
-          highContrast: false,
-          fontSize: 'medium'
-        },
-        privacy: {
-          analytics: true,
-          marketing: false,
-          personalization: true
-        },
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      setPreferences(defaultPrefs);
-      savePreferences(defaultPrefs);
-    }
-  }, [user?.id]);
+    const initializeProfile = () => {
+      const stored = localStorage.getItem('hawkly_user_profile');
+      if (stored) {
+        try {
+          setBehaviorProfile(JSON.parse(stored));
+        } catch (error) {
+          console.warn('Failed to parse user profile:', error);
+        }
+      } else {
+        // Create new profile
+        const newProfile: UserBehaviorProfile = {
+          visitCount: 1,
+          averageSessionTime: 0,
+          preferredSections: [],
+          interactionPatterns: {},
+          lastVisit: new Date().toISOString(),
+          deviceType: getDeviceType(),
+          preferredContentType: 'visual'
+        };
+        setBehaviorProfile(newProfile);
+        localStorage.setItem('hawkly_user_profile', JSON.stringify(newProfile));
+      }
+    };
 
-  // Initialize behavior profile for new users
-  useEffect(() => {
-    if (user && !behaviorProfile) {
-      const initialProfile = {
-        userId: user.id,
-        visitCount: 1,
-        lastVisit: new Date().toISOString(),
-        totalTimeSpent: 0,
-        averageSessionDuration: 0,
-        deviceType: 'desktop' as const,
-        pagesVisited: [window.location.pathname],
-        mostVisitedPages: [window.location.pathname],
-        completedActions: [],
-        preferences: {},
-        engagementScore: 1,
-        conversionEvents: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      setBehaviorProfile(initialProfile);
-    }
-  }, [user, behaviorProfile, setBehaviorProfile]);
+    initializeProfile();
+  }, []);
 
-  // Initialize journey profile
-  useEffect(() => {
-    if (user && !journeyProfile) {
-      const initialJourney: UserJourneyProfile = {
-        userId: user.id,
-        currentStage: 'visitor',
-        stageHistory: [{ stage: 'visitor', timestamp: new Date().toISOString() }],
-        nextRecommendedActions: ['explore_services', 'view_auditor_profiles'],
-        progressScore: 10,
-        blockers: [],
-        opportunities: ['start_onboarding']
-      };
-      setJourneyProfile(initialJourney);
-    }
-  }, [user, journeyProfile]);
-
-  const updatePreferences = (newPreferences: Partial<UserPreferences>) => {
-    if (preferences) {
+  // Track user interactions
+  const trackInteraction = useCallback((section: string, interactionType: string) => {
+    setBehaviorProfile(prev => {
+      if (!prev) return prev;
+      
       const updated = {
-        ...preferences,
-        ...newPreferences,
-        updatedAt: new Date().toISOString()
+        ...prev,
+        interactionPatterns: {
+          ...prev.interactionPatterns,
+          [`${section}_${interactionType}`]: (prev.interactionPatterns[`${section}_${interactionType}`] || 0) + 1
+        }
       };
-      setPreferences(updated);
-      savePreferences(updated);
-    }
-  };
+      
+      localStorage.setItem('hawkly_user_profile', JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
 
-  const getUserSegmentValue = () => {
-    return getUserSegment(behaviorProfile, userProfile?.user_type);
-  };
+  // Update preferences
+  const updatePreferences = useCallback((newPreferences: Partial<UserPreferences>) => {
+    setPreferences(prev => {
+      const updated = { ...prev, ...newPreferences };
+      localStorage.setItem('hawkly_user_preferences', JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
 
-  const getRecommendedActions = () => {
-    if (!journeyProfile) return [];
-    return journeyProfile.nextRecommendedActions;
-  };
+  // Get user segment for personalization
+  const getUserSegment = useCallback(() => {
+    if (!behaviorProfile) return 'new_visitor';
+    
+    if (behaviorProfile.visitCount === 1) return 'new_visitor';
+    if (behaviorProfile.visitCount < 5) return 'returning_visitor';
+    if (behaviorProfile.averageSessionTime > 300) return 'engaged_user';
+    if (user) return 'authenticated_user';
+    
+    return 'casual_visitor';
+  }, [behaviorProfile, user]);
 
   return {
-    preferences,
     behaviorProfile,
-    journeyProfile,
+    preferences,
+    trackInteraction,
     updatePreferences,
-    trackBehavior,
-    getUserSegment: getUserSegmentValue,
-    getRecommendedActions
+    getUserSegment
   };
-};
+}
+
+function getDeviceType(): 'mobile' | 'tablet' | 'desktop' {
+  const width = window.innerWidth;
+  if (width < 768) return 'mobile';
+  if (width < 1024) return 'tablet';
+  return 'desktop';
+}

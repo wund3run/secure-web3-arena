@@ -4,6 +4,9 @@ import { LazySection } from "@/components/performance/LazySection";
 import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
 import { OptimizedRoute } from "@/components/performance/OptimizedRoute";
 import { ProgressiveLoader } from "@/components/performance/ProgressiveLoader";
+import { AdaptiveContentRenderer } from "@/components/home/adaptive-content-renderer";
+import { SmartResourceManager } from "@/components/performance/SmartResourceManager";
+import { IntelligentAnalytics } from "@/components/analytics/IntelligentAnalytics";
 
 // Core journey components (loaded immediately)
 import { SimplifiedHero } from "@/components/home/simplified-hero";
@@ -30,7 +33,7 @@ const homePageStages = [
   {
     name: "Hero Section",
     component: SimplifiedHero,
-    loadTime: 100
+    loadTime: 50
   },
   {
     name: "Trust Indicators", 
@@ -45,7 +48,7 @@ const homePageStages = [
   {
     name: "How It Works",
     component: HowItWorksSection,
-    loadTime: 150
+    loadTime: 100
   },
   {
     name: "User Journey",
@@ -56,37 +59,44 @@ const homePageStages = [
 
 export function IndexPageLayout() {
   return (
-    <OptimizedRoute
-      title="Hawkly | Leading Web3 Security Marketplace"
-      description="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions."
-      preloadRoutes={['/marketplace', '/request-audit', '/auth']}
-    >
-      <div className="flex-grow">
-        {/* Core content with progressive loading */}
-        <ProgressiveLoader 
-          stages={homePageStages}
-          className="space-y-0"
-        />
+    <SmartResourceManager>
+      <OptimizedRoute
+        title="Hawkly | Leading Web3 Security Marketplace"
+        description="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions."
+        preloadRoutes={['/marketplace', '/request-audit', '/auth']}
+      >
+        <AdaptiveContentRenderer>
+          <div className="flex-grow">
+            {/* Core content with progressive loading */}
+            <ProgressiveLoader 
+              stages={homePageStages}
+              className="space-y-0"
+            />
+            
+            {/* Below-the-fold content - lazy loaded with enhanced loading states */}
+            <LazySection 
+              fallback={<SectionLoadingFallback />}
+              threshold={0.1}
+              rootMargin="200px"
+            >
+              <QuickStartSection />
+            </LazySection>
+            
+            <LazySection 
+              fallback={<SectionLoadingFallback height="h-80" />}
+              threshold={0.1}
+              rootMargin="100px"
+            >
+              <Suspense fallback={<SectionLoadingFallback height="h-80" />}>
+                <FaqSection />
+              </Suspense>
+            </LazySection>
+          </div>
+        </AdaptiveContentRenderer>
         
-        {/* Below-the-fold content - lazy loaded with enhanced loading states */}
-        <LazySection 
-          fallback={<SectionLoadingFallback />}
-          threshold={0.1}
-          rootMargin="200px"
-        >
-          <QuickStartSection />
-        </LazySection>
-        
-        <LazySection 
-          fallback={<SectionLoadingFallback height="h-80" />}
-          threshold={0.1}
-          rootMargin="100px"
-        >
-          <Suspense fallback={<SectionLoadingFallback height="h-80" />}>
-            <FaqSection />
-          </Suspense>
-        </LazySection>
-      </div>
-    </OptimizedRoute>
+        {/* Development Analytics Dashboard */}
+        <IntelligentAnalytics />
+      </OptimizedRoute>
+    </SmartResourceManager>
   );
 }
