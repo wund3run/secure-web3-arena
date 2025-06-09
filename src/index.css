@@ -5,6 +5,7 @@
 
 @import "./styles/design-tokens.css";
 @import "./styles/modern-design-tokens.css";
+@import "./styles/enhanced-animations.css";
 
 @layer base {
   :root {

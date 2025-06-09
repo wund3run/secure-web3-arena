@@ -1,35 +1,31 @@
 
-import React, { Suspense } from 'react';
-import { useIntersectionObserver } from '@/hooks/performance/useIntersectionObserver';
+import React, { Suspense, lazy } from "react";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
 
 interface LazySectionProps {
   children: React.ReactNode;
   fallback?: React.ReactNode;
   threshold?: number;
+  rootMargin?: string;
   className?: string;
 }
 
-const DefaultFallback = () => (
-  <div className="min-h-[200px] flex items-center justify-center">
-    <div className="animate-pulse bg-muted rounded-lg w-full h-48"></div>
-  </div>
-);
-
-export function LazySection({ 
-  children, 
-  fallback = <DefaultFallback />, 
+export function LazySection({
+  children,
+  fallback = <EnhancedSkeleton variant="shimmer" className="h-64 w-full" />,
   threshold = 0.1,
+  rootMargin = "100px",
   className = ""
 }: LazySectionProps) {
-  const { targetRef, hasIntersected } = useIntersectionObserver<HTMLDivElement>({
+  const [ref, isIntersecting] = useIntersectionObserver({
     threshold,
-    triggerOnce: true,
-    rootMargin: '100px'
+    rootMargin,
   });
 
   return (
-    <div ref={targetRef} className={className}>
-      {hasIntersected ? (
+    <div ref={ref} className={className}>
+      {isIntersecting ? (
         <Suspense fallback={fallback}>
           {children}
         </Suspense>
