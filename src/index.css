@@ -9,20 +9,20 @@
 @layer base {
   :root {
     /* Brand Colors - Matching Hawkly Logo Exactly */
-    --primary: 248 67% 67%; /* Blue from logo gradient start #4A90E2 */
+    --primary: 217 91% 60%; /* Blue from logo gradient start #4A90E2 */
     --primary-foreground: 0 0% 100%;
     
     --secondary: 187 85% 53%; /* Cyan from logo gradient end #33C3F0 */
     --secondary-foreground: 0 0% 100%;
     
-    --accent: 14 100% 57%; /* Orange from hawk eyes #FF5722 */
+    --accent: 24 95% 53%; /* Orange from hawk eyes #FF5722 */
     --accent-foreground: 0 0% 100%;
 
     /* Brand-specific gradient colors */
-    --brand-blue: 248 67% 67%; /* #4A90E2 */
-    --brand-purple: 262 57% 67%; /* #8A73E2 */
+    --brand-blue: 217 91% 60%; /* #4A90E2 */
+    --brand-purple: 262 83% 58%; /* #7C3AED */
     --brand-cyan: 187 85% 53%; /* #33C3F0 */
-    --brand-orange: 14 100% 57%; /* #FF5722 */
+    --brand-orange: 24 95% 53%; /* #FF5722 */
     
     /* Core UI Colors */
     --background: 0 0% 100%;
@@ -39,7 +39,7 @@
     
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 248 67% 67%;
+    --ring: 217 91% 60%;
     
     --radius: var(--radius-md);
     
@@ -52,8 +52,8 @@
     --error-foreground: 0 0% 100%;
     
     /* Brand gradient variables */
-    --brand-gradient: linear-gradient(135deg, hsl(248 67% 67%), hsl(262 57% 67%), hsl(187 85% 53%));
-    --brand-gradient-subtle: linear-gradient(135deg, hsl(248 67% 67% / 0.1), hsl(262 57% 67% / 0.1), hsl(187 85% 53% / 0.1));
+    --brand-gradient: linear-gradient(135deg, hsl(217 91% 60%), hsl(262 83% 58%), hsl(187 85% 53%));
+    --brand-gradient-subtle: linear-gradient(135deg, hsl(217 91% 60% / 0.1), hsl(262 83% 58% / 0.1), hsl(187 85% 53% / 0.1));
   }
   
   .dark {
@@ -66,7 +66,7 @@
     --popover: 220 13% 21%;
     --popover-foreground: 210 40% 98%;
     
-    --primary: 248 67% 77%;
+    --primary: 217 91% 70%;
     --primary-foreground: 220 13% 18%;
     
     --secondary: 187 85% 63%;
@@ -75,12 +75,12 @@
     --muted: 217 33% 18%;
     --muted-foreground: 215 20% 65%;
     
-    --accent: 14 100% 67%;
+    --accent: 24 95% 63%;
     --accent-foreground: 220 13% 18%;
     
     --border: 217 33% 25%;
     --input: 217 33% 25%;
-    --ring: 248 67% 77%;
+    --ring: 217 91% 70%;
   }
 
   /* Enhanced typography with brand consistency */
@@ -455,6 +455,15 @@
   }
   50% {
     background-position: 100% 50%;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 }
 

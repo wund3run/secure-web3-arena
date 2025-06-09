@@ -28,7 +28,12 @@ interface LazyComponentWrapperProps {
 
 export function LazyComponentWrapper({ 
   children, 
-  fallback = <LoadingSpinner size="lg" text="Loading component..." /> 
+  fallback = (
+    <div className="flex flex-col items-center justify-center p-8 space-y-4">
+      <LoadingSpinner size="lg" brand />
+      <p className="text-sm text-muted-foreground">Loading component...</p>
+    </div>
+  )
 }: LazyComponentWrapperProps) {
   return (
     <Suspense fallback={fallback}>

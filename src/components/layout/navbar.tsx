@@ -9,7 +9,7 @@ import { useAuth } from '@/contexts/auth';
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, signOut } = useAuth(); // Changed from logout to signOut
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -67,7 +67,7 @@ export function Navbar() {
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={logout}
+                onClick={signOut}
                 className="border-brand-blue/30 text-brand-blue hover:bg-brand-blue/10 hover:border-brand-blue/50"
               >
                 Sign Out
@@ -135,7 +135,7 @@ export function Navbar() {
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    onClick={() => { logout(); setIsMenuOpen(false); }}
+                    onClick={() => { signOut(); setIsMenuOpen(false); }}
                     className="w-full"
                   >
                     Sign Out
