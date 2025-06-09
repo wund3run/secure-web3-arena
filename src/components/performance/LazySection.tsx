@@ -13,7 +13,17 @@ interface LazySectionProps {
 
 export function LazySection({
   children,
-  fallback = <EnhancedSkeleton variant="shimmer" className="h-64 w-full" />,
+  fallback = (
+    <div className="flex flex-col items-center justify-center p-8 space-y-4">
+      <img 
+        src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+        alt="Hawkly Logo"
+        className="h-16 w-16 object-contain bg-transparent animate-pulse"
+        style={{ backgroundColor: 'transparent' }}
+      />
+      <EnhancedSkeleton variant="shimmer" className="h-64 w-full" />
+    </div>
+  ),
   threshold = 0.1,
   rootMargin = "100px",
   className = ""

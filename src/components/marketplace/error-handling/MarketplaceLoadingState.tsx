@@ -19,6 +19,16 @@ export const MarketplaceLoadingState: React.FC<MarketplaceLoadingStateProps> = m
   if (type === 'detail') {
     return (
       <div className="space-y-6">
+        {/* Logo and branding header */}
+        <div className="flex items-center justify-center mb-8">
+          <img 
+            src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+            alt="Hawkly Logo"
+            className="h-12 w-12 object-contain bg-transparent animate-pulse"
+            style={{ backgroundColor: 'transparent' }}
+          />
+        </div>
+        
         <div className="flex flex-col md:flex-row gap-6">
           <Skeleton className="h-64 w-full md:w-1/3 rounded-lg" />
           <div className="space-y-4 w-full md:w-2/3">
@@ -42,6 +52,16 @@ export const MarketplaceLoadingState: React.FC<MarketplaceLoadingStateProps> = m
   if (type === 'list') {
     return (
       <div className="space-y-4">
+        {/* Logo and branding header */}
+        <div className="flex items-center justify-center mb-8">
+          <img 
+            src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+            alt="Hawkly Logo"
+            className="h-12 w-12 object-contain bg-transparent animate-pulse"
+            style={{ backgroundColor: 'transparent' }}
+          />
+        </div>
+        
         {Array.from({ length: renderCount }).map((_, i) => (
           <div key={i} className="flex items-center gap-4 p-4 border rounded-lg">
             <Skeleton 
@@ -70,37 +90,49 @@ export const MarketplaceLoadingState: React.FC<MarketplaceLoadingStateProps> = m
 
   // Default grid loading state with staggered animations
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {Array.from({ length: renderCount }).map((_, i) => (
-        <Card key={i} className="overflow-hidden">
-          <Skeleton 
-            className="h-48 w-full" 
-            variant={i % 2 === 0 ? 'default' : 'card'}
-            style={{ animationDelay: `${i * 100}ms` }}
-          />
-          <CardContent className="p-4 space-y-2">
+    <div className="space-y-6">
+      {/* Logo and branding header */}
+      <div className="flex items-center justify-center mb-8">
+        <img 
+          src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+          alt="Hawkly Logo"
+          className="h-12 w-12 object-contain bg-transparent animate-pulse"
+          style={{ backgroundColor: 'transparent' }}
+        />
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {Array.from({ length: renderCount }).map((_, i) => (
+          <Card key={i} className="overflow-hidden">
             <Skeleton 
-              className="h-5 w-3/4" 
-              style={{ animationDelay: `${i * 125}ms` }}
+              className="h-48 w-full" 
+              variant={i % 2 === 0 ? 'default' : 'card'}
+              style={{ animationDelay: `${i * 100}ms` }}
             />
-            <Skeleton 
-              className="h-4 w-1/2" 
-              variant="text"
-              style={{ animationDelay: `${i * 150}ms` }}
-            />
-            <div className="flex justify-between items-center pt-4">
+            <CardContent className="p-4 space-y-2">
               <Skeleton 
-                className="h-6 w-16" 
-                style={{ animationDelay: `${i * 175}ms` }}
+                className="h-5 w-3/4" 
+                style={{ animationDelay: `${i * 125}ms` }}
               />
               <Skeleton 
-                className="h-8 w-20" 
-                style={{ animationDelay: `${i * 200}ms` }}
+                className="h-4 w-1/2" 
+                variant="text"
+                style={{ animationDelay: `${i * 150}ms` }}
               />
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+              <div className="flex justify-between items-center pt-4">
+                <Skeleton 
+                  className="h-6 w-16" 
+                  style={{ animationDelay: `${i * 175}ms` }}
+                />
+                <Skeleton 
+                  className="h-8 w-20" 
+                  style={{ animationDelay: `${i * 200}ms` }}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 });

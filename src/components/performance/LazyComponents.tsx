@@ -30,7 +30,12 @@ export function LazyComponentWrapper({
   children, 
   fallback = (
     <div className="flex flex-col items-center justify-center p-8 space-y-4">
-      <LoadingSpinner size="lg" brand />
+      <img 
+        src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+        alt="Hawkly Logo"
+        className="h-16 w-16 object-contain bg-transparent animate-pulse"
+        style={{ backgroundColor: 'transparent' }}
+      />
       <p className="text-sm text-muted-foreground">Loading component...</p>
     </div>
   )
