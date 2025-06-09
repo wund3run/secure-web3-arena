@@ -162,6 +162,15 @@
 
 @layer components {
   /* Modern container */
+  .container-modern {
+    width: 100%;
+    max-width: var(--container-max-width);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+  }
+
   .container {
     @apply container-modern;
   }
