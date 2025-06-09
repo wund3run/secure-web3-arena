@@ -33,6 +33,11 @@ const homePageStages = [
     loadTime: 100
   },
   {
+    name: "Trust Indicators", 
+    component: TrustIndicators,
+    loadTime: 100
+  },
+  {
     name: "Value Proposition",
     component: ValuePropositionSection,
     loadTime: 150
@@ -80,14 +85,6 @@ export function IndexPageLayout() {
           <Suspense fallback={<SectionLoadingFallback height="h-80" />}>
             <FaqSection />
           </Suspense>
-        </LazySection>
-        
-        {/* Trust indicators moved to the end with intelligent loading */}
-        <LazySection 
-          fallback={<SectionLoadingFallback height="h-32" />}
-          threshold={0.2}
-        >
-          <TrustIndicators />
         </LazySection>
       </div>
     </OptimizedRoute>

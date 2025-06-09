@@ -23,8 +23,8 @@ export function ProgressiveLoader({
   showProgress = false,
   className = ""
 }: ProgressiveLoaderProps) {
-  const [currentStage, setCurrentStage] = useState(0);
   const [loadedStages, setLoadedStages] = useState<Set<number>>(new Set());
+  const [currentStage, setCurrentStage] = useState(0);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -38,22 +38,16 @@ export function ProgressiveLoader({
 
     const timer = setTimeout(() => {
       setLoadedStages(prev => new Set([...prev, currentStage]));
-      setCurrentStage(prev => prev + 1);
       setProgress(((currentStage + 1) / stages.length) * 100);
+      setCurrentStage(prev => prev + 1);
     }, loadTime);
 
     return () => clearTimeout(timer);
   }, [currentStage, stages, onComplete]);
 
-  if (currentStage >= stages.length) {
-    const FinalComponent = stages[stages.length - 1].component;
-    const finalProps = stages[stages.length - 1].props || {};
-    return <FinalComponent {...finalProps} />;
-  }
-
   return (
     <div className={className}>
-      {showProgress && (
+      {showProgress && currentStage < stages.length && (
         <div className="mb-4 space-y-2">
           <div className="flex justify-between text-sm text-muted-foreground">
             <span>Loading {stages[currentStage]?.name || 'content'}...</span>
@@ -63,18 +57,8 @@ export function ProgressiveLoader({
         </div>
       )}
       
-      <div className="space-y-4">
+      <div className="space-y-0">
         {stages.map((stage, index) => {
-          if (index > currentStage) {
-            return (
-              <EnhancedSkeleton 
-                key={stage.name}
-                variant="shimmer" 
-                className="h-20 w-full rounded" 
-              />
-            );
-          }
-          
           if (loadedStages.has(index)) {
             const StageComponent = stage.component;
             const stageProps = stage.props || {};
@@ -85,13 +69,17 @@ export function ProgressiveLoader({
             );
           }
           
-          return (
-            <EnhancedSkeleton 
-              key={stage.name}
-              variant="pulse" 
-              className="h-20 w-full rounded" 
-            />
-          );
+          if (index <= currentStage) {
+            return (
+              <EnhancedSkeleton 
+                key={stage.name}
+                variant="shimmer" 
+                className="h-64 w-full rounded mb-8" 
+              />
+            );
+          }
+          
+          return null;
         })}
       </div>
     </div>
