@@ -19,6 +19,13 @@ export interface UserPreferences {
   autoPlay: boolean;
   reducedMotion: boolean;
   compactMode: boolean;
+  notificationSettings?: {
+    auditUpdates: boolean;
+    newMessages: boolean;
+    paymentAlerts: boolean;
+    securityAlerts: boolean;
+    marketingEmails: boolean;
+  };
 }
 
 export function useUserProfiling() {
@@ -30,7 +37,14 @@ export function useUserProfiling() {
     notifications: true,
     autoPlay: false,
     reducedMotion: false,
-    compactMode: false
+    compactMode: false,
+    notificationSettings: {
+      auditUpdates: true,
+      newMessages: true,
+      paymentAlerts: true,
+      securityAlerts: true,
+      marketingEmails: false
+    }
   });
 
   // Initialize user profiling
@@ -80,6 +94,11 @@ export function useUserProfiling() {
     });
   }, []);
 
+  // Track behavior (alias for trackInteraction)
+  const trackBehavior = useCallback((action: string, metadata?: any) => {
+    trackInteraction('general', action);
+  }, [trackInteraction]);
+
   // Update preferences
   const updatePreferences = useCallback((newPreferences: Partial<UserPreferences>) => {
     setPreferences(prev => {
@@ -101,12 +120,44 @@ export function useUserProfiling() {
     return 'casual_visitor';
   }, [behaviorProfile, user]);
 
+  // Get recommended actions
+  const getRecommendedActions = useCallback(() => {
+    const segment = getUserSegment();
+    const actions = [];
+    
+    switch (segment) {
+      case 'new_visitor':
+        actions.push('explore_services', 'learn_about_audits');
+        break;
+      case 'returning_visitor':
+        actions.push('create_account', 'request_audit');
+        break;
+      case 'engaged_user':
+        actions.push('start_first_audit', 'browse_auditors');
+        break;
+      case 'authenticated_user':
+        actions.push('submit_audit_request', 'view_dashboard');
+        break;
+    }
+    
+    return actions;
+  }, [getUserSegment]);
+
+  // Mock journey profile
+  const journeyProfile = {
+    currentStage: 'visitor' as const,
+    progressScore: behaviorProfile ? Math.min(100, behaviorProfile.visitCount * 10) : 0
+  };
+
   return {
     behaviorProfile,
     preferences,
     trackInteraction,
+    trackBehavior,
     updatePreferences,
-    getUserSegment
+    getUserSegment,
+    getRecommendedActions,
+    journeyProfile
   };
 }
 

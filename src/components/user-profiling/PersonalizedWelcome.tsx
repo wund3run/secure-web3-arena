@@ -34,13 +34,13 @@ export function PersonalizedWelcome() {
 
   const getPersonalizedMessage = () => {
     switch (userSegment) {
-      case 'first_time_visitor':
+      case 'new_visitor':
         return "Discover the future of Web3 security. Connect with top auditors or showcase your expertise.";
-      case 'returning_client':
+      case 'returning_visitor':
         return "Ready for your next security audit? Our expert auditors are here to help.";
-      case 'active_auditor':
+      case 'engaged_user':
         return "New audit opportunities are waiting. Check out the latest project requests.";
-      case 'browsing_prospect':
+      case 'authenticated_user':
         return "Still exploring? Let us help you find exactly what you're looking for.";
       default:
         return "Your Web3 security journey continues here.";

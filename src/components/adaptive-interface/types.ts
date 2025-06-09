@@ -1,5 +1,5 @@
 
-import { UserPreferences, UserBehaviorProfile } from '@/types/user-profiling';
+import { UserPreferences, UserBehaviorProfile } from '@/hooks/useUserProfiling';
 
 export interface AdaptiveInterfaceProps {
   userSegment: string;

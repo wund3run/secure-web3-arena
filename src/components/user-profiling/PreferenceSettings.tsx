@@ -18,7 +18,7 @@ export function PreferenceSettings() {
       notificationSettings: {
         ...preferences?.notificationSettings,
         [key]: value,
-      } as any,
+      },
     });
   };
 
