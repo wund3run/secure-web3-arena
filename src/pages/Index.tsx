@@ -1,4 +1,3 @@
-
 import React from "react";
 import { StandardizedLayout } from "@/components/layout/StandardizedLayout";
 import { SkipLink } from "@/components/ui/skip-link";
@@ -13,10 +12,19 @@ const SupportButtonEnhanced = React.lazy(() =>
   import("@/components/ui/support-button-enhanced").then(m => ({ default: m.SupportButtonEnhanced }))
 );
 
-// Minimal loading fallback for lazy components
+// Enhanced loading fallback for better UX
 const ComponentFallback = () => (
-  <div className="w-full h-32 flex items-center justify-center">
-    <div className="w-6 h-6 border-2 border-neutral-300 border-t-primary-600 rounded-full animate-spin"></div>
+  <div className="min-h-screen p-6 space-y-4">
+    <div className="animate-pulse space-y-4">
+      <div className="h-12 bg-muted rounded-lg w-64 mx-auto" />
+      <div className="h-4 bg-muted rounded w-full max-w-2xl mx-auto" />
+      <div className="h-4 bg-muted rounded w-3/4 max-w-xl mx-auto" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 max-w-6xl mx-auto">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="h-48 bg-muted rounded-lg animate-pulse" />
+        ))}
+      </div>
+    </div>
   </div>
 );
 
@@ -25,7 +33,7 @@ export default function Index() {
     <StandardizedLayout
       title="Hawkly | Leading Web3 Security Marketplace"
       description="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions."
-      keywords="web3 security, smart contract audit, blockchain security"
+      keywords="web3 security, smart contract audit, blockchain security, defi security, nft audit"
       showBreadcrumbs={false}
     >
       <SEOOptimization 

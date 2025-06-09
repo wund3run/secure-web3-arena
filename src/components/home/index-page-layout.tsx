@@ -1,4 +1,3 @@
-
 import React, { Suspense } from "react";
 import { LazySection } from "@/components/performance/LazySection";
 import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
@@ -8,8 +7,8 @@ import { AdaptiveContentRenderer } from "@/components/home/adaptive-content-rend
 import { SmartResourceManager } from "@/components/performance/SmartResourceManager";
 import { IntelligentAnalytics } from "@/components/analytics/IntelligentAnalytics";
 
-// Core journey components (loaded immediately)
-import { SimplifiedHero } from "@/components/home/simplified-hero";
+// Core journey components (loaded immediately) - update to use enhanced hero
+import { EnhancedHero } from "@/components/home/EnhancedHero";
 import { TrustIndicators } from "@/components/home/trust-indicators";
 import { ValuePropositionSection } from "@/components/home/value-proposition-section";
 import { HowItWorksSection } from "@/components/home/how-it-works-section";
@@ -28,11 +27,11 @@ const SectionLoadingFallback = ({ height = "h-64" }: { height?: string }) => (
   </div>
 );
 
-// Progressive loading stages for the homepage
+// Progressive loading stages for the homepage - update to use enhanced hero
 const homePageStages = [
   {
-    name: "Hero Section",
-    component: SimplifiedHero,
+    name: "Enhanced Hero Section",
+    component: EnhancedHero,
     loadTime: 50
   },
   {
