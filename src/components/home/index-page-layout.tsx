@@ -1,3 +1,4 @@
+
 import React, { Suspense } from "react";
 import { LazySection } from "@/components/performance/LazySection";
 import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
@@ -6,6 +7,8 @@ import { ProgressiveLoader } from "@/components/performance/ProgressiveLoader";
 import { AdaptiveContentRenderer } from "@/components/home/adaptive-content-renderer";
 import { SmartResourceManager } from "@/components/performance/SmartResourceManager";
 import { IntelligentAnalytics } from "@/components/analytics/IntelligentAnalytics";
+import { SEOEnhancer } from "@/components/seo/SEOEnhancer";
+import { SmartNavigationEnhancer } from "@/components/navigation/SmartNavigationEnhancer";
 
 // Core journey components (loaded immediately) - update to use enhanced hero
 import { EnhancedHero } from "@/components/home/EnhancedHero";
@@ -64,6 +67,9 @@ export function IndexPageLayout() {
         description="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions."
         preloadRoutes={['/marketplace', '/request-audit', '/auth']}
       >
+        {/* SEO Enhancement */}
+        <SEOEnhancer />
+        
         <AdaptiveContentRenderer>
           <div className="flex-grow">
             {/* Core content with progressive loading */}
@@ -92,6 +98,9 @@ export function IndexPageLayout() {
             </LazySection>
           </div>
         </AdaptiveContentRenderer>
+        
+        {/* Smart Navigation Enhancement */}
+        <SmartNavigationEnhancer />
         
         {/* Development Analytics Dashboard */}
         <IntelligentAnalytics />
