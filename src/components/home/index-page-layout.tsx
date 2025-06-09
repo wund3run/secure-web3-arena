@@ -1,4 +1,3 @@
-
 import React, { Suspense } from "react";
 import { LazySection } from "@/components/performance/LazySection";
 import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
@@ -19,7 +18,7 @@ import {
 // Enhanced loading fallback component
 const SectionLoadingFallback = ({ height = "h-64" }: { height?: string }) => (
   <div className={`${height} p-6`}>
-    <EnhancedSkeleton variant="card" animation="shimmer" className="h-full w-full" />
+    <EnhancedSkeleton variant="card" className="h-full w-full" />
   </div>
 );
 
