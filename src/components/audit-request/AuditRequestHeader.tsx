@@ -13,7 +13,7 @@ const AuditRequestHeader: React.FC = () => {
     <div className="text-center mb-10">
       <div className="flex justify-center mb-6 animate-in fade-in slide-in-from-top-5">
         <img 
-          src="/lovable-uploads/457a4f30-ef00-4983-ad81-9841ef293c46.png" 
+          src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
           alt="Hawkly Logo"
           className="w-24 h-24 object-contain bg-transparent hover-lift cursor-pointer transition-all"
           style={{ backgroundColor: 'transparent' }}

@@ -30,7 +30,7 @@ export function EnhancedNavbar() {
             <Link to="/" className="flex-shrink-0">
               <img
                 className="h-12 w-12 object-contain bg-transparent"
-                src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png"
+                src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png"
                 alt="Hawkly Logo"
                 style={{ backgroundColor: 'transparent' }}
               />

@@ -15,7 +15,7 @@ export function Footer() {
           <div className="space-y-6">
             <div className="flex items-center space-x-3">
               <img 
-                src="/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png" 
+                src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
                 alt="Hawkly"
                 className="h-8 w-8"
               />
