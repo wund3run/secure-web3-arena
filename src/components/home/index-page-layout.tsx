@@ -1,6 +1,9 @@
+
 import React, { Suspense } from "react";
 import { LazySection } from "@/components/performance/LazySection";
 import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
+import { OptimizedRoute } from "@/components/performance/OptimizedRoute";
+import { ProgressiveLoader } from "@/components/performance/ProgressiveLoader";
 
 // Core journey components (loaded immediately)
 import { SimplifiedHero } from "@/components/home/simplified-hero";
@@ -22,34 +25,71 @@ const SectionLoadingFallback = ({ height = "h-64" }: { height?: string }) => (
   </div>
 );
 
+// Progressive loading stages for the homepage
+const homePageStages = [
+  {
+    name: "Hero Section",
+    component: SimplifiedHero,
+    loadTime: 100
+  },
+  {
+    name: "Value Proposition",
+    component: ValuePropositionSection,
+    loadTime: 150
+  },
+  {
+    name: "How It Works",
+    component: HowItWorksSection,
+    loadTime: 150
+  },
+  {
+    name: "User Journey",
+    component: UserJourneySection,
+    loadTime: 100
+  }
+];
+
 export function IndexPageLayout() {
   return (
-    <div className="flex-grow">
-      {/* Above-the-fold content - loaded immediately */}
-      <SimplifiedHero />
-      
-      {/* Value proposition section */}
-      <ValuePropositionSection />
-      
-      {/* How it works section */}
-      <HowItWorksSection />
-      
-      {/* User journey section - Choose Your Path */}
-      <UserJourneySection />
-      
-      {/* Below-the-fold content - lazy loaded with enhanced loading states */}
-      <LazySection fallback={<SectionLoadingFallback />}>
-        <QuickStartSection />
-      </LazySection>
-      
-      <LazySection fallback={<SectionLoadingFallback height="h-80" />}>
-        <Suspense fallback={<SectionLoadingFallback height="h-80" />}>
-          <FaqSection />
-        </Suspense>
-      </LazySection>
-      
-      {/* Trust indicators moved to the end */}
-      <TrustIndicators />
-    </div>
+    <OptimizedRoute
+      title="Hawkly | Leading Web3 Security Marketplace"
+      description="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions."
+      preloadRoutes={['/marketplace', '/request-audit', '/auth']}
+    >
+      <div className="flex-grow">
+        {/* Core content with progressive loading */}
+        <ProgressiveLoader 
+          stages={homePageStages}
+          className="space-y-0"
+        />
+        
+        {/* Below-the-fold content - lazy loaded with enhanced loading states */}
+        <LazySection 
+          fallback={<SectionLoadingFallback />}
+          threshold={0.1}
+          rootMargin="200px"
+        >
+          <QuickStartSection />
+        </LazySection>
+        
+        <LazySection 
+          fallback={<SectionLoadingFallback height="h-80" />}
+          threshold={0.1}
+          rootMargin="100px"
+        >
+          <Suspense fallback={<SectionLoadingFallback height="h-80" />}>
+            <FaqSection />
+          </Suspense>
+        </LazySection>
+        
+        {/* Trust indicators moved to the end with intelligent loading */}
+        <LazySection 
+          fallback={<SectionLoadingFallback height="h-32" />}
+          threshold={0.2}
+        >
+          <TrustIndicators />
+        </LazySection>
+      </div>
+    </OptimizedRoute>
   );
 }

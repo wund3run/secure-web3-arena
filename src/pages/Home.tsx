@@ -2,6 +2,7 @@
 import React from "react";
 import { StandardizedLayout } from "@/components/layout/StandardizedLayout";
 import { SkipLink } from "@/components/ui/skip-link";
+import { EnhancedErrorBoundary } from "@/components/error-handling/EnhancedErrorBoundary";
 
 // Lazy load heavy components
 const IndexPageLayout = React.lazy(() => 
@@ -29,14 +30,18 @@ export default function Home() {
       <SkipLink targetId="main-content" />
       
       <main id="main-content">
-        <React.Suspense fallback={<ComponentFallback />}>
-          <IndexPageLayout />
-        </React.Suspense>
+        <EnhancedErrorBoundary>
+          <React.Suspense fallback={<ComponentFallback />}>
+            <IndexPageLayout />
+          </React.Suspense>
+        </EnhancedErrorBoundary>
       </main>
       
-      <React.Suspense fallback={null}>
-        <SupportButtonEnhanced />
-      </React.Suspense>
+      <EnhancedErrorBoundary>
+        <React.Suspense fallback={null}>
+          <SupportButtonEnhanced />
+        </React.Suspense>
+      </EnhancedErrorBoundary>
     </StandardizedLayout>
   );
 }
