@@ -1,3 +1,4 @@
+
 import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -8,21 +9,21 @@ import { AuthProvider } from "@/contexts/auth";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { ErrorBoundary } from "@/components/security/ErrorBoundary";
 
-// Lazy load pages
+// Lazy load pages - Enhanced versions are now primary
 const Index = React.lazy(() => import("@/pages/Index"));
 const Dashboard = React.lazy(() => import("@/pages/Dashboard"));
-const Marketplace = React.lazy(() => import("@/pages/Marketplace"));
-const Auth = React.lazy(() => import("@/pages/Auth"));
-const RequestAudit = React.lazy(() => import("@/pages/RequestAudit"));
+const Marketplace = React.lazy(() => import("@/pages/EnhancedMarketplacePage"));
+const Auth = React.lazy(() => import("@/pages/EnhancedAuth"));
+const RequestAudit = React.lazy(() => import("@/pages/EnhancedRequestAudit"));
 const Profile = React.lazy(() => import("@/pages/Profile"));
 const AuditDetails = React.lazy(() => import("@/pages/AuditDetails"));
 const Audits = React.lazy(() => import("@/pages/Audits"));
 const Settings = React.lazy(() => import("@/pages/Settings"));
 
-// Enhanced pages
-const EnhancedRequestAudit = React.lazy(() => import("@/pages/EnhancedRequestAudit"));
-const EnhancedMarketplace = React.lazy(() => import("@/pages/EnhancedMarketplace"));
-const EnhancedAuth = React.lazy(() => import("@/pages/EnhancedAuth"));
+// Legacy versions for compatibility (redirects)
+const LegacyMarketplace = React.lazy(() => import("@/pages/MarketplacePage"));
+const LegacyAuth = React.lazy(() => import("@/pages/Auth"));
+const LegacyRequestAudit = React.lazy(() => import("@/pages/RequestAudit"));
 
 // Footer and essential pages
 const About = React.lazy(() => import("@/pages/About"));
@@ -38,8 +39,6 @@ const Consulting = React.lazy(() => import("@/pages/Consulting"));
 const AiTools = React.lazy(() => import("@/pages/AiTools"));
 const VulnerabilityScanner = React.lazy(() => import("@/pages/VulnerabilityScanner"));
 const ServiceProviderOnboarding = React.lazy(() => import("@/pages/ServiceProviderOnboarding"));
-const DashboardAuditor = React.lazy(() => import("@/pages/DashboardAuditor"));
-const DashboardProject = React.lazy(() => import("@/pages/DashboardProject"));
 
 // Community and resources
 const Resources = React.lazy(() => import("@/pages/Resources"));
@@ -128,7 +127,7 @@ function App() {
                   <Router>
                     <Suspense fallback={<AppLoadingFallback />}>
                       <Routes>
-                        {/* Core application routes */}
+                        {/* Core application routes - Enhanced versions are now primary */}
                         <Route path="/" element={<Index />} />
                         <Route path="/auth" element={<Auth />} />
                         <Route path="/dashboard" element={<Dashboard />} />
@@ -139,10 +138,10 @@ function App() {
                         <Route path="/audits" element={<Audits />} />
                         <Route path="/settings" element={<Settings />} />
                         
-                        {/* Enhanced pages */}
-                        <Route path="/enhanced-request-audit" element={<EnhancedRequestAudit />} />
-                        <Route path="/enhanced-marketplace" element={<EnhancedMarketplace />} />
-                        <Route path="/enhanced-auth" element={<EnhancedAuth />} />
+                        {/* Legacy routes for backward compatibility */}
+                        <Route path="/legacy-marketplace" element={<LegacyMarketplace />} />
+                        <Route path="/legacy-auth" element={<LegacyAuth />} />
+                        <Route path="/legacy-request-audit" element={<LegacyRequestAudit />} />
                         
                         {/* Service pages */}
                         <Route path="/code-reviews" element={<CodeReviews />} />
@@ -151,10 +150,6 @@ function App() {
                         <Route path="/ai-tools" element={<AiTools />} />
                         <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
                         <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
-                        
-                        {/* Dashboard variations */}
-                        <Route path="/dashboard/auditor" element={<DashboardAuditor />} />
-                        <Route path="/dashboard/project" element={<DashboardProject />} />
                         
                         {/* Security and resources */}
                         <Route path="/security-audits" element={<SecurityAudits />} />
@@ -195,10 +190,8 @@ function App() {
                         <Route path="/terms" element={<Terms />} />
                         <Route path="/privacy" element={<Privacy />} />
                         
-                        {/* Alias routes for SEO and navigation */}
+                        {/* Consolidated SEO routes - Only essential ones */}
                         <Route path="/security-insights" element={<Vulnerabilities />} />
-                        <Route path="/security-guides" element={<Resources />} />
-                        <Route path="/knowledge-base" element={<Resources />} />
                         <Route path="/docs" element={<Resources />} />
                         <Route path="/tutorials" element={<Resources />} />
                         <Route path="/templates" element={<Resources />} />

@@ -1,9 +1,10 @@
+
 import React from "react";
 import { StandardizedLayout } from "@/components/layout/StandardizedLayout";
 import { SkipLink } from "@/components/ui/skip-link";
 import { SEOOptimization } from "@/components/seo/SEOOptimization";
 
-// Lazy load heavy components to improve initial page load
+// Enhanced components for consistent experience
 const IndexPageLayout = React.lazy(() => 
   import("@/components/home/index-page-layout").then(m => ({ default: m.IndexPageLayout }))
 );

@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { DashboardRouter } from './DashboardRouter';
+import { UnifiedDashboard } from './UnifiedDashboard';
 
 export function DashboardLayout() {
-  return <DashboardRouter />;
+  return <UnifiedDashboard />;
 }

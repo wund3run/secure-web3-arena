@@ -1,6 +1,7 @@
 
 /**
  * Optimized navigation utilities with caching for better performance
+ * Consolidated routes to remove duplicates and improve maintainability
  */
 
 // Cache for route validation results
@@ -16,15 +17,15 @@ const DYNAMIC_ROUTE_PATTERNS = [
   /^\/provider\/[^/]+$/
 ];
 
-// Core routes that always exist - cached for performance
+// Core routes that always exist - consolidated and cleaned up
 const CORE_ROUTES = new Set([
   '/',
   '/auth',
   '/marketplace',
+  '/request-audit',
   '/audits',
   '/community',
   '/service-provider-onboarding',
-  '/request-audit',
   '/submit-service',
   '/escrow',
   '/dashboard',
@@ -38,10 +39,6 @@ const CORE_ROUTES = new Set([
   '/pricing',
   '/resources',
   '/templates',
-  '/competitive-advantages',
-  '/comprehensive-security',
-  '/audit-guidelines',
-  '/blog',
   '/vulnerabilities',
   '/security-insights',
   '/forum',
@@ -52,10 +49,25 @@ const CORE_ROUTES = new Set([
   '/terms',
   '/privacy',
   '/security-policy',
-  '/distribution-strategy'
+  '/about',
+  '/careers',
+  '/code-reviews',
+  '/penetration-testing',
+  '/consulting',
+  '/vulnerability-scanner',
+  '/security-audits',
+  '/web3-security',
+  '/web-security',
+  '/platform-integration',
+  '/security-compliance',
+  '/performance-optimization',
+  '/platform-optimization',
+  '/analytics',
+  '/database-tools',
+  '/user-experience'
 ]);
 
-// Optimized route mappings
+// Simplified route mappings - removed duplicates
 const ROUTE_MAPPINGS: Record<string, string> = {
   '/dashboard': '/auth',
   '/profile': '/dashboard',
@@ -76,22 +88,12 @@ const ROUTE_MAPPINGS: Record<string, string> = {
   '/questions': '/faq',
   '/template': '/templates',
   '/resource': '/resources',
-  '/compare': '/competitive-advantages',
-  '/comparison': '/competitive-advantages',
-  '/vs': '/competitive-advantages',
-  '/competitors': '/competitive-advantages',
-  '/advantages': '/competitive-advantages',
-  '/coverage': '/comprehensive-security',
-  '/services': '/comprehensive-security',
-  '/features': '/',
-  '/platform': '/',
-  '/technology': '/docs',
-  '/distribution': '/distribution-strategy',
-  '/growth': '/distribution-strategy',
-  '/scale': '/distribution-strategy',
-  '/partnerships': '/distribution-strategy',
-  '/expansion': '/distribution-strategy',
-  '/strategy': '/distribution-strategy'
+  '/enhanced-marketplace': '/marketplace',
+  '/enhanced-auth': '/auth',
+  '/enhanced-request-audit': '/request-audit',
+  '/legacy-marketplace': '/marketplace',
+  '/legacy-auth': '/auth',
+  '/legacy-request-audit': '/request-audit'
 };
 
 export function getFallbackRoute(attemptedPath: string): string {
