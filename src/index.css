@@ -175,6 +175,68 @@
     @apply container-modern;
   }
 
+  /* Typography utilities that need to be in components layer for @apply */
+  .text-display-2xl {
+    font-size: var(--text-6xl);
+    font-weight: var(--font-bold);
+    line-height: var(--leading-tight);
+    letter-spacing: -0.025em;
+  }
+
+  .text-display-xl {
+    font-size: var(--text-5xl);
+    font-weight: var(--font-bold);
+    line-height: var(--leading-tight);
+    letter-spacing: -0.025em;
+  }
+
+  .text-display-lg {
+    font-size: var(--text-4xl);
+    font-weight: var(--font-bold);
+    line-height: var(--leading-snug);
+  }
+
+  .text-display-md {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-semibold);
+    line-height: var(--leading-snug);
+  }
+
+  /* Modern design system classes */
+  .card-modern {
+    background-color: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-neutral-200);
+    transition: all var(--duration-normal) var(--ease-out);
+  }
+
+  .btn-modern {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-md);
+    font-weight: var(--font-medium);
+    font-size: var(--text-sm);
+    line-height: var(--leading-tight);
+    transition: all var(--duration-normal) var(--ease-out);
+    cursor: pointer;
+    border: none;
+    height: var(--button-height-md);
+  }
+
+  .focus-modern {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+
+  .focus-modern:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+
   /* Enhanced card components */
   .card-enhanced {
     @apply card-modern hover:shadow-lg transition-all duration-300;
