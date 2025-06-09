@@ -23,6 +23,9 @@ export function EnhancedHero() {
     return () => clearInterval(interval);
   }, [features.length]);
 
+  // Get the current icon component
+  const CurrentIcon = features[currentFeature].icon;
+
   return (
     <section className="relative pt-20 pb-24 overflow-hidden">
       {/* Enhanced background with animated elements */}
@@ -65,9 +68,7 @@ export function EnhancedHero() {
           {/* Interactive feature showcase */}
           <div className="mb-10">
             <div className="flex items-center justify-center gap-2 text-lg mb-4">
-              {features[currentFeature].icon && (
-                <features[currentFeature].icon className="h-6 w-6 text-primary" />
-              )}
+              <CurrentIcon className="h-6 w-6 text-primary" />
               <span className="font-medium text-foreground animate-fade-in">
                 {features[currentFeature].text}
               </span>
