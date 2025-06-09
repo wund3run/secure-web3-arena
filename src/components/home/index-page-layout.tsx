@@ -1,4 +1,3 @@
-
 import React, { Suspense } from "react";
 import { LazySection } from "@/components/performance/LazySection";
 import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
@@ -7,10 +6,8 @@ import { ProgressiveLoader } from "@/components/performance/ProgressiveLoader";
 import { AdaptiveContentRenderer } from "@/components/home/adaptive-content-renderer";
 import { SmartResourceManager } from "@/components/performance/SmartResourceManager";
 import { IntelligentAnalytics } from "@/components/analytics/IntelligentAnalytics";
-import { SEOEnhancer } from "@/components/seo/SEOEnhancer";
-import { SmartNavigationEnhancer } from "@/components/navigation/SmartNavigationEnhancer";
 
-// Core journey components (loaded immediately)
+// Core journey components (loaded immediately) - update to use enhanced hero
 import { EnhancedHero } from "@/components/home/EnhancedHero";
 import { TrustIndicators } from "@/components/home/trust-indicators";
 import { ValuePropositionSection } from "@/components/home/value-proposition-section";
@@ -30,7 +27,7 @@ const SectionLoadingFallback = ({ height = "h-64" }: { height?: string }) => (
   </div>
 );
 
-// Progressive loading stages for the homepage
+// Progressive loading stages for the homepage - update to use enhanced hero
 const homePageStages = [
   {
     name: "Enhanced Hero Section",
@@ -67,9 +64,6 @@ export function IndexPageLayout() {
         description="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions."
         preloadRoutes={['/marketplace', '/request-audit', '/auth']}
       >
-        {/* SEO Enhancement */}
-        <SEOEnhancer />
-        
         <AdaptiveContentRenderer>
           <div className="flex-grow">
             {/* Core content with progressive loading */}
@@ -99,11 +93,8 @@ export function IndexPageLayout() {
           </div>
         </AdaptiveContentRenderer>
         
-        {/* Smart Navigation Enhancement - only show for returning users */}
-        <SmartNavigationEnhancer />
-        
-        {/* Development Analytics Dashboard - only for development/admin */}
-        {process.env.NODE_ENV === 'development' && <IntelligentAnalytics />}
+        {/* Development Analytics Dashboard */}
+        <IntelligentAnalytics />
       </OptimizedRoute>
     </SmartResourceManager>
   );

@@ -1,123 +1,142 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Shield, Users, Zap, CheckCircle } from 'lucide-react';
+import { ArrowRight, Sparkles, Shield, Users, Zap, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '@/contexts/auth';
+import { Badge } from '@/components/ui/badge';
 
 export function EnhancedHero() {
-  const { user } = useAuth();
-
-  const stats = [
-    { label: 'Security Experts', value: '500+', icon: Users },
-    { label: 'Audits Completed', value: '2,500+', icon: Shield },
-    { label: 'Vulnerabilities Found', value: '10,000+', icon: Zap }
-  ];
-
+  const [currentFeature, setCurrentFeature] = useState(0);
+  
   const features = [
-    'AI-Powered Expert Matching',
-    'Real-time Collaboration Tools',
-    'Comprehensive Security Reports',
-    'Industry-Leading Standards'
+    { icon: Shield, text: "500+ Verified Security Experts" },
+    { icon: Zap, text: "24h Average Response Time" },
+    { icon: Users, text: "$350M+ Assets Protected" },
+    { icon: CheckCircle, text: "2,500+ Audits Completed" }
   ];
+
+  // Rotate features every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentFeature((prev) => (prev + 1) % features.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [features.length]);
+
+  // Get the current icon component
+  const CurrentIcon = features[currentFeature].icon;
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-background via-muted/20 to-background">
-      <div className="absolute inset-0 bg-grid-black/[0.02] bg-[size:60px_60px]" />
-      <div className="relative container mx-auto px-4 py-20 sm:py-24">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Content */}
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <Badge variant="outline" className="w-fit">
-                <Shield className="h-3 w-3 mr-1" />
-                Trusted by 1000+ Projects
-              </Badge>
-              
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
-                Secure Your{' '}
-                <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                  Web3 Project
-                </span>{' '}
-                with Expert Audits
-              </h1>
-              
-              <p className="text-xl text-muted-foreground leading-relaxed max-w-lg">
-                Connect with verified security experts for comprehensive smart contract audits. 
-                Fast, secure, and affordable blockchain security solutions.
-              </p>
-            </div>
+    <section className="relative pt-20 pb-24 overflow-hidden">
+      {/* Enhanced background with animated elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/5 to-secondary/5" />
+      <div className="absolute inset-0 bg-grid-primary/5 [mask-image:radial-gradient(ellipse_at_center,white,transparent)]" />
+      
+      {/* Floating elements */}
+      <div className="absolute top-20 left-10 w-20 h-20 bg-primary/10 rounded-full blur-xl animate-pulse" />
+      <div className="absolute bottom-20 right-10 w-32 h-32 bg-secondary/10 rounded-full blur-xl animate-pulse delay-1000" />
+      
+      <div className="container-modern relative z-10">
+        <div className="text-center max-w-5xl mx-auto">
+          {/* Announcement badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 mb-8 animate-fade-in">
+            <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+            <span className="text-sm font-medium bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              🎉 Now with AI-powered auditor matching
+            </span>
+          </div>
+          
+          {/* Main headline with enhanced typography */}
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+            <span className="block text-foreground">
+              Next-Generation
+            </span>
+            <span className="block bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent bg-[length:200%_200%] animate-[gradient_3s_ease-in-out_infinite]">
+              Web3 Security
+            </span>
+            <span className="block text-foreground text-3xl md:text-4xl lg:text-5xl font-medium mt-2">
+              Marketplace
+            </span>
+          </h1>
+          
+          {/* Enhanced subtitle */}
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-4xl mx-auto leading-relaxed">
+            The <span className="font-semibold text-foreground">intelligent marketplace</span> that matches blockchain projects with 
+            <span className="font-semibold text-foreground"> verified security experts</span> using AI-powered algorithms.
+          </p>
 
-            {/* Features */}
-            <div className="grid grid-cols-2 gap-3">
-              {features.map((feature, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span className="text-sm font-medium">{feature}</span>
-                </div>
-              ))}
+          {/* Interactive feature showcase */}
+          <div className="mb-10">
+            <div className="flex items-center justify-center gap-2 text-lg mb-4">
+              <CurrentIcon className="h-6 w-6 text-primary" />
+              <span className="font-medium text-foreground animate-fade-in">
+                {features[currentFeature].text}
+              </span>
             </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button asChild size="lg" className="group">
-                <Link to={user ? "/request-audit" : "/auth"}>
-                  {user ? "Request Security Audit" : "Get Started Free"}
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </Button>
-              
-              <Button variant="outline" size="lg" asChild>
-                <Link to="/marketplace">
-                  Browse Security Experts
-                </Link>
-              </Button>
-            </div>
-
-            {/* Stats */}
-            <div className="flex flex-wrap gap-6 pt-4">
-              {stats.map((stat, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <stat.icon className="h-4 w-4 text-primary" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-lg">{stat.value}</div>
-                    <div className="text-xs text-muted-foreground">{stat.label}</div>
-                  </div>
-                </div>
+            
+            {/* Feature indicators */}
+            <div className="flex justify-center gap-2">
+              {features.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentFeature(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    index === currentFeature ? 'bg-primary w-8' : 'bg-muted-foreground/30'
+                  }`}
+                />
               ))}
             </div>
           </div>
 
-          {/* Visual */}
-          <div className="relative">
-            <div className="relative bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-8">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <div className="h-12 bg-gradient-to-r from-green-400 to-green-600 rounded-lg flex items-center justify-center">
-                    <Shield className="h-6 w-6 text-white" />
-                  </div>
-                  <div className="h-8 bg-muted rounded-md" />
-                  <div className="h-6 bg-muted/60 rounded-md w-3/4" />
-                </div>
-                <div className="space-y-3">
-                  <div className="h-8 bg-muted rounded-md" />
-                  <div className="h-12 bg-gradient-to-r from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
-                    <Users className="h-6 w-6 text-white" />
-                  </div>
-                  <div className="h-6 bg-muted/60 rounded-md w-2/3" />
-                </div>
-              </div>
-              <div className="mt-6 h-10 bg-gradient-to-r from-primary to-primary/80 rounded-lg flex items-center justify-center">
-                <span className="text-white font-medium">Secure & Verified</span>
-              </div>
-            </div>
+          {/* Enhanced CTAs */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+            <Button asChild size="lg" className="h-14 px-8 text-lg bg-gradient-to-r from-primary to-secondary hover:shadow-lg hover:scale-105 transition-all duration-300 group">
+              <Link to="/marketplace" className="flex items-center gap-2">
+                Find Security Experts
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </Button>
             
-            {/* Floating elements */}
-            <div className="absolute -top-4 -right-4 w-8 h-8 bg-green-500 rounded-full animate-pulse" />
-            <div className="absolute -bottom-4 -left-4 w-6 h-6 bg-blue-500 rounded-full animate-pulse delay-1000" />
+            <Button asChild variant="outline" size="lg" className="h-14 px-8 text-lg border-2 border-primary/30 hover:bg-primary/5 hover:border-primary/50 transition-all duration-300">
+              <Link to="/request-audit">
+                Request Free Quote
+              </Link>
+            </Button>
+          </div>
+
+          {/* Social proof with enhanced visual design */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            {[
+              { number: "500+", label: "Verified Experts", color: "from-primary to-primary/70" },
+              { number: "$350M+", label: "Assets Protected", color: "from-secondary to-secondary/70" },
+              { number: "2,500+", label: "Audits Completed", color: "from-green-500 to-green-400" },
+              { number: "24h", label: "Avg Response", color: "from-orange-500 to-orange-400" }
+            ].map((stat, index) => (
+              <div 
+                key={index} 
+                className="text-center p-4 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg group"
+              >
+                <div className={`text-2xl md:text-3xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-1 group-hover:scale-110 transition-transform duration-300`}>
+                  {stat.number}
+                </div>
+                <div className="text-sm text-muted-foreground font-medium">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Trust badges */}
+          <div className="mt-12 flex justify-center items-center gap-6 opacity-60">
+            <Badge variant="outline" className="px-4 py-2">
+              SOC 2 Compliant
+            </Badge>
+            <Badge variant="outline" className="px-4 py-2">
+              ISO 27001 Certified
+            </Badge>
+            <Badge variant="outline" className="px-4 py-2">
+              24/7 Support
+            </Badge>
           </div>
         </div>
       </div>

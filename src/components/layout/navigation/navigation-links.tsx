@@ -88,11 +88,6 @@ export const navigationLinks = [
         description: "AI-powered security tools"
       },
       {
-        title: "Platform Audit",
-        href: "/audit-dashboard",
-        description: "Monitor platform quality and SEO"
-      },
-      {
         title: "Careers",
         href: "/careers",
         description: "Join the Hawkly team"

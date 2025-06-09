@@ -1,113 +1,182 @@
 
-import { Suspense, lazy } from "react";
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import React, { Suspense } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
+import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/auth";
-import { ThemeProvider } from "@/components/theme/theme-provider";
-import { Helmet, HelmetProvider } from "react-helmet-async";
-import { StandardizedLayout } from "@/components/layout/StandardizedLayout";
-import { AppInitializer } from "@/components/app/AppInitializer";
-import { GlobalComponents } from "@/components/app/GlobalComponents";
+import { NotificationProvider } from "@/contexts/NotificationContext";
+import { ErrorBoundary } from "@/components/security/ErrorBoundary";
 
-// Import existing pages with default imports
-import Marketplace from "@/pages/Marketplace";
-import RequestAudit from "@/pages/RequestAudit";
-import Auth from "@/pages/Auth";
+// Core pages - Enhanced versions are now primary
+const Index = React.lazy(() => import("@/pages/Index"));
+const Dashboard = React.lazy(() => import("@/pages/Dashboard"));
+const Marketplace = React.lazy(() => import("@/pages/EnhancedMarketplacePage"));
+const Auth = React.lazy(() => import("@/pages/EnhancedAuth"));
+const RequestAudit = React.lazy(() => import("@/pages/EnhancedRequestAudit"));
+const Profile = React.lazy(() => import("@/pages/Profile"));
+const AuditDetails = React.lazy(() => import("@/pages/AuditDetails"));
+const Audits = React.lazy(() => import("@/pages/Audits"));
+const Settings = React.lazy(() => import("@/pages/Settings"));
 
-// Lazy load the AuditDashboard and Index page
-const AuditDashboard = lazy(() => import("@/pages/AuditDashboard"));
-const IndexPage = lazy(() => import("@/pages/Index"));
+// Legacy versions for backward compatibility
+const LegacyMarketplace = React.lazy(() => import("@/pages/MarketplacePage"));
+const LegacyAuth = React.lazy(() => import("@/pages/Auth"));
+const LegacyRequestAudit = React.lazy(() => import("@/pages/RequestAudit"));
 
-// Simple placeholder component for missing pages
-const PlaceholderPage = ({ title }: { title: string }) => (
-  <StandardizedLayout title={title} description={`${title} page`}>
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-4">{title}</h1>
-      <p className="text-muted-foreground">This page is under development.</p>
+// Essential business pages
+const About = React.lazy(() => import("@/pages/About"));
+const Contact = React.lazy(() => import("@/pages/Contact"));
+const Careers = React.lazy(() => import("@/pages/Careers"));
+const Terms = React.lazy(() => import("@/pages/Terms"));
+const Privacy = React.lazy(() => import("@/pages/Privacy"));
+const Pricing = React.lazy(() => import("@/pages/Pricing"));
+
+// Core service pages
+const CodeReviews = React.lazy(() => import("@/pages/CodeReviews"));
+const PenetrationTesting = React.lazy(() => import("@/pages/PenetrationTesting"));
+const Consulting = React.lazy(() => import("@/pages/Consulting"));
+const SecurityAudits = React.lazy(() => import("@/pages/SecurityAudits"));
+const Web3Security = React.lazy(() => import("@/pages/Web3Security"));
+
+// Community and resources
+const Resources = React.lazy(() => import("@/pages/Resources"));
+const FAQ = React.lazy(() => import("@/pages/FAQ"));
+const Support = React.lazy(() => import("@/pages/Support"));
+const Community = React.lazy(() => import("@/pages/Community"));
+const Vulnerabilities = React.lazy(() => import("@/pages/Vulnerabilities"));
+
+// Tools and utilities
+const AiTools = React.lazy(() => import("@/pages/AiTools"));
+const VulnerabilityScanner = React.lazy(() => import("@/pages/VulnerabilityScanner"));
+const ServiceProviderOnboarding = React.lazy(() => import("@/pages/ServiceProviderOnboarding"));
+
+// Enhanced loading fallback
+const AppLoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="flex flex-col items-center space-y-4">
+      <img 
+        src="/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png" 
+        alt="Hawkly"
+        className="h-12 w-12"
+        loading="eager"
+      />
+      <div className="w-8 h-8 border-2 border-border border-t-primary rounded-full animate-spin" />
+      <p className="text-sm text-muted-foreground">Loading...</p>
     </div>
-  </StandardizedLayout>
+  </div>
 );
 
+// Enhanced query client with better error handling and caching
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: 1,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
+      retry: (failureCount, error: any) => {
+        // Don't retry on 4xx errors except 408, 429
+        if (error?.status >= 400 && error?.status < 500 && ![408, 429].includes(error?.status)) {
+          return false;
+        }
+        return failureCount < 2;
+      },
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: 'always',
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    },
+    mutations: {
+      retry: (failureCount, error: any) => {
+        // Only retry on network errors or 5xx errors
+        if (error?.status >= 400 && error?.status < 500) {
+          return false;
+        }
+        return failureCount < 1;
+      },
     },
   },
 });
 
-export default function App() {
+function App() {
   return (
-    <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <ThemeProvider defaultTheme="system" storageKey="ui-theme">
-            <BrowserRouter>
-              <AuthProvider>
-                <AppInitializer>
-                  <GlobalComponents />
-                  
-                  <div className="min-h-screen bg-background">
-                    <Helmet>
-                      <title>Hawkly | Leading Web3 Security Marketplace</title>
-                      <meta name="description" content="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions." />
-                    </Helmet>
-                    
-                    <Suspense fallback={
-                      <div className="min-h-screen flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                      </div>
-                    }>
+    <ErrorBoundary>
+      <HelmetProvider>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider defaultTheme="light" storageKey="hawkly-ui-theme">
+            <AuthProvider>
+              <NotificationProvider>
+                <div className="min-h-screen bg-background font-sans antialiased">
+                  <Router>
+                    <Suspense fallback={<AppLoadingFallback />}>
                       <Routes>
-                        <Route path="/" element={<IndexPage />} />
+                        {/* Core application routes - Enhanced versions are primary */}
+                        <Route path="/" element={<Index />} />
+                        <Route path="/auth" element={<Auth />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/marketplace" element={<Marketplace />} />
                         <Route path="/request-audit" element={<RequestAudit />} />
-                        <Route path="/auth" element={<Auth />} />
-                        <Route path="/audit-dashboard" element={<AuditDashboard />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/audit/:id" element={<AuditDetails />} />
+                        <Route path="/audits" element={<Audits />} />
+                        <Route path="/settings" element={<Settings />} />
                         
-                        {/* Placeholder routes for missing pages */}
-                        <Route path="/docs" element={<PlaceholderPage title="Documentation" />} />
-                        <Route path="/security" element={<PlaceholderPage title="Security Practices" />} />
-                        <Route path="/vulnerability-scanner" element={<PlaceholderPage title="Vulnerability Scanner" />} />
-                        <Route path="/service-provider-onboarding" element={<PlaceholderPage title="Service Provider Onboarding" />} />
-                        <Route path="/pricing" element={<PlaceholderPage title="Pricing" />} />
-                        <Route path="/about" element={<PlaceholderPage title="About Us" />} />
-                        <Route path="/contact" element={<PlaceholderPage title="Contact Us" />} />
-                        <Route path="/careers" element={<PlaceholderPage title="Careers" />} />
-                        <Route path="/terms" element={<PlaceholderPage title="Terms & Conditions" />} />
-                        <Route path="/privacy" element={<PlaceholderPage title="Privacy Policy" />} />
-                        <Route path="/profile" element={<PlaceholderPage title="User Profile" />} />
-                        <Route path="/settings" element={<PlaceholderPage title="Settings" />} />
-                        <Route path="/audits" element={<PlaceholderPage title="Audits" />} />
-                        <Route path="/community" element={<PlaceholderPage title="Community" />} />
-                        <Route path="/resources" element={<PlaceholderPage title="Resources" />} />
-                        <Route path="/vulnerabilities" element={<PlaceholderPage title="Vulnerabilities" />} />
-                        <Route path="/ai-tools" element={<PlaceholderPage title="AI Tools" />} />
-                        <Route path="/security-audits" element={<PlaceholderPage title="Security Audits" />} />
-                        <Route path="/code-reviews" element={<PlaceholderPage title="Code Reviews" />} />
-                        <Route path="/penetration-testing" element={<PlaceholderPage title="Penetration Testing" />} />
-                        <Route path="/consulting" element={<PlaceholderPage title="Consulting" />} />
-                        <Route path="/faq" element={<PlaceholderPage title="FAQ" />} />
-                        <Route path="/support" element={<PlaceholderPage title="Support" />} />
-                        <Route path="/dashboard" element={<PlaceholderPage title="Dashboard" />} />
+                        {/* Legacy routes for backward compatibility */}
+                        <Route path="/legacy-marketplace" element={<LegacyMarketplace />} />
+                        <Route path="/legacy-auth" element={<LegacyAuth />} />
+                        <Route path="/legacy-request-audit" element={<LegacyRequestAudit />} />
                         
-                        {/* 404 handling */}
-                        <Route path="/404" element={<PlaceholderPage title="Page Not Found" />} />
-                        <Route path="*" element={<Navigate to="/404" replace />} />
+                        {/* Core service pages */}
+                        <Route path="/code-reviews" element={<CodeReviews />} />
+                        <Route path="/penetration-testing" element={<PenetrationTesting />} />
+                        <Route path="/consulting" element={<Consulting />} />
+                        <Route path="/security-audits" element={<SecurityAudits />} />
+                        <Route path="/web3-security" element={<Web3Security />} />
+                        <Route path="/ai-tools" element={<AiTools />} />
+                        <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
+                        <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
+                        
+                        {/* Community and resources */}
+                        <Route path="/resources" element={<Resources />} />
+                        <Route path="/vulnerabilities" element={<Vulnerabilities />} />
+                        <Route path="/faq" element={<FAQ />} />
+                        <Route path="/support" element={<Support />} />
+                        <Route path="/community" element={<Community />} />
+                        
+                        {/* Essential business pages */}
+                        <Route path="/pricing" element={<Pricing />} />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/contact" element={<Contact />} />
+                        <Route path="/careers" element={<Careers />} />
+                        <Route path="/terms" element={<Terms />} />
+                        <Route path="/privacy" element={<Privacy />} />
+                        
+                        {/* Essential SEO routes - redirect to main resources */}
+                        <Route path="/security-insights" element={<Vulnerabilities />} />
+                        <Route path="/docs" element={<Resources />} />
+                        <Route path="/templates" element={<Resources />} />
                       </Routes>
                     </Suspense>
-                  </div>
+                  </Router>
                   
-                  <Toaster position="top-right" />
-                </AppInitializer>
-              </AuthProvider>
-            </BrowserRouter>
+                  <Toaster 
+                    position="top-right"
+                    toastOptions={{
+                      duration: 4000,
+                      style: {
+                        background: 'hsl(var(--background))',
+                        color: 'hsl(var(--foreground))',
+                        border: '1px solid hsl(var(--border))',
+                      },
+                    }}
+                  />
+                </div>
+              </NotificationProvider>
+            </AuthProvider>
           </ThemeProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </HelmetProvider>
+        </QueryClientProvider>
+      </HelmetProvider>
+    </ErrorBoundary>
   );
 }
+
+export default App;
