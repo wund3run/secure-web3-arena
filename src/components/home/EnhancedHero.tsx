@@ -51,7 +51,7 @@ export function EnhancedHero() {
             <span className="block text-foreground">
               Next-Generation
             </span>
-            <span className="block bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent animate-gradient">
+            <span className="block bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent bg-[length:200%_200%] animate-[gradient_3s_ease-in-out_infinite]">
               Web3 Security
             </span>
             <span className="block text-foreground text-3xl md:text-4xl lg:text-5xl font-medium mt-2">
@@ -140,18 +140,6 @@ export function EnhancedHero() {
           </div>
         </div>
       </div>
-
-      {/* Add gradient animation */}
-      <style jsx>{`
-        @keyframes gradient {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-        .animate-gradient {
-          background-size: 200% 200%;
-          animation: gradient 3s ease-in-out infinite;
-        }
-      `}</style>
     </section>
   );
 }
