@@ -28,6 +28,12 @@ export function StandardizedLoading({
     lg: "p-6"
   };
 
+  const logoSizes = {
+    sm: "h-8 w-8",
+    md: "h-12 w-12", 
+    lg: "h-16 w-16"
+  };
+
   if (variant === "skeleton") {
     return (
       <div className={cn("animate-pulse space-y-2", containerClasses[size], className)}>
@@ -41,7 +47,12 @@ export function StandardizedLoading({
   if (variant === "pulse") {
     return (
       <div className={cn("flex items-center justify-center", containerClasses[size], className)}>
-        <div className={cn("bg-primary rounded-full animate-pulse", sizeClasses[size])}></div>
+        <img 
+          src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+          alt="Hawkly Logo"
+          className={cn("object-contain bg-transparent animate-pulse", logoSizes[size])}
+          style={{ backgroundColor: 'transparent' }}
+        />
         {message && <span className="ml-2 text-sm text-muted-foreground">{message}</span>}
       </div>
     );
@@ -49,7 +60,12 @@ export function StandardizedLoading({
 
   return (
     <div className={cn("flex flex-col items-center justify-center", containerClasses[size], className)}>
-      <Loader2 className={cn("animate-spin text-primary", sizeClasses[size])} />
+      <img 
+        src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+        alt="Hawkly Logo"
+        className={cn("object-contain bg-transparent animate-pulse", logoSizes[size])}
+        style={{ backgroundColor: 'transparent' }}
+      />
       {message && (
         <p className="mt-2 text-sm text-muted-foreground text-center">{message}</p>
       )}

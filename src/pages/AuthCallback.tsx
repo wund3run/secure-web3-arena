@@ -92,7 +92,12 @@ const AuthCallback = () => {
           </>
         ) : (
           <>
-            <Loader2 className="h-16 w-16 text-primary animate-spin mb-4" />
+            <img 
+              src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+              alt="Hawkly Logo"
+              className="h-16 w-16 object-contain bg-transparent animate-pulse mb-4"
+              style={{ backgroundColor: 'transparent' }}
+            />
             <h2 className="text-xl font-semibold mb-2">Authenticating...</h2>
             <p className="text-muted-foreground text-center">
               Please wait while we complete your authentication

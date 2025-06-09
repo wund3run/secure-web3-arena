@@ -32,6 +32,12 @@ export function EnhancedLoadingState({
     lg: 'h-8 w-8'
   };
 
+  const logoSizes = {
+    sm: 'h-8 w-8',
+    md: 'h-12 w-12',
+    lg: 'h-16 w-16'
+  };
+
   const containerClasses = cn(
     "flex flex-col items-center justify-center gap-3",
     fullScreen ? "min-h-screen" : "p-8",
@@ -113,6 +119,12 @@ export function EnhancedLoadingState({
   if (variant === 'progress') {
     return (
       <div className={containerClasses}>
+        <img 
+          src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+          alt="Hawkly Logo"
+          className={cn("object-contain bg-transparent animate-pulse mb-4", logoSizes[size])}
+          style={{ backgroundColor: 'transparent' }}
+        />
         <div className="w-full max-w-xs">
           <div className="flex justify-between text-sm mb-1">
             <span className="text-muted-foreground">{message || 'Loading...'}</span>
@@ -132,11 +144,11 @@ export function EnhancedLoadingState({
   if (variant === 'pulse') {
     return (
       <div className={containerClasses}>
-        <div
-          className={cn(
-            "rounded-full bg-primary animate-pulse",
-            sizeClasses[size]
-          )}
+        <img 
+          src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+          alt="Hawkly Logo"
+          className={cn("object-contain bg-transparent animate-pulse", logoSizes[size])}
+          style={{ backgroundColor: 'transparent' }}
         />
         {message && (
           <p className="text-sm text-muted-foreground">{message}</p>
@@ -145,10 +157,15 @@ export function EnhancedLoadingState({
     );
   }
 
-  // Default spinner variant
+  // Default spinner variant with Hawkly logo
   return (
     <div className={containerClasses}>
-      <Loader2 className={cn("animate-spin text-primary", sizeClasses[size])} />
+      <img 
+        src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+        alt="Hawkly Logo"
+        className={cn("object-contain bg-transparent animate-pulse", logoSizes[size])}
+        style={{ backgroundColor: 'transparent' }}
+      />
       {message && (
         <p className="text-sm text-muted-foreground text-center max-w-sm">
           {message}
