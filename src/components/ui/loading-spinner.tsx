@@ -17,11 +17,19 @@ export function LoadingSpinner({ size = 'md', className, brand = false }: Loadin
 
   if (brand) {
     return (
-      <div className={cn('relative', sizeClasses[size], className)}>
-        <div className="absolute inset-0 rounded-full border-2 border-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-cyan animate-spin">
-          <div className="absolute inset-1 rounded-full bg-background" />
+      <div className="flex flex-col items-center space-y-4">
+        <img 
+          src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+          alt="Hawkly Logo"
+          className="h-16 w-16 object-contain bg-transparent animate-pulse"
+          style={{ backgroundColor: 'transparent' }}
+        />
+        <div className={cn('relative', sizeClasses[size], className)}>
+          <div className="absolute inset-0 rounded-full border-2 border-transparent bg-gradient-to-r from-brand-blue via-brand-purple to-brand-cyan animate-spin">
+            <div className="absolute inset-1 rounded-full bg-background" />
+          </div>
+          <div className="absolute inset-2 rounded-full bg-gradient-to-r from-brand-blue via-brand-purple to-brand-cyan opacity-50 animate-pulse" />
         </div>
-        <div className="absolute inset-2 rounded-full bg-gradient-to-r from-brand-blue via-brand-purple to-brand-cyan opacity-50 animate-pulse" />
       </div>
     );
   }
