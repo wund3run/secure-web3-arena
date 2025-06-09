@@ -1,10 +1,7 @@
 
 import React from "react";
 import { VibrantHero } from "./VibrantHero";
-import { TrustSection } from "./TrustSection";
-import { FeaturesSection } from "./FeaturesSection";
-import { TestimonialsSection } from "./TestimonialsSection";
-import { CTASection } from "./CTASection";
+import { EnhancedFeaturesSection } from "./EnhancedFeaturesSection";
 
 export function IndexPageLayout() {
   return (
@@ -19,10 +16,7 @@ export function IndexPageLayout() {
       
       {/* Enhanced sections with brand styling */}
       <div className="bg-gradient-to-b from-gray-50 to-white">
-        <TrustSection />
-        <FeaturesSection />
-        <TestimonialsSection />
-        <CTASection />
+        <EnhancedFeaturesSection />
       </div>
     </div>
   );
