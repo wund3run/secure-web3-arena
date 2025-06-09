@@ -28,7 +28,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { platformOrchestrator } from '@/services/platformOrchestration';
 
 interface NavigationItem {
   label: string;
@@ -36,7 +35,7 @@ interface NavigationItem {
   icon: React.ElementType;
   badge?: string;
   description?: string;
-  category: 'core' | 'advanced' | 'tools' | 'admin';
+  category: 'core' | 'service' | 'tools' | 'admin';
 }
 
 interface SystemAlert {
@@ -48,8 +47,8 @@ interface SystemAlert {
 
 export function EnhancedNavigationSystem() {
   const location = useLocation();
-  const [systemHealth, setSystemHealth] = useState({ overall: 100, criticalIssues: [] });
-  const [alerts, setAlerts] = useState<SystemAlert[]>([]);
+  const [systemHealth] = useState({ overall: 100, criticalIssues: [] });
+  const [alerts] = useState<SystemAlert[]>([]);
 
   const navigationItems: NavigationItem[] = [
     // Core Platform
@@ -58,41 +57,20 @@ export function EnhancedNavigationSystem() {
     { label: 'Audits', href: '/audits', icon: FileText, category: 'core' },
     { label: 'Request Audit', href: '/request-audit', icon: Users, category: 'core' },
     
-    // Advanced Features
-    { label: 'Security & Compliance', href: '/security-compliance', icon: Shield, badge: 'New', category: 'advanced', description: 'Advanced security monitoring and compliance' },
-    { label: 'Performance Hub', href: '/performance-optimization', icon: Zap, badge: 'Enhanced', category: 'advanced', description: 'Performance monitoring and optimization' },
-    { label: 'Platform Control', href: '/platform-optimization', icon: Monitor, badge: 'Pro', category: 'advanced', description: 'Advanced platform management' },
+    // Services
+    { label: 'Security Audits', href: '/security-audits', icon: Shield, category: 'service', description: 'Comprehensive security audits' },
+    { label: 'Code Reviews', href: '/code-reviews', icon: FileText, category: 'service', description: 'Expert code analysis' },
+    { label: 'Penetration Testing', href: '/penetration-testing', icon: Zap, category: 'service', description: 'Security testing services' },
+    { label: 'Consulting', href: '/consulting', icon: Monitor, category: 'service', description: 'Security consulting' },
     
-    // Tools & Analytics
-    { label: 'Analytics Center', href: '/analytics', icon: BarChart3, category: 'tools', description: 'Comprehensive analytics dashboard' },
-    { label: 'System Health', href: '/system-health', icon: Activity, category: 'tools', description: 'Real-time system monitoring' },
-    { label: 'Database Tools', href: '/database-tools', icon: Database, category: 'tools', description: 'Database management and insights' },
+    // Tools & Resources
+    { label: 'AI Tools', href: '/ai-tools', icon: BarChart3, category: 'tools', description: 'AI-powered security tools' },
+    { label: 'Vulnerabilities', href: '/vulnerabilities', icon: Activity, category: 'tools', description: 'Vulnerability database' },
+    { label: 'Resources', href: '/resources', icon: Database, category: 'tools', description: 'Security guides and resources' },
     
     // Admin
     { label: 'Settings', href: '/settings', icon: Settings, category: 'admin' },
   ];
-
-  useEffect(() => {
-    const updateSystemHealth = () => {
-      const health = platformOrchestrator.getSystemHealth();
-      setSystemHealth(health);
-      
-      // Generate alerts based on system health
-      const newAlerts: SystemAlert[] = health.criticalIssues.map((issue, index) => ({
-        id: `alert-${index}`,
-        type: 'warning' as const,
-        message: issue,
-        timestamp: new Date()
-      }));
-      
-      setAlerts(newAlerts);
-    };
-
-    updateSystemHealth();
-    const interval = setInterval(updateSystemHealth, 30000); // Update every 30 seconds
-    
-    return () => clearInterval(interval);
-  }, []);
 
   const isActiveRoute = (href: string) => {
     return location.pathname === href || location.pathname.startsWith(href + '/');
@@ -110,8 +88,8 @@ export function EnhancedNavigationSystem() {
 
     const categoryLabels = {
       core: 'Core Platform',
-      advanced: 'Advanced Features',
-      tools: 'Tools & Analytics',
+      service: 'Services',
+      tools: 'Tools & Resources',
       admin: 'Administration'
     };
 
@@ -151,7 +129,7 @@ export function EnhancedNavigationSystem() {
       {/* Header with System Status */}
       <div className="p-4 border-b">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-semibold">Platform Control</h2>
+          <h2 className="text-lg font-semibold">Platform Navigation</h2>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="flex items-center gap-2">
@@ -206,7 +184,7 @@ export function EnhancedNavigationSystem() {
       <div className="flex-1 overflow-y-auto p-2">
         <nav className="space-y-1">
           {renderNavigationSection('core', navigationItems)}
-          {renderNavigationSection('advanced', navigationItems)}
+          {renderNavigationSection('service', navigationItems)}
           {renderNavigationSection('tools', navigationItems)}
           {renderNavigationSection('admin', navigationItems)}
         </nav>
@@ -216,14 +194,14 @@ export function EnhancedNavigationSystem() {
       <div className="p-4 border-t">
         <div className="space-y-2">
           <Button variant="outline" size="sm" className="w-full justify-start" asChild>
-            <Link to="/platform-optimization">
+            <Link to="/marketplace">
               <Monitor className="h-3 w-3 mr-2" />
-              Platform Overview
+              Browse Services
             </Link>
           </Button>
           
           <Button variant="outline" size="sm" className="w-full justify-start" asChild>
-            <Link to="/security-compliance">
+            <Link to="/security-audits">
               <Shield className="h-3 w-3 mr-2" />
               Security Center
             </Link>

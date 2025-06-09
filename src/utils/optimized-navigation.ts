@@ -1,7 +1,7 @@
 
 /**
  * Optimized navigation utilities with caching for better performance
- * Consolidated routes to remove duplicates and improve maintainability
+ * Cleaned up routes to remove unused pages and consolidate functionality
  */
 
 // Cache for route validation results
@@ -17,83 +17,65 @@ const DYNAMIC_ROUTE_PATTERNS = [
   /^\/provider\/[^/]+$/
 ];
 
-// Core routes that always exist - consolidated and cleaned up
+// Core routes that always exist - cleaned up and consolidated
 const CORE_ROUTES = new Set([
   '/',
   '/auth',
   '/marketplace',
   '/request-audit',
   '/audits',
-  '/community',
-  '/service-provider-onboarding',
-  '/submit-service',
-  '/escrow',
   '/dashboard',
-  '/admin',
-  '/system-health',
-  '/contact',
-  '/support',
-  '/faq',
-  '/ai-tools',
-  '/docs',
-  '/pricing',
-  '/resources',
-  '/templates',
-  '/vulnerabilities',
-  '/security-insights',
-  '/forum',
-  '/events',
-  '/challenges',
-  '/leaderboard',
-  '/achievements',
-  '/terms',
-  '/privacy',
-  '/security-policy',
-  '/about',
-  '/careers',
+  '/profile',
+  '/settings',
+  '/security-audits',
   '/code-reviews',
   '/penetration-testing',
   '/consulting',
-  '/vulnerability-scanner',
-  '/security-audits',
   '/web3-security',
-  '/web-security',
-  '/platform-integration',
-  '/security-compliance',
-  '/performance-optimization',
-  '/platform-optimization',
-  '/analytics',
-  '/database-tools',
-  '/user-experience'
+  '/resources',
+  '/vulnerabilities',
+  '/community',
+  '/ai-tools',
+  '/vulnerability-scanner',
+  '/service-provider-onboarding',
+  '/faq',
+  '/support',
+  '/pricing',
+  '/about',
+  '/contact',
+  '/careers',
+  '/terms',
+  '/privacy'
 ]);
 
-// Simplified route mappings - removed duplicates
+// Simplified route mappings - cleaned up duplicates
 const ROUTE_MAPPINGS: Record<string, string> = {
   '/dashboard': '/auth',
-  '/profile': '/dashboard',
-  '/settings': '/dashboard',
-  '/admin': '/dashboard',
   '/auditor': '/service-provider-onboarding',
   '/audit': '/audits',
   '/security': '/marketplace',
   '/help': '/support',
-  '/documentation': '/docs',
-  '/guide': '/docs',
-  '/api': '/docs',
+  '/documentation': '/resources',
+  '/docs': '/resources',
+  '/guide': '/resources',
+  '/guides': '/resources',
+  '/api': '/resources',
   '/tools': '/ai-tools',
   '/cost': '/pricing',
   '/price': '/pricing',
   '/contact-us': '/contact',
   '/reach-out': '/contact',
   '/questions': '/faq',
-  '/template': '/templates',
+  '/template': '/resources',
+  '/templates': '/resources',
   '/resource': '/resources',
   '/enhanced-marketplace': '/marketplace',
   '/enhanced-auth': '/auth',
   '/enhanced-request-audit': '/request-audit',
   '/legacy-marketplace': '/marketplace',
   '/legacy-auth': '/auth',
-  '/legacy-request-audit': '/request-audit'
+  '/legacy-request-audit': '/request-audit',
+  '/security-insights': '/vulnerabilities'
 };
 
 export function getFallbackRoute(attemptedPath: string): string {

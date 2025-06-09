@@ -9,7 +9,7 @@ import { AuthProvider } from "@/contexts/auth";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { ErrorBoundary } from "@/components/security/ErrorBoundary";
 
-// Lazy load pages - Enhanced versions are now primary
+// Core pages - Enhanced versions are now primary
 const Index = React.lazy(() => import("@/pages/Index"));
 const Dashboard = React.lazy(() => import("@/pages/Dashboard"));
 const Marketplace = React.lazy(() => import("@/pages/EnhancedMarketplacePage"));
@@ -20,55 +20,37 @@ const AuditDetails = React.lazy(() => import("@/pages/AuditDetails"));
 const Audits = React.lazy(() => import("@/pages/Audits"));
 const Settings = React.lazy(() => import("@/pages/Settings"));
 
-// Legacy versions for compatibility (redirects)
+// Legacy versions for backward compatibility
 const LegacyMarketplace = React.lazy(() => import("@/pages/MarketplacePage"));
 const LegacyAuth = React.lazy(() => import("@/pages/Auth"));
 const LegacyRequestAudit = React.lazy(() => import("@/pages/RequestAudit"));
 
-// Footer and essential pages
+// Essential business pages
 const About = React.lazy(() => import("@/pages/About"));
 const Contact = React.lazy(() => import("@/pages/Contact"));
 const Careers = React.lazy(() => import("@/pages/Careers"));
 const Terms = React.lazy(() => import("@/pages/Terms"));
 const Privacy = React.lazy(() => import("@/pages/Privacy"));
+const Pricing = React.lazy(() => import("@/pages/Pricing"));
 
-// Service pages
+// Core service pages
 const CodeReviews = React.lazy(() => import("@/pages/CodeReviews"));
 const PenetrationTesting = React.lazy(() => import("@/pages/PenetrationTesting"));
 const Consulting = React.lazy(() => import("@/pages/Consulting"));
-const AiTools = React.lazy(() => import("@/pages/AiTools"));
-const VulnerabilityScanner = React.lazy(() => import("@/pages/VulnerabilityScanner"));
-const ServiceProviderOnboarding = React.lazy(() => import("@/pages/ServiceProviderOnboarding"));
+const SecurityAudits = React.lazy(() => import("@/pages/SecurityAudits"));
+const Web3Security = React.lazy(() => import("@/pages/Web3Security"));
 
 // Community and resources
 const Resources = React.lazy(() => import("@/pages/Resources"));
 const FAQ = React.lazy(() => import("@/pages/FAQ"));
 const Support = React.lazy(() => import("@/pages/Support"));
-const SecurityAudits = React.lazy(() => import("@/pages/SecurityAudits"));
-const Web3Security = React.lazy(() => import("@/pages/Web3Security"));
-const Vulnerabilities = React.lazy(() => import("@/pages/Vulnerabilities"));
-const WebSecurity = React.lazy(() => import("@/pages/WebSecurity"));
 const Community = React.lazy(() => import("@/pages/Community"));
-const Forum = React.lazy(() => import("@/pages/Forum"));
-const Events = React.lazy(() => import("@/pages/Events"));
-const Leaderboard = React.lazy(() => import("@/pages/Leaderboard"));
-const SubmitService = React.lazy(() => import("@/pages/SubmitService"));
+const Vulnerabilities = React.lazy(() => import("@/pages/Vulnerabilities"));
 
-// Additional missing pages
-const Pricing = React.lazy(() => import("@/pages/Pricing"));
-const SecurityPolicy = React.lazy(() => import("@/pages/SecurityPolicy"));
-
-// New platform integration pages
-const PlatformIntegration = React.lazy(() => import("@/pages/PlatformIntegration"));
-const SecurityCompliance = React.lazy(() => import("@/pages/SecurityCompliance"));
-const PerformanceOptimization = React.lazy(() => import("@/pages/PerformanceOptimization"));
-const PlatformOptimization = React.lazy(() => import("@/pages/PlatformOptimization"));
-
-// Analytics and Tools pages
-const Analytics = React.lazy(() => import("@/pages/Analytics"));
-const SystemHealth = React.lazy(() => import("@/pages/SystemHealth"));
-const DatabaseTools = React.lazy(() => import("@/pages/DatabaseTools"));
-const UserExperience = React.lazy(() => import("@/pages/UserExperience"));
+// Tools and utilities
+const AiTools = React.lazy(() => import("@/pages/AiTools"));
+const VulnerabilityScanner = React.lazy(() => import("@/pages/VulnerabilityScanner"));
+const ServiceProviderOnboarding = React.lazy(() => import("@/pages/ServiceProviderOnboarding"));
 
 // Enhanced loading fallback
 const AppLoadingFallback = () => (
@@ -127,7 +109,7 @@ function App() {
                   <Router>
                     <Suspense fallback={<AppLoadingFallback />}>
                       <Routes>
-                        {/* Core application routes - Enhanced versions are now primary */}
+                        {/* Core application routes - Enhanced versions are primary */}
                         <Route path="/" element={<Index />} />
                         <Route path="/auth" element={<Auth />} />
                         <Route path="/dashboard" element={<Dashboard />} />
@@ -143,57 +125,34 @@ function App() {
                         <Route path="/legacy-auth" element={<LegacyAuth />} />
                         <Route path="/legacy-request-audit" element={<LegacyRequestAudit />} />
                         
-                        {/* Service pages */}
+                        {/* Core service pages */}
                         <Route path="/code-reviews" element={<CodeReviews />} />
                         <Route path="/penetration-testing" element={<PenetrationTesting />} />
                         <Route path="/consulting" element={<Consulting />} />
+                        <Route path="/security-audits" element={<SecurityAudits />} />
+                        <Route path="/web3-security" element={<Web3Security />} />
                         <Route path="/ai-tools" element={<AiTools />} />
                         <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
                         <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
                         
-                        {/* Security and resources */}
-                        <Route path="/security-audits" element={<SecurityAudits />} />
-                        <Route path="/web3-security" element={<Web3Security />} />
-                        <Route path="/vulnerabilities" element={<Vulnerabilities />} />
-                        <Route path="/web-security" element={<WebSecurity />} />
+                        {/* Community and resources */}
                         <Route path="/resources" element={<Resources />} />
+                        <Route path="/vulnerabilities" element={<Vulnerabilities />} />
                         <Route path="/faq" element={<FAQ />} />
                         <Route path="/support" element={<Support />} />
-                        
-                        {/* Community pages */}
                         <Route path="/community" element={<Community />} />
-                        <Route path="/forum" element={<Forum />} />
-                        <Route path="/events" element={<Events />} />
-                        <Route path="/leaderboard" element={<Leaderboard />} />
-                        <Route path="/submit-service" element={<SubmitService />} />
                         
-                        {/* Business pages */}
+                        {/* Essential business pages */}
                         <Route path="/pricing" element={<Pricing />} />
-                        <Route path="/security-policy" element={<SecurityPolicy />} />
-                        
-                        {/* Platform Integration Routes */}
-                        <Route path="/platform-integration" element={<PlatformIntegration />} />
-                        <Route path="/security-compliance" element={<SecurityCompliance />} />
-                        <Route path="/performance-optimization" element={<PerformanceOptimization />} />
-                        <Route path="/platform-optimization" element={<PlatformOptimization />} />
-                        
-                        {/* Analytics and Tools Routes */}
-                        <Route path="/analytics" element={<Analytics />} />
-                        <Route path="/system-health" element={<SystemHealth />} />
-                        <Route path="/database-tools" element={<DatabaseTools />} />
-                        <Route path="/user-experience" element={<UserExperience />} />
-                        
-                        {/* Footer pages - Essential for navigation */}
                         <Route path="/about" element={<About />} />
                         <Route path="/contact" element={<Contact />} />
                         <Route path="/careers" element={<Careers />} />
                         <Route path="/terms" element={<Terms />} />
                         <Route path="/privacy" element={<Privacy />} />
                         
-                        {/* Consolidated SEO routes - Only essential ones */}
+                        {/* Essential SEO routes - redirect to main resources */}
                         <Route path="/security-insights" element={<Vulnerabilities />} />
                         <Route path="/docs" element={<Resources />} />
-                        <Route path="/tutorials" element={<Resources />} />
                         <Route path="/templates" element={<Resources />} />
                       </Routes>
                     </Suspense>

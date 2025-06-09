@@ -57,11 +57,6 @@ export const navigationLinks = [
         requiresAuth: true
       },
       {
-        title: "Documentation",
-        href: "/docs",
-        description: "Platform guides and API docs"
-      },
-      {
         title: "FAQ",
         href: "/faq",
         description: "Frequently asked questions"
@@ -83,19 +78,14 @@ export const navigationLinks = [
         description: "Connect with security experts"
       },
       {
-        title: "Forum",
-        href: "/forum",
-        description: "Discuss security topics"
+        title: "Web3 Security",
+        href: "/web3-security",
+        description: "Learn about Web3 security"
       },
       {
-        title: "Events",
-        href: "/events",
-        description: "Security meetups and workshops"
-      },
-      {
-        title: "Leaderboard",
-        href: "/leaderboard",
-        description: "Top security contributors"
+        title: "AI Tools",
+        href: "/ai-tools",
+        description: "AI-powered security tools"
       },
       {
         title: "Careers",
