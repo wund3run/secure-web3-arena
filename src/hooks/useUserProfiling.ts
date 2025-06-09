@@ -10,6 +10,9 @@ export interface UserBehaviorProfile {
   lastVisit: string;
   deviceType: 'mobile' | 'tablet' | 'desktop';
   preferredContentType: 'visual' | 'textual' | 'interactive';
+  engagementScore: number;
+  mostVisitedPages: string[];
+  completedActions: string[];
 }
 
 export interface UserPreferences {
@@ -19,6 +22,8 @@ export interface UserPreferences {
   autoPlay: boolean;
   reducedMotion: boolean;
   compactMode: boolean;
+  experienceLevel: 'beginner' | 'intermediate' | 'expert';
+  dashboardLayout: 'compact' | 'detailed' | 'cards';
   notificationSettings?: {
     auditUpdates: boolean;
     newMessages: boolean;
@@ -27,6 +32,15 @@ export interface UserPreferences {
     marketingEmails: boolean;
   };
 }
+
+export type UserJourneyStage = 
+  | 'visitor' 
+  | 'explorer' 
+  | 'evaluator' 
+  | 'engager' 
+  | 'converter' 
+  | 'advocate'
+  | 'power_user';
 
 export function useUserProfiling() {
   const { user } = useAuth();
@@ -38,6 +52,8 @@ export function useUserProfiling() {
     autoPlay: false,
     reducedMotion: false,
     compactMode: false,
+    experienceLevel: 'beginner',
+    dashboardLayout: 'cards',
     notificationSettings: {
       auditUpdates: true,
       newMessages: true,
@@ -66,7 +82,10 @@ export function useUserProfiling() {
           interactionPatterns: {},
           lastVisit: new Date().toISOString(),
           deviceType: getDeviceType(),
-          preferredContentType: 'visual'
+          preferredContentType: 'visual',
+          engagementScore: 0,
+          mostVisitedPages: [],
+          completedActions: []
         };
         setBehaviorProfile(newProfile);
         localStorage.setItem('hawkly_user_profile', JSON.stringify(newProfile));
@@ -86,7 +105,8 @@ export function useUserProfiling() {
         interactionPatterns: {
           ...prev.interactionPatterns,
           [`${section}_${interactionType}`]: (prev.interactionPatterns[`${section}_${interactionType}`] || 0) + 1
-        }
+        },
+        engagementScore: Math.min(100, prev.engagementScore + 1)
       };
       
       localStorage.setItem('hawkly_user_profile', JSON.stringify(updated));
@@ -97,6 +117,22 @@ export function useUserProfiling() {
   // Track behavior (alias for trackInteraction)
   const trackBehavior = useCallback((action: string, metadata?: any) => {
     trackInteraction('general', action);
+    
+    // Track completed actions
+    setBehaviorProfile(prev => {
+      if (!prev) return prev;
+      
+      const updated = {
+        ...prev,
+        completedActions: [...new Set([...prev.completedActions, action])],
+        mostVisitedPages: metadata?.page ? 
+          [...new Set([...prev.mostVisitedPages, metadata.page])] : 
+          prev.mostVisitedPages
+      };
+      
+      localStorage.setItem('hawkly_user_profile', JSON.stringify(updated));
+      return updated;
+    });
   }, [trackInteraction]);
 
   // Update preferences
@@ -145,7 +181,7 @@ export function useUserProfiling() {
 
   // Mock journey profile
   const journeyProfile = {
-    currentStage: 'visitor' as const,
+    currentStage: 'visitor' as UserJourneyStage,
     progressScore: behaviorProfile ? Math.min(100, behaviorProfile.visitCount * 10) : 0
   };
 

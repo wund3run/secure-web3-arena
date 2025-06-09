@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useUserProfiling } from '@/hooks/useUserProfiling';
 import { useAuth } from '@/contexts/auth';
