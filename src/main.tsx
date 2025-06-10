@@ -3,7 +3,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
-import "./styles/design-tokens.css";
 import { FocusVisibleProvider } from "./components/ui/interactive-elements";
 import { AccessibilityProvider } from "./components/accessibility/AccessibilityEnhancements";
 
