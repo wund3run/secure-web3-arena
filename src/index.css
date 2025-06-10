@@ -10,13 +10,13 @@
   :root {
     /* Brand Colors - Matching Hawkly Logo Exactly */
     --primary: 217 91% 60%; /* Blue from logo gradient start #4A90E2 */
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 0 0% 98%;
     
     --secondary: 187 85% 53%; /* Cyan from logo gradient end #33C3F0 */
-    --secondary-foreground: 0 0% 100%;
+    --secondary-foreground: 0 0% 98%;
     
     --accent: 24 95% 53%; /* Orange from hawk eyes #FF5722 */
-    --accent-foreground: 0 0% 100%;
+    --accent-foreground: 0 0% 98%;
 
     /* Brand-specific gradient colors */
     --brand-blue: 217 91% 60%; /* #4A90E2 */
@@ -24,32 +24,32 @@
     --brand-cyan: 187 85% 53%; /* #33C3F0 */
     --brand-orange: 24 95% 53%; /* #FF5722 */
     
-    /* Core UI Colors */
-    --background: 0 0% 100%;
-    --foreground: 215 25% 20%;
+    /* Core UI Colors - Brand-influenced */
+    --background: 217 32% 97%;
+    --foreground: 217 25% 20%;
     
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 20%;
+    --card: 0 0% 98%;
+    --card-foreground: 217 25% 20%;
     
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 20%;
+    --popover: 0 0% 98%;
+    --popover-foreground: 217 25% 20%;
     
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 217 40% 92%;
+    --muted-foreground: 217 16% 45%;
     
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
+    --border: 217 32% 85%;
+    --input: 217 32% 88%;
     --ring: 217 91% 60%;
     
     --radius: var(--radius-md);
     
     /* Semantic colors with brand influence */
     --success: 142 71% 45%;
-    --success-foreground: 0 0% 100%;
+    --success-foreground: 0 0% 98%;
     --warning: 43 96% 56%;
-    --warning-foreground: 0 0% 100%;
+    --warning-foreground: 217 25% 20%;
     --error: 0 84% 60%;
-    --error-foreground: 0 0% 100%;
+    --error-foreground: 0 0% 98%;
     
     /* Brand gradient variables */
     --brand-gradient: linear-gradient(135deg, hsl(217 91% 60%), hsl(262 83% 58%), hsl(187 85% 53%));
@@ -57,26 +57,26 @@
   }
   
   .dark {
-    --background: 220 13% 18%;
-    --foreground: 210 40% 98%;
+    --background: 217 33% 15%;
+    --foreground: 217 40% 92%;
     
-    --card: 220 13% 21%;
-    --card-foreground: 210 40% 98%;
+    --card: 217 33% 18%;
+    --card-foreground: 217 40% 92%;
     
-    --popover: 220 13% 21%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 217 33% 18%;
+    --popover-foreground: 217 40% 92%;
     
     --primary: 217 91% 70%;
-    --primary-foreground: 220 13% 18%;
+    --primary-foreground: 217 33% 15%;
     
     --secondary: 187 85% 63%;
-    --secondary-foreground: 220 13% 18%;
+    --secondary-foreground: 217 33% 15%;
     
-    --muted: 217 33% 18%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 217 33% 22%;
+    --muted-foreground: 217 20% 65%;
     
     --accent: 24 95% 63%;
-    --accent-foreground: 220 13% 18%;
+    --accent-foreground: 217 33% 15%;
     
     --border: 217 33% 25%;
     --input: 217 33% 25%;
@@ -216,10 +216,10 @@
 
   /* Brand-enhanced design system classes */
   .card-modern {
-    background-color: white;
+    background-color: hsl(var(--card));
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
-    border: 1px solid var(--color-neutral-200);
+    border: 1px solid hsl(var(--border));
     transition: all var(--duration-normal) var(--ease-out);
   }
 
@@ -245,7 +245,7 @@
   }
 
   .focus-modern:focus-visible {
-    outline: 2px solid var(--color-primary-500);
+    outline: 2px solid hsl(var(--primary));
     outline-offset: 2px;
   }
 
@@ -261,7 +261,7 @@
 
   .btn-primary {
     background: var(--brand-gradient);
-    color: white;
+    color: hsl(var(--primary-foreground));
     box-shadow: var(--shadow-sm);
   }
 
@@ -332,7 +332,7 @@
 
   .badge-brand {
     background: var(--brand-gradient);
-    color: white;
+    color: hsl(var(--primary-foreground));
     @apply px-3 py-1 rounded-full text-sm font-medium;
   }
 
@@ -411,11 +411,7 @@
   /* Brand-enhanced backdrop utilities */
   .backdrop-blur-modern {
     backdrop-filter: blur(12px) saturate(180%);
-    background-color: rgba(255, 255, 255, 0.85);
-  }
-
-  .dark .backdrop-blur-modern {
-    background-color: rgba(17, 24, 39, 0.85);
+    background-color: hsl(var(--background) / 0.85);
   }
 
   /* Brand-specific utilities */
@@ -497,12 +493,12 @@
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   :root {
-    --border: 0 0% 20%;
-    --muted-foreground: 0 0% 20%;
+    --border: 217 50% 50%;
+    --muted-foreground: 217 50% 30%;
   }
   
   .dark {
-    --border: 0 0% 80%;
-    --muted-foreground: 0 0% 80%;
+    --border: 217 50% 70%;
+    --muted-foreground: 217 50% 80%;
   }
 }
