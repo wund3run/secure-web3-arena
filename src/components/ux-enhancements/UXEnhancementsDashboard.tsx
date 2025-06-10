@@ -1,78 +1,75 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUXEnhancements } from '@/hooks/useUXEnhancements';
 import { 
-  Shield, 
+  Accessibility, 
   Palette, 
   Globe, 
   MessageCircle, 
-  CheckCircle, 
-  AlertTriangle, 
-  Download,
-  Upload,
+  Eye, 
+  Smartphone,
+  Monitor,
   Moon,
   Sun,
-  Zap
+  RefreshCw,
+  CheckCircle,
+  AlertCircle,
+  Users
 } from 'lucide-react';
 
 export function UXEnhancementsDashboard() {
   const {
+    // Accessibility
     accessibility,
-    theme,
-    i18n,
-    chat,
     validateAccessibility,
     generateAccessibilityReport,
+    
+    // Theme
+    theme,
     applyTheme,
-    createCustomTheme,
     toggleDarkMode,
+    
+    // i18n
+    i18n,
     changeLocale,
+    translateText,
+    t,
+    formatDate,
+    formatNumber,
+    formatCurrency,
+    
+    // Chat
+    chat,
     connectChat,
-    t
+    joinChatRoom,
+    sendChatMessage
   } = useUXEnhancements();
 
-  const [customThemeName, setCustomThemeName] = useState('');
-  const [customThemeColor, setCustomThemeColor] = useState('#5E35B1');
-
-  const handleCreateCustomTheme = () => {
-    if (customThemeName.trim()) {
-      createCustomTheme(customThemeName, customThemeColor);
-      setCustomThemeName('');
-    }
-  };
-
-  const handleExportReport = () => {
-    const report = generateAccessibilityReport();
-    const blob = new Blob([report], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `accessibility-report-${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
   return (
-    <div className="container py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">UX Enhancements Dashboard</h1>
-        <p className="text-muted-foreground">
-          Manage accessibility, theming, internationalization, and real-time features
-        </p>
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">UX Enhancements</h1>
+          <p className="text-muted-foreground">
+            Advanced user experience features and customization options
+          </p>
+        </div>
+        <Badge variant="secondary" className="bg-hawkly-primary/10 text-hawkly-primary">
+          Enhanced UX Suite
+        </Badge>
       </div>
 
       <Tabs defaultValue="accessibility" className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="accessibility" className="flex items-center gap-2">
-            <Shield className="h-4 w-4" />
+            <Accessibility className="h-4 w-4" />
             Accessibility
           </TabsTrigger>
           <TabsTrigger value="theming" className="flex items-center gap-2">
@@ -81,7 +78,7 @@ export function UXEnhancementsDashboard() {
           </TabsTrigger>
           <TabsTrigger value="i18n" className="flex items-center gap-2">
             <Globe className="h-4 w-4" />
-            i18n
+            Internationalization
           </TabsTrigger>
           <TabsTrigger value="chat" className="flex items-center gap-2">
             <MessageCircle className="h-4 w-4" />
@@ -93,76 +90,64 @@ export function UXEnhancementsDashboard() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Shield className="h-5 w-5" />
-                WCAG Compliance
+                <Eye className="h-5 w-5" />
+                Accessibility Validation
               </CardTitle>
               <CardDescription>
-                Automated accessibility validation and compliance reporting
+                WCAG 2.1 compliance checking and accessibility improvements
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Accessibility Validation</p>
-                  <p className="text-sm text-muted-foreground">
-                    Last validated: {accessibility.lastValidation?.toLocaleString() || 'Never'}
-                  </p>
+                <div className="space-y-1">
+                  <Label>Current Status</Label>
+                  <div className="flex items-center gap-2">
+                    {accessibility.violations.length === 0 ? (
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <AlertCircle className="h-4 w-4 text-orange-500" />
+                    )}
+                    <span className="text-sm">
+                      {accessibility.violations.length} violations found
+                    </span>
+                  </div>
                 </div>
-                <Button 
+                <Button
                   onClick={validateAccessibility}
                   disabled={accessibility.isValidating}
+                  className="flex items-center gap-2"
                 >
+                  <RefreshCw className={`h-4 w-4 ${accessibility.isValidating ? 'animate-spin' : ''}`} />
                   {accessibility.isValidating ? 'Validating...' : 'Run Validation'}
                 </Button>
               </div>
 
               {accessibility.violations.length > 0 && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-medium">Violations Found</h3>
-                    <Button variant="outline" size="sm" onClick={handleExportReport}>
-                      <Download className="h-4 w-4 mr-2" />
-                      Export Report
-                    </Button>
-                  </div>
-                  
-                  <div className="grid gap-4">
-                    {accessibility.violations.slice(0, 5).map((violation, index) => (
-                      <div key={index} className="border rounded-lg p-4">
+                <div className="space-y-2">
+                  <Label>Violations Found</Label>
+                  <div className="space-y-2 max-h-40 overflow-y-auto">
+                    {accessibility.violations.map((violation, index) => (
+                      <div key={index} className="p-3 border rounded-lg bg-orange-50 dark:bg-orange-900/20">
                         <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Badge variant={violation.severity === 'error' ? 'destructive' : 'secondary'}>
-                                {violation.severity}
-                              </Badge>
-                              <span className="text-sm font-medium">{violation.rule.id}</span>
-                            </div>
-                            <p className="text-sm mb-2">{violation.message}</p>
-                            <p className="text-xs text-muted-foreground">{violation.suggestion}</p>
+                          <div>
+                            <p className="font-medium text-sm">{violation.description}</p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Impact: {violation.impact} | Element: {violation.target}
+                            </p>
                           </div>
-                          {violation.severity === 'error' ? (
-                            <AlertTriangle className="h-5 w-5 text-destructive" />
-                          ) : (
-                            <CheckCircle className="h-5 w-5 text-warning" />
-                          )}
+                          <Badge variant={violation.impact === 'critical' ? 'destructive' : 'secondary'}>
+                            {violation.impact}
+                          </Badge>
                         </div>
                       </div>
                     ))}
                   </div>
-
-                  {accessibility.violations.length > 5 && (
-                    <p className="text-sm text-muted-foreground text-center">
-                      And {accessibility.violations.length - 5} more violations...
-                    </p>
-                  )}
                 </div>
               )}
 
-              {accessibility.violations.length === 0 && accessibility.lastValidation && (
-                <div className="text-center py-8">
-                  <CheckCircle className="h-12 w-12 mx-auto mb-4 text-green-500" />
-                  <p className="font-medium text-green-600">No accessibility violations found!</p>
-                  <p className="text-sm text-muted-foreground">Your page meets WCAG compliance standards</p>
+              {accessibility.lastValidation && (
+                <div className="text-xs text-muted-foreground">
+                  Last validation: {accessibility.lastValidation.toLocaleString()}
                 </div>
               )}
             </CardContent>
@@ -170,18 +155,18 @@ export function UXEnhancementsDashboard() {
         </TabsContent>
 
         <TabsContent value="theming" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Palette className="h-5 w-5" />
-                  Theme Selection
-                </CardTitle>
-                <CardDescription>
-                  Choose from available themes or create custom ones
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Palette className="h-5 w-5" />
+                Theme Management
+              </CardTitle>
+              <CardDescription>
+                Customize the visual appearance and color scheme
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Current Theme</Label>
                   <Select value={theme.currentTheme} onValueChange={(value) => applyTheme(value)}>
@@ -191,65 +176,42 @@ export function UXEnhancementsDashboard() {
                     <SelectContent>
                       {theme.availableThemes.map((themeName) => (
                         <SelectItem key={themeName} value={themeName}>
-                          {themeName}
+                          {themeName.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    {theme.isDarkMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-                    <Label>Dark Mode</Label>
-                  </div>
-                  <Switch checked={theme.isDarkMode} onCheckedChange={toggleDarkMode} />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Create Custom Theme</CardTitle>
-                <CardDescription>
-                  Generate a custom theme from a base color
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Theme Name</Label>
-                  <Input
-                    value={customThemeName}
-                    onChange={(e) => setCustomThemeName(e.target.value)}
-                    placeholder="Enter theme name"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Base Color</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      type="color"
-                      value={customThemeColor}
-                      onChange={(e) => setCustomThemeColor(e.target.value)}
-                      className="w-20 h-10"
+                  <Label>Dark Mode</Label>
+                  <div className="flex items-center space-x-2">
+                    <Sun className="h-4 w-4" />
+                    <Switch
+                      checked={theme.isDarkMode}
+                      onCheckedChange={toggleDarkMode}
                     />
-                    <Input
-                      value={customThemeColor}
-                      onChange={(e) => setCustomThemeColor(e.target.value)}
-                      placeholder="#5E35B1"
-                      className="flex-1"
-                    />
+                    <Moon className="h-4 w-4" />
                   </div>
                 </div>
+              </div>
 
-                <Button onClick={handleCreateCustomTheme} className="w-full">
-                  <Zap className="h-4 w-4 mr-2" />
-                  Generate Theme
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <div className="p-3 rounded border bg-hawkly-primary text-white text-center text-xs">
+                  Primary
+                </div>
+                <div className="p-3 rounded border bg-hawkly-secondary text-white text-center text-xs">
+                  Secondary
+                </div>
+                <div className="p-3 rounded border bg-hawkly-accent text-white text-center text-xs">
+                  Accent
+                </div>
+                <div className="p-3 rounded border bg-hawkly-orange text-white text-center text-xs">
+                  Orange
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="i18n" className="space-y-6">
@@ -260,53 +222,42 @@ export function UXEnhancementsDashboard() {
                 Internationalization
               </CardTitle>
               <CardDescription>
-                Language and localization settings
+                Multi-language support and localization features
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Current Language</Label>
-                  <Select value={i18n.currentLocale} onValueChange={changeLocale}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {i18n.availableLocales.map((locale) => (
-                        <SelectItem key={locale.code} value={locale.code}>
-                          {locale.nativeName} ({locale.name})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Sample Translation</Label>
-                  <div className="p-3 bg-muted rounded-md">
-                    <p className="text-sm">{t('common.loading')}</p>
-                    <p className="text-xs text-muted-foreground">{t('nav.dashboard')}</p>
-                  </div>
-                </div>
+              <div className="space-y-2">
+                <Label>Current Language</Label>
+                <Select value={i18n.currentLocale} onValueChange={changeLocale}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {i18n.availableLocales.map((locale) => (
+                      <SelectItem key={locale.code} value={locale.code}>
+                        {locale.name} ({locale.nativeName})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {i18n.availableLocales.slice(0, 6).map((locale) => (
-                  <Card key={locale.code} className="cursor-pointer hover:shadow-md transition-shadow"
-                        onClick={() => changeLocale(locale.code)}>
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">{locale.nativeName}</p>
-                          <p className="text-xs text-muted-foreground">{locale.name}</p>
-                        </div>
-                        {locale.code === i18n.currentLocale && (
-                          <CheckCircle className="h-4 w-4 text-green-500" />
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+              <div className="space-y-2">
+                <Label>Formatting Examples</Label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-lg bg-muted/30">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Date</p>
+                    <p className="font-medium">{formatDate(new Date())}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Number</p>
+                    <p className="font-medium">{formatNumber(1234567.89)}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Currency</p>
+                    <p className="font-medium">{formatCurrency(1234.56)}</p>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -320,53 +271,47 @@ export function UXEnhancementsDashboard() {
                 Real-time Chat System
               </CardTitle>
               <CardDescription>
-                WebSocket-based real-time communication features
+                Live communication and collaboration features
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">Connection Status</span>
-                    <Badge variant={chat.isConnected ? 'default' : 'secondary'}>
-                      {chat.connectionState}
-                    </Badge>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">Current Room</span>
-                    <span className="text-sm text-muted-foreground">
-                      {chat.currentRoom || 'Not in a room'}
-                    </span>
-                  </div>
-
-                  {chat.typingUsers.length > 0 && (
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium">Typing Users</span>
-                      <span className="text-sm text-muted-foreground">
-                        {chat.typingUsers.length} user(s) typing
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="space-y-4">
-                  <Button 
-                    onClick={() => connectChat('user123', 'auth-token')}
-                    disabled={chat.isConnected}
-                    className="w-full"
-                  >
-                    {chat.isConnected ? 'Connected' : 'Connect to Chat'}
-                  </Button>
-
-                  <div className="text-center">
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex items-center gap-3">
+                  <div className={`h-3 w-3 rounded-full ${chat.isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+                  <div>
+                    <p className="font-medium">Connection Status</p>
                     <p className="text-sm text-muted-foreground">
-                      Chat features include real-time messaging, typing indicators, 
-                      file sharing, and presence detection
+                      {chat.isConnected ? 'Connected' : 'Disconnected'}
                     </p>
                   </div>
                 </div>
+                <Badge variant={chat.isConnected ? 'default' : 'secondary'}>
+                  {chat.connectionState}
+                </Badge>
               </div>
+
+              {chat.currentRoom && (
+                <div className="space-y-2">
+                  <Label>Current Room</Label>
+                  <div className="p-3 border rounded-lg bg-muted/30">
+                    <p className="font-medium">{chat.currentRoom}</p>
+                    {chat.typingUsers.length > 0 && (
+                      <p className="text-sm text-muted-foreground">
+                        <Users className="h-3 w-3 inline mr-1" />
+                        {chat.typingUsers.join(', ')} {chat.typingUsers.length === 1 ? 'is' : 'are'} typing...
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <Button
+                onClick={() => connectChat('demo-user', 'demo-token')}
+                disabled={chat.isConnected}
+                className="w-full"
+              >
+                {chat.isConnected ? 'Connected' : 'Connect to Chat'}
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
