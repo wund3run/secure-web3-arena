@@ -2,47 +2,46 @@
 import { useCallback } from 'react';
 import { Notification } from '@/types/notification.types';
 
+const STORAGE_KEY = 'hawkly_notifications';
+const MAX_STORED_NOTIFICATIONS = 100;
+
 export const useNotificationPersistence = () => {
   const saveNotifications = useCallback((notifications: Notification[]) => {
     try {
-      // Only save to localStorage if we have notifications and user is logged in
-      if (notifications.length > 0) {
-        const notificationsToSave = notifications.slice(0, 50); // Limit to 50 notifications
-        localStorage.setItem('hawkly_notifications', JSON.stringify(notificationsToSave));
-      }
+      const toStore = notifications.slice(0, MAX_STORED_NOTIFICATIONS);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
     } catch (error) {
-      console.warn('Failed to save notifications to localStorage:', error);
+      console.error('Failed to save notifications to localStorage:', error);
     }
   }, []);
 
   const loadNotifications = useCallback((): Notification[] => {
     try {
-      const saved = localStorage.getItem('hawkly_notifications');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        // Convert timestamp strings back to Date objects
-        return parsed.map((notification: any) => ({
-          ...notification,
-          timestamp: new Date(notification.timestamp)
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return parsed.map((n: any) => ({
+          ...n,
+          timestamp: new Date(n.timestamp),
         }));
       }
     } catch (error) {
-      console.warn('Failed to load notifications from localStorage:', error);
+      console.error('Failed to load notifications from localStorage:', error);
     }
     return [];
   }, []);
 
-  const clearPersistedNotifications = useCallback(() => {
+  const clearStoredNotifications = useCallback(() => {
     try {
-      localStorage.removeItem('hawkly_notifications');
+      localStorage.removeItem(STORAGE_KEY);
     } catch (error) {
-      console.warn('Failed to clear persisted notifications:', error);
+      console.error('Failed to clear stored notifications:', error);
     }
   }, []);
 
   return {
     saveNotifications,
     loadNotifications,
-    clearPersistedNotifications
+    clearStoredNotifications,
   };
 };

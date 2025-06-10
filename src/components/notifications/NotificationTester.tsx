@@ -4,23 +4,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useNotifications } from '@/contexts/NotificationContext';
+import { useRealtimeSync } from '@/hooks/useRealtimeSync';
 import { Send, TestTube } from 'lucide-react';
 
 export function NotificationTester() {
-  const { addNotification } = useNotifications();
+  const { sendNotification } = useRealtimeSync({ channel: 'notifications' });
   const [message, setMessage] = useState('');
   const [type, setType] = useState<'info' | 'success' | 'warning' | 'error'>('info');
 
   const handleSendNotification = () => {
     if (message.trim()) {
-      addNotification({
-        title: `Test ${type} notification`,
-        message: message,
-        type: type,
-        category: 'system',
-        userId: 'test-user',
-      });
+      sendNotification(message, type);
       setMessage('');
     }
   };
@@ -35,13 +29,7 @@ export function NotificationTester() {
 
     testMessages.forEach((test, index) => {
       setTimeout(() => {
-        addNotification({
-          title: `Test ${test.type} notification`,
-          message: test.message,
-          type: test.type,
-          category: 'system',
-          userId: 'test-user',
-        });
+        sendNotification(test.message, test.type);
       }, index * 500);
     });
   };

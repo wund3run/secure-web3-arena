@@ -1,146 +1,129 @@
 
 import React from 'react';
-import { useNotifications } from '@/contexts/NotificationContext';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
 import { formatDistanceToNow } from 'date-fns';
-import { 
-  CheckCircle, 
-  AlertTriangle, 
-  Info, 
-  XCircle, 
-  MessageSquare,
-  CreditCard,
-  Shield,
-  Settings,
-  Trash2
-} from 'lucide-react';
-
-const getNotificationIcon = (type: string, category: string) => {
-  if (category === 'audit') return <Shield className="h-4 w-4" />;
-  if (category === 'payment') return <CreditCard className="h-4 w-4" />;
-  if (category === 'message') return <MessageSquare className="h-4 w-4" />;
-  if (category === 'system') return <Settings className="h-4 w-4" />;
-
-  switch (type) {
-    case 'success':
-      return <CheckCircle className="h-4 w-4 text-green-500" />;
-    case 'warning':
-      return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-    case 'error':
-      return <XCircle className="h-4 w-4 text-red-500" />;
-    default:
-      return <Info className="h-4 w-4 text-blue-500" />;
-  }
-};
-
-const getTypeColor = (type: string) => {
-  switch (type) {
-    case 'success': return 'text-green-600';
-    case 'warning': return 'text-yellow-600';
-    case 'error': return 'text-red-600';
-    default: return 'text-blue-600';
-  }
-};
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@/components/ui/badge';
+import { X, ExternalLink, CheckCheck, Bell } from 'lucide-react';
+import { useNotifications } from '@/contexts/NotificationContext';
+import { cn } from '@/lib/utils';
 
 export const NotificationList = () => {
-  const { notifications, markAsRead, removeNotification, clearAll } = useNotifications();
+  const { notifications, removeNotification, clearAll, markAsRead } = useNotifications();
+
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case 'success': return '✅';
+      case 'warning': return '⚠️';
+      case 'error': return '❌';
+      default: return 'ℹ️';
+    }
+  };
+
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'audit': return 'bg-blue-100 text-blue-800';
+      case 'message': return 'bg-green-100 text-green-800';
+      case 'payment': return 'bg-yellow-100 text-yellow-800';
+      case 'system': return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   if (notifications.length === 0) {
     return (
-      <div className="text-center py-8 text-muted-foreground">
-        <Info className="h-8 w-8 mx-auto mb-2 opacity-50" />
-        <p className="text-sm">No notifications yet</p>
-        <p className="text-xs mt-1">You'll see updates about your audits and payments here</p>
+      <div className="p-6 text-center text-gray-500">
+        <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
+        <p>No notifications yet</p>
       </div>
     );
   }
 
   return (
-    <div className="max-h-96">
+    <div className="flex flex-col">
       <div className="flex items-center justify-between p-4 border-b">
-        <span className="text-sm font-medium">
-          {notifications.length} notification{notifications.length !== 1 ? 's' : ''}
-        </span>
+        <h3 className="font-semibold">Notifications</h3>
         <Button
           variant="ghost"
           size="sm"
           onClick={clearAll}
-          className="text-xs h-6"
+          className="text-xs"
         >
-          <Trash2 className="h-3 w-3 mr-1" />
           Clear all
         </Button>
       </div>
       
-      <ScrollArea className="max-h-80">
-        <div className="divide-y">
+      <ScrollArea className="max-h-96">
+        <div className="space-y-1">
           {notifications.map((notification) => (
             <div
               key={notification.id}
-              className={`p-4 hover:bg-muted/50 transition-colors ${
-                !notification.read ? 'bg-blue-50/30 border-l-2 border-l-blue-500' : ''
-              }`}
+              className={cn(
+                "p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors",
+                !notification.read && "bg-blue-50"
+              )}
             >
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5">
-                  {getNotificationIcon(notification.type, notification.category)}
-                </div>
-                
+              <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1">
-                      <h4 className="text-sm font-medium leading-tight">
-                        {notification.title}
-                      </h4>
-                      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                        {notification.message}
-                      </p>
-                    </div>
-                    
-                    <div className="flex items-center gap-2">
-                      {!notification.read && (
-                        <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0" />
-                      )}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeNotification(notification.id)}
-                        className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <XCircle className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2 mt-2">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm">{getNotificationIcon(notification.type)}</span>
                     <Badge 
-                      variant="outline" 
-                      className={`text-xs ${getTypeColor(notification.type)}`}
+                      variant="secondary" 
+                      className={cn("text-xs", getCategoryColor(notification.category))}
                     >
                       {notification.category}
                     </Badge>
-                    
-                    <span className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(notification.timestamp, { addSuffix: true })}
-                    </span>
+                    {!notification.read && (
+                      <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0" />
+                    )}
                   </div>
                   
-                  {notification.actionUrl && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="mt-2 h-6 text-xs"
-                      onClick={() => {
-                        markAsRead(notification.id);
-                        window.location.href = notification.actionUrl!;
-                      }}
-                    >
-                      {notification.actionLabel || 'View'}
-                    </Button>
-                  )}
+                  <h4 className="font-medium text-sm text-gray-900 truncate">
+                    {notification.title}
+                  </h4>
+                  
+                  <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                    {notification.message}
+                  </p>
+                  
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="text-xs text-gray-400">
+                      {formatDistanceToNow(notification.timestamp, { addSuffix: true })}
+                    </span>
+                    
+                    <div className="flex items-center gap-1">
+                      {notification.actionUrl && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0"
+                          onClick={() => window.location.href = notification.actionUrl!}
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                        </Button>
+                      )}
+                      
+                      {!notification.read && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0"
+                          onClick={() => markAsRead(notification.id)}
+                        >
+                          <CheckCheck className="h-3 w-3" />
+                        </Button>
+                      )}
+                      
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
+                        onClick={() => removeNotification(notification.id)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

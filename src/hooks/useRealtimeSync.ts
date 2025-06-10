@@ -1,164 +1,93 @@
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { RealtimeChannel } from '@supabase/supabase-js';
+import { useState, useEffect } from 'react';
 
-interface RealtimeNotification {
+interface RealtimeSyncState {
+  isConnected: boolean;
+  lastSync: Date | null;
+  syncStatus: 'idle' | 'syncing' | 'error';
+  connectionStatus: 'connected' | 'disconnected' | 'reconnecting';
+}
+
+interface RealtimeSyncOptions {
+  channel?: string;
+}
+
+interface Notification {
   id: string;
-  message: string;
   type: 'info' | 'success' | 'warning' | 'error';
+  message: string;
   timestamp: Date;
 }
 
-interface UseRealtimeSyncOptions {
-  channel: string;
-  events?: string[];
-  autoReconnect?: boolean;
-  maxReconnectAttempts?: number;
-}
+export function useRealtimeSync(options?: RealtimeSyncOptions) {
+  const [state, setState] = useState<RealtimeSyncState>({
+    isConnected: true, // Simulate connected state for demo
+    lastSync: new Date(),
+    syncStatus: 'idle',
+    connectionStatus: 'connected'
+  });
 
-export const useRealtimeSync = (options?: UseRealtimeSyncOptions) => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected' | 'error'>('disconnected');
-  const [notifications, setNotifications] = useState<RealtimeNotification[]>([]);
-  const [reconnectAttempts, setReconnectAttempts] = useState(0);
-  
-  const channelRef = useRef<RealtimeChannel | null>(null);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
-  
-  const {
-    channel: channelName = 'default',
-    events = ['*'],
-    autoReconnect = true,
-    maxReconnectAttempts = 5
-  } = options || {};
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const addNotification = useCallback((message: string, type: RealtimeNotification['type'] = 'info') => {
-    const notification: RealtimeNotification = {
-      id: crypto.randomUUID(),
-      message,
+  useEffect(() => {
+    // Simulate real-time connection monitoring
+    const interval = setInterval(() => {
+      const isConnected = Math.random() > 0.1; // 90% uptime simulation
+      setState(prev => ({
+        ...prev,
+        lastSync: new Date(),
+        isConnected,
+        connectionStatus: isConnected ? 'connected' : 'disconnected'
+      }));
+
+      // Simulate occasional notifications
+      if (Math.random() > 0.8) {
+        const notification: Notification = {
+          id: Date.now().toString(),
+          type: ['info', 'success', 'warning'][Math.floor(Math.random() * 3)] as any,
+          message: `System update from ${options?.channel || 'default'} channel`,
+          timestamp: new Date()
+        };
+        setNotifications(prev => [notification, ...prev.slice(0, 9)]); // Keep last 10
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [options?.channel]);
+
+  const forceSync = () => {
+    setState(prev => ({ ...prev, syncStatus: 'syncing' }));
+    
+    setTimeout(() => {
+      setState(prev => ({
+        ...prev,
+        syncStatus: 'idle',
+        lastSync: new Date(),
+        isConnected: true,
+        connectionStatus: 'connected'
+      }));
+    }, 1000);
+  };
+
+  const sendNotification = (message: string, type: 'info' | 'success' | 'warning' | 'error' = 'info') => {
+    const notification: Notification = {
+      id: Date.now().toString(),
       type,
+      message,
       timestamp: new Date()
     };
-    
-    setNotifications(prev => [notification, ...prev.slice(0, 49)]); // Keep max 50
-    
-    // Auto-remove after 10 seconds
-    setTimeout(() => {
-      setNotifications(prev => prev.filter(n => n.id !== notification.id));
-    }, 10000);
-  }, []);
+    setNotifications(prev => [notification, ...prev.slice(0, 9)]);
+  };
 
-  const connect = useCallback(() => {
-    if (channelRef.current) {
-      channelRef.current.unsubscribe();
-    }
-
-    setConnectionStatus('connecting');
-    
-    const channel = supabase.channel(channelName, {
-      config: {
-        presence: { key: `user_${Date.now()}` }
-      }
-    });
-
-    // Handle connection events
-    channel
-      .on('system', {}, (payload) => {
-        console.log('Realtime system event:', payload);
-        
-        if (payload.status === 'ok') {
-          setIsConnected(true);
-          setConnectionStatus('connected');
-          setReconnectAttempts(0);
-          addNotification(`Connected to ${channelName}`, 'success');
-        }
-      })
-      .on('postgres_changes', { event: '*', schema: 'public' }, (payload) => {
-        console.log('Database change:', payload);
-        addNotification(`Database updated: ${payload.table}`, 'info');
-      })
-      .subscribe((status) => {
-        console.log('Channel subscription status:', status);
-        
-        if (status === 'SUBSCRIBED') {
-          setIsConnected(true);
-          setConnectionStatus('connected');
-          setReconnectAttempts(0);
-        } else if (status === 'CHANNEL_ERROR') {
-          setIsConnected(false);
-          setConnectionStatus('error');
-          addNotification('Connection error occurred', 'error');
-          
-          if (autoReconnect && reconnectAttempts < maxReconnectAttempts) {
-            const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), 30000);
-            
-            reconnectTimeoutRef.current = setTimeout(() => {
-              setReconnectAttempts(prev => prev + 1);
-              connect();
-            }, delay);
-          }
-        } else if (status === 'CLOSED') {
-          setIsConnected(false);
-          setConnectionStatus('disconnected');
-          addNotification('Connection closed', 'warning');
-        }
-      });
-
-    channelRef.current = channel;
-  }, [channelName, autoReconnect, maxReconnectAttempts, reconnectAttempts, addNotification]);
-
-  const disconnect = useCallback(() => {
-    if (channelRef.current) {
-      channelRef.current.unsubscribe();
-      channelRef.current = null;
-    }
-    
-    if (reconnectTimeoutRef.current) {
-      clearTimeout(reconnectTimeoutRef.current);
-    }
-    
-    setIsConnected(false);
-    setConnectionStatus('disconnected');
-    setReconnectAttempts(0);
-  }, []);
-
-  const clearNotifications = useCallback(() => {
+  const clearNotifications = () => {
     setNotifications([]);
-  }, []);
-
-  // Auto-connect on mount
-  useEffect(() => {
-    connect();
-    
-    return () => {
-      disconnect();
-    };
-  }, [connect, disconnect]);
-
-  // Handle browser visibility changes
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible' && !isConnected) {
-        connect();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [isConnected, connect]);
+  };
 
   return {
-    isConnected,
-    connectionStatus,
+    ...state,
     notifications,
-    connect,
-    disconnect,
-    clearNotifications,
-    reconnectAttempts,
-    maxReconnectAttempts
+    forceSync,
+    sendNotification,
+    clearNotifications
   };
-};
+}

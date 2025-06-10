@@ -1,28 +1,33 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/auth';
 import { toast } from 'sonner';
 
-export interface AuditRequest {
+interface AuditRequest {
   id: string;
   project_name: string;
-  blockchain: string;
+  client_id: string;
   status: string;
   created_at: string;
-  client_id: string;
-  budget?: number;
+  updated_at: string;
+  project_description?: string;
+  blockchain: string;
+  repository_url?: string;
+  contract_count?: number;
+  lines_of_code?: number;
   deadline?: string;
+  budget?: number;
+  audit_scope?: string;
+  previous_audits?: boolean;
+  specific_concerns?: string;
 }
 
-export const useRealtimeAuditRequests = () => {
-  const { user, getUserType } = useAuth();
+export function useRealtimeAuditRequests() {
   const [auditRequests, setAuditRequests] = useState<AuditRequest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Initial data fetch
   useEffect(() => {
-    if (!user) return;
-
     const fetchAuditRequests = async () => {
       try {
         const { data, error } = await supabase
@@ -41,10 +46,12 @@ export const useRealtimeAuditRequests = () => {
     };
 
     fetchAuditRequests();
+  }, []);
 
-    // Set up real-time subscription
+  // Real-time subscription
+  useEffect(() => {
     const channel = supabase
-      .channel('audit-requests-changes')
+      .channel('audit_requests_realtime')
       .on(
         'postgres_changes',
         {
@@ -53,21 +60,31 @@ export const useRealtimeAuditRequests = () => {
           table: 'audit_requests'
         },
         (payload) => {
-          console.log('Real-time update:', payload);
+          console.log('Real-time audit request update:', payload);
           
           if (payload.eventType === 'INSERT') {
             setAuditRequests(prev => [payload.new as AuditRequest, ...prev]);
-            toast.info('New audit request received');
+            toast.success('New audit request received!');
           } else if (payload.eventType === 'UPDATE') {
             setAuditRequests(prev => 
               prev.map(request => 
-                request.id === payload.new.id ? payload.new as AuditRequest : request
+                request.id === payload.new.id 
+                  ? { ...request, ...payload.new }
+                  : request
               )
             );
+            
+            // Show toast for status changes
+            const oldStatus = payload.old?.status;
+            const newStatus = payload.new?.status;
+            if (oldStatus !== newStatus) {
+              toast.info(`Audit request status updated to: ${newStatus}`);
+            }
           } else if (payload.eventType === 'DELETE') {
             setAuditRequests(prev => 
               prev.filter(request => request.id !== payload.old.id)
             );
+            toast.info('Audit request removed');
           }
         }
       )
@@ -76,18 +93,21 @@ export const useRealtimeAuditRequests = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, []);
 
-  const updateRequestStatus = async (requestId: string, status: string) => {
+  const updateRequestStatus = async (requestId: string, newStatus: string) => {
     try {
       const { error } = await supabase
         .from('audit_requests')
-        .update({ status, updated_at: new Date().toISOString() })
+        .update({ 
+          status: newStatus,
+          updated_at: new Date().toISOString()
+        })
         .eq('id', requestId);
 
       if (error) throw error;
       
-      toast.success(`Request ${status} successfully`);
+      toast.success(`Request status updated to: ${newStatus}`);
     } catch (error) {
       console.error('Error updating request status:', error);
       toast.error('Failed to update request status');
@@ -97,6 +117,6 @@ export const useRealtimeAuditRequests = () => {
   return {
     auditRequests,
     isLoading,
-    updateRequestStatus,
+    updateRequestStatus
   };
-};
+}

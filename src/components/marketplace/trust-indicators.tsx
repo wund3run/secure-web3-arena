@@ -23,9 +23,9 @@ export function TrustIndicators({
   };
   
   const getScoreColor = () => {
-    if (securityScore >= 90) return "from-green-500 to-green-600";
-    if (securityScore >= 70) return "from-amber-500 to-amber-600";
-    return "from-primary to-primary/80";
+    if (securityScore >= 90) return "bg-green-500";
+    if (securityScore >= 70) return "bg-amber-500";
+    return "bg-primary";
   };
   
   const getSizeClasses = () => {
@@ -108,7 +108,8 @@ export function TrustIndicators({
             <div className="w-full">
               <Progress 
                 value={securityScore} 
-                className={`${sizeClasses.progress} bg-muted [&>div]:bg-gradient-to-r [&>div]:${getScoreColor()}`}
+                className={`${sizeClasses.progress} bg-muted`}
+                indicatorClassName={getScoreColor()}
               />
             </div>
           </TooltipTrigger>

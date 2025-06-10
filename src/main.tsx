@@ -1,7 +1,6 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { HelmetProvider } from 'react-helmet-async';
 import App from "./App";
 import "./index.css";
 import "./styles/design-tokens.css";
@@ -23,12 +22,10 @@ if ('serviceWorker' in navigator) {
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <HelmetProvider>
-      <AccessibilityProvider>
-        <FocusVisibleProvider>
-          <App />
-        </FocusVisibleProvider>
-      </AccessibilityProvider>
-    </HelmetProvider>
+    <AccessibilityProvider>
+      <FocusVisibleProvider>
+        <App />
+      </FocusVisibleProvider>
+    </AccessibilityProvider>
   </React.StrictMode>
 );
