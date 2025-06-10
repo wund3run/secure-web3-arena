@@ -3,7 +3,7 @@ import React, { Suspense } from 'react';
 import { useAuth } from '@/contexts/auth';
 import ErrorBoundary from '@/components/ui/error-boundary';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/enhanced-skeleton';
+import { EnhancedSkeleton } from '@/components/ui/enhanced-skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Plus, AlertCircle, TrendingUp, Shield, Clock, Users } from 'lucide-react';
@@ -22,18 +22,18 @@ function DashboardSkeleton() {
         {[...Array(4)].map((_, i) => (
           <Card key={i}>
             <CardHeader className="pb-2">
-              <Skeleton className="h-4 w-24" />
+              <EnhancedSkeleton className="h-4 w-24" />
             </CardHeader>
             <CardContent>
-              <Skeleton className="h-8 w-16 mb-2" />
-              <Skeleton className="h-3 w-32" />
+              <EnhancedSkeleton className="h-8 w-16 mb-2" />
+              <EnhancedSkeleton className="h-3 w-32" />
             </CardContent>
           </Card>
         ))}
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Skeleton className="h-96" />
-        <Skeleton className="h-96" />
+        <EnhancedSkeleton className="h-96" />
+        <EnhancedSkeleton className="h-96" />
       </div>
     </div>
   );
@@ -99,7 +99,7 @@ export function ImprovedProjectOwnerDashboard() {
       {/* Onboarding for new users */}
       {needsOnboarding && (
         <ErrorBoundary fallback={<div>Failed to load onboarding</div>}>
-          <Suspense fallback={<Skeleton className="h-48" />}>
+          <Suspense fallback={<EnhancedSkeleton className="h-48" />}>
             <OnboardingWizard />
           </Suspense>
         </ErrorBoundary>
@@ -110,7 +110,7 @@ export function ImprovedProjectOwnerDashboard() {
         <Suspense fallback={
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[...Array(4)].map((_, i) => (
-              <Skeleton key={i} className="h-24" />
+              <EnhancedSkeleton key={i} className="h-24" />
             ))}
           </div>
         }>
@@ -120,7 +120,7 @@ export function ImprovedProjectOwnerDashboard() {
 
       {/* Quick Actions */}
       <ErrorBoundary fallback={<div>Quick actions unavailable</div>}>
-        <Suspense fallback={<Skeleton className="h-32" />}>
+        <Suspense fallback={<EnhancedSkeleton className="h-32" />}>
           <QuickActions />
         </Suspense>
       </ErrorBoundary>
@@ -130,7 +130,7 @@ export function ImprovedProjectOwnerDashboard() {
         {/* Projects Overview - Takes 2 columns on large screens */}
         <div className="lg:col-span-2">
           <ErrorBoundary fallback={<DashboardErrorFallback error={new Error('Projects data failed')} retry={() => window.location.reload()} />}>
-            <Suspense fallback={<Skeleton className="h-96" />}>
+            <Suspense fallback={<EnhancedSkeleton className="h-96" />}>
               <EnhancedProjectsOverview userId={user.id} />
             </Suspense>
           </ErrorBoundary>
@@ -139,7 +139,7 @@ export function ImprovedProjectOwnerDashboard() {
         {/* Security Insights - Takes 1 column */}
         <div>
           <ErrorBoundary fallback={<DashboardErrorFallback error={new Error('Security data failed')} retry={() => window.location.reload()} />}>
-            <Suspense fallback={<Skeleton className="h-96" />}>
+            <Suspense fallback={<EnhancedSkeleton className="h-96" />}>
               <EnhancedSecurityInsights userId={user.id} />
             </Suspense>
           </ErrorBoundary>
@@ -148,7 +148,7 @@ export function ImprovedProjectOwnerDashboard() {
 
       {/* Recent Activity */}
       <ErrorBoundary fallback={<DashboardErrorFallback error={new Error('Activity data failed')} retry={() => window.location.reload()} />}>
-        <Suspense fallback={<Skeleton className="h-64" />}>
+        <Suspense fallback={<EnhancedSkeleton className="h-64" />}>
           <EnhancedRecentActivity userId={user.id} />
         </Suspense>
       </ErrorBoundary>

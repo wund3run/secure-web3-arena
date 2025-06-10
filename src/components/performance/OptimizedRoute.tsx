@@ -15,9 +15,9 @@ interface OptimizedRouteProps {
 
 const RouteLoadingFallback = () => (
   <div className="min-h-screen p-6 space-y-4">
-    <EnhancedSkeleton variant="shimmer" className="h-12 w-64" />
-    <EnhancedSkeleton variant="shimmer" className="h-4 w-full" />
-    <EnhancedSkeleton variant="shimmer" className="h-4 w-3/4" />
+    <EnhancedSkeleton variant="default" className="h-12 w-64" />
+    <EnhancedSkeleton variant="default" className="h-4 w-full" />
+    <EnhancedSkeleton variant="default" className="h-4 w-3/4" />
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
       {Array.from({ length: 6 }).map((_, i) => (
         <EnhancedSkeleton key={i} variant="card" className="h-48" />

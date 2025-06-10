@@ -3,7 +3,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 
 interface EnhancedSkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: "default" | "card" | "text" | "avatar" | "button";
+  variant?: "default" | "card" | "text" | "avatar" | "button" | "shimmer" | "wave";
   size?: "sm" | "md" | "lg";
   animation?: "pulse" | "shimmer" | "wave";
 }
@@ -21,6 +21,8 @@ export function EnhancedSkeleton({
     text: "bg-muted/60 rounded",
     avatar: "bg-muted rounded-full",
     button: "bg-muted rounded-md",
+    shimmer: "bg-gradient-to-r from-muted via-muted/50 to-muted",
+    wave: "bg-muted relative overflow-hidden",
   };
 
   const sizeClasses = {
@@ -48,3 +50,6 @@ export function EnhancedSkeleton({
     />
   );
 }
+
+// Export for backwards compatibility
+export { EnhancedSkeleton as Skeleton };

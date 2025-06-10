@@ -8,13 +8,13 @@ import { Link } from 'react-router-dom';
 
 interface Project {
   id: string;
-  name: string;
+  project_name: string;
   status: string;
   created_at: string;
-  project_audits?: Array<{
+  audit_findings?: Array<{
     id: string;
+    severity: string;
     status: string;
-    severity_level: string;
     created_at: string;
   }>;
 }
@@ -78,16 +78,16 @@ export function ProjectOverviewContent({ projects }: ProjectOverviewContentProps
           <div key={project.id} className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-3">
-                <h4 className="font-medium text-sm truncate">{project.name}</h4>
+                <h4 className="font-medium text-sm truncate">{project.project_name}</h4>
                 {getStatusIndicator(project.status)}
               </div>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-xs text-muted-foreground">
                   Created {new Date(project.created_at).toLocaleDateString()}
                 </span>
-                {project.project_audits && project.project_audits.length > 0 && (
+                {project.audit_findings && project.audit_findings.length > 0 && (
                   <Badge variant="secondary" className="text-xs">
-                    {project.project_audits.length} audit{project.project_audits.length > 1 ? 's' : ''}
+                    {project.audit_findings.length} finding{project.audit_findings.length > 1 ? 's' : ''}
                   </Badge>
                 )}
               </div>

@@ -2,7 +2,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { EnhancedDashboardWidget } from '../../EnhancedDashboardWidget';
+import { EnhancedDashboardWidget } from '../../../enhanced/EnhancedDashboardWidget';
 import { ProjectOverviewContent } from './ProjectOverviewContent';
 import { BarChart3 } from 'lucide-react';
 
@@ -12,16 +12,16 @@ interface EnhancedProjectOverviewProps {
 
 export function EnhancedProjectOverview({ userId }: EnhancedProjectOverviewProps) {
   const { data: projects, isLoading, error, refetch } = useQuery({
-    queryKey: ['projects-overview', userId],
+    queryKey: ['audit-requests-overview', userId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('projects')
+        .from('audit_requests')
         .select(`
           *,
-          project_audits (
+          audit_findings (
             id,
+            severity,
             status,
-            severity_level,
             created_at
           )
         `)

@@ -73,7 +73,7 @@ export function ProgressiveLoader({
             return (
               <EnhancedSkeleton 
                 key={stage.name}
-                variant="shimmer" 
+                variant="default" 
                 className="h-64 w-full rounded mb-8" 
               />
             );

@@ -21,7 +21,7 @@ export function LazySection({
         className="h-16 w-16 object-contain bg-transparent animate-pulse"
         style={{ backgroundColor: 'transparent' }}
       />
-      <EnhancedSkeleton variant="shimmer" className="h-64 w-full" />
+      <EnhancedSkeleton variant="default" className="h-64 w-full" />
     </div>
   ),
   threshold = 0.1,
