@@ -3,26 +3,21 @@ import React from "react";
 import { StandardizedLayout } from "@/components/layout/StandardizedLayout";
 import { SkipLink } from "@/components/ui/skip-link";
 import { SEOOptimization } from "@/components/seo/SEOOptimization";
+import { EnhancedHeroSection } from "@/components/home/enhanced-hero-section";
+import { TrustIndicators } from "@/components/home/trust-indicators";
+import { ValuePropositionSection } from "@/components/home/value-proposition-section";
+import { HowItWorksSection } from "@/components/home/how-it-works-section";
 
-// Enhanced components for consistent experience
-const IndexPageLayout = React.lazy(() => 
-  import("@/components/home/index-page-layout").then(m => ({ default: m.IndexPageLayout }))
-);
-
-const SupportButtonEnhanced = React.lazy(() => 
-  import("@/components/ui/support-button-enhanced").then(m => ({ default: m.SupportButtonEnhanced }))
-);
-
-// Enhanced loading fallback for better UX
+// Enhanced loading fallback
 const ComponentFallback = () => (
-  <div className="min-h-screen p-6 space-y-4">
-    <div className="animate-pulse space-y-4">
-      <div className="h-12 bg-muted rounded-lg w-64 mx-auto" />
-      <div className="h-4 bg-muted rounded w-full max-w-2xl mx-auto" />
-      <div className="h-4 bg-muted rounded w-3/4 max-w-xl mx-auto" />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 max-w-6xl mx-auto">
+  <div className="min-h-screen p-6 space-y-8">
+    <div className="ui-animate-fadeInUp space-y-6">
+      <div className="h-16 bg-gray-200 rounded-lg w-64 mx-auto ui-loading" />
+      <div className="h-4 bg-gray-200 rounded w-full max-w-2xl mx-auto ui-loading" />
+      <div className="h-4 bg-gray-200 rounded w-3/4 max-w-xl mx-auto ui-loading" />
+      <div className="ui-grid ui-grid-3 mt-12 max-w-6xl mx-auto">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="h-48 bg-muted rounded-lg animate-pulse" />
+          <div key={i} className="h-48 bg-gray-200 rounded-lg ui-loading" />
         ))}
       </div>
     </div>
@@ -48,13 +43,25 @@ export default function Index() {
       
       <main id="main-content" className="flex-grow">
         <React.Suspense fallback={<ComponentFallback />}>
-          <IndexPageLayout />
+          {/* Enhanced Hero Section */}
+          <EnhancedHeroSection />
+          
+          {/* Trust Indicators */}
+          <section className="ui-section-compact bg-gray-50">
+            <TrustIndicators />
+          </section>
+          
+          {/* Value Proposition */}
+          <section className="ui-section">
+            <ValuePropositionSection />
+          </section>
+          
+          {/* How It Works */}
+          <section className="ui-section-compact bg-gray-50">
+            <HowItWorksSection />
+          </section>
         </React.Suspense>
       </main>
-      
-      <React.Suspense fallback={null}>
-        <SupportButtonEnhanced />
-      </React.Suspense>
     </StandardizedLayout>
   );
 }
