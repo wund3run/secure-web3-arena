@@ -266,7 +266,7 @@
   }
 
   .section-title {
-    @apply text-display-lg md:text-display-xl font-bold mb-4;
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold mb-4;
     background: var(--brand-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
