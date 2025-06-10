@@ -26,7 +26,7 @@ async function fetchSecurityInsights(userId: string): Promise<SecurityData> {
   try {
     const { data, error } = await supabase
       .from('audit_requests')
-      .select('security_score, vulnerabilities_found, vulnerabilities_fixed')
+      .select('security_score')
       .eq('client_id', userId)
       .not('security_score', 'is', null);
 
@@ -34,11 +34,28 @@ async function fetchSecurityInsights(userId: string): Promise<SecurityData> {
 
     const scores = data?.map(d => d.security_score).filter(Boolean) || [];
     const averageScore = scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
-    const vulnerabilitiesFixed = data?.reduce((sum, d) => sum + (d.vulnerabilities_fixed || 0), 0) || 0;
+
+    // Fetch audit findings for vulnerability count
+    const { data: findingsData, error: findingsError } = await supabase
+      .from('audit_findings')
+      .select('severity, status')
+      .in('audit_request_id', 
+        data?.map(req => req.id) || []
+      );
+
+    if (findingsError) console.error('Error fetching findings:', findingsError);
+
+    const vulnerabilitiesFixed = findingsData?.filter(f => f.status === 'fixed').length || 0;
 
     // Mock trend calculation - in real app, compare with previous period
     const securityTrend: 'up' | 'down' | 'stable' = averageScore > 75 ? 'up' : averageScore < 50 ? 'down' : 'stable';
     const riskLevel: 'low' | 'medium' | 'high' = averageScore > 80 ? 'low' : averageScore > 60 ? 'medium' : 'high';
+
+    // Process findings by severity
+    const findingsBySeverity = findingsData?.reduce((acc, finding) => {
+      acc[finding.severity] = (acc[finding.severity] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>) || {};
 
     return {
       averageScore,
@@ -46,10 +63,10 @@ async function fetchSecurityInsights(userId: string): Promise<SecurityData> {
       securityTrend,
       riskLevel,
       recentFindings: [
-        { severity: 'critical', count: 2 },
-        { severity: 'high', count: 5 },
-        { severity: 'medium', count: 12 },
-        { severity: 'low', count: 8 }
+        { severity: 'critical', count: findingsBySeverity.critical || 0 },
+        { severity: 'high', count: findingsBySeverity.high || 0 },
+        { severity: 'medium', count: findingsBySeverity.medium || 0 },
+        { severity: 'low', count: findingsBySeverity.low || 0 }
       ]
     };
   } catch (error) {
@@ -172,7 +189,7 @@ export function EnhancedSecurityInsights({ userId }: SecurityInsightsProps) {
             {insights?.recentFindings.map((finding, index) => (
               <div key={index} className="flex items-center justify-between text-sm">
                 <span className="capitalize">{finding.severity}</span>
-                <Badge variant="outline" size="sm">
+                <Badge variant="outline">
                   {finding.count}
                 </Badge>
               </div>

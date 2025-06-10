@@ -26,7 +26,7 @@ async function fetchRecentActivity(userId: string): Promise<ActivityItem[]> {
     // Fetch recent audit activities
     const { data: auditData, error: auditError } = await supabase
       .from('audit_requests')
-      .select('id, title, status, created_at, updated_at')
+      .select('id, project_name, status, created_at, updated_at')
       .eq('client_id', userId)
       .order('updated_at', { ascending: false })
       .limit(10);
@@ -41,7 +41,7 @@ async function fetchRecentActivity(userId: string): Promise<ActivityItem[]> {
         id: `audit-${audit.id}`,
         type: 'audit_created',
         title: 'Audit Request Created',
-        description: audit.title || 'New audit request',
+        description: audit.project_name || 'New audit request',
         timestamp: audit.created_at,
         metadata: { auditId: audit.id, status: audit.status }
       });
@@ -51,7 +51,7 @@ async function fetchRecentActivity(userId: string): Promise<ActivityItem[]> {
           id: `audit-updated-${audit.id}`,
           type: 'audit_updated',
           title: 'Audit Updated',
-          description: `Status changed for "${audit.title}"`,
+          description: `Status changed for "${audit.project_name}"`,
           timestamp: audit.updated_at,
           metadata: { auditId: audit.id, status: audit.status }
         });
@@ -188,7 +188,7 @@ export function EnhancedRecentActivity({ userId }: RecentActivityProps) {
                   </p>
                   
                   {activity.metadata?.status && (
-                    <Badge variant="outline" size="sm" className="mt-1">
+                    <Badge variant="outline" className="mt-1">
                       {activity.metadata.status.replace('_', ' ')}
                     </Badge>
                   )}

@@ -14,7 +14,7 @@ interface ProjectsOverviewProps {
 
 interface Project {
   id: string;
-  title: string;
+  project_name: string;
   status: string;
   created_at: string;
   completion_percentage: number;
@@ -25,7 +25,7 @@ interface Project {
 async function fetchUserProjects(userId: string): Promise<Project[]> {
   const { data, error } = await supabase
     .from('audit_requests')
-    .select('id, title, status, created_at, completion_percentage, security_score, budget')
+    .select('id, project_name, status, created_at, completion_percentage, security_score, budget')
     .eq('client_id', userId)
     .order('created_at', { ascending: false })
     .limit(6);
@@ -145,7 +145,7 @@ export function EnhancedProjectsOverview({ userId }: ProjectsOverviewProps) {
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
                     {getStatusIcon(project.status)}
-                    <h4 className="font-medium truncate">{project.title}</h4>
+                    <h4 className="font-medium truncate">{project.project_name}</h4>
                   </div>
                   <div className="flex items-center gap-2">
                     {getStatusBadge(project.status)}
