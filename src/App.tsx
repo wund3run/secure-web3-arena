@@ -13,7 +13,7 @@ import { MarketplacePage } from '@/pages/MarketplacePage';
 import { RealTimeDashboard } from '@/components/dashboard/enhanced/RealTimeDashboard';
 import { EscrowManager } from '@/components/escrow/EscrowManager';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
-import { AuthPage } from '@/pages/AuthPage';
+import Auth from '@/pages/Auth';
 
 function App() {
   return (
@@ -32,7 +32,7 @@ function App() {
                     <Route path="/dashboard" element={<RealTimeDashboard />} />
                     <Route path="/escrow" element={<EscrowManager />} />
                     <Route path="/admin" element={<AdminDashboard />} />
-                    <Route path="/auth" element={<AuthPage />} />
+                    <Route path="/auth" element={<Auth />} />
                   </Routes>
                 </main>
                 
