@@ -3,9 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import enhanced brand system */
-@import url('./styles/enhanced-brand-system.css');
-
 @layer utilities {
   .animate-fade-in-up {
     animation: fade-in-up 0.6s ease-out forwards;
@@ -38,40 +35,5 @@
     100% {
       background-position: 200% 0;
     }
-  }
-
-  /* Enhanced brand utilities */
-  .gradient-primary {
-    background: linear-gradient(135deg, #8A73E2 0%, #33C3F0 100%);
-  }
-
-  .gradient-secondary {
-    background: linear-gradient(135deg, #33C3F0 0%, #22C55E 100%);
-  }
-
-  .gradient-text {
-    background: linear-gradient(135deg, #8A73E2 0%, #33C3F0 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-size: 200% 200%;
-    animation: gradientShift 3s ease-in-out infinite;
-  }
-
-  .brand-shadow {
-    box-shadow: 0 4px 20px rgba(138, 115, 226, 0.15);
-  }
-
-  .brand-shadow-lg {
-    box-shadow: 0 8px 30px rgba(138, 115, 226, 0.2);
-  }
-
-  .brand-glow {
-    box-shadow: 0 0 30px rgba(138, 115, 226, 0.3);
-  }
-
-  @keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
   }
 }
