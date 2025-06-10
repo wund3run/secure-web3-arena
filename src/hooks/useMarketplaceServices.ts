@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { performanceMonitor } from '@/utils/performance/performance-monitor';
 
 interface MarketplaceService {
   id: string;
@@ -54,23 +53,27 @@ export const useMarketplaceServices = () => {
         if (fetchError) throw fetchError;
 
         // Transform the data to match our interface
-        const transformedServices: MarketplaceService[] = (data || []).map(service => ({
-          ...service,
-          min_price: service.price_range?.min || 0,
-          blockchain_ecosystems: service.blockchain_ecosystems || [],
-          tags: service.tags || []
-        }));
+        const transformedServices: MarketplaceService[] = (data || []).map(service => {
+          let minPrice = 0;
+          
+          // Safely handle price_range extraction
+          if (service.price_range && typeof service.price_range === 'object' && 'min' in service.price_range) {
+            minPrice = service.price_range.min as number;
+          }
+
+          return {
+            ...service,
+            min_price: minPrice,
+            blockchain_ecosystems: service.blockchain_ecosystems || [],
+            tags: service.tags || []
+          };
+        });
 
         setServices(transformedServices);
 
-        // Record performance metrics
+        // Log performance metrics
         const endTime = performance.now();
-        performanceMonitor.recordPerformanceData({
-          name: 'marketplace-services-fetch',
-          value: endTime - startTime,
-          category: 'api_request',
-          metadata: { serviceCount: transformedServices.length }
-        });
+        console.log(`Marketplace services fetch took ${endTime - startTime} milliseconds`);
 
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to fetch services';

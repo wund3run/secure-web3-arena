@@ -47,8 +47,7 @@ export function AuditProgressTracker({ auditRequestId }: AuditProgressTrackerPro
   const progressPercentage = totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
 
   const handleMarkComplete = async (milestoneId: string) => {
-    await updateMilestone({
-      id: milestoneId,
+    await updateMilestone(milestoneId, {
       status: 'completed',
       completed_at: new Date().toISOString()
     });

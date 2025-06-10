@@ -61,8 +61,7 @@ export function AuditManagement() {
             </div>
             <Progress 
               value={stats.securityScore} 
-              className="h-1.5 mt-2" 
-              indicatorClassName="bg-gradient-to-r from-primary/80 to-primary"
+              className="h-1.5 mt-2 [&>div]:bg-gradient-to-r [&>div]:from-primary/80 [&>div]:to-primary"
             />
           </CardContent>
         </Card>
@@ -107,8 +106,7 @@ export function AuditManagement() {
             </div>
             <Progress 
               value={70} 
-              className="h-1.5 mt-2" 
-              indicatorClassName="bg-gradient-to-r from-amber-500 to-destructive"
+              className="h-1.5 mt-2 [&>div]:bg-gradient-to-r [&>div]:from-amber-500 [&>div]:to-destructive"
             />
           </CardContent>
         </Card>

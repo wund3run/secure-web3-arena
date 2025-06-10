@@ -55,7 +55,8 @@ export function EnhancedSecurityProvider({ children }: { children: React.ReactNo
         addThreat({
           type: 'system_vulnerability',
           severity: 'high',
-          message: 'Security system initialization failed'
+          message: 'Security system initialization failed',
+          resolved: false
         });
       }
     };
@@ -71,8 +72,7 @@ export function EnhancedSecurityProvider({ children }: { children: React.ReactNo
     const newThreat: SecurityThreat = {
       ...threat,
       id: crypto.randomUUID(),
-      timestamp: new Date(),
-      resolved: false
+      timestamp: new Date()
     };
 
     setThreats(prev => [newThreat, ...prev.slice(0, 9)]); // Keep max 10 threats
@@ -113,7 +113,8 @@ export function EnhancedSecurityProvider({ children }: { children: React.ReactNo
     addThreat({
       type: 'suspicious_activity',
       severity: 'high',
-      message: incident
+      message: incident,
+      resolved: false
     });
   };
 

@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 
 export const Navigation = () => {
-  const { user, logout } = useAuth();
+  const { user, signOut } = useAuth();
   const location = useLocation();
 
   const navigationItems = [
@@ -31,6 +31,14 @@ export const Navigation = () => {
 
   const isActive = (path: string) => {
     return location.pathname === path;
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   return (
@@ -83,7 +91,7 @@ export const Navigation = () => {
                     </Link>
                   </Button>
                   
-                  <Button variant="ghost" size="sm" onClick={logout}>
+                  <Button variant="ghost" size="sm" onClick={handleLogout}>
                     <LogOut className="h-4 w-4 mr-2" />
                     Logout
                   </Button>

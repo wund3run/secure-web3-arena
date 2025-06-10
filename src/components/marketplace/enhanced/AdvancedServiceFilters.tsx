@@ -56,6 +56,14 @@ export const AdvancedServiceFilters = ({ onFiltersChange, onClose }: AdvancedSer
     onFiltersChange({});
   };
 
+  const handleFeaturedChange = (checked: boolean | "indeterminate") => {
+    setFeatured(checked === true);
+  };
+
+  const handleVerifiedChange = (checked: boolean | "indeterminate") => {
+    setVerified(checked === true);
+  };
+
   return (
     <Card className="w-80">
       <CardHeader className="pb-3">
@@ -152,7 +160,7 @@ export const AdvancedServiceFilters = ({ onFiltersChange, onClose }: AdvancedSer
             <Checkbox
               id="featured"
               checked={featured}
-              onCheckedChange={setFeatured}
+              onCheckedChange={handleFeaturedChange}
             />
             <label htmlFor="featured" className="text-sm cursor-pointer">
               Featured services only
@@ -163,7 +171,7 @@ export const AdvancedServiceFilters = ({ onFiltersChange, onClose }: AdvancedSer
             <Checkbox
               id="verified"
               checked={verified}
-              onCheckedChange={setVerified}
+              onCheckedChange={handleVerifiedChange}
             />
             <label htmlFor="verified" className="text-sm cursor-pointer">
               Verified providers only

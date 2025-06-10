@@ -46,7 +46,19 @@ export function AuditCommunication({ auditRequestId }: AuditCommunicationProps) 
         .order('created_at', { ascending: true });
 
       if (error) throw error;
-      return data as Message[];
+      
+      // Transform the data to ensure proper typing
+      return (data || []).map((item: any) => ({
+        id: item.id,
+        content: item.content,
+        sender_id: item.sender_id,
+        created_at: item.created_at,
+        message_type: item.message_type,
+        file_attachments: item.file_attachments || [],
+        sender: item.sender && typeof item.sender === 'object' && !('error' in item.sender) 
+          ? item.sender 
+          : { full_name: 'Unknown User', avatar_url: undefined }
+      })) as Message[];
     },
   });
 

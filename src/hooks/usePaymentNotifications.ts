@@ -23,8 +23,8 @@ export const usePaymentNotifications = () => {
           filter: `client_id=eq.${user.id}`,
         },
         (payload) => {
-          const transaction = payload.new;
-          const oldTransaction = payload.old;
+          const transaction = payload.new as any;
+          const oldTransaction = payload.old as any;
           
           if (payload.eventType === 'UPDATE' && 
               oldTransaction?.status !== transaction?.status) {
@@ -36,7 +36,7 @@ export const usePaymentNotifications = () => {
               'refunded': { type: 'warning' as const, message: 'Payment has been refunded' },
             };
 
-            const statusConfig = statusMessages[transaction.status as keyof typeof statusMessages];
+            const statusConfig = statusMessages[transaction?.status as keyof typeof statusMessages];
             
             if (statusConfig) {
               addNotification({
@@ -63,10 +63,13 @@ export const usePaymentNotifications = () => {
           table: 'escrow_contracts',
         },
         (payload) => {
+          const newData = payload.new as any;
+          const oldData = payload.old as any;
+          
           // Check if user is involved in this contract
-          if (payload.new?.client_id === user.id || payload.new?.auditor_id === user.id) {
-            const oldStatus = payload.old?.status;
-            const newStatus = payload.new?.status;
+          if (newData?.client_id === user.id || newData?.auditor_id === user.id) {
+            const oldStatus = oldData?.status;
+            const newStatus = newData?.status;
             
             if (oldStatus !== newStatus) {
               addNotification({
@@ -75,7 +78,7 @@ export const usePaymentNotifications = () => {
                 type: 'info',
                 category: 'payment',
                 userId: user.id,
-                actionUrl: `/escrow/${payload.new.id}`,
+                actionUrl: `/escrow/${newData.id}`,
                 actionLabel: 'View Contract',
               });
             }
@@ -95,22 +98,25 @@ export const usePaymentNotifications = () => {
           table: 'milestones',
         },
         (payload) => {
-          if (payload.new?.is_completed && !payload.old?.is_completed) {
+          const newData = payload.new as any;
+          const oldData = payload.old as any;
+          
+          if (newData?.is_completed && !oldData?.is_completed) {
             // Fetch escrow contract to check if user is involved
             supabase
               .from('escrow_contracts')
               .select('client_id, auditor_id, title')
-              .eq('id', payload.new.escrow_contract_id)
+              .eq('id', newData.escrow_contract_id)
               .single()
               .then(({ data }) => {
                 if (data && (data.client_id === user.id || data.auditor_id === user.id)) {
                   addNotification({
                     title: 'Milestone Payment Released',
-                    message: `Payment for "${payload.new.title}" has been released`,
+                    message: `Payment for "${newData.title}" has been released`,
                     type: 'success',
                     category: 'payment',
                     userId: user.id,
-                    actionUrl: `/escrow/${payload.new.escrow_contract_id}`,
+                    actionUrl: `/escrow/${newData.escrow_contract_id}`,
                     actionLabel: 'View Contract',
                   });
                 }
