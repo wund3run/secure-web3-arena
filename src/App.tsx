@@ -1,7 +1,7 @@
-
 import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/contexts/auth";
 import { ThemeProvider } from "@/components/ui/theme-provider";
@@ -30,39 +30,41 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <AccessibilityProvider>
-          <AuthProvider>
-            <Router>
-              <div className="min-h-screen bg-background text-foreground">
-                <Suspense fallback={
-                  <EnhancedLoadingState 
-                    variant="pulse" 
-                    size="lg" 
-                    message="Loading Hawkly..." 
-                    fullScreen 
-                  />
-                }>
-                  <Routes>
-                    <Route path="/" element={<IndexPageLayout />} />
-                    <Route path="/auth" element={<AuthPage />} />
-                    <Route path="/dashboard" element={<DashboardPage />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="/marketplace" element={<MarketplacePage />} />
-                    <Route path="/security-audits" element={<SecurityAuditsPage />} />
-                    <Route path="/request-audit" element={<RequestAuditPage />} />
-                    <Route path="/audits" element={<AuditsPage />} />
-                    <Route path="/accessibility-testing" element={<AccessibilityTestingPage />} />
-                  </Routes>
-                </Suspense>
-                <Toaster />
-              </div>
-            </Router>
-          </AuthProvider>
-        </AccessibilityProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <AccessibilityProvider>
+            <AuthProvider>
+              <Router>
+                <div className="min-h-screen bg-background text-foreground">
+                  <Suspense fallback={
+                    <EnhancedLoadingState 
+                      variant="pulse" 
+                      size="lg" 
+                      message="Loading Hawkly..." 
+                      fullScreen 
+                    />
+                  }>
+                    <Routes>
+                      <Route path="/" element={<IndexPageLayout />} />
+                      <Route path="/auth" element={<AuthPage />} />
+                      <Route path="/dashboard" element={<DashboardPage />} />
+                      <Route path="/profile" element={<ProfilePage />} />
+                      <Route path="/marketplace" element={<MarketplacePage />} />
+                      <Route path="/security-audits" element={<SecurityAuditsPage />} />
+                      <Route path="/request-audit" element={<RequestAuditPage />} />
+                      <Route path="/audits" element={<AuditsPage />} />
+                      <Route path="/accessibility-testing" element={<AccessibilityTestingPage />} />
+                    </Routes>
+                  </Suspense>
+                  <Toaster />
+                </div>
+              </Router>
+            </AuthProvider>
+          </AccessibilityProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 
