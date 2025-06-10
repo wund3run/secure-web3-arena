@@ -13,12 +13,15 @@ import { EnhancedRecentActivity } from '../widgets/enhanced/EnhancedRecentActivi
 import { QuickActions } from '../widgets/enhanced/QuickActions';
 import { MetricsOverview } from '../widgets/enhanced/MetricsOverview';
 import { OnboardingWizard } from '../widgets/enhanced/OnboardingWizard';
+import { ResponsiveGrid } from '@/components/ui/responsive-grid';
+import { EnhancedProgressBar } from '@/components/ui/enhanced-progress-bar';
+import { CodeSplittingWrapper } from '@/components/performance/CodeSplitting';
 
-// Loading fallback component
+// Enhanced loading fallback component
 function DashboardSkeleton() {
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <ResponsiveGrid cols={{ default: 1, md: 2, lg: 4 }}>
         {[...Array(4)].map((_, i) => (
           <Card key={i}>
             <CardHeader className="pb-2">
@@ -30,11 +33,11 @@ function DashboardSkeleton() {
             </CardContent>
           </Card>
         ))}
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      </ResponsiveGrid>
+      <ResponsiveGrid cols={{ default: 1, lg: 2 }}>
         <EnhancedSkeleton className="h-96" />
         <EnhancedSkeleton className="h-96" />
-      </div>
+      </ResponsiveGrid>
     </div>
   );
 }
@@ -82,6 +85,21 @@ export function ImprovedProjectOwnerDashboard() {
           <p className="text-muted-foreground mt-1">
             Manage your security audits and track project progress
           </p>
+          
+          {/* Overall Progress Indicator */}
+          <div className="mt-4 max-w-md">
+            <EnhancedProgressBar
+              value={userProfile?.projects_completed || 0}
+              max={10}
+              label="Platform Journey"
+              variant="success"
+              milestones={[
+                { value: 1, label: 'First Audit', completed: (userProfile?.projects_completed || 0) >= 1 },
+                { value: 5, label: 'Regular User', completed: (userProfile?.projects_completed || 0) >= 5 },
+                { value: 10, label: 'Power User', completed: (userProfile?.projects_completed || 0) >= 10 }
+              ]}
+            />
+          </div>
         </div>
         
         <div className="flex items-center gap-3">
@@ -108,11 +126,11 @@ export function ImprovedProjectOwnerDashboard() {
       {/* Quick Metrics Overview */}
       <ErrorBoundary fallback={<DashboardErrorFallback error={new Error('Metrics failed')} retry={() => window.location.reload()} />}>
         <Suspense fallback={
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <ResponsiveGrid cols={{ default: 1, md: 2, lg: 4 }}>
             {[...Array(4)].map((_, i) => (
               <EnhancedSkeleton key={i} className="h-24" />
             ))}
-          </div>
+          </ResponsiveGrid>
         }>
           <MetricsOverview userId={user.id} />
         </Suspense>
@@ -126,7 +144,7 @@ export function ImprovedProjectOwnerDashboard() {
       </ErrorBoundary>
 
       {/* Main Dashboard Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <ResponsiveGrid cols={{ default: 1, lg: 3 }}>
         {/* Projects Overview - Takes 2 columns on large screens */}
         <div className="lg:col-span-2">
           <ErrorBoundary fallback={<DashboardErrorFallback error={new Error('Projects data failed')} retry={() => window.location.reload()} />}>
@@ -140,11 +158,11 @@ export function ImprovedProjectOwnerDashboard() {
         <div>
           <ErrorBoundary fallback={<DashboardErrorFallback error={new Error('Security data failed')} retry={() => window.location.reload()} />}>
             <Suspense fallback={<EnhancedSkeleton className="h-96" />}>
-              <EnhancedSecurityInsights userId={user.id} />
+              <CodeSplittingWrapper component="analytics" userId={user.id} />
             </Suspense>
           </ErrorBoundary>
         </div>
-      </div>
+      </ResponsiveGrid>
 
       {/* Recent Activity */}
       <ErrorBoundary fallback={<DashboardErrorFallback error={new Error('Activity data failed')} retry={() => window.location.reload()} />}>
