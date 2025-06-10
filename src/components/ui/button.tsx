@@ -10,16 +10,18 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "gradient-primary text-white hover:hawk-shadow-lg hover:-translate-y-0.5 shadow-sm",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary/30 hover:hawk-shadow",
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary/30 hover:shadow-md",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm hover:hawk-shadow",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm hover:shadow-md",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        brand: "gradient-primary text-white hover:hawk-shadow-lg hover:-translate-y-1 hover:scale-105",
+        brand: "btn-brand-primary brand-hover-lift",
+        brandSecondary: "btn-brand-secondary brand-hover-lift",
+        brandGhost: "bg-transparent text-white border border-white/30 hover:bg-white/10 hover:border-white/50",
       },
       size: {
         default: "h-10 px-4 py-2",

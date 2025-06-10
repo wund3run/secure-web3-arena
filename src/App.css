@@ -3,6 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import enhanced design system */
+@import "./styles/design-system.css";
+
 @layer utilities {
   .animate-fade-in-up {
     animation: fade-in-up 0.6s ease-out forwards;
@@ -35,5 +38,39 @@
     100% {
       background-position: 200% 0;
     }
+  }
+
+  /* Brand-enhanced utility classes */
+  .brand-glow {
+    box-shadow: var(--shadow-brand-glow);
+  }
+
+  .brand-hover-lift {
+    transition: all 0.3s ease;
+  }
+
+  .brand-hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-brand-lg);
+  }
+
+  .gradient-hero {
+    background: var(--brand-gradient-hero);
+  }
+
+  .gradient-primary {
+    background: var(--brand-gradient-primary);
+  }
+
+  .gradient-text {
+    background: var(--brand-gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+  }
+
+  .gradient-text-animate {
+    animation: gradientShift 3s ease-in-out infinite;
   }
 }

@@ -1,0 +1,192 @@
+
+/* Hawkly Brand System - Enhanced Color Palette */
+:root {
+  /* Primary Brand Colors - Based on Hawkly Logo */
+  --brand-primary: #8A73E2;
+  --brand-primary-light: #A78BFA;
+  --brand-primary-dark: #7C3AED;
+  --brand-primary-50: #F8F7FF;
+  --brand-primary-100: #F0EDFF;
+  --brand-primary-500: #8A73E2;
+  --brand-primary-600: #7C3AED;
+  --brand-primary-700: #6B46C1;
+
+  /* Secondary Brand Colors */
+  --brand-secondary: #33C3F0;
+  --brand-secondary-light: #38BDF8;
+  --brand-secondary-dark: #0EA5E9;
+  --brand-secondary-50: #F0F9FF;
+  --brand-secondary-100: #E0F2FE;
+  --brand-secondary-500: #33C3F0;
+  --brand-secondary-600: #0EA5E9;
+
+  /* Accent Colors */
+  --brand-accent: #FF5722;
+  --brand-accent-light: #FF7043;
+  --brand-accent-dark: #E64A19;
+  --brand-accent-50: #FFF3E0;
+  --brand-accent-500: #FF5722;
+
+  /* Success/Growth Colors */
+  --brand-success: #10B981;
+  --brand-success-light: #34D399;
+  --brand-success-50: #ECFDF5;
+  --brand-success-500: #10B981;
+
+  /* Warning Colors */
+  --brand-warning: #F59E0B;
+  --brand-warning-light: #FBBF24;
+  --brand-warning-50: #FFFBEB;
+
+  /* Enhanced Gradients */
+  --brand-gradient-primary: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+  --brand-gradient-secondary: linear-gradient(135deg, var(--brand-secondary) 0%, var(--brand-primary) 100%);
+  --brand-gradient-accent: linear-gradient(135deg, var(--brand-accent) 0%, var(--brand-primary) 100%);
+  --brand-gradient-hero: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 50%, var(--brand-accent) 100%);
+  --brand-gradient-subtle: linear-gradient(135deg, var(--brand-primary-50) 0%, var(--brand-secondary-50) 100%);
+
+  /* Surface Colors with Brand Tints */
+  --surface-primary: #FFFFFF;
+  --surface-secondary: #F8FAFC;
+  --surface-accent: #F1F5F9;
+  --surface-brand-light: rgba(138, 115, 226, 0.05);
+  --surface-brand-medium: rgba(138, 115, 226, 0.1);
+
+  /* Text Colors with Brand Integration */
+  --text-primary: #1E293B;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  --text-brand: var(--brand-primary);
+  --text-on-brand: #FFFFFF;
+
+  /* Border Colors */
+  --border-light: #E2E8F0;
+  --border-medium: #CBD5E1;
+  --border-brand: var(--brand-primary);
+  --border-brand-light: rgba(138, 115, 226, 0.2);
+
+  /* Shadow System with Brand Accents */
+  --shadow-brand-sm: 0 1px 3px rgba(138, 115, 226, 0.1);
+  --shadow-brand-md: 0 4px 12px rgba(138, 115, 226, 0.15);
+  --shadow-brand-lg: 0 8px 25px rgba(138, 115, 226, 0.2);
+  --shadow-brand-xl: 0 20px 40px rgba(138, 115, 226, 0.25);
+  --shadow-brand-glow: 0 0 20px rgba(138, 115, 226, 0.3);
+
+  /* Interactive States */
+  --interactive-hover: rgba(138, 115, 226, 0.08);
+  --interactive-active: rgba(138, 115, 226, 0.12);
+  --interactive-focus: rgba(138, 115, 226, 0.16);
+
+  /* Brand-specific component tokens */
+  --button-brand-bg: var(--brand-gradient-primary);
+  --button-brand-hover: var(--brand-gradient-secondary);
+  --card-brand-border: var(--border-brand-light);
+  --card-brand-bg: var(--surface-brand-light);
+}
+
+/* Dark mode adjustments */
+.dark {
+  --surface-primary: #0F172A;
+  --surface-secondary: #1E293B;
+  --surface-accent: #334155;
+  --surface-brand-light: rgba(138, 115, 226, 0.1);
+  --surface-brand-medium: rgba(138, 115, 226, 0.15);
+  
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  
+  --border-light: #334155;
+  --border-medium: #475569;
+}
+
+/* Brand utility classes */
+.brand-gradient {
+  background: var(--brand-gradient-primary);
+}
+
+.brand-gradient-text {
+  background: var(--brand-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.brand-shadow {
+  box-shadow: var(--shadow-brand-md);
+}
+
+.brand-shadow-glow {
+  box-shadow: var(--shadow-brand-glow);
+}
+
+.brand-card {
+  background: var(--card-brand-bg);
+  border: 1px solid var(--card-brand-border);
+  box-shadow: var(--shadow-brand-sm);
+}
+
+.brand-button-primary {
+  background: var(--button-brand-bg);
+  color: var(--text-on-brand);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.brand-button-primary:hover {
+  background: var(--button-brand-hover);
+  box-shadow: var(--shadow-brand-lg);
+  transform: translateY(-2px);
+}
+
+/* Interactive feedback */
+.brand-interactive {
+  transition: all 0.2s ease;
+}
+
+.brand-interactive:hover {
+  background-color: var(--interactive-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-brand-sm);
+}
+
+.brand-interactive:active {
+  background-color: var(--interactive-active);
+  transform: translateY(0);
+}
+
+/* Animation enhancements */
+@keyframes brand-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(138, 115, 226, 0.4);
+  }
+  50% { 
+    box-shadow: 0 0 0 10px rgba(138, 115, 226, 0);
+  }
+}
+
+@keyframes brand-float {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% { 
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+.animate-brand-pulse {
+  animation: brand-pulse 2s infinite;
+}
+
+.animate-brand-float {
+  animation: brand-float 6s ease-in-out infinite;
+}
+
+/* Responsive brand adjustments */
+@media (max-width: 768px) {
+  :root {
+    --shadow-brand-lg: 0 4px 15px rgba(138, 115, 226, 0.15);
+    --shadow-brand-xl: 0 10px 25px rgba(138, 115, 226, 0.2);
+  }
+}

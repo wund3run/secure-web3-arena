@@ -1,28 +1,11 @@
 
-/* Enhanced animations for better UX */
+/* Enhanced Animations for Brand Experience */
 
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes wave {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
+/* Fade animations with brand timing */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -30,10 +13,10 @@
   }
 }
 
-@keyframes scaleIn {
+@keyframes fadeInScale {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.9);
   }
   to {
     opacity: 1;
@@ -41,66 +24,168 @@
   }
 }
 
-@keyframes slideInLeft {
-  from {
+/* Brand-specific entrance animations */
+@keyframes brandEntrance {
+  0% {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateY(20px) scale(0.95);
   }
-  to {
+  50% {
+    opacity: 0.8;
+    transform: translateY(-5px) scale(1.02);
+  }
+  100% {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0) scale(1);
   }
 }
 
-@keyframes slideInRight {
+/* Gradient animation for text */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Hover lift animation */
+@keyframes hoverLift {
   from {
-    opacity: 0;
-    transform: translateX(20px);
+    transform: translateY(0) scale(1);
+    box-shadow: var(--shadow-brand-sm);
   }
   to {
-    opacity: 1;
-    transform: translateX(0);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--shadow-brand-lg);
   }
 }
 
-/* Utility classes for animations */
+/* Animation classes */
 .animate-fade-in-up {
-  animation: fadeInUp 0.5s ease-out forwards;
+  animation: fadeInUp 0.6s ease-out forwards;
 }
 
-.animate-scale-in {
-  animation: scaleIn 0.3s ease-out forwards;
+.animate-fade-in-scale {
+  animation: fadeInScale 0.5s ease-out forwards;
+}
+
+.animate-brand-entrance {
+  animation: brandEntrance 0.8s ease-out forwards;
+}
+
+.animate-gradient-text {
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease-in-out infinite;
+}
+
+.animate-hover-lift {
+  transition: all 0.3s ease;
+}
+
+.animate-hover-lift:hover {
+  animation: hoverLift 0.3s ease forwards;
+}
+
+/* Stagger animation for lists */
+.stagger-animation > * {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
+.stagger-animation > *:nth-child(6) { animation-delay: 0.6s; }
+
+/* Loading shimmer with brand colors */
+@keyframes brandShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-brand-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(138, 115, 226, 0.1),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: brandShimmer 1.5s infinite;
+}
+
+/* Interactive button animations */
+.button-brand-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.button-brand-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.button-brand-effect:hover::before {
+  left: 100%;
+}
+
+/* Scroll-triggered animations */
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .animate-slide-in-left {
-  animation: slideInLeft 0.4s ease-out forwards;
+  animation: slideInFromLeft 0.6s ease-out forwards;
 }
 
 .animate-slide-in-right {
-  animation: slideInRight 0.4s ease-out forwards;
+  animation: slideInFromRight 0.6s ease-out forwards;
 }
 
-/* Stagger animations for lists */
-.stagger-1 { animation-delay: 0.1s; }
-.stagger-2 { animation-delay: 0.2s; }
-.stagger-3 { animation-delay: 0.3s; }
-.stagger-4 { animation-delay: 0.4s; }
-.stagger-5 { animation-delay: 0.5s; }
-
-/* Hover effects */
-.hover-lift {
-  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
-}
-
-.hover-lift:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
-
-.hover-glow {
-  transition: box-shadow 0.3s ease-out;
-}
-
-.hover-glow:hover {
-  box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.3);
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .animate-fade-in-scale,
+  .animate-brand-entrance,
+  .animate-gradient-text,
+  .animate-hover-lift,
+  .animate-brand-shimmer,
+  .animate-slide-in-left,
+  .animate-slide-in-right {
+    animation: none;
+  }
+  
+  .stagger-animation > * {
+    opacity: 1;
+    animation: none;
+  }
 }
