@@ -18,7 +18,7 @@ export function NotificationTester() {
         title: `Test ${type} notification`,
         message: message,
         type: type,
-        category: 'testing',
+        category: 'system',
         userId: 'test-user',
       });
       setMessage('');
@@ -39,7 +39,7 @@ export function NotificationTester() {
           title: `Test ${test.type} notification`,
           message: test.message,
           type: test.type,
-          category: 'testing',
+          category: 'system',
           userId: 'test-user',
         });
       }, index * 500);

@@ -86,14 +86,7 @@ export function BuyerTutorial({ onComplete, onClose }: BuyerTutorialProps) {
       </CardHeader>
       
       <CardContent className="px-0 py-0">
-        <TutorialTabs
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          showingDetails={showingDetails}
-          toggleDetails={toggleDetails}
-          incrementProgress={incrementProgress}
-          progress={progress}
-        />
+        <TutorialTabs />
       </CardContent>
       
       <CardFooter className="flex justify-between pt-4 px-6 pb-4 border-t">
