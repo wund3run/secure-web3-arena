@@ -13,7 +13,7 @@ interface ThemeProviderState {
 }
 
 const initialState: ThemeProviderState = {
-  currentThemeName: "security-professional",
+  currentThemeName: "hawkly-security",
   setCurrentThemeName: () => null,
 };
 
@@ -21,26 +21,26 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 export function ThemeProvider({
   children,
-  storageKey = "ui-theme",
+  storageKey = "hawkly-theme",
   ...props
 }: ThemeProviderProps) {
   const [currentThemeName, setCurrentThemeName] = useState<string>(() => {
     try {
       const saved = localStorage.getItem('hawkly-theme');
-      return saved ? JSON.parse(saved).name : 'security-professional';
+      return saved ? JSON.parse(saved).name : 'hawkly-security';
     } catch {
-      return 'security-professional';
+      return 'hawkly-security';
     }
   });
 
   useEffect(() => {
     const root = window.document.documentElement;
     
-    // Always apply dark mode
+    // Always apply dark mode for Hawkly
     root.classList.remove("light");
     root.classList.add("dark");
     
-    // Apply the Security Professional theme in dark mode
+    // Apply the Hawkly Security theme
     themeSystem.applyTheme(currentThemeName, 'dark');
   }, [currentThemeName]);
 

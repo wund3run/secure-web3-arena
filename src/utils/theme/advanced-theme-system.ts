@@ -1,3 +1,4 @@
+
 interface ThemeColors {
   primary: string;
   secondary: string;
@@ -21,13 +22,11 @@ interface ThemeConfig {
     sans: string[];
     mono: string[];
   };
-  spacing: Record<string, string>;
-  borderRadius: Record<string, string>;
 }
 
 export class AdvancedThemeSystem {
   private static instance: AdvancedThemeSystem;
-  private currentTheme: string = 'security-professional';
+  private currentTheme: string = 'hawkly-security';
   private themes: Map<string, ThemeConfig> = new Map();
 
   static getInstance(): AdvancedThemeSystem {
@@ -38,268 +37,129 @@ export class AdvancedThemeSystem {
   }
 
   constructor() {
-    this.initializeDefaultThemes();
+    this.initializeHawklyThemes();
     this.loadUserPreferences();
   }
 
-  private initializeDefaultThemes() {
-    // Enhanced Security Professional theme
+  private initializeHawklyThemes() {
+    // Official Hawkly Security Professional theme
+    this.themes.set('hawkly-security', {
+      name: 'Hawkly Security Professional',
+      colors: {
+        light: {
+          primary: '217 71% 58%',       // Hawkly Primary Blue
+          secondary: '193 85% 56%',     // Hawkly Secondary Cyan
+          background: '0 0% 100%',      // White background
+          foreground: '217 32% 15%',    // Dark text
+          muted: '217 30% 95%',         // Light muted
+          accent: '254 85% 75%',        // Hawkly Purple
+          destructive: '0 84% 60%',     // Error red
+          border: '217 25% 88%',        // Light border
+          input: '217 25% 95%',         // Light input
+          ring: '217 71% 58%'           // Primary focus ring
+        },
+        dark: {
+          primary: '217 71% 65%',       // Lighter primary for dark
+          secondary: '193 85% 65%',     // Lighter secondary for dark
+          background: '217 32% 6%',     // Deep navy background
+          foreground: '217 30% 94%',    // Light text
+          muted: '217 32% 15%',         // Dark muted
+          accent: '254 85% 75%',        // Hawkly Purple
+          destructive: '0 84% 65%',     // Lighter error for dark
+          border: '217 32% 18%',        // Dark border
+          input: '217 32% 18%',         // Dark input
+          ring: '217 71% 65%'           // Primary focus ring
+        }
+      },
+      fonts: {
+        sans: ['Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace']
+      }
+    });
+
+    // Legacy security-professional theme (for backward compatibility)
     this.themes.set('security-professional', {
-      name: 'Security Professional',
+      name: 'Security Professional (Legacy)',
       colors: {
         light: {
-          primary: '217 91% 60%',
-          secondary: '187 85% 55%',
-          background: '217 32% 98%',
-          foreground: '217 40% 12%',
-          muted: '217 30% 92%',
-          accent: '262 83% 62%',
-          destructive: '0 84% 57%',
+          primary: '217 71% 58%',
+          secondary: '193 85% 56%',
+          background: '0 0% 100%',
+          foreground: '217 32% 15%',
+          muted: '217 30% 95%',
+          accent: '254 85% 75%',
+          destructive: '0 84% 60%',
           border: '217 25% 88%',
-          input: '217 25% 90%',
-          ring: '217 91% 60%'
+          input: '217 25% 95%',
+          ring: '217 71% 58%'
         },
         dark: {
-          primary: '217 91% 65%',
-          secondary: '187 85% 65%',
-          background: '217 40% 6%',
+          primary: '217 71% 65%',
+          secondary: '193 85% 65%',
+          background: '217 32% 6%',
           foreground: '217 30% 94%',
-          muted: '217 40% 15%',
-          accent: '262 83% 67%',
+          muted: '217 32% 15%',
+          accent: '254 85% 75%',
           destructive: '0 84% 65%',
-          border: '217 40% 18%',
-          input: '217 40% 18%',
-          ring: '217 91% 65%'
+          border: '217 32% 18%',
+          input: '217 32% 18%',
+          ring: '217 71% 65%'
         }
       },
       fonts: {
         sans: ['Inter', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace']
-      },
-      spacing: {
-        xs: '0.25rem',
-        sm: '0.5rem',
-        md: '1rem',
-        lg: '1.5rem',
-        xl: '2rem'
-      },
-      borderRadius: {
-        sm: '0.125rem',
-        md: '0.375rem',
-        lg: '0.5rem',
-        xl: '0.75rem'
-      }
-    });
-
-    // Default theme
-    this.themes.set('default', {
-      name: 'Default',
-      colors: {
-        light: {
-          primary: '222.2 84% 4.9%',
-          secondary: '210 40% 96%',
-          background: '0 0% 100%',
-          foreground: '222.2 84% 4.9%',
-          muted: '210 40% 96%',
-          accent: '210 40% 96%',
-          destructive: '0 84.2% 60.2%',
-          border: '214.3 31.8% 91.4%',
-          input: '214.3 31.8% 91.4%',
-          ring: '222.2 84% 4.9%'
-        },
-        dark: {
-          primary: '210 40% 98%',
-          secondary: '222.2 84% 4.9%',
-          background: '222.2 84% 4.9%',
-          foreground: '210 40% 98%',
-          muted: '217.2 32.6% 17.5%',
-          accent: '217.2 32.6% 17.5%',
-          destructive: '0 62.8% 30.6%',
-          border: '217.2 32.6% 17.5%',
-          input: '217.2 32.6% 17.5%',
-          ring: '212.7 26.8% 83.9%'
-        }
-      },
-      fonts: {
-        sans: ['Inter', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace']
-      },
-      spacing: {
-        xs: '0.25rem',
-        sm: '0.5rem',
-        md: '1rem',
-        lg: '1.5rem',
-        xl: '2rem'
-      },
-      borderRadius: {
-        sm: '0.125rem',
-        md: '0.375rem',
-        lg: '0.5rem',
-        xl: '0.75rem'
-      }
-    });
-
-    // High contrast theme for accessibility
-    this.themes.set('high-contrast', {
-      name: 'High Contrast',
-      colors: {
-        light: {
-          primary: '0 0% 0%',
-          secondary: '0 0% 20%',
-          background: '0 0% 100%',
-          foreground: '0 0% 0%',
-          muted: '0 0% 90%',
-          accent: '0 0% 10%',
-          destructive: '0 100% 40%',
-          border: '0 0% 0%',
-          input: '0 0% 95%',
-          ring: '0 0% 0%'
-        },
-        dark: {
-          primary: '0 0% 100%',
-          secondary: '0 0% 80%',
-          background: '0 0% 0%',
-          foreground: '0 0% 100%',
-          muted: '0 0% 15%',
-          accent: '0 0% 90%',
-          destructive: '0 100% 60%',
-          border: '0 0% 100%',
-          input: '0 0% 10%',
-          ring: '0 0% 100%'
-        }
-      },
-      fonts: {
-        sans: ['Inter', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace']
-      },
-      spacing: {
-        xs: '0.25rem',
-        sm: '0.5rem',
-        md: '1rem',
-        lg: '1.5rem',
-        xl: '2rem'
-      },
-      borderRadius: {
-        sm: '0.125rem',
-        md: '0.375rem',
-        lg: '0.5rem',
-        xl: '0.75rem'
       }
     });
   }
 
-  generatePaletteFromColor(baseColor: string): ThemeColors {
-    // Enhanced palette generation for security context
-    const hsl = this.hexToHsl(baseColor);
-    
-    return {
-      primary: `${hsl.h} ${Math.min(hsl.s + 10, 100)}% ${Math.min(hsl.l + 5, 70)}%`,
-      secondary: `${(hsl.h + 30) % 360} ${hsl.s * 0.9}% ${Math.min(hsl.l + 8, 65)}%`,
-      background: '217 32% 98%',
-      foreground: '217 40% 12%',
-      muted: `${hsl.h} ${hsl.s * 0.25}% 92%`,
-      accent: `${(hsl.h + 60) % 360} ${hsl.s * 0.95}% ${hsl.l}%`,
-      destructive: '0 84% 57%',
-      border: `${hsl.h} ${hsl.s * 0.25}% 88%`,
-      input: `${hsl.h} ${hsl.s * 0.25}% 90%`,
-      ring: `${hsl.h} ${Math.min(hsl.s + 10, 100)}% ${Math.min(hsl.l + 5, 70)}%`
-    };
-  }
-
-  createCustomTheme(name: string, baseColor: string): ThemeConfig {
-    const lightColors = this.generatePaletteFromColor(baseColor);
-    const darkColors = this.generateDarkVariant(lightColors);
-
-    const theme: ThemeConfig = {
-      name,
-      colors: { light: lightColors, dark: darkColors },
-      fonts: {
-        sans: ['Inter', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace']
-      },
-      spacing: {
-        xs: '0.25rem',
-        sm: '0.5rem',
-        md: '1rem',
-        lg: '1.5rem',
-        xl: '2rem'
-      },
-      borderRadius: {
-        sm: '0.125rem',
-        md: '0.375rem',
-        lg: '0.5rem',
-        xl: '0.75rem'
-      }
-    };
-
-    this.themes.set(name, theme);
-    return theme;
-  }
-
-  private generateDarkVariant(lightColors: ThemeColors): ThemeColors {
-    return {
-      primary: lightColors.background,
-      secondary: lightColors.foreground,
-      background: lightColors.foreground,
-      foreground: lightColors.background,
-      muted: '217.2 32.6% 17.5%',
-      accent: '217.2 32.6% 17.5%',
-      destructive: '0 62.8% 30.6%',
-      border: '217.2 32.6% 17.5%',
-      input: '217.2 32.6% 17.5%',
-      ring: lightColors.primary
-    };
-  }
-
-  applyTheme(themeName: string, mode: 'light' | 'dark' = 'light') {
-    const theme = this.themes.get(themeName);
+  applyTheme(themeName: string, mode: 'light' | 'dark' = 'dark') {
+    const theme = this.themes.get(themeName) || this.themes.get('hawkly-security');
     if (!theme) return;
 
     this.currentTheme = themeName;
     const colors = theme.colors[mode];
     const root = document.documentElement;
 
-    // Apply CSS custom properties with enhanced security theme variables
+    // Apply Hawkly brand colors
+    root.style.setProperty('--hawkly-primary', '217 71% 58%');
+    root.style.setProperty('--hawkly-secondary', '193 85% 56%');
+    root.style.setProperty('--hawkly-accent', '254 85% 75%');
+    root.style.setProperty('--hawkly-orange', '14 100% 60%');
+    root.style.setProperty('--hawkly-success', '142 71% 45%');
+    root.style.setProperty('--hawkly-warning', '43 96% 56%');
+    root.style.setProperty('--hawkly-error', '0 84% 60%');
+    root.style.setProperty('--hawkly-info', '217 71% 58%');
+
+    // Apply theme colors
     Object.entries(colors).forEach(([key, value]) => {
       root.style.setProperty(`--${key}`, value);
     });
-
-    // Apply security-specific theme variables
-    if (themeName === 'security-professional') {
-      root.style.setProperty('--security-critical', mode === 'dark' ? '0 84% 65%' : '0 84% 57%');
-      root.style.setProperty('--security-high', mode === 'dark' ? '24 95% 62%' : '24 95% 55%');
-      root.style.setProperty('--security-medium', mode === 'dark' ? '43 96% 60%' : '43 96% 53%');
-      root.style.setProperty('--security-low', mode === 'dark' ? '142 76% 52%' : '142 76% 45%');
-      root.style.setProperty('--security-info', mode === 'dark' ? '217 91% 65%' : '217 91% 60%');
-    }
 
     // Apply fonts
     root.style.setProperty('--font-sans', theme.fonts.sans.join(', '));
     root.style.setProperty('--font-mono', theme.fonts.mono.join(', '));
 
-    // Apply spacing
-    Object.entries(theme.spacing).forEach(([key, value]) => {
-      root.style.setProperty(`--spacing-${key}`, value);
-    });
-
-    // Apply border radius
-    Object.entries(theme.borderRadius).forEach(([key, value]) => {
-      root.style.setProperty(`--radius-${key}`, value);
-    });
+    // Ensure dark mode is always applied
+    root.classList.remove("light");
+    root.classList.add("dark");
 
     // Save preference
-    localStorage.setItem('hawkly-theme', JSON.stringify({ name: themeName, mode }));
+    localStorage.setItem('hawkly-theme', JSON.stringify({ name: themeName, mode: 'dark' }));
   }
 
   private loadUserPreferences() {
     try {
       const saved = localStorage.getItem('hawkly-theme');
       if (saved) {
-        const { name, mode } = JSON.parse(saved);
-        this.applyTheme(name, mode);
+        const { name } = JSON.parse(saved);
+        this.applyTheme(name, 'dark');
+      } else {
+        this.applyTheme('hawkly-security', 'dark');
       }
     } catch (error) {
       console.warn('Failed to load theme preferences:', error);
+      this.applyTheme('hawkly-security', 'dark');
     }
   }
 
@@ -309,50 +169,6 @@ export class AdvancedThemeSystem {
 
   getCurrentTheme(): string {
     return this.currentTheme;
-  }
-
-  exportTheme(themeName: string): string {
-    const theme = this.themes.get(themeName);
-    return theme ? JSON.stringify(theme, null, 2) : '';
-  }
-
-  importTheme(themeJson: string): boolean {
-    try {
-      const theme: ThemeConfig = JSON.parse(themeJson);
-      this.themes.set(theme.name, theme);
-      return true;
-    } catch (error) {
-      console.error('Failed to import theme:', error);
-      return false;
-    }
-  }
-
-  private hexToHsl(hex: string) {
-    const r = parseInt(hex.slice(1, 3), 16) / 255;
-    const g = parseInt(hex.slice(3, 5), 16) / 255;
-    const b = parseInt(hex.slice(5, 7), 16) / 255;
-
-    const max = Math.max(r, g, b);
-    const min = Math.min(r, g, b);
-    let h = 0, s = 0, l = (max + min) / 2;
-
-    if (max !== min) {
-      const d = max - min;
-      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-      
-      switch (max) {
-        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-        case g: h = (b - r) / d + 2; break;
-        case b: h = (r - g) / d + 4; break;
-      }
-      h /= 6;
-    }
-
-    return {
-      h: Math.round(h * 360),
-      s: Math.round(s * 100),
-      l: Math.round(l * 100)
-    };
   }
 }
 

@@ -57,16 +57,17 @@ export function ConsolidatedNavbar() {
   return (
     <header 
       className={`
-        sticky top-0 z-50 w-full border-b transition-all duration-200 bg-background/95 backdrop-blur-md shadow-sm
+        sticky top-0 z-50 w-full border-b border-border transition-all duration-200 
+        bg-background/95 backdrop-blur-md shadow-hawkly
       `}
       role="banner"
     >
-      <div className="container mx-auto px-4">
+      <div className="container-modern">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link 
             to={user ? "/dashboard" : "/"} 
-            className="flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-primary"
+            className="focus-modern flex items-center space-x-2"
             aria-label="Hawkly Home"
           >
             <img 
@@ -74,7 +75,7 @@ export function ConsolidatedNavbar() {
               alt="Hawkly Logo"
               className="h-12 w-12 object-contain"
             />
-            <span className="hidden sm:block font-bold text-xl bg-gradient-to-r from-secondary-400 to-primary-400 bg-clip-text text-transparent">
+            <span className="hidden sm:block font-bold text-xl text-hawkly-gradient">
               Hawkly
             </span>
           </Link>
@@ -87,10 +88,10 @@ export function ConsolidatedNavbar() {
                 to={link.href}
                 className={`
                   px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200
-                  focus:outline-none focus:ring-2 focus:ring-primary
+                  focus-modern
                   ${location.pathname === link.href
-                    ? 'text-primary-400 bg-primary-900/20'
-                    : 'text-neutral-300 hover:text-primary-300 hover:bg-neutral-800/50'
+                    ? 'text-hawkly-primary bg-hawkly-primary/10'
+                    : 'text-muted-foreground hover:text-hawkly-primary hover:bg-muted/50'
                   }
                 `}
               >
@@ -106,7 +107,7 @@ export function ConsolidatedNavbar() {
 
             {/* Search (for authenticated users) */}
             {user && (
-              <Button variant="ghost" size="icon" className="text-neutral-300 hover:text-primary-300">
+              <Button variant="ghost" size="icon" className="focus-modern text-muted-foreground hover:text-hawkly-primary">
                 <Search className="h-5 w-5" />
                 <span className="sr-only">Search</span>
               </Button>
@@ -118,23 +119,23 @@ export function ConsolidatedNavbar() {
             {/* Auth section */}
             {!user && !isAuthPage ? (
               <div className="hidden md:flex items-center space-x-2">
-                <Button variant="ghost" asChild className="text-neutral-300 hover:text-primary-300">
+                <Button variant="ghost" asChild className="focus-modern text-muted-foreground hover:text-hawkly-primary">
                   <Link to="/auth">Sign In</Link>
                 </Button>
-                <Button asChild className="bg-gradient-to-r from-primary-600 to-secondary-500 hover:from-primary-700 hover:to-secondary-600 text-white">
+                <Button asChild className="btn-primary focus-modern">
                   <Link to="/auth">Get Started</Link>
                 </Button>
               </div>
             ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-10 w-10 p-0 focus:outline-none focus:ring-2 focus:ring-primary">
+                  <Button variant="ghost" className="h-10 w-10 p-0 focus-modern">
                     <Avatar className="h-8 w-8">
                       <AvatarImage 
                         src={userProfile?.avatar_url} 
                         alt={userProfile?.full_name || user.email || "User"} 
                       />
-                      <AvatarFallback className="bg-primary-900 text-primary-300">
+                      <AvatarFallback className="bg-hawkly-primary/20 text-hawkly-primary">
                         {(userProfile?.full_name || user.email || "U")[0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
@@ -161,7 +162,7 @@ export function ConsolidatedNavbar() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
                     onClick={signOut}
-                    className="text-red-400 focus:text-red-300"
+                    className="text-hawkly-error hover:text-hawkly-error/80"
                   >
                     Sign Out
                   </DropdownMenuItem>
