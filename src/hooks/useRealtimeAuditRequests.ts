@@ -1,33 +1,28 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/auth';
 import { toast } from 'sonner';
 
-interface AuditRequest {
+export interface AuditRequest {
   id: string;
   project_name: string;
-  client_id: string;
+  blockchain: string;
   status: string;
   created_at: string;
-  updated_at: string;
-  project_description?: string;
-  blockchain: string;
-  repository_url?: string;
-  contract_count?: number;
-  lines_of_code?: number;
-  deadline?: string;
+  client_id: string;
   budget?: number;
-  audit_scope?: string;
-  previous_audits?: boolean;
-  specific_concerns?: string;
+  deadline?: string;
 }
 
-export function useRealtimeAuditRequests() {
+export const useRealtimeAuditRequests = () => {
+  const { user, getUserType } = useAuth();
   const [auditRequests, setAuditRequests] = useState<AuditRequest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Initial data fetch
   useEffect(() => {
+    if (!user) return;
+
     const fetchAuditRequests = async () => {
       try {
         const { data, error } = await supabase
@@ -46,12 +41,10 @@ export function useRealtimeAuditRequests() {
     };
 
     fetchAuditRequests();
-  }, []);
 
-  // Real-time subscription
-  useEffect(() => {
+    // Set up real-time subscription
     const channel = supabase
-      .channel('audit_requests_realtime')
+      .channel('audit-requests-changes')
       .on(
         'postgres_changes',
         {
@@ -60,31 +53,21 @@ export function useRealtimeAuditRequests() {
           table: 'audit_requests'
         },
         (payload) => {
-          console.log('Real-time audit request update:', payload);
+          console.log('Real-time update:', payload);
           
           if (payload.eventType === 'INSERT') {
             setAuditRequests(prev => [payload.new as AuditRequest, ...prev]);
-            toast.success('New audit request received!');
+            toast.info('New audit request received');
           } else if (payload.eventType === 'UPDATE') {
             setAuditRequests(prev => 
               prev.map(request => 
-                request.id === payload.new.id 
-                  ? { ...request, ...payload.new }
-                  : request
+                request.id === payload.new.id ? payload.new as AuditRequest : request
               )
             );
-            
-            // Show toast for status changes
-            const oldStatus = payload.old?.status;
-            const newStatus = payload.new?.status;
-            if (oldStatus !== newStatus) {
-              toast.info(`Audit request status updated to: ${newStatus}`);
-            }
           } else if (payload.eventType === 'DELETE') {
             setAuditRequests(prev => 
               prev.filter(request => request.id !== payload.old.id)
             );
-            toast.info('Audit request removed');
           }
         }
       )
@@ -93,21 +76,18 @@ export function useRealtimeAuditRequests() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [user]);
 
-  const updateRequestStatus = async (requestId: string, newStatus: string) => {
+  const updateRequestStatus = async (requestId: string, status: string) => {
     try {
       const { error } = await supabase
         .from('audit_requests')
-        .update({ 
-          status: newStatus,
-          updated_at: new Date().toISOString()
-        })
+        .update({ status, updated_at: new Date().toISOString() })
         .eq('id', requestId);
 
       if (error) throw error;
       
-      toast.success(`Request status updated to: ${newStatus}`);
+      toast.success(`Request ${status} successfully`);
     } catch (error) {
       console.error('Error updating request status:', error);
       toast.error('Failed to update request status');
@@ -117,6 +97,6 @@ export function useRealtimeAuditRequests() {
   return {
     auditRequests,
     isLoading,
-    updateRequestStatus
+    updateRequestStatus,
   };
-}
+};

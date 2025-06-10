@@ -2,11 +2,11 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Dispute, Profile, DisputeComment, DisputeStatus } from "../types/escrow-types";
+import { Dispute, Profile, DisputeStatus } from "../types/escrow-types";
 
 export const useEscrowDisputes = (profile: Profile | null) => {
   const [disputes, setDisputes] = useState<Record<string, Dispute[]>>({});
-
+  
   const fetchDisputes = async (contractId: string) => {
     try {
       const { data, error } = await supabase
@@ -26,36 +26,20 @@ export const useEscrowDisputes = (profile: Profile | null) => {
       
       // Type assertion and transformation
       const typedDisputes = (data || []).map(dispute => {
-        // Handle raiser
         const raiser = typeof dispute.raiser === 'object' && dispute.raiser !== null ? 
           dispute.raiser as Profile : 
           undefined;
         
-        // Handle arbitrator
         const arbitrator = typeof dispute.arbitrator === 'object' && dispute.arbitrator !== null ? 
           dispute.arbitrator as Profile : 
-          undefined;
-        
-        // Handle comments
-        const comments = Array.isArray(dispute.comments) ?
-          dispute.comments.map(comment => {
-            const user = typeof comment.user === 'object' && comment.user !== null ?
-              comment.user as Profile :
-              undefined;
-            
-            return {
-              ...comment,
-              user
-            } as DisputeComment;
-          }) :
           undefined;
           
         return {
           ...dispute,
           raiser,
           arbitrator,
-          comments,
-          status: dispute.status as DisputeStatus
+          status: dispute.status as DisputeStatus,
+          comments: dispute.comments || []
         } as Dispute;
       });
       
@@ -78,23 +62,12 @@ export const useEscrowDisputes = (profile: Profile | null) => {
       return null;
     }
     
-    if (!dispute.escrow_contract_id) {
-      toast.error('Contract ID is required');
-      return null;
-    }
-    
-    if (!dispute.reason) {
-      toast.error('Reason is required for disputes');
-      return null;
-    }
-    
     try {
       const disputeData = {
         ...dispute,
         raised_by: dispute.raised_by || profile.id,
-        reason: dispute.reason,
-        escrow_contract_id: dispute.escrow_contract_id,  // Explicitly add this as a required field
-        status: dispute.status || 'opened' as DisputeStatus
+        escrow_contract_id: dispute.escrow_contract_id,
+        reason: dispute.reason || 'No reason provided'
       };
       
       const { data, error } = await supabase
@@ -105,13 +78,7 @@ export const useEscrowDisputes = (profile: Profile | null) => {
         
       if (error) throw error;
       
-      // Update contract status to disputed
       if (dispute.escrow_contract_id) {
-        await supabase
-          .from('escrow_contracts')
-          .update({ status: 'disputed' })
-          .eq('id', dispute.escrow_contract_id);
-          
         await fetchDisputes(dispute.escrow_contract_id);
       }
       
@@ -126,7 +93,7 @@ export const useEscrowDisputes = (profile: Profile | null) => {
 
   const addDisputeComment = async (disputeId: string, comment: string) => {
     if (!profile) {
-      toast.error('You must be logged in to comment on a dispute');
+      toast.error('You must be logged in to add a comment');
       return false;
     }
     
@@ -141,17 +108,6 @@ export const useEscrowDisputes = (profile: Profile | null) => {
         
       if (error) throw error;
       
-      // Refresh the disputes for the related contract
-      const { data } = await supabase
-        .from('disputes')
-        .select('escrow_contract_id')
-        .eq('id', disputeId)
-        .single();
-        
-      if (data?.escrow_contract_id) {
-        await fetchDisputes(data.escrow_contract_id);
-      }
-      
       toast.success('Comment added successfully');
       return true;
     } catch (error) {
@@ -162,28 +118,17 @@ export const useEscrowDisputes = (profile: Profile | null) => {
   };
 
   const resolveDispute = async (disputeId: string, resolution: string) => {
-    if (!profile) {
-      toast.error('You must be logged in to resolve a dispute');
-      return false;
-    }
-    
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('disputes')
-        .update({
+        .update({ 
           status: 'resolved',
           resolution,
-          arbitrator_id: profile.id
+          updated_at: new Date().toISOString()
         })
-        .eq('id', disputeId)
-        .select('escrow_contract_id')
-        .single();
+        .eq('id', disputeId);
         
       if (error) throw error;
-      
-      if (data?.escrow_contract_id) {
-        await fetchDisputes(data.escrow_contract_id);
-      }
       
       toast.success('Dispute resolved successfully');
       return true;
