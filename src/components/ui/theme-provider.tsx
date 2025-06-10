@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { themeSystem } from '@/utils/theme/advanced-theme-system';
 
@@ -39,9 +38,9 @@ export function ThemeProvider({
   const [currentThemeName, setCurrentThemeName] = useState<string>(() => {
     try {
       const saved = localStorage.getItem('hawkly-theme');
-      return saved ? JSON.parse(saved).name : 'default';
+      return saved ? JSON.parse(saved).name : 'security-professional';
     } catch {
-      return 'default';
+      return 'security-professional';
     }
   });
 
@@ -63,7 +62,7 @@ export function ThemeProvider({
     
     root.classList.add(effectiveTheme);
     
-    // Apply the current theme with the effective mode
+    // Apply the Security Professional theme by default
     themeSystem.applyTheme(currentThemeName, effectiveTheme);
   }, [theme, currentThemeName]);
 

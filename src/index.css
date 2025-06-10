@@ -8,80 +8,95 @@
 
 @layer base {
   :root {
-    /* Enhanced Brand Colors - More vibrant and engaging */
-    --primary: 217 91% 65%; /* Brighter blue #5BA3F5 */
+    /* Enhanced Security Professional Theme - Primary Colors */
+    --primary: 217 91% 60%; /* Professional blue #4A90E2 */
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 187 85% 58%; /* More vibrant cyan #3DD8FF */
+    --secondary: 187 85% 55%; /* Trust cyan #3DD8FF */
     --secondary-foreground: 0 0% 100%;
     
-    --accent: 262 83% 65%; /* Purple accent #A78BFA */
+    --accent: 262 83% 62%; /* Innovation purple #A78BFA */
     --accent-foreground: 0 0% 100%;
 
-    /* Warm accent for highlights */
-    --brand-orange: 24 95% 58%; /* Warmer orange #FF6B35 */
+    /* Security-focused brand colors */
+    --brand-orange: 24 95% 55%; /* Alert orange #FF6B35 */
+    --success: 142 76% 45%; /* Security green #10B981 */
+    --warning: 43 96% 53%; /* Caution amber #F59E0B */
+    --error: 0 84% 57%; /* Critical red #EF4444 */
     
-    /* Enhanced UI Colors - Brand-influenced instead of grey */
-    --background: 217 32% 98%; /* Very light blue-tinted background */
-    --foreground: 217 40% 15%; /* Dark blue-grey for text */
+    /* Enhanced UI Foundation - Security Professional */
+    --background: 217 32% 98%; /* Clean security white */
+    --foreground: 217 40% 12%; /* Professional dark blue-grey */
     
-    --card: 217 20% 96%; /* Light blue-tinted cards */
-    --card-foreground: 217 40% 15%;
+    --card: 217 20% 97%; /* Elevated card background */
+    --card-foreground: 217 40% 12%;
     
-    --popover: 217 20% 97%;
-    --popover-foreground: 217 40% 15%;
+    --popover: 217 20% 98%;
+    --popover-foreground: 217 40% 12%;
     
-    --muted: 217 30% 90%; /* Blue-tinted muted instead of grey */
-    --muted-foreground: 217 25% 35%; /* Warmer muted text */
+    --muted: 217 30% 92%; /* Subtle security grey */
+    --muted-foreground: 217 25% 32%; /* Readable muted text */
     
-    --border: 217 25% 85%; /* Blue-tinted borders */
-    --input: 217 25% 88%; /* Blue-tinted inputs */
-    --ring: 217 91% 65%;
+    --border: 217 25% 88%; /* Clean professional borders */
+    --input: 217 25% 90%; /* Input field backgrounds */
+    --ring: 217 91% 60%;
     
     --radius: var(--radius-md);
     
-    /* Enhanced semantic colors */
-    --success: 142 76% 45%;
+    /* Enhanced semantic colors for security context */
     --success-foreground: 0 0% 100%;
-    --warning: 43 96% 56%;
-    --warning-foreground: 217 40% 15%;
-    --error: 0 84% 60%;
+    --warning-foreground: 217 40% 12%;
     --error-foreground: 0 0% 100%;
     
-    /* Brand gradient variables */
-    --brand-gradient: linear-gradient(135deg, hsl(217 91% 65%), hsl(262 83% 65%), hsl(187 85% 58%));
-    --brand-gradient-subtle: linear-gradient(135deg, hsl(217 91% 65% / 0.1), hsl(262 83% 65% / 0.1), hsl(187 85% 58% / 0.1));
+    /* Security-specific status colors */
+    --security-critical: 0 84% 57%;
+    --security-high: 24 95% 55%;
+    --security-medium: 43 96% 53%;
+    --security-low: 142 76% 45%;
+    --security-info: 217 91% 60%;
+    
+    /* Professional gradients */
+    --brand-gradient: linear-gradient(135deg, hsl(217 91% 60%), hsl(262 83% 62%), hsl(187 85% 55%));
+    --brand-gradient-subtle: linear-gradient(135deg, hsl(217 91% 60% / 0.08), hsl(262 83% 62% / 0.08), hsl(187 85% 55% / 0.08));
     --brand-gradient-surface: linear-gradient(135deg, hsl(217 91% 98%), hsl(262 83% 98%), hsl(187 85% 98%));
+    --security-gradient: linear-gradient(135deg, hsl(217 91% 60%), hsl(142 76% 45%));
   }
   
   .dark {
-    --background: 217 40% 8%; /* Dark blue background instead of black */
-    --foreground: 217 30% 92%; /* Light blue-tinted text */
+    --background: 217 40% 6%; /* Deep security dark */
+    --foreground: 217 30% 94%; /* High contrast light text */
     
-    --card: 217 40% 12%; /* Dark blue cards */
-    --card-foreground: 217 30% 92%;
+    --card: 217 40% 9%; /* Elevated dark cards */
+    --card-foreground: 217 30% 94%;
     
-    --popover: 217 40% 12%;
-    --popover-foreground: 217 30% 92%;
+    --popover: 217 40% 9%;
+    --popover-foreground: 217 30% 94%;
     
-    --primary: 217 91% 70%; /* Brighter primary in dark mode */
-    --primary-foreground: 217 40% 8%;
+    --primary: 217 91% 65%; /* Brighter primary in dark */
+    --primary-foreground: 217 40% 6%;
     
-    --secondary: 187 85% 68%;
-    --secondary-foreground: 217 40% 8%;
+    --secondary: 187 85% 65%;
+    --secondary-foreground: 217 40% 6%;
     
-    --muted: 217 40% 18%; /* Dark blue muted */
-    --muted-foreground: 217 25% 70%;
+    --muted: 217 40% 15%; /* Dark professional muted */
+    --muted-foreground: 217 25% 72%;
     
-    --accent: 262 83% 70%;
-    --accent-foreground: 217 40% 8%;
+    --accent: 262 83% 67%;
+    --accent-foreground: 217 40% 6%;
     
-    --border: 217 40% 20%; /* Dark blue borders */
-    --input: 217 40% 20%;
-    --ring: 217 91% 70%;
+    --border: 217 40% 18%; /* Subtle dark borders */
+    --input: 217 40% 18%;
+    --ring: 217 91% 65%;
+    
+    /* Dark mode security colors */
+    --security-critical: 0 84% 65%;
+    --security-high: 24 95% 62%;
+    --security-medium: 43 96% 60%;
+    --security-low: 142 76% 52%;
+    --security-info: 217 91% 65%;
   }
 
-  /* Enhanced typography with brand warmth */
+  /* Enhanced Security Professional Typography */
   body {
     font-family: var(--font-family-sans);
     line-height: var(--leading-normal);
@@ -89,9 +104,10 @@
     background: var(--brand-gradient-surface);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em; /* Tighter, more professional spacing */
   }
 
-  /* Warmer heading colors */
+  /* Professional heading hierarchy */
   h1, h2, h3, h4, h5, h6 {
     font-weight: var(--font-semibold);
     line-height: var(--leading-tight);
@@ -102,31 +118,35 @@
   h1 {
     font-size: var(--text-4xl);
     font-weight: var(--font-bold);
-    background: var(--brand-gradient);
+    background: var(--security-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    letter-spacing: -0.035em;
   }
   
   h2 {
     font-size: var(--text-3xl);
     font-weight: var(--font-semibold);
     color: hsl(var(--primary));
+    letter-spacing: -0.03em;
   }
   
   h3 {
     font-size: var(--text-2xl);
     font-weight: var(--font-semibold);
     color: hsl(var(--primary));
+    letter-spacing: -0.025em;
   }
   
   h4 {
     font-size: var(--text-xl);
     font-weight: var(--font-medium);
     color: hsl(var(--accent));
+    letter-spacing: -0.02em;
   }
 
-  /* Responsive typography */
+  /* Responsive typography optimization */
   @media (min-width: 768px) {
     h1 {
       font-size: var(--text-5xl);
@@ -141,48 +161,52 @@
     }
   }
 
-  /* Enhanced paragraph styling */
+  /* Enhanced professional text styling */
   p {
     line-height: var(--leading-relaxed);
     margin-bottom: var(--space-4);
-    color: hsl(var(--foreground) / 0.9);
+    color: hsl(var(--foreground) / 0.92);
   }
 
-  /* Brand-consistent link styling */
+  /* Security-focused link styling */
   a {
     color: hsl(var(--primary));
     text-decoration: none;
     transition: all var(--duration-fast) var(--ease-out);
+    font-weight: 500;
   }
 
   a:hover {
     color: hsl(var(--accent));
     text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
   }
 
-  /* Enhanced button styling */
+  /* Professional button and input styling */
   button {
     transition: all var(--duration-normal) var(--ease-out);
     font-weight: var(--font-medium);
+    letter-spacing: -0.01em;
   }
 
-  /* Enhanced input styling */
   input, textarea, select {
     transition: all var(--duration-fast) var(--ease-out);
     border-radius: var(--radius-md);
     background-color: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
+    border: 1.5px solid hsl(var(--border));
+    font-weight: 450;
   }
 
   input:focus, textarea:focus, select:focus {
     outline: none;
-    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.2);
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.15);
     border-color: hsl(var(--primary));
   }
 }
 
 @layer components {
-  /* Enhanced container */
+  /* Enhanced Security Professional Components */
   .container-modern {
     width: 100%;
     max-width: var(--container-max-width);
@@ -196,22 +220,24 @@
     @apply container-modern;
   }
 
-  /* Brand-enhanced card components */
-  .card-modern {
-    background: linear-gradient(135deg, hsl(var(--card)), hsl(var(--card) / 0.95));
+  /* Professional security-focused cards */
+  .card-security {
+    background: linear-gradient(135deg, hsl(var(--card)), hsl(var(--card) / 0.98));
     border-radius: var(--radius-lg);
-    box-shadow: 0 4px 20px hsl(var(--primary) / 0.08);
-    border: 1px solid hsl(var(--border));
+    box-shadow: 0 4px 20px hsl(var(--primary) / 0.06), 0 1px 3px hsl(var(--border) / 0.8);
+    border: 1.5px solid hsl(var(--border));
     transition: all var(--duration-normal) var(--ease-out);
+    backdrop-filter: blur(8px);
   }
 
-  .card-modern:hover {
-    box-shadow: 0 8px 30px hsl(var(--primary) / 0.15);
+  .card-security:hover {
+    box-shadow: 0 8px 32px hsl(var(--primary) / 0.12), 0 2px 8px hsl(var(--border));
     transform: translateY(-2px);
+    border-color: hsl(var(--primary) / 0.3);
   }
 
-  /* Enhanced button system */
-  .btn-modern {
+  /* Enhanced Security Professional button system */
+  .btn-security {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -225,146 +251,162 @@
     cursor: pointer;
     border: none;
     height: var(--button-height-md);
+    letter-spacing: -0.01em;
   }
 
-  .btn-primary {
-    background: var(--brand-gradient);
+  .btn-primary-security {
+    background: var(--security-gradient);
     color: hsl(var(--primary-foreground));
-    box-shadow: 0 4px 15px hsl(var(--primary) / 0.3);
+    box-shadow: 0 4px 16px hsl(var(--primary) / 0.25), 0 1px 4px hsl(var(--primary) / 0.4);
   }
 
-  .btn-primary:hover {
-    box-shadow: 0 6px 25px hsl(var(--primary) / 0.4);
-    transform: translateY(-2px);
+  .btn-primary-security:hover {
+    box-shadow: 0 6px 24px hsl(var(--primary) / 0.35), 0 2px 8px hsl(var(--primary) / 0.5);
+    transform: translateY(-1px);
   }
 
-  .btn-secondary {
+  .btn-secondary-security {
     background: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary) / 0.9));
     color: hsl(var(--secondary-foreground));
-    box-shadow: 0 4px 15px hsl(var(--secondary) / 0.3);
+    box-shadow: 0 4px 16px hsl(var(--secondary) / 0.25);
   }
 
-  .btn-outline {
+  .btn-outline-security {
     background: hsl(var(--card));
     border: 2px solid hsl(var(--primary));
     color: hsl(var(--primary));
+    font-weight: 500;
   }
 
-  .btn-outline:hover {
-    background: var(--brand-gradient);
+  .btn-outline-security:hover {
+    background: var(--security-gradient);
     color: hsl(var(--primary-foreground));
+    border-color: transparent;
   }
 
-  /* Enhanced section styling */
-  .section-modern {
-    @apply py-16 md:py-20 lg:py-24;
-    background: var(--brand-gradient-surface);
+  /* Security status badges */
+  .badge-critical {
+    background: linear-gradient(135deg, hsl(var(--security-critical)), hsl(var(--security-critical) / 0.8));
+    @apply text-white border border-red-500/20 px-3 py-1 rounded-full text-sm font-semibold shadow-lg;
   }
 
-  .section-header {
-    @apply text-center mb-12 md:mb-16;
+  .badge-high {
+    background: linear-gradient(135deg, hsl(var(--security-high)), hsl(var(--security-high) / 0.8));
+    @apply text-white border border-orange-500/20 px-3 py-1 rounded-full text-sm font-semibold shadow-lg;
   }
 
-  .section-title {
-    @apply text-3xl md:text-4xl lg:text-5xl font-bold mb-4;
-    background: var(--brand-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .badge-medium {
+    background: linear-gradient(135deg, hsl(var(--security-medium)), hsl(var(--security-medium) / 0.8));
+    @apply text-foreground border border-yellow-500/20 px-3 py-1 rounded-full text-sm font-semibold shadow-lg;
   }
 
-  .section-subtitle {
-    @apply text-lg md:text-xl max-w-3xl mx-auto;
-    color: hsl(var(--foreground) / 0.8);
+  .badge-low {
+    background: linear-gradient(135deg, hsl(var(--security-low)), hsl(var(--security-low) / 0.8));
+    @apply text-white border border-green-500/20 px-3 py-1 rounded-full text-sm font-semibold shadow-lg;
   }
 
-  /* Status badges with vibrant colors */
-  .badge-success {
-    background: linear-gradient(135deg, hsl(var(--success)), hsl(var(--success) / 0.8));
-    @apply text-success-foreground border border-success/20 px-3 py-1 rounded-full text-sm font-medium;
+  .badge-info {
+    background: linear-gradient(135deg, hsl(var(--security-info)), hsl(var(--security-info) / 0.8));
+    @apply text-white border border-blue-500/20 px-3 py-1 rounded-full text-sm font-semibold shadow-lg;
   }
 
-  .badge-warning {
-    background: linear-gradient(135deg, hsl(var(--warning)), hsl(var(--warning) / 0.8));
-    @apply text-warning-foreground border border-warning/20 px-3 py-1 rounded-full text-sm font-medium;
-  }
-
-  .badge-error {
-    background: linear-gradient(135deg, hsl(var(--error)), hsl(var(--error) / 0.8));
-    @apply text-error-foreground border border-error/20 px-3 py-1 rounded-full text-sm font-medium;
-  }
-
-  .badge-brand {
-    background: var(--brand-gradient);
+  .badge-security-professional {
+    background: var(--security-gradient);
     color: hsl(var(--primary-foreground));
-    @apply px-3 py-1 rounded-full text-sm font-medium shadow-lg;
+    @apply px-3 py-1 rounded-full text-sm font-semibold shadow-lg;
   }
 
-  /* Enhanced loading states */
-  .skeleton {
-    background: linear-gradient(90deg, hsl(var(--muted)), hsl(var(--primary) / 0.1), hsl(var(--muted)));
+  /* Enhanced loading states with security theme */
+  .skeleton-security {
+    background: linear-gradient(90deg, hsl(var(--muted)), hsl(var(--primary) / 0.08), hsl(var(--muted)));
     background-size: 200% 100%;
-    animation: shimmer 2s infinite;
+    animation: shimmer-security 2s infinite;
     @apply rounded;
   }
 
-  /* Brand gradient text */
-  .text-brand-gradient {
-    background: var(--brand-gradient);
+  /* Security professional gradient text */
+  .text-security-gradient {
+    background: var(--security-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    font-weight: 600;
   }
 
-  /* Enhanced focus styles */
-  .focus-modern {
+  /* Enhanced focus styles for security compliance */
+  .focus-security {
     outline: 2px solid transparent;
     outline-offset: 2px;
   }
 
-  .focus-modern:focus-visible {
+  .focus-security:focus-visible {
     outline: 2px solid hsl(var(--primary));
     outline-offset: 2px;
-    box-shadow: 0 0 0 4px hsl(var(--primary) / 0.2);
+    box-shadow: 0 0 0 4px hsl(var(--primary) / 0.15);
+  }
+
+  /* Professional section styling */
+  .section-security {
+    @apply py-16 md:py-20 lg:py-24;
+    background: var(--brand-gradient-surface);
+  }
+
+  .section-header-security {
+    @apply text-center mb-12 md:mb-16;
+  }
+
+  .section-title-security {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold mb-4;
+    background: var(--security-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.035em;
+  }
+
+  .section-subtitle-security {
+    @apply text-lg md:text-xl max-w-3xl mx-auto;
+    color: hsl(var(--foreground) / 0.85);
+    font-weight: 450;
   }
 }
 
 @layer utilities {
-  /* Enhanced gradients */
-  .gradient-primary {
-    background: var(--brand-gradient);
+  /* Enhanced Security Professional gradients */
+  .gradient-security-primary {
+    background: var(--security-gradient);
   }
 
-  .gradient-subtle {
+  .gradient-security-subtle {
     background: var(--brand-gradient-subtle);
   }
 
-  .gradient-surface {
+  .gradient-security-surface {
     background: var(--brand-gradient-surface);
   }
 
-  /* Enhanced shadows with brand colors */
-  .hawk-shadow {
-    box-shadow: 0 4px 20px hsl(var(--primary) / 0.15);
+  /* Enhanced security-focused shadows */
+  .security-shadow {
+    box-shadow: 0 4px 20px hsl(var(--primary) / 0.12);
   }
 
-  .hawk-shadow-lg {
-    box-shadow: 0 8px 30px hsl(var(--primary) / 0.2);
+  .security-shadow-lg {
+    box-shadow: 0 8px 32px hsl(var(--primary) / 0.18);
   }
 
-  .hawk-glow {
-    box-shadow: 0 0 30px hsl(var(--primary) / 0.4);
+  .security-glow {
+    box-shadow: 0 0 32px hsl(var(--primary) / 0.3);
   }
 
-  /* Vibrant backdrop */
-  .backdrop-blur-modern {
-    backdrop-filter: blur(12px) saturate(180%);
-    background: linear-gradient(135deg, hsl(var(--background) / 0.8), hsl(var(--card) / 0.9));
+  /* Professional backdrop with security theme */
+  .backdrop-blur-security {
+    backdrop-filter: blur(16px) saturate(180%);
+    background: linear-gradient(135deg, hsl(var(--background) / 0.85), hsl(var(--card) / 0.92));
   }
 }
 
-/* Enhanced animations */
-@keyframes shimmer {
+/* Enhanced animations for security theme */
+@keyframes shimmer-security {
   0% {
     background-position: -200% 0;
   }
@@ -373,16 +415,16 @@
   }
 }
 
-@keyframes gradient-shift {
+@keyframes security-pulse {
   0%, 100% {
-    background-position: 0% 50%;
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
   }
-  50% {
-    background-position: 100% 50%;
+  70% {
+    box-shadow: 0 0 0 10px hsl(var(--primary) / 0);
   }
 }
 
-/* Enhanced scrollbar with brand colors */
+/* Enhanced scrollbar with security theme */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -394,10 +436,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--brand-gradient);
+  background: var(--security-gradient);
   border-radius: var(--radius-sm);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, hsl(var(--primary) / 0.9), hsl(var(--secondary) / 0.9));
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.9), hsl(var(--success) / 0.9));
 }

@@ -1,4 +1,3 @@
-
 interface ThemeColors {
   primary: string;
   secondary: string;
@@ -28,7 +27,7 @@ interface ThemeConfig {
 
 export class AdvancedThemeSystem {
   private static instance: AdvancedThemeSystem;
-  private currentTheme: string = 'default';
+  private currentTheme: string = 'security-professional';
   private themes: Map<string, ThemeConfig> = new Map();
 
   static getInstance(): AdvancedThemeSystem {
@@ -44,6 +43,54 @@ export class AdvancedThemeSystem {
   }
 
   private initializeDefaultThemes() {
+    // Enhanced Security Professional theme
+    this.themes.set('security-professional', {
+      name: 'Security Professional',
+      colors: {
+        light: {
+          primary: '217 91% 60%',
+          secondary: '187 85% 55%',
+          background: '217 32% 98%',
+          foreground: '217 40% 12%',
+          muted: '217 30% 92%',
+          accent: '262 83% 62%',
+          destructive: '0 84% 57%',
+          border: '217 25% 88%',
+          input: '217 25% 90%',
+          ring: '217 91% 60%'
+        },
+        dark: {
+          primary: '217 91% 65%',
+          secondary: '187 85% 65%',
+          background: '217 40% 6%',
+          foreground: '217 30% 94%',
+          muted: '217 40% 15%',
+          accent: '262 83% 67%',
+          destructive: '0 84% 65%',
+          border: '217 40% 18%',
+          input: '217 40% 18%',
+          ring: '217 91% 65%'
+        }
+      },
+      fonts: {
+        sans: ['Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace']
+      },
+      spacing: {
+        xs: '0.25rem',
+        sm: '0.5rem',
+        md: '1rem',
+        lg: '1.5rem',
+        xl: '2rem'
+      },
+      borderRadius: {
+        sm: '0.125rem',
+        md: '0.375rem',
+        lg: '0.5rem',
+        xl: '0.75rem'
+      }
+    });
+
     // Default theme
     this.themes.set('default', {
       name: 'Default',
@@ -142,21 +189,20 @@ export class AdvancedThemeSystem {
   }
 
   generatePaletteFromColor(baseColor: string): ThemeColors {
-    // AI-generated palette based on base color
-    // This is a simplified version - in production, use a proper color theory library
+    // Enhanced palette generation for security context
     const hsl = this.hexToHsl(baseColor);
     
     return {
-      primary: `${hsl.h} ${hsl.s}% ${hsl.l}%`,
-      secondary: `${(hsl.h + 30) % 360} ${hsl.s * 0.8}% ${Math.min(hsl.l + 10, 95)}%`,
-      background: '0 0% 100%',
-      foreground: '0 0% 5%',
-      muted: `${hsl.h} ${hsl.s * 0.3}% 95%`,
-      accent: `${(hsl.h + 60) % 360} ${hsl.s * 0.9}% ${hsl.l}%`,
-      destructive: '0 84% 60%',
-      border: `${hsl.h} ${hsl.s * 0.3}% 90%`,
-      input: `${hsl.h} ${hsl.s * 0.3}% 95%`,
-      ring: `${hsl.h} ${hsl.s}% ${hsl.l}%`
+      primary: `${hsl.h} ${Math.min(hsl.s + 10, 100)}% ${Math.min(hsl.l + 5, 70)}%`,
+      secondary: `${(hsl.h + 30) % 360} ${hsl.s * 0.9}% ${Math.min(hsl.l + 8, 65)}%`,
+      background: '217 32% 98%',
+      foreground: '217 40% 12%',
+      muted: `${hsl.h} ${hsl.s * 0.25}% 92%`,
+      accent: `${(hsl.h + 60) % 360} ${hsl.s * 0.95}% ${hsl.l}%`,
+      destructive: '0 84% 57%',
+      border: `${hsl.h} ${hsl.s * 0.25}% 88%`,
+      input: `${hsl.h} ${hsl.s * 0.25}% 90%`,
+      ring: `${hsl.h} ${Math.min(hsl.s + 10, 100)}% ${Math.min(hsl.l + 5, 70)}%`
     };
   }
 
@@ -213,10 +259,19 @@ export class AdvancedThemeSystem {
     const colors = theme.colors[mode];
     const root = document.documentElement;
 
-    // Apply CSS custom properties
+    // Apply CSS custom properties with enhanced security theme variables
     Object.entries(colors).forEach(([key, value]) => {
       root.style.setProperty(`--${key}`, value);
     });
+
+    // Apply security-specific theme variables
+    if (themeName === 'security-professional') {
+      root.style.setProperty('--security-critical', mode === 'dark' ? '0 84% 65%' : '0 84% 57%');
+      root.style.setProperty('--security-high', mode === 'dark' ? '24 95% 62%' : '24 95% 55%');
+      root.style.setProperty('--security-medium', mode === 'dark' ? '43 96% 60%' : '43 96% 53%');
+      root.style.setProperty('--security-low', mode === 'dark' ? '142 76% 52%' : '142 76% 45%');
+      root.style.setProperty('--security-info', mode === 'dark' ? '217 91% 65%' : '217 91% 60%');
+    }
 
     // Apply fonts
     root.style.setProperty('--font-sans', theme.fonts.sans.join(', '));

@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -32,8 +31,8 @@ const config: Config = {
           100: "#e0efff",
           200: "#b8dfff",
           300: "#78c7ff",
-          400: "#5ba3f5",
-          500: "#4a90e2",
+          400: "#4a90e2",
+          500: "#3b82f6",
           600: "#2563eb",
           700: "#1d4ed8",
           800: "#1e40af",
@@ -51,6 +50,7 @@ const config: Config = {
           600: "#0891b2",
           700: "#0e7490",
           800: "#155e75",
+          900: "#164e63",
         },
         accent: {
           DEFAULT: "hsl(var(--accent))",
@@ -103,7 +103,14 @@ const config: Config = {
           500: "#ef4444",
           600: "#dc2626",
         },
-        // Enhanced brand colors
+        // Enhanced Security Professional colors
+        "security-critical": "hsl(var(--security-critical))",
+        "security-high": "hsl(var(--security-high))",
+        "security-medium": "hsl(var(--security-medium))",
+        "security-low": "hsl(var(--security-low))",
+        "security-info": "hsl(var(--security-info))",
+        
+        // Enhanced brand colors for Security Professional theme
         "brand-orange": {
           50: "#fff7ed",
           100: "#ffedd5",
@@ -114,7 +121,8 @@ const config: Config = {
           600: "#ea580c",
           700: "#c2410c",
         },
-        // Blue-tinted neutrals instead of grey
+        
+        // Professional neutral colors with blue undertones
         neutral: {
           50: "#f8fafe",
           100: "#f1f6fc",
@@ -138,18 +146,19 @@ const config: Config = {
         mono: ["JetBrains Mono", "monospace"],
       },
       boxShadow: {
-        'brand': '0 4px 20px rgba(74, 144, 226, 0.15)',
-        'brand-lg': '0 8px 30px rgba(74, 144, 226, 0.2)',
-        'brand-xl': '0 12px 40px rgba(74, 144, 226, 0.25)',
-        'brand-glow': '0 0 30px rgba(74, 144, 226, 0.4)',
-        'warm': '0 4px 20px rgba(255, 107, 53, 0.15)',
-        'accent': '0 4px 20px rgba(167, 139, 250, 0.15)',
+        'security': '0 4px 20px hsl(var(--primary) / 0.12)',
+        'security-lg': '0 8px 32px hsl(var(--primary) / 0.18)',
+        'security-xl': '0 12px 40px hsl(var(--primary) / 0.25)',
+        'security-glow': '0 0 32px hsl(var(--primary) / 0.3)',
+        'trust': '0 4px 20px hsl(var(--secondary) / 0.15)',
+        'innovation': '0 4px 20px hsl(var(--accent) / 0.15)',
       },
       backgroundImage: {
-        'brand-gradient': 'linear-gradient(135deg, #4a90e2, #a78bfa, #3dd8ff)',
-        'brand-gradient-subtle': 'linear-gradient(135deg, rgba(74, 144, 226, 0.1), rgba(167, 139, 250, 0.1), rgba(61, 216, 255, 0.1))',
-        'brand-surface': 'linear-gradient(135deg, #f8fafe, #f0f7ff, #f0fdff)',
-        'warm-gradient': 'linear-gradient(135deg, #fb923c, #4a90e2)',
+        'security-gradient': 'var(--security-gradient)',
+        'brand-gradient': 'var(--brand-gradient)',
+        'brand-gradient-subtle': 'var(--brand-gradient-subtle)',
+        'brand-surface': 'var(--brand-gradient-surface)',
+        'security-surface': 'linear-gradient(135deg, hsl(var(--background)), hsl(var(--card)))',
       },
       keyframes: {
         "accordion-down": {
@@ -180,15 +189,19 @@ const config: Config = {
             "background-position": "100% 50%"
           }
         },
-        "brand-float": {
+        "security-float": {
           "0%, 100%": { transform: "translateY(0px) rotate(0deg)" },
-          "50%": { transform: "translateY(-10px) rotate(2deg)" },
+          "50%": { transform: "translateY(-8px) rotate(1deg)" },
         },
-        shimmer: {
+        "shimmer-security": {
           "0%": { "background-position": "-200% 0" },
           "100%": { "background-position": "200% 0" },
         },
-        "gradient-shift": {
+        "security-pulse": {
+          "0%, 100%": { "box-shadow": "0 0 0 0 hsl(var(--primary) / 0.4)" },
+          "70%": { "box-shadow": "0 0 0 10px hsl(var(--primary) / 0)" },
+        },
+        "trust-wave": {
           "0%, 100%": { "background-position": "0% 50%" },
           "50%": { "background-position": "100% 50%" },
         },
@@ -200,9 +213,10 @@ const config: Config = {
         "slide-up": "slideUp 0.5s ease-out",
         "scale-in": "scaleIn 0.3s ease-out",
         "gradient": "gradient 3s ease-in-out infinite",
-        "brand-float": "brand-float 6s ease-in-out infinite",
-        "shimmer": "shimmer 2s infinite",
-        "gradient-shift": "gradient-shift 3s ease-in-out infinite",
+        "security-float": "security-float 6s ease-in-out infinite",
+        "shimmer-security": "shimmer-security 2s infinite",
+        "security-pulse": "security-pulse 2s infinite",
+        "trust-wave": "trust-wave 3s ease-in-out infinite",
       },
     },
   },
