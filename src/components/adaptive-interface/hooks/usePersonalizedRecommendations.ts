@@ -13,7 +13,7 @@ export function usePersonalizedRecommendations({
     const recs: Recommendation[] = [];
     
     // Recommendations based on user segment
-    if (userSegment === 'first_time_visitor') {
+    if (userSegment === 'new_user') {
       recs.push({
         id: 'explore_services',
         title: 'Explore Security Services',
@@ -26,7 +26,7 @@ export function usePersonalizedRecommendations({
       });
     }
     
-    if (userSegment === 'returning_client') {
+    if (userSegment === 'regular_user') {
       recs.push({
         id: 'request_new_audit',
         title: 'Request New Audit',
@@ -39,7 +39,7 @@ export function usePersonalizedRecommendations({
       });
     }
     
-    if (userType === 'auditor' && userSegment === 'active_auditor') {
+    if (userType === 'auditor' && userSegment === 'power_user') {
       recs.push({
         id: 'view_opportunities',
         title: 'New Audit Opportunities',

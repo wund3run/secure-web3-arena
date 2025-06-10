@@ -39,7 +39,7 @@ export function AdaptiveNavigation({
   return (
     <div className="adaptive-navigation">
       {/* This component provides navigation adaptation logic */}
-      <style jsx>{`
+      <style>{`
         .adaptive-navigation .nav-item.advanced {
           ${userSegment === 'new_user' ? 'display: none;' : ''}
         }

@@ -30,7 +30,7 @@ export function AdaptiveContent({
   return (
     <div className={getContentClasses()}>
       {children}
-      <style jsx>{`
+      <style>{`
         .adaptive-content.segment-new_user .advanced-features {
           display: none;
         }

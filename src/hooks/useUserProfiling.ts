@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/auth';
 
@@ -8,6 +9,14 @@ interface UserPreferences {
   timezone: string;
   dashboardLayout: 'compact' | 'detailed' | 'cards';
   autoSave: boolean;
+  notificationSettings?: {
+    auditUpdates: boolean;
+    newMessages: boolean;
+    paymentAlerts: boolean;
+    securityAlerts: boolean;
+    marketingEmails: boolean;
+  };
+  experienceLevel?: 'beginner' | 'intermediate' | 'expert';
 }
 
 interface BehaviorProfile {
@@ -22,6 +31,13 @@ interface BehaviorProfile {
   lastActiveDate: Date;
   engagementScore: number;
   conversionEvents: number;
+  mostVisitedPages: string[];
+  completedActions: string[];
+}
+
+interface JourneyProfile {
+  currentStage: 'visitor' | 'explorer' | 'evaluator' | 'engager' | 'converter' | 'advocate' | 'power_user';
+  progressScore: number;
 }
 
 type UserSegment = 'new_user' | 'regular_user' | 'power_user' | 'at_risk' | 'champion';
@@ -38,6 +54,10 @@ export const useUserProfiling = () => {
   });
   
   const [behaviorProfile, setBehaviorProfile] = useState<BehaviorProfile | null>(null);
+  const [journeyProfile] = useState<JourneyProfile>({
+    currentStage: 'visitor',
+    progressScore: 25
+  });
 
   useEffect(() => {
     if (!user) return;
@@ -85,7 +105,9 @@ export const useUserProfiling = () => {
       featureUsage: {},
       lastActiveDate: new Date(),
       engagementScore: 0.5,
-      conversionEvents: 0
+      conversionEvents: 0,
+      mostVisitedPages: [],
+      completedActions: []
     };
     setBehaviorProfile(profile);
   };
@@ -178,6 +200,23 @@ export const useUserProfiling = () => {
     });
   };
 
+  const trackBehavior = (action: string, metadata?: any) => {
+    if (!user || !behaviorProfile) return;
+
+    setBehaviorProfile(prev => {
+      if (!prev) return null;
+
+      const updated = {
+        ...prev,
+        completedActions: [...prev.completedActions, action],
+        engagementScore: prev.engagementScore + 1
+      };
+
+      localStorage.setItem(`user_behavior_${user.id}`, JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   const getUserSegment = (): UserSegment => {
     if (!behaviorProfile) return 'new_user';
 
@@ -234,14 +273,42 @@ export const useUserProfiling = () => {
     }
   };
 
+  const getRecommendedActions = () => {
+    const segment = getUserSegment();
+    const actions = [];
+
+    switch (segment) {
+      case 'new_user':
+        actions.push('explore_services', 'start_onboarding');
+        break;
+      case 'regular_user':
+        actions.push('view_auditor_profiles', 'submit_audit_request');
+        break;
+      case 'power_user':
+        actions.push('try_advanced_features', 'provide_feedback');
+        break;
+      case 'at_risk':
+        actions.push('check_updates', 'special_offers');
+        break;
+      case 'champion':
+        actions.push('refer_friends', 'beta_features');
+        break;
+    }
+
+    return actions;
+  };
+
   return {
     preferences,
     behaviorProfile,
+    journeyProfile,
     updatePreferences,
     trackFeatureUsage,
     trackConversionEvent,
+    trackBehavior,
     getUserSegment,
-    getPersonalizedContent
+    getPersonalizedContent,
+    getRecommendedActions
   };
 };
 

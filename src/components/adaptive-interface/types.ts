@@ -29,3 +29,33 @@ export interface PersonalizationRule {
   action: string;
   weight: number;
 }
+
+export interface PersonalizedMessage {
+  title: string;
+  message: string;
+  type: 'welcome' | 'info' | 'warning' | 'success';
+}
+
+export interface AdaptiveLayoutConfig {
+  variant: 'compact' | 'detailed' | 'cards';
+  priority: string[];
+  widgets: string[];
+}
+
+export interface QuickAction {
+  id: string;
+  label: string;
+  href: string;
+  priority: number;
+}
+
+export interface Recommendation {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  action: string;
+  tags: string[];
+  priority: number;
+  relevanceScore: number;
+}

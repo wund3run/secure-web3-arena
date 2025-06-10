@@ -12,17 +12,17 @@ interface AdaptiveContentProps {
 }
 
 export function AdaptiveContentRenderer({ children }: AdaptiveContentProps) {
-  const { getUserSegment, behaviorProfile, trackInteraction } = useUserProfiling();
+  const { getUserSegment, behaviorProfile, trackFeatureUsage } = useUserProfiling();
   const userSegment = getUserSegment();
 
   // Render segment-specific content
   const renderPersonalizedCTA = () => {
     const handleCTAClick = (action: string) => {
-      trackInteraction('cta', action);
+      trackFeatureUsage('cta_' + action);
     };
 
     switch (userSegment) {
-      case 'new_visitor':
+      case 'new_user':
         return (
           <Card className="bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
             <CardContent className="p-6">
@@ -46,7 +46,7 @@ export function AdaptiveContentRenderer({ children }: AdaptiveContentProps) {
           </Card>
         );
 
-      case 'returning_visitor':
+      case 'regular_user':
         return (
           <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
             <CardContent className="p-6">
@@ -65,7 +65,7 @@ export function AdaptiveContentRenderer({ children }: AdaptiveContentProps) {
           </Card>
         );
 
-      case 'engaged_user':
+      case 'power_user':
         return (
           <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
             <CardContent className="p-6">
@@ -89,13 +89,13 @@ export function AdaptiveContentRenderer({ children }: AdaptiveContentProps) {
           </Card>
         );
 
-      case 'authenticated_user':
+      case 'champion':
         return (
           <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-3">
                 <Clock className="h-5 w-5 text-purple-600" />
-                <Badge variant="secondary">Member</Badge>
+                <Badge variant="secondary">Champion</Badge>
               </div>
               <h3 className="text-lg font-semibold mb-2">Your Security Dashboard</h3>
               <p className="text-muted-foreground mb-4">

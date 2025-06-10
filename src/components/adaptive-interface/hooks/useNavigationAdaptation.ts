@@ -43,7 +43,7 @@ export function useNavigationAdaptation({
     const mostVisited = behaviorProfile?.mostVisitedPages || [];
     const completedActions = behaviorProfile?.completedActions || [];
     
-    if (userSegment === 'first_time_visitor') {
+    if (userSegment === 'new_user') {
       actions.push({
         id: 'explore',
         label: 'Explore Services',
@@ -75,9 +75,9 @@ export function useNavigationAdaptation({
 
   const shouldHighlightItem = (itemId: string): boolean => {
     const highlightMap: Record<string, boolean> = {
-      'marketplace': userSegment === 'first_time_visitor',
-      'request-audit': userType === 'project_owner' && userSegment === 'explorer',
-      'opportunities': userType === 'auditor' && userSegment === 'active_auditor',
+      'marketplace': userSegment === 'new_user',
+      'request-audit': userType === 'project_owner' && userSegment === 'regular_user',
+      'opportunities': userType === 'auditor' && userSegment === 'power_user',
     };
     
     return highlightMap[itemId] || false;

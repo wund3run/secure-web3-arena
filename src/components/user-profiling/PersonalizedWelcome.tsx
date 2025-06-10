@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useUserProfiling } from '@/hooks/useUserProfiling';
 import { useAuth } from '@/contexts/auth';
@@ -33,13 +34,13 @@ export function PersonalizedWelcome() {
 
   const getPersonalizedMessage = () => {
     switch (userSegment) {
-      case 'new_visitor':
+      case 'new_user':
         return "Discover the future of Web3 security. Connect with top auditors or showcase your expertise.";
-      case 'returning_visitor':
+      case 'regular_user':
         return "Ready for your next security audit? Our expert auditors are here to help.";
-      case 'engaged_user':
+      case 'power_user':
         return "New audit opportunities are waiting. Check out the latest project requests.";
-      case 'authenticated_user':
+      case 'champion':
         return "Still exploring? Let us help you find exactly what you're looking for.";
       default:
         return "Your Web3 security journey continues here.";

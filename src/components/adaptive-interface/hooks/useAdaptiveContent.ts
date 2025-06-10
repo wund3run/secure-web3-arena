@@ -24,11 +24,11 @@ export function useAdaptiveContent({
     const basePriority = ['overview', 'actions', 'content'];
     
     switch (userSegment) {
-      case 'first_time_visitor':
+      case 'new_user':
         return ['welcome', 'getting-started', 'overview'];
-      case 'returning_client':
+      case 'regular_user':
         return ['projects', 'audits', 'reports'];
-      case 'active_auditor':
+      case 'power_user':
         return ['opportunities', 'active-audits', 'earnings'];
       default:
         return basePriority;
@@ -52,20 +52,20 @@ export function useAdaptiveContent({
   } => {
     const messages: any = {};
     
-    if (userSegment === 'first_time_visitor') {
+    if (userSegment === 'new_user') {
       messages.welcome = {
         title: 'Welcome to Hawkly!',
         message: 'Discover the future of Web3 security. Let us help you get started.',
         type: 'welcome' as const
       };
       messages.helpTip = 'Start by exploring our marketplace or learning about our audit process.';
-    } else if (userSegment === 'returning_client') {
+    } else if (userSegment === 'regular_user') {
       messages.welcome = {
         title: 'Welcome back!',
         message: 'Ready for your next security audit? Check out our latest auditor matches.',
         type: 'welcome' as const
       };
-    } else if (userSegment === 'active_auditor') {
+    } else if (userSegment === 'power_user') {
       messages.welcome = {
         title: 'New opportunities await',
         message: 'There are fresh audit requests that match your expertise.',
