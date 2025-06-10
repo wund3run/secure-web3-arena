@@ -1,92 +1,101 @@
 
 import React from 'react';
-import { Shield, Award, Users, CheckCircle, Star, Globe } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-
-const TRUST_METRICS = [
-  { value: '500+', label: 'Security Audits Completed', icon: Shield },
-  { value: '50+', label: 'Verified Expert Auditors', icon: Users },
-  { value: '99.9%', label: 'Vulnerability Detection Rate', icon: CheckCircle },
-  { value: '4.9/5', label: 'Average Client Rating', icon: Star }
-];
-
-const CERTIFICATIONS = [
-  { name: 'SOC 2 Type II', icon: Award },
-  { name: 'ISO 27001', icon: Shield },
-  { name: 'GDPR Compliant', icon: Globe }
-];
-
-const TESTIMONIALS = [
-  {
-    quote: "Hawkly's auditors found critical vulnerabilities we missed. Saved our project from potential exploits.",
-    author: "Sarah Chen",
-    role: "CTO, DeFi Protocol",
-    rating: 5
-  },
-  {
-    quote: "The quality of audits and speed of delivery exceeded our expectations. Highly recommended.",
-    author: "Marcus Rodriguez", 
-    role: "Founder, NFT Marketplace",
-    rating: 5
-  }
-];
+import { Shield, Users, Award, CheckCircle, Star, Zap } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 export function TrustIndicators() {
+  const stats = [
+    {
+      icon: Shield,
+      value: "500+",
+      label: "Verified Security Experts",
+      description: "Rigorously vetted professionals",
+      color: "text-brand-primary"
+    },
+    {
+      icon: Users,
+      value: "$350M+",
+      label: "Assets Protected",
+      description: "Total value secured",
+      color: "text-brand-secondary"
+    },
+    {
+      icon: Award,
+      value: "2,500+",
+      label: "Audits Completed",
+      description: "Successfully delivered projects",
+      color: "text-brand-accent"
+    },
+    {
+      icon: CheckCircle,
+      value: "12,800+",
+      label: "Vulnerabilities Found",
+      description: "Critical issues identified",
+      color: "text-brand-primary"
+    }
+  ];
+
+  const badges = [
+    { icon: Shield, text: "SOC 2 Compliant", color: "bg-brand-primary/10 text-brand-primary border-brand-primary/30" },
+    { icon: Star, text: "ISO 27001 Certified", color: "bg-brand-secondary/10 text-brand-secondary border-brand-secondary/30" },
+    { icon: Zap, text: "24/7 Support", color: "bg-brand-accent/10 text-brand-accent border-brand-accent/30" }
+  ];
+
   return (
-    <section className="py-16 bg-muted/20">
-      <div className="container px-4 md:px-6">
-        {/* Trust Metrics */}
-        <div className="text-center mb-12">
-          <h2 className="text-2xl font-bold mb-2">Trusted by Leading Web3 Projects</h2>
-          <p className="text-muted-foreground">Join hundreds of projects that trust Hawkly with their security</p>
-        </div>
-        
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-          {TRUST_METRICS.map((metric, index) => (
-            <div key={index} className="text-center">
-              <div className="flex justify-center mb-2">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <metric.icon className="h-6 w-6 text-primary" />
-                </div>
-              </div>
-              <div className="text-2xl font-bold text-primary mb-1">{metric.value}</div>
-              <div className="text-sm text-muted-foreground">{metric.label}</div>
-            </div>
-          ))}
+    <section className="py-16 bg-gradient-to-br from-brand-primary/5 via-background to-brand-secondary/5">
+      <div className="container-modern">
+        <div className="text-center mb-12 stagger-animation">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text">
+            Trusted by Leading Web3 Projects
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Join thousands of projects that rely on our security expertise to protect their blockchain applications
+          </p>
         </div>
 
-        {/* Testimonials */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          {TESTIMONIALS.map((testimonial, index) => (
-            <Card key={index} className="bg-card border">
-              <CardContent className="p-6">
-                <div className="flex mb-3">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
+        {/* Enhanced stats grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 stagger-animation">
+          {stats.map((stat, index) => {
+            const IconComponent = stat.icon;
+            return (
+              <div 
+                key={index}
+                className="card-enhanced p-6 text-center group brand-hover-lift"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="flex justify-center mb-4">
+                  <div className="p-3 rounded-full bg-gradient-to-br from-brand-primary/10 to-brand-secondary/10 group-hover:from-brand-primary/20 group-hover:to-brand-secondary/20 transition-all duration-300">
+                    <IconComponent className={`h-8 w-8 ${stat.color} group-hover:scale-110 transition-transform duration-300`} />
+                  </div>
                 </div>
-                <blockquote className="text-muted-foreground mb-4 italic">
-                  "{testimonial.quote}"
-                </blockquote>
-                <div>
-                  <div className="font-semibold">{testimonial.author}</div>
-                  <div className="text-sm text-muted-foreground">{testimonial.role}</div>
+                <div className="text-3xl font-bold mb-2 gradient-text">
+                  {stat.value}
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+                <div className="font-semibold text-foreground mb-1">
+                  {stat.label}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {stat.description}
+                </div>
+              </div>
+            );
+          })}
         </div>
 
-        {/* Certifications */}
-        <div className="flex justify-center">
-          <div className="flex flex-wrap justify-center gap-8">
-            {CERTIFICATIONS.map((cert, index) => (
-              <div key={index} className="flex items-center gap-2 bg-muted/30 px-4 py-2 rounded-lg">
-                <cert.icon className="h-5 w-5 text-primary" />
-                <span className="text-sm font-medium">{cert.name}</span>
-              </div>
-            ))}
-          </div>
+        {/* Enhanced trust badges */}
+        <div className="flex flex-wrap justify-center gap-4 animate-fade-in-up">
+          {badges.map((badge, index) => {
+            const IconComponent = badge.icon;
+            return (
+              <Badge 
+                key={index}
+                className={`px-6 py-3 text-sm font-medium border transition-all duration-300 hover:scale-105 ${badge.color}`}
+              >
+                <IconComponent className="h-4 w-4 mr-2" />
+                {badge.text}
+              </Badge>
+            );
+          })}
         </div>
       </div>
     </section>
