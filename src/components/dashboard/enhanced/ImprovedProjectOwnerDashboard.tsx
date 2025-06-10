@@ -1,7 +1,7 @@
 
 import React, { Suspense } from 'react';
 import { useAuth } from '@/contexts/auth';
-import { ErrorBoundary } from '@/components/ui/error-boundary';
+import ErrorBoundary from '@/components/ui/error-boundary';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/enhanced-skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
