@@ -3,7 +3,6 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { Loader2, Wifi, WifiOff, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { designTokens } from "@/utils/design/tokens";
 
 interface LoadingStateProps {
   variant?: 'spinner' | 'skeleton' | 'pulse' | 'dots' | 'progress';

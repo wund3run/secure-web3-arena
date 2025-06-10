@@ -1,5 +1,5 @@
+
 import React from 'react';
-import { designTokens } from '../design/tokens';
 
 export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
 

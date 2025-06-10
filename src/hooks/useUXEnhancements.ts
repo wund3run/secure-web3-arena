@@ -85,7 +85,7 @@ export function useUXEnhancements() {
   };
 
   // Theme functions
-  const applyTheme = (themeName: string, mode: 'light' | 'dark' = 'light') => {
+  const applyTheme = (themeName: string, mode: 'light' | 'dark' = 'dark') => {
     themeSystem.applyTheme(themeName, mode);
     setState(prev => ({
       ...prev,
@@ -95,18 +95,6 @@ export function useUXEnhancements() {
         isDarkMode: mode === 'dark'
       }
     }));
-  };
-
-  const createCustomTheme = (name: string, baseColor: string) => {
-    const theme = themeSystem.createCustomTheme(name, baseColor);
-    setState(prev => ({
-      ...prev,
-      theme: {
-        ...prev.theme,
-        availableThemes: themeSystem.getAvailableThemes()
-      }
-    }));
-    return theme;
   };
 
   const toggleDarkMode = () => {
@@ -218,7 +206,6 @@ export function useUXEnhancements() {
     
     // Theme
     applyTheme,
-    createCustomTheme,
     toggleDarkMode,
     
     // i18n
