@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { useNavigationAdaptation } from './hooks/useNavigationAdaptation';
 import { AdaptiveInterfaceProps } from './types';
 
 export function AdaptiveNavigation({ 
@@ -9,52 +8,45 @@ export function AdaptiveNavigation({
   preferences, 
   behaviorProfile 
 }: AdaptiveInterfaceProps) {
-  const { 
-    getAdaptedMenuItems, 
-    quickActions, 
-    shouldHighlightItem 
-  } = useNavigationAdaptation({ userSegment, userType, preferences, behaviorProfile });
+  
+  const getNavigationItems = () => {
+    const baseItems = ['dashboard', 'marketplace'];
+    
+    // Add items based on user type
+    if (userType === 'auditor') {
+      baseItems.push('my-audits', 'earnings');
+    } else if (userType === 'project_owner') {
+      baseItems.push('my-projects', 'request-audit');
+    }
+    
+    // Add advanced items for power users
+    if (userSegment === 'power_user' || userSegment === 'champion') {
+      baseItems.push('analytics', 'api-access');
+    }
+    
+    // Hide complex features for new users
+    if (userSegment === 'new_user') {
+      return baseItems.filter(item => !['analytics', 'api-access'].includes(item));
+    }
+    
+    return baseItems;
+  };
 
-  const adaptedMenuItems = getAdaptedMenuItems();
+  const shouldShowQuickActions = () => {
+    return behaviorProfile && behaviorProfile.visitCount > 3;
+  };
 
-  // This component enhances existing navigation rather than replacing it
   return (
-    <div className="adaptive-navigation-enhancements">
-      {/* Quick actions based on user behavior */}
-      {quickActions.length > 0 && (
-        <div className="quick-actions-bar bg-muted/50 p-2 rounded-lg mb-4">
-          <div className="flex gap-2 items-center">
-            <span className="text-xs font-medium text-muted-foreground">Quick Actions:</span>
-            {quickActions.map((action, index) => (
-              <button
-                key={index}
-                className="text-xs bg-primary/10 hover:bg-primary/20 px-2 py-1 rounded transition-colors"
-                onClick={() => window.location.href = action.href}
-              >
-                {action.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Navigation hints */}
-      <style>
-        {adaptedMenuItems.map(item => 
-          shouldHighlightItem(item.id) 
-            ? `[data-nav-item="${item.id}"] { position: relative; }
-               [data-nav-item="${item.id}"]:after { 
-                 content: "●"; 
-                 color: hsl(var(--primary)); 
-                 position: absolute; 
-                 right: -8px; 
-                 top: 50%; 
-                 transform: translateY(-50%); 
-                 font-size: 8px; 
-               }`
-            : ''
-        ).join('\n')}
-      </style>
+    <div className="adaptive-navigation">
+      {/* This component provides navigation adaptation logic */}
+      <style jsx>{`
+        .adaptive-navigation .nav-item.advanced {
+          ${userSegment === 'new_user' ? 'display: none;' : ''}
+        }
+        .adaptive-navigation .quick-actions {
+          ${!shouldShowQuickActions() ? 'display: none;' : ''}
+        }
+      `}</style>
     </div>
   );
 }

@@ -1,205 +1,262 @@
-
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/auth';
 
-export interface UserBehaviorProfile {
-  visitCount: number;
-  averageSessionTime: number;
-  preferredSections: string[];
-  interactionPatterns: Record<string, number>;
-  lastVisit: string;
-  deviceType: 'mobile' | 'tablet' | 'desktop';
-  preferredContentType: 'visual' | 'textual' | 'interactive';
-  engagementScore: number;
-  mostVisitedPages: string[];
-  completedActions: string[];
-}
-
-export interface UserPreferences {
+interface UserPreferences {
   theme: 'light' | 'dark' | 'auto';
-  language: string;
   notifications: boolean;
-  autoPlay: boolean;
-  reducedMotion: boolean;
-  compactMode: boolean;
-  experienceLevel: 'beginner' | 'intermediate' | 'expert';
+  language: string;
+  timezone: string;
   dashboardLayout: 'compact' | 'detailed' | 'cards';
-  notificationSettings?: {
-    auditUpdates: boolean;
-    newMessages: boolean;
-    paymentAlerts: boolean;
-    securityAlerts: boolean;
-    marketingEmails: boolean;
-  };
+  autoSave: boolean;
 }
 
-export type UserJourneyStage = 
-  | 'visitor' 
-  | 'explorer' 
-  | 'evaluator' 
-  | 'engager' 
-  | 'converter' 
-  | 'advocate'
-  | 'power_user';
+interface BehaviorProfile {
+  visitCount: number;
+  totalTimeSpent: number;
+  averageSessionDuration: number;
+  preferredPages: string[];
+  deviceType: 'mobile' | 'tablet' | 'desktop';
+  browserPreference: string;
+  timeOfDayActivity: Record<string, number>;
+  featureUsage: Record<string, number>;
+  lastActiveDate: Date;
+  engagementScore: number;
+  conversionEvents: number;
+}
 
-export function useUserProfiling() {
+type UserSegment = 'new_user' | 'regular_user' | 'power_user' | 'at_risk' | 'champion';
+
+export const useUserProfiling = () => {
   const { user } = useAuth();
-  const [behaviorProfile, setBehaviorProfile] = useState<UserBehaviorProfile | null>(null);
   const [preferences, setPreferences] = useState<UserPreferences>({
-    theme: 'light',
-    language: 'en',
+    theme: 'auto',
     notifications: true,
-    autoPlay: false,
-    reducedMotion: false,
-    compactMode: false,
-    experienceLevel: 'beginner',
-    dashboardLayout: 'cards',
-    notificationSettings: {
-      auditUpdates: true,
-      newMessages: true,
-      paymentAlerts: true,
-      securityAlerts: true,
-      marketingEmails: false
-    }
+    language: 'en',
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    dashboardLayout: 'detailed',
+    autoSave: true
   });
+  
+  const [behaviorProfile, setBehaviorProfile] = useState<BehaviorProfile | null>(null);
 
-  // Initialize user profiling
   useEffect(() => {
-    const initializeProfile = () => {
-      const stored = localStorage.getItem('hawkly_user_profile');
-      if (stored) {
-        try {
-          setBehaviorProfile(JSON.parse(stored));
-        } catch (error) {
-          console.warn('Failed to parse user profile:', error);
-        }
-      } else {
-        // Create new profile
-        const newProfile: UserBehaviorProfile = {
-          visitCount: 1,
-          averageSessionTime: 0,
-          preferredSections: [],
-          interactionPatterns: {},
-          lastVisit: new Date().toISOString(),
-          deviceType: getDeviceType(),
-          preferredContentType: 'visual',
-          engagementScore: 0,
-          mostVisitedPages: [],
-          completedActions: []
-        };
-        setBehaviorProfile(newProfile);
-        localStorage.setItem('hawkly_user_profile', JSON.stringify(newProfile));
+    if (!user) return;
+
+    // Load user preferences from localStorage
+    const savedPreferences = localStorage.getItem(`user_preferences_${user.id}`);
+    if (savedPreferences) {
+      try {
+        setPreferences(JSON.parse(savedPreferences));
+      } catch (error) {
+        console.error('Failed to parse user preferences:', error);
       }
+    }
+
+    // Load or initialize behavior profile
+    const savedBehavior = localStorage.getItem(`user_behavior_${user.id}`);
+    if (savedBehavior) {
+      try {
+        const parsed = JSON.parse(savedBehavior);
+        setBehaviorProfile({
+          ...parsed,
+          lastActiveDate: new Date(parsed.lastActiveDate)
+        });
+      } catch (error) {
+        console.error('Failed to parse behavior profile:', error);
+        initializeBehaviorProfile();
+      }
+    } else {
+      initializeBehaviorProfile();
+    }
+
+    // Update behavior on page load
+    updateBehaviorProfile();
+  }, [user]);
+
+  const initializeBehaviorProfile = () => {
+    const profile: BehaviorProfile = {
+      visitCount: 1,
+      totalTimeSpent: 0,
+      averageSessionDuration: 0,
+      preferredPages: [],
+      deviceType: getDeviceType(),
+      browserPreference: getBrowserType(),
+      timeOfDayActivity: {},
+      featureUsage: {},
+      lastActiveDate: new Date(),
+      engagementScore: 0.5,
+      conversionEvents: 0
     };
+    setBehaviorProfile(profile);
+  };
 
-    initializeProfile();
-  }, []);
+  const updateBehaviorProfile = () => {
+    if (!user || !behaviorProfile) return;
 
-  // Track user interactions
-  const trackInteraction = useCallback((section: string, interactionType: string) => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentPath = window.location.pathname;
+
     setBehaviorProfile(prev => {
-      if (!prev) return prev;
-      
+      if (!prev) return null;
+
       const updated = {
         ...prev,
-        interactionPatterns: {
-          ...prev.interactionPatterns,
-          [`${section}_${interactionType}`]: (prev.interactionPatterns[`${section}_${interactionType}`] || 0) + 1
+        visitCount: prev.visitCount + 1,
+        lastActiveDate: now,
+        timeOfDayActivity: {
+          ...prev.timeOfDayActivity,
+          [currentHour]: (prev.timeOfDayActivity[currentHour] || 0) + 1
         },
-        engagementScore: Math.min(100, prev.engagementScore + 1)
+        preferredPages: updatePreferredPages(prev.preferredPages, currentPath)
       };
-      
-      localStorage.setItem('hawkly_user_profile', JSON.stringify(updated));
+
+      // Save to localStorage
+      localStorage.setItem(`user_behavior_${user.id}`, JSON.stringify(updated));
       return updated;
     });
-  }, []);
+  };
 
-  // Track behavior (alias for trackInteraction)
-  const trackBehavior = useCallback((action: string, metadata?: any) => {
-    trackInteraction('general', action);
+  const updatePreferredPages = (current: string[], newPage: string): string[] => {
+    const updated = [...current];
+    const existingIndex = updated.indexOf(newPage);
     
-    // Track completed actions
+    if (existingIndex > -1) {
+      // Move to front if already exists
+      updated.splice(existingIndex, 1);
+      updated.unshift(newPage);
+    } else {
+      // Add to front
+      updated.unshift(newPage);
+    }
+    
+    // Keep only top 10 pages
+    return updated.slice(0, 10);
+  };
+
+  const updatePreferences = (newPreferences: Partial<UserPreferences>) => {
+    if (!user) return;
+
+    const updated = { ...preferences, ...newPreferences };
+    setPreferences(updated);
+    localStorage.setItem(`user_preferences_${user.id}`, JSON.stringify(updated));
+  };
+
+  const trackFeatureUsage = (feature: string) => {
+    if (!user || !behaviorProfile) return;
+
     setBehaviorProfile(prev => {
-      if (!prev) return prev;
-      
+      if (!prev) return null;
+
       const updated = {
         ...prev,
-        completedActions: [...new Set([...prev.completedActions, action])],
-        mostVisitedPages: metadata?.page ? 
-          [...new Set([...prev.mostVisitedPages, metadata.page])] : 
-          prev.mostVisitedPages
+        featureUsage: {
+          ...prev.featureUsage,
+          [feature]: (prev.featureUsage[feature] || 0) + 1
+        }
       };
-      
-      localStorage.setItem('hawkly_user_profile', JSON.stringify(updated));
+
+      localStorage.setItem(`user_behavior_${user.id}`, JSON.stringify(updated));
       return updated;
     });
-  }, [trackInteraction]);
+  };
 
-  // Update preferences
-  const updatePreferences = useCallback((newPreferences: Partial<UserPreferences>) => {
-    setPreferences(prev => {
-      const updated = { ...prev, ...newPreferences };
-      localStorage.setItem('hawkly_user_preferences', JSON.stringify(updated));
+  const trackConversionEvent = () => {
+    if (!user || !behaviorProfile) return;
+
+    setBehaviorProfile(prev => {
+      if (!prev) return null;
+
+      const updated = {
+        ...prev,
+        conversionEvents: prev.conversionEvents + 1,
+        engagementScore: Math.min(1, prev.engagementScore + 0.1)
+      };
+
+      localStorage.setItem(`user_behavior_${user.id}`, JSON.stringify(updated));
       return updated;
     });
-  }, []);
+  };
 
-  // Get user segment for personalization
-  const getUserSegment = useCallback(() => {
-    if (!behaviorProfile) return 'new_visitor';
-    
-    if (behaviorProfile.visitCount === 1) return 'new_visitor';
-    if (behaviorProfile.visitCount < 5) return 'returning_visitor';
-    if (behaviorProfile.averageSessionTime > 300) return 'engaged_user';
-    if (user) return 'authenticated_user';
-    
-    return 'casual_visitor';
-  }, [behaviorProfile, user]);
+  const getUserSegment = (): UserSegment => {
+    if (!behaviorProfile) return 'new_user';
 
-  // Get recommended actions
-  const getRecommendedActions = useCallback(() => {
+    const { visitCount, engagementScore, conversionEvents, lastActiveDate } = behaviorProfile;
+    const daysSinceLastActive = Math.floor((Date.now() - lastActiveDate.getTime()) / (1000 * 60 * 60 * 24));
+
+    if (visitCount < 3) return 'new_user';
+    if (daysSinceLastActive > 30) return 'at_risk';
+    if (conversionEvents > 5 && engagementScore > 0.8) return 'champion';
+    if (visitCount > 20 && engagementScore > 0.6) return 'power_user';
+    return 'regular_user';
+  };
+
+  const getPersonalizedContent = () => {
     const segment = getUserSegment();
-    const actions = [];
     
     switch (segment) {
-      case 'new_visitor':
-        actions.push('explore_services', 'learn_about_audits');
-        break;
-      case 'returning_visitor':
-        actions.push('create_account', 'request_audit');
-        break;
-      case 'engaged_user':
-        actions.push('start_first_audit', 'browse_auditors');
-        break;
-      case 'authenticated_user':
-        actions.push('submit_audit_request', 'view_dashboard');
-        break;
+      case 'new_user':
+        return {
+          welcomeMessage: "Welcome to Hawkly! Let's get you started.",
+          primaryCTA: "Complete Profile",
+          recommendations: ["Take our platform tour", "Set up your first project"]
+        };
+      case 'regular_user':
+        return {
+          welcomeMessage: "Welcome back! Ready to continue?",
+          primaryCTA: "View Dashboard",
+          recommendations: ["Check recent updates", "Explore new features"]
+        };
+      case 'power_user':
+        return {
+          welcomeMessage: "Great to see you again!",
+          primaryCTA: "Advanced Features",
+          recommendations: ["Try our new AI tools", "Join our beta program"]
+        };
+      case 'at_risk':
+        return {
+          welcomeMessage: "We've missed you! Check out what's new.",
+          primaryCTA: "See Updates",
+          recommendations: ["Special offers available", "New features added"]
+        };
+      case 'champion':
+        return {
+          welcomeMessage: "Welcome back, champion!",
+          primaryCTA: "Pro Dashboard",
+          recommendations: ["Refer friends", "Share feedback", "Early access features"]
+        };
+      default:
+        return {
+          welcomeMessage: "Welcome to Hawkly!",
+          primaryCTA: "Get Started",
+          recommendations: []
+        };
     }
-    
-    return actions;
-  }, [getUserSegment]);
-
-  // Mock journey profile
-  const journeyProfile = {
-    currentStage: 'visitor' as UserJourneyStage,
-    progressScore: behaviorProfile ? Math.min(100, behaviorProfile.visitCount * 10) : 0
   };
 
   return {
-    behaviorProfile,
     preferences,
-    trackInteraction,
-    trackBehavior,
+    behaviorProfile,
     updatePreferences,
+    trackFeatureUsage,
+    trackConversionEvent,
     getUserSegment,
-    getRecommendedActions,
-    journeyProfile
+    getPersonalizedContent
   };
-}
+};
 
-function getDeviceType(): 'mobile' | 'tablet' | 'desktop' {
+const getDeviceType = (): 'mobile' | 'tablet' | 'desktop' => {
   const width = window.innerWidth;
   if (width < 768) return 'mobile';
   if (width < 1024) return 'tablet';
   return 'desktop';
-}
+};
+
+const getBrowserType = (): string => {
+  const userAgent = navigator.userAgent;
+  if (userAgent.includes('Chrome')) return 'Chrome';
+  if (userAgent.includes('Firefox')) return 'Firefox';
+  if (userAgent.includes('Safari')) return 'Safari';
+  if (userAgent.includes('Edge')) return 'Edge';
+  return 'Other';
+};

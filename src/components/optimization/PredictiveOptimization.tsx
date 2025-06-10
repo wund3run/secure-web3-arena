@@ -1,153 +1,190 @@
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
-import { Brain, TrendingUp, Target, Zap, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TrendingUp, Target, Zap, Brain, BarChart3, Users } from 'lucide-react';
 
-interface PredictionModel {
+interface OptimizationSuggestion {
   id: string;
-  name: string;
-  accuracy: number;
-  lastTrained: string;
-  status: 'active' | 'training' | 'inactive';
-}
-
-interface OptimizationOpportunity {
-  id: string;
+  category: 'performance' | 'conversion' | 'engagement' | 'retention';
   title: string;
   description: string;
-  impact: 'high' | 'medium' | 'low';
+  impact: {
+    metric: string;
+    improvement: number;
+    confidence: number;
+  };
   effort: 'low' | 'medium' | 'high';
-  predictedOutcome: string;
-  confidence: number;
-  category: string;
+  timeframe: string;
+  currentValue: number;
+  targetValue: number;
 }
 
-export function PredictiveOptimization() {
-  const [isAnalyzing, setIsAnalyzing] = useState(true);
-  const [selectedModel, setSelectedModel] = useState('conversion');
+interface PredictiveModel {
+  name: string;
+  accuracy: number;
+  predictions: Array<{
+    metric: string;
+    current: number;
+    predicted: number;
+    timeframe: string;
+  }>;
+}
+
+export const PredictiveOptimization: React.FC = () => {
+  const [suggestions, setSuggestions] = useState<OptimizationSuggestion[]>([]);
+  const [models, setModels] = useState<PredictiveModel[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate AI model analysis
-    const analyzeData = async () => {
-      setIsAnalyzing(true);
-      await new Promise(resolve => setTimeout(resolve, 2500));
-      setIsAnalyzing(false);
-    };
+    // Simulate AI model processing
+    const timer = setTimeout(() => {
+      setSuggestions([
+        {
+          id: '1',
+          category: 'conversion',
+          title: 'Optimize Audit Request Form',
+          description: 'Simplify the form by reducing fields from 12 to 7 based on user behavior analysis',
+          impact: {
+            metric: 'Conversion Rate',
+            improvement: 23,
+            confidence: 0.87
+          },
+          effort: 'medium',
+          timeframe: '2 weeks',
+          currentValue: 12.3,
+          targetValue: 15.1
+        },
+        {
+          id: '2',
+          category: 'engagement',
+          title: 'Implement Smart Notifications',
+          description: 'Use ML to determine optimal notification timing for each user',
+          impact: {
+            metric: 'User Engagement',
+            improvement: 31,
+            confidence: 0.82
+          },
+          effort: 'high',
+          timeframe: '1 month',
+          currentValue: 68.5,
+          targetValue: 89.7
+        },
+        {
+          id: '3',
+          category: 'performance',
+          title: 'Lazy Load Dashboard Components',
+          description: 'Implement code splitting for heavy dashboard components',
+          impact: {
+            metric: 'Page Load Time',
+            improvement: 40,
+            confidence: 0.95
+          },
+          effort: 'low',
+          timeframe: '1 week',
+          currentValue: 2.8,
+          targetValue: 1.7
+        },
+        {
+          id: '4',
+          category: 'retention',
+          title: 'Personalized Onboarding Flow',
+          description: 'Create dynamic onboarding based on user type and goals',
+          impact: {
+            metric: 'User Retention',
+            improvement: 28,
+            confidence: 0.79
+          },
+          effort: 'high',
+          timeframe: '3 weeks',
+          currentValue: 45.2,
+          targetValue: 57.9
+        }
+      ]);
 
-    analyzeData();
-  }, [selectedModel]);
+      setModels([
+        {
+          name: 'Conversion Prediction Model',
+          accuracy: 0.89,
+          predictions: [
+            { metric: 'Sign-up Rate', current: 12.3, predicted: 15.8, timeframe: '30 days' },
+            { metric: 'Audit Completion', current: 78.5, predicted: 82.1, timeframe: '30 days' }
+          ]
+        },
+        {
+          name: 'User Behavior Model',
+          accuracy: 0.84,
+          predictions: [
+            { metric: 'Session Duration', current: 7.2, predicted: 9.1, timeframe: '30 days' },
+            { metric: 'Pages per Session', current: 4.7, predicted: 5.3, timeframe: '30 days' }
+          ]
+        },
+        {
+          name: 'Churn Prediction Model',
+          accuracy: 0.91,
+          predictions: [
+            { metric: 'Monthly Churn', current: 8.5, predicted: 6.2, timeframe: '30 days' },
+            { metric: 'At-Risk Users', current: 156, predicted: 98, timeframe: '30 days' }
+          ]
+        }
+      ]);
 
-  const predictionModels: PredictionModel[] = [
-    { id: 'conversion', name: 'Conversion Prediction', accuracy: 94.2, lastTrained: '2 hours ago', status: 'active' },
-    { id: 'churn', name: 'Churn Risk Model', accuracy: 89.7, lastTrained: '1 day ago', status: 'active' },
-    { id: 'engagement', name: 'Engagement Forecasting', accuracy: 91.8, lastTrained: '6 hours ago', status: 'active' },
-    { id: 'revenue', name: 'Revenue Prediction', accuracy: 87.3, lastTrained: '4 hours ago', status: 'training' }
-  ];
+      setLoading(false);
+    }, 1800);
 
-  const optimizationOpportunities: OptimizationOpportunity[] = [
-    {
-      id: 'ui-optimization',
-      title: 'Landing Page CTA Optimization',
-      description: 'AI predicts 23% conversion improvement with button color and placement changes',
-      impact: 'high',
-      effort: 'low',
-      predictedOutcome: '+23% conversion rate',
-      confidence: 0.89,
-      category: 'ui'
-    },
-    {
-      id: 'personalization',
-      title: 'Personalized Service Recommendations',
-      description: 'Machine learning suggests personalized auditor matching could increase satisfaction',
-      impact: 'high',
-      effort: 'medium',
-      predictedOutcome: '+31% user satisfaction',
-      confidence: 0.92,
-      category: 'personalization'
-    },
-    {
-      id: 'retention',
-      title: 'User Retention Strategy',
-      description: 'Predictive model identifies optimal timing for follow-up communications',
-      impact: 'medium',
-      effort: 'low',
-      predictedOutcome: '+18% retention rate',
-      confidence: 0.76,
-      category: 'retention'
-    },
-    {
-      id: 'pricing',
-      title: 'Dynamic Pricing Optimization',
-      description: 'AI-driven pricing strategy could increase revenue while maintaining competitiveness',
-      impact: 'high',
-      effort: 'high',
-      predictedOutcome: '+15% revenue',
-      confidence: 0.84,
-      category: 'pricing'
+    return () => clearTimeout(timer);
+  }, []);
+
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case 'performance': return Zap;
+      case 'conversion': return Target;
+      case 'engagement': return Users;
+      case 'retention': return TrendingUp;
+      default: return Brain;
     }
-  ];
+  };
 
-  const predictionData = [
-    { month: 'Jan', actual: 85, predicted: 87, confidence: 92 },
-    { month: 'Feb', actual: 92, predicted: 89, confidence: 89 },
-    { month: 'Mar', actual: 88, predicted: 91, confidence: 94 },
-    { month: 'Apr', actual: 96, predicted: 94, confidence: 91 },
-    { month: 'May', actual: null, predicted: 98, confidence: 88 },
-    { month: 'Jun', actual: null, predicted: 102, confidence: 85 },
-  ];
-
-  const getImpactColor = (impact: string) => {
-    switch (impact) {
-      case 'high': return 'bg-red-100 text-red-800 border-red-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'performance': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+      case 'conversion': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+      case 'engagement': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
+      case 'retention': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300';
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
     }
   };
 
   const getEffortColor = (effort: string) => {
     switch (effort) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low': return 'secondary';
+      case 'medium': return 'default';
+      case 'high': return 'destructive';
+      default: return 'default';
     }
   };
 
-  if (isAnalyzing) {
+  if (loading) {
     return (
-      <Card className="border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950">
-        <CardContent className="p-8">
-          <div className="flex items-center gap-4 mb-6">
-            <Brain className="h-8 w-8 text-purple-500 animate-pulse" />
-            <div>
-              <h3 className="text-xl font-semibold">Predictive Optimization Engine</h3>
-              <p className="text-muted-foreground">Analyzing patterns and generating optimization strategies...</p>
-            </div>
-          </div>
-          
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Brain className="h-5 w-5 animate-pulse" />
+            AI Models Processing...
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm">Training ML models</span>
-              <span className="text-sm text-purple-600">94%</span>
-            </div>
-            <Progress value={94} className="h-2" />
-            
-            <div className="flex items-center justify-between">
-              <span className="text-sm">Analyzing user behavior patterns</span>
-              <span className="text-sm text-purple-600">87%</span>
-            </div>
-            <Progress value={87} className="h-2" />
-            
-            <div className="flex items-center justify-between">
-              <span className="text-sm">Generating optimization recommendations</span>
-              <span className="text-sm text-purple-600">92%</span>
-            </div>
-            <Progress value={92} className="h-2" />
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="h-6 bg-muted rounded w-2/3 mb-2"></div>
+                <div className="h-4 bg-muted rounded w-full mb-1"></div>
+                <div className="h-4 bg-muted rounded w-3/4"></div>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
@@ -156,177 +193,249 @@ export function PredictiveOptimization() {
 
   return (
     <div className="space-y-6">
-      {/* Model Status Overview */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Brain className="h-5 w-5 text-purple-500" />
-            Predictive Models Status
+            <Brain className="h-5 w-5 text-primary" />
+            Predictive Optimization Engine
           </CardTitle>
-          <CardDescription>
-            Machine learning models continuously analyze data to predict outcomes and suggest optimizations
-          </CardDescription>
+          <p className="text-sm text-muted-foreground">
+            AI-powered recommendations to optimize your platform performance
+          </p>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {predictionModels.map((model) => (
-              <div
-                key={model.id}
-                className={`p-4 rounded-lg border cursor-pointer transition-colors ${
-                  selectedModel === model.id ? 'border-purple-300 bg-purple-50' : 'border-border hover:border-purple-200'
-                }`}
-                onClick={() => setSelectedModel(model.id)}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-medium text-sm">{model.name}</h4>
-                  <Badge variant={model.status === 'active' ? 'default' : 'secondary'} className="text-xs">
-                    {model.status}
-                  </Badge>
-                </div>
-                <div className="text-2xl font-bold text-purple-600">{model.accuracy}%</div>
-                <div className="text-xs text-muted-foreground">Accuracy</div>
-                <div className="text-xs text-muted-foreground mt-1">
-                  <Clock className="h-3 w-3 inline mr-1" />
-                  {model.lastTrained}
-                </div>
-              </div>
-            ))}
+      </Card>
+
+      <Tabs defaultValue="suggestions" className="space-y-4">
+        <TabsList className="grid grid-cols-3 w-full">
+          <TabsTrigger value="suggestions">Optimization Suggestions</TabsTrigger>
+          <TabsTrigger value="predictions">Predictive Models</TabsTrigger>
+          <TabsTrigger value="insights">Strategic Insights</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="suggestions">
+          <div className="grid gap-4">
+            {suggestions.map((suggestion) => {
+              const IconComponent = getCategoryIcon(suggestion.category);
+              return (
+                <Card key={suggestion.id}>
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`p-2 rounded-lg ${getCategoryColor(suggestion.category)}`}>
+                          <IconComponent className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">{suggestion.title}</h3>
+                          <p className="text-sm text-muted-foreground">{suggestion.description}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={getEffortColor(suggestion.effort)}>
+                          {suggestion.effort} effort
+                        </Badge>
+                        <Badge variant="outline">
+                          {suggestion.timeframe}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-4 mb-4">
+                      <div>
+                        <p className="text-sm font-medium mb-1">Expected Impact</p>
+                        <p className="text-lg font-bold text-green-600">
+                          +{suggestion.impact.improvement}%
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {suggestion.impact.metric}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium mb-1">Current Value</p>
+                        <p className="text-lg font-bold">
+                          {suggestion.currentValue}
+                          {suggestion.category === 'performance' ? 's' : '%'}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium mb-1">Target Value</p>
+                        <p className="text-lg font-bold text-blue-600">
+                          {suggestion.targetValue}
+                          {suggestion.category === 'performance' ? 's' : '%'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground">Confidence:</span>
+                        <Progress 
+                          value={suggestion.impact.confidence * 100} 
+                          className="w-20 h-2"
+                        />
+                        <span className="text-sm font-medium">
+                          {(suggestion.impact.confidence * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                      <Button size="sm">
+                        Implement
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
-        </CardContent>
-      </Card>
+        </TabsContent>
 
-      {/* Prediction Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Performance Predictions vs Actual Results</CardTitle>
-          <CardDescription>
-            Comparing AI predictions with actual outcomes for model validation
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={predictionData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Area type="monotone" dataKey="confidence" stackId="1" stroke="#8B5CF6" fill="#8B5CF6" fillOpacity={0.1} />
-              <Line type="monotone" dataKey="actual" stroke="#3B82F6" strokeWidth={3} dot={{ fill: '#3B82F6' }} />
-              <Line type="monotone" dataKey="predicted" stroke="#10B981" strokeWidth={2} strokeDasharray="5 5" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      {/* Optimization Opportunities */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Target className="h-5 w-5 text-green-500" />
-            AI-Driven Optimization Opportunities
-          </CardTitle>
-          <CardDescription>
-            Machine learning identified optimization opportunities ranked by predicted impact
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2">
-            {optimizationOpportunities.map((opportunity) => (
-              <Card key={opportunity.id} className="hover:shadow-md transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-sm">{opportunity.title}</h4>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {opportunity.description}
-                      </p>
-                    </div>
-                    <div className="flex gap-1 ml-2">
-                      <Badge className={getImpactColor(opportunity.impact)} variant="outline">
-                        {opportunity.impact} impact
-                      </Badge>
-                    </div>
-                  </div>
+        <TabsContent value="predictions">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {models.map((model, index) => (
+              <Card key={index}>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center justify-between">
+                    {model.name}
+                    <Badge variant="outline">
+                      {(model.accuracy * 100).toFixed(0)}% accurate
+                    </Badge>
+                  </CardTitle>
                 </CardHeader>
-                
-                <CardContent className="pt-0 space-y-3">
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <Badge className={getEffortColor(opportunity.effort)} variant="secondary">
-                        {opportunity.effort} effort
-                      </Badge>
-                      <span className="text-muted-foreground">•</span>
-                      <span>{opportunity.category}</span>
+                <CardContent className="space-y-4">
+                  {model.predictions.map((prediction, predIndex) => (
+                    <div key={predIndex} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{prediction.metric}</span>
+                        <span className="text-xs text-muted-foreground">
+                          in {prediction.timeframe}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">Current: {prediction.current}</span>
+                        <TrendingUp className="h-3 w-3 text-green-500" />
+                        <span className="text-sm font-semibold text-green-600">
+                          Predicted: {prediction.predicted}
+                        </span>
+                      </div>
+                      <Progress 
+                        value={(prediction.predicted / prediction.current) * 50} 
+                        className="h-2"
+                      />
                     </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="font-medium text-green-600">
-                        {opportunity.predictedOutcome}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {Math.round(opportunity.confidence * 100)}% confidence
-                      </span>
-                    </div>
-                    <Progress value={opportunity.confidence * 100} className="h-2" />
-                  </div>
-                  
-                  <div className="flex items-center justify-between pt-2">
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      {opportunity.confidence > 0.8 ? (
-                        <CheckCircle className="h-3 w-3 text-green-500" />
-                      ) : (
-                        <AlertTriangle className="h-3 w-3 text-yellow-500" />
-                      )}
-                      {opportunity.confidence > 0.8 ? 'High confidence' : 'Medium confidence'}
-                    </div>
-                    <Button size="sm" variant="outline" className="h-7 text-xs">
-                      <Zap className="h-3 w-3 mr-1" />
-                      Implement
-                    </Button>
-                  </div>
+                  ))}
                 </CardContent>
               </Card>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </TabsContent>
 
-      {/* Summary Metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-purple-600">4</div>
-            <div className="text-sm text-muted-foreground">Active Models</div>
-            <div className="text-xs text-green-600 mt-1">91% avg accuracy</div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">12</div>
-            <div className="text-sm text-muted-foreground">Opportunities Found</div>
-            <div className="text-xs text-purple-600 mt-1">8 high impact</div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">+27%</div>
-            <div className="text-sm text-muted-foreground">Predicted Growth</div>
-            <div className="text-xs text-blue-600 mt-1">Next quarter</div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-orange-600">89%</div>
-            <div className="text-sm text-muted-foreground">Model Confidence</div>
-            <div className="text-xs text-green-600 mt-1">Improving daily</div>
-          </CardContent>
-        </Card>
-      </div>
+        <TabsContent value="insights">
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5" />
+                  Strategic Insights
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
+                  <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                    Conversion Optimization Priority
+                  </h4>
+                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                    Focus on audit request form optimization for maximum impact with minimal effort
+                  </p>
+                </div>
+
+                <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg">
+                  <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2">
+                    User Retention Opportunity
+                  </h4>
+                  <p className="text-sm text-green-700 dark:text-green-300">
+                    Personalized onboarding can significantly improve 30-day retention rates
+                  </p>
+                </div>
+
+                <div className="p-4 bg-purple-50 dark:bg-purple-950 rounded-lg">
+                  <h4 className="font-semibold text-purple-900 dark:text-purple-100 mb-2">
+                    Performance Impact
+                  </h4>
+                  <p className="text-sm text-purple-700 dark:text-purple-300">
+                    Code splitting implementation shows highest confidence and immediate results
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5" />
+                  Optimization Roadmap
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                      1
+                    </div>
+                    <div>
+                      <h4 className="font-medium">Week 1: Performance</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Implement lazy loading (Low effort, High impact)
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                      2
+                    </div>
+                    <div>
+                      <h4 className="font-medium">Week 2-3: Conversion</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Optimize audit request form
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                      3
+                    </div>
+                    <div>
+                      <h4 className="font-medium">Week 4-6: Retention</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Build personalized onboarding
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                      4
+                    </div>
+                    <div>
+                      <h4 className="font-medium">Month 2: Engagement</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Deploy smart notifications
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-4 border-t">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Overall Progress</span>
+                    <span className="text-sm text-muted-foreground">25% complete</span>
+                  </div>
+                  <Progress value={25} className="mt-2" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
-}
+};
