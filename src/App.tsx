@@ -1,4 +1,3 @@
-
 import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -7,7 +6,10 @@ import { Toaster } from "@/components/ui/sonner";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/auth";
 import { NotificationProvider } from "@/contexts/NotificationContext";
+import { ErrorProvider } from "@/contexts/ErrorContext";
 import { ErrorBoundary } from "@/components/security/ErrorBoundary";
+import { ToastHandler } from "@/components/ui/toast-handler";
+import LoadingTrivia from "@/components/ui/loading-trivia";
 
 // Core pages - Enhanced versions are now primary
 const Index = React.lazy(() => import("@/pages/Index"));
@@ -52,19 +54,15 @@ const AiTools = React.lazy(() => import("@/pages/AiTools"));
 const VulnerabilityScanner = React.lazy(() => import("@/pages/VulnerabilityScanner"));
 const ServiceProviderOnboarding = React.lazy(() => import("@/pages/ServiceProviderOnboarding"));
 
-// Enhanced loading fallback
+// Enhanced loading fallback with better UX
 const AppLoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
-    <div className="flex flex-col items-center space-y-4">
-      <img 
-        src="/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png" 
-        alt="Hawkly"
-        className="h-12 w-12"
-        loading="eager"
-      />
-      <div className="w-8 h-8 border-2 border-border border-t-primary rounded-full animate-spin" />
-      <p className="text-sm text-muted-foreground">Loading...</p>
-    </div>
+    <LoadingTrivia 
+      message="Initializing Hawkly Security Platform..." 
+      size="lg" 
+      showTrivia={true}
+      fullPage={true}
+    />
   </div>
 );
 
@@ -103,75 +101,79 @@ function App() {
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider defaultTheme="light" storageKey="hawkly-ui-theme">
-            <AuthProvider>
-              <NotificationProvider>
-                <div className="min-h-screen bg-background font-sans antialiased">
-                  <Router>
-                    <Suspense fallback={<AppLoadingFallback />}>
-                      <Routes>
-                        {/* Core application routes - Enhanced versions are primary */}
-                        <Route path="/" element={<Index />} />
-                        <Route path="/auth" element={<Auth />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/marketplace" element={<Marketplace />} />
-                        <Route path="/request-audit" element={<RequestAudit />} />
-                        <Route path="/profile" element={<Profile />} />
-                        <Route path="/audit/:id" element={<AuditDetails />} />
-                        <Route path="/audits" element={<Audits />} />
-                        <Route path="/settings" element={<Settings />} />
-                        
-                        {/* Legacy routes for backward compatibility */}
-                        <Route path="/legacy-marketplace" element={<LegacyMarketplace />} />
-                        <Route path="/legacy-auth" element={<LegacyAuth />} />
-                        <Route path="/legacy-request-audit" element={<LegacyRequestAudit />} />
-                        
-                        {/* Core service pages */}
-                        <Route path="/code-reviews" element={<CodeReviews />} />
-                        <Route path="/penetration-testing" element={<PenetrationTesting />} />
-                        <Route path="/consulting" element={<Consulting />} />
-                        <Route path="/security-audits" element={<SecurityAudits />} />
-                        <Route path="/web3-security" element={<Web3Security />} />
-                        <Route path="/ai-tools" element={<AiTools />} />
-                        <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
-                        <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
-                        
-                        {/* Community and resources */}
-                        <Route path="/resources" element={<Resources />} />
-                        <Route path="/vulnerabilities" element={<Vulnerabilities />} />
-                        <Route path="/faq" element={<FAQ />} />
-                        <Route path="/support" element={<Support />} />
-                        <Route path="/community" element={<Community />} />
-                        
-                        {/* Essential business pages */}
-                        <Route path="/pricing" element={<Pricing />} />
-                        <Route path="/about" element={<About />} />
-                        <Route path="/contact" element={<Contact />} />
-                        <Route path="/careers" element={<Careers />} />
-                        <Route path="/terms" element={<Terms />} />
-                        <Route path="/privacy" element={<Privacy />} />
-                        
-                        {/* Essential SEO routes - redirect to main resources */}
-                        <Route path="/security-insights" element={<Vulnerabilities />} />
-                        <Route path="/docs" element={<Resources />} />
-                        <Route path="/templates" element={<Resources />} />
-                      </Routes>
-                    </Suspense>
-                  </Router>
-                  
-                  <Toaster 
-                    position="top-right"
-                    toastOptions={{
-                      duration: 4000,
-                      style: {
-                        background: 'hsl(var(--background))',
-                        color: 'hsl(var(--foreground))',
-                        border: '1px solid hsl(var(--border))',
-                      },
-                    }}
-                  />
-                </div>
-              </NotificationProvider>
-            </AuthProvider>
+            <ErrorProvider>
+              <AuthProvider>
+                <NotificationProvider>
+                  <ToastHandler>
+                    <div className="min-h-screen bg-background font-sans antialiased">
+                      <Router>
+                        <Suspense fallback={<AppLoadingFallback />}>
+                          <Routes>
+                            {/* Core application routes - Enhanced versions are primary */}
+                            <Route path="/" element={<Index />} />
+                            <Route path="/auth" element={<Auth />} />
+                            <Route path="/dashboard" element={<Dashboard />} />
+                            <Route path="/marketplace" element={<Marketplace />} />
+                            <Route path="/request-audit" element={<RequestAudit />} />
+                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/audit/:id" element={<AuditDetails />} />
+                            <Route path="/audits" element={<Audits />} />
+                            <Route path="/settings" element={<Settings />} />
+                            
+                            {/* Legacy routes for backward compatibility */}
+                            <Route path="/legacy-marketplace" element={<LegacyMarketplace />} />
+                            <Route path="/legacy-auth" element={<LegacyAuth />} />
+                            <Route path="/legacy-request-audit" element={<LegacyRequestAudit />} />
+                            
+                            {/* Core service pages */}
+                            <Route path="/code-reviews" element={<CodeReviews />} />
+                            <Route path="/penetration-testing" element={<PenetrationTesting />} />
+                            <Route path="/consulting" element={<Consulting />} />
+                            <Route path="/security-audits" element={<SecurityAudits />} />
+                            <Route path="/web3-security" element={<Web3Security />} />
+                            <Route path="/ai-tools" element={<AiTools />} />
+                            <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
+                            <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
+                            
+                            {/* Community and resources */}
+                            <Route path="/resources" element={<Resources />} />
+                            <Route path="/vulnerabilities" element={<Vulnerabilities />} />
+                            <Route path="/faq" element={<FAQ />} />
+                            <Route path="/support" element={<Support />} />
+                            <Route path="/community" element={<Community />} />
+                            
+                            {/* Essential business pages */}
+                            <Route path="/pricing" element={<Pricing />} />
+                            <Route path="/about" element={<About />} />
+                            <Route path="/contact" element={<Contact />} />
+                            <Route path="/careers" element={<Careers />} />
+                            <Route path="/terms" element={<Terms />} />
+                            <Route path="/privacy" element={<Privacy />} />
+                            
+                            {/* Essential SEO routes - redirect to main resources */}
+                            <Route path="/security-insights" element={<Vulnerabilities />} />
+                            <Route path="/docs" element={<Resources />} />
+                            <Route path="/templates" element={<Resources />} />
+                          </Routes>
+                        </Suspense>
+                      </Router>
+                      
+                      <Toaster 
+                        position="top-right"
+                        toastOptions={{
+                          duration: 4000,
+                          style: {
+                            background: 'hsl(var(--background))',
+                            color: 'hsl(var(--foreground))',
+                            border: '1px solid hsl(var(--border))',
+                          },
+                        }}
+                      />
+                    </div>
+                  </ToastHandler>
+                </NotificationProvider>
+              </AuthProvider>
+            </ErrorProvider>
           </ThemeProvider>
         </QueryClientProvider>
       </HelmetProvider>

@@ -1,29 +1,50 @@
 
-import React from 'react';
-import { cn } from '@/lib/utils';
+import React from "react";
+import { cn } from "@/lib/utils";
 
-interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'card' | 'text' | 'avatar' | 'brand' | 'shimmer';
+interface EnhancedSkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
+  variant?: "default" | "card" | "text" | "avatar" | "button";
+  size?: "sm" | "md" | "lg";
+  animation?: "pulse" | "shimmer" | "wave";
 }
 
-export function EnhancedSkeleton({ className, variant = 'default', ...props }: SkeletonProps) {
-  const baseClasses = 'animate-pulse rounded-md';
-  
+export function EnhancedSkeleton({
+  className,
+  variant = "default",
+  size = "md",
+  animation = "pulse",
+  ...props
+}: EnhancedSkeletonProps) {
   const variantClasses = {
-    default: 'bg-muted',
-    card: 'bg-gradient-to-r from-muted via-muted/50 to-muted',
-    text: 'bg-muted h-4',
-    avatar: 'bg-muted rounded-full',
-    brand: 'bg-gradient-to-r from-brand-blue/10 via-brand-purple/10 to-brand-cyan/10',
-    shimmer: 'bg-gradient-to-r from-muted via-muted/30 to-muted bg-[length:200%_100%] animate-[shimmer_2s_ease-in-out_infinite]'
+    default: "bg-muted",
+    card: "bg-muted/80 rounded-lg",
+    text: "bg-muted/60 rounded",
+    avatar: "bg-muted rounded-full",
+    button: "bg-muted rounded-md",
+  };
+
+  const sizeClasses = {
+    sm: "h-3",
+    md: "h-4", 
+    lg: "h-6",
+  };
+
+  const animationClasses = {
+    pulse: "animate-pulse",
+    shimmer: "animate-shimmer-security",
+    wave: "animate-trust-wave",
   };
 
   return (
-    <div 
-      className={cn(baseClasses, variantClasses[variant], className)} 
-      {...props} 
+    <div
+      className={cn(
+        "rounded-md",
+        variantClasses[variant],
+        sizeClasses[size],
+        animationClasses[animation],
+        className
+      )}
+      {...props}
     />
   );
 }
-
-export { EnhancedSkeleton as Skeleton };
