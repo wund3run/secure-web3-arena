@@ -43,8 +43,16 @@ export const RealtimeNotificationSystem: React.FC = () => {
         .limit(20);
 
       if (data) {
-        setNotifications(data);
-        setUnreadCount(data.filter(n => !n.is_read).length);
+        // Type cast and filter the data to ensure type safety
+        const typedNotifications = data
+          .filter(n => ['info', 'success', 'warning', 'error'].includes(n.type))
+          .map(n => ({
+            ...n,
+            type: n.type as 'info' | 'success' | 'warning' | 'error'
+          }));
+        
+        setNotifications(typedNotifications);
+        setUnreadCount(typedNotifications.filter(n => !n.is_read).length);
       }
     };
 
@@ -62,9 +70,16 @@ export const RealtimeNotificationSystem: React.FC = () => {
           filter: `user_id=eq.${user.id}`
         },
         (payload) => {
-          const newNotification = payload.new as RealtimeNotification;
-          setNotifications(prev => [newNotification, ...prev.slice(0, 19)]);
-          setUnreadCount(prev => prev + 1);
+          const newNotification = payload.new as any;
+          // Ensure type safety for real-time updates
+          if (['info', 'success', 'warning', 'error'].includes(newNotification.type)) {
+            const typedNotification: RealtimeNotification = {
+              ...newNotification,
+              type: newNotification.type as 'info' | 'success' | 'warning' | 'error'
+            };
+            setNotifications(prev => [typedNotification, ...prev.slice(0, 19)]);
+            setUnreadCount(prev => prev + 1);
+          }
         }
       )
       .subscribe();
