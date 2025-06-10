@@ -1,338 +1,39 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Import Enhanced UI System */
-@import url('./styles/enhanced-ui-system.css');
-
-/* Enhanced Brand System - Consolidated */
-:root {
-  /* Primary Brand Colors - Based on Hawkly Logo */
-  --brand-primary: #8A73E2;
-  --brand-primary-light: #A78BFA;
-  --brand-primary-dark: #7C3AED;
-  --brand-primary-50: #F8F7FF;
-  --brand-primary-100: #F0EDFF;
-  --brand-primary-500: #8A73E2;
-  --brand-primary-600: #7C3AED;
-  --brand-primary-700: #6B46C1;
-
-  /* Secondary Brand Colors */
-  --brand-secondary: #33C3F0;
-  --brand-secondary-light: #38BDF8;
-  --brand-secondary-dark: #0EA5E9;
-  --brand-secondary-50: #F0F9FF;
-  --brand-secondary-100: #E0F2FE;
-  --brand-secondary-500: #33C3F0;
-  --brand-secondary-600: #0EA5E9;
-
-  /* Accent Colors */
-  --brand-accent: #FF5722;
-  --brand-accent-light: #FF7043;
-  --brand-accent-dark: #E64A19;
-  --brand-accent-50: #FFF3E0;
-  --brand-accent-500: #FF5722;
-
-  /* Enhanced Gradients */
-  --brand-gradient-primary: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
-  --brand-gradient-secondary: linear-gradient(135deg, var(--brand-secondary) 0%, var(--brand-primary) 100%);
-  --brand-gradient-hero: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 50%, var(--brand-accent) 100%);
-
-  /* Shadow System with Brand Accents */
-  --shadow-brand-sm: 0 1px 3px rgba(138, 115, 226, 0.1);
-  --shadow-brand-md: 0 4px 12px rgba(138, 115, 226, 0.15);
-  --shadow-brand-lg: 0 8px 25px rgba(138, 115, 226, 0.2);
-  --shadow-brand-glow: 0 0 20px rgba(138, 115, 226, 0.3);
-}
-
 @layer utilities {
-  /* Missing Animation Classes */
   .animate-fade-in-up {
     animation: fade-in-up 0.6s ease-out forwards;
   }
   
-  .animate-fade-in-scale {
-    animation: fade-in-scale 0.5s ease-out forwards;
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   
-  .animate-brand-entrance {
-    animation: brand-entrance 0.8s ease-out forwards;
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
   }
   
-  .animate-brand-pulse {
-    animation: brand-pulse 2s infinite;
-  }
-  
-  .animate-brand-float {
-    animation: brand-float 6s ease-in-out infinite;
-  }
-  
-  .animate-gradient-text {
-    background-size: 200% 200%;
-    animation: gradientShift 3s ease-in-out infinite;
-  }
-
-  /* Container Classes */
-  .container-modern {
-    width: 100%;
-    max-width: 80rem;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  /* Stagger Animation */
-  .stagger-animation > * {
-    opacity: 0;
-    animation: fadeInUp 0.6s ease-out forwards;
-  }
-  
-  .stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
-  .stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
-  .stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
-  .stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
-  .stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
-
-  /* Brand-enhanced utility classes */
-  .brand-glow {
-    box-shadow: var(--shadow-brand-glow);
-  }
-
-  .brand-hover-lift {
-    transition: all 0.3s ease;
-  }
-
-  .brand-hover-lift:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-brand-lg);
-  }
-
-  .gradient-hero {
-    background: var(--brand-gradient-hero);
-  }
-
-  .gradient-primary {
-    background: var(--brand-gradient-primary);
-  }
-
-  .gradient-text {
-    background: var(--brand-gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    background-size: 200% 200%;
-  }
-
-  /* Enhanced Card Component */
-  .card-enhanced {
-    background: white;
-    border: 1px solid #E2E8F0;
-    border-radius: 12px;
-    box-shadow: var(--shadow-brand-sm);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .card-enhanced::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--brand-gradient-primary);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .card-enhanced:hover {
-    border-color: rgba(138, 115, 226, 0.2);
-    box-shadow: var(--shadow-brand-md);
-    transform: translateY(-2px);
-  }
-
-  .card-enhanced:hover::before {
-    opacity: 1;
-  }
-
-  /* Hero Section Styling */
-  .hero-brand {
-    background: var(--brand-gradient-hero);
-    position: relative;
-    overflow: hidden;
-    min-height: 600px;
-    display: flex;
-    align-items: center;
-  }
-
-  .hero-brand::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    opacity: 0.1;
-  }
-
-  /* Brand Button Classes */
-  .btn-brand-primary {
-    background: var(--brand-gradient-primary);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-brand-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-brand-lg);
-  }
-
-  .btn-brand-secondary {
-    background: transparent;
-    color: var(--brand-primary);
-    border: 2px solid var(--brand-primary);
-    padding: 10px 22px;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-  }
-
-  .btn-brand-secondary:hover {
-    background: rgba(138, 115, 226, 0.05);
-    border-color: var(--brand-primary);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-brand-sm);
-  }
-
-  /* Interactive button animations */
-  .button-brand-effect {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .button-brand-effect::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-  }
-
-  .button-brand-effect:hover::before {
-    left: 100%;
-  }
-}
-
-/* Enhanced Animations */
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fade-in-scale {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes brand-entrance {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  50% {
-    opacity: 0.8;
-    transform: translateY(-5px) scale(1.02);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes brand-pulse {
-  0%, 100% { 
-    box-shadow: 0 0 0 0 rgba(138, 115, 226, 0.4);
-  }
-  50% { 
-    box-shadow: 0 0 0 10px rgba(138, 115, 226, 0);
-  }
-}
-
-@keyframes brand-float {
-  0%, 100% { 
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% { 
-    transform: translateY(-10px) rotate(2deg);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .hero-brand {
-    min-height: 500px;
-  }
-  
-  .container-modern {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  .animate-fade-in-up,
-  .animate-fade-in-scale,
-  .animate-brand-entrance,
-  .animate-gradient-text,
-  .animate-brand-pulse,
-  .animate-brand-float {
-    animation: none;
-  }
-  
-  .stagger-animation > * {
-    opacity: 1;
-    animation: none;
+  @keyframes wave {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
   }
 }

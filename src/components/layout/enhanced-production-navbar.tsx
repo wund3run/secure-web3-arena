@@ -7,7 +7,7 @@ import { MobileNavigation } from "./navigation/mobile-navigation";
 import { AuthButtons } from "./navigation/auth-buttons";
 import { HeaderSearch } from "./navigation/header-search";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { X, Shield } from "lucide-react";
+import { X } from "lucide-react";
 import { navigationLinks } from "./navigation/navigation-links";
 
 export function EnhancedProductionNavbar() {
@@ -42,21 +42,20 @@ export function EnhancedProductionNavbar() {
   
   return (
     <header 
-      className="sticky top-0 z-50 w-full border-b border-brand-primary/20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 nav-brand"
+      className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
       role="banner"
     >
       {showAlert && user && (
-        <Alert className="rounded-none border-t-0 border-l-0 border-r-0 border-b bg-brand-gradient text-white animate-fade-in-up">
-          <div className="container flex items-center justify-between py-2">
+        <Alert className="rounded-none border-t-0 border-l-0 border-r-0 border-b bg-primary text-primary-foreground">
+          <div className="container flex items-center justify-between py-1">
             <AlertDescription>
-              <span className="text-sm font-medium flex items-center gap-2">
-                <Shield className="h-4 w-4" />
+              <span className="text-sm">
                 <strong>Welcome back!</strong> Access all security services from your dashboard
               </span>
             </AlertDescription>
             <button 
               onClick={() => setShowAlert(false)} 
-              className="text-white/80 hover:text-white transition-colors brand-hover-lift"
+              className="text-primary-foreground/80 hover:text-primary-foreground transition-colors"
               aria-label="Close announcement"
             >
               <X size={18} />
@@ -70,18 +69,15 @@ export function EnhancedProductionNavbar() {
         <div className="flex items-center">
           <Link 
             to={user ? "/dashboard" : "/"} 
-            className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-primary rounded-md p-2 brand-hover-lift transition-all duration-300"
+            className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary rounded-md p-1"
             aria-label="Hawkly Home"
           >
-            <div className="relative">
-              <img 
-                src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
-                alt="Hawkly Logo"
-                className="h-12 w-12 object-contain bg-transparent"
-                style={{ backgroundColor: 'transparent' }}
-              />
-              <div className="absolute inset-0 bg-brand-gradient opacity-0 hover:opacity-10 transition-opacity duration-300 rounded-full" />
-            </div>
+            <img 
+              src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+              alt="Hawkly Logo"
+              className="h-12 w-12 object-contain bg-transparent"
+              style={{ backgroundColor: 'transparent' }}
+            />
           </Link>
           
           {/* Enhanced Desktop Navigation */}

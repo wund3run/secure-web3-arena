@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -5,7 +6,7 @@ import { MobileCardContent } from "./MobileCardContent";
 import { MobileCardFooter } from "./MobileCardFooter";
 import { MobileCardImage } from "./MobileCardImage";
 
-// Keep existing interface definition
+// Define a standalone interface without extending ServiceCardProps
 export interface MobileFriendlyCardProps {
   id: string;
   title: string;
@@ -49,13 +50,13 @@ export function MobileFriendlyCard({
   
   return (
     <Card 
-      className="card-enhanced h-full flex flex-col group brand-hover-lift overflow-hidden"
+      className="overflow-hidden h-full flex flex-col interactive-card border-border/30 hover:border-primary/20 transition-all duration-300 group relative"
       id={cardId}
     >
       <MobileCardImage 
         imageUrl={imageUrl} 
         title={title} 
-        alt={`${title} service preview`}
+        alt={`${title} service preview`} // Added alt for accessibility
       />
       
       <CardContent className="p-4 flex-grow">
@@ -66,21 +67,21 @@ export function MobileFriendlyCard({
           category={category}
           tags={tags}
           rating={rating}
-          descriptionId={descriptionId}
+          descriptionId={descriptionId} // Pass ID for accessibility
         />
       </CardContent>
       
-      <CardFooter className="p-4 pt-0 flex-shrink-0 justify-between items-center border-t border-brand-primary/10 mt-auto">
+      <CardFooter className="p-4 pt-0 flex-shrink-0 justify-between items-center border-t border-border/10 mt-auto">
         <MobileCardFooter 
           pricing={pricing} 
           completedJobs={completedJobs} 
         />
         
         <Button 
-          variant="brandSecondary" 
+          variant="outline" 
           size="sm"
           onClick={onSelect}
-          className="group-hover:variant-brand transition-all duration-300"
+          className="hover:bg-primary/5 group-hover:border-primary/30 transition-colors duration-300"
           aria-label={`View details for ${title}`}
           aria-describedby={descriptionId}
         >

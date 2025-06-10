@@ -1,19 +1,20 @@
+
 import React from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 
 const enhancedCardVariants = cva(
-  "rounded-lg border bg-card text-card-foreground shadow-brand-sm transition-all duration-300 card-enhanced",
+  "rounded-lg border bg-card text-card-foreground shadow-sm transition-all duration-300",
   {
     variants: {
       variant: {
-        default: "hover:shadow-brand-md",
-        elevated: "shadow-brand-lg hover:shadow-brand-xl hover:-translate-y-1",
-        interactive: "cursor-pointer hover:shadow-brand-lg hover:-translate-y-0.5 hover:border-brand-primary/50 brand-hover-lift",
-        minimal: "border-0 shadow-none hover:shadow-brand-sm",
-        outlined: "border-2 hover:border-brand-primary/50 hover:shadow-brand-md",
-        gradient: "bg-gradient-to-br from-brand-primary/5 via-background to-brand-secondary/5 border-brand-primary/20 hover:shadow-brand-lg"
+        default: "hover:shadow-md",
+        elevated: "shadow-lg hover:shadow-xl hover:-translate-y-1",
+        interactive: "cursor-pointer hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/50",
+        minimal: "border-0 shadow-none hover:shadow-sm",
+        outlined: "border-2 hover:border-primary/50 hover:shadow-md",
+        gradient: "bg-gradient-to-br from-primary/5 via-background to-secondary/5 border-primary/20 hover:shadow-lg"
       },
       padding: {
         none: "p-0",
@@ -45,7 +46,7 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
         className={cn(
           enhancedCardVariants({ variant, padding }),
           hover && "hover:scale-105",
-          glow && "brand-glow",
+          glow && "hover:shadow-primary/20",
           className
         )}
         {...props}
@@ -56,7 +57,7 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
 
 EnhancedCard.displayName = "EnhancedCard";
 
-// Enhanced Card Header with gradient option
+// Enhanced Card Header with better spacing and typography
 const EnhancedCardHeader = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
@@ -68,7 +69,7 @@ const EnhancedCardHeader = React.forwardRef<
     ref={ref}
     className={cn(
       "space-y-2",
-      gradient && "bg-gradient-to-r from-brand-primary/10 to-brand-secondary/10 rounded-t-lg -m-6 mb-6 p-6",
+      gradient && "bg-gradient-to-r from-primary/10 to-secondary/10 rounded-t-lg -m-6 mb-6 p-6",
       centered && "text-center",
       className
     )}
@@ -78,7 +79,7 @@ const EnhancedCardHeader = React.forwardRef<
 
 EnhancedCardHeader.displayName = "EnhancedCardHeader";
 
-// Enhanced Card Title with gradient text option
+// Enhanced Card Title with better typography
 const EnhancedCardTitle = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLHeadingElement> & {
@@ -99,7 +100,7 @@ const EnhancedCardTitle = React.forwardRef<
       className={cn(
         "font-semibold leading-tight tracking-tight",
         sizeClasses[size],
-        gradient && "gradient-text",
+        gradient && "bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent",
         className
       )}
       {...props}
@@ -165,7 +166,7 @@ const EnhancedCardFooter = React.forwardRef<
     ref={ref}
     className={cn(
       "gap-2",
-      border && "border-t border-brand-primary/10 pt-6",
+      border && "border-t pt-6",
       centered && "justify-center",
       className
     )}

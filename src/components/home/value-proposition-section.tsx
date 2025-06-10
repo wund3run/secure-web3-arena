@@ -1,108 +1,146 @@
 
 import React from 'react';
-import { Shield, Zap, Users, Award, CheckCircle, Globe } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Clock, Shield, DollarSign, Zap, TrendingUp, CheckCircle } from 'lucide-react';
+
+const benefits = [
+  {
+    icon: Clock,
+    title: "10x Faster",
+    description: "Get audit results in days, not months",
+    metric: "Average 7 days vs 70 days traditional",
+    color: "text-primary-600"
+  },
+  {
+    icon: DollarSign,
+    title: "50% Lower Cost",
+    description: "Pay only for what you need with milestone-based pricing",
+    metric: "Starting from $2,500 vs $50,000+",
+    color: "text-success-600"
+  },
+  {
+    icon: Shield,
+    title: "Expert Network",
+    description: "Access 500+ verified security professionals",
+    metric: "95% client satisfaction rate",
+    color: "text-secondary-600"
+  },
+  {
+    icon: Zap,
+    title: "AI-Powered",
+    description: "Smart matching connects you to the right expert",
+    metric: "< 2 hours to match",
+    color: "text-warning-600"
+  }
+];
+
+const comparisons = [
+  {
+    feature: "Time to Start",
+    traditional: "4-8 weeks",
+    hawkly: "< 2 hours",
+    improvement: true
+  },
+  {
+    feature: "Cost Range",
+    traditional: "$50k - $200k+",
+    hawkly: "$2.5k - $25k",
+    improvement: true
+  },
+  {
+    feature: "Audit Duration",
+    traditional: "8-16 weeks",
+    hawkly: "1-3 weeks",
+    improvement: true
+  },
+  {
+    feature: "Expert Matching",
+    traditional: "Manual & Limited",
+    hawkly: "AI-Powered",
+    improvement: true
+  },
+  {
+    feature: "Payment Security",
+    traditional: "Upfront Payment",
+    hawkly: "Escrow Protection",
+    improvement: true
+  }
+];
 
 export function ValuePropositionSection() {
-  const propositions = [
-    {
-      icon: Shield,
-      title: "Expert-Vetted Security",
-      description: "Every auditor undergoes rigorous verification and continuous performance monitoring",
-      color: "text-brand-primary",
-      bgColor: "bg-brand-primary/10"
-    },
-    {
-      icon: Zap,
-      title: "Rapid Response",
-      description: "Get matched with qualified auditors within 24 hours and start securing your project",
-      color: "text-brand-secondary",
-      bgColor: "bg-brand-secondary/10"
-    },
-    {
-      icon: Users,
-      title: "Collaborative Process",
-      description: "Work directly with auditors through our platform for transparent, efficient audits",
-      color: "text-brand-accent",
-      bgColor: "bg-brand-accent/10"
-    },
-    {
-      icon: Award,
-      title: "Proven Track Record",
-      description: "Join 2,500+ successfully completed audits with $350M+ in protected assets",
-      color: "text-brand-primary",
-      bgColor: "bg-brand-primary/10"
-    },
-    {
-      icon: CheckCircle,
-      title: "Comprehensive Coverage",
-      description: "From smart contracts to DeFi protocols - we cover all blockchain security needs",
-      color: "text-brand-secondary",
-      bgColor: "bg-brand-secondary/10"
-    },
-    {
-      icon: Globe,
-      title: "Global Network",
-      description: "Access security experts worldwide, available across all time zones",
-      color: "text-brand-accent",
-      bgColor: "bg-brand-accent/10"
-    }
-  ];
-
   return (
-    <section className="py-20 bg-gradient-to-br from-background via-brand-primary/5 to-brand-secondary/5">
-      <div className="container-modern">
-        <div className="text-center mb-16 stagger-animation">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text">
-            Why Choose Hawkly?
+    <section className="section-padding bg-gradient-to-b from-neutral-50 to-primary-50/30">
+      <div className="modern-container">
+        {/* Benefits Grid */}
+        <div className="section-header">
+          <Badge variant="secondary" className="mb-4 bg-primary-100 text-primary-700 border-primary-200">
+            <TrendingUp className="h-3 w-3 mr-1" />
+            Why Choose Hawkly
+          </Badge>
+          <h2 className="section-title text-neutral-900">
+            The Smart Way to Secure Web3
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            The most trusted platform connecting blockchain projects with world-class security experts
+          <p className="section-subtitle text-neutral-600">
+            Traditional audit firms are slow and expensive. We've built a better way using AI, blockchain technology, and the world's top security experts.
           </p>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 stagger-animation">
-          {propositions.map((prop, index) => {
-            const IconComponent = prop.icon;
-            return (
-              <div
-                key={index}
-                className="card-enhanced p-8 group brand-hover-lift"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="flex items-start space-x-4">
-                  <div className={`p-3 rounded-lg ${prop.bgColor} group-hover:scale-110 transition-transform duration-300 flex-shrink-0`}>
-                    <IconComponent className={`h-6 w-6 ${prop.color}`} />
+          <div className="grid-features">
+            {benefits.map((benefit, index) => (
+              <Card key={index} className="modern-card modern-card-hover text-center bg-white border-neutral-200">
+                <CardContent className="p-6">
+                  <div className={`w-12 h-12 mx-auto rounded-xl bg-neutral-50 border-2 border-neutral-200 flex items-center justify-center mb-4 ${benefit.color}`}>
+                    <benefit.icon className="h-6 w-6" />
                   </div>
-                  <div>
-                    <h3 className="text-xl font-semibold mb-3 text-foreground group-hover:text-brand-primary transition-colors duration-300">
-                      {prop.title}
-                    </h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {prop.description}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="text-center animate-fade-in-up">
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button asChild size="lg" variant="brand" className="shadow-brand-lg">
-              <Link to="/marketplace">
-                <Shield className="mr-2 h-5 w-5" />
-                Explore Security Services
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="brandSecondary">
-              <Link to="/request-audit">
-                Request Free Consultation
-              </Link>
-            </Button>
+                  <h3 className="text-lg font-semibold mb-2 text-neutral-900">{benefit.title}</h3>
+                  <p className="text-sm text-neutral-600 mb-3">{benefit.description}</p>
+                  <Badge variant="outline" className="text-xs bg-neutral-50 text-neutral-700 border-neutral-300">
+                    {benefit.metric}
+                  </Badge>
+                </CardContent>
+              </Card>
+            ))}
           </div>
+        </div>
+
+        {/* Comparison Table */}
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold mb-4 text-neutral-900">Hawkly vs Traditional Audit Firms</h3>
+            <p className="text-neutral-600">See how we stack up against the old way of doing security audits</p>
+          </div>
+
+          <Card className="modern-card overflow-hidden bg-white border-neutral-200">
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-neutral-50 border-b border-neutral-200">
+                    <tr>
+                      <th className="text-left p-4 font-medium text-neutral-900">Feature</th>
+                      <th className="text-center p-4 font-medium text-neutral-700">Traditional Firms</th>
+                      <th className="text-center p-4 font-medium text-primary-700">Hawkly</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {comparisons.map((comparison, index) => (
+                      <tr key={index} className="border-t border-neutral-100">
+                        <td className="p-4 font-medium text-neutral-900">{comparison.feature}</td>
+                        <td className="p-4 text-center text-neutral-600">{comparison.traditional}</td>
+                        <td className="p-4 text-center">
+                          <div className="flex items-center justify-center gap-2">
+                            <span className="font-medium text-primary-700">{comparison.hawkly}</span>
+                            {comparison.improvement && (
+                              <CheckCircle className="h-4 w-4 text-success-500" />
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </section>
