@@ -5,7 +5,7 @@ import { EnhancedSkeleton } from '@/components/ui/enhanced-skeleton';
 // Lazy load heavy components with proper default export handling
 const AdminDashboard = lazy(() => 
   import('@/components/admin/AdminDashboard').then(module => ({ 
-    default: module.default || module.AdminDashboard 
+    default: module.AdminDashboard 
   }))
 );
 
