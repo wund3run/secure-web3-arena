@@ -12,7 +12,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ModeToggle } from "@/components/theme/ModeToggle";
 import { useLocation } from 'react-router-dom';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 
@@ -86,8 +85,6 @@ export function EnhancedNavbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
-
-            <ModeToggle />
           </div>
         </div>
       </div>

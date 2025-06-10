@@ -100,7 +100,7 @@ function App() {
     <ErrorBoundary>
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
-          <ThemeProvider defaultTheme="light" storageKey="hawkly-ui-theme">
+          <ThemeProvider storageKey="hawkly-ui-theme">
             <ErrorProvider>
               <AuthProvider>
                 <NotificationProvider>

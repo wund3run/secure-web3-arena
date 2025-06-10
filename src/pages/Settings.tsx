@@ -18,11 +18,9 @@ import {
   EyeOff
 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth';
-import { useTheme } from '@/components/ui/theme-provider';
 
 export default function Settings() {
   const { user } = useAuth();
-  const { theme, setTheme } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const [notifications, setNotifications] = useState({
     email: true,
@@ -200,25 +198,10 @@ export default function Settings() {
                 <CardContent className="space-y-6">
                   <div className="space-y-2">
                     <Label>Theme</Label>
-                    <div className="flex gap-2">
-                      <Button 
-                        variant={theme === 'light' ? 'default' : 'outline'}
-                        onClick={() => setTheme('light')}
-                      >
-                        Light
-                      </Button>
-                      <Button 
-                        variant={theme === 'dark' ? 'default' : 'outline'}
-                        onClick={() => setTheme('dark')}
-                      >
-                        Dark
-                      </Button>
-                      <Button 
-                        variant={theme === 'system' ? 'default' : 'outline'}
-                        onClick={() => setTheme('system')}
-                      >
-                        System
-                      </Button>
+                    <div className="p-4 bg-muted rounded-lg">
+                      <p className="text-sm text-muted-foreground">
+                        Hawkly uses a consistent dark theme optimized for security professionals and low-light conditions.
+                      </p>
                     </div>
                   </div>
                 </CardContent>
