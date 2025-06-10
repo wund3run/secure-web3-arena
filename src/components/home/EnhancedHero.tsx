@@ -92,7 +92,7 @@ export function EnhancedHero() {
 
           {/* Enhanced CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-            <Button asChild size="lg" className="btn-brand-primary h-14 px-8 text-lg font-semibold group button-brand-effect brand-hover-lift">
+            <Button asChild size="lg" variant="brand" className="h-14 px-8 text-lg font-semibold group">
               <Link to="/marketplace" className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
                 Find Your Guardian
@@ -100,7 +100,7 @@ export function EnhancedHero() {
               </Link>
             </Button>
             
-            <Button asChild size="lg" className="h-14 px-8 text-lg bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all duration-300 font-semibold brand-hover-lift">
+            <Button asChild size="lg" variant="brandGhost" className="h-14 px-8 text-lg font-semibold">
               <Link to="/request-audit">
                 Request Protection Quote
               </Link>
@@ -119,7 +119,7 @@ export function EnhancedHero() {
               return (
                 <div 
                   key={index} 
-                  className="card-enhanced bg-white/10 backdrop-blur-sm border-white/20 hover:border-white/40 p-6 rounded-xl text-center group animate-hover-lift"
+                  className="card-enhanced bg-white/10 backdrop-blur-sm border-white/20 hover:border-white/40 p-6 rounded-xl text-center group brand-hover-lift"
                   style={{ animationDelay: `${0.7 + index * 0.1}s` }}
                 >
                   <IconComponent className="h-8 w-8 mx-auto mb-3 text-white group-hover:scale-110 transition-transform duration-300" />
