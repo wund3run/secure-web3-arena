@@ -3,458 +3,176 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "./styles/design-system.css";
-@import "./styles/enhanced-animations.css";
-
 @layer base {
   :root {
-    /* Brand Colors - Matching Hawkly Logo Exactly */
-    --primary: 217 91% 60%; /* Blue from logo gradient start #4A90E2 */
-    --primary-foreground: 0 0% 100%;
-    
-    --secondary: 187 85% 53%; /* Cyan from logo gradient end #33C3F0 */
-    --secondary-foreground: 0 0% 100%;
-    
-    --accent: 24 95% 53%; /* Orange from hawk eyes #FF5722 */
-    --accent-foreground: 0 0% 100%;
-
-    /* Brand-specific gradient colors */
-    --brand-blue: 217 91% 60%; /* #4A90E2 */
-    --brand-purple: 262 83% 58%; /* #7C3AED */
-    --brand-cyan: 187 85% 53%; /* #33C3F0 */
-    --brand-orange: 24 95% 53%; /* #FF5722 */
-    
-    /* Core UI Colors */
     --background: 0 0% 100%;
-    --foreground: 215 25% 20%;
-    
+    --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 20%;
-    
+    --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 20%;
-    
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 262 57% 45%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
     --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
     
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 217 91% 60%;
+    /* Hawkly Brand Colors */
+    --brand-blue: 204 89% 65%;
+    --brand-purple: 262 57% 45%;
+    --brand-cyan: 187 85% 53%;
+    --brand-orange: 14 100% 57%;
     
-    --radius: var(--radius-md);
+    /* Enhanced Brand Variables */
+    --brand-gradient: linear-gradient(135deg, hsl(var(--brand-purple)) 0%, hsl(var(--brand-blue)) 35%, hsl(var(--brand-cyan)) 70%, hsl(var(--brand-orange)) 100%);
+    --brand-gradient-subtle: linear-gradient(135deg, hsl(var(--brand-purple) / 0.1) 0%, hsl(var(--brand-cyan) / 0.1) 100%);
     
-    /* Semantic colors with brand influence */
+    /* Semantic Colors */
     --success: 142 71% 45%;
-    --success-foreground: 0 0% 100%;
-    --warning: 43 96% 56%;
-    --warning-foreground: 0 0% 100%;
-    --error: 0 84% 60%;
-    --error-foreground: 0 0% 100%;
-    
-    /* Brand gradient variables */
-    --brand-gradient: linear-gradient(135deg, hsl(217 91% 60%), hsl(262 83% 58%), hsl(187 85% 53%));
-    --brand-gradient-subtle: linear-gradient(135deg, hsl(217 91% 60% / 0.1), hsl(262 83% 58% / 0.1), hsl(187 85% 53% / 0.1));
+    --success-foreground: 355.7 100% 97.3%;
+    --warning: 37 100% 50%;
+    --warning-foreground: 355.7 100% 97.3%;
+    --error: 0 84.2% 60.2%;
+    --error-foreground: 210 40% 98%;
   }
-  
+
   .dark {
-    --background: 220 13% 18%;
+    --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-    
-    --card: 220 13% 21%;
+    --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
-    
-    --popover: 220 13% 21%;
+    --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
+    --primary: 262 57% 65%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
     
-    --primary: 217 91% 70%;
-    --primary-foreground: 220 13% 18%;
-    
-    --secondary: 187 85% 63%;
-    --secondary-foreground: 220 13% 18%;
-    
-    --muted: 217 33% 18%;
-    --muted-foreground: 215 20% 65%;
-    
-    --accent: 24 95% 63%;
-    --accent-foreground: 220 13% 18%;
-    
-    --border: 217 33% 25%;
-    --input: 217 33% 25%;
-    --ring: 217 91% 70%;
+    /* Dark mode brand adjustments */
+    --brand-purple: 262 57% 65%;
+    --brand-blue: 204 89% 75%;
   }
+}
 
-  /* Enhanced typography with brand consistency */
+@layer base {
+  * {
+    @apply border-border;
+  }
   body {
-    font-family: var(--font-family-sans);
-    line-height: var(--leading-normal);
-    color: hsl(var(--foreground));
-    background-color: hsl(var(--background));
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Brand-consistent heading hierarchy */
-  h1, h2, h3, h4, h5, h6 {
-    font-weight: var(--font-semibold);
-    line-height: var(--leading-tight);
-    letter-spacing: -0.025em;
-    color: hsl(var(--foreground));
-  }
-  
-  h1 {
-    font-size: var(--text-4xl);
-    font-weight: var(--font-bold);
-  }
-  
-  h2 {
-    font-size: var(--text-3xl);
-    font-weight: var(--font-semibold);
-  }
-  
-  h3 {
-    font-size: var(--text-2xl);
-    font-weight: var(--font-semibold);
-  }
-  
-  h4 {
-    font-size: var(--text-xl);
-    font-weight: var(--font-medium);
-  }
-
-  /* Responsive typography */
-  @media (min-width: 768px) {
-    h1 {
-      font-size: var(--text-5xl);
-    }
-    
-    h2 {
-      font-size: var(--text-4xl);
-    }
-    
-    h3 {
-      font-size: var(--text-3xl);
-    }
-  }
-
-  /* Brand-enhanced paragraph styling */
-  p {
-    line-height: var(--leading-relaxed);
-    margin-bottom: var(--space-4);
-  }
-
-  /* Brand-consistent link styling */
-  a {
-    color: hsl(var(--primary));
-    text-decoration: none;
-    transition: all var(--duration-fast) var(--ease-out);
-  }
-
-  a:hover {
-    color: hsl(var(--primary) / 0.8);
-  }
-
-  /* Enhanced button styling with brand colors */
-  button {
-    transition: all var(--duration-normal) var(--ease-out);
-    font-weight: var(--font-medium);
-  }
-
-  /* Brand-enhanced input styling */
-  input, textarea, select {
-    transition: all var(--duration-fast) var(--ease-out);
-    border-radius: var(--radius-md);
-  }
-
-  input:focus, textarea:focus, select:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px hsl(var(--ring) / 0.5);
-    border-color: hsl(var(--ring));
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
 @layer components {
-  /* Brand-enhanced container */
-  .container-modern {
-    width: 100%;
-    max-width: var(--container-max-width);
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: var(--container-padding);
-    padding-right: var(--container-padding);
-  }
-
-  .container {
-    @apply container-modern;
-  }
-
-  /* Brand-consistent typography utilities */
-  .text-display-2xl {
-    font-size: var(--text-6xl);
-    font-weight: var(--font-bold);
-    line-height: var(--leading-tight);
-    letter-spacing: -0.025em;
-  }
-
-  .text-display-xl {
-    font-size: var(--text-5xl);
-    font-weight: var(--font-bold);
-    line-height: var(--leading-tight);
-    letter-spacing: -0.025em;
-  }
-
-  .text-display-lg {
-    font-size: var(--text-4xl);
-    font-weight: var(--font-bold);
-    line-height: var(--leading-snug);
-  }
-
-  .text-display-md {
-    font-size: var(--text-3xl);
-    font-weight: var(--font-semibold);
-    line-height: var(--leading-snug);
-  }
-
-  /* Brand-enhanced design system classes */
-  .card-modern {
-    background-color: white;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--color-neutral-200);
-    transition: all var(--duration-normal) var(--ease-out);
-  }
-
-  .btn-modern {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-6);
-    border-radius: var(--radius-md);
-    font-weight: var(--font-medium);
-    font-size: var(--text-sm);
-    line-height: var(--leading-tight);
-    transition: all var(--duration-normal) var(--ease-out);
-    cursor: pointer;
-    border: none;
-    height: var(--button-height-md);
-  }
-
-  .focus-modern {
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-  }
-
-  .focus-modern:focus-visible {
-    outline: 2px solid var(--color-primary-500);
-    outline-offset: 2px;
-  }
-
-  /* Brand-enhanced card components */
-  .card-enhanced {
-    @apply card-modern hover:shadow-lg transition-all duration-300;
-  }
-
-  /* Brand-consistent button variants */
-  .btn {
-    @apply btn-modern focus-modern;
-  }
-
-  .btn-primary {
+  /* Brand Gradient Classes */
+  .gradient-primary {
     background: var(--brand-gradient);
-    color: white;
-    box-shadow: var(--shadow-sm);
   }
-
-  .btn-primary:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-  }
-
-  .btn-secondary {
-    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-sm hover:shadow-md;
-  }
-
-  .btn-outline {
-    @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
-  }
-
-  .btn-ghost {
-    @apply hover:bg-accent hover:text-accent-foreground;
-  }
-
-  /* Brand-enhanced section styling */
-  .section-modern {
-    @apply py-16 md:py-20 lg:py-24;
-  }
-
-  .section-header {
-    @apply text-center mb-12 md:mb-16;
-  }
-
-  .section-title {
-    @apply text-display-lg md:text-display-xl font-bold mb-4;
-  }
-
-  .section-subtitle {
-    @apply text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto;
-  }
-
-  /* Brand-enhanced grid layouts */
-  .grid-modern {
-    @apply grid gap-6 md:gap-8;
-  }
-
-  .grid-features {
-    @apply grid-modern grid-cols-1 md:grid-cols-2 lg:grid-cols-3;
-  }
-
-  .grid-services {
-    @apply grid-modern grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
-  }
-
-  /* Brand-consistent focus styles */
-  .focus-ring {
-    @apply focus-modern;
-  }
-
-  /* Status badges with brand colors */
-  .badge-success {
-    @apply bg-success/10 text-success border border-success/20 px-3 py-1 rounded-full text-sm font-medium;
-  }
-
-  .badge-warning {
-    @apply bg-warning/10 text-warning border border-warning/20 px-3 py-1 rounded-full text-sm font-medium;
-  }
-
-  .badge-error {
-    @apply bg-error/10 text-error border border-error/20 px-3 py-1 rounded-full text-sm font-medium;
-  }
-
-  .badge-brand {
-    background: var(--brand-gradient);
-    color: white;
-    @apply px-3 py-1 rounded-full text-sm font-medium;
-  }
-
-  /* Brand-enhanced loading states */
-  .skeleton {
-    @apply animate-pulse bg-muted rounded;
-  }
-
-  /* Text utilities */
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  .text-pretty {
-    text-wrap: pretty;
-  }
-
-  /* Brand gradient text */
+  
   .text-brand-gradient {
     background: var(--brand-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    color: transparent;
+  }
+  
+  /* Enhanced Shadows */
+  .hawk-shadow {
+    box-shadow: 0 4px 20px rgba(138, 115, 226, 0.15);
+  }
+  
+  .hawk-shadow-lg {
+    box-shadow: 0 8px 30px rgba(138, 115, 226, 0.2);
+  }
+  
+  .hawk-glow {
+    box-shadow: 0 0 20px rgba(138, 115, 226, 0.3);
+  }
+  
+  /* Interactive Card Enhancement */
+  .interactive-card {
+    @apply transition-all duration-300 ease-out;
+  }
+  
+  .interactive-card:hover {
+    @apply -translate-y-1 shadow-lg;
+  }
+  
+  /* Container Improvements */
+  .container-modern {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 }
 
 @layer utilities {
-  /* Brand spacing utilities */
-  .space-section {
-    @apply space-y-16 md:space-y-20;
+  /* Animation Utilities */
+  .animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
   }
-
-  .space-content {
-    @apply space-y-8 md:space-y-12;
+  
+  .animate-scale-in {
+    animation: scale-in 0.4s ease-out forwards;
   }
-
-  .space-elements {
-    @apply space-y-4 md:space-y-6;
-  }
-
-  /* Brand gradients */
-  .gradient-primary {
-    background: var(--brand-gradient);
-  }
-
-  .gradient-text {
-    background: var(--brand-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .gradient-subtle {
-    background: var(--brand-gradient-subtle);
-  }
-
-  /* Enhanced animation utilities */
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-in-out;
-  }
-
-  .animate-slide-up {
-    animation: slideUp 0.5s ease-out;
-  }
-
+  
   .animate-hawk-hover {
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
+  
   .animate-hawk-hover:hover {
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(74, 144, 226, 0.15);
   }
-
-  /* Brand-enhanced backdrop utilities */
-  .backdrop-blur-modern {
-    backdrop-filter: blur(12px) saturate(180%);
-    background-color: rgba(255, 255, 255, 0.85);
+  
+  /* Grid Utilities */
+  .bg-grid-primary {
+    background-image: radial-gradient(circle, hsl(var(--primary) / 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
   }
-
-  .dark .backdrop-blur-modern {
-    background-color: rgba(17, 24, 39, 0.85);
-  }
-
-  /* Brand-specific utilities */
-  .hawk-shadow {
-    box-shadow: 0 4px 20px rgba(74, 144, 226, 0.1);
-  }
-
-  .hawk-shadow-lg {
-    box-shadow: 0 8px 30px rgba(74, 144, 226, 0.15);
-  }
-
-  .hawk-glow {
-    box-shadow: 0 0 20px rgba(74, 144, 226, 0.3);
+  
+  /* Text Utilities */
+  .text-balance {
+    text-wrap: balance;
   }
 }
 
-/* Brand-enhanced animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideUp {
-  from { 
+/* Enhanced Keyframes */
+@keyframes fade-in-up {
+  from {
     opacity: 0;
     transform: translateY(20px);
   }
-  to { 
+  to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-@keyframes gradient {
-  0%, 100% {
-    background-position: 0% 50%;
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
   }
-  50% {
-    background-position: 100% 50%;
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -467,42 +185,21 @@
   }
 }
 
-/* Brand-enhanced scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
-  border-radius: var(--radius-sm);
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
-  border-radius: var(--radius-sm);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, hsl(var(--primary) / 0.8), hsl(var(--secondary) / 0.8));
-}
-
-/* Print styles */
-@media print {
-  .no-print {
-    display: none !important;
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
-/* High contrast mode support */
+/* High Contrast Mode */
 @media (prefers-contrast: high) {
   :root {
     --border: 0 0% 20%;
-    --muted-foreground: 0 0% 20%;
-  }
-  
-  .dark {
-    --border: 0 0% 80%;
-    --muted-foreground: 0 0% 80%;
+    --muted: 0 0% 85%;
   }
 }

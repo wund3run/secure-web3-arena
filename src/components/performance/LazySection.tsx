@@ -1,47 +1,53 @@
 
-import React, { Suspense, lazy } from "react";
-import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
+import React, { useRef, useEffect, useState, ReactNode } from 'react';
 
 interface LazySectionProps {
-  children: React.ReactNode;
-  fallback?: React.ReactNode;
+  children: ReactNode;
+  fallback?: ReactNode;
   threshold?: number;
   rootMargin?: string;
   className?: string;
 }
 
-export function LazySection({
-  children,
-  fallback = (
-    <div className="flex flex-col items-center justify-center p-8 space-y-4">
-      <img 
-        src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
-        alt="Hawkly Logo"
-        className="h-16 w-16 object-contain bg-transparent animate-pulse"
-        style={{ backgroundColor: 'transparent' }}
-      />
-      <EnhancedSkeleton variant="shimmer" className="h-64 w-full" />
-    </div>
-  ),
-  threshold = 0.1,
-  rootMargin = "100px",
-  className = ""
+export function LazySection({ 
+  children, 
+  fallback, 
+  threshold = 0.1, 
+  rootMargin = '50px',
+  className = ''
 }: LazySectionProps) {
-  const [ref, isIntersecting] = useIntersectionObserver({
-    threshold,
-    rootMargin,
-  });
+  const [isVisible, setIsVisible] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasLoaded) {
+          setIsVisible(true);
+          setHasLoaded(true);
+        }
+      },
+      {
+        threshold,
+        rootMargin,
+      }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+    };
+  }, [threshold, rootMargin, hasLoaded]);
 
   return (
     <div ref={ref} className={className}>
-      {isIntersecting ? (
-        <Suspense fallback={fallback}>
-          {children}
-        </Suspense>
-      ) : (
-        fallback
-      )}
+      {isVisible ? children : fallback}
     </div>
   );
 }

@@ -1,29 +1,49 @@
 
-import React from 'react';
-import { cn } from '@/lib/utils';
+import React from "react";
+import { cn } from "@/lib/utils";
+import { cva, type VariantProps } from "class-variance-authority";
 
-interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'card' | 'text' | 'avatar' | 'brand' | 'shimmer';
-}
+const skeletonVariants = cva(
+  "animate-pulse rounded-md bg-muted",
+  {
+    variants: {
+      variant: {
+        default: "bg-muted",
+        card: "bg-muted/70 border border-border/20",
+        text: "bg-muted/50 h-4",
+        avatar: "bg-muted rounded-full",
+        button: "bg-muted/80 h-10"
+      },
+      size: {
+        sm: "h-4",
+        md: "h-6", 
+        lg: "h-8",
+        xl: "h-12"
+      }
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "md"
+    }
+  }
+);
 
-export function EnhancedSkeleton({ className, variant = 'default', ...props }: SkeletonProps) {
-  const baseClasses = 'animate-pulse rounded-md';
-  
-  const variantClasses = {
-    default: 'bg-muted',
-    card: 'bg-gradient-to-r from-muted via-muted/50 to-muted',
-    text: 'bg-muted h-4',
-    avatar: 'bg-muted rounded-full',
-    brand: 'bg-gradient-to-r from-brand-blue/10 via-brand-purple/10 to-brand-cyan/10',
-    shimmer: 'bg-gradient-to-r from-muted via-muted/30 to-muted bg-[length:200%_100%] animate-[shimmer_2s_ease-in-out_infinite]'
-  };
+export interface EnhancedSkeletonProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof skeletonVariants> {}
 
-  return (
-    <div 
-      className={cn(baseClasses, variantClasses[variant], className)} 
-      {...props} 
-    />
-  );
-}
+const EnhancedSkeleton = React.forwardRef<HTMLDivElement, EnhancedSkeletonProps>(
+  ({ className, variant, size, ...props }, ref) => {
+    return (
+      <div
+        className={cn(skeletonVariants({ variant, size, className }))}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
 
-export { EnhancedSkeleton as Skeleton };
+EnhancedSkeleton.displayName = "EnhancedSkeleton";
+
+export { EnhancedSkeleton, skeletonVariants };

@@ -1,104 +1,53 @@
 
-import React, { Suspense, useEffect, useState } from 'react';
-import { EnhancedErrorBoundary } from '@/components/error-handling/EnhancedErrorBoundary';
-import { EnhancedSkeleton } from '@/components/ui/enhanced-skeleton';
-import { useAnalytics } from '@/hooks/useAnalytics';
+import React, { ReactNode, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 
 interface OptimizedRouteProps {
-  children: React.ReactNode;
-  fallback?: React.ReactNode;
-  errorFallback?: React.ReactNode;
-  preloadRoutes?: string[];
+  children: ReactNode;
   title?: string;
   description?: string;
+  preloadRoutes?: string[];
+  className?: string;
 }
 
-const RouteLoadingFallback = () => (
-  <div className="min-h-screen p-6 space-y-4">
-    <EnhancedSkeleton variant="shimmer" className="h-12 w-64" />
-    <EnhancedSkeleton variant="shimmer" className="h-4 w-full" />
-    <EnhancedSkeleton variant="shimmer" className="h-4 w-3/4" />
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <EnhancedSkeleton key={i} variant="card" className="h-48" />
-      ))}
-    </div>
-  </div>
-);
-
-export function OptimizedRoute({
-  children,
-  fallback = <RouteLoadingFallback />,
-  errorFallback,
+export function OptimizedRoute({ 
+  children, 
+  title, 
+  description, 
   preloadRoutes = [],
-  title,
-  description
+  className = ''
 }: OptimizedRouteProps) {
-  const { trackInteraction } = useAnalytics();
-  const [isVisible, setIsVisible] = useState(false);
-
-  // Track route visibility
   useEffect(() => {
-    setIsVisible(true);
-    trackInteraction('route_loaded', { 
-      title, 
-      description,
-      timestamp: Date.now()
+    // Preload critical routes
+    preloadRoutes.forEach(route => {
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = route;
+      document.head.appendChild(link);
     });
 
-    return () => setIsVisible(false);
-  }, [title, description, trackInteraction]);
-
-  // Preload related routes on idle
-  useEffect(() => {
-    if (preloadRoutes.length === 0) return;
-
-    const preloadOnIdle = () => {
+    // Cleanup on unmount
+    return () => {
       preloadRoutes.forEach(route => {
-        try {
-          // This would be used with dynamic imports in a real router setup
-          console.log(`Preloading route: ${route}`);
-        } catch (error) {
-          console.warn(`Failed to preload route ${route}:`, error);
+        const existingLink = document.querySelector(`link[href="${route}"]`);
+        if (existingLink) {
+          document.head.removeChild(existingLink);
         }
       });
     };
-
-    if ('requestIdleCallback' in window) {
-      const idleCallback = (window as any).requestIdleCallback(preloadOnIdle, { timeout: 2000 });
-      return () => (window as any).cancelIdleCallback(idleCallback);
-    } else {
-      const timeout = setTimeout(preloadOnIdle, 1000);
-      return () => clearTimeout(timeout);
-    }
   }, [preloadRoutes]);
 
-  // Update document title and meta description
-  useEffect(() => {
-    if (title) {
-      document.title = title;
-    }
-    
-    if (description) {
-      let metaDescription = document.querySelector('meta[name="description"]');
-      if (metaDescription) {
-        metaDescription.setAttribute('content', description);
-      } else {
-        metaDescription = document.createElement('meta');
-        metaDescription.setAttribute('name', 'description');
-        metaDescription.setAttribute('content', description);
-        document.head.appendChild(metaDescription);
-      }
-    }
-  }, [title, description]);
-
   return (
-    <EnhancedErrorBoundary fallback={errorFallback}>
-      <Suspense fallback={fallback}>
-        <div className={`transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-          {children}
-        </div>
-      </Suspense>
-    </EnhancedErrorBoundary>
+    <>
+      {title && (
+        <Helmet>
+          <title>{title}</title>
+          {description && <meta name="description" content={description} />}
+        </Helmet>
+      )}
+      <div className={className}>
+        {children}
+      </div>
+    </>
   );
 }

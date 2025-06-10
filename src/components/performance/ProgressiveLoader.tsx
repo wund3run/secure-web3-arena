@@ -1,87 +1,60 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactNode } from 'react';
 import { EnhancedSkeleton } from '@/components/ui/enhanced-skeleton';
-import { Progress } from '@/components/ui/progress';
 
-interface LoadingStage {
+interface ProgressiveStage {
   name: string;
   component: React.ComponentType<any>;
+  loadTime: number;
   props?: any;
-  loadTime?: number;
 }
 
 interface ProgressiveLoaderProps {
-  stages: LoadingStage[];
-  onComplete?: () => void;
-  showProgress?: boolean;
+  stages: ProgressiveStage[];
   className?: string;
+  fallback?: ReactNode;
 }
 
 export function ProgressiveLoader({ 
   stages, 
-  onComplete, 
-  showProgress = false,
-  className = ""
+  className = '',
+  fallback 
 }: ProgressiveLoaderProps) {
-  const [loadedStages, setLoadedStages] = useState<Set<number>>(new Set());
-  const [currentStage, setCurrentStage] = useState(0);
-  const [progress, setProgress] = useState(0);
+  const [loadedStages, setLoadedStages] = useState<number>(0);
 
   useEffect(() => {
-    if (currentStage >= stages.length) {
-      onComplete?.();
-      return;
+    let timeoutId: NodeJS.Timeout;
+    
+    if (loadedStages < stages.length) {
+      const currentStage = stages[loadedStages];
+      timeoutId = setTimeout(() => {
+        setLoadedStages(prev => prev + 1);
+      }, currentStage.loadTime);
     }
 
-    const stage = stages[currentStage];
-    const loadTime = stage.loadTime || 200;
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [loadedStages, stages]);
 
-    const timer = setTimeout(() => {
-      setLoadedStages(prev => new Set([...prev, currentStage]));
-      setProgress(((currentStage + 1) / stages.length) * 100);
-      setCurrentStage(prev => prev + 1);
-    }, loadTime);
-
-    return () => clearTimeout(timer);
-  }, [currentStage, stages, onComplete]);
+  const defaultFallback = (
+    <div className="space-y-6">
+      <EnhancedSkeleton variant="card" className="h-64 w-full" />
+    </div>
+  );
 
   return (
     <div className={className}>
-      {showProgress && currentStage < stages.length && (
-        <div className="mb-4 space-y-2">
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Loading {stages[currentStage]?.name || 'content'}...</span>
-            <span>{Math.round(progress)}%</span>
+      {stages.slice(0, loadedStages).map((stage, index) => {
+        const Component = stage.component;
+        return (
+          <div key={index} className="animate-fade-in">
+            <Component {...(stage.props || {})} />
           </div>
-          <Progress value={progress} className="h-1" />
-        </div>
-      )}
+        );
+      })}
       
-      <div className="space-y-0">
-        {stages.map((stage, index) => {
-          if (loadedStages.has(index)) {
-            const StageComponent = stage.component;
-            const stageProps = stage.props || {};
-            return (
-              <div key={stage.name} className="animate-fade-in-up">
-                <StageComponent {...stageProps} />
-              </div>
-            );
-          }
-          
-          if (index <= currentStage) {
-            return (
-              <EnhancedSkeleton 
-                key={stage.name}
-                variant="shimmer" 
-                className="h-64 w-full rounded mb-8" 
-              />
-            );
-          }
-          
-          return null;
-        })}
-      </div>
+      {loadedStages < stages.length && (fallback || defaultFallback)}
     </div>
   );
 }
