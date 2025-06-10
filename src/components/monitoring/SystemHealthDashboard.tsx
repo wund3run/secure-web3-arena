@@ -20,7 +20,7 @@ import {
 import { useRealtimeSync } from '@/hooks/useRealtimeSync';
 
 export function SystemHealthDashboard() {
-  const { isConnected, lastSync, forceSync } = useRealtimeSync({ channel: 'system-health' });
+  const { isConnected } = useRealtimeSync({ channel: 'system-health' });
   const [systemMetrics, setSystemMetrics] = useState({
     uptime: 99.8,
     errorRate: 2.1,
@@ -195,8 +195,8 @@ export function SystemHealthDashboard() {
                 <div className="font-medium capitalize">{isConnected ? 'Connected' : 'Disconnected'}</div>
               </div>
               <div>
-                <span className="text-muted-foreground">Last Sync:</span>
-                <div className="font-medium">{lastSync?.toLocaleTimeString()}</div>
+                <span className="text-muted-foreground">Last Updated:</span>
+                <div className="font-medium">{systemMetrics.lastHealthCheck.toLocaleTimeString()}</div>
               </div>
             </div>
             <div className="pt-2 border-t">

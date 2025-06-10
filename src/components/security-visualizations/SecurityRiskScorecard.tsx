@@ -48,6 +48,16 @@ const getRiskIcon = (riskLevel: string) => {
   }
 };
 
+const getProgressGradient = (riskLevel: string): string => {
+  switch (riskLevel) {
+    case 'critical': return 'from-red-500 to-red-600';
+    case 'high': return 'from-orange-500 to-orange-600';
+    case 'medium': return 'from-yellow-500 to-yellow-600';
+    case 'low': return 'from-green-500 to-green-600';
+    default: return 'from-blue-500 to-blue-600';
+  }
+};
+
 export function SecurityRiskScorecard({ 
   projectName, 
   overallScore, 
@@ -95,11 +105,11 @@ export function SecurityRiskScorecard({
         <div className="h-4 relative w-full bg-muted rounded-full overflow-hidden">
           <div 
             className={cn(
-              "h-full rounded-full",
-              overallScore < 40 ? "bg-red-500" :
-              overallScore < 60 ? "bg-orange-500" :
-              overallScore < 80 ? "bg-yellow-500" :
-              "bg-green-500"
+              "h-full rounded-full bg-gradient-to-r",
+              overallScore < 40 ? "from-red-500 to-red-600" :
+              overallScore < 60 ? "from-orange-500 to-orange-600" :
+              overallScore < 80 ? "from-yellow-500 to-yellow-600" :
+              "from-green-500 to-green-600"
             )}
             style={{ width: `${overallScore}%` }}
           />
@@ -122,13 +132,9 @@ export function SecurityRiskScorecard({
               
               <Progress 
                 value={(category.score / category.maxScore) * 100} 
-                className="h-2"
-                indicatorClassName={cn(
-                  category.riskLevel === 'critical' ? "bg-red-500" :
-                  category.riskLevel === 'high' ? "bg-orange-500" :
-                  category.riskLevel === 'medium' ? "bg-yellow-500" :
-                  category.riskLevel === 'low' ? "bg-green-500" :
-                  "bg-blue-500"
+                className={cn(
+                  "h-2 [&>div]:bg-gradient-to-r",
+                  `[&>div]:${getProgressGradient(category.riskLevel)}`
                 )}
               />
               

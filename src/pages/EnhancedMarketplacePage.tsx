@@ -51,9 +51,7 @@ export default function EnhancedMarketplacePage() {
         description: service.description,
         provider: mockProvider,
         pricing: {
-          amount: typeof service.price_range === 'object' && service.price_range !== null && 'min' in service.price_range 
-            ? service.price_range.min 
-            : 5000,
+          amount: service.min_price || 5000,
           currency: 'USD'
         },
         rating: service.average_rating || 0,
@@ -209,7 +207,7 @@ export default function EnhancedMarketplacePage() {
                       level: 'verified' as const,
                       isVerified: true
                     },
-                    pricing: { amount: 5000, currency: 'USD' },
+                    pricing: { amount: service.min_price || 5000, currency: 'USD' },
                     rating: service.average_rating || 4.5,
                     completedJobs: service.review_count || 10,
                     category: service.category,
