@@ -96,7 +96,7 @@ export function IntelligentAnalytics() {
             </div>
             {behaviorProfile && (
               <div className="text-muted-foreground">
-                Visit #{behaviorProfile.visitCount} • {Math.round(behaviorProfile.averageSessionTime)}s avg
+                Visit #{behaviorProfile.visitCount} • {Math.round(behaviorProfile.averageSessionDuration)}s avg
               </div>
             )}
           </div>
