@@ -1,430 +1,84 @@
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+@import "./styles/design-tokens.css";
+@import "./styles/modern-design-tokens.css";
 @import "./styles/design-system.css";
-@import "./styles/enhanced-animations.css";
 
 @layer base {
   :root {
-    /* Enhanced Security Professional Theme - Primary Colors */
-    --primary: 217 91% 60%; /* Professional blue #4A90E2 */
-    --primary-foreground: 0 0% 100%;
-    
-    --secondary: 187 85% 55%; /* Trust cyan #3DD8FF */
-    --secondary-foreground: 0 0% 100%;
-    
-    --accent: 262 83% 62%; /* Innovation purple #A78BFA */
-    --accent-foreground: 0 0% 100%;
-
-    /* Security-focused brand colors */
-    --brand-orange: 24 95% 55%; /* Alert orange #FF6B35 */
-    --success: 142 76% 45%; /* Security green #10B981 */
-    --warning: 43 96% 53%; /* Caution amber #F59E0B */
-    --error: 0 84% 57%; /* Critical red #EF4444 */
-    
-    /* Enhanced UI Foundation - Security Professional */
-    --background: 217 32% 98%; /* Clean security white */
-    --foreground: 217 40% 12%; /* Professional dark blue-grey */
-    
-    --card: 217 20% 97%; /* Elevated card background */
-    --card-foreground: 217 40% 12%;
-    
-    --popover: 217 20% 98%;
-    --popover-foreground: 217 40% 12%;
-    
-    --muted: 217 30% 92%; /* Subtle security grey */
-    --muted-foreground: 217 25% 32%; /* Readable muted text */
-    
-    --border: 217 25% 88%; /* Clean professional borders */
-    --input: 217 25% 90%; /* Input field backgrounds */
-    --ring: 217 91% 60%;
-    
-    --radius: var(--radius-md);
-    
-    /* Enhanced semantic colors for security context */
-    --success-foreground: 0 0% 100%;
-    --warning-foreground: 217 40% 12%;
-    --error-foreground: 0 0% 100%;
-    
-    /* Security-specific status colors */
-    --security-critical: 0 84% 57%;
-    --security-high: 24 95% 55%;
-    --security-medium: 43 96% 53%;
-    --security-low: 142 76% 45%;
-    --security-info: 217 91% 60%;
-    
-    /* Professional gradients */
-    --brand-gradient: linear-gradient(135deg, hsl(217 91% 60%), hsl(262 83% 62%), hsl(187 85% 55%));
-    --brand-gradient-subtle: linear-gradient(135deg, hsl(217 91% 60% / 0.08), hsl(262 83% 62% / 0.08), hsl(187 85% 55% / 0.08));
-    --brand-gradient-surface: linear-gradient(135deg, hsl(217 91% 98%), hsl(262 83% 98%), hsl(187 85% 98%));
-    --security-gradient: linear-gradient(135deg, hsl(217 91% 60%), hsl(142 76% 45%));
-  }
-  
-  .dark {
-    --background: 217 40% 6%; /* Deep security dark */
-    --foreground: 217 30% 94%; /* High contrast light text */
-    
-    --card: 217 40% 9%; /* Elevated dark cards */
-    --card-foreground: 217 30% 94%;
-    
-    --popover: 217 40% 9%;
-    --popover-foreground: 217 30% 94%;
-    
-    --primary: 217 91% 65%; /* Brighter primary in dark */
-    --primary-foreground: 217 40% 6%;
-    
-    --secondary: 187 85% 65%;
-    --secondary-foreground: 217 40% 6%;
-    
-    --muted: 217 40% 15%; /* Dark professional muted */
-    --muted-foreground: 217 25% 72%;
-    
-    --accent: 262 83% 67%;
-    --accent-foreground: 217 40% 6%;
-    
-    --border: 217 40% 18%; /* Subtle dark borders */
-    --input: 217 40% 18%;
-    --ring: 217 91% 65%;
-    
-    /* Dark mode security colors */
-    --security-critical: 0 84% 65%;
-    --security-high: 24 95% 62%;
-    --security-medium: 43 96% 60%;
-    --security-low: 142 76% 52%;
-    --security-info: 217 91% 65%;
+    /* Force dark theme colors */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.0%;
+    --radius: 0.5rem;
   }
 
-  /* Enhanced Security Professional Typography */
+  * {
+    @apply border-border;
+  }
+
   body {
-    font-family: var(--font-family-sans);
-    line-height: var(--leading-normal);
-    color: hsl(var(--foreground));
-    background: var(--brand-gradient-surface);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    letter-spacing: -0.01em; /* Tighter, more professional spacing */
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 
-  /* Professional heading hierarchy */
-  h1, h2, h3, h4, h5, h6 {
-    font-weight: var(--font-semibold);
-    line-height: var(--leading-tight);
-    letter-spacing: -0.025em;
-    color: hsl(var(--foreground));
-  }
-  
-  h1 {
-    font-size: var(--text-4xl);
-    font-weight: var(--font-bold);
-    background: var(--security-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: -0.035em;
-  }
-  
-  h2 {
-    font-size: var(--text-3xl);
-    font-weight: var(--font-semibold);
-    color: hsl(var(--primary));
-    letter-spacing: -0.03em;
-  }
-  
-  h3 {
-    font-size: var(--text-2xl);
-    font-weight: var(--font-semibold);
-    color: hsl(var(--primary));
-    letter-spacing: -0.025em;
-  }
-  
-  h4 {
-    font-size: var(--text-xl);
-    font-weight: var(--font-medium);
-    color: hsl(var(--accent));
-    letter-spacing: -0.02em;
+  /* Grid pattern for backgrounds */
+  .bg-grid-white\/\[0\.02\] {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   }
 
-  /* Responsive typography optimization */
-  @media (min-width: 768px) {
-    h1 {
-      font-size: var(--text-5xl);
-    }
-    
-    h2 {
-      font-size: var(--text-4xl);
-    }
-    
-    h3 {
-      font-size: var(--text-3xl);
-    }
+  /* Ensure all elements respect dark theme */
+  .dark,
+  .dark * {
+    color-scheme: dark;
   }
 
-  /* Enhanced professional text styling */
-  p {
-    line-height: var(--leading-relaxed);
-    margin-bottom: var(--space-4);
-    color: hsl(var(--foreground) / 0.92);
-  }
-
-  /* Security-focused link styling */
-  a {
-    color: hsl(var(--primary));
-    text-decoration: none;
-    transition: all var(--duration-fast) var(--ease-out);
-    font-weight: 500;
-  }
-
-  a:hover {
-    color: hsl(var(--accent));
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 4px;
-  }
-
-  /* Professional button and input styling */
-  button {
-    transition: all var(--duration-normal) var(--ease-out);
-    font-weight: var(--font-medium);
-    letter-spacing: -0.01em;
-  }
-
-  input, textarea, select {
-    transition: all var(--duration-fast) var(--ease-out);
-    border-radius: var(--radius-md);
-    background-color: hsl(var(--card));
-    border: 1.5px solid hsl(var(--border));
-    font-weight: 450;
-  }
-
-  input:focus, textarea:focus, select:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.15);
-    border-color: hsl(var(--primary));
-  }
-}
-
-@layer components {
-  /* Enhanced Security Professional Components */
+  /* Modern container utility */
   .container-modern {
-    width: 100%;
-    max-width: var(--container-max-width);
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: var(--container-padding);
-    padding-right: var(--container-padding);
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  .container {
-    @apply container-modern;
+  /* Modern focus utility */
+  .focus-modern {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
   }
 
-  /* Professional security-focused cards */
-  .card-security {
-    background: linear-gradient(135deg, hsl(var(--card)), hsl(var(--card) / 0.98));
-    border-radius: var(--radius-lg);
-    box-shadow: 0 4px 20px hsl(var(--primary) / 0.06), 0 1px 3px hsl(var(--border) / 0.8);
-    border: 1.5px solid hsl(var(--border));
-    transition: all var(--duration-normal) var(--ease-out);
-    backdrop-filter: blur(8px);
+  /* Modern button utilities */
+  .btn-modern {
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
   }
 
-  .card-security:hover {
-    box-shadow: 0 8px 32px hsl(var(--primary) / 0.12), 0 2px 8px hsl(var(--border));
-    transform: translateY(-2px);
-    border-color: hsl(var(--primary) / 0.3);
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
   }
 
-  /* Enhanced Security Professional button system */
-  .btn-security {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-6);
-    border-radius: var(--radius-md);
-    font-weight: var(--font-medium);
-    font-size: var(--text-sm);
-    line-height: var(--leading-tight);
-    transition: all var(--duration-normal) var(--ease-out);
-    cursor: pointer;
-    border: none;
-    height: var(--button-height-md);
-    letter-spacing: -0.01em;
-  }
-
-  .btn-primary-security {
-    background: var(--security-gradient);
-    color: hsl(var(--primary-foreground));
-    box-shadow: 0 4px 16px hsl(var(--primary) / 0.25), 0 1px 4px hsl(var(--primary) / 0.4);
-  }
-
-  .btn-primary-security:hover {
-    box-shadow: 0 6px 24px hsl(var(--primary) / 0.35), 0 2px 8px hsl(var(--primary) / 0.5);
-    transform: translateY(-1px);
-  }
-
-  .btn-secondary-security {
-    background: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary) / 0.9));
-    color: hsl(var(--secondary-foreground));
-    box-shadow: 0 4px 16px hsl(var(--secondary) / 0.25);
-  }
-
-  .btn-outline-security {
-    background: hsl(var(--card));
-    border: 2px solid hsl(var(--primary));
-    color: hsl(var(--primary));
-    font-weight: 500;
-  }
-
-  .btn-outline-security:hover {
-    background: var(--security-gradient);
-    color: hsl(var(--primary-foreground));
-    border-color: transparent;
-  }
-
-  /* Security status badges */
-  .badge-critical {
-    background: linear-gradient(135deg, hsl(var(--security-critical)), hsl(var(--security-critical) / 0.8));
-    @apply text-white border border-red-500/20 px-3 py-1 rounded-full text-sm font-semibold shadow-lg;
-  }
-
-  .badge-high {
-    background: linear-gradient(135deg, hsl(var(--security-high)), hsl(var(--security-high) / 0.8));
-    @apply text-white border border-orange-500/20 px-3 py-1 rounded-full text-sm font-semibold shadow-lg;
-  }
-
-  .badge-medium {
-    background: linear-gradient(135deg, hsl(var(--security-medium)), hsl(var(--security-medium) / 0.8));
-    @apply text-foreground border border-yellow-500/20 px-3 py-1 rounded-full text-sm font-semibold shadow-lg;
-  }
-
-  .badge-low {
-    background: linear-gradient(135deg, hsl(var(--security-low)), hsl(var(--security-low) / 0.8));
-    @apply text-white border border-green-500/20 px-3 py-1 rounded-full text-sm font-semibold shadow-lg;
-  }
-
-  .badge-info {
-    background: linear-gradient(135deg, hsl(var(--security-info)), hsl(var(--security-info) / 0.8));
-    @apply text-white border border-blue-500/20 px-3 py-1 rounded-full text-sm font-semibold shadow-lg;
-  }
-
-  .badge-security-professional {
-    background: var(--security-gradient);
-    color: hsl(var(--primary-foreground));
-    @apply px-3 py-1 rounded-full text-sm font-semibold shadow-lg;
-  }
-
-  /* Enhanced loading states with security theme */
-  .skeleton-security {
-    background: linear-gradient(90deg, hsl(var(--muted)), hsl(var(--primary) / 0.08), hsl(var(--muted)));
-    background-size: 200% 100%;
-    animation: shimmer-security 2s infinite;
-    @apply rounded;
-  }
-
-  /* Security professional gradient text */
-  .text-security-gradient {
-    background: var(--security-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-weight: 600;
-  }
-
-  /* Enhanced focus styles for security compliance */
-  .focus-security {
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-  }
-
-  .focus-security:focus-visible {
-    outline: 2px solid hsl(var(--primary));
-    outline-offset: 2px;
-    box-shadow: 0 0 0 4px hsl(var(--primary) / 0.15);
-  }
-
-  /* Professional section styling */
-  .section-security {
-    @apply py-16 md:py-20 lg:py-24;
-    background: var(--brand-gradient-surface);
-  }
-
-  .section-header-security {
-    @apply text-center mb-12 md:mb-16;
-  }
-
-  .section-title-security {
-    @apply text-3xl md:text-4xl lg:text-5xl font-bold mb-4;
-    background: var(--security-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: -0.035em;
-  }
-
-  .section-subtitle-security {
-    @apply text-lg md:text-xl max-w-3xl mx-auto;
-    color: hsl(var(--foreground) / 0.85);
-    font-weight: 450;
+  /* Gradient text utility */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
   }
 }
 
-@layer utilities {
-  /* Enhanced Security Professional gradients */
-  .gradient-security-primary {
-    background: var(--security-gradient);
-  }
-
-  .gradient-security-subtle {
-    background: var(--brand-gradient-subtle);
-  }
-
-  .gradient-security-surface {
-    background: var(--brand-gradient-surface);
-  }
-
-  /* Enhanced security-focused shadows */
-  .security-shadow {
-    box-shadow: 0 4px 20px hsl(var(--primary) / 0.12);
-  }
-
-  .security-shadow-lg {
-    box-shadow: 0 8px 32px hsl(var(--primary) / 0.18);
-  }
-
-  .security-glow {
-    box-shadow: 0 0 32px hsl(var(--primary) / 0.3);
-  }
-
-  /* Professional backdrop with security theme */
-  .backdrop-blur-security {
-    backdrop-filter: blur(16px) saturate(180%);
-    background: linear-gradient(135deg, hsl(var(--background) / 0.85), hsl(var(--card) / 0.92));
-  }
-}
-
-/* Enhanced animations for security theme */
-@keyframes shimmer-security {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes security-pulse {
-  0%, 100% {
-    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 10px hsl(var(--primary) / 0);
-  }
-}
-
-/* Enhanced scrollbar with security theme */
+/* Custom scrollbar for dark theme */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -432,14 +86,24 @@
 
 ::-webkit-scrollbar-track {
   background: hsl(var(--muted));
-  border-radius: var(--radius-sm);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--security-gradient);
-  border-radius: var(--radius-sm);
+  background: hsl(var(--border));
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, hsl(var(--primary) / 0.9), hsl(var(--success) / 0.9));
+  background: hsl(var(--primary));
+}
+
+/* Selection colors for dark theme */
+::selection {
+  background: hsl(var(--primary) / 0.3);
+  color: hsl(var(--foreground));
+}
+
+/* Ensure consistent dark theme across all components */
+.light {
+  display: none !important;
 }

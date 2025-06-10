@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/auth";
@@ -12,7 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Search } from "lucide-react";
-import { ModeToggle } from "@/components/theme/ModeToggle";
 import { EnhancedMobileMenu } from '@/components/ui/enhanced-mobile-menu';
 import { RealtimeNotificationSystem } from '@/components/notifications/RealtimeNotificationSystem';
 import { RealtimeConnectionStatus } from '@/components/realtime/RealtimeConnectionStatus';
@@ -59,11 +59,7 @@ export function UnifiedNavbar() {
     <>
       <header 
         className={`
-          sticky top-0 z-50 w-full border-b transition-all duration-200
-          ${isScrolled 
-            ? 'bg-background/95 backdrop-blur-md shadow-sm' 
-            : 'bg-background/80 backdrop-blur-sm'
-          }
+          sticky top-0 z-50 w-full border-b transition-all duration-200 bg-background/95 backdrop-blur-md shadow-sm
         `}
         role="banner"
       >
@@ -80,7 +76,7 @@ export function UnifiedNavbar() {
                 alt="Hawkly Logo"
                 className="h-12 w-12 object-contain"
               />
-              <span className="hidden sm:block font-bold text-xl text-primary-600">
+              <span className="hidden sm:block font-bold text-xl bg-gradient-to-r from-secondary-400 to-primary-400 bg-clip-text text-transparent">
                 Hawkly
               </span>
             </Link>
@@ -95,8 +91,8 @@ export function UnifiedNavbar() {
                     px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200
                     focus-modern
                     ${location.pathname === link.href
-                      ? 'text-primary-600 bg-primary-50'
-                      : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50'
+                      ? 'text-primary-400 bg-primary-900/20'
+                      : 'text-neutral-300 hover:text-primary-300 hover:bg-neutral-800/50'
                     }
                   `}
                 >
@@ -112,7 +108,7 @@ export function UnifiedNavbar() {
 
               {/* Search (for authenticated users) */}
               {user && (
-                <Button variant="ghost" size="icon" className="focus-modern">
+                <Button variant="ghost" size="icon" className="focus-modern text-neutral-300 hover:text-primary-300">
                   <Search className="h-5 w-5" />
                   <span className="sr-only">Search</span>
                 </Button>
@@ -121,16 +117,13 @@ export function UnifiedNavbar() {
               {/* Notifications */}
               {user && <RealtimeNotificationSystem />}
 
-              {/* Theme toggle */}
-              <ModeToggle />
-
               {/* Auth section */}
               {!user && !isAuthPage ? (
                 <div className="hidden md:flex items-center space-x-2">
-                  <Button variant="ghost" asChild className="focus-modern">
+                  <Button variant="ghost" asChild className="focus-modern text-neutral-300 hover:text-primary-300">
                     <Link to="/auth">Sign In</Link>
                   </Button>
-                  <Button asChild className="btn-modern btn-primary focus-modern">
+                  <Button asChild className="btn-modern btn-primary focus-modern bg-gradient-to-r from-primary-600 to-secondary-500 hover:from-primary-700 hover:to-secondary-600">
                     <Link to="/auth">Get Started</Link>
                   </Button>
                 </div>
@@ -143,16 +136,16 @@ export function UnifiedNavbar() {
                           src={userProfile?.avatar_url} 
                           alt={userProfile?.full_name || user.email || "User"} 
                         />
-                        <AvatarFallback className="bg-primary-100 text-primary-600">
+                        <AvatarFallback className="bg-primary-900 text-primary-300">
                           {(userProfile?.full_name || user.email || "U")[0].toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuContent align="end" className="w-56 bg-card border-border">
                     <DropdownMenuLabel>
                       <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium">
+                        <p className="text-sm font-medium text-card-foreground">
                           {userProfile?.full_name || "User"}
                         </p>
                         <p className="text-xs text-muted-foreground">
@@ -162,15 +155,15 @@ export function UnifiedNavbar() {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link to="/profile">Profile</Link>
+                      <Link to="/profile" className="text-card-foreground">Profile</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/settings">Settings</Link>
+                      <Link to="/settings" className="text-card-foreground">Settings</Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem 
                       onClick={signOut}
-                      className="text-red-600 focus:text-red-600"
+                      className="text-red-400 focus:text-red-300"
                     >
                       Sign Out
                     </DropdownMenuItem>
