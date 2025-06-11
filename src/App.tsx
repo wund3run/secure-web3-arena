@@ -1,192 +1,97 @@
-import { Suspense, lazy } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
-import { AuthProvider } from "@/contexts/auth";
+import { AuthProvider } from "@/contexts/auth/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { EscrowProvider } from "@/contexts/EscrowContext";
-import { GlobalErrorBoundary } from "@/components/error-handling/GlobalErrorBoundary";
-import { NotFoundPage } from "@/components/error-handling/NotFoundPage";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+import { ErrorBoundary } from "@/components/error/comprehensive-error-boundary";
 
-// Lazy load pages for better performance
-const Index = lazy(() => import("./pages/Index"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Auth = lazy(() => import("./pages/Auth"));
-const Marketplace = lazy(() => import("./pages/Marketplace"));
-const RequestAudit = lazy(() => import("./pages/RequestAudit"));
-const Profile = lazy(() => import("./pages/Profile"));
-const Onboarding = lazy(() => import("./pages/Onboarding"));
-const MessagingPage = lazy(() => import("./pages/MessagingPage"));
-const Escrow = lazy(() => import("./pages/Escrow"));
-const Collaboration = lazy(() => import("./pages/Collaboration"));
-const Analytics = lazy(() => import("./pages/Analytics"));
-const AdvancedFeaturesHub = lazy(() => import("./pages/AdvancedFeaturesHub"));
-
-// Phase 1 Implementation - Security Services Pages
-const CodeReviews = lazy(() => import("./pages/CodeReviews"));
-const PenetrationTesting = lazy(() => import("./pages/PenetrationTesting"));
-const Consulting = lazy(() => import("./pages/Consulting"));
-
-// Phase 1 Implementation - Resource Pages
-const SecurityGuides = lazy(() => import("./pages/SecurityGuides"));
-const KnowledgeBase = lazy(() => import("./pages/KnowledgeBase"));
-const Tutorials = lazy(() => import("./pages/Tutorials"));
-const Templates = lazy(() => import("./pages/Templates"));
-
-// Phase 1 Implementation - Tools Pages
-const SecurityInsights = lazy(() => import("./pages/SecurityInsights"));
-const AITools = lazy(() => import("./pages/AITools"));
-const VulnerabilityScanner = lazy(() => import("./pages/VulnerabilityScanner"));
-const PlatformReports = lazy(() => import("./pages/tools/PlatformReportsPage"));
-
-// Phase 2 Implementation - Community Pages
-const Forum = lazy(() => import("./pages/Forum"));
-const Events = lazy(() => import("./pages/Events"));
-const Challenges = lazy(() => import("./pages/Challenges"));
-const Leaderboard = lazy(() => import("./pages/Leaderboard"));
-
-// Business pages
-const AboutPage = lazy(() => import("./pages/business/AboutPage"));
-const PricingPage = lazy(() => import("./pages/business/PricingPage"));
-const CareersPage = lazy(() => import("./pages/business/CareersPage"));
-const ContactPage = lazy(() => import("./pages/business/ContactPage"));
-
-// Support pages
-const SupportPage = lazy(() => import("./pages/support/SupportPage"));
-const FAQPage = lazy(() => import("./pages/support/FAQPage"));
-const TermsPage = lazy(() => import("./pages/support/TermsPage"));
-const PrivacyPage = lazy(() => import("./pages/support/PrivacyPage"));
-
-// Phase 4 & 5 Implementation - New Pages
-const NotificationCenter = lazy(() => import("./pages/NotificationCenter"));
-const FileManagement = lazy(() => import("./pages/FileManagement"));
-const TwoFactorSetup = lazy(() => import("./pages/TwoFactorSetup"));
-const PricingCalculator = lazy(() => import("./pages/PricingCalculator"));
-
-// Missing Pages - Now Adding Routes
-const AuditDetails = lazy(() => import("./pages/AuditDetails"));
-const AuditGuidelines = lazy(() => import("./pages/AuditGuidelines"));
-const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
-
-// Missing Auth Pages - Now Adding Routes
-const ResetPassword = lazy(() => import("./pages/ResetPassword"));
-const AuthCallback = lazy(() => import("./pages/AuthCallback"));
-const TwoFactorAuth = lazy(() => import("./pages/TwoFactorAuth"));
+// Page imports
+import Index from "./pages/Index";
+import Auth from "./pages/Auth";
+import Dashboard from "./pages/Dashboard";
+import Marketplace from "./pages/Marketplace";
+import RequestAudit from "./pages/RequestAudit";
+import Pricing from "./pages/Pricing";
+import PricingINR from "./pages/PricingINR";
+import Contact from "./pages/Contact";
+import About from "./pages/About";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import NotFound from "./pages/error/NotFound";
+import BusinessDashboard from "./pages/business/BusinessDashboard";
+import ContactPage from "./pages/business/ContactPage";
+import AuditRequest from "./pages/business/AuditRequest";
+import UserProfile from "./pages/user-profiling/UserProfile";
+import UserAdmin from "./pages/admin/UserAdmin";
+import AuditAdmin from "./pages/admin/AuditAdmin";
+import AuditorManagement from "./pages/admin/AuditorManagement";
+import ProjectManagement from "./pages/admin/ProjectManagement";
+import PricingCalculator from "./pages/PricingCalculator";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <HelmetProvider>
-      <TooltipProvider>
-        <GlobalErrorBoundary>
-          <BrowserRouter>
-            <AuthProvider>
-              <NotificationProvider>
-                <EscrowProvider>
-                  <div className="min-h-screen bg-background font-sans antialiased">
-                    <Suspense fallback={<LoadingSpinner />}>
-                      <Routes>
-                        {/* Main routes */}
-                        <Route path="/" element={<Index />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/auth" element={<Auth />} />
-                        <Route path="/reset-password" element={<ResetPassword />} />
-                        <Route path="/auth/callback" element={<AuthCallback />} />
-                        <Route path="/2fa" element={<TwoFactorAuth />} />
-                        <Route path="/marketplace" element={<Marketplace />} />
-                        <Route path="/request-audit" element={<RequestAudit />} />
-                        <Route path="/profile" element={<Profile />} />
-                        <Route path="/onboarding" element={<Onboarding />} />
-                        <Route path="/messages" element={<MessagingPage />} />
+function App() {
+  return (
+    <ErrorBoundary>
+      <HelmetProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <NotificationProvider>
+              <EscrowProvider>
+                <AccessibilityProvider>
+                  <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+                    <TooltipProvider>
+                      <Toaster />
+                      <Sonner />
+                      <BrowserRouter>
+                        <Routes>
+                          <Route path="/" element={<Index />} />
+                          <Route path="/auth" element={<Auth />} />
+                          <Route path="/dashboard" element={<Dashboard />} />
+                          <Route path="/marketplace" element={<Marketplace />} />
+                          <Route path="/request-audit" element={<RequestAudit />} />
+                          <Route path="/pricing" element={<Pricing />} />
+                          <Route path="/pricing-inr" element={<PricingINR />} />
+                          <Route path="/contact" element={<Contact />} />
+                          <Route path="/about" element={<About />} />
+                          <Route path="/privacy" element={<Privacy />} />
+                          <Route path="/terms" element={<Terms />} />
+                          <Route path="*" element={<NotFound />} />
 
-                        {/* Audit System Routes */}
-                        <Route path="/audits/:id" element={<AuditDetails />} />
-                        <Route path="/audit-guidelines" element={<AuditGuidelines />} />
-                        
-                        {/* Advanced features */}
-                        <Route path="/features" element={<AdvancedFeaturesHub />} />
-                        <Route path="/escrow" element={<Escrow />} />
-                        <Route path="/collaboration" element={<Collaboration />} />
-                        <Route path="/analytics" element={<Analytics />} />
+                          {/* Business Routes */}
+                          <Route path="/business/dashboard" element={<BusinessDashboard />} />
+                          <Route path="/business/contact" element={<ContactPage />} />
+                          <Route path="/business/audit-request" element={<AuditRequest />} />
 
-                        {/* Phase 1 - Security Services */}
-                        <Route path="/code-reviews" element={<CodeReviews />} />
-                        <Route path="/penetration-testing" element={<PenetrationTesting />} />
-                        <Route path="/consulting" element={<Consulting />} />
+                          {/* User Profiling */}
+                          <Route path="/user-profile" element={<UserProfile />} />
 
-                        {/* Phase 1 - Resource Pages */}
-                        <Route path="/security-guides" element={<SecurityGuides />} />
-                        <Route path="/knowledge-base" element={<KnowledgeBase />} />
-                        <Route path="/tutorials" element={<Tutorials />} />
-                        <Route path="/templates" element={<Templates />} />
+                          {/* Admin Routes */}
+                          <Route path="/admin/users" element={<UserAdmin />} />
+                          <Route path="/admin/audits" element={<AuditAdmin />} />
+                          <Route path="/admin/auditors" element={<AuditorManagement />} />
+                          <Route path="/admin/projects" element={<ProjectManagement />} />
 
-                        {/* Phase 1 - Tools Pages */}
-                        <Route path="/security-insights" element={<SecurityInsights />} />
-                        <Route path="/ai-tools" element={<AITools />} />
-                        <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
-                        <Route path="/platform-reports" element={<PlatformReports />} />
-
-                        {/* Phase 2 - Community Pages */}
-                        <Route path="/forum" element={<Forum />} />
-                        <Route path="/events" element={<Events />} />
-                        <Route path="/challenges" element={<Challenges />} />
-                        <Route path="/leaderboard" element={<Leaderboard />} />
-
-                        {/* Business routes */}
-                        <Route path="/business/about" element={<AboutPage />} />
-                        <Route path="/about" element={<AboutPage />} />
-                        <Route path="/business/pricing" element={<PricingPage />} />
-                        <Route path="/pricing" element={<PricingPage />} />
-                        <Route path="/pricing-inr" element={<PricingINR />} />
-                        <Route path="/business/careers" element={<CareersPage />} />
-                        <Route path="/careers" element={<CareersPage />} />
-                        <Route path="/business/contact" element={<ContactPage />} />
-                        <Route path="/contact" element={<ContactPage />} />
-
-                        {/* Support routes */}
-                        <Route path="/support" element={<SupportPage />} />
-                        <Route path="/support/faq" element={<FAQPage />} />
-                        <Route path="/faq" element={<FAQPage />} />
-                        <Route path="/support/terms" element={<TermsPage />} />
-                        <Route path="/terms" element={<TermsPage />} />
-                        <Route path="/support/privacy" element={<PrivacyPage />} />
-                        <Route path="/privacy" element={<PrivacyPage />} />
-
-                        {/* Admin routes */}
-                        <Route path="/admin/*" element={<AdminDashboard />} />
-
-                        {/* Phase 4 & 5 - New Routes */}
-                        <Route path="/notifications" element={<NotificationCenter />} />
-                        <Route path="/files" element={<FileManagement />} />
-                        <Route path="/2fa-setup" element={<TwoFactorSetup />} />
-                        <Route path="/pricing-calculator" element={<PricingCalculator />} />
-
-                        {/* Legacy routes for compatibility */}
-                        <Route path="/security-audits" element={<Marketplace />} />
-                        <Route path="/resources/*" element={<SupportPage />} />
-                        <Route path="/tools/*" element={<AdvancedFeaturesHub />} />
-                        <Route path="/community" element={<Forum />} />
-
-                        {/* 404 page */}
-                        <Route path="*" element={<NotFoundPage />} />
-                      </Routes>
-                    </Suspense>
-                    <Toaster />
-                    <Sonner />
-                  </div>
-                </EscrowProvider>
-              </NotificationProvider>
-            </AuthProvider>
-          </BrowserRouter>
-        </GlobalErrorBoundary>
-      </TooltipProvider>
-    </HelmetProvider>
-  </QueryClientProvider>
-);
+                          {/* Pricing Calculator */}
+                          <Route path="/pricing-calculator" element={<PricingCalculator />} />
+                        </Routes>
+                      </BrowserRouter>
+                    </TooltipProvider>
+                  </ThemeProvider>
+                </AccessibilityProvider>
+              </EscrowProvider>
+            </NotificationProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </HelmetProvider>
+    </ErrorBoundary>
+  );
+}
 
 export default App;
