@@ -16,13 +16,20 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth';
 
+interface NavigationItem {
+  label: string;
+  href: string;
+  icon: React.ElementType;
+  badge?: number;
+}
+
 export function EnhancedQuickNavigation() {
   const { user, userProfile, getUserType } = useAuth();
   const location = useLocation();
   const userType = getUserType();
 
-  const getNavigationItems = () => {
-    const baseItems = [
+  const getNavigationItems = (): NavigationItem[] => {
+    const baseItems: NavigationItem[] = [
       { label: 'Home', href: '/', icon: Home },
       { label: 'Marketplace', href: '/marketplace', icon: Search },
     ];
@@ -35,7 +42,7 @@ export function EnhancedQuickNavigation() {
       ];
     }
 
-    const authenticatedItems = [
+    const authenticatedItems: NavigationItem[] = [
       ...baseItems,
       { label: 'Dashboard', href: '/dashboard', icon: User },
       { label: 'Messages', href: '/messages', icon: MessageSquare, badge: 3 },
