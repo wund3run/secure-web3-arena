@@ -16,7 +16,7 @@ const Contact = React.lazy(() => import('@/pages/Contact'));
 const About = React.lazy(() => import('@/pages/About'));
 const Privacy = React.lazy(() => import('@/pages/Privacy'));
 const Terms = React.lazy(() => import('@/pages/Terms'));
-const NotFound = React.lazy(() => import('@/pages/NotFound'));
+const Enhanced404 = React.lazy(() => import('@/pages/Enhanced404'));
 const PricingCalculator = React.lazy(() => import('@/pages/PricingCalculator'));
 
 // Service pages
@@ -134,8 +134,8 @@ export function StabilizedRouter() {
       {/* Service Provider */}
       <Route path="/service-provider-onboarding" element={<RouteWrapper><ServiceProviderOnboarding /></RouteWrapper>} />
 
-      {/* Fallback for unmatched routes */}
-      <Route path="*" element={<RouteWrapper><NotFound /></RouteWrapper>} />
+      {/* Enhanced 404 for unmatched routes */}
+      <Route path="*" element={<RouteWrapper><Enhanced404 /></RouteWrapper>} />
     </Routes>
   );
 }

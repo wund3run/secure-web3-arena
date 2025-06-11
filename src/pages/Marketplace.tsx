@@ -1,124 +1,101 @@
 
-import React from "react";
-import { StandardLayout } from "@/components/layout/StandardLayout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Shield, Code, Bug, Users, Star, TrendingUp } from "lucide-react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { StandardizedLayout } from '@/components/layout/StandardizedLayout';
+import { EnhancedMarketplaceGrid } from '@/components/marketplace/enhanced-marketplace-grid';
 
-export default function Marketplace() {
-  const services = [
-    {
-      title: "Smart Contract Audits",
-      description: "Comprehensive security audits for smart contracts across all major blockchains",
-      price: "Starting from ₹2,08,250",
-      icon: <Shield className="h-6 w-6 text-blue-500" />,
-      features: ["Manual code review", "Automated testing", "Detailed report", "Post-audit support"]
+// Mock data - replace with real API data
+const mockServices = [
+  {
+    id: '1',
+    title: 'Smart Contract Security Audit',
+    description: 'Comprehensive security analysis for DeFi protocols with detailed vulnerability assessment and recommendations.',
+    provider: {
+      name: 'John Smith',
+      rating: 4.9,
+      reviewCount: 127,
+      verified: true,
+      location: 'San Francisco, CA'
     },
-    {
-      title: "Code Reviews",
-      description: "Expert code analysis and security recommendations for your Web3 project",
-      price: "Starting from ₹83,300",
-      icon: <Code className="h-6 w-6 text-green-500" />,
-      features: ["Line-by-line analysis", "Best practices", "Optimization tips", "Documentation review"]
+    priceRange: {
+      min: 5000,
+      max: 15000,
+      currency: 'USD'
     },
-    {
-      title: "Penetration Testing",
-      description: "Advanced security testing to identify vulnerabilities in your application",
-      price: "Starting from ₹2,91,550",
-      icon: <Bug className="h-6 w-6 text-red-500" />,
-      features: ["Real-world attacks", "Infrastructure testing", "Exploit development", "Remediation guide"]
-    }
-  ];
+    deliveryTime: 7,
+    category: 'Smart Contract Audit',
+    tags: ['DeFi', 'Solidity', 'Security'],
+    featured: true,
+    blockchainEcosystems: ['Ethereum', 'Polygon']
+  },
+  {
+    id: '2',
+    title: 'Full Stack Web3 Security Review',
+    description: 'End-to-end security assessment covering smart contracts, frontend, and backend infrastructure.',
+    provider: {
+      name: 'Alice Johnson',
+      rating: 4.8,
+      reviewCount: 89,
+      verified: true,
+      location: 'New York, NY'
+    },
+    priceRange: {
+      min: 8000,
+      max: 25000,
+      currency: 'USD'
+    },
+    deliveryTime: 14,
+    category: 'Full Stack Audit',
+    tags: ['Web3', 'Frontend', 'Backend'],
+    featured: false,
+    blockchainEcosystems: ['Ethereum', 'BSC', 'Arbitrum']
+  },
+  {
+    id: '3',
+    title: 'NFT Collection Security Audit',
+    description: 'Specialized security audit for NFT smart contracts with focus on minting, trading, and royalty mechanisms.',
+    provider: {
+      name: 'Mike Chen',
+      rating: 4.7,
+      reviewCount: 56,
+      verified: true,
+      location: 'Singapore'
+    },
+    priceRange: {
+      min: 3000,
+      max: 10000,
+      currency: 'USD'
+    },
+    deliveryTime: 5,
+    category: 'NFT Audit',
+    tags: ['NFT', 'ERC-721', 'ERC-1155'],
+    featured: false,
+    blockchainEcosystems: ['Ethereum', 'Polygon', 'Solana']
+  }
+];
 
-  const stats = [
-    { label: "Security Experts", value: "500+", icon: <Users className="h-5 w-5" /> },
-    { label: "Projects Secured", value: "2,000+", icon: <Shield className="h-5 w-5" /> },
-    { label: "Average Rating", value: "4.9", icon: <Star className="h-5 w-5" /> },
-    { label: "Success Rate", value: "99.8%", icon: <TrendingUp className="h-5 w-5" /> }
-  ];
-
+const Marketplace = () => {
   return (
-    <StandardLayout
-      title="Security Marketplace"
-      description="Browse verified Web3 security experts and audit services - March 2025"
+    <StandardizedLayout
+      title="Web3 Security Marketplace - Find Expert Auditors"
+      description="Connect with verified security experts for comprehensive smart contract audits and Web3 security services."
     >
-      <div className="container py-12">
-        <div className="text-center mb-16">
-          <Badge variant="secondary" className="mb-4">Verified Experts</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Security Marketplace
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Connect with verified Web3 security experts for comprehensive audit services. 
-            Protect your blockchain assets with industry-leading security expertise.
-          </p>
-        </div>
-
-        {/* Stats Section */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-          {stats.map((stat, index) => (
-            <div key={index} className="text-center">
-              <div className="flex justify-center mb-2 text-primary">{stat.icon}</div>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <div className="text-sm text-muted-foreground">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Services Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          {services.map((service, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-3">
-                  {service.icon}
-                  <CardTitle className="text-xl">{service.title}</CardTitle>
-                </div>
-                <CardDescription className="text-base">{service.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="text-2xl font-bold text-primary">{service.price}</div>
-                  <ul className="space-y-2">
-                    {service.features.map((feature, idx) => (
-                      <li key={idx} className="text-sm text-muted-foreground flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                  <Button className="w-full" asChild>
-                    <Link to="/request-audit">Get Started</Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* CTA Section */}
-        <div className="text-center bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-8">
-          <h2 className="text-2xl font-bold mb-4">Ready to Secure Your Project?</h2>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Join thousands of projects that trust our security experts. Get started with a comprehensive 
-            security audit today and protect your blockchain assets.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/request-audit">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-secondary">
-                Request Security Audit
-              </Button>
-            </Link>
-            <Link to="/pricing-inr">
-              <Button size="lg" variant="outline">
-                View Pricing (INR)
-              </Button>
-            </Link>
+      <div className="container mx-auto px-4 py-8">
+        <div className="space-y-6">
+          <div className="text-center space-y-4">
+            <h1 className="text-4xl font-bold tracking-tight">
+              Security Marketplace
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Find expert auditors and security specialists for your Web3 projects. 
+              Get comprehensive security audits from verified professionals.
+            </p>
           </div>
+
+          <EnhancedMarketplaceGrid services={mockServices} />
         </div>
       </div>
-    </StandardLayout>
+    </StandardizedLayout>
   );
-}
+};
+
+export default Marketplace;
