@@ -38,8 +38,8 @@ export function FeaturesOverview() {
   ];
 
   return (
-    <section className="py-20 interactive-section relative">
-      <div className="container relative z-10">
+    <section className="py-20 bg-gradient-to-b from-gray-900 to-gray-800">
+      <div className="container">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-6">
             <span className="text-white">Guardian </span>
@@ -51,15 +51,15 @@ export function FeaturesOverview() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <Card key={index} className="interactive-card group">
+            <Card key={index} className="bg-gradient-to-b from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-blue-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10">
               <CardHeader className="text-center">
-                <div className="mx-auto p-4 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-lg w-fit mb-4 border border-blue-500/20 group-hover:scale-110 transition-transform duration-300">
-                  <div className="text-blue-400 group-hover:text-blue-300 transition-colors">
+                <div className="mx-auto p-4 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-lg w-fit mb-4 border border-blue-500/20">
+                  <div className="text-blue-400">
                     {feature.icon}
                   </div>
                 </div>
-                <CardTitle className="text-xl text-white group-hover:text-blue-100 transition-colors">{feature.title}</CardTitle>
-                <CardDescription className="text-gray-300 group-hover:text-gray-200 transition-colors">{feature.description}</CardDescription>
+                <CardTitle className="text-xl text-white">{feature.title}</CardTitle>
+                <CardDescription className="text-gray-300">{feature.description}</CardDescription>
               </CardHeader>
             </Card>
           ))}
@@ -67,7 +67,7 @@ export function FeaturesOverview() {
         
         {/* Enterprise Security Badge */}
         <div className="mt-16 text-center">
-          <div className="inline-flex items-center gap-4 px-8 py-4 rounded-xl interactive-card">
+          <div className="inline-flex items-center gap-4 px-8 py-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20">
             <Lock className="h-8 w-8 text-purple-400" />
             <div className="text-left">
               <h3 className="text-lg font-semibold text-white">Enterprise Security Grade</h3>
