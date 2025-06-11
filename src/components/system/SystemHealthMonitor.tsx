@@ -6,9 +6,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, AlertCircle, XCircle, Eye, EyeOff } from 'lucide-react';
 
+interface HealthReport {
+  totalRoutes: number;
+  publicRoutes: number;
+  protectedRoutes: number;
+  categoryCounts: Record<string, number>;
+  navigationHealth: { valid: number; invalid: number };
+}
+
 export function SystemHealthMonitor() {
   const [isVisible, setIsVisible] = useState(false);
-  const [healthReport, setHealthReport] = useState<any>(null);
+  const [healthReport, setHealthReport] = useState<HealthReport | null>(null);
 
   useEffect(() => {
     // Only show in development or when explicitly enabled
