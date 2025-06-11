@@ -1,295 +1,376 @@
 
 import React, { useState } from 'react';
 import { StandardLayout } from '@/components/layout/StandardLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Download,
-  Star,
-  Users,
-  Clock,
+  FileText, 
+  Download, 
   Search,
-  Filter,
-  ArrowRight,
-  BookOpen,
+  Code,
   Shield,
-  Zap,
-  Code
+  CheckCircle,
+  Star,
+  Eye,
+  Copy,
+  ExternalLink
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const Templates = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [sortBy, setSortBy] = useState('popular');
 
   const templates = [
     {
       id: 1,
-      title: "AI-Enhanced Smart Contract Audit Template",
-      description: "Advanced template incorporating GPT-4 powered vulnerability detection patterns, automated security checks, and machine learning risk assessment - Updated March 2025",
-      category: "AI Security",
-      downloadCount: "4.2k",
+      title: 'Smart Contract Security Checklist',
+      description: 'Comprehensive checklist for auditing smart contracts with 50+ security checks',
+      type: 'checklist',
+      category: 'smart-contracts',
+      downloads: 2400,
       rating: 4.9,
-      lastUpdated: "March 2025",
-      new: true,
-      icon: Zap,
-      tags: ["AI", "ML", "Automation", "GPT-4"],
-      difficulty: "Advanced"
+      language: 'General',
+      lastUpdated: '2024-01-15',
+      author: 'Security Team',
+      tags: ['Audit', 'Smart Contract', 'Checklist'],
+      preview: true
     },
     {
       id: 2,
-      title: "DeFi Protocol Security Framework 2025",
-      description: "Comprehensive security checklist for DeFi applications including flash loan protection, MEV protection, oracle security, and cross-protocol risks",
-      category: "DeFi",
-      downloadCount: "3.8k",
-      rating: 4.9,
-      lastUpdated: "March 2025",
-      new: true,
-      icon: Shield,
-      tags: ["DeFi", "Flash Loans", "Oracles", "MEV"],
-      difficulty: "Expert"
+      title: 'Solidity Security Patterns',
+      description: 'Collection of secure coding patterns and anti-patterns for Solidity development',
+      type: 'code',
+      category: 'smart-contracts',
+      downloads: 1800,
+      rating: 4.8,
+      language: 'Solidity',
+      lastUpdated: '2024-01-10',
+      author: 'Marcus Chen',
+      tags: ['Solidity', 'Patterns', 'Best Practices'],
+      preview: true
     },
     {
       id: 3,
-      title: "Layer 2 & Rollup Security Checklist",
-      description: "Specialized template for L2 solutions including optimistic rollups, zk-rollups, state channels, and cross-layer communication security",
-      category: "Layer 2",
-      downloadCount: "2.9k",
-      rating: 4.8,
-      lastUpdated: "March 2025",
-      new: true,
-      icon: Code,
-      tags: ["L2", "Rollups", "ZK", "Scaling"],
-      difficulty: "Advanced"
+      title: 'DeFi Protocol Security Assessment',
+      description: 'Template for comprehensive DeFi protocol security evaluation and risk assessment',
+      type: 'document',
+      category: 'defi',
+      downloads: 1500,
+      rating: 4.7,
+      language: 'General',
+      lastUpdated: '2024-01-08',
+      author: 'Sarah Rodriguez',
+      tags: ['DeFi', 'Assessment', 'Risk Analysis'],
+      preview: true
     },
     {
       id: 4,
-      title: "Cross-Chain Bridge Security Assessment",
-      description: "Multi-chain security template covering bridge architecture, consensus mechanisms, validator networks, and cross-chain attack vectors",
-      category: "Cross-Chain",
-      downloadCount: "2.1k",
-      rating: 4.7,
-      lastUpdated: "February 2025",
-      icon: BookOpen,
-      tags: ["Bridges", "Multi-chain", "Consensus"],
-      difficulty: "Expert"
+      title: 'Penetration Testing Report Template',
+      description: 'Professional penetration testing report template with executive summary',
+      type: 'document',
+      category: 'pentesting',
+      downloads: 2100,
+      rating: 4.9,
+      language: 'General',
+      lastUpdated: '2024-01-12',
+      author: 'Alex Thompson',
+      tags: ['Penetration Testing', 'Report', 'Documentation'],
+      preview: true
     },
     {
       id: 5,
-      title: "NFT & Token Contract Security Guide",
-      description: "Security guidelines for NFT marketplaces, token contracts, royalty systems, and metadata security considerations",
-      category: "NFT",
-      downloadCount: "3.2k",
+      title: 'Gas Optimization Techniques',
+      description: 'Code snippets and examples for optimizing gas usage in smart contracts',
+      type: 'code',
+      category: 'optimization',
+      downloads: 1200,
       rating: 4.6,
-      lastUpdated: "March 2025",
-      icon: Shield,
-      tags: ["NFT", "ERC-721", "Royalties", "Metadata"],
-      difficulty: "Intermediate"
+      language: 'Solidity',
+      lastUpdated: '2024-01-05',
+      author: 'Dev Team',
+      tags: ['Gas Optimization', 'Performance', 'Cost Reduction'],
+      preview: true
     },
     {
       id: 6,
-      title: "DAO Governance Security Framework",
-      description: "Security patterns for decentralized governance including voting mechanisms, proposal systems, treasury management, and governance attacks",
-      category: "DAO",
-      downloadCount: "1.9k",
+      title: 'NFT Security Best Practices Guide',
+      description: 'Comprehensive guide and checklist for NFT project security',
+      type: 'guide',
+      category: 'nft',
+      downloads: 950,
       rating: 4.8,
-      lastUpdated: "February 2025",
-      icon: Users,
-      tags: ["DAO", "Governance", "Voting", "Treasury"],
-      difficulty: "Advanced"
+      language: 'General',
+      lastUpdated: '2024-01-03',
+      author: 'Security Team',
+      tags: ['NFT', 'Security', 'Best Practices'],
+      preview: true
+    },
+    {
+      id: 7,
+      title: 'Multi-Signature Wallet Implementation',
+      description: 'Secure multi-signature wallet smart contract template with tests',
+      type: 'code',
+      category: 'wallets',
+      downloads: 800,
+      rating: 4.7,
+      language: 'Solidity',
+      lastUpdated: '2023-12-28',
+      author: 'Marcus Chen',
+      tags: ['Multi-Sig', 'Wallet', 'Security'],
+      preview: false
+    },
+    {
+      id: 8,
+      title: 'Incident Response Playbook',
+      description: 'Step-by-step playbook for responding to security incidents in Web3 projects',
+      type: 'playbook',
+      category: 'incident-response',
+      downloads: 1100,
+      rating: 4.8,
+      language: 'General',
+      lastUpdated: '2024-01-01',
+      author: 'Sarah Rodriguez',
+      tags: ['Incident Response', 'Emergency', 'Procedures'],
+      preview: true
     }
   ];
 
   const categories = [
-    { value: 'all', label: 'All Categories' },
-    { value: 'AI Security', label: 'AI Security' },
-    { value: 'DeFi', label: 'DeFi' },
-    { value: 'Layer 2', label: 'Layer 2' },
-    { value: 'Cross-Chain', label: 'Cross-Chain' },
-    { value: 'NFT', label: 'NFT' },
-    { value: 'DAO', label: 'DAO' }
+    { id: 'all', name: 'All Templates' },
+    { id: 'smart-contracts', name: 'Smart Contracts' },
+    { id: 'defi', name: 'DeFi Security' },
+    { id: 'pentesting', name: 'Penetration Testing' },
+    { id: 'nft', name: 'NFT Security' },
+    { id: 'optimization', name: 'Optimization' },
+    { id: 'wallets', name: 'Wallets' },
+    { id: 'incident-response', name: 'Incident Response' }
+  ];
+
+  const templateTypes = [
+    { id: 'checklist', name: 'Checklists', icon: <CheckCircle className="h-4 w-4" /> },
+    { id: 'code', name: 'Code Templates', icon: <Code className="h-4 w-4" /> },
+    { id: 'document', name: 'Documents', icon: <FileText className="h-4 w-4" /> },
+    { id: 'guide', name: 'Guides', icon: <Shield className="h-4 w-4" /> },
+    { id: 'playbook', name: 'Playbooks', icon: <FileText className="h-4 w-4" /> }
   ];
 
   const filteredTemplates = templates.filter(template => {
     const matchesSearch = template.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         template.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          template.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = selectedCategory === 'all' || template.category === selectedCategory;
     return matchesSearch && matchesCategory;
-  }).sort((a, b) => {
-    switch (sortBy) {
-      case 'popular': return parseInt(b.downloadCount.replace('k', '')) - parseInt(a.downloadCount.replace('k', ''));
-      case 'rating': return b.rating - a.rating;
-      case 'recent': return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
-      default: return 0;
-    }
   });
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'Beginner': return 'bg-green-100 text-green-800';
-      case 'Intermediate': return 'bg-yellow-100 text-yellow-800';
-      case 'Advanced': return 'bg-orange-100 text-orange-800';
-      case 'Expert': return 'bg-red-100 text-red-800';
+  const getTypeIcon = (type: string) => {
+    const typeData = templateTypes.find(t => t.id === type);
+    return typeData ? typeData.icon : <FileText className="h-4 w-4" />;
+  };
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'checklist': return 'bg-green-100 text-green-800';
+      case 'code': return 'bg-blue-100 text-blue-800';
+      case 'document': return 'bg-purple-100 text-purple-800';
+      case 'guide': return 'bg-orange-100 text-orange-800';
+      case 'playbook': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
   return (
     <StandardLayout
-      title="Security Audit Templates"
-      description="Professional audit templates and frameworks updated for March 2025"
+      title="Security Templates | Hawkly"
+      description="Ready-to-use security templates, checklists, and code snippets"
     >
-      <div className="container py-12">
-        {/* Header */}
+      <div className="container mx-auto px-4 py-8">
+        {/* Hero Section */}
         <div className="text-center mb-12">
-          <Badge variant="secondary" className="mb-4">Updated March 2025</Badge>
-          <h1 className="text-4xl font-bold mb-4">Security Audit Templates</h1>
+          <Badge variant="outline" className="px-4 py-2 mb-4">
+            <FileText className="h-4 w-4 mr-2" />
+            Ready-to-Use Templates
+          </Badge>
+          <h1 className="text-4xl font-bold text-hawkly-gradient mb-4">
+            Security Templates
+          </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Professional templates and frameworks used by top security experts. 
-            Enhanced with AI-powered analysis and updated for the latest Web3 security landscape.
+            Accelerate your security workflow with our collection of professional templates, 
+            checklists, code snippets, and documentation. All templates are created by industry experts.
           </p>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-          <div className="text-center">
-            <div className="text-3xl font-bold text-primary mb-2">50+</div>
-            <div className="text-sm text-muted-foreground">Security Templates</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-primary mb-2">18.2k</div>
-            <div className="text-sm text-muted-foreground">Total Downloads</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-primary mb-2">4.8</div>
-            <div className="text-sm text-muted-foreground">Avg. Rating</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-primary mb-2">95%</div>
-            <div className="text-sm text-muted-foreground">Success Rate</div>
-          </div>
-        </div>
-
-        {/* Filters */}
+        {/* Search and Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
+          <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
-              placeholder="Search templates, categories, or tags..."
+              placeholder="Search templates, technologies, or topics..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
             />
           </div>
-          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="w-full md:w-[200px]">
-              <Filter className="h-4 w-4 mr-2" />
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
+          <div className="flex gap-2">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="px-4 py-2 border rounded-lg"
+            >
               {categories.map(category => (
-                <SelectItem key={category.value} value={category.value}>
-                  {category.label}
-                </SelectItem>
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
               ))}
-            </SelectContent>
-          </Select>
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-full md:w-[150px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="popular">Most Popular</SelectItem>
-              <SelectItem value="rating">Highest Rated</SelectItem>
-              <SelectItem value="recent">Most Recent</SelectItem>
-            </SelectContent>
-          </Select>
+            </select>
+          </div>
         </div>
 
-        {/* Templates Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {filteredTemplates.map((template) => {
-            const Icon = template.icon;
-            return (
-              <Card key={template.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <Icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {template.new && (
-                        <Badge variant="default" className="text-xs">New 2025</Badge>
-                      )}
-                      <Badge variant="secondary">{template.category}</Badge>
-                    </div>
-                  </div>
-                  <CardTitle className="text-lg">{template.title}</CardTitle>
-                  <CardDescription className="line-clamp-3">{template.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex flex-wrap gap-1">
-                      {template.tags.map(tag => (
-                        <Badge key={tag} variant="outline" className="text-xs">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                    
-                    <div className="flex items-center justify-between text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Download className="h-4 w-4" />
-                        {template.downloadCount}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        {template.rating}
-                      </span>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <Badge className={getDifficultyColor(template.difficulty)}>
-                        {template.difficulty}
-                      </Badge>
-                      <span className="text-xs text-muted-foreground">
-                        {template.lastUpdated}
-                      </span>
-                    </div>
-                    
-                    <Button className="w-full">
-                      Download Template <Download className="ml-2 h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+        <Tabs defaultValue="all" className="space-y-8">
+          <TabsList className="grid w-full grid-cols-6 max-w-4xl mx-auto">
+            <TabsTrigger value="all">All Types</TabsTrigger>
+            {templateTypes.map(type => (
+              <TabsTrigger key={type.id} value={type.id}>
+                {type.name}
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
-        {/* CTA Section */}
-        <div className="text-center bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-12">
-          <h2 className="text-3xl font-bold mb-4">Ready for a Professional Audit?</h2>
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Use these templates as a starting point, or get a comprehensive security audit from our verified experts.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/request-audit">
-              <Button size="lg">
-                Request Professional Audit
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Link to="/marketplace">
-              <Button size="lg" variant="outline">
-                Browse Expert Auditors
-              </Button>
-            </Link>
+          {['all', ...templateTypes.map(t => t.id)].map(tabValue => (
+            <TabsContent key={tabValue} value={tabValue} className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredTemplates
+                  .filter(template => tabValue === 'all' || template.type === tabValue)
+                  .map((template) => (
+                    <Card key={template.id} className="hover:shadow-lg transition-all">
+                      <CardHeader>
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            {getTypeIcon(template.type)}
+                            <CardTitle className="text-lg line-clamp-2">{template.title}</CardTitle>
+                          </div>
+                          <Badge className={`text-xs ${getTypeColor(template.type)}`}>
+                            {templateTypes.find(t => t.id === template.type)?.name || template.type}
+                          </Badge>
+                        </div>
+                        <p className="text-muted-foreground text-sm line-clamp-2">
+                          {template.description}
+                        </p>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="flex items-center justify-between text-sm text-muted-foreground">
+                          <div className="flex items-center gap-4">
+                            <span className="flex items-center gap-1">
+                              <Download className="h-3 w-3" />
+                              {template.downloads}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Star className="h-3 w-3 text-yellow-500 fill-current" />
+                              {template.rating}
+                            </span>
+                          </div>
+                          <span className="text-xs">{template.language}</span>
+                        </div>
+                        
+                        <div className="flex flex-wrap gap-1">
+                          {template.tags.map((tag, index) => (
+                            <Badge key={index} variant="secondary" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                        
+                        <div className="text-xs text-muted-foreground">
+                          By {template.author} • Updated {template.lastUpdated}
+                        </div>
+                        
+                        <div className="flex gap-2">
+                          {template.preview && (
+                            <Button variant="outline" size="sm" className="flex-1">
+                              <Eye className="h-3 w-3 mr-1" />
+                              Preview
+                            </Button>
+                          )}
+                          <Button size="sm" className="flex-1">
+                            <Download className="h-3 w-3 mr-1" />
+                            Download
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+              </div>
+            </TabsContent>
+          ))}
+        </Tabs>
+
+        {/* Featured Collections */}
+        <div className="mt-16">
+          <h2 className="text-2xl font-bold text-center mb-8">Featured Collections</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="hover:shadow-lg transition-all">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-primary" />
+                  Audit Essentials
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground text-sm">
+                  Complete collection of checklists, templates, and guides for security auditing.
+                </p>
+                <div className="text-sm text-muted-foreground">
+                  12 templates • 5,200+ downloads
+                </div>
+                <Button className="w-full">
+                  <ExternalLink className="h-3 w-3 mr-2" />
+                  View Collection
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-lg transition-all">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Code className="h-5 w-5 text-primary" />
+                  Smart Contract Starter Kit
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground text-sm">
+                  Ready-to-use secure smart contract templates and deployment scripts.
+                </p>
+                <div className="text-sm text-muted-foreground">
+                  8 templates • 3,800+ downloads
+                </div>
+                <Button className="w-full">
+                  <ExternalLink className="h-3 w-3 mr-2" />
+                  View Collection
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-lg transition-all">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-primary" />
+                  Incident Response Kit
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground text-sm">
+                  Emergency response playbooks and communication templates for security incidents.
+                </p>
+                <div className="text-sm text-muted-foreground">
+                  6 templates • 2,100+ downloads
+                </div>
+                <Button className="w-full">
+                  <ExternalLink className="h-3 w-3 mr-2" />
+                  View Collection
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

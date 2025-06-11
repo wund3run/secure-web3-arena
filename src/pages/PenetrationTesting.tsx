@@ -1,258 +1,385 @@
 
 import React, { useState } from 'react';
-import { StandardizedLayout } from '@/components/layout/StandardizedLayout';
+import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Shield, Target, Zap, AlertTriangle, CheckCircle, Calendar, Users, FileText } from 'lucide-react';
+import { 
+  Shield, 
+  Target, 
+  AlertTriangle, 
+  CheckCircle, 
+  Clock, 
+  Users, 
+  FileText,
+  Zap,
+  Search,
+  Globe,
+  Database,
+  Wifi,
+  Smartphone
+} from 'lucide-react';
 
 const PenetrationTesting = () => {
   const [selectedService, setSelectedService] = useState('');
 
   const testingServices = [
     {
-      id: 'smart-contract',
-      title: 'Smart Contract Penetration Testing',
-      description: 'Comprehensive security testing of smart contracts and DeFi protocols',
-      duration: '1-2 weeks',
-      price: 'From $5,000',
-      features: ['Automated vulnerability scanning', 'Manual code analysis', 'Attack vector simulation', 'Gas optimization review']
+      id: 'web-app',
+      title: 'Web Application Testing',
+      icon: <Globe className="h-6 w-6" />,
+      description: 'Comprehensive security testing of web applications including OWASP Top 10 vulnerabilities',
+      duration: '2-4 weeks',
+      price: 'From $3,500',
+      features: [
+        'SQL Injection Testing',
+        'Cross-Site Scripting (XSS)',
+        'Authentication Bypass',
+        'Session Management',
+        'Business Logic Flaws'
+      ]
     },
     {
-      id: 'dapp',
-      title: 'DApp Security Testing',
-      description: 'End-to-end security assessment of decentralized applications',
+      id: 'network',
+      title: 'Network Penetration Testing',
+      icon: <Wifi className="h-6 w-6" />,
+      description: 'External and internal network security assessment to identify infrastructure vulnerabilities',
+      duration: '1-3 weeks',
+      price: 'From $4,200',
+      features: [
+        'Port Scanning & Enumeration',
+        'Vulnerability Assessment',
+        'Privilege Escalation',
+        'Lateral Movement Testing',
+        'Network Segmentation Review'
+      ]
+    },
+    {
+      id: 'mobile',
+      title: 'Mobile Application Testing',
+      icon: <Smartphone className="h-6 w-6" />,
+      description: 'Security testing for iOS and Android applications including static and dynamic analysis',
       duration: '2-3 weeks',
-      price: 'From $8,000',
-      features: ['Frontend security analysis', 'Backend API testing', 'Wallet integration security', 'User flow analysis']
+      price: 'From $2,800',
+      features: [
+        'Static Code Analysis',
+        'Dynamic Runtime Testing',
+        'API Security Testing',
+        'Data Storage Security',
+        'Communication Security'
+      ]
     },
     {
-      id: 'infrastructure',
-      title: 'Infrastructure Testing',
-      description: 'Network and server security assessment for Web3 infrastructure',
+      id: 'api',
+      title: 'API Security Testing',
+      icon: <Database className="h-6 w-6" />,
+      description: 'Specialized testing for REST, GraphQL, and other API endpoints',
       duration: '1-2 weeks',
-      price: 'From $6,000',
-      features: ['Network penetration testing', 'Server hardening review', 'DNS security analysis', 'SSL/TLS configuration']
+      price: 'From $2,200',
+      features: [
+        'Authentication Testing',
+        'Authorization Flaws',
+        'Input Validation',
+        'Rate Limiting',
+        'Data Exposure'
+      ]
     }
   ];
 
-  const methodologies = [
+  const methodology = [
     {
-      phase: 'Reconnaissance',
-      description: 'Information gathering and target analysis',
-      icon: Target,
-      activities: ['Code repository analysis', 'Documentation review', 'Architecture mapping', 'Attack surface identification']
+      phase: 'Planning & Reconnaissance',
+      description: 'Information gathering and attack surface mapping',
+      duration: '2-3 days',
+      deliverables: ['Scope Definition', 'Reconnaissance Report']
     },
     {
-      phase: 'Vulnerability Assessment',
+      phase: 'Scanning & Enumeration',
       description: 'Automated and manual vulnerability discovery',
-      icon: Zap,
-      activities: ['Automated scanning', 'Manual code review', 'Logic flaw analysis', 'Configuration assessment']
+      duration: '3-5 days',
+      deliverables: ['Vulnerability Scan Results', 'Service Enumeration']
     },
     {
-      phase: 'Exploitation',
-      description: 'Controlled exploitation of discovered vulnerabilities',
-      icon: AlertTriangle,
-      activities: ['Proof of concept development', 'Impact assessment', 'Chain exploitation', 'Data extraction simulation']
+      phase: 'Gaining Access',
+      description: 'Exploitation of identified vulnerabilities',
+      duration: '5-7 days',
+      deliverables: ['Proof of Concept Exploits', 'Access Documentation']
     },
     {
-      phase: 'Reporting',
-      description: 'Comprehensive documentation and recommendations',
-      icon: FileText,
-      activities: ['Executive summary', 'Technical findings', 'Risk assessment', 'Remediation roadmap']
+      phase: 'Maintaining Access',
+      description: 'Testing persistence and privilege escalation',
+      duration: '2-3 days',
+      deliverables: ['Persistence Testing', 'Privilege Escalation Report']
+    },
+    {
+      phase: 'Analysis & Reporting',
+      description: 'Comprehensive report with remediation guidance',
+      duration: '3-4 days',
+      deliverables: ['Executive Summary', 'Technical Report', 'Remediation Plan']
+    }
+  ];
+
+  const experts = [
+    {
+      name: 'Marcus Chen',
+      title: 'Senior Penetration Tester',
+      certifications: ['OSCP', 'CEH', 'CISSP'],
+      experience: '8+ years',
+      specialization: 'Web Applications & APIs',
+      image: '/lovable-uploads/457a4f30-ef00-4983-ad81-9841ef293c46.png'
+    },
+    {
+      name: 'Sarah Rodriguez',
+      title: 'Network Security Specialist',
+      certifications: ['OSCE', 'GPEN', 'GCIH'],
+      experience: '10+ years',
+      specialization: 'Network Infrastructure',
+      image: '/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png'
+    },
+    {
+      name: 'Alex Thompson',
+      title: 'Mobile Security Expert',
+      certifications: ['GMOB', 'CEH', 'CSSLP'],
+      experience: '6+ years',
+      specialization: 'Mobile Applications',
+      image: '/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png'
     }
   ];
 
   return (
-    <StandardizedLayout
-      title="Penetration Testing | Hawkly"
-      description="Advanced security vulnerability testing for Web3 applications and infrastructure"
-      keywords="penetration testing, security testing, vulnerability assessment"
+    <StandardLayout
+      title="Penetration Testing Services | Hawkly"
+      description="Professional penetration testing services to identify and validate security vulnerabilities"
     >
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-orange-900 relative overflow-hidden">
-        {/* Animated background */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-grid-white/[0.05] [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" />
-          <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-red-500/20 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl animate-pulse delay-1500" />
+      <div className="container mx-auto px-4 py-8">
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <Badge variant="outline" className="px-4 py-2 mb-4">
+            <Target className="h-4 w-4 mr-2" />
+            Ethical Hacking Services
+          </Badge>
+          <h1 className="text-4xl font-bold text-hawkly-gradient mb-4">
+            Professional Penetration Testing
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Comprehensive security testing services to identify vulnerabilities before attackers do. 
+            Our certified ethical hackers simulate real-world attacks to validate your security posture.
+          </p>
         </div>
 
-        <div className="relative z-10 container mx-auto px-4 py-12">
-          {/* Hero Section */}
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-red-500/10 px-4 py-2 rounded-full border border-red-500/20 mb-6">
-              <Shield className="h-5 w-5 text-red-400" />
-              <span className="text-red-300 font-medium">Advanced Security Testing</span>
-            </div>
-            <h1 className="text-5xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
-                Penetration Testing Services
-              </span>
-            </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Comprehensive security vulnerability testing for your Web3 applications, smart contracts, 
-              and infrastructure. Identify and fix security gaps before attackers do.
-            </p>
-          </div>
+        <Tabs defaultValue="services" className="space-y-8">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="services">Testing Services</TabsTrigger>
+            <TabsTrigger value="methodology">Methodology</TabsTrigger>
+            <TabsTrigger value="experts">Our Experts</TabsTrigger>
+            <TabsTrigger value="request">Request Test</TabsTrigger>
+          </TabsList>
 
-          <Tabs defaultValue="services" className="max-w-6xl mx-auto">
-            <TabsList className="grid w-full grid-cols-3 bg-gray-800/50 border border-gray-700">
-              <TabsTrigger value="services" className="data-[state=active]:bg-red-600">Services</TabsTrigger>
-              <TabsTrigger value="methodology" className="data-[state=active]:bg-red-600">Methodology</TabsTrigger>
-              <TabsTrigger value="booking" className="data-[state=active]:bg-red-600">Book Test</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="services" className="mt-8">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {testingServices.map((service) => (
-                  <Card key={service.id} className="bg-gray-800/50 border-gray-700 backdrop-blur-sm hover:border-red-500/50 transition-colors">
-                    <CardHeader>
-                      <CardTitle className="text-white text-xl">{service.title}</CardTitle>
-                      <p className="text-gray-400">{service.description}</p>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-gray-400" />
-                          <span className="text-gray-300">{service.duration}</span>
-                        </div>
-                        <Badge variant="outline" className="border-red-500/50 text-red-300">
-                          {service.price}
-                        </Badge>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <h4 className="text-white font-medium">Includes:</h4>
-                        {service.features.map((feature, index) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-green-400" />
-                            <span className="text-gray-300 text-sm">{feature}</span>
-                          </div>
-                        ))}
-                      </div>
-                      
-                      <Button 
-                        className="w-full bg-red-600 hover:bg-red-700"
-                        onClick={() => setSelectedService(service.id)}
-                      >
-                        Select Service
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="methodology" className="mt-8">
-              <div className="space-y-8">
-                <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm">
+          <TabsContent value="services" className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {testingServices.map((service) => (
+                <Card key={service.id} className="hover:shadow-lg transition-all">
                   <CardHeader>
-                    <CardTitle className="text-white text-2xl text-center">Our Testing Methodology</CardTitle>
-                    <p className="text-gray-400 text-center">
-                      We follow industry-standard penetration testing methodologies adapted for Web3 security
-                    </p>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        {service.icon}
+                      </div>
+                      <div>
+                        <CardTitle className="text-xl">{service.title}</CardTitle>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {service.duration}
+                          </span>
+                          <span className="text-primary font-medium">{service.price}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-muted-foreground">{service.description}</p>
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-sm">Key Testing Areas:</h4>
+                      <ul className="grid grid-cols-1 gap-1">
+                        {service.features.map((feature, index) => (
+                          <li key={index} className="flex items-center gap-2 text-sm">
+                            <CheckCircle className="h-3 w-3 text-green-500" />
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <Button 
+                      className="w-full" 
+                      onClick={() => setSelectedService(service.id)}
+                    >
+                      Select This Service
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="methodology" className="space-y-8">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold mb-4">Our Testing Methodology</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                We follow industry-standard penetration testing methodologies including PTES, OWASP, and NIST guidelines
+              </p>
+            </div>
+            
+            <div className="space-y-6">
+              {methodology.map((phase, index) => (
+                <Card key={index} className="relative">
+                  <CardHeader>
+                    <div className="flex items-start gap-4">
+                      <div className="flex items-center justify-center w-10 h-10 bg-primary text-primary-foreground rounded-full font-bold">
+                        {index + 1}
+                      </div>
+                      <div className="flex-1">
+                        <CardTitle className="text-lg">{phase.phase}</CardTitle>
+                        <p className="text-muted-foreground mt-1">{phase.description}</p>
+                        <div className="flex items-center gap-4 mt-2 text-sm">
+                          <Badge variant="secondary">
+                            <Clock className="h-3 w-3 mr-1" />
+                            {phase.duration}
+                          </Badge>
+                          <span className="text-muted-foreground">
+                            Deliverables: {phase.deliverables.join(', ')}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </CardHeader>
                 </Card>
+              ))}
+            </div>
+          </TabsContent>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {methodologies.map((method, index) => (
-                    <Card key={index} className="bg-gray-800/50 border-gray-700 backdrop-blur-sm">
-                      <CardHeader>
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 bg-red-600/20 rounded-lg">
-                            <method.icon className="h-6 w-6 text-red-400" />
-                          </div>
-                          <div>
-                            <CardTitle className="text-white">{method.phase}</CardTitle>
-                            <p className="text-gray-400 text-sm">{method.description}</p>
-                          </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2">
-                          {method.activities.map((activity, actIndex) => (
-                            <div key={actIndex} className="flex items-center gap-2">
-                              <div className="w-2 h-2 bg-red-400 rounded-full" />
-                              <span className="text-gray-300 text-sm">{activity}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+          <TabsContent value="experts" className="space-y-8">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold mb-4">Meet Our Penetration Testing Experts</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Our team consists of certified ethical hackers with extensive real-world experience
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {experts.map((expert, index) => (
+                <Card key={index} className="text-center hover:shadow-lg transition-all">
+                  <CardHeader>
+                    <div className="mx-auto w-20 h-20 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center mb-4">
+                      <Users className="h-10 w-10 text-primary" />
+                    </div>
+                    <CardTitle className="text-lg">{expert.name}</CardTitle>
+                    <p className="text-muted-foreground">{expert.title}</p>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-center gap-2">
+                        <Badge variant="outline">{expert.experience}</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">{expert.specialization}</p>
+                      <div className="flex flex-wrap justify-center gap-1">
+                        {expert.certifications.map((cert, certIndex) => (
+                          <Badge key={certIndex} variant="secondary" className="text-xs">
+                            {cert}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                    <Button variant="outline" size="sm" className="w-full">
+                      View Profile
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="request" className="space-y-8">
+            <div className="max-w-2xl mx-auto">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold mb-4">Request Penetration Testing</h2>
+                <p className="text-muted-foreground">
+                  Tell us about your security testing requirements and we'll connect you with the right expert
+                </p>
               </div>
-            </TabsContent>
-
-            <TabsContent value="booking" className="mt-8">
-              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm max-w-2xl mx-auto">
+              
+              <Card>
                 <CardHeader>
-                  <CardTitle className="text-white text-center">Book Penetration Testing</CardTitle>
-                  <p className="text-gray-400 text-center">
-                    Schedule a consultation to discuss your testing requirements
-                  </p>
+                  <CardTitle>Project Details</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Service Type</label>
-                      <select className="w-full p-3 bg-gray-700/50 border border-gray-600 rounded-md text-white">
-                        <option value="">Select service</option>
-                        {testingServices.map(service => (
-                          <option key={service.id} value={service.id}>{service.title}</option>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Testing Type</label>
+                      <select 
+                        className="w-full p-3 border rounded-lg"
+                        value={selectedService}
+                        onChange={(e) => setSelectedService(e.target.value)}
+                      >
+                        <option value="">Select testing type...</option>
+                        {testingServices.map((service) => (
+                          <option key={service.id} value={service.id}>
+                            {service.title}
+                          </option>
                         ))}
                       </select>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Preferred Start Date</label>
-                      <input 
-                        type="date" 
-                        className="w-full p-3 bg-gray-700/50 border border-gray-600 rounded-md text-white"
-                      />
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Target Environment</label>
+                      <Input placeholder="e.g., Production, Staging, Development" />
                     </div>
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Project Details</label>
-                    <textarea 
-                      placeholder="Describe your project, specific concerns, and testing scope..."
+                  
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Project Scope</label>
+                    <Textarea 
+                      placeholder="Describe your target applications, networks, or systems to be tested..."
                       rows={4}
-                      className="w-full p-3 bg-gray-700/50 border border-gray-600 rounded-md text-white"
                     />
                   </div>
-
+                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Budget Range</label>
-                      <select className="w-full p-3 bg-gray-700/50 border border-gray-600 rounded-md text-white">
-                        <option value="">Select budget</option>
-                        <option value="5k-10k">$5,000 - $10,000</option>
-                        <option value="10k-20k">$10,000 - $20,000</option>
-                        <option value="20k+">$20,000+</option>
-                      </select>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Preferred Timeline</label>
+                      <Input type="date" />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Urgency</label>
-                      <select className="w-full p-3 bg-gray-700/50 border border-gray-600 rounded-md text-white">
-                        <option value="">Select urgency</option>
-                        <option value="standard">Standard (2-4 weeks)</option>
-                        <option value="priority">Priority (1-2 weeks)</option>
-                        <option value="emergency">Emergency (< 1 week)</option>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Budget Range</label>
+                      <select className="w-full p-3 border rounded-lg">
+                        <option value="">Select budget range...</option>
+                        <option value="2k-5k">$2,000 - $5,000</option>
+                        <option value="5k-10k">$5,000 - $10,000</option>
+                        <option value="10k-25k">$10,000 - $25,000</option>
+                        <option value="25k+">$25,000+</option>
                       </select>
                     </div>
                   </div>
-
-                  <Button className="w-full bg-red-600 hover:bg-red-700 text-lg py-3">
-                    Schedule Consultation
+                  
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Additional Requirements</label>
+                    <Textarea 
+                      placeholder="Any specific compliance requirements, testing constraints, or special considerations..."
+                      rows={3}
+                    />
+                  </div>
+                  
+                  <Button className="w-full" size="lg">
+                    Submit Testing Request
                   </Button>
                 </CardContent>
               </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
-    </StandardizedLayout>
+    </StandardLayout>
   );
 };
 

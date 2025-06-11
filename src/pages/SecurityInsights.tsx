@@ -1,420 +1,461 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { StandardLayout } from '@/components/layout/StandardLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  TrendingUp,
-  BarChart,
-  AlertTriangle,
-  Shield,
+  TrendingUp, 
+  AlertTriangle, 
+  Shield, 
+  Target,
+  BarChart3,
   Activity,
   Globe,
-  Brain,
-  Target,
-  ArrowRight,
+  Clock,
   ArrowUp,
   ArrowDown,
   Eye,
   Download
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const SecurityInsights = () => {
-  const [timeRange, setTimeRange] = useState('30d');
-
-  const insights = [
+  const threatData = [
     {
-      title: "Vulnerability Trends",
-      description: "Critical vulnerabilities discovered across Web3 protocols",
-      value: "127",
-      change: "+23%",
-      trend: "up",
-      color: "text-red-600",
-      icon: AlertTriangle
+      name: 'Flash Loan Attacks',
+      severity: 'High',
+      trend: 'up',
+      change: '+15%',
+      incidents: 23,
+      description: 'Increased activity in flash loan exploits targeting DeFi protocols'
     },
     {
-      title: "Security Score",
-      description: "Average security score across audited projects",
-      value: "8.2/10",
-      change: "+0.3",
-      trend: "up",
-      color: "text-green-600",
-      icon: Shield
+      name: 'Smart Contract Reentrancy',
+      severity: 'Critical',
+      trend: 'down',
+      change: '-8%',
+      incidents: 12,
+      description: 'Decrease in reentrancy attacks due to better prevention measures'
     },
     {
-      title: "Threat Level",
-      description: "Current ecosystem threat assessment",
-      value: "Medium",
-      change: "Stable",
-      trend: "stable",
-      color: "text-yellow-600",
-      icon: Target
+      name: 'Private Key Compromise',
+      severity: 'Critical',
+      trend: 'up',
+      change: '+22%',
+      incidents: 31,
+      description: 'Rising incidents of compromised private keys and seed phrases'
     },
     {
-      title: "Active Audits",
-      description: "Ongoing security assessments this month",
-      value: "89",
-      change: "+12%",
-      trend: "up",
-      color: "text-blue-600",
-      icon: Activity
+      name: 'Oracle Manipulation',
+      severity: 'High',
+      trend: 'stable',
+      change: '0%',
+      incidents: 8,
+      description: 'Stable but concerning levels of oracle price manipulation'
     }
   ];
 
-  const threatIntelligence = [
-    {
-      type: "Flash Loan Attacks",
-      severity: "High",
-      instances: 23,
-      trend: "+15%",
-      description: "Sophisticated flash loan exploits targeting cross-protocol integrations"
-    },
-    {
-      type: "Reentrancy Variants",
-      severity: "Critical",
-      instances: 12,
-      trend: "+8%",
-      description: "New reentrancy patterns affecting bridge contracts"
-    },
-    {
-      type: "Oracle Manipulation",
-      severity: "High",
-      instances: 18,
-      trend: "-5%",
-      description: "Price oracle attacks on DeFi lending protocols"
-    },
-    {
-      type: "Governance Exploits",
-      severity: "Medium",
-      instances: 7,
-      trend: "+25%",
-      description: "DAO governance token manipulation attacks"
-    }
+  const vulnerabilityStats = [
+    { category: 'Smart Contracts', critical: 45, high: 128, medium: 234, low: 156 },
+    { category: 'DeFi Protocols', critical: 23, high: 89, medium: 167, low: 98 },
+    { category: 'NFT Projects', critical: 12, high: 67, medium: 145, low: 203 },
+    { category: 'Web3 Apps', critical: 34, high: 156, medium: 289, low: 167 }
   ];
 
-  const topVulnerabilities = [
+  const riskMetrics = [
     {
-      name: "Cross-Chain Bridge Reentrancy",
-      category: "Critical",
-      protocols: 15,
-      bounty: "$2.5M",
-      discovered: "March 2025"
+      title: 'Total Value at Risk',
+      value: '$2.4B',
+      change: '+12%',
+      trend: 'up',
+      description: 'Across monitored protocols'
     },
     {
-      name: "MEV-Enhanced Flash Loans",
-      category: "High",
-      protocols: 23,
-      bounty: "$1.8M",
-      discovered: "March 2025"
+      title: 'Average Response Time',
+      value: '4.2h',
+      change: '-15%',
+      trend: 'down',
+      description: 'For critical vulnerabilities'
     },
     {
-      name: "AI-Assisted Social Engineering",
-      category: "High",
-      protocols: 8,
-      bounty: "$950k",
-      discovered: "February 2025"
+      title: 'Prevention Rate',
+      value: '94.7%',
+      change: '+3%',
+      trend: 'up',
+      description: 'Of attacks successfully prevented'
     },
     {
-      name: "ZK-SNARK Circuit Bugs",
-      category: "Critical",
-      protocols: 6,
-      bounty: "$3.2M",
-      discovered: "February 2025"
+      title: 'Recovery Time',
+      value: '12.8h',
+      change: '-8%',
+      trend: 'down',
+      description: 'Average incident recovery time'
     }
   ];
 
   const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'Critical': return 'bg-red-100 text-red-800';
-      case 'High': return 'bg-orange-100 text-orange-800';
-      case 'Medium': return 'bg-yellow-100 text-yellow-800';
+    switch (severity.toLowerCase()) {
+      case 'critical': return 'bg-red-100 text-red-800';
+      case 'high': return 'bg-orange-100 text-orange-800';
+      case 'medium': return 'bg-yellow-100 text-yellow-800';
+      case 'low': return 'bg-green-100 text-green-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
   const getTrendIcon = (trend: string) => {
-    if (trend === 'up') return <ArrowUp className="h-4 w-4 text-green-600" />;
-    if (trend === 'down') return <ArrowDown className="h-4 w-4 text-red-600" />;
-    return <Activity className="h-4 w-4 text-gray-600" />;
+    switch (trend) {
+      case 'up': return <ArrowUp className="h-3 w-3 text-red-500" />;
+      case 'down': return <ArrowDown className="h-3 w-3 text-green-500" />;
+      default: return <div className="h-3 w-3 bg-gray-400 rounded-full" />;
+    }
   };
 
   return (
     <StandardLayout
-      title="Security Insights"
-      description="AI-powered security analytics and threat intelligence for Web3"
+      title="Security Insights | Hawkly"
+      description="Real-time security intelligence and threat analysis"
     >
-      <div className="container py-12">
-        {/* Header */}
+      <div className="container mx-auto px-4 py-8">
+        {/* Hero Section */}
         <div className="text-center mb-12">
-          <Badge variant="secondary" className="mb-4">Real-time Intelligence</Badge>
-          <h1 className="text-4xl font-bold mb-4">Web3 Security Insights</h1>
+          <Badge variant="outline" className="px-4 py-2 mb-4">
+            <Activity className="h-4 w-4 mr-2" />
+            Real-Time Intelligence
+          </Badge>
+          <h1 className="text-4xl font-bold text-hawkly-gradient mb-4">
+            Security Insights
+          </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            AI-powered security analytics providing real-time threat intelligence, 
-            vulnerability trends, and predictive insights for the Web3 ecosystem.
+            Comprehensive security intelligence dashboard providing real-time threat analysis, 
+            vulnerability trends, and risk assessments across the Web3 ecosystem.
           </p>
         </div>
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {insights.map((insight, index) => {
-            const Icon = insight.icon;
-            return (
-              <Card key={index}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">{insight.title}</CardTitle>
-                  <Icon className={`h-4 w-4 ${insight.color}`} />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{insight.value}</div>
-                  <div className="flex items-center text-xs text-muted-foreground">
-                    {getTrendIcon(insight.trend)}
-                    <span className="ml-1">{insight.change} from last month</span>
+          {riskMetrics.map((metric, index) => (
+            <Card key={index}>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-medium text-muted-foreground">{metric.title}</h3>
+                  {getTrendIcon(metric.trend)}
+                </div>
+                <div className="space-y-1">
+                  <div className="text-2xl font-bold">{metric.value}</div>
+                  <div className="flex items-center gap-1 text-sm">
+                    <span className={metric.trend === 'up' ? 'text-red-600' : 'text-green-600'}>
+                      {metric.change}
+                    </span>
+                    <span className="text-muted-foreground">vs last month</span>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2">{insight.description}</p>
+                  <p className="text-xs text-muted-foreground">{metric.description}</p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <Tabs defaultValue="threats" className="space-y-8">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="threats">Threat Intelligence</TabsTrigger>
+            <TabsTrigger value="vulnerabilities">Vulnerabilities</TabsTrigger>
+            <TabsTrigger value="analysis">Risk Analysis</TabsTrigger>
+            <TabsTrigger value="reports">Reports</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="threats" className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-orange-500" />
+                    Active Threat Landscape
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {threatData.map((threat, index) => (
+                    <div key={index} className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-semibold">{threat.name}</h4>
+                          <Badge className={getSeverityColor(threat.severity)}>
+                            {threat.severity}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground">{threat.description}</p>
+                        <div className="text-xs text-muted-foreground">
+                          {threat.incidents} incidents this month
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 text-sm">
+                        {getTrendIcon(threat.trend)}
+                        <span className={threat.trend === 'up' ? 'text-red-600' : 'text-green-600'}>
+                          {threat.change}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
                 </CardContent>
               </Card>
-            );
-          })}
-        </div>
 
-        {/* Threat Intelligence */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-red-600" />
-                Active Threats
-              </CardTitle>
-              <CardDescription>
-                Current threat landscape and emerging attack vectors
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {threatIntelligence.map((threat, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium">{threat.type}</span>
-                        <Badge className={getSeverityColor(threat.severity)} variant="secondary">
-                          {threat.severity}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground">{threat.description}</p>
-                    </div>
-                    <div className="text-right ml-4">
-                      <div className="font-semibold">{threat.instances}</div>
-                      <div className="text-sm text-muted-foreground">{threat.trend}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Brain className="h-5 w-5 text-blue-600" />
-                AI Predictions
-              </CardTitle>
-              <CardDescription>
-                Machine learning insights and risk forecasting
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <div>
-                  <div className="flex justify-between text-sm mb-2">
-                    <span>Cross-Chain Attack Risk</span>
-                    <span className="font-medium">78%</span>
-                  </div>
-                  <Progress value={78} className="h-2" />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    High probability of bridge exploits in next 30 days
-                  </p>
-                </div>
-                
-                <div>
-                  <div className="flex justify-between text-sm mb-2">
-                    <span>DeFi Protocol Vulnerability</span>
-                    <span className="font-medium">65%</span>
-                  </div>
-                  <Progress value={65} className="h-2" />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Elevated risk in lending and AMM protocols
-                  </p>
-                </div>
-                
-                <div>
-                  <div className="flex justify-between text-sm mb-2">
-                    <span>Social Engineering Threats</span>
-                    <span className="font-medium">45%</span>
-                  </div>
-                  <Progress value={45} className="h-2" />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    AI-enhanced phishing campaigns targeting developers
-                  </p>
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-sm mb-2">
-                    <span>Zero-Day Discovery Rate</span>
-                    <span className="font-medium">23%</span>
-                  </div>
-                  <Progress value={23} className="h-2" />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Expected increase in novel vulnerability patterns
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Top Vulnerabilities */}
-        <Card className="mb-12">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-orange-600" />
-              Critical Vulnerabilities - March 2025
-            </CardTitle>
-            <CardDescription>
-              Most significant security discoveries and their impact
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {topVulnerabilities.map((vuln, index) => (
-                <div key={index} className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="font-semibold">{vuln.name}</span>
-                      <Badge className={getSeverityColor(vuln.category)} variant="secondary">
-                        {vuln.category}
-                      </Badge>
-                      <Badge variant="outline" className="text-xs">
-                        {vuln.protocols} protocols affected
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Globe className="h-5 w-5 text-blue-500" />
+                    Global Security Status
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Network Security Level</span>
+                      <Badge variant="outline" className="bg-green-50 text-green-700">
+                        Stable
                       </Badge>
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span>Max Bounty: {vuln.bounty}</span>
-                      <span>Discovered: {vuln.discovered}</span>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-green-500 h-2 rounded-full" style={{ width: '78%' }}></div>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">
-                    <Eye className="h-4 w-4 mr-2" />
-                    Details
-                  </Button>
-                </div>
-              ))}
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">DeFi Protocol Safety</span>
+                      <Badge variant="outline" className="bg-yellow-50 text-yellow-700">
+                        Elevated Risk
+                      </Badge>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-yellow-500 h-2 rounded-full" style={{ width: '65%' }}></div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Smart Contract Security</span>
+                      <Badge variant="outline" className="bg-green-50 text-green-700">
+                        Good
+                      </Badge>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-green-500 h-2 rounded-full" style={{ width: '82%' }}></div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </CardContent>
-        </Card>
+          </TabsContent>
 
-        {/* Analytics Dashboard */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
-          <Card className="lg:col-span-2">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BarChart className="h-5 w-5 text-green-600" />
-                Security Trend Analysis
-              </CardTitle>
-              <CardDescription>
-                Monthly vulnerability discovery and resolution patterns
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-64 flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 rounded-lg">
-                <div className="text-center">
-                  <BarChart className="h-16 w-16 text-primary mx-auto mb-4" />
-                  <p className="text-lg font-semibold">Interactive Chart</p>
-                  <p className="text-sm text-muted-foreground">
-                    Vulnerability trends over time with AI-powered predictions
-                  </p>
+          <TabsContent value="vulnerabilities" className="space-y-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5 text-red-500" />
+                  Vulnerability Distribution by Category
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {vulnerabilityStats.map((category, index) => (
+                    <div key={index} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-semibold">{category.category}</h4>
+                        <span className="text-sm text-muted-foreground">
+                          Total: {category.critical + category.high + category.medium + category.low}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 flex rounded-full overflow-hidden h-3">
+                          <div 
+                            className="bg-red-500" 
+                            style={{ width: `${(category.critical / (category.critical + category.high + category.medium + category.low)) * 100}%` }}
+                          ></div>
+                          <div 
+                            className="bg-orange-500" 
+                            style={{ width: `${(category.high / (category.critical + category.high + category.medium + category.low)) * 100}%` }}
+                          ></div>
+                          <div 
+                            className="bg-yellow-500" 
+                            style={{ width: `${(category.medium / (category.critical + category.high + category.medium + category.low)) * 100}%` }}
+                          ></div>
+                          <div 
+                            className="bg-green-500" 
+                            style={{ width: `${(category.low / (category.critical + category.high + category.medium + category.low)) * 100}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4 text-xs">
+                        <span className="flex items-center gap-1">
+                          <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                          Critical: {category.critical}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                          High: {category.high}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                          Medium: {category.medium}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          Low: {category.low}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Globe className="h-5 w-5 text-purple-600" />
-                Global Impact
-              </CardTitle>
-              <CardDescription>
-                Ecosystem-wide security metrics
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Total Value Secured</span>
-                  <span className="font-semibold">$847B</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Protocols Monitored</span>
-                  <span className="font-semibold">2,340</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Active Researchers</span>
-                  <span className="font-semibold">8,920</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Vulnerabilities Prevented</span>
-                  <span className="font-semibold">1,247</span>
-                </div>
-                
-                <div className="pt-4 border-t">
-                  <h4 className="font-medium mb-3">Top Ecosystems</h4>
-                  <div className="space-y-2">
+          <TabsContent value="analysis" className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5 text-purple-500" />
+                    Risk Assessment Matrix
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-4 gap-2 text-xs font-semibold text-center">
+                      <div></div>
+                      <div>Low Impact</div>
+                      <div>Medium Impact</div>
+                      <div>High Impact</div>
+                    </div>
+                    <div className="grid grid-cols-4 gap-2">
+                      <div className="text-xs font-semibold">High Probability</div>
+                      <div className="h-12 bg-yellow-200 rounded flex items-center justify-center text-xs">12</div>
+                      <div className="h-12 bg-orange-200 rounded flex items-center justify-center text-xs">8</div>
+                      <div className="h-12 bg-red-200 rounded flex items-center justify-center text-xs">3</div>
+                    </div>
+                    <div className="grid grid-cols-4 gap-2">
+                      <div className="text-xs font-semibold">Medium Probability</div>
+                      <div className="h-12 bg-green-200 rounded flex items-center justify-center text-xs">23</div>
+                      <div className="h-12 bg-yellow-200 rounded flex items-center justify-center text-xs">15</div>
+                      <div className="h-12 bg-orange-200 rounded flex items-center justify-center text-xs">7</div>
+                    </div>
+                    <div className="grid grid-cols-4 gap-2">
+                      <div className="text-xs font-semibold">Low Probability</div>
+                      <div className="h-12 bg-green-100 rounded flex items-center justify-center text-xs">45</div>
+                      <div className="h-12 bg-green-200 rounded flex items-center justify-center text-xs">18</div>
+                      <div className="h-12 bg-yellow-200 rounded flex items-center justify-center text-xs">9</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-blue-500" />
+                    Incident Timeline
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
                     {[
-                      { name: "Ethereum", percentage: 45 },
-                      { name: "Solana", percentage: 23 },
-                      { name: "Polygon", percentage: 18 },
-                      { name: "Avalanche", percentage: 14 }
-                    ].map((ecosystem, index) => (
-                      <div key={index} className="flex items-center justify-between">
-                        <span className="text-sm">{ecosystem.name}</span>
-                        <div className="flex items-center gap-2">
-                          <Progress value={ecosystem.percentage} className="w-16 h-2" />
-                          <span className="text-xs text-muted-foreground w-8">
-                            {ecosystem.percentage}%
-                          </span>
+                      { time: '2h ago', event: 'Flash loan attack detected on Protocol X', severity: 'critical' },
+                      { time: '6h ago', event: 'Suspicious oracle price movement', severity: 'high' },
+                      { time: '12h ago', event: 'Smart contract upgrade completed', severity: 'medium' },
+                      { time: '1d ago', event: 'Routine security scan completed', severity: 'low' },
+                      { time: '2d ago', event: 'New vulnerability disclosed', severity: 'high' }
+                    ].map((incident, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <div className={`w-3 h-3 rounded-full mt-1 ${
+                          incident.severity === 'critical' ? 'bg-red-500' :
+                          incident.severity === 'high' ? 'bg-orange-500' :
+                          incident.severity === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
+                        }`}></div>
+                        <div className="flex-1">
+                          <p className="text-sm">{incident.event}</p>
+                          <p className="text-xs text-muted-foreground">{incident.time}</p>
                         </div>
                       </div>
                     ))}
                   </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
 
-        {/* CTA Section */}
-        <div className="text-center bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg p-12">
-          <h2 className="text-3xl font-bold mb-4">Stay Ahead of Security Threats</h2>
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Get personalized security insights and threat intelligence for your Web3 projects with our AI-powered analysis.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg">
-              <Brain className="mr-2 h-4 w-4" />
-              Get AI Security Report
-            </Button>
-            <Link to="/request-audit">
-              <Button size="lg" variant="outline">
-                <Download className="mr-2 h-4 w-4" />
-                Request Full Audit
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        </div>
+          <TabsContent value="reports" className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                {
+                  title: 'Weekly Security Summary',
+                  description: 'Comprehensive weekly analysis of security trends and incidents',
+                  date: 'January 15, 2024',
+                  type: 'Weekly Report'
+                },
+                {
+                  title: 'DeFi Threat Landscape Q1 2024',
+                  description: 'Quarterly analysis of DeFi security threats and mitigation strategies',
+                  date: 'January 10, 2024',
+                  type: 'Quarterly Report'
+                },
+                {
+                  title: 'Flash Loan Attack Analysis',
+                  description: 'Deep dive into recent flash loan attacks and prevention methods',
+                  date: 'January 8, 2024',
+                  type: 'Special Report'
+                },
+                {
+                  title: 'Smart Contract Vulnerability Trends',
+                  description: 'Monthly analysis of smart contract vulnerabilities and patterns',
+                  date: 'January 5, 2024',
+                  type: 'Monthly Report'
+                },
+                {
+                  title: 'Incident Response Best Practices',
+                  description: 'Guidelines for effective incident response in Web3 environments',
+                  date: 'January 3, 2024',
+                  type: 'Best Practices'
+                },
+                {
+                  title: 'Security Metrics Dashboard',
+                  description: 'Real-time metrics and KPIs for security performance tracking',
+                  date: 'January 1, 2024',
+                  type: 'Dashboard'
+                }
+              ].map((report, index) => (
+                <Card key={index} className="hover:shadow-lg transition-all">
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <CardTitle className="text-lg line-clamp-2">{report.title}</CardTitle>
+                      <Badge variant="outline" className="text-xs">
+                        {report.type}
+                      </Badge>
+                    </div>
+                    <p className="text-muted-foreground text-sm line-clamp-2">
+                      {report.description}
+                    </p>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="text-sm text-muted-foreground">
+                      Published: {report.date}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" className="flex-1">
+                        <Eye className="h-3 w-3 mr-1" />
+                        View
+                      </Button>
+                      <Button size="sm" className="flex-1">
+                        <Download className="h-3 w-3 mr-1" />
+                        Download
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </StandardLayout>
   );
