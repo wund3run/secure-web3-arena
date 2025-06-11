@@ -1,70 +1,107 @@
 
 import { useMemo } from 'react';
-import { AdaptiveInterfaceProps, AdaptiveDashboardConfig } from '../types';
+import { AdaptiveInterfaceProps, DashboardLayoutConfig } from '../types';
 
-export function useAdaptiveDashboard({
+export const useAdaptiveDashboard = ({
   userSegment,
   userType,
   preferences,
   behaviorProfile
-}: AdaptiveInterfaceProps) {
+}: AdaptiveInterfaceProps) => {
   
   const getDashboardLayout = (): string => {
-    // Return layout based on user preferences or defaults
-    if (preferences?.dashboardLayout) {
+    // Prioritize user preferences
+    if (preferences.dashboardLayout) {
       return preferences.dashboardLayout;
     }
-    
-    // Fallback to segment-based defaults
+
+    // Fallback to segment-based layout
     switch (userSegment) {
       case 'new_user':
-        return 'detailed'; // More guidance for new users
+        return 'compact';
       case 'power_user':
       case 'champion':
-        return 'compact'; // More efficient for experienced users
+        return 'detailed';
       default:
-        return 'cards'; // Balanced view for regular users
+        return 'cards';
     }
   };
 
   const getWidgetPriority = (): string[] => {
-    const baseWidgets = ['overview', 'quick-actions'];
+    const baseWidgets = ['overview', 'recent-activity', 'quick-actions'];
     
-    if (userType === 'auditor') {
-      return [...baseWidgets, 'active-audits', 'earnings', 'availability'];
-    } else {
-      return [...baseWidgets, 'projects', 'recommendations', 'activity'];
+    if (!behaviorProfile) return baseWidgets;
+
+    const prioritized = [...baseWidgets];
+
+    // Add widgets based on feature usage
+    if (behaviorProfile.featureUsage['notifications'] > 5) {
+      prioritized.push('notifications');
     }
+
+    if (behaviorProfile.featureUsage['analytics'] > 3) {
+      prioritized.push('analytics');
+    }
+
+    if (userSegment === 'power_user' || userSegment === 'champion') {
+      prioritized.push('advanced-metrics', 'ai-insights');
+    }
+
+    return prioritized;
   };
 
-  const getPersonalizedMetrics = (): string[] => {
-    const metrics = [];
-    
+  const getPersonalizedMetrics = () => {
+    const metrics = {
+      primary: 'overview',
+      secondary: ['activity', 'performance'],
+      advanced: []
+    };
+
     if (userType === 'auditor') {
-      metrics.push('earnings', 'completion-rate', 'client-satisfaction');
-    } else {
-      metrics.push('project-status', 'audit-progress', 'cost-tracking');
+      metrics.primary = 'audits';
+      metrics.secondary = ['earnings', 'ratings'];
+      if (userSegment === 'power_user') {
+        metrics.advanced = ['efficiency', 'client-satisfaction'];
+      }
+    } else if (userType === 'project_owner') {
+      metrics.primary = 'projects';
+      metrics.secondary = ['security-score', 'spending'];
+      if (userSegment === 'power_user') {
+        metrics.advanced = ['roi', 'risk-assessment'];
+      }
     }
-    
-    // Add advanced metrics for power users
-    if (userSegment === 'power_user' || userSegment === 'champion') {
-      metrics.push('performance-trends', 'predictive-insights');
-    }
-    
+
     return metrics;
   };
 
-  const config: AdaptiveDashboardConfig = useMemo(() => ({
-    layout: getDashboardLayout() as 'compact' | 'detailed' | 'cards',
-    widgetPriority: getWidgetPriority(),
-    personalizedMetrics: getPersonalizedMetrics(),
-    showAdvancedFeatures: userSegment === 'power_user' || userSegment === 'champion'
-  }), [userSegment, userType, preferences, behaviorProfile]);
+  const getRecommendedActions = () => {
+    const actions = [];
 
-  return {
+    switch (userSegment) {
+      case 'new_user':
+        actions.push('complete-profile', 'take-tour', 'first-action');
+        break;
+      case 'regular_user':
+        actions.push('explore-features', 'optimize-workflow');
+        break;
+      case 'power_user':
+        actions.push('try-advanced-features', 'provide-feedback');
+        break;
+      case 'at_risk':
+        actions.push('check-updates', 'special-offers', 'support');
+        break;
+      case 'champion':
+        actions.push('refer-friends', 'beta-features', 'community');
+        break;
+    }
+
+    return actions;
+  };
+
+  return useMemo(() => ({
     getDashboardLayout,
     getWidgetPriority,
     getPersonalizedMetrics,
-    config
-  };
-}
+    getRecommendedActions
+  }), [userSegment, userType, preferences, behaviorProfile]);
+};

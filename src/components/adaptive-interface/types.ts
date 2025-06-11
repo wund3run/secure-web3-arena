@@ -1,36 +1,45 @@
 
 export interface AdaptiveInterfaceProps {
-  userSegment: string;
+  userSegment: 'new_user' | 'regular_user' | 'power_user' | 'at_risk' | 'champion';
   userType: string;
-  preferences: any;
-  behaviorProfile: any;
+  preferences: {
+    theme: string;
+    dashboardLayout: string;
+    notifications: boolean;
+    [key: string]: any;
+  };
+  behaviorProfile: {
+    visitCount: number;
+    preferredPages: string[];
+    featureUsage: Record<string, number>;
+    engagementScore: number;
+    [key: string]: any;
+  } | null;
   isAuthenticated?: boolean;
 }
 
-export interface AdaptiveDashboardConfig {
+export interface DashboardLayoutConfig {
   layout: 'compact' | 'detailed' | 'cards';
-  widgetPriority: string[];
-  personalizedMetrics: string[];
-  showAdvancedFeatures: boolean;
+  priority: string[];
+  widgets: string[];
 }
 
-export interface UserSegment {
-  id: string;
-  name: string;
-  characteristics: string[];
-  recommendations: string[];
+export interface PersonalizationRule {
+  condition: (props: AdaptiveInterfaceProps) => boolean;
+  action: string;
+  weight: number;
 }
 
 export interface PersonalizedMessage {
   title: string;
   message: string;
-  type: 'welcome' | 'info' | 'warning' | 'error';
+  type: 'welcome' | 'info' | 'warning' | 'success';
 }
 
 export interface AdaptiveLayoutConfig {
   variant: 'compact' | 'detailed' | 'cards';
-  showSidebar: boolean;
-  contentPriority: string[];
+  priority: string[];
+  widgets: string[];
 }
 
 export interface QuickAction {
