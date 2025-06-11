@@ -7,7 +7,18 @@ import { ArrowRight, Shield, Eye, CheckCircle } from 'lucide-react';
 export function HeroSection() {
   return (
     <section className="relative py-32 lg:py-40 bg-gradient-to-br from-gray-900 via-gray-800 to-black overflow-hidden">
-      {/* Background Pattern */}
+      {/* Grid Background Pattern */}
+      <div 
+        className="absolute inset-0 opacity-30"
+        style={{
+          backgroundImage: `url('/lovable-uploads/1c074bb3-8c7f-44c0-85c3-bf5b4123c592.png')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      />
+      
+      {/* Additional grid overlay for enhanced effect */}
       <div className="absolute inset-0 bg-grid-white/[0.02] [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" />
       
       {/* Gradient Overlay */}
