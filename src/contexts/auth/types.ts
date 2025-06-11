@@ -25,11 +25,13 @@ export interface AuthContextProps {
   session: Session | null;
   userProfile: UserProfile | null;
   loading: boolean;
+  error: any;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signUp: (email: string, password: string, fullName: string, userType: 'auditor' | 'project_owner') => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
   resetPassword: (newPassword: string) => Promise<void>;
   updateUserProfile: (data: Partial<UserProfile>) => Promise<UserProfile | null>;
+  updateProfile: (data: Partial<UserProfile>) => Promise<UserProfile | null>;
   getUserType: () => 'auditor' | 'project_owner' | 'admin' | null;
 }

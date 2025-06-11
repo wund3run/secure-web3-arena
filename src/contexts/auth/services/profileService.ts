@@ -20,7 +20,8 @@ export const profileService = {
       if (profile) {
         const typedProfile: UserProfile = {
           ...profile,
-          user_type: profile.user_type as UserProfile['user_type'] || 'project_owner'
+          user_type: profile.user_type as UserProfile['user_type'] || 'project_owner',
+          verification_status: (profile.verification_status as UserProfile['verification_status']) || 'pending'
         };
         console.log('Profile loaded:', typedProfile);
         return typedProfile;
@@ -76,7 +77,8 @@ export const profileService = {
     if (updatedProfile) {
       const typedProfile: UserProfile = {
         ...updatedProfile,
-        user_type: updatedProfile.user_type as UserProfile['user_type'] || 'project_owner'
+        user_type: updatedProfile.user_type as UserProfile['user_type'] || 'project_owner',
+        verification_status: (updatedProfile.verification_status as UserProfile['verification_status']) || 'pending'
       };
       toast.success('Profile updated successfully');
       return typedProfile;

@@ -11,6 +11,7 @@ export const useAuthProvider = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<any>(null);
 
   useEffect(() => {
     // Set up auth state listener first
@@ -49,6 +50,7 @@ export const useAuthProvider = () => {
       email,
       password,
     });
+    setError(error);
     return { error };
   };
 
@@ -71,11 +73,24 @@ export const useAuthProvider = () => {
       await profileService.createProfile(data.user.id, fullName, userType);
     }
 
+    setError(error);
     return { error };
   };
 
   const signOut = async () => {
     await supabase.auth.signOut();
+  };
+
+  const forgotPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    if (error) throw error;
+  };
+
+  const resetPassword = async (newPassword: string) => {
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+    if (error) throw error;
   };
 
   const updateUserProfile = async (data: Partial<UserProfile>) => {
@@ -93,6 +108,8 @@ export const useAuthProvider = () => {
     }
   };
 
+  const updateProfile = updateUserProfile; // Alias for compatibility
+
   const getUserType = (): 'auditor' | 'project_owner' | 'admin' | null => {
     return userProfile?.user_type || null;
   };
@@ -102,10 +119,14 @@ export const useAuthProvider = () => {
     session,
     userProfile,
     loading,
+    error,
     signIn,
     signUp,
     signOut,
+    forgotPassword,
+    resetPassword,
     updateUserProfile,
+    updateProfile,
     getUserType,
   };
 };
