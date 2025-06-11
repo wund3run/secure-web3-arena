@@ -6,10 +6,12 @@ import { EnhancedAuditorDashboard } from './enhanced/EnhancedAuditorDashboard';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { LoadingDashboard } from './LoadingDashboard';
 import { UnauthenticatedDashboard } from './UnauthenticatedDashboard';
+import { NotificationDashboardWidget } from './NotificationDashboardWidget';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, Shield, BarChart3, Settings, Bell } from 'lucide-react';
+import { Users, Shield, BarChart3, Settings, Bell, MessageSquare, DollarSign } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface DashboardSwitcherProps {
   currentView: string;
@@ -21,12 +23,14 @@ function DashboardSwitcher({ currentView, onViewChange, userType }: DashboardSwi
   const views = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
     { id: 'projects', label: userType === 'auditor' ? 'Audits' : 'Projects', icon: Shield },
-    { id: 'messages', label: 'Messages', icon: Bell },
+    { id: 'messages', label: 'Messages', icon: MessageSquare },
+    { id: 'escrow', label: 'Payments', icon: DollarSign },
+    { id: 'notifications', label: 'Alerts', icon: Bell },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
   return (
-    <div className="flex items-center gap-2 mb-6 p-1 bg-muted rounded-lg">
+    <div className="flex items-center gap-2 mb-6 p-1 bg-muted rounded-lg flex-wrap">
       {views.map((view) => (
         <Button
           key={view.id}
@@ -40,6 +44,37 @@ function DashboardSwitcher({ currentView, onViewChange, userType }: DashboardSwi
         </Button>
       ))}
     </div>
+  );
+}
+
+function QuickAccessPanel() {
+  const quickActions = [
+    { title: 'Start New Audit', href: '/request-audit', icon: Shield, color: 'bg-blue-100 text-blue-600' },
+    { title: 'Escrow Payments', href: '/escrow', icon: DollarSign, color: 'bg-green-100 text-green-600' },
+    { title: 'Live Collaboration', href: '/collaboration', icon: Users, color: 'bg-purple-100 text-purple-600' },
+    { title: 'Analytics Hub', href: '/analytics', icon: BarChart3, color: 'bg-orange-100 text-orange-600' },
+  ];
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg">Quick Actions</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 gap-3">
+          {quickActions.map((action) => (
+            <Button key={action.title} asChild variant="outline" className="h-16 flex-col gap-2">
+              <Link to={action.href}>
+                <div className={`p-2 rounded-lg ${action.color}`}>
+                  <action.icon className="h-4 w-4" />
+                </div>
+                <span className="text-xs">{action.title}</span>
+              </Link>
+            </Button>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -64,17 +99,16 @@ export const UnifiedDashboard = () => {
         <div>
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <p className="text-muted-foreground">
-            Welcome back, {user?.email}
+            Welcome back! Here's what's happening with your {userType === 'auditor' ? 'audits' : 'projects'}.
           </p>
         </div>
-        <Badge variant="secondary" className="flex items-center gap-2">
-          <Users className="h-4 w-4" />
-          {userType === 'project_owner' ? 'Project Owner' : 
-           userType === 'auditor' ? 'Security Auditor' :
-           userType === 'admin' ? 'Administrator' : 'User'}
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Badge variant="outline">{userType}</Badge>
+          <Button asChild>
+            <Link to="/features">Explore Features</Link>
+          </Button>
+        </div>
       </div>
-      
       <DashboardSwitcher 
         currentView={currentView}
         onViewChange={setCurrentView}
@@ -83,68 +117,87 @@ export const UnifiedDashboard = () => {
     </div>
   );
 
-  // Quick stats component
-  const renderQuickStats = () => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            {userType === 'auditor' ? 'Active Audits' : 'Active Projects'}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">12</div>
-          <p className="text-xs text-muted-foreground">+2 from last month</p>
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            {userType === 'auditor' ? 'Total Earnings' : 'Total Spent'}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">$45,231</div>
-          <p className="text-xs text-muted-foreground">+12% from last month</p>
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            Average Rating
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">4.8</div>
-          <p className="text-xs text-muted-foreground">From 156 reviews</p>
-        </CardContent>
-      </Card>
+  // Render overview content
+  const renderOverviewContent = () => (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="lg:col-span-2 space-y-6">
+        {userType === 'auditor' ? (
+          <EnhancedAuditorDashboard />
+        ) : userType === 'admin' ? (
+          <AdminDashboard />
+        ) : (
+          <ProjectOwnerDashboard />
+        )}
+      </div>
+      <div className="space-y-6">
+        <NotificationDashboardWidget />
+        <QuickAccessPanel />
+      </div>
     </div>
   );
 
+  // Render content based on current view
+  const renderViewContent = () => {
+    switch (currentView) {
+      case 'overview':
+        return renderOverviewContent();
+      case 'messages':
+        return (
+          <Card>
+            <CardContent className="text-center py-8">
+              <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+              <h3 className="text-lg font-medium mb-2">Messages</h3>
+              <p className="text-muted-foreground mb-4">
+                Communicate with auditors and clients in real-time
+              </p>
+              <Button asChild>
+                <Link to="/messages">Open Messages</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        );
+      case 'escrow':
+        return (
+          <Card>
+            <CardContent className="text-center py-8">
+              <DollarSign className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+              <h3 className="text-lg font-medium mb-2">Escrow & Payments</h3>
+              <p className="text-muted-foreground mb-4">
+                Manage secure milestone-based payments
+              </p>
+              <Button asChild>
+                <Link to="/escrow">Manage Payments</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        );
+      case 'notifications':
+        return (
+          <div className="space-y-6">
+            <NotificationDashboardWidget />
+            <Card>
+              <CardContent className="text-center py-8">
+                <Bell className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-medium mb-2">Advanced Notifications</h3>
+                <p className="text-muted-foreground mb-4">
+                  Configure smart alerts and real-time updates
+                </p>
+                <Button asChild variant="outline">
+                  <Link to="/collaboration">Configure Notifications</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        );
+      default:
+        return renderOverviewContent();
+    }
+  };
+
   return (
-    <div className="container mx-auto py-8">
+    <div className="space-y-6">
       {renderDashboardHeader()}
-      
-      {currentView === 'overview' && renderQuickStats()}
-      
-      {/* Render appropriate dashboard based on user type */}
-      <div className="dashboard-content">
-        {(() => {
-          switch (userType) {
-            case 'project_owner':
-              return <ProjectOwnerDashboard />;
-            case 'auditor':
-              return <EnhancedAuditorDashboard />;
-            case 'admin':
-              return <AdminDashboard />;
-            default:
-              return <ProjectOwnerDashboard />;
-          }
-        })()}
-      </div>
+      {renderViewContent()}
     </div>
   );
 };

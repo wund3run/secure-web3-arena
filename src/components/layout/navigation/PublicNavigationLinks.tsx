@@ -29,50 +29,55 @@ export const publicNavigationLinks: PublicNavigationLink[] = [
     ]
   },
   {
-    title: "Resources",
-    href: "/resources",
+    title: "Platform",
+    href: "/features",
     children: [
       {
-        title: "Security Guides",
-        href: "/resources/security-guides",
-        description: "Best practices and security guidelines"
+        title: "Advanced Features",
+        href: "/features",
+        description: "Explore our comprehensive platform capabilities"
       },
       {
-        title: "Knowledge Base",
-        href: "/resources/knowledge-base",
-        description: "Comprehensive security documentation"
+        title: "Escrow & Payments",
+        href: "/escrow",
+        description: "Secure milestone-based payment system"
       },
       {
-        title: "Tutorials",
-        href: "/resources/tutorials",
-        description: "Step-by-step security tutorials"
+        title: "Real-time Collaboration",
+        href: "/collaboration",
+        description: "Live document editing and team communication"
+      },
+      {
+        title: "Analytics Dashboard",
+        href: "/analytics",
+        description: "Advanced insights and performance metrics"
       }
     ]
   },
   {
-    title: "Tools",
-    href: "/tools",
+    title: "Resources",
+    href: "/support",
     children: [
       {
-        title: "Security Insights",
-        href: "/tools/security-insights",
-        description: "Real-time vulnerability analysis"
+        title: "Support Center",
+        href: "/support",
+        description: "Get help and find answers"
       },
       {
-        title: "AI Tools",
-        href: "/tools/ai-tools",
-        description: "AI-powered security analysis"
+        title: "FAQ",
+        href: "/support/faq",
+        description: "Frequently asked questions"
       },
       {
-        title: "Vulnerability Scanner",
-        href: "/tools/vulnerability-scanner",
-        description: "Automated security scanning"
+        title: "Documentation",
+        href: "/support",
+        description: "Comprehensive platform guides"
       }
     ]
   },
   {
     title: "Company",
-    href: "/business",
+    href: "/business/about",
     children: [
       {
         title: "About",

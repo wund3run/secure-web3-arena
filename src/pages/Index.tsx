@@ -1,60 +1,116 @@
 
-import React from "react";
-import { StandardizedLayout } from "@/components/layout/StandardizedLayout";
-import { SkipLink } from "@/components/ui/skip-link";
-import { SEOOptimization } from "@/components/seo/SEOOptimization";
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
+import { HeroSection } from "@/components/sections/HeroSection";
+import { FeaturesOverview } from "@/components/sections/FeaturesOverview";
+import { CTASection } from "@/components/sections/CTASection";
+import { FeatureShowcase } from "@/components/features/FeatureShowcase";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
+import { Shield, Users, Zap, BarChart3 } from "lucide-react";
 
-// Enhanced components for consistent experience
-const IndexPageLayout = React.lazy(() => 
-  import("@/components/home/index-page-layout").then(m => ({ default: m.IndexPageLayout }))
-);
-
-const SupportButtonEnhanced = React.lazy(() => 
-  import("@/components/ui/support-button-enhanced").then(m => ({ default: m.SupportButtonEnhanced }))
-);
-
-// Enhanced loading fallback for better UX
-const ComponentFallback = () => (
-  <div className="min-h-screen p-6 space-y-4">
-    <div className="animate-pulse space-y-4">
-      <div className="h-12 bg-muted rounded-lg w-64 mx-auto" />
-      <div className="h-4 bg-muted rounded w-full max-w-2xl mx-auto" />
-      <div className="h-4 bg-muted rounded w-3/4 max-w-xl mx-auto" />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 max-w-6xl mx-auto">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="h-48 bg-muted rounded-lg animate-pulse" />
-        ))}
-      </div>
-    </div>
-  </div>
-);
-
-export default function Index() {
+const Index = () => {
   return (
-    <StandardizedLayout
-      title="Hawkly | Leading Web3 Security Marketplace"
-      description="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions."
-      keywords="web3 security, smart contract audit, blockchain security, defi security, nft audit"
-      showBreadcrumbs={false}
-    >
-      <SEOOptimization 
-        type="website"
-        title="Hawkly | Leading Web3 Security Marketplace"
-        description="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions."
-        imageUrl="/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png"
-      />
+    <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Hawkly - Web3 Security Audit Platform</title>
+        <meta name="description" content="Professional Web3 security auditing platform with AI-powered matching, escrow payments, and real-time collaboration tools." />
+        <meta name="keywords" content="Web3 security, smart contract audit, blockchain security, DeFi audit, NFT security" />
+        <meta property="og:title" content="Hawkly - Web3 Security Audit Platform" />
+        <meta property="og:description" content="Professional Web3 security auditing with advanced features" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
+
+      <Navbar />
       
-      <SkipLink targetId="main-content" />
-      
-      <main id="main-content" className="flex-grow">
-        <React.Suspense fallback={<ComponentFallback />}>
-          <IndexPageLayout />
-        </React.Suspense>
+      <main>
+        <HeroSection />
+        
+        {/* Enhanced Features Section */}
+        <section className="py-20 bg-muted/50">
+          <div className="container">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold mb-4">Advanced Platform Features</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Built for Web3 security professionals with cutting-edge tools and seamless workflows
+              </p>
+            </div>
+            <FeatureShowcase />
+          </div>
+        </section>
+
+        {/* Quick Access Section */}
+        <section className="py-20">
+          <div className="container">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold mb-4">Get Started Today</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Choose your path and start securing Web3 projects with our comprehensive platform
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+              {[
+                {
+                  icon: <Shield className="h-8 w-8" />,
+                  title: "Request Audit",
+                  description: "Submit your project for professional security review",
+                  href: "/request-audit",
+                  cta: "Start Audit"
+                },
+                {
+                  icon: <Users className="h-8 w-8" />,
+                  title: "Browse Experts",
+                  description: "Find verified security auditors for your project",
+                  href: "/marketplace",
+                  cta: "Find Auditors"
+                },
+                {
+                  icon: <Zap className="h-8 w-8" />,
+                  title: "Platform Features",
+                  description: "Explore advanced tools and capabilities",
+                  href: "/features",
+                  cta: "View Features"
+                },
+                {
+                  icon: <BarChart3 className="h-8 w-8" />,
+                  title: "Analytics",
+                  description: "Access comprehensive insights and reporting",
+                  href: "/analytics",
+                  cta: "View Analytics"
+                }
+              ].map((item, index) => (
+                <Card key={index} className="text-center hover:shadow-lg transition-all">
+                  <CardHeader>
+                    <div className="mx-auto p-3 bg-primary/10 rounded-lg w-fit mb-4">
+                      <div className="text-primary">
+                        {item.icon}
+                      </div>
+                    </div>
+                    <CardTitle className="text-xl">{item.title}</CardTitle>
+                    <CardDescription>{item.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button asChild className="w-full">
+                      <Link to={item.href}>{item.cta}</Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <FeaturesOverview />
+        <CTASection />
       </main>
       
-      <React.Suspense fallback={null}>
-        <SupportButtonEnhanced />
-      </React.Suspense>
-    </StandardizedLayout>
+      <Footer />
+    </div>
   );
-}
+};
+
+export default Index;

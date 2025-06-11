@@ -1,28 +1,51 @@
 
 import React from 'react';
-import { Wifi, WifiOff } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useRealtimeSync } from '@/hooks/useRealtimeSync';
+import { Wifi, WifiOff, Loader2 } from 'lucide-react';
 
-export function RealtimeStatusIndicator() {
-  const { isConnected } = useRealtimeSync();
+interface RealtimeStatusIndicatorProps {
+  channel?: string;
+  className?: string;
+}
+
+export function RealtimeStatusIndicator({ 
+  channel = 'global',
+  className = ""
+}: RealtimeStatusIndicatorProps) {
+  const { isConnected, connectionStatus } = useRealtimeSync({ channel });
+
+  const getStatusIcon = () => {
+    switch (connectionStatus) {
+      case 'connected':
+        return <Wifi className="h-3 w-3" />;
+      case 'connecting':
+        return <Loader2 className="h-3 w-3 animate-spin" />;
+      case 'disconnected':
+      default:
+        return <WifiOff className="h-3 w-3" />;
+    }
+  };
+
+  const getStatusVariant = () => {
+    switch (connectionStatus) {
+      case 'connected':
+        return 'default';
+      case 'connecting':
+        return 'secondary';
+      case 'disconnected':
+      default:
+        return 'destructive';
+    }
+  };
 
   return (
     <Badge 
-      variant={isConnected ? "default" : "destructive"} 
-      className="flex items-center gap-1 text-xs"
+      variant={getStatusVariant()} 
+      className={`text-xs flex items-center gap-1 ${className}`}
     >
-      {isConnected ? (
-        <>
-          <Wifi className="h-3 w-3" />
-          Live
-        </>
-      ) : (
-        <>
-          <WifiOff className="h-3 w-3" />
-          Offline
-        </>
-      )}
+      {getStatusIcon()}
+      <span className="capitalize">{connectionStatus}</span>
     </Badge>
   );
 }
