@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,7 +10,7 @@ import { NotificationProvider } from "@/contexts/NotificationContext";
 import { EscrowProvider } from "@/contexts/EscrowContext";
 import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
 import { ThemeProvider } from "@/components/ui/theme-provider";
-import { ErrorBoundary } from "@/components/error/comprehensive-error-boundary";
+import { ComprehensiveErrorBoundary } from "@/components/error/comprehensive-error-boundary";
 
 // Page imports
 import Index from "./pages/Index";
@@ -23,29 +24,22 @@ import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
-import NotFound from "./pages/error/NotFound";
-import BusinessDashboard from "./pages/business/BusinessDashboard";
+import NotFound from "./pages/NotFound";
 import ContactPage from "./pages/business/ContactPage";
-import AuditRequest from "./pages/business/AuditRequest";
-import UserProfile from "./pages/user-profiling/UserProfile";
-import UserAdmin from "./pages/admin/UserAdmin";
-import AuditAdmin from "./pages/admin/AuditAdmin";
-import AuditorManagement from "./pages/admin/AuditorManagement";
-import ProjectManagement from "./pages/admin/ProjectManagement";
 import PricingCalculator from "./pages/PricingCalculator";
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
-    <ErrorBoundary>
+    <ComprehensiveErrorBoundary>
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <NotificationProvider>
               <EscrowProvider>
                 <AccessibilityProvider>
-                  <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+                  <ThemeProvider storageKey="vite-ui-theme">
                     <TooltipProvider>
                       <Toaster />
                       <Sonner />
@@ -65,18 +59,7 @@ function App() {
                           <Route path="*" element={<NotFound />} />
 
                           {/* Business Routes */}
-                          <Route path="/business/dashboard" element={<BusinessDashboard />} />
                           <Route path="/business/contact" element={<ContactPage />} />
-                          <Route path="/business/audit-request" element={<AuditRequest />} />
-
-                          {/* User Profiling */}
-                          <Route path="/user-profile" element={<UserProfile />} />
-
-                          {/* Admin Routes */}
-                          <Route path="/admin/users" element={<UserAdmin />} />
-                          <Route path="/admin/audits" element={<AuditAdmin />} />
-                          <Route path="/admin/auditors" element={<AuditorManagement />} />
-                          <Route path="/admin/projects" element={<ProjectManagement />} />
 
                           {/* Pricing Calculator */}
                           <Route path="/pricing-calculator" element={<PricingCalculator />} />
@@ -90,7 +73,7 @@ function App() {
           </AuthProvider>
         </QueryClientProvider>
       </HelmetProvider>
-    </ErrorBoundary>
+    </ComprehensiveErrorBoundary>
   );
 }
 
