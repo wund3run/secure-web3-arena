@@ -3,6 +3,7 @@ import React from "react";
 import { StandardizedLayout } from "@/components/layout/StandardizedLayout";
 import { SkipLink } from "@/components/ui/skip-link";
 import { EnhancedErrorBoundary } from "@/components/error-handling/EnhancedErrorBoundary";
+import { NavigationOptimizer } from "@/components/layout/navigation/NavigationOptimizer";
 
 // Lazy load heavy components
 const IndexPageLayout = React.lazy(() => 
@@ -21,27 +22,29 @@ const ComponentFallback = () => (
 
 export default function Home() {
   return (
-    <StandardizedLayout
-      title="Hawkly | Leading Web3 Security Marketplace"
-      description="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions."
-      keywords="web3 security, smart contract audit, blockchain security"
-      showBreadcrumbs={false}
-    >
-      <SkipLink targetId="main-content" />
-      
-      <main id="main-content">
+    <NavigationOptimizer>
+      <StandardizedLayout
+        title="Hawkly | Leading Web3 Security Marketplace"
+        description="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions."
+        keywords="web3 security, smart contract audit, blockchain security"
+        showBreadcrumbs={false}
+      >
+        <SkipLink targetId="main-content" />
+        
+        <main id="main-content">
+          <EnhancedErrorBoundary>
+            <React.Suspense fallback={<ComponentFallback />}>
+              <IndexPageLayout />
+            </React.Suspense>
+          </EnhancedErrorBoundary>
+        </main>
+        
         <EnhancedErrorBoundary>
-          <React.Suspense fallback={<ComponentFallback />}>
-            <IndexPageLayout />
+          <React.Suspense fallback={null}>
+            <SupportButtonEnhanced />
           </React.Suspense>
         </EnhancedErrorBoundary>
-      </main>
-      
-      <EnhancedErrorBoundary>
-        <React.Suspense fallback={null}>
-          <SupportButtonEnhanced />
-        </React.Suspense>
-      </EnhancedErrorBoundary>
-    </StandardizedLayout>
+      </StandardizedLayout>
+    </NavigationOptimizer>
   );
 }

@@ -5,6 +5,8 @@ import { EnhancedDashboardRouter } from '@/components/dashboard/EnhancedDashboar
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { EnhancedRouteGuard } from '@/components/routing/EnhancedRouteGuard';
+import { EnhancedBreadcrumbs } from '@/components/navigation/EnhancedBreadcrumbs';
+import { ResponsiveLayout } from '@/components/layout/ResponsiveLayout';
 
 const Dashboard = () => {
   return (
@@ -17,7 +19,8 @@ const Dashboard = () => {
       <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
         <main className="flex-grow">
-          <div className="container py-8">
+          <ResponsiveLayout maxWidth="2xl" padding="md">
+            <EnhancedBreadcrumbs />
             <EnhancedRouteGuard 
               requiresAuth={true}
               allowedRoles={['auditor', 'project_owner', 'admin']}
@@ -25,7 +28,7 @@ const Dashboard = () => {
             >
               <EnhancedDashboardRouter />
             </EnhancedRouteGuard>
-          </div>
+          </ResponsiveLayout>
         </main>
         <Footer />
       </div>
