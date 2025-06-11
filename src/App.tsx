@@ -1,4 +1,5 @@
 
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -37,13 +38,13 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <NotificationProvider>
-              <EscrowProvider>
-                <AccessibilityProvider>
-                  <ThemeProvider storageKey="vite-ui-theme">
-                    <TooltipProvider>
-                      <Toaster />
-                      <Sonner />
-                      <BrowserRouter>
+              <AccessibilityProvider>
+                <ThemeProvider storageKey="vite-ui-theme">
+                  <TooltipProvider>
+                    <Toaster />
+                    <Sonner />
+                    <BrowserRouter>
+                      <EscrowProvider>
                         <Routes>
                           <Route path="/" element={<Index />} />
                           <Route path="/auth" element={<Auth />} />
@@ -64,11 +65,11 @@ function App() {
                           {/* Pricing Calculator */}
                           <Route path="/pricing-calculator" element={<PricingCalculator />} />
                         </Routes>
-                      </BrowserRouter>
-                    </TooltipProvider>
-                  </ThemeProvider>
-                </AccessibilityProvider>
-              </EscrowProvider>
+                      </EscrowProvider>
+                    </BrowserRouter>
+                  </TooltipProvider>
+                </ThemeProvider>
+              </AccessibilityProvider>
             </NotificationProvider>
           </AuthProvider>
         </QueryClientProvider>
@@ -78,3 +79,4 @@ function App() {
 }
 
 export default App;
+
