@@ -1,113 +1,101 @@
 
-import { useState } from 'react';
-import { toast } from 'sonner';
-import type { AuthContextProps } from './types';
-import { useAuthState } from './hooks/useAuthState';
-import { authService } from './services/authService';
+import { useState, useEffect } from 'react';
+import { User, Session } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 import { profileService } from './services/profileService';
-import { getUserType } from './utils/userUtils';
+import { UserProfile } from './types';
+import { toast } from 'sonner';
 
-export function useAuthProvider(): AuthContextProps {
-  const { user, session, userProfile, loading, setUser, setSession, setUserProfile } = useAuthState();
-  const [error, setError] = useState<string | null>(null);
+export const useAuthProvider = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Set up auth state listener first
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          setTimeout(async () => {
+            const profile = await profileService.fetchProfile(session.user.id);
+            setUserProfile(profile);
+          }, 0);
+        } else {
+          setUserProfile(null);
+        }
+        setLoading(false);
+      }
+    );
+
+    // Then check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        profileService.fetchProfile(session.user.id).then(setUserProfile);
+      }
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const signIn = async (email: string, password: string) => {
-    setError(null);
-    
-    try {
-      const data = await authService.signIn(email, password);
-      return data;
-    } catch (err: any) {
-      console.error('Sign in error:', err);
-      setError(err.message);
-      toast.error('Sign in failed', { description: err.message });
-      throw err;
-    }
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    return { error };
   };
 
   const signUp = async (email: string, password: string, fullName: string, userType: 'auditor' | 'project_owner') => {
-    setError(null);
+    const redirectUrl = `${window.location.origin}/auth/callback`;
     
-    try {
-      const data = await authService.signUp(email, password, fullName, userType);
-      
-      // Create extended profile
-      if (data.user) {
-        await profileService.createProfile(data.user.id, fullName, userType);
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: {
+          full_name: fullName,
+          user_type: userType,
+        }
       }
-      
-      return data;
-    } catch (err: any) {
-      console.error('Sign up error:', err);
-      setError(err.message);
-      toast.error('Sign up failed', { description: err.message });
-      throw err;
+    });
+
+    if (!error && data.user) {
+      await profileService.createProfile(data.user.id, fullName, userType);
     }
+
+    return { error };
   };
 
   const signOut = async () => {
-    setError(null);
-    
-    try {
-      console.log('Auth provider: Starting sign out process...');
-      await authService.signOut();
-      
-      // Clear all auth state
-      setUser(null);
-      setSession(null);
-      setUserProfile(null);
-      
-      console.log('Auth provider: Sign out completed successfully');
-    } catch (err: any) {
-      console.error('Sign out error:', err);
-      setError(err.message);
-      toast.error('Sign out failed', { description: err.message });
-      throw err;
-    }
+    await supabase.auth.signOut();
   };
 
-  const forgotPassword = async (email: string) => {
-    setError(null);
-    
-    try {
-      await authService.forgotPassword(email);
-    } catch (err: any) {
-      setError(err.message);
-      toast.error('Failed to send reset email', { description: err.message });
-      throw err;
-    }
-  };
-
-  const resetPassword = async (newPassword: string) => {
-    setError(null);
-    
-    try {
-      await authService.resetPassword(newPassword);
-    } catch (err: any) {
-      setError(err.message);
-      toast.error('Failed to update password', { description: err.message });
-      throw err;
-    }
-  };
-
-  const updateProfile = async (data: Partial<typeof userProfile>) => {
-    if (!user) throw new Error('No user logged in');
-    
-    setError(null);
+  const updateUserProfile = async (data: Partial<UserProfile>) => {
+    if (!user) return null;
     
     try {
       const updatedProfile = await profileService.updateProfile(user.id, data);
       if (updatedProfile) {
         setUserProfile(updatedProfile);
       }
-    } catch (err: any) {
-      setError(err.message);
-      toast.error('Failed to update profile', { description: err.message });
-      throw err;
+      return updatedProfile;
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+      throw error;
     }
   };
 
-  const getType = () => getUserType(user, userProfile);
+  const getUserType = (): 'auditor' | 'project_owner' | 'admin' | null => {
+    return userProfile?.user_type || null;
+  };
 
   return {
     user,
@@ -117,10 +105,7 @@ export function useAuthProvider(): AuthContextProps {
     signIn,
     signUp,
     signOut,
-    forgotPassword,
-    resetPassword,
-    getUserType: getType,
-    updateProfile,
-    error,
+    updateUserProfile,
+    getUserType,
   };
-}
+};

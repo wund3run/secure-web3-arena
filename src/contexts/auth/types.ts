@@ -9,15 +9,15 @@ export interface UserProfile {
   avatar_url?: string;
   website?: string;
   wallet_address?: string;
-  user_type?: 'auditor' | 'project_owner' | 'admin' | 'general' | 'visitor';
-  verification_status?: string;
+  user_type: 'auditor' | 'project_owner' | 'admin';
+  verification_status: 'pending' | 'verified' | 'rejected';
   skills?: string[];
   specializations?: string[];
-  social_links?: any;
+  social_links?: Record<string, string>;
   years_of_experience?: number;
   projects_completed?: number;
-  created_at?: string;
-  updated_at?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface AuthContextProps {
@@ -25,12 +25,11 @@ export interface AuthContextProps {
   session: Session | null;
   userProfile: UserProfile | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<any>;
-  signUp: (email: string, password: string, fullName: string, userType: 'auditor' | 'project_owner') => Promise<any>;
+  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, fullName: string, userType: 'auditor' | 'project_owner') => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
   resetPassword: (newPassword: string) => Promise<void>;
-  getUserType: () => 'auditor' | 'project_owner' | 'admin' | 'general' | 'visitor';
-  updateProfile: (data: Partial<UserProfile>) => Promise<void>;
-  error: string | null;
+  updateUserProfile: (data: Partial<UserProfile>) => Promise<UserProfile | null>;
+  getUserType: () => 'auditor' | 'project_owner' | 'admin' | null;
 }

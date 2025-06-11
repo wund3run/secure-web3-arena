@@ -17,6 +17,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     resetPassword: auth.resetPassword || (async (newPassword: string) => {
       console.warn("resetPassword not implemented");
     }),
+    updateUserProfile: auth.updateUserProfile || (async (data: any) => {
+      console.warn("updateUserProfile not implemented");
+      return null;
+    }),
   };
 
   return (
