@@ -45,11 +45,11 @@ export function useStabilizedAuth() {
     }
   };
 
-  const signUpWithFeedback = async (email: string, password: string, metadata?: any) => {
+  const signUpWithFeedback = async (email: string, password: string, fullName: string, userType: 'auditor' | 'project_owner') => {
     try {
       LoadingStateManager.setLoading('auth', 'Creating account...');
-      // Fix: Use correct signUp signature with proper parameter order
-      const result = await auth.signUp(email, password);
+      // Fix: Use correct signUp signature with all 4 required parameters
+      const result = await auth.signUp(email, password, fullName, userType);
       
       if (result.error) {
         LoadingStateManager.setError('auth', result.error.message);
