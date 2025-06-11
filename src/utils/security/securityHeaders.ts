@@ -1,50 +1,35 @@
 
-/**
- * Security headers configuration for enhanced protection
- */
-export const securityHeaders = {
+export const applySecurityHeaders = (): void => {
   // Content Security Policy
-  'Content-Security-Policy': [
+  const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.gpteng.co https://fonts.googleapis.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://maps.googleapis.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "img-src 'self' data: https: blob:",
     "font-src 'self' https://fonts.gstatic.com",
-    "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
-    "frame-ancestors 'none'",
+    "img-src 'self' data: https: blob:",
+    "connect-src 'self' https://*.supabase.co https://api.stripe.com https://api.openai.com",
+    "frame-src 'self' https://js.stripe.com",
     "object-src 'none'",
     "base-uri 'self'"
-  ].join('; '),
-  
-  // Prevent clickjacking
-  'X-Frame-Options': 'DENY',
-  
-  // Prevent MIME type sniffing
-  'X-Content-Type-Options': 'nosniff',
-  
-  // Control referrer information
-  'Referrer-Policy': 'strict-origin-when-cross-origin',
-  
-  // Enable XSS protection
-  'X-XSS-Protection': '1; mode=block'
-};
+  ].join('; ');
 
-/**
- * Apply security headers to the document
- */
-export const applySecurityHeaders = () => {
-  // Add meta tags for security headers that can be set via HTML
-  const head = document.head;
-  
-  // Content Security Policy
-  const cspMeta = document.createElement('meta');
-  cspMeta.setAttribute('http-equiv', 'Content-Security-Policy');
-  cspMeta.setAttribute('content', securityHeaders['Content-Security-Policy']);
-  head.appendChild(cspMeta);
-  
-  // Referrer Policy
-  const referrerMeta = document.createElement('meta');
-  referrerMeta.setAttribute('name', 'referrer');
-  referrerMeta.setAttribute('content', 'strict-origin-when-cross-origin');
-  head.appendChild(referrerMeta);
+  const meta = document.createElement('meta');
+  meta.httpEquiv = 'Content-Security-Policy';
+  meta.content = csp;
+  document.head.appendChild(meta);
+
+  // Additional security headers via meta tags
+  const securityHeaders = [
+    { name: 'X-Content-Type-Options', content: 'nosniff' },
+    { name: 'X-Frame-Options', content: 'DENY' },
+    { name: 'X-XSS-Protection', content: '1; mode=block' },
+    { name: 'Referrer-Policy', content: 'strict-origin-when-cross-origin' }
+  ];
+
+  securityHeaders.forEach(header => {
+    const metaTag = document.createElement('meta');
+    metaTag.setAttribute('http-equiv', header.name);
+    metaTag.content = header.content;
+    document.head.appendChild(metaTag);
+  });
 };
