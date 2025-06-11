@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Github, Wallet } from 'lucide-react';
-import { useAuth } from '@/contexts/auth';
+import { Github } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 interface SocialAuthButtonsProps {
@@ -11,19 +11,25 @@ interface SocialAuthButtonsProps {
 
 export const SocialAuthButtons: React.FC<SocialAuthButtonsProps> = ({ mode }) => {
   const [isLoading, setIsLoading] = useState<string | null>(null);
-  const { signIn } = useAuth();
 
-  const handleSocialAuth = async (provider: 'google' | 'github' | 'metamask') => {
+  const handleSocialAuth = async (provider: 'google' | 'github') => {
     setIsLoading(provider);
     
     try {
-      // For demo purposes, we'll show a toast
-      toast.info(`${provider.charAt(0).toUpperCase() + provider.slice(1)} authentication coming soon!`);
-      
-      // In a real implementation, you would integrate with Supabase OAuth
-      // await supabase.auth.signInWithOAuth({ provider })
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (error) throw error;
+
+      // The redirect will happen automatically
+      toast.success(`Redirecting to ${provider.charAt(0).toUpperCase() + provider.slice(1)}...`);
     } catch (error: any) {
-      toast.error(`${provider} authentication failed`, {
+      console.error(`${provider} authentication error:`, error);
+      toast.error(`${provider.charAt(0).toUpperCase() + provider.slice(1)} authentication failed`, {
         description: error.message
       });
     } finally {
@@ -69,7 +75,7 @@ export const SocialAuthButtons: React.FC<SocialAuthButtonsProps> = ({ mode }) =>
               fill="#EA4335"
             />
           </svg>
-          {isLoading === 'google' ? 'Connecting...' : 'Continue with Google'}
+          {isLoading === 'google' ? 'Connecting...' : `Continue with Google`}
         </Button>
 
         <Button
@@ -79,17 +85,7 @@ export const SocialAuthButtons: React.FC<SocialAuthButtonsProps> = ({ mode }) =>
           className="w-full"
         >
           <Github className="mr-2 h-4 w-4" />
-          {isLoading === 'github' ? 'Connecting...' : 'Continue with GitHub'}
-        </Button>
-
-        <Button
-          variant="outline"
-          onClick={() => handleSocialAuth('metamask')}
-          disabled={isLoading === 'metamask'}
-          className="w-full"
-        >
-          <Wallet className="mr-2 h-4 w-4" />
-          {isLoading === 'metamask' ? 'Connecting...' : 'Connect MetaMask'}
+          {isLoading === 'github' ? 'Connecting...' : `Continue with GitHub`}
         </Button>
       </div>
     </div>
