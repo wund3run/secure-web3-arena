@@ -1,111 +1,264 @@
 
-import React from 'react';
-import { StandardLayout } from '@/components/layout/StandardLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState } from 'react';
+import { StandardizedLayout } from '@/components/layout/StandardizedLayout';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Code, FileText, GitBranch, ArrowRight, Shield } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Code, Star, Clock, CheckCircle, GitBranch, Users, FileText, ArrowRight } from 'lucide-react';
 
 const CodeReviews = () => {
-  const reviewTypes = [
+  const [selectedLanguage, setSelectedLanguage] = useState('');
+
+  const reviewers = [
     {
-      title: "Smart Contract Code Review",
-      description: "Comprehensive line-by-line review of smart contract code for security vulnerabilities and best practices",
-      features: ["Manual code analysis", "Security pattern verification", "Gas optimization review", "Best practices assessment"],
-      price: "Starting at $2,500",
-      duration: "2-4 days"
+      id: 1,
+      name: "Dr. Sarah Chen",
+      specialty: "Smart Contract Security",
+      rating: 4.9,
+      reviews: 234,
+      languages: ["Solidity", "Rust", "Go"],
+      hourlyRate: 150,
+      avatar: "/api/placeholder/64/64"
     },
     {
-      title: "DeFi Protocol Review",
-      description: "Specialized review for DeFi protocols focusing on economic models and token mechanics",
-      features: ["Tokenomics analysis", "Liquidity mechanism review", "Governance structure assessment", "Economic model validation"],
-      price: "Starting at $5,000",
-      duration: "3-7 days"
+      id: 2,
+      name: "Marcus Rodriguez",
+      specialty: "DeFi Protocol Analysis",
+      rating: 4.8,
+      reviews: 187,
+      languages: ["Solidity", "JavaScript", "Python"],
+      hourlyRate: 120,
+      avatar: "/api/placeholder/64/64"
     },
     {
-      title: "Full Repository Audit",
-      description: "Complete codebase review including infrastructure, deployment scripts, and documentation",
-      features: ["Complete repository scan", "Infrastructure review", "Deployment security", "Documentation audit"],
-      price: "Starting at $8,000",
-      duration: "1-2 weeks"
+      id: 3,
+      name: "Elena Petrov",
+      specialty: "Cross-chain Security",
+      rating: 4.9,
+      reviews: 156,
+      languages: ["Rust", "C++", "Solidity"],
+      hourlyRate: 180,
+      avatar: "/api/placeholder/64/64"
     }
   ];
 
+  const languages = ["Solidity", "Rust", "JavaScript", "Python", "Go", "C++", "TypeScript"];
+
   return (
-    <StandardLayout
-      title="Code Reviews"
-      description="Professional code review services for Web3 projects - March 2025"
+    <StandardizedLayout
+      title="Code Reviews | Hawkly"
+      description="Expert code analysis and security reviews for Web3 projects"
+      keywords="code review, security analysis, smart contract review"
     >
-      <div className="container py-12">
-        <div className="text-center mb-16">
-          <Badge variant="secondary" className="mb-4">Expert Code Analysis</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Professional Code Reviews
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            Get expert code analysis from verified security professionals. Our reviewers have 
-            analyzed over 10,000 smart contracts and identified critical vulnerabilities.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/request-audit">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-secondary">
-                <Code className="mr-2 h-5 w-5" />
-                Request Code Review
-              </Button>
-            </Link>
-            <Link to="/marketplace">
-              <Button size="lg" variant="outline">
-                Browse Reviewers
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 relative overflow-hidden">
+        {/* Animated background */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-grid-white/[0.05] [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" />
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000" />
+        </div>
+
+        <div className="relative z-10 container mx-auto px-4 py-12">
+          {/* Hero Section */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-blue-500/10 px-4 py-2 rounded-full border border-blue-500/20 mb-6">
+              <Code className="h-5 w-5 text-blue-400" />
+              <span className="text-blue-300 font-medium">Expert Code Analysis</span>
+            </div>
+            <h1 className="text-5xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Professional Code Reviews
+              </span>
+            </h1>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+              Get your smart contracts and Web3 code reviewed by expert security professionals. 
+              Identify vulnerabilities, improve code quality, and ensure best practices.
+            </p>
           </div>
-        </div>
 
-        {/* Review Types */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          {reviewTypes.map((review, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Code className="h-5 w-5 text-primary" />
-                  {review.title}
-                </CardTitle>
-                <CardDescription>{review.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="text-2xl font-bold text-primary">{review.price}</div>
-                  <div className="text-sm text-muted-foreground">Duration: {review.duration}</div>
-                  <ul className="space-y-2">
-                    {review.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center gap-2 text-sm">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        {feature}
-                      </li>
+          <Tabs defaultValue="submit" className="max-w-6xl mx-auto">
+            <TabsList className="grid w-full grid-cols-3 bg-gray-800/50 border border-gray-700">
+              <TabsTrigger value="submit" className="data-[state=active]:bg-blue-600">Submit Code</TabsTrigger>
+              <TabsTrigger value="reviewers" className="data-[state=active]:bg-blue-600">Find Reviewers</TabsTrigger>
+              <TabsTrigger value="process" className="data-[state=active]:bg-blue-600">Review Process</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="submit" className="mt-8">
+              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-blue-400" />
+                    Submit Code for Review
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Project Name</label>
+                      <Input 
+                        placeholder="Enter your project name" 
+                        className="bg-gray-700/50 border-gray-600 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">Programming Language</label>
+                      <select 
+                        className="w-full p-3 bg-gray-700/50 border border-gray-600 rounded-md text-white"
+                        value={selectedLanguage}
+                        onChange={(e) => setSelectedLanguage(e.target.value)}
+                      >
+                        <option value="">Select language</option>
+                        {languages.map(lang => (
+                          <option key={lang} value={lang}>{lang}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Repository URL</label>
+                    <Input 
+                      placeholder="https://github.com/username/repository" 
+                      className="bg-gray-700/50 border-gray-600 text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Review Requirements</label>
+                    <Textarea 
+                      placeholder="Describe what aspects you want reviewed, specific concerns, and any deadlines..."
+                      rows={4}
+                      className="bg-gray-700/50 border-gray-600 text-white"
+                    />
+                  </div>
+
+                  <div className="flex gap-4">
+                    <Button className="bg-blue-600 hover:bg-blue-700">
+                      Submit for Review
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-700">
+                      Save as Draft
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="reviewers" className="mt-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {reviewers.map((reviewer) => (
+                  <Card key={reviewer.id} className="bg-gray-800/50 border-gray-700 backdrop-blur-sm hover:border-blue-500/50 transition-colors">
+                    <CardHeader>
+                      <div className="flex items-center gap-4">
+                        <Avatar className="h-16 w-16">
+                          <AvatarImage src={reviewer.avatar} />
+                          <AvatarFallback className="bg-blue-600">
+                            {reviewer.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <CardTitle className="text-white text-lg">{reviewer.name}</CardTitle>
+                          <p className="text-gray-400">{reviewer.specialty}</p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-1">
+                          <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                          <span className="text-white font-medium">{reviewer.rating}</span>
+                          <span className="text-gray-400">({reviewer.reviews})</span>
+                        </div>
+                        <div className="text-gray-300">
+                          ${reviewer.hourlyRate}/hr
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-2">
+                        {reviewer.languages.map((lang) => (
+                          <Badge key={lang} variant="secondary" className="bg-blue-600/20 text-blue-300">
+                            {lang}
+                          </Badge>
+                        ))}
+                      </div>
+                      
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                        Request Review
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="process" className="mt-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="text-white flex items-center gap-2">
+                      <GitBranch className="h-5 w-5 text-blue-400" />
+                      Review Process
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {[
+                      { step: 1, title: "Code Submission", description: "Upload your code or provide repository access" },
+                      { step: 2, title: "Reviewer Assignment", description: "Expert reviewers are matched to your project" },
+                      { step: 3, title: "Security Analysis", description: "Comprehensive code analysis and vulnerability assessment" },
+                      { step: 4, title: "Report Generation", description: "Detailed findings with recommendations and fixes" },
+                      { step: 5, title: "Follow-up Support", description: "Implementation guidance and re-review if needed" }
+                    ].map((item, index) => (
+                      <div key={index} className="flex gap-4">
+                        <div className="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm font-bold">{item.step}</span>
+                        </div>
+                        <div>
+                          <h3 className="text-white font-semibold">{item.title}</h3>
+                          <p className="text-gray-400">{item.description}</p>
+                        </div>
+                      </div>
                     ))}
-                  </ul>
-                  <Button className="w-full">Get Started</Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                  </CardContent>
+                </Card>
 
-        {/* CTA */}
-        <div className="text-center bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-8">
-          <Shield className="h-12 w-12 text-primary mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-4">Ready for Expert Code Review?</h2>
-          <p className="text-muted-foreground mb-6">
-            Join 800+ projects that have improved their code quality with our expert reviews.
-          </p>
-          <Link to="/request-audit">
-            <Button size="lg">Start Code Review</Button>
-          </Link>
+                <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="text-white flex items-center gap-2">
+                      <CheckCircle className="h-5 w-5 text-green-400" />
+                      What We Review
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {[
+                        "Security vulnerabilities and attack vectors",
+                        "Code quality and best practices",
+                        "Gas optimization opportunities",
+                        "Logic errors and edge cases",
+                        "Access control implementations",
+                        "Integration security patterns",
+                        "Documentation and comments",
+                        "Testing coverage and quality"
+                      ].map((item, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-400" />
+                          <span className="text-gray-300">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
-    </StandardLayout>
+    </StandardizedLayout>
   );
 };
 

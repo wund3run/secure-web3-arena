@@ -27,6 +27,23 @@ const Collaboration = lazy(() => import("./pages/Collaboration"));
 const Analytics = lazy(() => import("./pages/Analytics"));
 const AdvancedFeaturesHub = lazy(() => import("./pages/AdvancedFeaturesHub"));
 
+// Phase 1 Implementation - Security Services Pages
+const CodeReviews = lazy(() => import("./pages/CodeReviews"));
+const PenetrationTesting = lazy(() => import("./pages/PenetrationTesting"));
+const Consulting = lazy(() => import("./pages/Consulting"));
+
+// Phase 1 Implementation - Resource Pages
+const SecurityGuides = lazy(() => import("./pages/SecurityGuides"));
+const KnowledgeBase = lazy(() => import("./pages/KnowledgeBase"));
+const Tutorials = lazy(() => import("./pages/Tutorials"));
+const Templates = lazy(() => import("./pages/Templates"));
+
+// Phase 1 Implementation - Tools Pages
+const SecurityInsights = lazy(() => import("./pages/SecurityInsights"));
+const AITools = lazy(() => import("./pages/AITools"));
+const VulnerabilityScanner = lazy(() => import("./pages/VulnerabilityScanner"));
+const PlatformReports = lazy(() => import("./pages/tools/PlatformReportsPage"));
+
 // Business pages
 const AboutPage = lazy(() => import("./pages/business/AboutPage"));
 const PricingPage = lazy(() => import("./pages/business/PricingPage"));
@@ -68,6 +85,23 @@ const App = () => (
                         <Route path="/escrow" element={<Escrow />} />
                         <Route path="/collaboration" element={<Collaboration />} />
                         <Route path="/analytics" element={<Analytics />} />
+
+                        {/* Phase 1 - Security Services */}
+                        <Route path="/code-reviews" element={<CodeReviews />} />
+                        <Route path="/penetration-testing" element={<PenetrationTesting />} />
+                        <Route path="/consulting" element={<Consulting />} />
+
+                        {/* Phase 1 - Resource Pages */}
+                        <Route path="/security-guides" element={<SecurityGuides />} />
+                        <Route path="/knowledge-base" element={<KnowledgeBase />} />
+                        <Route path="/tutorials" element={<Tutorials />} />
+                        <Route path="/templates" element={<Templates />} />
+
+                        {/* Phase 1 - Tools Pages */}
+                        <Route path="/security-insights" element={<SecurityInsights />} />
+                        <Route path="/ai-tools" element={<AITools />} />
+                        <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
+                        <Route path="/platform-reports" element={<PlatformReports />} />
 
                         {/* Business routes */}
                         <Route path="/business/about" element={<AboutPage />} />
