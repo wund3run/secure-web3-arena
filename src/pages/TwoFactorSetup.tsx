@@ -4,7 +4,7 @@ import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Stepper } from '@/components/ui/stepper';
+import { ProgressSteps } from '@/components/ui/progress-steps';
 import { TOTPSetup } from '@/components/auth/mfa/TOTPSetup';
 import { 
   Shield, 
@@ -17,29 +17,29 @@ import {
 } from 'lucide-react';
 
 const TwoFactorSetup = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [currentStep, setCurrentStep] = useState('method');
+  const [completedSteps, setCompletedSteps] = useState<string[]>([]);
 
   const steps = [
     {
+      id: 'method',
       title: 'Choose Method',
       description: 'Select your preferred 2FA method',
-      icon: <Shield className="h-5 w-5" />,
     },
     {
+      id: 'setup',
       title: 'Setup Authenticator',
       description: 'Configure your authenticator app',
-      icon: <Smartphone className="h-5 w-5" />,
     },
     {
+      id: 'backup',
       title: 'Backup Codes',
       description: 'Save your recovery codes',
-      icon: <Key className="h-5 w-5" />,
     },
     {
+      id: 'complete',
       title: 'Complete Setup',
       description: 'Verify and finish setup',
-      icon: <CheckCircle className="h-5 w-5" />,
     },
   ];
 
@@ -74,15 +74,17 @@ const TwoFactorSetup = () => {
   const [selectedMethod, setSelectedMethod] = useState<string>('');
 
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
+    const currentIndex = steps.findIndex(step => step.id === currentStep);
+    if (currentIndex < steps.length - 1) {
       setCompletedSteps(prev => [...prev, currentStep]);
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(steps[currentIndex + 1].id);
     }
   };
 
   const handlePrevious = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+    const currentIndex = steps.findIndex(step => step.id === currentStep);
+    if (currentIndex > 0) {
+      setCurrentStep(steps[currentIndex - 1].id);
     }
   };
 
@@ -93,7 +95,7 @@ const TwoFactorSetup = () => {
 
   const renderStepContent = () => {
     switch (currentStep) {
-      case 0:
+      case 'method':
         return (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Choose Your 2FA Method</h3>
@@ -131,7 +133,7 @@ const TwoFactorSetup = () => {
           </div>
         );
 
-      case 1:
+      case 'setup':
         return (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Setup Authenticator App</h3>
@@ -149,7 +151,7 @@ const TwoFactorSetup = () => {
           </div>
         );
 
-      case 2:
+      case 'backup':
         return (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Save Your Backup Codes</h3>
@@ -182,7 +184,7 @@ const TwoFactorSetup = () => {
           </div>
         );
 
-      case 3:
+      case 'complete':
         return (
           <div className="space-y-4 text-center">
             <CheckCircle className="h-16 w-16 mx-auto text-green-500" />
@@ -222,10 +224,10 @@ const TwoFactorSetup = () => {
 
         <Card>
           <CardHeader>
-            <Stepper
-              steps={steps}
-              currentStep={currentStep}
-              completedSteps={completedSteps}
+            <ProgressSteps 
+              steps={steps} 
+              currentStepId={currentStep}
+              className="mb-4"
             />
           </CardHeader>
           <CardContent className="space-y-6">
@@ -235,17 +237,17 @@ const TwoFactorSetup = () => {
               <Button
                 variant="outline"
                 onClick={handlePrevious}
-                disabled={currentStep === 0}
+                disabled={currentStep === 'method'}
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Previous
               </Button>
               <Button
-                onClick={currentStep === steps.length - 1 ? handleComplete : handleNext}
-                disabled={currentStep === 0 && !selectedMethod}
+                onClick={currentStep === 'complete' ? handleComplete : handleNext}
+                disabled={currentStep === 'method' && !selectedMethod}
               >
-                {currentStep === steps.length - 1 ? 'Complete Setup' : 'Next'}
-                {currentStep !== steps.length - 1 && <ArrowRight className="h-4 w-4 ml-2" />}
+                {currentStep === 'complete' ? 'Complete Setup' : 'Next'}
+                {currentStep !== 'complete' && <ArrowRight className="h-4 w-4 ml-2" />}
               </Button>
             </div>
           </CardContent>
