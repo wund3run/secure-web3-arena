@@ -9,7 +9,7 @@ export interface UserProfile {
   avatar_url?: string;
   website?: string;
   wallet_address?: string;
-  user_type: 'auditor' | 'project_owner' | 'admin';
+  user_type: 'auditor' | 'project_owner' | 'admin' | 'general';
   verification_status: 'pending' | 'verified' | 'rejected';
   skills?: string[];
   specializations?: string[];
@@ -33,5 +33,5 @@ export interface AuthContextProps {
   resetPassword: (newPassword: string) => Promise<void>;
   updateUserProfile: (data: Partial<UserProfile>) => Promise<UserProfile | null>;
   updateProfile: (data: Partial<UserProfile>) => Promise<UserProfile | null>;
-  getUserType: () => 'auditor' | 'project_owner' | 'admin' | null;
+  getUserType: () => 'auditor' | 'project_owner' | 'admin' | 'general' | null;
 }

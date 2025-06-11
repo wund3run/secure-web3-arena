@@ -110,7 +110,7 @@ export const useAuthProvider = () => {
 
   const updateProfile = updateUserProfile; // Alias for compatibility
 
-  const getUserType = (): 'auditor' | 'project_owner' | 'admin' | null => {
+  const getUserType = (): 'auditor' | 'project_owner' | 'admin' | 'general' | null => {
     return userProfile?.user_type || null;
   };
 

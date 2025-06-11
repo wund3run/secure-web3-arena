@@ -21,7 +21,10 @@ export const profileService = {
         const typedProfile: UserProfile = {
           ...profile,
           user_type: profile.user_type as UserProfile['user_type'] || 'project_owner',
-          verification_status: (profile.verification_status as UserProfile['verification_status']) || 'pending'
+          verification_status: (profile.verification_status as UserProfile['verification_status']) || 'pending',
+          social_links: (profile.social_links as Record<string, string>) || {},
+          skills: profile.skills || [],
+          specializations: profile.specializations || []
         };
         console.log('Profile loaded:', typedProfile);
         return typedProfile;
@@ -78,7 +81,10 @@ export const profileService = {
       const typedProfile: UserProfile = {
         ...updatedProfile,
         user_type: updatedProfile.user_type as UserProfile['user_type'] || 'project_owner',
-        verification_status: (updatedProfile.verification_status as UserProfile['verification_status']) || 'pending'
+        verification_status: (updatedProfile.verification_status as UserProfile['verification_status']) || 'pending',
+        social_links: (updatedProfile.social_links as Record<string, string>) || {},
+        skills: updatedProfile.skills || [],
+        specializations: updatedProfile.specializations || []
       };
       toast.success('Profile updated successfully');
       return typedProfile;
