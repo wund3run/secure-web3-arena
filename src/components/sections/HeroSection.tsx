@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -7,18 +6,46 @@ import { ArrowRight, Shield, Eye, CheckCircle } from 'lucide-react';
 export function HeroSection() {
   return (
     <section className="relative py-32 lg:py-40 bg-gradient-to-br from-gray-900 via-gray-800 to-black overflow-hidden">
-      {/* Grid Background Pattern */}
-      <div 
-        className="absolute inset-0 opacity-30"
-        style={{
-          backgroundImage: `url('/lovable-uploads/1c074bb3-8c7f-44c0-85c3-bf5b4123c592.png')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      />
+      {/* Animated Grid Background Pattern */}
+      <div className="absolute inset-0">
+        {/* Primary grid lines */}
+        <div 
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px',
+            animation: 'gridMove 20s linear infinite'
+          }}
+        />
+        
+        {/* Secondary grid lines */}
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(139, 92, 246, 0.5) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(139, 92, 246, 0.5) 1px, transparent 1px)
+            `,
+            backgroundSize: '100px 100px',
+            animation: 'gridMove 30s linear infinite reverse'
+          }}
+        />
+        
+        {/* Floating dots */}
+        <div 
+          className="absolute inset-0 opacity-30"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.4) 2px, transparent 2px)',
+            backgroundSize: '100px 100px',
+            animation: 'float 15s ease-in-out infinite'
+          }}
+        />
+      </div>
       
-      {/* Additional grid overlay for enhanced effect */}
+      {/* Additional animated overlay */}
       <div className="absolute inset-0 bg-grid-white/[0.02] [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" />
       
       {/* Gradient Overlay */}
@@ -101,6 +128,29 @@ export function HeroSection() {
           </div>
         </div>
       </div>
+      
+      <style jsx>{`
+        @keyframes gridMove {
+          0% {
+            transform: translate(0, 0);
+          }
+          100% {
+            transform: translate(50px, 50px);
+          }
+        }
+        
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px) translateX(0px);
+          }
+          33% {
+            transform: translateY(-10px) translateX(5px);
+          }
+          66% {
+            transform: translateY(5px) translateX(-5px);
+          }
+        }
+      `}</style>
     </section>
   );
 }
