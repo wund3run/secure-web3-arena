@@ -8,7 +8,7 @@ interface EnhancedLoadingStateProps {
   message?: string;
   progress?: number;
   size?: 'sm' | 'md' | 'lg';
-  variant?: 'default' | 'minimal' | 'card';
+  variant?: 'default' | 'minimal' | 'card' | 'skeleton';
   className?: string;
 }
 
@@ -28,8 +28,29 @@ export function EnhancedLoadingState({
   const containerClasses = {
     default: 'flex flex-col items-center justify-center min-h-[200px] space-y-4',
     minimal: 'flex items-center space-x-2',
-    card: 'flex flex-col items-center justify-center p-8 border rounded-lg bg-card space-y-4'
+    card: 'flex flex-col items-center justify-center p-8 border rounded-lg bg-card space-y-4',
+    skeleton: 'space-y-3'
   };
+
+  if (variant === 'skeleton') {
+    return (
+      <div className={cn(containerClasses[variant], className)}>
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div
+            key={i}
+            className={cn(
+              "animate-pulse rounded bg-muted",
+              size === 'sm' ? 'h-3' : size === 'md' ? 'h-4' : 'h-5'
+            )}
+            style={{ 
+              width: `${100 - (i * 15)}%`,
+              animationDelay: `${i * 150}ms`
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className={cn(containerClasses[variant], className)}>

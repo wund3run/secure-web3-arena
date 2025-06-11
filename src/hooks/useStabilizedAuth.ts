@@ -48,8 +48,8 @@ export function useStabilizedAuth() {
   const signUpWithFeedback = async (email: string, password: string, metadata?: any) => {
     try {
       LoadingStateManager.setLoading('auth', 'Creating account...');
-      // Use correct signUp signature - check if it expects metadata as 3rd param or options object
-      const result = await auth.signUp(email, password, { metadata });
+      // Fix: Use correct signUp signature with proper parameter order
+      const result = await auth.signUp(email, password);
       
       if (result.error) {
         LoadingStateManager.setError('auth', result.error.message);
