@@ -94,39 +94,55 @@ function App() {
                       <Route path="/accessibility-testing" element={<AccessibilityTestingPage />} />
                       
                       {/* Service routes */}
-                      <Route path="/code-reviews" element={<CodeReviewsPage />} />
-                      <Route path="/penetration-testing" element={<PenetrationTestingPage />} />
-                      <Route path="/consulting" element={<ConsultingPage />} />
+                      <Route path="/services/code-reviews" element={<CodeReviewsPage />} />
+                      <Route path="/services/penetration-testing" element={<PenetrationTestingPage />} />
+                      <Route path="/services/consulting" element={<ConsultingPage />} />
                       
                       {/* Resource routes */}
-                      <Route path="/security-guides" element={<SecurityGuidesPage />} />
-                      <Route path="/knowledge-base" element={<KnowledgeBasePage />} />
-                      <Route path="/tutorials" element={<TutorialsPage />} />
-                      <Route path="/templates" element={<TemplatesPage />} />
+                      <Route path="/resources/security-guides" element={<SecurityGuidesPage />} />
+                      <Route path="/resources/knowledge-base" element={<KnowledgeBasePage />} />
+                      <Route path="/resources/tutorials" element={<TutorialsPage />} />
+                      <Route path="/resources/templates" element={<TemplatesPage />} />
                       
                       {/* Tool routes */}
-                      <Route path="/security-insights" element={<SecurityInsightsPage />} />
-                      <Route path="/ai-tools" element={<AIToolsPage />} />
-                      <Route path="/vulnerability-scanner" element={<VulnerabilityScannerPage />} />
-                      <Route path="/platform-reports" element={<PlatformReportsPage />} />
+                      <Route path="/tools/security-insights" element={<SecurityInsightsPage />} />
+                      <Route path="/tools/ai-tools" element={<AIToolsPage />} />
+                      <Route path="/tools/vulnerability-scanner" element={<VulnerabilityScannerPage />} />
+                      <Route path="/tools/platform-reports" element={<PlatformReportsPage />} />
                       
                       {/* Community routes */}
-                      <Route path="/forum" element={<ForumPage />} />
-                      <Route path="/events" element={<EventsPage />} />
-                      <Route path="/challenges" element={<ChallengesPage />} />
-                      <Route path="/leaderboard" element={<LeaderboardPage />} />
+                      <Route path="/community/forum" element={<ForumPage />} />
+                      <Route path="/community/events" element={<EventsPage />} />
+                      <Route path="/community/challenges" element={<ChallengesPage />} />
+                      <Route path="/community/leaderboard" element={<LeaderboardPage />} />
                       
                       {/* Business routes */}
+                      <Route path="/business/about" element={<AboutPage />} />
+                      <Route path="/business/careers" element={<CareersPage />} />
+                      <Route path="/business/pricing" element={<PricingPage />} />
+                      <Route path="/business/contact" element={<ContactPage />} />
+                      
+                      {/* Support routes */}
+                      <Route path="/support/faq" element={<FAQPage />} />
+                      <Route path="/support/help" element={<SupportPage />} />
+                      <Route path="/support/terms" element={<TermsPage />} />
+                      <Route path="/support/privacy" element={<PrivacyPage />} />
+
+                      {/* Legacy routes for backward compatibility */}
                       <Route path="/about" element={<AboutPage />} />
                       <Route path="/careers" element={<CareersPage />} />
                       <Route path="/pricing" element={<PricingPage />} />
                       <Route path="/contact" element={<ContactPage />} />
-                      
-                      {/* Support routes */}
                       <Route path="/faq" element={<FAQPage />} />
                       <Route path="/support" element={<SupportPage />} />
                       <Route path="/terms" element={<TermsPage />} />
                       <Route path="/privacy" element={<PrivacyPage />} />
+                      <Route path="/security-guides" element={<SecurityGuidesPage />} />
+                      <Route path="/security-insights" element={<SecurityInsightsPage />} />
+                      <Route path="/ai-tools" element={<AIToolsPage />} />
+                      <Route path="/vulnerability-scanner" element={<VulnerabilityScannerPage />} />
+                      <Route path="/platform-reports" element={<PlatformReportsPage />} />
+                      <Route path="/events" element={<EventsPage />} />
                     </Routes>
                   </Suspense>
                   <Toaster />
