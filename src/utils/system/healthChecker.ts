@@ -1,4 +1,3 @@
-
 import { Logger } from '../logging/logger';
 import { CacheManager } from '../database/cacheManager';
 
@@ -54,12 +53,12 @@ export class HealthChecker {
       const stats = CacheManager.getStats();
       const responseTime = performance.now() - startTime;
       
-      const status = stats.activeEntries > 100 ? 'warning' : 'healthy';
+      const status = stats.size > 100 ? 'warning' : 'healthy';
       
       return {
         component: 'cache_system',
         status,
-        message: `Cache system operational with ${stats.activeEntries} active entries`,
+        message: `Cache system operational with ${stats.size} active entries`,
         responseTime,
         metadata: stats
       };
