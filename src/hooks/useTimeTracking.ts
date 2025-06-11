@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/auth';
 
 export interface TimeEntry {
   id: string;
@@ -15,6 +16,8 @@ export interface TimeEntry {
   end_time?: string;
   duration_minutes?: number;
   billable?: boolean;
+  auditor_id: string;
+  milestone_id?: string;
 }
 
 export interface ActiveTimeEntry {
@@ -25,13 +28,14 @@ export interface ActiveTimeEntry {
 }
 
 export const useTimeTracking = (auditId: string) => {
+  const { user } = useAuth();
   const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);
   const [activeEntry, setActiveEntry] = useState<ActiveTimeEntry | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [totalHours, setTotalHours] = useState(0);
 
   useEffect(() => {
-    if (!auditId) return;
+    if (!auditId || !user) return;
 
     const fetchTimeEntries = async () => {
       try {
@@ -39,16 +43,23 @@ export const useTimeTracking = (auditId: string) => {
           .from('audit_time_tracking')
           .select('*')
           .eq('audit_request_id', auditId)
-          .order('date', { ascending: false });
+          .order('created_at', { ascending: false });
 
         if (error) throw error;
         
-        const entries = data || [];
+        // Map database entries to our interface
+        const entries = (data || []).map(entry => ({
+          ...entry,
+          user_id: entry.auditor_id,
+          hours: entry.duration_minutes ? entry.duration_minutes / 60 : 0,
+          date: entry.created_at.split('T')[0],
+        })) as TimeEntry[];
+        
         setTimeEntries(entries);
         setTotalHours(entries.reduce((sum, entry) => sum + (entry.hours || 0), 0));
         
         // Check for active entry
-        const active = entries.find(entry => !entry.end_time);
+        const active = entries.find(entry => !entry.end_time && entry.start_time);
         if (active) {
           setActiveEntry({
             id: active.id,
@@ -86,18 +97,22 @@ export const useTimeTracking = (auditId: string) => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [auditId]);
+  }, [auditId, user]);
 
   const addTimeEntry = async (hours: number, description?: string, date?: string) => {
+    if (!user) return false;
+    
     try {
       const { error } = await supabase
         .from('audit_time_tracking')
         .insert({
           audit_request_id: auditId,
-          hours,
+          auditor_id: user.id,
+          duration_minutes: Math.round(hours * 60),
           description,
-          date: date || new Date().toISOString().split('T')[0],
-          activity_type: 'manual_entry'
+          start_time: new Date().toISOString(),
+          activity_type: 'manual_entry',
+          billable: true,
         });
 
       if (error) throw error;
@@ -108,17 +123,19 @@ export const useTimeTracking = (auditId: string) => {
     }
   };
 
-  const startTimer = async (activityType: string, description?: string, milestoneId?: string) => {
+  const startTimer = async (activityType: string, description?: string) => {
+    if (!user) return false;
+    
     try {
       const { data, error } = await supabase
         .from('audit_time_tracking')
         .insert({
           audit_request_id: auditId,
+          auditor_id: user.id,
           activity_type: activityType,
           description,
           start_time: new Date().toISOString(),
           billable: true,
-          hours: 0
         })
         .select()
         .single();
@@ -148,14 +165,12 @@ export const useTimeTracking = (auditId: string) => {
       const endTime = new Date();
       const startTime = new Date(activeEntry.start_time);
       const durationMinutes = Math.floor((endTime.getTime() - startTime.getTime()) / (1000 * 60));
-      const hours = durationMinutes / 60;
 
       const { error } = await supabase
         .from('audit_time_tracking')
         .update({
           end_time: endTime.toISOString(),
           duration_minutes: durationMinutes,
-          hours: hours
         })
         .eq('id', activeEntry.id);
 

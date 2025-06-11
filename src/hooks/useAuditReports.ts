@@ -1,20 +1,28 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/auth';
 
 export interface AuditReport {
   id: string;
   audit_request_id: string;
   title: string;
-  content?: string;
+  content?: any;
   report_type: 'preliminary' | 'interim' | 'final';
   status: 'draft' | 'review' | 'approved' | 'published';
   file_url?: string;
   created_at: string;
   updated_at: string;
+  generated_by: string;
+  reviewed_by?: string;
+  approved_by?: string;
+  published_at?: string;
+  template_used?: string;
+  version?: string;
 }
 
 export const useAuditReports = (auditId: string) => {
+  const { user } = useAuth();
   const [reports, setReports] = useState<AuditReport[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -86,12 +94,19 @@ export const useAuditReports = (auditId: string) => {
   };
 
   const createReport = async (report: Partial<AuditReport>) => {
+    if (!user) return false;
+    
     try {
       const { error } = await supabase
         .from('audit_reports')
         .insert({
-          ...report,
           audit_request_id: auditId,
+          title: report.title || 'Untitled Report',
+          content: report.content || {},
+          report_type: report.report_type || 'preliminary',
+          status: report.status || 'draft',
+          generated_by: user.id,
+          file_url: report.file_url,
         });
 
       if (error) throw error;
@@ -121,7 +136,10 @@ export const useAuditReports = (auditId: string) => {
     try {
       const { error } = await supabase
         .from('audit_reports')
-        .update({ status: 'published' })
+        .update({ 
+          status: 'published',
+          published_at: new Date().toISOString()
+        })
         .eq('id', reportId);
 
       if (error) throw error;

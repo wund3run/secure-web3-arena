@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/auth';
 
 export interface AuditMilestone {
   id: string;
@@ -12,9 +13,19 @@ export interface AuditMilestone {
   completion_date?: string;
   created_at: string;
   updated_at: string;
+  order_index: number;
+  completed_at?: string;
+  completed_by?: string;
+  approval_required?: boolean;
+  approved_by?: string;
+  approved_at?: string;
+  deliverables?: any;
+  time_estimate_hours?: number;
+  actual_time_hours?: number;
 }
 
 export const useAuditMilestones = (auditId: string) => {
+  const { user } = useAuth();
   const [milestones, setMilestones] = useState<AuditMilestone[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -27,7 +38,7 @@ export const useAuditMilestones = (auditId: string) => {
           .from('audit_milestones')
           .select('*')
           .eq('audit_request_id', auditId)
-          .order('created_at', { ascending: true });
+          .order('order_index', { ascending: true });
 
         if (error) throw error;
         
@@ -77,7 +88,7 @@ export const useAuditMilestones = (auditId: string) => {
         .from('audit_milestones')
         .update({ 
           status,
-          completion_date: status === 'completed' ? new Date().toISOString() : null,
+          completed_at: status === 'completed' ? new Date().toISOString() : null,
           updated_at: new Date().toISOString()
         })
         .eq('id', milestoneId);
@@ -91,12 +102,30 @@ export const useAuditMilestones = (auditId: string) => {
   };
 
   const createMilestone = async (milestone: Partial<AuditMilestone>) => {
+    if (!user) return false;
+    
     try {
+      // Get the next order index
+      const { data: existingMilestones } = await supabase
+        .from('audit_milestones')
+        .select('order_index')
+        .eq('audit_request_id', auditId)
+        .order('order_index', { ascending: false })
+        .limit(1);
+
+      const nextOrderIndex = existingMilestones && existingMilestones.length > 0 
+        ? existingMilestones[0].order_index + 1 
+        : 1;
+
       const { error } = await supabase
         .from('audit_milestones')
         .insert({
-          ...milestone,
           audit_request_id: auditId,
+          title: milestone.title || '',
+          description: milestone.description,
+          status: milestone.status || 'pending',
+          due_date: milestone.due_date,
+          order_index: nextOrderIndex,
         });
 
       if (error) throw error;
