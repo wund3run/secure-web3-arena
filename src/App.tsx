@@ -61,6 +61,12 @@ const FAQPage = lazy(() => import("./pages/support/FAQPage"));
 const TermsPage = lazy(() => import("./pages/support/TermsPage"));
 const PrivacyPage = lazy(() => import("./pages/support/PrivacyPage"));
 
+// Phase 4 & 5 Implementation - New Pages
+const NotificationCenter = lazy(() => import("./pages/NotificationCenter"));
+const FileManagement = lazy(() => import("./pages/FileManagement"));
+const TwoFactorSetup = lazy(() => import("./pages/TwoFactorSetup"));
+const PricingCalculator = lazy(() => import("./pages/PricingCalculator"));
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -138,6 +144,12 @@ const App = () => (
                         <Route path="/resources/*" element={<SupportPage />} />
                         <Route path="/tools/*" element={<AdvancedFeaturesHub />} />
                         <Route path="/community" element={<Forum />} />
+
+                        {/* Phase 4 & 5 - New Routes */}
+                        <Route path="/notifications" element={<NotificationCenter />} />
+                        <Route path="/files" element={<FileManagement />} />
+                        <Route path="/2fa-setup" element={<TwoFactorSetup />} />
+                        <Route path="/pricing-calculator" element={<PricingCalculator />} />
 
                         {/* 404 page */}
                         <Route path="*" element={<NotFoundPage />} />
