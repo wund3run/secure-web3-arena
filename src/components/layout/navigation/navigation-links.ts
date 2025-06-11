@@ -11,7 +11,6 @@ export const navigationLinks: NavigationLink[] = [
   {
     title: "Services",
     href: "/marketplace",
-    requiresAuth: true,
     children: [
       {
         title: "Browse Marketplace",
@@ -48,7 +47,6 @@ export const navigationLinks: NavigationLink[] = [
   {
     title: "Tools",
     href: "/ai-tools",
-    requiresAuth: true,
     children: [
       {
         title: "AI Security Tools",
@@ -80,7 +78,6 @@ export const navigationLinks: NavigationLink[] = [
   {
     title: "Resources",
     href: "/security-guides",
-    requiresAuth: true,
     children: [
       {
         title: "Security Guides",
@@ -106,13 +103,17 @@ export const navigationLinks: NavigationLink[] = [
         title: "Audit Guidelines",
         href: "/audit-guidelines",
         description: "Professional audit standards and procedures"
+      },
+      {
+        title: "Vulnerability Database",
+        href: "/vulnerabilities",
+        description: "Known vulnerabilities and fixes"
       }
     ]
   },
   {
     title: "Community",
     href: "/forum",
-    requiresAuth: true,
     children: [
       {
         title: "Forum",
@@ -133,6 +134,27 @@ export const navigationLinks: NavigationLink[] = [
         title: "Leaderboard",
         href: "/leaderboard",
         description: "Top security experts rankings"
+      }
+    ]
+  },
+  {
+    title: "Support",
+    href: "/support",
+    children: [
+      {
+        title: "Help Center",
+        href: "/support",
+        description: "Get help and support"
+      },
+      {
+        title: "FAQ",
+        href: "/faq",
+        description: "Frequently asked questions"
+      },
+      {
+        title: "Documentation",
+        href: "/documentation",
+        description: "Platform documentation"
       }
     ]
   }
