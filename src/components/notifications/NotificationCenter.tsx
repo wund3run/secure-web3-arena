@@ -3,216 +3,443 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { 
-  Bell, 
-  Settings, 
-  Mail, 
-  MessageSquare, 
-  DollarSign, 
-  Shield,
-  Clock,
-  CheckCircle,
-  AlertTriangle,
-  Info
-} from 'lucide-react';
-import { useNotifications } from '@/contexts/NotificationContext';
-import { formatDistanceToNow } from 'date-fns';
+import { Bell, CheckCircle, AlertCircle, FileText, MessageSquare, Calendar, Settings, X } from 'lucide-react';
 
-export const NotificationCenter = () => {
-  const { notifications, markAsRead, markAllAsRead, clearAll } = useNotifications();
-  const [emailNotifications, setEmailNotifications] = useState(true);
-  const [pushNotifications, setPushNotifications] = useState(true);
-  const [auditAlerts, setAuditAlerts] = useState(true);
-  const [messageAlerts, setMessageAlerts] = useState(true);
-  const [paymentAlerts, setPaymentAlerts] = useState(true);
+interface Notification {
+  id: string;
+  type: 'audit_update' | 'message' | 'payment' | 'system' | 'milestone';
+  title: string;
+  message: string;
+  timestamp: Date;
+  isRead: boolean;
+  isImportant: boolean;
+  actionUrl?: string;
+  senderName?: string;
+  senderAvatar?: string;
+  metadata?: any;
+}
+
+const mockNotifications: Notification[] = [
+  {
+    id: '1',
+    type: 'audit_update',
+    title: 'Audit Progress Update',
+    message: 'Dr. Alexandra Petrov has completed the static analysis phase of your DeFi protocol audit. 2 potential issues identified.',
+    timestamp: new Date(Date.now() - 300000),
+    isRead: false,
+    isImportant: true,
+    senderName: 'Dr. Alexandra Petrov',
+    senderAvatar: 'https://images.unsplash.com/photo-1494790108755-2616b332e234?w=100&h=100&fit=crop&crop=face',
+    actionUrl: '/dashboard/audits/defi-protocol-v2'
+  },
+  {
+    id: '2',
+    type: 'message',
+    title: 'New Message',
+    message: 'Marcus Chen: "I\'ve reviewed the gas optimization suggestions. The changes look good to implement."',
+    timestamp: new Date(Date.now() - 1800000),
+    isRead: false,
+    isImportant: false,
+    senderName: 'Marcus Chen',
+    senderAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
+    actionUrl: '/dashboard/messages/marcus-chen'
+  },
+  {
+    id: '3',
+    type: 'milestone',
+    title: 'Milestone Completed',
+    message: 'The "Initial Security Review" milestone for your NFT Marketplace project has been completed.',
+    timestamp: new Date(Date.now() - 3600000),
+    isRead: true,
+    isImportant: true,
+    actionUrl: '/dashboard/audits/nft-marketplace'
+  },
+  {
+    id: '4',
+    type: 'payment',
+    title: 'Payment Processed',
+    message: 'Payment of $18,500 has been processed for the NFT Marketplace audit. Funds have been released to the auditor.',
+    timestamp: new Date(Date.now() - 7200000),
+    isRead: true,
+    isImportant: false,
+    actionUrl: '/dashboard/payments'
+  },
+  {
+    id: '5',
+    type: 'system',
+    title: 'Security Alert',
+    message: 'A new critical vulnerability has been discovered in Solidity compiler version 0.8.19. Please review your projects.',
+    timestamp: new Date(Date.now() - 86400000),
+    isRead: false,
+    isImportant: true,
+    actionUrl: '/security-alerts'
+  }
+];
+
+export function NotificationCenter() {
+  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
+  const [filter, setFilter] = useState<'all' | 'unread' | 'important'>('all');
+
+  const unreadCount = notifications.filter(n => !n.isRead).length;
+  const importantCount = notifications.filter(n => n.isImportant && !n.isRead).length;
+
+  const markAsRead = (id: string) => {
+    setNotifications(prev => 
+      prev.map(notification => 
+        notification.id === id 
+          ? { ...notification, isRead: true }
+          : notification
+      )
+    );
+  };
+
+  const markAllAsRead = () => {
+    setNotifications(prev => 
+      prev.map(notification => ({ ...notification, isRead: true }))
+    );
+  };
+
+  const deleteNotification = (id: string) => {
+    setNotifications(prev => prev.filter(notification => notification.id !== id));
+  };
+
+  const getFilteredNotifications = () => {
+    switch (filter) {
+      case 'unread':
+        return notifications.filter(n => !n.isRead);
+      case 'important':
+        return notifications.filter(n => n.isImportant);
+      default:
+        return notifications;
+    }
+  };
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case 'success': return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'warning': return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-      case 'error': return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      default: return <Info className="h-4 w-4 text-blue-500" />;
+      case 'audit_update':
+        return <FileText className="h-4 w-4 text-blue-500" />;
+      case 'message':
+        return <MessageSquare className="h-4 w-4 text-green-500" />;
+      case 'milestone':
+        return <CheckCircle className="h-4 w-4 text-purple-500" />;
+      case 'payment':
+        return <Calendar className="h-4 w-4 text-orange-500" />;
+      case 'system':
+        return <AlertCircle className="h-4 w-4 text-red-500" />;
+      default:
+        return <Bell className="h-4 w-4 text-gray-500" />;
     }
   };
 
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case 'audit': return <Shield className="h-4 w-4" />;
-      case 'message': return <MessageSquare className="h-4 w-4" />;
-      case 'payment': return <DollarSign className="h-4 w-4" />;
-      default: return <Bell className="h-4 w-4" />;
-    }
+  const formatTimestamp = (timestamp: Date) => {
+    const now = new Date();
+    const diff = now.getTime() - timestamp.getTime();
+    
+    if (diff < 60000) return 'Just now';
+    if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+    if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+    return `${Math.floor(diff / 86400000)}d ago`;
   };
 
-  const unreadNotifications = notifications.filter(n => !n.read);
-  const recentNotifications = notifications.slice(0, 10);
+  const filteredNotifications = getFilteredNotifications();
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <Bell className="h-6 w-6" />
-          <h1 className="text-2xl font-bold">Notification Center</h1>
-          {unreadNotifications.length > 0 && (
-            <Badge variant="destructive">{unreadNotifications.length} unread</Badge>
-          )}
+    <Card className="w-full max-w-2xl mx-auto">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Bell className="h-5 w-5" />
+            <CardTitle>Notifications</CardTitle>
+            {unreadCount > 0 && (
+              <Badge variant="default" className="h-5 w-5 rounded-full text-xs p-0 flex items-center justify-center">
+                {unreadCount}
+              </Badge>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={markAllAsRead}>
+              Mark all read
+            </Button>
+            <Button variant="outline" size="sm">
+              <Settings className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={markAllAsRead}>
-            Mark All Read
-          </Button>
-          <Button variant="outline" onClick={clearAll}>
-            Clear All
-          </Button>
-        </div>
-      </div>
+      </CardHeader>
 
-      <Tabs defaultValue="notifications" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="preferences">Preferences</TabsTrigger>
-        </TabsList>
+      <CardContent className="p-0">
+        <Tabs defaultValue="all" className="w-full">
+          <div className="px-6 pb-3">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="all" onClick={() => setFilter('all')}>
+                All ({notifications.length})
+              </TabsTrigger>
+              <TabsTrigger value="unread" onClick={() => setFilter('unread')}>
+                Unread ({unreadCount})
+              </TabsTrigger>
+              <TabsTrigger value="important" onClick={() => setFilter('important')}>
+                Important ({importantCount})
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-        <TabsContent value="notifications" className="space-y-4">
-          <ScrollArea className="h-[600px]">
-            {notifications.length === 0 ? (
-              <Card>
-                <CardContent className="p-8 text-center">
-                  <Bell className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">No notifications yet</p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="space-y-3">
-                {notifications.map((notification) => (
-                  <Card 
+          <TabsContent value="all" className="mt-0">
+            <div className="divide-y">
+              {filteredNotifications.length === 0 ? (
+                <div className="p-6 text-center text-muted-foreground">
+                  <Bell className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No notifications to show</p>
+                </div>
+              ) : (
+                filteredNotifications.map((notification) => (
+                  <div
                     key={notification.id}
-                    className={`transition-all cursor-pointer hover:shadow-md ${
-                      !notification.read ? 'border-l-4 border-l-blue-500 bg-blue-50/50' : ''
+                    className={`p-4 hover:bg-muted/50 transition-colors ${
+                      !notification.isRead ? 'bg-primary/5 border-l-2 border-primary' : ''
                     }`}
-                    onClick={() => markAsRead(notification.id)}
                   >
-                    <CardContent className="p-4">
-                      <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 mt-0.5">
-                          {getNotificationIcon(notification.type)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            {getCategoryIcon(notification.category)}
-                            <h3 className="font-semibold text-sm truncate">
-                              {notification.title}
-                            </h3>
-                            <Badge variant="outline" className="text-xs">
-                              {notification.category}
-                            </Badge>
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0">
+                        {notification.senderAvatar ? (
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={notification.senderAvatar} />
+                            <AvatarFallback>
+                              {notification.senderName?.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                        ) : (
+                          <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
+                            {getNotificationIcon(notification.type)}
                           </div>
-                          <p className="text-sm text-muted-foreground mb-2">
-                            {notification.message}
-                          </p>
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs text-muted-foreground">
-                              {formatDistanceToNow(notification.timestamp, { addSuffix: true })}
-                            </span>
-                            {!notification.read && (
-                              <Badge variant="secondary" className="text-xs">New</Badge>
+                        )}
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm font-medium">{notification.title}</p>
+                              {notification.isImportant && (
+                                <Badge variant="destructive" className="text-xs px-1.5 py-0">
+                                  Important
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                              {notification.message}
+                            </p>
+                            <div className="flex items-center gap-4 mt-2">
+                              <span className="text-xs text-muted-foreground">
+                                {formatTimestamp(notification.timestamp)}
+                              </span>
+                              {notification.actionUrl && (
+                                <Button variant="link" size="sm" className="text-xs px-0 h-auto">
+                                  View Details
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-1 ml-2">
+                            {!notification.isRead && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => markAsRead(notification.id)}
+                                className="h-8 w-8 p-0"
+                              >
+                                <CheckCircle className="h-4 w-4" />
+                              </Button>
                             )}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => deleteNotification(notification.id)}
+                              className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
                           </div>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </ScrollArea>
-        </TabsContent>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </TabsContent>
 
-        <TabsContent value="preferences" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                Notification Preferences
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Delivery Methods</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4" />
-                      <Label htmlFor="email-notifications">Email Notifications</Label>
-                    </div>
-                    <Switch
-                      id="email-notifications"
-                      checked={emailNotifications}
-                      onCheckedChange={setEmailNotifications}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Bell className="h-4 w-4" />
-                      <Label htmlFor="push-notifications">Browser Notifications</Label>
-                    </div>
-                    <Switch
-                      id="push-notifications"
-                      checked={pushNotifications}
-                      onCheckedChange={setPushNotifications}
-                    />
-                  </div>
+          <TabsContent value="unread" className="mt-0">
+            <div className="divide-y">
+              {filteredNotifications.length === 0 ? (
+                <div className="p-6 text-center text-muted-foreground">
+                  <CheckCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>All caught up! No unread notifications.</p>
                 </div>
-              </div>
+              ) : (
+                filteredNotifications.map((notification) => (
+                  <div
+                    key={notification.id}
+                    className="p-4 hover:bg-muted/50 transition-colors bg-primary/5 border-l-2 border-primary"
+                  >
+                    {/* Same notification structure as above */}
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0">
+                        {notification.senderAvatar ? (
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={notification.senderAvatar} />
+                            <AvatarFallback>
+                              {notification.senderName?.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                        ) : (
+                          <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
+                            {getNotificationIcon(notification.type)}
+                          </div>
+                        )}
+                      </div>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Categories</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Shield className="h-4 w-4" />
-                      <Label htmlFor="audit-alerts">Audit Updates</Label>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm font-medium">{notification.title}</p>
+                              {notification.isImportant && (
+                                <Badge variant="destructive" className="text-xs px-1.5 py-0">
+                                  Important
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                              {notification.message}
+                            </p>
+                            <div className="flex items-center gap-4 mt-2">
+                              <span className="text-xs text-muted-foreground">
+                                {formatTimestamp(notification.timestamp)}
+                              </span>
+                              {notification.actionUrl && (
+                                <Button variant="link" size="sm" className="text-xs px-0 h-auto">
+                                  View Details
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-1 ml-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => markAsRead(notification.id)}
+                              className="h-8 w-8 p-0"
+                            >
+                              <CheckCircle className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => deleteNotification(notification.id)}
+                              className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <Switch
-                      id="audit-alerts"
-                      checked={auditAlerts}
-                      onCheckedChange={setAuditAlerts}
-                    />
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <MessageSquare className="h-4 w-4" />
-                      <Label htmlFor="message-alerts">Messages</Label>
-                    </div>
-                    <Switch
-                      id="message-alerts"
-                      checked={messageAlerts}
-                      onCheckedChange={setMessageAlerts}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <DollarSign className="h-4 w-4" />
-                      <Label htmlFor="payment-alerts">Payments & Escrow</Label>
-                    </div>
-                    <Switch
-                      id="payment-alerts"
-                      checked={paymentAlerts}
-                      onCheckedChange={setPaymentAlerts}
-                    />
-                  </div>
+                ))
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="important" className="mt-0">
+            <div className="divide-y">
+              {filteredNotifications.length === 0 ? (
+                <div className="p-6 text-center text-muted-foreground">
+                  <AlertCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No important notifications at this time.</p>
                 </div>
-              </div>
+              ) : (
+                filteredNotifications.map((notification) => (
+                  <div
+                    key={notification.id}
+                    className={`p-4 hover:bg-muted/50 transition-colors ${
+                      !notification.isRead ? 'bg-primary/5 border-l-2 border-primary' : ''
+                    }`}
+                  >
+                    {/* Same notification structure as above */}
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0">
+                        {notification.senderAvatar ? (
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={notification.senderAvatar} />
+                            <AvatarFallback>
+                              {notification.senderName?.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                        ) : (
+                          <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
+                            {getNotificationIcon(notification.type)}
+                          </div>
+                        )}
+                      </div>
 
-              <Button className="w-full">Save Preferences</Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm font-medium">{notification.title}</p>
+                              <Badge variant="destructive" className="text-xs px-1.5 py-0">
+                                Important
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                              {notification.message}
+                            </p>
+                            <div className="flex items-center gap-4 mt-2">
+                              <span className="text-xs text-muted-foreground">
+                                {formatTimestamp(notification.timestamp)}
+                              </span>
+                              {notification.actionUrl && (
+                                <Button variant="link" size="sm" className="text-xs px-0 h-auto">
+                                  View Details
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-1 ml-2">
+                            {!notification.isRead && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => markAsRead(notification.id)}
+                                className="h-8 w-8 p-0"
+                              >
+                                <CheckCircle className="h-4 w-4" />
+                              </Button>
+                            )}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => deleteNotification(notification.id)}
+                              className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
   );
-};
+}
