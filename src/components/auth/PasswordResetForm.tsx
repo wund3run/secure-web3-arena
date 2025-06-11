@@ -2,66 +2,63 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Eye, EyeOff, Lock, ArrowLeft } from 'lucide-react';
-import { useEnhancedAuth } from '@/hooks/useEnhancedAuth';
-import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Mail } from 'lucide-react';
+import { useAuth } from '@/contexts/auth';
+import { toast } from 'sonner';
 
 export const PasswordResetForm = () => {
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [isResetting, setIsResetting] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
-  
-  const { updatePassword } = useEnhancedAuth();
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const { forgotPassword } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-
-    if (newPassword !== confirmPassword) {
-      setError('Passwords do not match');
+    
+    if (!email) {
+      toast.error('Please enter your email address');
       return;
     }
 
-    if (newPassword.length < 8) {
-      setError('Password must be at least 8 characters long');
-      return;
-    }
-
-    setIsResetting(true);
+    setIsLoading(true);
     try {
-      await updatePassword(newPassword);
-      setSuccess(true);
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 2000);
-    } catch (err: any) {
-      setError(err.message || 'Failed to reset password');
+      await forgotPassword(email);
+      setIsSubmitted(true);
+    } catch (error: any) {
+      toast.error('Failed to send reset email', {
+        description: error.message
+      });
     } finally {
-      setIsResetting(false);
+      setIsLoading(false);
     }
   };
 
-  if (success) {
+  if (isSubmitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-secondary/5 p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <CardTitle className="text-green-600">Password Reset Successful!</CardTitle>
+            <div className="mx-auto mb-4 p-3 bg-green-100 rounded-full w-fit">
+              <Mail className="h-6 w-6 text-green-600" />
+            </div>
+            <CardTitle>Check your email</CardTitle>
           </CardHeader>
-          <CardContent className="text-center space-y-4">
-            <p className="text-muted-foreground">
-              Your password has been successfully updated. You'll be redirected to your dashboard shortly.
-            </p>
-            <Button asChild className="w-full">
-              <Link to="/dashboard">Go to Dashboard</Link>
+          <CardContent className="space-y-4">
+            <Alert>
+              <AlertDescription>
+                We've sent a password reset link to <strong>{email}</strong>. 
+                Please check your email and click the link to reset your password.
+              </AlertDescription>
+            </Alert>
+            <Button 
+              variant="outline" 
+              className="w-full"
+              onClick={() => window.location.href = '/auth'}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Sign In
             </Button>
           </CardContent>
         </Card>
@@ -70,80 +67,43 @@ export const PasswordResetForm = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-secondary/5 p-4">
       <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Reset Your Password</CardTitle>
+        <CardHeader className="text-center">
+          <CardTitle>Reset your password</CardTitle>
           <p className="text-sm text-muted-foreground">
-            Enter your new password below
+            Enter your email address and we'll send you a link to reset your password.
           </p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="newPassword">New Password</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="newPassword"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Enter your new password"
-                  className="pl-10 pr-10"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                  minLength={8}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-muted-foreground" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-muted-foreground" />
-                  )}
-                </button>
-              </div>
+              <label htmlFor="email" className="text-sm font-medium">
+                Email address
+              </label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                disabled={isLoading}
+                required
+              />
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm New Password</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="confirmPassword"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Confirm your new password"
-                  className="pl-10"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  minLength={8}
-                />
-              </div>
-            </div>
-
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-
-            <Button type="submit" className="w-full" disabled={isResetting}>
-              {isResetting ? 'Updating Password...' : 'Update Password'}
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? 'Sending...' : 'Send reset link'}
+            </Button>
+            <Button 
+              type="button"
+              variant="outline" 
+              className="w-full"
+              onClick={() => window.location.href = '/auth'}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Sign In
             </Button>
           </form>
-
-          <div className="mt-4 text-center">
-            <Button variant="link" asChild>
-              <Link to="/auth" className="flex items-center gap-2">
-                <ArrowLeft className="h-4 w-4" />
-                Back to Sign In
-              </Link>
-            </Button>
-          </div>
         </CardContent>
       </Card>
     </div>

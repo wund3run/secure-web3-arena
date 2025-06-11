@@ -1,4 +1,3 @@
-
 import { Suspense, lazy } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -73,6 +72,11 @@ const AuditDetails = lazy(() => import("./pages/AuditDetails"));
 const AuditGuidelines = lazy(() => import("./pages/AuditGuidelines"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 
+// Missing Auth Pages - Now Adding Routes
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
+const TwoFactorAuth = lazy(() => import("./pages/TwoFactorAuth"));
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -91,6 +95,9 @@ const App = () => (
                         <Route path="/" element={<Index />} />
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/auth" element={<Auth />} />
+                        <Route path="/reset-password" element={<ResetPassword />} />
+                        <Route path="/auth/callback" element={<AuthCallback />} />
+                        <Route path="/2fa" element={<TwoFactorAuth />} />
                         <Route path="/marketplace" element={<Marketplace />} />
                         <Route path="/request-audit" element={<RequestAudit />} />
                         <Route path="/profile" element={<Profile />} />

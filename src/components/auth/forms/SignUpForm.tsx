@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Eye, EyeOff } from "lucide-react";
+import { SocialAuthButtons } from "../SocialAuthButtons";
 
 interface SignUpFormProps {
   formData: {
@@ -29,123 +31,113 @@ export const SignUpForm = ({
   error,
   onInputChange,
   onTogglePassword,
-  onSubmit
+  onSubmit,
 }: SignUpFormProps) => {
   return (
-    <div className="space-y-4">
-      {error && (
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      <div className="space-y-2">
-        <Label>Account Type</Label>
-        <div className="grid grid-cols-2 gap-2">
-          <Button
-            type="button"
-            variant={formData.userType === 'project_owner' ? 'default' : 'outline'}
-            onClick={() => onInputChange('userType', 'project_owner')}
-            className="text-sm"
-          >
-            Project Owner
-          </Button>
-          <Button
-            type="button"
-            variant={formData.userType === 'auditor' ? 'default' : 'outline'}
-            onClick={() => onInputChange('userType', 'auditor')}
-            className="text-sm"
-          >
-            Security Auditor
-          </Button>
-        </div>
-        <p className="text-xs text-muted-foreground">
-          {formData.userType === 'auditor' 
-            ? 'Offer security audit services to Web3 projects' 
-            : 'Request security audits for your Web3 projects'}
-        </p>
-      </div>
-      
+    <div className="space-y-6">
       <form onSubmit={onSubmit} className="space-y-4">
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        
         <div className="space-y-2">
           <Label htmlFor="fullName">Full Name</Label>
-          <div className="relative">
-            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="fullName"
-              type="text"
-              placeholder="Enter your full name"
-              className="pl-10"
-              value={formData.fullName}
-              onChange={(e) => onInputChange('fullName', e.target.value)}
-              required
-            />
-          </div>
+          <Input
+            id="fullName"
+            type="text"
+            value={formData.fullName}
+            onChange={(e) => onInputChange('fullName', e.target.value)}
+            placeholder="Enter your full name"
+            disabled={isLoading}
+            required
+          />
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="registerEmail">Email</Label>
-          <div className="relative">
-            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="registerEmail"
-              type="email"
-              placeholder="Enter your email"
-              className="pl-10"
-              value={formData.email}
-              onChange={(e) => onInputChange('email', e.target.value)}
-              required
-            />
-          </div>
+          <Label htmlFor="signup-email">Email</Label>
+          <Input
+            id="signup-email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => onInputChange('email', e.target.value)}
+            placeholder="Enter your email"
+            disabled={isLoading}
+            required
+          />
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="registerPassword">Password</Label>
+          <Label htmlFor="signup-password">Password</Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              id="registerPassword"
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Create a password"
-              className="pl-10 pr-10"
+              id="signup-password"
+              type={showPassword ? "text" : "password"}
               value={formData.password}
               onChange={(e) => onInputChange('password', e.target.value)}
+              placeholder="Create a password"
+              disabled={isLoading}
               required
             />
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
+              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
               onClick={onTogglePassword}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2"
+              disabled={isLoading}
             >
               {showPassword ? (
-                <EyeOff className="h-4 w-4 text-muted-foreground" />
+                <EyeOff className="h-4 w-4" />
               ) : (
-                <Eye className="h-4 w-4 text-muted-foreground" />
+                <Eye className="h-4 w-4" />
               )}
-            </button>
+            </Button>
           </div>
         </div>
-
+        
         <div className="space-y-2">
           <Label htmlFor="confirmPassword">Confirm Password</Label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="confirmPassword"
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Confirm your password"
-              className="pl-10"
-              value={formData.confirmPassword}
-              onChange={(e) => onInputChange('confirmPassword', e.target.value)}
-              required
-            />
-          </div>
+          <Input
+            id="confirmPassword"
+            type={showPassword ? "text" : "password"}
+            value={formData.confirmPassword}
+            onChange={(e) => onInputChange('confirmPassword', e.target.value)}
+            placeholder="Confirm your password"
+            disabled={isLoading}
+            required
+          />
         </div>
-
+        
+        <div className="space-y-3">
+          <Label>I want to:</Label>
+          <RadioGroup
+            value={formData.userType}
+            onValueChange={(value) => onInputChange('userType', value)}
+            className="flex flex-col space-y-2"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="project_owner" id="project_owner" />
+              <Label htmlFor="project_owner">
+                Get my project audited (Project Owner)
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="auditor" id="auditor" />
+              <Label htmlFor="auditor">
+                Provide security services (Auditor)
+              </Label>
+            </div>
+          </RadioGroup>
+        </div>
+        
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? 'Creating account...' : 'Create account'}
+          {isLoading ? "Creating account..." : "Create Account"}
         </Button>
       </form>
+      
+      <SocialAuthButtons mode="signup" />
     </div>
   );
 };
