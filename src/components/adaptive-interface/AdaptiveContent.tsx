@@ -45,37 +45,6 @@ export function AdaptiveContent({
       <div className="adaptive-content-wrapper">
         {children}
       </div>
-      
-      <style jsx>{`
-        .adaptive-content {
-          width: 100%;
-        }
-        
-        .adaptive-content.layout-compact .dashboard-widget {
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: 1rem;
-        }
-        
-        .adaptive-content.layout-detailed .dashboard-widget {
-          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-          gap: 1.5rem;
-        }
-        
-        .adaptive-content.layout-cards .dashboard-widget {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-        
-        .adaptive-content.segment-new_user .advanced-feature {
-          display: none;
-        }
-        
-        .adaptive-content.segment-power_user .beginner-tip,
-        .adaptive-content.segment-champion .beginner-tip {
-          display: none;
-        }
-      `}</style>
     </div>
   );
 }

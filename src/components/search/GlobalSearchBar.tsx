@@ -46,11 +46,11 @@ export function GlobalSearchBar({
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 300));
     
-    // Mock results
+    // Mock results with proper typing
     const mockResults: SearchResult[] = [
       {
         id: '1',
-        type: 'auditor',
+        type: 'auditor' as const,
         title: 'Alex Smith',
         description: 'Senior Smart Contract Auditor - Ethereum, Solana specialist',
         metadata: { rating: 4.9, completedAudits: 47 },
@@ -58,7 +58,7 @@ export function GlobalSearchBar({
       },
       {
         id: '2',
-        type: 'project',
+        type: 'project' as const,
         title: 'DeFi Protocol Audit',
         description: 'Security audit for decentralized lending protocol',
         metadata: { status: 'In Progress', blockchain: 'Ethereum' },
@@ -66,7 +66,7 @@ export function GlobalSearchBar({
       },
       {
         id: '3',
-        type: 'resource',
+        type: 'resource' as const,
         title: 'Smart Contract Security Best Practices',
         description: 'Comprehensive guide for secure smart contract development',
         metadata: { type: 'Guide', category: 'Security' },
