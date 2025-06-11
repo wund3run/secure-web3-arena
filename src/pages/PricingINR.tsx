@@ -4,74 +4,91 @@ import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowRight, IndianRupee, DollarSign } from 'lucide-react';
+import { Check, ArrowRight, IndianRupee, DollarSign, Calculator } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function PricingINR() {
   const [currency, setCurrency] = useState<'USD' | 'INR'>('INR');
+  const [exchangeRate] = useState(83.30); // Current USD to INR rate
 
   const plans = [
     {
-      name: "Basic Audit",
-      priceUSD: "$5,000",
-      priceINR: "₹4,16,500",
-      description: "Perfect for simple smart contracts and small projects",
+      name: "Smart Contract Audit",
+      priceUSD: 5000,
+      priceINR: 416500,
+      duration: "5-7 days",
+      description: "Comprehensive security audit for smart contracts up to 1000 lines of code",
       features: [
-        "Up to 500 lines of code",
-        "Basic security review",
-        "Standard report",
-        "5-7 day delivery",
-        "Email support"
+        "Automated vulnerability scanning",
+        "Manual code review by certified auditors",
+        "Gas optimization analysis",
+        "Detailed security report",
+        "Fix verification",
+        "30-day support"
       ],
-      popular: false
+      popular: false,
+      category: "basic"
     },
     {
-      name: "Comprehensive Audit",
-      priceUSD: "$15,000",
-      priceINR: "₹12,49,500",
-      description: "Ideal for DeFi protocols and complex applications",
+      name: "DeFi Protocol Audit",
+      priceUSD: 15000,
+      priceINR: 1249500,
+      duration: "7-10 days",
+      description: "Complete security assessment for DeFi protocols and complex dApps",
       features: [
-        "Up to 2,000 lines of code",
-        "Comprehensive security analysis",
-        "Detailed report with recommendations",
-        "3-5 day delivery",
-        "Priority support",
-        "Post-audit consultation"
+        "Multi-contract system analysis",
+        "Economic model review",
+        "Flash loan attack simulation",
+        "Governance mechanism audit",
+        "Integration testing",
+        "Post-deployment monitoring setup"
       ],
-      popular: true
+      popular: true,
+      category: "comprehensive"
     },
     {
-      name: "Enterprise Audit",
-      priceUSD: "Custom",
-      priceINR: "Custom",
-      description: "For large protocols and ongoing security partnerships",
+      name: "Enterprise Security Suite",
+      priceUSD: 50000,
+      priceINR: 4165000,
+      duration: "14-21 days",
+      description: "Full-scale security assessment for enterprise blockchain solutions",
       features: [
-        "Unlimited lines of code",
-        "Full security ecosystem review",
-        "Custom reporting",
-        "1-3 day delivery",
-        "24/7 dedicated support",
-        "Ongoing monitoring",
-        "Emergency response"
+        "Complete ecosystem audit",
+        "Infrastructure security review",
+        "Compliance assessment",
+        "Emergency response plan",
+        "24/7 monitoring setup",
+        "Team training sessions"
       ],
-      popular: false
+      popular: false,
+      category: "enterprise"
     }
   ];
 
+  const convertPrice = (usdPrice: number) => {
+    return currency === 'USD' ? usdPrice : Math.round(usdPrice * exchangeRate);
+  };
+
+  const formatPrice = (price: number) => {
+    if (currency === 'USD') {
+      return `$${price.toLocaleString()}`;
+    }
+    return `₹${price.toLocaleString('en-IN')}`;
+  };
+
   return (
     <StandardLayout 
-      title="Pricing - Indian Market" 
-      description="Transparent pricing for professional Web3 security audits in India"
+      title="Pricing - Web3 Security Audits" 
+      description="Professional Web3 security audit pricing in INR and USD"
     >
       <div className="container py-12">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Simple, Transparent Pricing</h1>
+          <h1 className="text-4xl font-bold mb-4">Transparent Security Audit Pricing</h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
-            Choose the audit package that fits your project needs. All plans include 
-            our comprehensive security analysis by verified experts.
+            Professional Web3 security audits by certified experts. Choose the package that fits your project needs.
           </p>
           
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center items-center gap-4 mb-8">
             <div className="flex bg-muted rounded-lg p-1">
               <Button
                 variant={currency === 'USD' ? 'default' : 'ghost'}
@@ -92,70 +109,81 @@ export default function PricingINR() {
                 INR
               </Button>
             </div>
+            <div className="text-sm text-muted-foreground">
+              Rate: 1 USD = ₹{exchangeRate}
+            </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {plans.map((plan, index) => (
-            <Card key={index} className={`hover:shadow-lg transition-shadow ${plan.popular ? 'ring-2 ring-primary' : ''}`}>
+            <Card key={index} className={`hover:shadow-lg transition-shadow ${plan.popular ? 'ring-2 ring-primary border-primary' : ''}`}>
               <CardHeader>
                 {plan.popular && (
-                  <Badge className="w-fit mb-4">Most Popular</Badge>
+                  <Badge className="w-fit mb-4 bg-primary text-primary-foreground">Most Popular</Badge>
                 )}
-                <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                <CardTitle className="text-xl">{plan.name}</CardTitle>
                 <div className="text-3xl font-bold text-primary">
-                  {currency === 'USD' ? plan.priceUSD : plan.priceINR}
+                  {formatPrice(convertPrice(plan.priceUSD))}
                 </div>
-                <CardDescription>{plan.description}</CardDescription>
+                <div className="text-sm text-muted-foreground">{plan.duration}</div>
+                <CardDescription className="mt-2">{plan.description}</CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-3 mb-6">
                   {plan.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                    <li key={idx} className="flex items-start gap-2">
+                      <Check className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
                       <span className="text-sm">{feature}</span>
                     </li>
                   ))}
                 </ul>
-                <Button className="w-full" variant={plan.popular ? "default" : "outline"} asChild>
-                  <Link to="/request-audit">
-                    Get Started <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
+                <div className="space-y-3">
+                  <Button className="w-full" variant={plan.popular ? "default" : "outline"} asChild>
+                    <Link to="/request-audit">
+                      Get Started <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button variant="ghost" className="w-full" asChild>
+                    <Link to="/pricing-calculator">
+                      <Calculator className="mr-2 h-4 w-4" />
+                      Calculate Custom Price
+                    </Link>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           ))}
         </div>
 
         <div className="bg-muted/50 rounded-lg p-8 mb-8">
-          <h2 className="text-2xl font-bold mb-4 text-center">Why Choose Hawkly?</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center">Why Choose Hawkly Security?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-center">
-              <h3 className="font-semibold mb-2">Local Expertise</h3>
+              <h3 className="font-semibold mb-2">Certified Experts</h3>
               <p className="text-sm text-muted-foreground">
-                Understanding of Indian regulatory environment and market needs
+                Our auditors are certified by leading security organizations
               </p>
             </div>
             <div className="text-center">
-              <h3 className="font-semibold mb-2">Flexible Payment</h3>
+              <h3 className="font-semibold mb-2">Fast Turnaround</h3>
               <p className="text-sm text-muted-foreground">
-                Accept payments in INR, USD, and major cryptocurrencies
+                Most audits completed within 7-14 days
               </p>
             </div>
             <div className="text-center">
               <h3 className="font-semibold mb-2">24/7 Support</h3>
               <p className="text-sm text-muted-foreground">
-                Round-the-clock support in multiple Indian languages
+                Round-the-clock support throughout the audit process
               </p>
             </div>
           </div>
         </div>
 
-        <div className="text-center">
+        <div className="bg-primary/5 rounded-lg p-6 text-center">
+          <h3 className="text-lg font-semibold mb-2">Need a Custom Quote?</h3>
           <p className="text-muted-foreground mb-4">
-            All prices are estimates. Final pricing depends on project complexity and requirements.
-            <br />
-            Exchange rate: 1 USD = 83.30 INR (rates may vary)
+            For large projects or ongoing security partnerships, we offer custom pricing.
           </p>
           <Button asChild>
             <Link to="/contact">Get Custom Quote</Link>

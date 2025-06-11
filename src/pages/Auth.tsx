@@ -1,11 +1,11 @@
 
 import React from 'react';
 import { AuthLayout } from '@/components/auth/AuthLayout';
-import { AuthForms } from '@/components/auth/AuthForms';
+import { CompleteAuthFlow } from '@/components/auth/CompleteAuthFlow';
 import { useAuthPage } from '@/hooks/useAuthPage';
 
 const Auth = () => {
-  const { isLoading, loading, error, handleSignIn, handleSignUp } = useAuthPage();
+  const { loading } = useAuthPage();
 
   if (loading) {
     return (
@@ -25,12 +25,9 @@ const Auth = () => {
 
   return (
     <AuthLayout>
-      <AuthForms
-        onSignIn={handleSignIn}
-        onSignUp={handleSignUp}
-        isLoading={isLoading}
-        error={error}
-      />
+      <div className="max-w-2xl mx-auto">
+        <CompleteAuthFlow />
+      </div>
     </AuthLayout>
   );
 };
