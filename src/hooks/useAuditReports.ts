@@ -30,7 +30,19 @@ export const useAuditReports = (auditId: string) => {
           .order('created_at', { ascending: false });
 
         if (error) throw error;
-        setReports(data || []);
+        
+        // Ensure valid report types and status
+        const validReports = (data || []).map(report => ({
+          ...report,
+          report_type: ['preliminary', 'interim', 'final'].includes(report.report_type) 
+            ? report.report_type 
+            : 'preliminary',
+          status: ['draft', 'review', 'approved', 'published'].includes(report.status)
+            ? report.status
+            : 'draft'
+        })) as AuditReport[];
+        
+        setReports(validReports);
       } catch (error) {
         console.error('Error fetching reports:', error);
       } finally {
@@ -73,9 +85,60 @@ export const useAuditReports = (auditId: string) => {
     }
   };
 
+  const createReport = async (report: Partial<AuditReport>) => {
+    try {
+      const { error } = await supabase
+        .from('audit_reports')
+        .insert({
+          ...report,
+          audit_request_id: auditId,
+        });
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error creating report:', error);
+      return false;
+    }
+  };
+
+  const updateReport = async (reportId: string, updates: Partial<AuditReport>) => {
+    try {
+      const { error } = await supabase
+        .from('audit_reports')
+        .update(updates)
+        .eq('id', reportId);
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error updating report:', error);
+      return false;
+    }
+  };
+
+  const publishReport = async (reportId: string) => {
+    try {
+      const { error } = await supabase
+        .from('audit_reports')
+        .update({ status: 'published' })
+        .eq('id', reportId);
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error publishing report:', error);
+      return false;
+    }
+  };
+
   return {
     reports,
     isLoading,
-    generateReport
+    loading: isLoading, // Alias for backward compatibility
+    generateReport,
+    createReport,
+    updateReport,
+    publishReport
   };
 };

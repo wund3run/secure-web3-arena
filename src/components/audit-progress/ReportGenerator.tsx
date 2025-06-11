@@ -8,8 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FileText, Download, Eye, Plus, Upload } from 'lucide-react';
-import { useAuditReports, type AuditReport } from '@/hooks/useAuditReports';
+import { FileText, Download, Eye, Plus } from 'lucide-react';
+import { useAuditReports } from '@/hooks/useAuditReports';
 import { format } from 'date-fns';
 
 interface ReportGeneratorProps {
@@ -18,16 +18,35 @@ interface ReportGeneratorProps {
 }
 
 export const ReportGenerator: React.FC<ReportGeneratorProps> = ({ auditRequestId, isAuditor }) => {
-  const { reports, loading, createReport, updateReport, publishReport } = useAuditReports(auditRequestId);
+  const { reports, isLoading, generateReport, createReport } = useAuditReports(auditRequestId);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [newReport, setNewReport] = useState({
-    report_type: '' as AuditReport['report_type'] | '',
     title: '',
-    content: {},
-    template_used: '',
+    report_type: 'preliminary' as 'preliminary' | 'interim' | 'final',
+    content: '',
   });
 
-  const getStatusColor = (status: AuditReport['status']) => {
+  const handleCreateReport = async () => {
+    if (!newReport.title) return;
+
+    try {
+      await createReport(newReport);
+      setNewReport({ title: '', report_type: 'preliminary', content: '' });
+      setIsCreateDialogOpen(false);
+    } catch (error) {
+      console.error('Failed to create report:', error);
+    }
+  };
+
+  const handleGenerateReport = async (type: 'preliminary' | 'interim' | 'final') => {
+    try {
+      await generateReport(type);
+    } catch (error) {
+      console.error('Failed to generate report:', error);
+    }
+  };
+
+  const getStatusBadgeVariant = (status: string) => {
     switch (status) {
       case 'published':
         return 'default';
@@ -40,64 +59,60 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({ auditRequestId
     }
   };
 
-  const getTypeColor = (type: AuditReport['report_type']) => {
+  const getReportTypeLabel = (type: string) => {
     switch (type) {
-      case 'final':
-        return 'default';
-      case 'interim':
-        return 'secondary';
       case 'preliminary':
-        return 'outline';
-      case 'executive_summary':
-        return 'outline';
+        return 'Preliminary';
+      case 'interim':
+        return 'Interim';
+      case 'final':
+        return 'Final';
+      default:
+        return type;
     }
   };
 
-  const handleCreateReport = async () => {
-    if (!newReport.report_type || !newReport.title) return;
-
-    try {
-      await createReport({
-        audit_request_id: auditRequestId,
-        report_type: newReport.report_type,
-        title: newReport.title,
-        version: '1.0',
-        status: 'draft',
-        content: newReport.content,
-        template_used: newReport.template_used,
-      });
-
-      setNewReport({
-        report_type: '' as AuditReport['report_type'] | '',
-        title: '',
-        content: {},
-        template_used: '',
-      });
-      setIsCreateDialogOpen(false);
-    } catch (error) {
-      console.error('Failed to create report:', error);
-    }
-  };
-
-  const handleStatusChange = async (reportId: string, newStatus: AuditReport['status']) => {
-    await updateReport(reportId, { status: newStatus });
-  };
-
-  const handlePublish = async (reportId: string) => {
-    await publishReport(reportId);
-  };
-
-  if (loading) {
-    return <div className="animate-pulse space-y-4">
-      {[...Array(2)].map((_, i) => (
-        <div key={i} className="h-24 bg-muted rounded-lg" />
-      ))}
-    </div>;
+  if (isLoading) {
+    return <div className="animate-pulse h-64 bg-muted rounded-lg" />;
   }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Quick Actions */}
+      {isAuditor && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Generate Reports</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                onClick={() => handleGenerateReport('preliminary')}
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Generate Preliminary Report
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => handleGenerateReport('interim')}
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Generate Interim Report
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => handleGenerateReport('final')}
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Generate Final Report
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Reports List */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -108,7 +123,7 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({ auditRequestId
             {isAuditor && (
               <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button>
+                  <Button size="sm">
                     <Plus className="h-4 w-4 mr-2" />
                     Create Report
                   </Button>
@@ -119,21 +134,6 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({ auditRequestId
                   </DialogHeader>
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="report_type">Report Type</Label>
-                      <Select value={newReport.report_type} onValueChange={(value) => setNewReport(prev => ({ ...prev, report_type: value as AuditReport['report_type'] }))}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select report type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="preliminary">Preliminary Report</SelectItem>
-                          <SelectItem value="interim">Interim Report</SelectItem>
-                          <SelectItem value="final">Final Report</SelectItem>
-                          <SelectItem value="executive_summary">Executive Summary</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div>
                       <Label htmlFor="title">Title</Label>
                       <Input
                         id="title"
@@ -142,22 +142,34 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({ auditRequestId
                         placeholder="Report title"
                       />
                     </div>
-                    
                     <div>
-                      <Label htmlFor="template">Template (Optional)</Label>
-                      <Select value={newReport.template_used} onValueChange={(value) => setNewReport(prev => ({ ...prev, template_used: value }))}>
+                      <Label htmlFor="report_type">Report Type</Label>
+                      <Select
+                        value={newReport.report_type}
+                        onValueChange={(value: 'preliminary' | 'interim' | 'final') => 
+                          setNewReport(prev => ({ ...prev, report_type: value }))
+                        }
+                      >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select template" />
+                          <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="standard">Standard Audit Report</SelectItem>
-                          <SelectItem value="executive">Executive Summary</SelectItem>
-                          <SelectItem value="technical">Technical Deep Dive</SelectItem>
-                          <SelectItem value="compliance">Compliance Report</SelectItem>
+                          <SelectItem value="preliminary">Preliminary</SelectItem>
+                          <SelectItem value="interim">Interim</SelectItem>
+                          <SelectItem value="final">Final</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-                    
+                    <div>
+                      <Label htmlFor="content">Content</Label>
+                      <Textarea
+                        id="content"
+                        value={newReport.content}
+                        onChange={(e) => setNewReport(prev => ({ ...prev, content: e.target.value }))}
+                        placeholder="Report content"
+                        rows={4}
+                      />
+                    </div>
                     <Button onClick={handleCreateReport} className="w-full">
                       Create Report
                     </Button>
@@ -168,99 +180,44 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({ auditRequestId
           </div>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
-            Generate and manage audit reports throughout the audit lifecycle
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Reports List */}
-      <div className="space-y-4">
-        {reports.length === 0 ? (
-          <Card>
-            <CardContent className="text-center py-8">
-              <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-muted-foreground">No reports generated yet</p>
-            </CardContent>
-          </Card>
-        ) : (
-          reports.map(report => (
-            <Card key={report.id}>
-              <CardContent className="pt-6">
-                <div className="flex items-start justify-between">
+          <div className="space-y-4">
+            {reports.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8">No reports generated yet</p>
+            ) : (
+              reports.map(report => (
+                <div key={report.id} className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="font-medium">{report.title}</h3>
-                      <Badge variant={getTypeColor(report.report_type)}>
-                        {report.report_type.replace('_', ' ')}
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-medium">{report.title}</h4>
+                      <Badge variant="outline">
+                        {getReportTypeLabel(report.report_type)}
                       </Badge>
-                      <Badge variant={getStatusColor(report.status)}>
+                      <Badge variant={getStatusBadgeVariant(report.status)}>
                         {report.status}
                       </Badge>
                     </div>
-                    
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
-                      <span>Version {report.version}</span>
-                      <span>Created {format(new Date(report.created_at), 'MMM dd, yyyy')}</span>
-                      {report.published_at && (
-                        <span>Published {format(new Date(report.published_at), 'MMM dd, yyyy')}</span>
-                      )}
+                    <div className="text-sm text-muted-foreground">
+                      Created: {format(new Date(report.created_at), 'MMM dd, yyyy')}
                     </div>
-                    
-                    {report.template_used && (
-                      <p className="text-sm text-muted-foreground">
-                        Template: {report.template_used}
-                      </p>
-                    )}
                   </div>
-                  
                   <div className="flex items-center gap-2">
                     <Button variant="outline" size="sm">
                       <Eye className="h-4 w-4 mr-2" />
                       View
                     </Button>
-                    
                     {report.file_url && (
                       <Button variant="outline" size="sm">
                         <Download className="h-4 w-4 mr-2" />
                         Download
                       </Button>
                     )}
-                    
-                    {isAuditor && (
-                      <>
-                        {report.status !== 'published' && (
-                          <Select
-                            value={report.status}
-                            onValueChange={(value) => handleStatusChange(report.id, value as AuditReport['status'])}
-                          >
-                            <SelectTrigger className="w-32">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="draft">Draft</SelectItem>
-                              <SelectItem value="review">Review</SelectItem>
-                              <SelectItem value="approved">Approved</SelectItem>
-                              <SelectItem value="published">Published</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        )}
-                        
-                        {report.status === 'approved' && (
-                          <Button onClick={() => handlePublish(report.id)}>
-                            <Upload className="h-4 w-4 mr-2" />
-                            Publish
-                          </Button>
-                        )}
-                      </>
-                    )}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
+              ))
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

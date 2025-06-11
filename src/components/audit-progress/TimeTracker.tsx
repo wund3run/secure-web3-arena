@@ -19,7 +19,7 @@ interface TimeTrackerProps {
 }
 
 export const TimeTracker: React.FC<TimeTrackerProps> = ({ auditRequestId, isAuditor }) => {
-  const { timeEntries, activeEntry, loading, startTimer, stopTimer, getTotalTime, getBillableTime } = useTimeTracking(auditRequestId);
+  const { timeEntries, activeEntry, isLoading, startTimer, stopTimer, getTotalTime, getBillableTime } = useTimeTracking(auditRequestId);
   const milestonesData = useAuditMilestones(auditRequestId);
   const [isStartDialogOpen, setIsStartDialogOpen] = useState(false);
   const [timerConfig, setTimerConfig] = useState({
@@ -53,7 +53,7 @@ export const TimeTracker: React.FC<TimeTrackerProps> = ({ auditRequestId, isAudi
   const totalMinutes = getTotalTime();
   const billableMinutes = getBillableTime();
 
-  if (loading) {
+  if (isLoading) {
     return <div className="animate-pulse h-64 bg-muted rounded-lg" />;
   }
 
@@ -199,21 +199,28 @@ export const TimeTracker: React.FC<TimeTrackerProps> = ({ auditRequestId, isAudi
                 <div key={entry.id} className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-medium">{entry.activity_type.replace('_', ' ')}</span>
-                      {entry.billable && <Badge variant="outline" className="text-xs">Billable</Badge>}
+                      <span className="font-medium">{entry.activity_type?.replace('_', ' ') || 'General'}</span>
+                      {entry.billable !== false && <Badge variant="outline" className="text-xs">Billable</Badge>}
                       {!entry.end_time && <Badge variant="default" className="text-xs">Active</Badge>}
                     </div>
                     {entry.description && (
                       <p className="text-sm text-muted-foreground mb-1">{entry.description}</p>
                     )}
                     <div className="text-sm text-muted-foreground">
-                      {format(new Date(entry.start_time), 'MMM dd, yyyy HH:mm')}
-                      {entry.end_time && ` - ${format(new Date(entry.end_time), 'HH:mm')}`}
+                      {entry.start_time ? (
+                        <>
+                          {format(new Date(entry.start_time), 'MMM dd, yyyy HH:mm')}
+                          {entry.end_time && ` - ${format(new Date(entry.end_time), 'HH:mm')}`}
+                        </>
+                      ) : (
+                        format(new Date(entry.created_at), 'MMM dd, yyyy')
+                      )}
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="font-medium">
-                      {entry.duration_minutes ? formatDuration(entry.duration_minutes) : 'Running...'}
+                      {entry.duration_minutes ? formatDuration(entry.duration_minutes) : 
+                       entry.hours ? `${entry.hours}h` : 'Running...'}
                     </div>
                   </div>
                 </div>

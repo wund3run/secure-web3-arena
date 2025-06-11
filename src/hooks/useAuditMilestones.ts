@@ -30,7 +30,16 @@ export const useAuditMilestones = (auditId: string) => {
           .order('created_at', { ascending: true });
 
         if (error) throw error;
-        setMilestones(data || []);
+        
+        // Ensure status values are valid
+        const validMilestones = (data || []).map(milestone => ({
+          ...milestone,
+          status: ['pending', 'in_progress', 'completed'].includes(milestone.status) 
+            ? milestone.status 
+            : 'pending'
+        })) as AuditMilestone[];
+        
+        setMilestones(validMilestones);
       } catch (error) {
         console.error('Error fetching milestones:', error);
       } finally {
@@ -81,9 +90,46 @@ export const useAuditMilestones = (auditId: string) => {
     }
   };
 
+  const createMilestone = async (milestone: Partial<AuditMilestone>) => {
+    try {
+      const { error } = await supabase
+        .from('audit_milestones')
+        .insert({
+          ...milestone,
+          audit_request_id: auditId,
+        });
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error creating milestone:', error);
+      return false;
+    }
+  };
+
+  const updateMilestone = async (milestoneId: string, updates: Partial<AuditMilestone>) => {
+    try {
+      const { error } = await supabase
+        .from('audit_milestones')
+        .update(updates)
+        .eq('id', milestoneId);
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error updating milestone:', error);
+      return false;
+    }
+  };
+
   return {
     milestones,
     isLoading,
-    updateMilestoneStatus
+    loading: isLoading, // Alias for backward compatibility
+    updateMilestoneStatus,
+    createMilestone,
+    updateMilestone,
+    completeMilestone: (milestoneId: string) => updateMilestoneStatus(milestoneId, 'completed'),
+    approveMilestone: (milestoneId: string) => updateMilestone(milestoneId, { status: 'completed' })
   };
 };
