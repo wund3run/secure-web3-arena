@@ -3,13 +3,12 @@ export interface Notification {
   id: string;
   title: string;
   message: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+  type: 'success' | 'error' | 'warning' | 'info';
+  category: string;
   timestamp: Date;
   read: boolean;
   actionUrl?: string;
   actionLabel?: string;
-  userId: string;
-  category: 'audit' | 'message' | 'system' | 'payment' | 'realtime' | 'audit_progress';
 }
 
 export interface NotificationContextType {

@@ -1,48 +1,38 @@
 
 import { useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/auth';
 import { useNotifications } from '@/contexts/NotificationContext';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-export const useRealtimeNotifications = () => {
+export function useRealtimeNotifications() {
   const { user } = useAuth();
   const { addNotification } = useNotifications();
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.id) return;
 
-    console.log('Setting up real-time notifications for user:', user.id);
-
-    // Subscribe to audit request updates
-    const auditUpdatesChannel = supabase
-      .channel('audit_updates')
+    // Subscribe to real-time notifications
+    const channel = supabase
+      .channel('user-notifications')
       .on(
         'postgres_changes',
         {
-          event: 'UPDATE',
+          event: 'INSERT',
           schema: 'public',
-          table: 'audit_requests',
-          filter: `client_id=eq.${user.id}`,
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          console.log('Audit update received:', payload);
-          const oldStatus = payload.old?.status;
-          const newStatus = payload.new?.status;
-          
-          if (oldStatus !== newStatus) {
-            addNotification({
-              title: 'Audit Status Updated',
-              message: `Your audit status changed from ${oldStatus} to ${newStatus}`,
-              type: 'info',
-              category: 'audit',
-              userId: user.id,
-              actionUrl: `/audit/${payload.new.id}`,
-              actionLabel: 'View Details',
-            });
-            
-            toast.info(`Audit status updated to ${newStatus}`);
-          }
+          const notification = payload.new;
+          addNotification({
+            title: notification.title,
+            message: notification.message,
+            type: notification.type || 'info',
+            category: 'system',
+            actionUrl: notification.action_url,
+            actionLabel: 'View'
+          });
         }
       )
       .on(
@@ -50,30 +40,24 @@ export const useRealtimeNotifications = () => {
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'audit_findings',
+          table: 'audit_status_updates',
+          filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          // Check if this finding is for an audit involving the current user
-          supabase
-            .from('audit_requests')
-            .select('client_id, assigned_auditor_id, project_name')
-            .eq('id', payload.new.audit_request_id)
-            .single()
-            .then(({ data }) => {
-              if (data && (data.client_id === user.id || data.assigned_auditor_id === user.id)) {
-                addNotification({
-                  title: 'New Security Finding',
-                  message: `A ${payload.new.severity} severity finding was identified in ${data.project_name}`,
-                  type: payload.new.severity === 'critical' || payload.new.severity === 'high' ? 'error' : 'info',
-                  category: 'audit',
-                  userId: user.id,
-                  actionUrl: `/audit/${payload.new.audit_request_id}`,
-                  actionLabel: 'View Finding',
-                });
-                
-                toast.warning(`New ${payload.new.severity} finding identified`);
-              }
-            });
+          const update = payload.new;
+          addNotification({
+            title: 'Audit Update',
+            message: update.message || `${update.status_type}: ${update.title}`,
+            type: 'info',
+            category: 'audit',
+            actionUrl: `/audits/${update.audit_request_id}`,
+            actionLabel: 'View Audit'
+          });
+
+          // Also show a toast for immediate feedback
+          toast.success('Audit Update', {
+            description: update.title
+          });
         }
       )
       .on(
@@ -81,41 +65,27 @@ export const useRealtimeNotifications = () => {
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'audit_messages',
+          table: 'message_notifications',
+          filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          // Only notify if message is not from current user
-          if (payload.new.sender_id !== user.id) {
-            supabase
-              .from('audit_requests')
-              .select('client_id, assigned_auditor_id, project_name')
-              .eq('id', payload.new.audit_request_id)
-              .single()
-              .then(({ data }) => {
-                if (data && (data.client_id === user.id || data.assigned_auditor_id === user.id)) {
-                  addNotification({
-                    title: 'New Message',
-                    message: `You received a new message about ${data.project_name}`,
-                    type: 'info',
-                    category: 'message',
-                    userId: user.id,
-                    actionUrl: `/audit/${payload.new.audit_request_id}`,
-                    actionLabel: 'View Message',
-                  });
-                  
-                  toast.info('New message received');
-                }
-              });
-          }
+          const messageNotification = payload.new;
+          addNotification({
+            title: 'New Message',
+            message: `You have a new ${messageNotification.notification_type}`,
+            type: 'info',
+            category: 'message',
+            actionUrl: '/messages',
+            actionLabel: 'View Messages'
+          });
         }
       )
       .subscribe();
 
     return () => {
-      console.log('Cleaning up real-time notification channels');
-      supabase.removeChannel(auditUpdatesChannel);
+      supabase.removeChannel(channel);
     };
-  }, [user, addNotification]);
+  }, [user?.id, addNotification]);
 
   return null;
-};
+}

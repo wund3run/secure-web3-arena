@@ -1,47 +1,110 @@
 
 import { useEffect } from 'react';
-import { useNotifications } from '@/contexts/NotificationContext';
-import { useAuth } from '@/contexts/auth';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/auth';
+import { useNotifications } from '@/contexts/NotificationContext';
 
-export const usePaymentNotifications = () => {
-  const { addNotification } = useNotifications();
+export function usePaymentNotifications() {
   const { user } = useAuth();
+  const { addNotification } = useNotifications();
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.id) return;
 
-    // Subscribe to payment-related events
-    const paymentChannel = supabase
-      .channel('payment_notifications')
+    const channel = supabase
+      .channel('payment-events')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'payment_transactions',
+        },
+        (payload) => {
+          const oldRecord = payload.old;
+          const newRecord = payload.new;
+
+          // Only notify users involved in the transaction
+          const isUserInvolved = 
+            newRecord.client_id === user.id || 
+            newRecord.auditor_id === user.id;
+
+          if (!isUserInvolved) return;
+
+          // Payment status change notifications
+          if (oldRecord.status !== newRecord.status) {
+            let notificationType: 'success' | 'error' | 'warning' | 'info' = 'info';
+            let message = '';
+
+            switch (newRecord.status) {
+              case 'completed':
+                notificationType = 'success';
+                message = newRecord.auditor_id === user.id 
+                  ? `Payment of $${newRecord.amount} received successfully`
+                  : `Payment of $${newRecord.amount} completed successfully`;
+                break;
+              case 'failed':
+                notificationType = 'error';
+                message = `Payment of $${newRecord.amount} failed. Please check your payment method.`;
+                break;
+              case 'pending':
+                notificationType = 'info';
+                message = `Payment of $${newRecord.amount} is being processed`;
+                break;
+              case 'refunded':
+                notificationType = 'warning';
+                message = `Payment of $${newRecord.amount} has been refunded`;
+                break;
+              default:
+                return;
+            }
+
+            addNotification({
+              title: 'Payment Update',
+              message,
+              type: notificationType,
+              category: 'payment',
+              actionUrl: `/payments/${newRecord.id}`,
+              actionLabel: 'View Details'
+            });
+          }
+        }
+      )
       .on(
         'postgres_changes',
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'audit_log',
-          filter: `action=like.%payment%`,
+          table: 'transactions',
         },
         (payload) => {
-          if (payload.new?.action.includes('payment')) {
-            const paymentType = payload.new.action.includes('received') ? 'success' : 'info';
-            
-            addNotification({
-              title: 'Payment Update',
-              message: `Payment ${payload.new.action.replace('payment_', '')}`,
-              type: paymentType,
-              category: 'payment',
-              userId: user.id,
-              actionUrl: `/audit/${payload.new.audit_request_id}`,
-              actionLabel: 'View Details',
-            });
+          const transaction = payload.new;
+
+          // Escrow milestone notifications
+          if (transaction.type === 'milestone_payment') {
+            const isUserInvolved = 
+              transaction.sender_id === user.id || 
+              transaction.recipient_id === user.id;
+
+            if (isUserInvolved) {
+              addNotification({
+                title: 'Milestone Payment',
+                message: transaction.recipient_id === user.id
+                  ? `You received a milestone payment of $${transaction.amount}`
+                  : `Milestone payment of $${transaction.amount} sent successfully`,
+                type: 'success',
+                category: 'escrow',
+                actionUrl: `/escrow/${transaction.escrow_contract_id}`,
+                actionLabel: 'View Escrow'
+              });
+            }
           }
         }
       )
       .subscribe();
 
     return () => {
-      supabase.removeChannel(paymentChannel);
+      supabase.removeChannel(channel);
     };
-  }, [user, addNotification]);
-};
+  }, [user?.id, addNotification]);
+}

@@ -1,6 +1,7 @@
 
 import React, { useState, useCallback } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { FileUpload } from '@/components/ui/FileUpload';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -8,115 +9,63 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Upload, 
   File, 
-  FileText, 
   Image, 
-  Archive,
-  Trash2,
-  Download,
+  FileText, 
+  Download, 
+  Trash2, 
   Eye,
-  Lock,
+  Clock,
   CheckCircle,
-  AlertTriangle,
-  Clock
+  AlertCircle,
+  FolderOpen
 } from 'lucide-react';
-import { useDropzone } from 'react-dropzone';
+import { toast } from 'sonner';
+import { useAuth } from '@/contexts/auth';
 
-interface FileItem {
+interface UploadedFile {
   id: string;
   name: string;
-  size: number;
+  url: string;
   type: string;
-  status: 'uploading' | 'completed' | 'error' | 'scanning';
-  progress: number;
-  url?: string;
-  scanResult?: 'clean' | 'threat' | 'pending';
+  size: number;
   uploadedAt: Date;
+  category: string;
 }
 
-export const FileUploadSystem = () => {
-  const [files, setFiles] = useState<FileItem[]>([]);
-  const [dragActive, setDragActive] = useState(false);
+export function FileUploadSystem() {
+  const { user } = useAuth();
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [activeCategory, setActiveCategory] = useState('documents');
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    const newFiles: FileItem[] = acceptedFiles.map(file => ({
+  const handleFileUpload = useCallback((fileUrl: string, fileName: string) => {
+    const newFile: UploadedFile = {
       id: crypto.randomUUID(),
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      status: 'uploading',
-      progress: 0,
+      name: fileName,
+      url: fileUrl,
+      type: fileName.split('.').pop() || 'unknown',
+      size: 0, // Would be provided by actual upload
       uploadedAt: new Date(),
-    }));
+      category: activeCategory
+    };
 
-    setFiles(prev => [...prev, ...newFiles]);
+    setUploadedFiles(prev => [newFile, ...prev]);
+    toast.success(`${fileName} uploaded successfully`);
+  }, [activeCategory]);
 
-    // Simulate upload process
-    newFiles.forEach(file => {
-      simulateUpload(file.id);
-    });
+  const handleDeleteFile = useCallback((fileId: string) => {
+    setUploadedFiles(prev => prev.filter(file => file.id !== fileId));
+    toast.success('File deleted successfully');
   }, []);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    multiple: true,
-    maxSize: 100 * 1024 * 1024, // 100MB
-  });
-
-  const simulateUpload = (fileId: string) => {
-    const interval = setInterval(() => {
-      setFiles(prev => prev.map(file => {
-        if (file.id === fileId) {
-          const newProgress = Math.min(file.progress + 10, 100);
-          if (newProgress === 100) {
-            clearInterval(interval);
-            // Start security scan
-            setTimeout(() => {
-              setFiles(prev => prev.map(f => 
-                f.id === fileId ? { ...f, status: 'scanning' } : f
-              ));
-              // Complete scan after 2 seconds
-              setTimeout(() => {
-                setFiles(prev => prev.map(f => 
-                  f.id === fileId ? { 
-                    ...f, 
-                    status: 'completed', 
-                    scanResult: 'clean',
-                    url: `/files/${f.name}`
-                  } : f
-                ));
-              }, 2000);
-            }, 500);
-            return { ...file, progress: newProgress, status: 'completed' as const };
-          }
-          return { ...file, progress: newProgress };
-        }
-        return file;
-      }));
-    }, 200);
-  };
-
-  const deleteFile = (fileId: string) => {
-    setFiles(prev => prev.filter(file => file.id !== fileId));
-  };
-
   const getFileIcon = (type: string) => {
-    if (type.startsWith('image/')) return <Image className="h-4 w-4" />;
-    if (type.includes('pdf') || type.includes('document')) return <FileText className="h-4 w-4" />;
-    if (type.includes('zip') || type.includes('archive')) return <Archive className="h-4 w-4" />;
-    return <File className="h-4 w-4" />;
-  };
-
-  const getStatusIcon = (status: string, scanResult?: string) => {
-    switch (status) {
-      case 'uploading': return <Clock className="h-4 w-4 text-blue-500" />;
-      case 'scanning': return <Lock className="h-4 w-4 text-yellow-500 animate-pulse" />;
-      case 'completed': 
-        return scanResult === 'clean' 
-          ? <CheckCircle className="h-4 w-4 text-green-500" />
-          : <AlertTriangle className="h-4 w-4 text-red-500" />;
-      case 'error': return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      default: return <File className="h-4 w-4" />;
+    const extension = type.toLowerCase();
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
+      return <Image className="h-5 w-5" />;
     }
+    if (['pdf', 'doc', 'docx', 'txt'].includes(extension)) {
+      return <FileText className="h-5 w-5" />;
+    }
+    return <File className="h-5 w-5" />;
   };
 
   const formatFileSize = (bytes: number) => {
@@ -127,128 +76,167 @@ export const FileUploadSystem = () => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  const completedFiles = files.filter(f => f.status === 'completed');
-  const uploadingFiles = files.filter(f => f.status === 'uploading' || f.status === 'scanning');
+  const categories = [
+    { id: 'documents', label: 'Documents', icon: FileText },
+    { id: 'code', label: 'Source Code', icon: File },
+    { id: 'reports', label: 'Reports', icon: FileText },
+    { id: 'contracts', label: 'Smart Contracts', icon: File },
+  ];
+
+  const filteredFiles = uploadedFiles.filter(file => file.category === activeCategory);
+
+  if (!user) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-orange-500" />
+              Authentication Required
+            </CardTitle>
+            <CardDescription>
+              Please sign in to access the file management system.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <Upload className="h-6 w-6" />
-        <h1 className="text-2xl font-bold">File Management</h1>
+    <div className="container mx-auto px-4 py-8 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">File Management</h1>
+          <p className="text-muted-foreground">
+            Upload, organize, and manage your project files securely
+          </p>
+        </div>
+        <Badge variant="secondary" className="flex items-center gap-1">
+          <FolderOpen className="h-3 w-3" />
+          {uploadedFiles.length} files
+        </Badge>
       </div>
 
-      <Tabs defaultValue="upload" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="upload">Upload Files</TabsTrigger>
-          <TabsTrigger value="files" className="flex items-center gap-2">
-            My Files
-            {completedFiles.length > 0 && (
-              <Badge variant="secondary">{completedFiles.length}</Badge>
-            )}
-          </TabsTrigger>
+      <Tabs value={activeCategory} onValueChange={setActiveCategory}>
+        <TabsList className="grid w-full grid-cols-4">
+          {categories.map((category) => (
+            <TabsTrigger
+              key={category.id}
+              value={category.id}
+              className="flex items-center gap-2"
+            >
+              <category.icon className="h-4 w-4" />
+              <span className="hidden sm:inline">{category.label}</span>
+            </TabsTrigger>
+          ))}
         </TabsList>
 
-        <TabsContent value="upload" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Secure File Upload</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div
-                {...getRootProps()}
-                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                  isDragActive ? 'border-primary bg-primary/5' : 'border-gray-300'
-                }`}
-              >
-                <input {...getInputProps()} />
-                <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-semibold mb-2">
-                  {isDragActive ? 'Drop files here' : 'Upload your files'}
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  Drag and drop files here, or click to select files
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Supports: PDF, DOC, DOCX, TXT, ZIP, Images • Max size: 100MB
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {uploadingFiles.length > 0 && (
+        {categories.map((category) => (
+          <TabsContent key={category.id} value={category.id} className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Upload Progress</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Upload className="h-5 w-5" />
+                  Upload {category.label}
+                </CardTitle>
+                <CardDescription>
+                  Upload files to your secure {category.label.toLowerCase()} folder
+                </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {uploadingFiles.map((file) => (
-                  <div key={file.id} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        {getFileIcon(file.type)}
-                        <span className="font-medium">{file.name}</span>
-                        <Badge variant="outline">
-                          {file.status === 'scanning' ? 'Scanning...' : 'Uploading...'}
-                        </Badge>
-                      </div>
-                      <span className="text-sm text-muted-foreground">
-                        {formatFileSize(file.size)}
-                      </span>
-                    </div>
-                    <Progress value={file.progress} className="h-2" />
-                  </div>
-                ))}
+              <CardContent>
+                <FileUpload
+                  onUpload={handleFileUpload}
+                  acceptedTypes={
+                    category.id === 'code' 
+                      ? ['.sol', '.js', '.ts', '.py', '.zip', '.tar.gz']
+                      : ['.pdf', '.doc', '.docx', '.txt', '.zip']
+                  }
+                  maxSize={50}
+                  folder={category.id}
+                />
               </CardContent>
             </Card>
-          )}
-        </TabsContent>
 
-        <TabsContent value="files" className="space-y-4">
-          {completedFiles.length === 0 ? (
             <Card>
-              <CardContent className="p-8 text-center">
-                <File className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground">No files uploaded yet</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-3">
-              {completedFiles.map((file) => (
-                <Card key={file.id}>
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        {getFileIcon(file.type)}
-                        <div>
-                          <h3 className="font-medium">{file.name}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {formatFileSize(file.size)} • Uploaded {file.uploadedAt.toLocaleDateString()}
-                          </p>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <category.icon className="h-5 w-5" />
+                  {category.label} ({filteredFiles.length})
+                </CardTitle>
+                <CardDescription>
+                  Manage your uploaded {category.label.toLowerCase()}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {filteredFiles.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <category.icon className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>No {category.label.toLowerCase()} uploaded yet</p>
+                    <p className="text-sm">Upload files using the form above</p>
+                  </div>
+                ) : (
+                  <div className="grid gap-3">
+                    {filteredFiles.map((file) => (
+                      <div
+                        key={file.id}
+                        className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          {getFileIcon(file.type)}
+                          <div>
+                            <p className="font-medium">{file.name}</p>
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                              <span className="flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                {file.uploadedAt.toLocaleDateString()}
+                              </span>
+                              <Badge variant="outline" className="text-xs">
+                                {file.type.toUpperCase()}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => window.open(file.url, '_blank')}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const link = document.createElement('a');
+                              link.href = file.url;
+                              link.download = file.name;
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                            }}
+                          >
+                            <Download className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDeleteFile(file.id)}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(file.status, file.scanResult)}
-                        <Badge variant={file.scanResult === 'clean' ? 'default' : 'destructive'}>
-                          {file.scanResult === 'clean' ? 'Secure' : 'Threat Detected'}
-                        </Badge>
-                        <Button variant="ghost" size="sm">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm">
-                          <Download className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => deleteFile(file.id)}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </TabsContent>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        ))}
       </Tabs>
     </div>
   );
-};
+}

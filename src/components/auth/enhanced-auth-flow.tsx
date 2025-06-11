@@ -1,69 +1,84 @@
 
 import React, { useState } from 'react';
-import { useAuth } from '@/contexts/auth';
+import { useStabilizedAuth } from '@/hooks/useStabilizedAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, Shield, Users, CheckCircle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Eye, EyeOff, Shield, Users, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function EnhancedAuthFlow() {
-  const { signIn, signUp, loading } = useAuth();
+  const [activeTab, setActiveTab] = useState('signin');
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    confirmPassword: '',
     fullName: '',
-    userType: 'project_owner' as 'auditor' | 'project_owner'
+    userType: 'project_owner' as 'auditor' | 'project_owner',
+    confirmPassword: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const validateForm = (isSignUp: boolean) => {
+  const { signIn, signUp, loading } = useStabilizedAuth();
+
+  const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    
-    if (!formData.email) newErrors.email = 'Email is required';
-    if (!formData.password) newErrors.password = 'Password is required';
-    if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
-    
-    if (isSignUp) {
-      if (!formData.fullName) newErrors.fullName = 'Full name is required';
+
+    if (!formData.email) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+
+    if (activeTab === 'signup') {
+      if (!formData.fullName) {
+        newErrors.fullName = 'Full name is required';
+      }
       if (formData.password !== formData.confirmPassword) {
         newErrors.confirmPassword = 'Passwords do not match';
       }
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm(false)) return;
+    
+    if (!validateForm()) {
+      return;
+    }
 
+    setIsSubmitting(true);
+    
     try {
-      await signIn(formData.email, formData.password);
-      toast.success('Welcome back!');
-    } catch (error: any) {
-      toast.error('Sign in failed', { description: error.message });
+      if (activeTab === 'signin') {
+        await signIn(formData.email, formData.password);
+      } else {
+        await signUp(formData.email, formData.password, formData.fullName, formData.userType);
+        toast.success('Account created! Please check your email for verification.');
+      }
+    } catch (error) {
+      console.error('Auth error:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm(true)) return;
-
-    try {
-      await signUp(formData.email, formData.password, formData.fullName, formData.userType);
-      toast.success('Account created successfully!');
-    } catch (error: any) {
-      toast.error('Sign up failed', { description: error.message });
-    }
-  };
-
-  const updateFormData = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
@@ -71,194 +86,235 @@ export function EnhancedAuthFlow() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <Tabs defaultValue="signin" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="signin">Sign In</TabsTrigger>
-          <TabsTrigger value="signup">Sign Up</TabsTrigger>
-        </TabsList>
+    <div className="w-full max-w-md mx-auto space-y-6">
+      <div className="text-center space-y-2">
+        <div className="flex items-center justify-center gap-2">
+          <img 
+            src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+            alt="Hawkly Logo"
+            className="h-8 w-8 object-contain"
+          />
+          <h1 className="text-2xl font-bold">Hawkly</h1>
+        </div>
+        <p className="text-muted-foreground">Secure Web3 Audit Platform</p>
+      </div>
 
-        <TabsContent value="signin">
-          <Card>
-            <CardHeader className="text-center">
+      <Card>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="signin" className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              Sign In
+            </TabsTrigger>
+            <TabsTrigger value="signup" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              Sign Up
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="signin">
+            <CardHeader>
               <CardTitle>Welcome Back</CardTitle>
               <CardDescription>
-                Sign in to access your Web3 security dashboard
+                Sign in to your Hawkly account to access secure Web3 auditing services
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSignIn} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signin-email">Email</Label>
-                  <Input
-                    id="signin-email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => updateFormData('email', e.target.value)}
-                    placeholder="Enter your email"
-                  />
-                  {errors.email && (
-                    <Alert variant="destructive">
-                      <AlertDescription>{errors.email}</AlertDescription>
-                    </Alert>
-                  )}
-                </div>
+          </TabsContent>
 
-                <div className="space-y-2">
-                  <Label htmlFor="signin-password">Password</Label>
-                  <Input
-                    id="signin-password"
-                    type="password"
-                    value={formData.password}
-                    onChange={(e) => updateFormData('password', e.target.value)}
-                    placeholder="Enter your password"
-                  />
-                  {errors.password && (
-                    <Alert variant="destructive">
-                      <AlertDescription>{errors.password}</AlertDescription>
-                    </Alert>
-                  )}
-                </div>
-
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Signing In...
-                    </>
-                  ) : (
-                    'Sign In'
-                  )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="signup">
-          <Card>
-            <CardHeader className="text-center">
-              <CardTitle>Join Hawkly</CardTitle>
+          <TabsContent value="signup">
+            <CardHeader>
+              <CardTitle>Create Account</CardTitle>
               <CardDescription>
-                Create your account to start securing Web3 projects
+                Join Hawkly to connect with expert auditors or offer your security services
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSignUp} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signup-name">Full Name</Label>
-                  <Input
-                    id="signup-name"
-                    value={formData.fullName}
-                    onChange={(e) => updateFormData('fullName', e.target.value)}
-                    placeholder="Enter your full name"
-                  />
-                  {errors.fullName && (
-                    <Alert variant="destructive">
-                      <AlertDescription>{errors.fullName}</AlertDescription>
-                    </Alert>
-                  )}
-                </div>
+          </TabsContent>
 
-                <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
-                  <Input
-                    id="signup-email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => updateFormData('email', e.target.value)}
-                    placeholder="Enter your email"
-                  />
-                  {errors.email && (
-                    <Alert variant="destructive">
-                      <AlertDescription>{errors.email}</AlertDescription>
-                    </Alert>
-                  )}
-                </div>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {activeTab === 'signup' && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="fullName">Full Name</Label>
+                    <Input
+                      id="fullName"
+                      type="text"
+                      placeholder="Enter your full name"
+                      value={formData.fullName}
+                      onChange={(e) => handleInputChange('fullName', e.target.value)}
+                      className={errors.fullName ? 'border-red-500' : ''}
+                    />
+                    {errors.fullName && (
+                      <p className="text-sm text-red-500 flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" />
+                        {errors.fullName}
+                      </p>
+                    )}
+                  </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="signup-password">Password</Label>
+                  <div className="space-y-3">
+                    <Label>Account Type</Label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button
+                        type="button"
+                        variant={formData.userType === 'project_owner' ? 'default' : 'outline'}
+                        className="h-auto p-4 flex flex-col items-center gap-2"
+                        onClick={() => handleInputChange('userType', 'project_owner')}
+                      >
+                        <Shield className="h-5 w-5" />
+                        <div className="text-center">
+                          <div className="font-medium">Project Owner</div>
+                          <div className="text-xs text-muted-foreground">Request audits</div>
+                        </div>
+                      </Button>
+                      <Button
+                        type="button"
+                        variant={formData.userType === 'auditor' ? 'default' : 'outline'}
+                        className="h-auto p-4 flex flex-col items-center gap-2"
+                        onClick={() => handleInputChange('userType', 'auditor')}
+                      >
+                        <Users className="h-5 w-5" />
+                        <div className="text-center">
+                          <div className="font-medium">Auditor</div>
+                          <div className="text-xs text-muted-foreground">Provide audits</div>
+                        </div>
+                      </Button>
+                    </div>
+                  </div>
+
+                  <Separator />
+                </>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  className={errors.email ? 'border-red-500' : ''}
+                />
+                {errors.email && (
+                  <p className="text-sm text-red-500 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" />
+                    {errors.email}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
                   <Input
-                    id="signup-password"
-                    type="password"
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Enter your password"
                     value={formData.password}
-                    onChange={(e) => updateFormData('password', e.target.value)}
-                    placeholder="Create a password"
+                    onChange={(e) => handleInputChange('password', e.target.value)}
+                    className={errors.password ? 'border-red-500 pr-10' : 'pr-10'}
                   />
-                  {errors.password && (
-                    <Alert variant="destructive">
-                      <AlertDescription>{errors.password}</AlertDescription>
-                    </Alert>
-                  )}
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
                 </div>
+                {errors.password && (
+                  <p className="text-sm text-red-500 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" />
+                    {errors.password}
+                  </p>
+                )}
+              </div>
 
+              {activeTab === 'signup' && (
                 <div className="space-y-2">
-                  <Label htmlFor="confirm-password">Confirm Password</Label>
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
                   <Input
-                    id="confirm-password"
-                    type="password"
-                    value={formData.confirmPassword}
-                    onChange={(e) => updateFormData('confirmPassword', e.target.value)}
+                    id="confirmPassword"
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="Confirm your password"
+                    value={formData.confirmPassword}
+                    onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                    className={errors.confirmPassword ? 'border-red-500' : ''}
                   />
                   {errors.confirmPassword && (
-                    <Alert variant="destructive">
-                      <AlertDescription>{errors.confirmPassword}</AlertDescription>
-                    </Alert>
+                    <p className="text-sm text-red-500 flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3" />
+                      {errors.confirmPassword}
+                    </p>
                   )}
                 </div>
+              )}
 
-                <div className="space-y-3">
-                  <Label>Account Type</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      type="button"
-                      variant={formData.userType === 'project_owner' ? 'default' : 'outline'}
-                      onClick={() => updateFormData('userType', 'project_owner')}
-                      className="h-auto p-3 flex flex-col items-center space-y-1"
-                    >
-                      <Users className="h-4 w-4" />
-                      <span className="text-xs">Project Owner</span>
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={formData.userType === 'auditor' ? 'default' : 'outline'}
-                      onClick={() => updateFormData('userType', 'auditor')}
-                      className="h-auto p-3 flex flex-col items-center space-y-1"
-                    >
-                      <Shield className="h-4 w-4" />
-                      <span className="text-xs">Security Auditor</span>
-                    </Button>
+              <Button 
+                type="submit" 
+                className="w-full" 
+                disabled={isSubmitting || loading}
+              >
+                {isSubmitting || loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {activeTab === 'signin' ? 'Signing in...' : 'Creating account...'}
+                  </>
+                ) : (
+                  <>
+                    {activeTab === 'signin' ? (
+                      <Shield className="mr-2 h-4 w-4" />
+                    ) : (
+                      <CheckCircle className="mr-2 h-4 w-4" />
+                    )}
+                    {activeTab === 'signin' ? 'Sign In' : 'Create Account'}
+                  </>
+                )}
+              </Button>
+            </form>
+
+            {activeTab === 'signup' && (
+              <div className="mt-4 space-y-3">
+                <Separator />
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground mb-3">
+                    What you get with Hawkly:
+                  </p>
+                  <div className="grid grid-cols-1 gap-2 text-xs">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <CheckCircle className="h-3 w-3 text-green-500" />
+                      <span>Secure escrow payments</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <CheckCircle className="h-3 w-3 text-green-500" />
+                      <span>Expert security auditors</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <CheckCircle className="h-3 w-3 text-green-500" />
+                      <span>Real-time project tracking</span>
+                    </div>
                   </div>
                 </div>
+              </div>
+            )}
+          </CardContent>
+        </Tabs>
+      </Card>
 
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating Account...
-                    </>
-                  ) : (
-                    'Create Account'
-                  )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-
-      <div className="mt-6 text-center text-sm text-muted-foreground">
-        <div className="flex items-center justify-center space-x-4">
-          <div className="flex items-center space-x-1">
-            <CheckCircle className="h-3 w-3 text-green-500" />
-            <span>SOC 2 Compliant</span>
-          </div>
-          <div className="flex items-center space-x-1">
-            <Shield className="h-3 w-3 text-blue-500" />
-            <span>Enterprise Security</span>
-          </div>
-        </div>
+      <div className="text-center">
+        <p className="text-xs text-muted-foreground">
+          By continuing, you agree to our{' '}
+          <a href="/terms" className="text-primary hover:underline">Terms of Service</a>{' '}
+          and{' '}
+          <a href="/privacy" className="text-primary hover:underline">Privacy Policy</a>
+        </p>
       </div>
     </div>
   );
