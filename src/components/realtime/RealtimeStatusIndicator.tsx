@@ -19,7 +19,7 @@ export function RealtimeStatusIndicator({
     switch (connectionStatus) {
       case 'connected':
         return <Wifi className="h-3 w-3" />;
-      case 'connecting':
+      case 'reconnecting':
         return <Loader2 className="h-3 w-3 animate-spin" />;
       case 'disconnected':
       default:
@@ -31,7 +31,7 @@ export function RealtimeStatusIndicator({
     switch (connectionStatus) {
       case 'connected':
         return 'default';
-      case 'connecting':
+      case 'reconnecting':
         return 'secondary';
       case 'disconnected':
       default:
