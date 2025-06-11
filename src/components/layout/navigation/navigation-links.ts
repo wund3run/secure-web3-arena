@@ -157,5 +157,15 @@ export const navigationLinks: NavigationLink[] = [
         description: "Platform documentation"
       }
     ]
+  },
+  {
+    title: "Dashboard",
+    href: "/dashboard",
+    requiresAuth: true
+  },
+  {
+    title: "My Audits",
+    href: "/audits",
+    requiresAuth: true
   }
 ];
