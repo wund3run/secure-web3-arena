@@ -2,38 +2,54 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Shield } from 'lucide-react';
+import { ArrowRight, Shield, CheckCircle } from 'lucide-react';
 
 export function CTASection() {
   return (
-    <section className="py-20 bg-primary text-primary-foreground">
-      <div className="container">
+    <section className="py-20 bg-gradient-to-r from-blue-600 via-blue-700 to-cyan-600 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 bg-grid-white/[0.05] [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" />
+      
+      <div className="container relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="mb-6">
-            <Shield className="h-16 w-16 mx-auto mb-4 opacity-90" />
+          <div className="mb-8">
+            <Shield className="h-20 w-20 mx-auto mb-6 text-white/90" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
             Ready to Secure Your Web3 Project?
           </h2>
-          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            Join thousands of developers who trust Hawkly for their security needs. 
-            Get started with a comprehensive audit today.
+          <p className="text-xl mb-8 text-blue-100 max-w-3xl mx-auto leading-relaxed">
+            Join thousands of developers who trust our vigilant security guardians. 
+            Get started with a comprehensive protection audit today and safeguard your digital assets.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="secondary" asChild>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
+            <Button size="lg" variant="secondary" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-6 text-lg font-semibold shadow-lg" asChild>
               <Link to="/request-audit">
                 Request Security Audit
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" asChild>
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 px-8 py-6 text-lg font-semibold" asChild>
               <Link to="/marketplace">
-                Browse Marketplace
+                Browse Guardian Marketplace
               </Link>
             </Button>
           </div>
-          <div className="mt-12 text-sm opacity-75">
-            <p>✓ No setup fees • ✓ Transparent pricing • ✓ 24/7 support</p>
+          
+          {/* Trust Indicators */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+            <div className="flex items-center justify-center gap-2 text-blue-100">
+              <CheckCircle className="h-5 w-5 text-green-300" />
+              <span className="font-medium">No setup fees</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 text-blue-100">
+              <CheckCircle className="h-5 w-5 text-green-300" />
+              <span className="font-medium">Transparent pricing</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 text-blue-100">
+              <CheckCircle className="h-5 w-5 text-green-300" />
+              <span className="font-medium">24/7 guardian support</span>
+            </div>
           </div>
         </div>
       </div>
