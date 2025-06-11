@@ -9,16 +9,16 @@ interface PreloadRoute {
 
 const routePreloadMap: Record<string, PreloadRoute[]> = {
   '/': [
-    { path: '/marketplace', component: () => import('@/pages/marketplace/Marketplace') },
-    { path: '/request-audit', component: () => import('@/pages/audit-request/RequestAudit') }
+    { path: '/marketplace', component: () => import('@/pages/Marketplace') },
+    { path: '/request-audit', component: () => import('@/pages/RequestAudit') }
   ],
   '/marketplace': [
-    { path: '/request-audit', component: () => import('@/pages/audit-request/RequestAudit') },
+    { path: '/request-audit', component: () => import('@/pages/RequestAudit') },
     { path: '/security-audits', component: () => import('@/pages/services/SecurityAudits') }
   ],
   '/dashboard': [
-    { path: '/audits', component: () => import('@/pages/audits/Audits') },
-    { path: '/profile', component: () => import('@/pages/profile/Profile') }
+    { path: '/audits', component: () => import('@/pages/Audits') },
+    { path: '/profile', component: () => import('@/pages/Profile') }
   ]
 };
 
