@@ -121,7 +121,9 @@ const MarketplacePage = () => {
                         <p className="text-muted-foreground line-clamp-2">{service.description}</p>
                         
                         <div className="flex items-center justify-between">
-                          <span className="text-lg font-bold">{service.pricing}</span>
+                          <span className="text-lg font-bold">
+                            {service.pricing.amount} {service.pricing.currency}
+                          </span>
                           <Badge variant="outline" className="flex items-center gap-1">
                             <Zap className="h-3 w-3" />
                             {service.provider.level}
