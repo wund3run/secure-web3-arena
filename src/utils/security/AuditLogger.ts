@@ -1,3 +1,4 @@
+
 export interface AuditLogEntry {
   id: string;
   timestamp: Date;
@@ -10,6 +11,9 @@ export interface AuditLogEntry {
   ipAddress?: string;
   userAgent: string;
 }
+
+// Export AuditEvent as an alias for backward compatibility
+export type AuditEvent = AuditLogEntry;
 
 class AuditLogger {
   private logs: AuditLogEntry[] = [];
@@ -89,6 +93,31 @@ class AuditLogger {
     }
 
     return filteredLogs.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  }
+
+  // Alias for backward compatibility
+  getEvents(filters?: any): AuditLogEntry[] {
+    return this.getLogs(filters);
+  }
+
+  exportAuditLog(format: 'json' | 'csv'): string {
+    const logs = this.getLogs();
+    
+    if (format === 'json') {
+      return JSON.stringify(logs, null, 2);
+    } else {
+      // CSV format
+      if (logs.length === 0) return '';
+      
+      const headers = Object.keys(logs[0]).join(',');
+      const rows = logs.map(log => 
+        Object.values(log).map(value => 
+          typeof value === 'object' ? JSON.stringify(value) : String(value)
+        ).join(',')
+      );
+      
+      return [headers, ...rows].join('\n');
+    }
   }
 
   generateSecurityReport(): {

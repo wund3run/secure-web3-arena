@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Shield, Activity, AlertTriangle, Download, RefreshCw } from 'lucide-react';
-import { auditLogger, AuditEvent } from '@/utils/security/AuditLogger';
+import { auditLogger, AuditLogEntry } from '@/utils/security/AuditLogger';
 import { SecurityHeadersManager } from '@/utils/security/SecurityHeadersManager';
 import { useSecurity } from './SecurityProvider';
 import { PermissionGuard } from '@/components/auth/rbac/PermissionGuard';
 
 export const SecurityDashboard: React.FC = () => {
-  const [auditEvents, setAuditEvents] = useState<AuditEvent[]>([]);
+  const [auditEvents, setAuditEvents] = useState<AuditLogEntry[]>([]);
   const [securityMetrics, setSecurityMetrics] = useState({
     totalEvents: 0,
     criticalEvents: 0,
@@ -24,7 +24,7 @@ export const SecurityDashboard: React.FC = () => {
   }, []);
 
   const loadAuditEvents = () => {
-    const events = auditLogger.getEvents();
+    const events = auditLogger.getLogs();
     setAuditEvents(events.slice(-50).reverse()); // Show last 50 events
     
     setSecurityMetrics({
@@ -154,15 +154,12 @@ export const SecurityDashboard: React.FC = () => {
                           <Badge variant={getSeverityColor(event.severity)}>
                             {event.severity}
                           </Badge>
-                          <span className="font-medium">{event.event_type}</span>
+                          <span className="font-medium">{event.action}</span>
                         </div>
-                        <div className="text-sm text-muted-foreground">{event.action}</div>
+                        <div className="text-sm text-muted-foreground">{event.description}</div>
                         <div className="text-xs text-muted-foreground">
                           {new Date(event.timestamp).toLocaleString()}
                         </div>
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        Risk: {event.risk_score}/10
                       </div>
                     </div>
                   ))}

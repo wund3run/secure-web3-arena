@@ -123,7 +123,7 @@ export function SecureInput({
         validationResult = EnhancedValidation.validateEmail(inputValue);
         break;
       case 'url':
-        validationResult = EnhancedValidation.validateURL(inputValue, validationOptions.required);
+        validationResult = EnhancedValidation.validateURL(inputValue);
         break;
       case 'number':
         validationResult = EnhancedValidation.validateNumber(inputValue, validationOptions);

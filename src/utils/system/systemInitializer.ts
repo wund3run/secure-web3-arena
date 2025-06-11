@@ -101,7 +101,8 @@ export class SystemInitializer {
       PerformanceMonitor.cleanup();
 
       // Generate final reports
-      const performanceReport = PerformanceMonitor.generatePerformanceReport();
+      const performanceMonitor = PerformanceMonitor.getInstance();
+      const performanceReport = performanceMonitor.generatePerformanceReport();
       Logger.info('Final performance report', {
         ...performanceReport,
         category: 'system'
