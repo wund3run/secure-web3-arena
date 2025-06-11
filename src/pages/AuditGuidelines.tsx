@@ -1,285 +1,309 @@
 
 import React from 'react';
 import { StandardLayout } from '@/components/layout/StandardLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  FileText, 
+  Shield, 
   CheckCircle, 
   AlertTriangle, 
-  Shield, 
-  Clock, 
+  FileText, 
   Users,
-  Download,
-  ArrowRight 
+  Clock,
+  Target,
+  BookOpen
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
-export default function AuditGuidelines() {
-  const auditPhases = [
+const AuditGuidelines = () => {
+  const guidelineCategories = [
     {
-      phase: "Initial Assessment",
-      duration: "1-2 days",
-      description: "Preliminary review to understand project scope, architecture, and security requirements",
-      deliverables: ["Project scope document", "Risk assessment matrix", "Timeline estimation"]
+      id: 'process',
+      title: 'Audit Process',
+      icon: <Clock className="h-5 w-5" />,
+      description: 'Step-by-step audit methodology and procedures'
     },
     {
-      phase: "Code Review",
-      duration: "3-7 days",
-      description: "Manual and automated reviews to identify vulnerabilities in smart contracts",
-      deliverables: ["Detailed vulnerability report", "Code quality assessment", "Gas optimization recommendations"]
+      id: 'standards',
+      title: 'Security Standards',
+      icon: <Shield className="h-5 w-5" />,
+      description: 'Industry security standards and best practices'
     },
     {
-      phase: "Testing & Validation",
-      duration: "2-3 days",
-      description: "Execute functional and security tests including edge cases and exploit scenarios",
-      deliverables: ["Test results documentation", "Proof of concept exploits", "Security test coverage report"]
+      id: 'tools',
+      title: 'Tools & Methods',
+      icon: <Target className="h-5 w-5" />,
+      description: 'Recommended tools and testing methodologies'
     },
     {
-      phase: "Final Report",
-      duration: "1-2 days",
-      description: "Comprehensive audit report with findings, severity levels, and remediation guidance",
-      deliverables: ["Executive summary", "Technical audit report", "Remediation roadmap"]
+      id: 'reporting',
+      title: 'Reporting Guidelines',
+      icon: <FileText className="h-5 w-5" />,
+      description: 'Standards for audit reporting and documentation'
+    }
+  ];
+
+  const processSteps = [
+    {
+      phase: 'Initial Assessment',
+      description: 'Conduct preliminary review to understand project scope and architecture',
+      duration: '1-2 days',
+      deliverables: ['Project assessment', 'Scope definition', 'Timeline agreement']
+    },
+    {
+      phase: 'Code Review',
+      description: 'Perform manual and automated code analysis',
+      duration: '3-7 days',
+      deliverables: ['Static analysis results', 'Manual review findings', 'Code quality assessment']
+    },
+    {
+      phase: 'Security Testing',
+      description: 'Execute functional and security tests',
+      duration: '2-5 days',
+      deliverables: ['Test results', 'Vulnerability assessment', 'Attack simulations']
+    },
+    {
+      phase: 'Reporting',
+      description: 'Compile findings and create comprehensive report',
+      duration: '1-3 days',
+      deliverables: ['Final audit report', 'Remediation recommendations', 'Executive summary']
+    },
+    {
+      phase: 'Remediation Support',
+      description: 'Provide guidance on fixing identified issues',
+      duration: '1-2 weeks',
+      deliverables: ['Fix verification', 'Retest results', 'Clearance certification']
     }
   ];
 
   const severityLevels = [
     {
-      level: "Critical",
-      color: "destructive",
-      description: "Issues that can result in loss of funds or complete system compromise",
-      examples: ["Reentrancy vulnerabilities", "Authorization bypasses", "Fund drainage exploits"],
-      response: "Immediate fix required before deployment"
+      level: 'Critical',
+      color: 'destructive',
+      description: 'Issues that can result in loss of funds or system compromise',
+      examples: ['Reentrancy vulnerabilities', 'Access control bypass', 'Fund drainage exploits']
     },
     {
-      level: "High",
-      color: "secondary",
-      description: "Issues affecting data integrity or availability that are not immediately exploitable",
-      examples: ["Access control failures", "Data validation issues", "State manipulation"],
-      response: "Fix required before production release"
+      level: 'High',
+      color: 'secondary',
+      description: 'Issues affecting data integrity that are not immediately exploitable',
+      examples: ['Logic errors', 'State manipulation', 'Unauthorized state changes']
     },
     {
-      level: "Medium",
-      color: "outline",
-      description: "Security risks that arise under specific conditions or configuration",
-      examples: ["Timestamp dependence", "Front-running susceptibility", "Denial of service vectors"],
-      response: "Should be addressed in next update cycle"
+      level: 'Medium',
+      color: 'outline',
+      description: 'Risks that arise under specific conditions',
+      examples: ['Input validation issues', 'Gas optimization problems', 'Race conditions']
     },
     {
-      level: "Low",
-      color: "outline",
-      description: "Minor issues, code quality improvements, or best practice recommendations",
-      examples: ["Gas optimization opportunities", "Code clarity improvements", "Documentation gaps"],
-      response: "Consider for future improvements"
+      level: 'Low',
+      color: 'outline',
+      description: 'Minor issues or best practice recommendations',
+      examples: ['Code style improvements', 'Documentation gaps', 'Optimization suggestions']
     }
   ];
 
-  const requiredTools = [
-    { name: "MythX", description: "Automated vulnerability detection for smart contracts", category: "Automated Analysis" },
-    { name: "Slither", description: "Static analysis framework for Solidity", category: "Static Analysis" },
-    { name: "Echidna", description: "Property-based fuzz testing for Ethereum smart contracts", category: "Fuzz Testing" },
-    { name: "Manticore", description: "Symbolic execution tool for smart contracts", category: "Symbolic Analysis" },
-    { name: "Hardhat", description: "Development environment for Ethereum", category: "Testing Framework" }
+  const recommendedTools = [
+    {
+      category: 'Static Analysis',
+      tools: [
+        { name: 'MythX', description: 'Comprehensive smart contract security analysis' },
+        { name: 'Slither', description: 'Static analysis framework for Solidity' },
+        { name: 'Securify', description: 'Security scanner for Ethereum smart contracts' }
+      ]
+    },
+    {
+      category: 'Dynamic Testing',
+      tools: [
+        { name: 'Echidna', description: 'Property-based fuzz testing for smart contracts' },
+        { name: 'Manticore', description: 'Symbolic execution tool for smart contracts' },
+        { name: 'Foundry', description: 'Fast, portable toolkit for Ethereum development' }
+      ]
+    },
+    {
+      category: 'Manual Review',
+      tools: [
+        { name: 'VS Code', description: 'Code editor with Solidity extensions' },
+        { name: 'Remix IDE', description: 'Web-based Solidity development environment' },
+        { name: 'Hardhat', description: 'Ethereum development environment' }
+      ]
+    }
   ];
 
   return (
-    <StandardLayout 
-      title="Security Audit Guidelines" 
-      description="Comprehensive guidelines for conducting professional Web3 security audits"
+    <StandardLayout
+      title="Audit Guidelines | Hawkly"
+      description="Professional audit standards, procedures, and best practices for security auditors"
     >
-      <div className="container py-12">
+      <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Security Audit Guidelines</h1>
+          <h1 className="text-4xl font-bold text-hawkly-gradient mb-4">
+            Security Audit Guidelines
+          </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Professional standards and methodologies for conducting comprehensive Web3 security audits. 
-            Follow these guidelines to ensure high-quality, consistent audit deliverables.
+            Professional standards and methodologies for conducting comprehensive 
+            security audits on the Hawkly platform.
           </p>
         </div>
 
-        {/* Audit Process */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold mb-8">Audit Process Overview</h2>
-          <div className="space-y-6">
-            {auditPhases.map((phase, index) => (
+        {/* Overview Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          {guidelineCategories.map((category) => (
+            <Card key={category.id} className="hover:shadow-lg transition-all">
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    {category.icon}
+                  </div>
+                  <CardTitle className="text-lg">{category.title}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground text-sm">{category.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Main Content */}
+        <Tabs defaultValue="process" className="space-y-8">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="process">Audit Process</TabsTrigger>
+            <TabsTrigger value="standards">Standards</TabsTrigger>
+            <TabsTrigger value="tools">Tools</TabsTrigger>
+            <TabsTrigger value="reporting">Reporting</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="process" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="h-5 w-5" />
+                  Audit Methodology
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {processSteps.map((step, index) => (
+                    <div key={index} className="border-l-4 border-primary pl-6 relative">
+                      <div className="absolute -left-2 top-0 w-4 h-4 bg-primary rounded-full" />
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-lg font-semibold">{step.phase}</h3>
+                          <Badge variant="outline">{step.duration}</Badge>
+                        </div>
+                        <p className="text-muted-foreground">{step.description}</p>
+                        <div className="space-y-1">
+                          <h4 className="text-sm font-medium">Deliverables:</h4>
+                          <ul className="text-sm text-muted-foreground space-y-1">
+                            {step.deliverables.map((deliverable, i) => (
+                              <li key={i} className="flex items-center gap-2">
+                                <CheckCircle className="h-3 w-3 text-green-500" />
+                                {deliverable}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="standards" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Vulnerability Classification</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {severityLevels.map((severity, index) => (
+                    <div key={index} className="border rounded-lg p-4">
+                      <div className="flex items-center gap-3 mb-3">
+                        <Badge variant={severity.color as any}>{severity.level}</Badge>
+                        <h3 className="font-semibold">{severity.level} Severity</h3>
+                      </div>
+                      <p className="text-muted-foreground mb-3">{severity.description}</p>
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-medium">Examples:</h4>
+                        <ul className="text-sm text-muted-foreground space-y-1">
+                          {severity.examples.map((example, i) => (
+                            <li key={i} className="flex items-center gap-2">
+                              <AlertTriangle className="h-3 w-3" />
+                              {example}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="tools" className="space-y-6">
+            {recommendedTools.map((category, index) => (
               <Card key={index}>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="flex items-center gap-3">
-                        <Badge variant="outline">Phase {index + 1}</Badge>
-                        {phase.phase}
-                      </CardTitle>
-                      <CardDescription className="mt-2">{phase.description}</CardDescription>
-                    </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Clock className="h-4 w-4" />
-                      <span className="text-sm">{phase.duration}</span>
-                    </div>
-                  </div>
+                  <CardTitle>{category.category}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <h4 className="font-semibold mb-2">Key Deliverables:</h4>
-                  <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                    {phase.deliverables.map((deliverable, idx) => (
-                      <li key={idx} className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-                        <span className="text-sm">{deliverable}</span>
-                      </li>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {category.tools.map((tool, i) => (
+                      <div key={i} className="border rounded-lg p-4">
+                        <h4 className="font-semibold mb-2">{tool.name}</h4>
+                        <p className="text-sm text-muted-foreground">{tool.description}</p>
+                      </div>
                     ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-
-        {/* Vulnerability Classification */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold mb-8">Vulnerability Classification</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {severityLevels.map((severity, index) => (
-              <Card key={index}>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-3">
-                    <Badge variant={severity.color as any}>{severity.level}</Badge>
-                    <AlertTriangle className="h-5 w-5" />
-                  </CardTitle>
-                  <CardDescription>{severity.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="font-semibold text-sm mb-2">Common Examples:</h4>
-                      <ul className="space-y-1">
-                        {severity.examples.map((example, idx) => (
-                          <li key={idx} className="text-sm text-muted-foreground">• {example}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="border-t pt-3">
-                      <span className="text-sm font-medium">Response Timeline: </span>
-                      <span className="text-sm">{severity.response}</span>
-                    </div>
                   </div>
                 </CardContent>
               </Card>
             ))}
-          </div>
-        </div>
+          </TabsContent>
 
-        {/* Required Tools */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold mb-8">Required Audit Tools</h2>
-          <Card>
-            <CardHeader>
-              <CardTitle>Industry-Standard Security Tools</CardTitle>
-              <CardDescription>
-                All auditors must utilize these approved tools for comprehensive security analysis
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {requiredTools.map((tool, index) => (
-                  <div key={index} className="border rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold">{tool.name}</h4>
-                      <Badge variant="outline" className="text-xs">{tool.category}</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{tool.description}</p>
+          <TabsContent value="reporting" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Report Structure</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-semibold mb-2">Executive Summary</h3>
+                    <p className="text-muted-foreground text-sm">
+                      High-level overview of findings, risk assessment, and recommendations
+                    </p>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Professional Conduct */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold mb-8">Professional Standards</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  Client Communication
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Maintain clear, professional, and timely communication</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Provide regular progress updates and milestone reports</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Respond to client inquiries within 24 hours</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Document all communications and decisions</span>
-                  </li>
-                </ul>
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-semibold mb-2">Methodology</h3>
+                    <p className="text-muted-foreground text-sm">
+                      Description of audit approach, tools used, and testing procedures
+                    </p>
+                  </div>
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-semibold mb-2">Detailed Findings</h3>
+                    <p className="text-muted-foreground text-sm">
+                      Comprehensive list of vulnerabilities with severity, impact, and remediation
+                    </p>
+                  </div>
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-semibold mb-2">Recommendations</h3>
+                    <p className="text-muted-foreground text-sm">
+                      Security improvements and best practices for ongoing development
+                    </p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5" />
-                  Confidentiality & Security
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Adhere to strict NDA and confidentiality agreements</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Secure all client data and audit materials</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Follow responsible disclosure practices</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Use platform's secure communication channels</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Download Resources */}
-        <div className="text-center bg-muted/50 rounded-lg p-8">
-          <h2 className="text-2xl font-bold mb-4">Get Started with Professional Auditing</h2>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Download our comprehensive audit toolkit and templates to ensure your audits meet 
-            industry standards and client expectations.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg">
-              <Download className="mr-2 h-5 w-5" />
-              Download Audit Toolkit
-            </Button>
-            <Button variant="outline" size="lg" asChild>
-              <Link to="/service-provider-onboarding">
-                Apply to Join Network
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-          </div>
-        </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </StandardLayout>
   );
-}
+};
+
+export default AuditGuidelines;

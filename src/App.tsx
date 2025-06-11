@@ -1,3 +1,4 @@
+
 import { Suspense, lazy } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -67,6 +68,11 @@ const FileManagement = lazy(() => import("./pages/FileManagement"));
 const TwoFactorSetup = lazy(() => import("./pages/TwoFactorSetup"));
 const PricingCalculator = lazy(() => import("./pages/PricingCalculator"));
 
+// Missing Pages - Now Adding Routes
+const AuditDetails = lazy(() => import("./pages/AuditDetails"));
+const AuditGuidelines = lazy(() => import("./pages/AuditGuidelines"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -90,6 +96,10 @@ const App = () => (
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/onboarding" element={<Onboarding />} />
                         <Route path="/messages" element={<MessagingPage />} />
+
+                        {/* Audit System Routes */}
+                        <Route path="/audits/:id" element={<AuditDetails />} />
+                        <Route path="/audit-guidelines" element={<AuditGuidelines />} />
                         
                         {/* Advanced features */}
                         <Route path="/features" element={<AdvancedFeaturesHub />} />
@@ -139,17 +149,20 @@ const App = () => (
                         <Route path="/support/privacy" element={<PrivacyPage />} />
                         <Route path="/privacy" element={<PrivacyPage />} />
 
-                        {/* Legacy routes for compatibility */}
-                        <Route path="/security-audits" element={<Marketplace />} />
-                        <Route path="/resources/*" element={<SupportPage />} />
-                        <Route path="/tools/*" element={<AdvancedFeaturesHub />} />
-                        <Route path="/community" element={<Forum />} />
+                        {/* Admin routes */}
+                        <Route path="/admin/*" element={<AdminDashboard />} />
 
                         {/* Phase 4 & 5 - New Routes */}
                         <Route path="/notifications" element={<NotificationCenter />} />
                         <Route path="/files" element={<FileManagement />} />
                         <Route path="/2fa-setup" element={<TwoFactorSetup />} />
                         <Route path="/pricing-calculator" element={<PricingCalculator />} />
+
+                        {/* Legacy routes for compatibility */}
+                        <Route path="/security-audits" element={<Marketplace />} />
+                        <Route path="/resources/*" element={<SupportPage />} />
+                        <Route path="/tools/*" element={<AdvancedFeaturesHub />} />
+                        <Route path="/community" element={<Forum />} />
 
                         {/* 404 page */}
                         <Route path="*" element={<NotFoundPage />} />

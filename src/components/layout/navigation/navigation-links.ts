@@ -14,6 +14,11 @@ export const navigationLinks: NavigationLink[] = [
     requiresAuth: true,
     children: [
       {
+        title: "Browse Marketplace",
+        href: "/marketplace",
+        description: "Find security experts for your project"
+      },
+      {
         title: "Security Audits",
         href: "/security-audits",
         description: "Comprehensive smart contract security reviews"
@@ -29,15 +34,52 @@ export const navigationLinks: NavigationLink[] = [
         description: "Advanced security vulnerability testing"
       },
       {
-        title: "Consulting",
+        title: "Security Consulting",
         href: "/consulting",
         description: "Strategic security guidance and planning"
+      },
+      {
+        title: "Request Audit",
+        href: "/request-audit",
+        description: "Submit your project for security review"
+      }
+    ]
+  },
+  {
+    title: "Tools",
+    href: "/ai-tools",
+    requiresAuth: true,
+    children: [
+      {
+        title: "AI Security Tools",
+        href: "/ai-tools",
+        description: "AI-powered security analysis tools"
+      },
+      {
+        title: "Security Insights",
+        href: "/security-insights",
+        description: "Real-time vulnerability analysis"
+      },
+      {
+        title: "Vulnerability Scanner",
+        href: "/vulnerability-scanner",
+        description: "Automated security scanning"
+      },
+      {
+        title: "Platform Reports",
+        href: "/platform-reports",
+        description: "Comprehensive security reports"
+      },
+      {
+        title: "File Management",
+        href: "/files",
+        description: "Secure file upload and management"
       }
     ]
   },
   {
     title: "Resources",
-    href: "/resources",
+    href: "/security-guides",
     requiresAuth: true,
     children: [
       {
@@ -59,39 +101,17 @@ export const navigationLinks: NavigationLink[] = [
         title: "Templates",
         href: "/templates",
         description: "Ready-to-use security templates"
-      }
-    ]
-  },
-  {
-    title: "Tools",
-    href: "/security-insights",
-    requiresAuth: true,
-    children: [
-      {
-        title: "Security Insights",
-        href: "/security-insights",
-        description: "Real-time vulnerability analysis"
       },
       {
-        title: "AI Tools",
-        href: "/ai-tools",
-        description: "AI-powered security analysis tools"
-      },
-      {
-        title: "Vulnerability Scanner",
-        href: "/vulnerability-scanner",
-        description: "Automated security scanning"
-      },
-      {
-        title: "Platform Reports",
-        href: "/platform-reports",
-        description: "Comprehensive security reports"
+        title: "Audit Guidelines",
+        href: "/audit-guidelines",
+        description: "Professional audit standards and procedures"
       }
     ]
   },
   {
     title: "Community",
-    href: "/community",
+    href: "/forum",
     requiresAuth: true,
     children: [
       {

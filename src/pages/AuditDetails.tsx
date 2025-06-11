@@ -2,204 +2,251 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { StandardLayout } from '@/components/layout/StandardLayout';
-import { useAuditDetails } from '@/hooks/useAuditDetails';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AuditProgressTracker } from '@/components/audit-details/AuditProgressTracker';
-import { VulnerabilityTracker } from '@/components/audit-details/VulnerabilityTracker';
-import { ActivityTimeline } from '@/components/audit-details/ActivityTimeline';
-import { CollaborationPanel } from '@/components/audit-details/CollaborationPanel';
-import LoadingState from '@/components/ui/loading-state';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Clock, BarChart3, Shield } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+  FileText, 
+  Calendar, 
+  User, 
+  Shield, 
+  Clock, 
+  CheckCircle,
+  AlertTriangle,
+  Download,
+  MessageSquare,
+  Settings
+} from 'lucide-react';
 
 const AuditDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const { 
-    isLoading, 
-    auditData, 
-    activeTab, 
-    setActiveTab, 
-    handleSendMessage,
-    updateFindingStatus,
-    milestones,
-    reports,
-    timeTracking
-  } = useAuditDetails(id);
 
-  if (isLoading) {
-    return (
-      <StandardLayout 
-        title="Loading Audit Details" 
-        description="Loading detailed information about your security audit"
-      >
-        <LoadingState message="Loading audit details..." />
-      </StandardLayout>
-    );
-  }
-
-  if (!auditData) {
-    return (
-      <StandardLayout 
-        title="Audit Not Found" 
-        description="The requested audit could not be found"
-      >
-        <div className="container py-12 text-center">
-          <h1 className="text-2xl font-bold">Audit Not Found</h1>
-          <p className="text-muted-foreground">The requested audit could not be found.</p>
-        </div>
-      </StandardLayout>
-    );
-  }
-
-  // Mock data for participants (in real app, this would come from the backend)
-  const participants = [
-    {
-      id: auditData.client_id,
-      name: auditData.client.full_name || 'Client',
-      role: 'Project Owner',
-      avatar: auditData.client.avatar_url,
-      status: 'online' as const
-    },
-    ...(auditData.auditor ? [{
-      id: auditData.auditor.id,
-      name: auditData.auditor.full_name || 'Auditor',
-      role: 'Security Auditor',
-      avatar: auditData.auditor.avatar_url,
-      status: 'online' as const
-    }] : [])
-  ];
-
-  // Mock messages (in real app, this would come from audit_messages table)
-  const messages = [
-    {
-      id: '1',
-      content: 'Starting the initial security review of your smart contracts.',
-      sender: {
-        id: auditData.assigned_auditor_id || 'system',
-        name: 'Security Auditor',
-        avatar: auditData.auditor?.avatar_url
-      },
-      timestamp: new Date().toISOString(),
-      type: 'text' as const
-    }
-  ];
+  // Mock audit data - in real app this would come from API
+  const audit = {
+    id: id || '1',
+    title: 'DeFi Protocol Security Audit',
+    status: 'In Progress',
+    priority: 'High',
+    auditor: 'Alex Thompson',
+    client: 'DeFi Innovations Ltd',
+    startDate: '2024-01-15',
+    deadline: '2024-02-15',
+    progress: 65,
+    findings: 8,
+    criticalFindings: 2,
+    description: 'Comprehensive security audit of the DeFi lending protocol smart contracts.',
+    scope: [
+      'Smart Contract Review',
+      'Access Control Analysis',
+      'Economic Model Validation',
+      'Integration Testing'
+    ],
+    timeline: [
+      { phase: 'Initial Review', status: 'completed', date: '2024-01-15' },
+      { phase: 'Code Analysis', status: 'completed', date: '2024-01-22' },
+      { phase: 'Testing Phase', status: 'in-progress', date: '2024-01-29' },
+      { phase: 'Final Report', status: 'pending', date: '2024-02-10' }
+    ]
+  };
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'default';
-      case 'in_progress':
-        return 'secondary';
-      case 'review':
-        return 'outline';
-      default:
-        return 'outline';
+    switch (status.toLowerCase()) {
+      case 'completed': return 'default';
+      case 'in progress': return 'secondary';
+      case 'pending': return 'outline';
+      default: return 'outline';
+    }
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority.toLowerCase()) {
+      case 'high': return 'destructive';
+      case 'medium': return 'secondary';
+      case 'low': return 'outline';
+      default: return 'outline';
     }
   };
 
   return (
-    <StandardLayout 
-      title={auditData.project_name} 
-      description={`Security audit details for ${auditData.project_name} - Track progress, view vulnerabilities, and collaborate with your audit team`}
+    <StandardLayout
+      title={`${audit.title} | Hawkly`}
+      description="Detailed view of security audit progress and findings"
     >
-      <div className="container py-8">
-        {/* Enhanced Header */}
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold">{auditData.project_name}</h1>
-                <Badge variant={getStatusColor(auditData.status || 'pending')}>
-                  {auditData.status?.replace('_', ' ') || 'Pending'}
-                </Badge>
-              </div>
-              <p className="text-muted-foreground">{auditData.project_description}</p>
-              
-              {/* Enhanced Progress Indicators */}
-              <div className="flex items-center gap-6 mt-4">
-                <div className="flex items-center gap-2">
-                  <BarChart3 className="h-4 w-4 text-primary" />
-                  <span className="text-sm">
-                    <span className="font-medium">{auditData.completion_percentage}%</span> Complete
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Shield className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">
-                    Security Score: <span className="font-medium">{auditData.security_score}</span>
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-blue-500" />
-                  <span className="text-sm">
-                    Phase: <span className="font-medium">{auditData.current_phase.replace('_', ' ')}</span>
-                  </span>
-                </div>
-                {timeTracking.activeEntry && (
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-sm font-medium text-green-600">Timer Active</span>
-                  </div>
-                )}
-              </div>
-            </div>
-            
-            <div className="text-right">
-              <div className="text-2xl font-bold text-primary">{auditData.completion_percentage}%</div>
-              <div className="text-sm text-muted-foreground">Complete</div>
-              {milestones.milestones.length > 0 && (
-                <div className="text-sm text-muted-foreground mt-1">
-                  {milestones.milestones.filter(m => m.status === 'completed').length} / {milestones.milestones.length} milestones
-                </div>
-              )}
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-3xl font-bold">{audit.title}</h1>
+            <div className="flex gap-2">
+              <Badge variant={getStatusColor(audit.status)}>{audit.status}</Badge>
+              <Badge variant={getPriorityColor(audit.priority)}>{audit.priority} Priority</Badge>
             </div>
           </div>
+          <p className="text-muted-foreground">{audit.description}</p>
         </div>
 
-        {/* Enhanced Content Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              Progress
-            </TabsTrigger>
-            <TabsTrigger value="vulnerabilities" className="flex items-center gap-2">
-              <Shield className="h-4 w-4" />
-              Vulnerabilities
-            </TabsTrigger>
-            <TabsTrigger value="activity" className="flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              Activity
-            </TabsTrigger>
-            <TabsTrigger value="collaboration" className="flex items-center gap-2">
-              <MessageSquare className="h-4 w-4" />
-              Collaborate
-            </TabsTrigger>
+        {/* Overview Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3">
+                <User className="h-8 w-8 text-blue-500" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Auditor</p>
+                  <p className="font-semibold">{audit.auditor}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3">
+                <Calendar className="h-8 w-8 text-green-500" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Deadline</p>
+                  <p className="font-semibold">{audit.deadline}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3">
+                <Clock className="h-8 w-8 text-yellow-500" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Progress</p>
+                  <p className="font-semibold">{audit.progress}%</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3">
+                <AlertTriangle className="h-8 w-8 text-red-500" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Findings</p>
+                  <p className="font-semibold">{audit.findings} ({audit.criticalFindings} critical)</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Content */}
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="timeline">Timeline</TabsTrigger>
+            <TabsTrigger value="findings">Findings</TabsTrigger>
+            <TabsTrigger value="communication">Communication</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="mt-6">
-            <AuditProgressTracker auditData={auditData} />
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Audit Scope</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    {audit.scope.map((item, index) => (
+                      <li key={index} className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Quick Actions</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Button className="w-full justify-start">
+                    <FileText className="h-4 w-4 mr-2" />
+                    View Latest Report
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start">
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Documents
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Message Auditor
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Audit Settings
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
-          <TabsContent value="vulnerabilities" className="mt-6">
-            <VulnerabilityTracker 
-              auditData={auditData} 
-              onUpdateFindingStatus={updateFindingStatus}
-            />
+          <TabsContent value="timeline" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Audit Timeline</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {audit.timeline.map((phase, index) => (
+                    <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
+                      <div className={`w-3 h-3 rounded-full ${
+                        phase.status === 'completed' ? 'bg-green-500' :
+                        phase.status === 'in-progress' ? 'bg-yellow-500' : 'bg-gray-300'
+                      }`} />
+                      <div className="flex-1">
+                        <h4 className="font-medium">{phase.phase}</h4>
+                        <p className="text-sm text-muted-foreground">{phase.date}</p>
+                      </div>
+                      <Badge variant={getStatusColor(phase.status)}>{phase.status}</Badge>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
-          <TabsContent value="activity" className="mt-6">
-            <ActivityTimeline updates={auditData.status_updates} />
+          <TabsContent value="findings" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Security Findings</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Shield className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-lg font-medium mb-2">Findings Report</h3>
+                  <p className="text-muted-foreground">
+                    Detailed findings will appear here as the audit progresses.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
-          <TabsContent value="collaboration" className="mt-6">
-            <CollaborationPanel
-              auditId={auditData.id}
-              participants={participants}
-              messages={messages}
-              onSendMessage={handleSendMessage}
-            />
+          <TabsContent value="communication" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Communication Log</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-lg font-medium mb-2">Communication History</h3>
+                  <p className="text-muted-foreground">
+                    All communications with the auditor will appear here.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
