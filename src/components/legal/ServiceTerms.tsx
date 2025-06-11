@@ -71,26 +71,28 @@ export function ServiceTerms() {
       <div className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>1. Audit Service Standards</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Shield className="h-5 w-5 text-green-600" />
+              1. Security Audit Services
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <h4 className="font-semibold mb-2">Quality Commitments:</h4>
-              <ul className="list-disc pl-6 space-y-1 text-sm">
-                <li>All auditors are certified professionals with minimum 2+ years experience</li>
-                <li>Comprehensive review following industry-standard methodologies (OWASP, NIST)</li>
-                <li>Detailed reports with severity classifications and remediation guidance</li>
-                <li>Post-audit support for 30 days included in all packages</li>
-                <li>Re-audit at 50% discount if critical issues are found within 90 days</li>
+              <h4 className="font-semibold mb-2">Service Scope & Standards</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><strong>Audit Methodology:</strong> Industry-standard security assessment following OWASP and NIST guidelines</li>
+                <li><strong>Code Coverage:</strong> Comprehensive analysis of smart contract logic, dependencies, and integrations</li>
+                <li><strong>Vulnerability Classification:</strong> Critical, High, Medium, Low severity ratings with detailed remediation guidance</li>
+                <li><strong>Deliverables:</strong> Executive summary, technical report, gas optimization recommendations, and verification testing</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-2">Delivery Timelines:</h4>
-              <ul className="list-disc pl-6 space-y-1 text-sm">
-                <li><strong>Basic Audits (up to 1000 LOC):</strong> 5-7 business days</li>
-                <li><strong>Comprehensive Audits:</strong> 7-14 business days</li>
-                <li><strong>Enterprise Audits:</strong> 14-21 business days</li>
-                <li><strong>Emergency Audits:</strong> 24-48 hours (premium rates apply)</li>
+              <h4 className="font-semibold mb-2">Quality Assurance</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><strong>Auditor Certification:</strong> All auditors certified through recognized security programs</li>
+                <li><strong>Peer Review:</strong> Multi-auditor verification for critical findings</li>
+                <li><strong>Follow-up Support:</strong> 30-day post-audit support for remediation questions</li>
+                <li><strong>Re-verification:</strong> Free verification testing after fixes implementation</li>
               </ul>
             </div>
           </CardContent>
@@ -98,26 +100,28 @@ export function ServiceTerms() {
 
         <Card>
           <CardHeader>
-            <CardTitle>2. Payment Terms & Refund Policy</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-blue-600" />
+              2. Payment Terms & Refund Policy
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <h4 className="font-semibold mb-2">Payment Structure:</h4>
-              <ul className="list-disc pl-6 space-y-1 text-sm">
-                <li><strong>Milestone-based payments:</strong> 50% upfront, 50% upon delivery</li>
-                <li><strong>Escrow protection:</strong> Funds held securely until work completion</li>
-                <li><strong>Accepted payments:</strong> Credit cards, bank transfers, crypto (BTC, ETH, USDC)</li>
-                <li><strong>Platform fee:</strong> 5% of project value (split between parties)</li>
+              <h4 className="font-semibold mb-2">Payment Structure</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><strong>Upfront Payment:</strong> 50% due upon audit commencement</li>
+                <li><strong>Milestone Payment:</strong> 30% due upon preliminary findings delivery</li>
+                <li><strong>Final Payment:</strong> 20% due upon final report delivery</li>
+                <li><strong>Accepted Methods:</strong> USD, EUR, major cryptocurrencies (ETH, BTC, USDC)</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-2">Refund Policy:</h4>
-              <ul className="list-disc pl-6 space-y-1 text-sm">
-                <li><strong>Full refund:</strong> If audit is not delivered within agreed timeline</li>
-                <li><strong>Partial refund:</strong> Pro-rata refund for work not completed</li>
-                <li><strong>Quality guarantee:</strong> Refund if audit doesn't meet minimum standards</li>
-                <li><strong>Cooling-off period:</strong> 7-day cancellation for new bookings</li>
-                <li><strong>Processing time:</strong> Refunds processed within 5-10 business days</li>
+              <h4 className="font-semibold mb-2">Refund Policy</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><strong>Cancellation Period:</strong> Full refund if cancelled within 24 hours of engagement</li>
+                <li><strong>Partial Completion:</strong> Pro-rated refund based on work completed at cancellation time</li>
+                <li><strong>Quality Guarantee:</strong> 100% refund if audit quality standards are not met</li>
+                <li><strong>Processing Time:</strong> Refunds processed within 5-10 business days</li>
               </ul>
             </div>
           </CardContent>
@@ -125,58 +129,56 @@ export function ServiceTerms() {
 
         <Card>
           <CardHeader>
-            <CardTitle>3. Dispute Resolution Procedures</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-orange-600" />
+              3. Dispute Resolution Procedures
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <h4 className="font-semibold mb-2">Resolution Process:</h4>
-              <ol className="list-decimal pl-6 space-y-2 text-sm">
-                <li><strong>Direct Resolution (0-48 hours):</strong> Parties attempt to resolve directly through platform messaging</li>
-                <li><strong>Platform Mediation (2-7 days):</strong> Hawkly support team mediates with access to project history</li>
-                <li><strong>Expert Arbitration (7-14 days):</strong> Independent blockchain security expert provides binding decision</li>
-                <li><strong>Legal Arbitration (14+ days):</strong> Formal arbitration through accredited arbitration bodies</li>
-              </ol>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-2">Dispute Types Covered:</h4>
-              <ul className="list-disc pl-6 space-y-1 text-sm">
-                <li>Quality of audit work and thoroughness</li>
-                <li>Timeline delays and delivery issues</li>
-                <li>Communication and professionalism concerns</li>
-                <li>Payment and refund disputes</li>
-                <li>Intellectual property and confidentiality breaches</li>
+              <h4 className="font-semibold mb-2">Escalation Process</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><strong>Direct Resolution:</strong> Initial dispute handled directly with assigned auditor</li>
+                <li><strong>Platform Mediation:</strong> Hawkly mediation team reviews disputes within 48 hours</li>
+                <li><strong>Expert Panel:</strong> Complex technical disputes reviewed by independent security experts</li>
+                <li><strong>Final Arbitration:</strong> Binding arbitration through established crypto arbitration services</li>
               </ul>
             </div>
-            <div className="p-4 bg-muted/50 rounded-lg">
-              <p className="text-sm">
-                <strong>Jurisdiction:</strong> Disputes are governed by the laws of the jurisdiction where the client is located, 
-                with international arbitration available through ICC or LCIA for cross-border disputes.
-              </p>
+            <div>
+              <h4 className="font-semibold mb-2">Resolution Timeline</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><strong>Response Time:</strong> Initial response within 24 hours</li>
+                <li><strong>Investigation:</strong> Thorough review completed within 5 business days</li>
+                <li><strong>Resolution:</strong> Final decision and remedy within 10 business days</li>
+                <li><strong>Appeal Process:</strong> 30-day window for dispute appeal with additional evidence</li>
+              </ul>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>4. Professional Liability & Insurance</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-purple-600" />
+              4. Liability & Professional Insurance
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <h4 className="font-semibold mb-2">Liability Limitations:</h4>
-              <ul className="list-disc pl-6 space-y-1 text-sm">
-                <li><strong>Audit Fee Limitation:</strong> Auditor liability limited to audit fee paid</li>
-                <li><strong>Platform Liability:</strong> Hawkly liability limited to platform fees collected</li>
-                <li><strong>No Consequential Damages:</strong> No liability for lost profits or business interruption</li>
-                <li><strong>Discovery Period:</strong> Claims must be made within 2 years of audit completion</li>
+              <h4 className="font-semibold mb-2">Liability Limitations</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><strong>Service Liability:</strong> Limited to audit fees paid, maximum $500K per incident</li>
+                <li><strong>Consequential Damages:</strong> No liability for indirect, incidental, or consequential damages</li>
+                <li><strong>Time Limitation:</strong> Claims must be filed within 12 months of audit completion</li>
+                <li><strong>Scope Limitation:</strong> Liability limited to issues within defined audit scope</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-2">Professional Insurance:</h4>
-              <ul className="list-disc pl-6 space-y-1 text-sm">
-                <li><strong>Auditor Coverage:</strong> All auditors maintain professional indemnity insurance</li>
+              <h4 className="font-semibold mb-2">Insurance Coverage</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><strong>Minimum Coverage:</strong> $1M USD per claim, $2M annual aggregate</li>
                 <li><strong>Platform Insurance:</strong> Additional platform liability coverage available</li>
-                <li><strong>High-Value Audits:</strong> Enhanced coverage options for projects >$100K</li>
+                <li><strong>High-Value Audits:</strong> Enhanced coverage options for projects {">"} $100K</li>
               </ul>
             </div>
           </CardContent>
@@ -184,55 +186,42 @@ export function ServiceTerms() {
 
         <Card>
           <CardHeader>
-            <CardTitle>5. Intellectual Property & Confidentiality</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Shield className="h-5 w-5 text-green-600" />
+              5. Compliance & Legal Framework
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <h4 className="font-semibold mb-2">Code Ownership:</h4>
-              <ul className="list-disc pl-6 space-y-1 text-sm">
-                <li>Clients retain full ownership of source code and smart contracts</li>
-                <li>Auditors may not use, copy, or distribute client code outside audit scope</li>
-                <li>Audit reports remain confidential to commissioning party</li>
-                <li>Platform retains rights to anonymized security statistics</li>
+              <h4 className="font-semibold mb-2">Regulatory Compliance</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><strong>Data Protection:</strong> Full GDPR compliance for EU clients, CCPA compliance for California</li>
+                <li><strong>Financial Regulations:</strong> AML/KYC procedures for high-value engagements</li>
+                <li><strong>Export Controls:</strong> Compliance with international export control laws</li>
+                <li><strong>Professional Standards:</strong> Adherence to established cybersecurity professional codes</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-2">Non-Disclosure Requirements:</h4>
-              <ul className="list-disc pl-6 space-y-1 text-sm">
-                <li>All auditors sign comprehensive NDAs before project access</li>
-                <li>Vulnerability disclosure only permitted with client authorization</li>
-                <li>Audit findings remain confidential for minimum 90 days post-delivery</li>
-                <li>Public disclosure requires written client consent</li>
+              <h4 className="font-semibold mb-2">Governing Law</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><strong>Jurisdiction:</strong> Governed by laws of jurisdiction where client is domiciled</li>
+                <li><strong>International Disputes:</strong> Singapore International Arbitration Centre (SIAC) rules</li>
+                <li><strong>Contract Language:</strong> English language governs all contract interpretations</li>
+                <li><strong>Amendment Process:</strong> Material changes require explicit client consent</li>
               </ul>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>6. Service Modifications & Termination</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <h4 className="font-semibold mb-2">Service Changes:</h4>
-              <ul className="list-disc pl-6 space-y-1 text-sm">
-                <li>30 days notice for material changes to service terms</li>
-                <li>Existing projects completed under original terms</li>
-                <li>Price changes apply to new projects only</li>
-                <li>Enhanced features may require service tier upgrades</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-2">Account Termination:</h4>
-              <ul className="list-disc pl-6 space-y-1 text-sm">
-                <li>Users may close accounts at any time with 7 days notice</li>
-                <li>Active projects must be completed or transferred</li>
-                <li>Data deletion follows privacy policy retention periods</li>
-                <li>Platform reserves right to terminate for terms violations</li>
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="bg-muted/50 rounded-lg p-6">
+          <h3 className="text-lg font-semibold mb-4">Important Notes</h3>
+          <div className="space-y-2 text-sm text-muted-foreground">
+            <p><strong>Service Agreement:</strong> These terms form part of the comprehensive service agreement executed for each audit engagement.</p>
+            <p><strong>Updates:</strong> Terms may be updated with 30-day notice. Existing engagements remain under original terms.</p>
+            <p><strong>Contact:</strong> Questions about these terms should be directed to legal@hawkly.com</p>
+            <p><strong>Effective Date:</strong> These terms are effective from January 1, 2025, and supersede all previous versions.</p>
+          </div>
+        </div>
       </div>
     </div>
   );
