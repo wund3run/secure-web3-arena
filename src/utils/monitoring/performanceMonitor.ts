@@ -1,325 +1,216 @@
-import { Logger } from '../logging/logger';
-
 export interface PerformanceMetric {
   name: string;
   value: number;
-  unit: string;
-  timestamp: string;
-  category: 'memory' | 'timing' | 'network' | 'user_interaction';
+  timestamp: Date;
   metadata?: Record<string, any>;
 }
 
 export class PerformanceMonitor {
-  private static metrics: PerformanceMetric[] = [];
-  private static readonly MAX_METRICS = 1000;
-  private static observers: PerformanceObserver[] = [];
+  private static instance: PerformanceMonitor;
+  private metrics: PerformanceMetric[] = [];
+  private observers: PerformanceObserver[] = [];
 
-  static init(): void {
-    // Monitor navigation timing
-    this.setupNavigationObserver();
-    
-    // Monitor resource loading
-    this.setupResourceObserver();
-    
-    // Monitor long tasks
-    this.setupLongTaskObserver();
-    
-    // Monitor memory usage
-    this.setupMemoryMonitoring();
-    
-    // Start periodic metric collection
-    this.startPeriodicCollection();
-
-    Logger.info('Performance monitoring initialized', { category: 'performance' });
+  static getInstance(): PerformanceMonitor {
+    if (!PerformanceMonitor.instance) {
+      PerformanceMonitor.instance = new PerformanceMonitor();
+    }
+    return PerformanceMonitor.instance;
   }
 
-  private static setupNavigationObserver(): void {
+  static init(): void {
+    const monitor = PerformanceMonitor.getInstance();
+    monitor.startMonitoring();
+  }
+
+  startMonitoring(): void {
+    this.monitorPageLoad();
+    this.monitorResourceLoading();
+    this.monitorUserInteractions();
+    this.monitorMemoryUsage();
+    this.monitorNetworkConditions();
+  }
+
+  private monitorPageLoad(): void {
     if ('PerformanceObserver' in window) {
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           if (entry.entryType === 'navigation') {
             const navEntry = entry as PerformanceNavigationTiming;
-            
-            this.recordMetric({
-              name: 'page_load_time',
-              value: navEntry.loadEventEnd - navEntry.fetchStart,
-              unit: 'ms',
-              category: 'timing',
-              metadata: {
-                domContentLoaded: navEntry.domContentLoadedEventEnd - navEntry.fetchStart,
-                firstPaint: this.getFirstPaint(),
-                firstContentfulPaint: this.getFirstContentfulPaint()
-              }
+            this.recordMetric('page_load_time', navEntry.loadEventEnd - navEntry.fetchStart, {
+              domContentLoaded: navEntry.domContentLoadedEventEnd - navEntry.fetchStart,
+              firstContentfulPaint: navEntry.loadEventStart - navEntry.fetchStart
             });
           }
         }
       });
-
+      
       observer.observe({ entryTypes: ['navigation'] });
       this.observers.push(observer);
     }
   }
 
-  private static setupResourceObserver(): void {
+  private monitorResourceLoading(): void {
     if ('PerformanceObserver' in window) {
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          if (entry.entryType === 'resource') {
-            const resourceEntry = entry as PerformanceResourceTiming;
-            
-            // Only monitor significant resources
-            if (resourceEntry.duration > 100 || resourceEntry.transferSize > 50000) {
-              this.recordMetric({
-                name: 'resource_load_time',
-                value: resourceEntry.duration,
-                unit: 'ms',
-                category: 'network',
-                metadata: {
-                  name: resourceEntry.name,
-                  size: resourceEntry.transferSize,
-                  type: this.getResourceType(resourceEntry.name)
-                }
-              });
-            }
+          const resourceEntry = entry as PerformanceResourceTiming;
+          if (resourceEntry.duration > 1000) { // Only track slow resources
+            this.recordMetric('slow_resource_load', resourceEntry.duration, {
+              url: resourceEntry.name,
+              type: this.getResourceType(resourceEntry.name),
+              size: resourceEntry.transferSize
+            });
           }
         }
       });
-
+      
       observer.observe({ entryTypes: ['resource'] });
       this.observers.push(observer);
     }
   }
 
-  private static setupLongTaskObserver(): void {
-    if ('PerformanceObserver' in window) {
-      try {
-        const observer = new PerformanceObserver((list) => {
-          for (const entry of list.getEntries()) {
-            this.recordMetric({
-              name: 'long_task',
-              value: entry.duration,
-              unit: 'ms',
-              category: 'timing',
-              metadata: {
-                startTime: entry.startTime,
-                name: entry.name
-              }
-            });
-          }
-        });
+  private monitorUserInteractions(): void {
+    let interactionCount = 0;
+    const trackInteraction = (eventType: string) => {
+      interactionCount++;
+      this.recordMetric('user_interaction', interactionCount, { eventType });
+    };
 
-        observer.observe({ entryTypes: ['longtask'] });
-        this.observers.push(observer);
-      } catch (e) {
-        // longtask might not be supported
-        Logger.debug('Long task observer not supported', { category: 'performance' });
-      }
-    }
+    document.addEventListener('click', () => trackInteraction('click'));
+    document.addEventListener('scroll', () => trackInteraction('scroll'));
+    document.addEventListener('keydown', () => trackInteraction('keydown'));
   }
 
-  private static setupMemoryMonitoring(): void {
+  private monitorMemoryUsage(): void {
     if ('memory' in performance) {
       setInterval(() => {
         const memory = (performance as any).memory;
-        
-        this.recordMetric({
-          name: 'memory_usage',
-          value: memory.usedJSHeapSize / 1024 / 1024, // Convert to MB
-          unit: 'MB',
-          category: 'memory',
-          metadata: {
-            total: memory.totalJSHeapSize / 1024 / 1024,
-            limit: memory.jsHeapSizeLimit / 1024 / 1024
-          }
+        this.recordMetric('memory_usage', memory.usedJSHeapSize, {
+          total: memory.totalJSHeapSize,
+          limit: memory.jsHeapSizeLimit
         });
       }, 30000); // Every 30 seconds
     }
   }
 
-  private static startPeriodicCollection(): void {
-    setInterval(() => {
-      // Collect Core Web Vitals
-      this.collectCoreWebVitals();
-      
-      // Clean old metrics
-      this.cleanOldMetrics();
-    }, 60000); // Every minute
-  }
-
-  private static collectCoreWebVitals(): void {
-    // LCP (Largest Contentful Paint)
-    const lcpEntries = performance.getEntriesByType('largest-contentful-paint') as PerformancePaintTiming[];
-    if (lcpEntries.length > 0) {
-      const lcp = lcpEntries[lcpEntries.length - 1];
-      this.recordMetric({
-        name: 'largest_contentful_paint',
-        value: lcp.startTime,
-        unit: 'ms',
-        category: 'timing'
+  private monitorNetworkConditions(): void {
+    if ('connection' in navigator) {
+      const connection = (navigator as any).connection;
+      this.recordMetric('network_speed', connection.downlink || 0, {
+        effectiveType: connection.effectiveType,
+        rtt: connection.rtt
       });
     }
-
-    // FID would require a separate library or user interaction tracking
-    // CLS would require layout shift tracking
   }
 
-  private static getFirstPaint(): number | undefined {
-    const paintEntries = performance.getEntriesByType('paint');
-    const firstPaint = paintEntries.find(entry => entry.name === 'first-paint');
-    return firstPaint?.startTime;
-  }
-
-  private static getFirstContentfulPaint(): number | undefined {
-    const paintEntries = performance.getEntriesByType('paint');
-    const fcp = paintEntries.find(entry => entry.name === 'first-contentful-paint');
-    return fcp?.startTime;
-  }
-
-  private static getResourceType(url: string): string {
-    if (url.includes('.js')) return 'script';
-    if (url.includes('.css')) return 'stylesheet';
-    if (url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/)) return 'image';
-    if (url.includes('/api/')) return 'api';
-    return 'other';
-  }
-
-  static recordMetric(metric: Omit<PerformanceMetric, 'timestamp'>): void {
-    const fullMetric: PerformanceMetric = {
-      ...metric,
-      timestamp: new Date().toISOString()
+  recordMetric(name: string, value: number, metadata?: Record<string, any>): void {
+    const metric: PerformanceMetric = {
+      name,
+      value,
+      timestamp: new Date(),
+      metadata
     };
 
-    this.metrics.unshift(fullMetric);
-    
-    // Keep only recent metrics
-    if (this.metrics.length > this.MAX_METRICS) {
-      this.metrics = this.metrics.slice(0, this.MAX_METRICS);
+    this.metrics.push(metric);
+
+    // Keep only last 1000 metrics
+    if (this.metrics.length > 1000) {
+      this.metrics = this.metrics.slice(-1000);
     }
 
-    // Log significant performance issues
-    if (this.isSignificantMetric(fullMetric)) {
-      Logger.warn(`Performance issue detected: ${metric.name}`, {
-        operation: 'performance_issue',
-        value: metric.value,
-        unit: metric.unit,
-        category: metric.category,
-        ...metric.metadata
-      });
+    // Log performance issues
+    if (this.isPerformanceIssue(name, value)) {
+      console.warn(`Performance Issue: ${name} = ${value}`, metadata);
     }
   }
 
-  private static isSignificantMetric(metric: PerformanceMetric): boolean {
-    switch (metric.name) {
-      case 'page_load_time':
-        return metric.value > 3000; // > 3 seconds
-      case 'resource_load_time':
-        return metric.value > 2000; // > 2 seconds
-      case 'long_task':
-        return metric.value > 50; // > 50ms
-      case 'memory_usage':
-        return metric.value > 100; // > 100MB
-      case 'largest_contentful_paint':
-        return metric.value > 2500; // > 2.5 seconds
-      default:
-        return false;
-    }
+  private isPerformanceIssue(name: string, value: number): boolean {
+    const thresholds: Record<string, number> = {
+      page_load_time: 3000, // 3 seconds
+      slow_resource_load: 2000, // 2 seconds
+      memory_usage: 50 * 1024 * 1024 // 50MB
+    };
+
+    return value > (thresholds[name] || Infinity);
   }
 
-  static getMetrics(category?: string, since?: Date): PerformanceMetric[] {
-    let filteredMetrics = this.metrics;
+  getMetrics(name?: string, since?: Date): PerformanceMetric[] {
+    let filtered = this.metrics;
 
-    if (category) {
-      filteredMetrics = filteredMetrics.filter(m => m.category === category);
+    if (name) {
+      filtered = filtered.filter(m => m.name === name);
     }
 
     if (since) {
-      filteredMetrics = filteredMetrics.filter(m => 
-        new Date(m.timestamp) >= since
-      );
+      filtered = filtered.filter(m => m.timestamp >= since);
     }
 
-    return filteredMetrics;
+    return filtered.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
-  static getAverageMetric(name: string, since?: Date): number | null {
-    const metrics = this.getMetrics(undefined, since).filter(m => m.name === name);
-    
-    if (metrics.length === 0) return null;
-    
-    const sum = metrics.reduce((acc, m) => acc + m.value, 0);
-    return sum / metrics.length;
-  }
-
-  static generatePerformanceReport(): {
-    summary: Record<string, any>;
-    recommendations: string[];
+  generatePerformanceReport(): {
+    summary: {
+      totalMetrics: number;
+      averagePageLoad: number;
+      memoryUsage: number;
+      slowResources: number;
+    };
+    trends: Record<string, number[]>;
+    issues: PerformanceMetric[];
   } {
-    const report = {
+    const pageLoadMetrics = this.getMetrics('page_load_time');
+    const memoryMetrics = this.getMetrics('memory_usage');
+    const slowResources = this.getMetrics('slow_resource_load');
+
+    const averagePageLoad = pageLoadMetrics.length > 0 
+      ? pageLoadMetrics.reduce((sum, m) => sum + m.value, 0) / pageLoadMetrics.length 
+      : 0;
+
+    const currentMemory = memoryMetrics.length > 0 
+      ? memoryMetrics[0].value 
+      : 0;
+
+    return {
       summary: {
         totalMetrics: this.metrics.length,
-        averagePageLoadTime: this.getAverageMetric('page_load_time'),
-        averageMemoryUsage: this.getAverageMetric('memory_usage'),
-        longTaskCount: this.getMetrics().filter(m => m.name === 'long_task').length,
-        significantIssues: this.metrics.filter(m => this.isSignificantMetric(m)).length
+        averagePageLoad,
+        memoryUsage: currentMemory,
+        slowResources: slowResources.length
       },
-      recommendations: [] as string[]
+      trends: this.calculateTrends(),
+      issues: this.getPerformanceIssues()
     };
-
-    // Generate recommendations
-    if (report.summary.averagePageLoadTime && report.summary.averagePageLoadTime > 3000) {
-      report.recommendations.push('Consider optimizing page load time - current average exceeds 3 seconds');
-    }
-
-    if (report.summary.averageMemoryUsage && report.summary.averageMemoryUsage > 50) {
-      report.recommendations.push('Monitor memory usage - current average is high');
-    }
-
-    if (report.summary.longTaskCount > 10) {
-      report.recommendations.push('Multiple long tasks detected - consider code splitting or optimization');
-    }
-
-    return report;
   }
 
-  private static cleanOldMetrics(): void {
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-    this.metrics = this.metrics.filter(m => new Date(m.timestamp) > oneHourAgo);
+  private calculateTrends(): Record<string, number[]> {
+    const trends: Record<string, number[]> = {};
+    const metricNames = [...new Set(this.metrics.map(m => m.name))];
+
+    metricNames.forEach(name => {
+      const metrics = this.getMetrics(name).slice(0, 10); // Last 10 values
+      trends[name] = metrics.map(m => m.value);
+    });
+
+    return trends;
+  }
+
+  private getPerformanceIssues(): PerformanceMetric[] {
+    return this.metrics.filter(metric => 
+      this.isPerformanceIssue(metric.name, metric.value)
+    );
+  }
+
+  private getResourceType(url: string): string {
+    if (url.includes('.js')) return 'javascript';
+    if (url.includes('.css')) return 'stylesheet';
+    if (url.match(/\.(jpg|jpeg|png|gif|webp)$/)) return 'image';
+    if (url.includes('.json')) return 'json';
+    return 'other';
   }
 
   static cleanup(): void {
-    this.observers.forEach(observer => observer.disconnect());
-    this.observers = [];
-    this.metrics = [];
-    Logger.info('Performance monitoring cleaned up', { category: 'performance' });
+    const monitor = PerformanceMonitor.getInstance();
+    monitor.observers.forEach(observer => observer.disconnect());
+    monitor.observers = [];
   }
 }
-
-// User interaction tracking
-export const trackUserInteraction = (action: string, element: string, metadata?: Record<string, any>) => {
-  PerformanceMonitor.recordMetric({
-    name: 'user_interaction',
-    value: performance.now(),
-    unit: 'ms',
-    category: 'user_interaction',
-    metadata: {
-      action,
-      element,
-      ...metadata
-    }
-  });
-};
-
-// API call tracking
-export const trackApiCall = (endpoint: string, method: string, duration: number, success: boolean) => {
-  PerformanceMonitor.recordMetric({
-    name: 'api_call',
-    value: duration,
-    unit: 'ms',
-    category: 'network',
-    metadata: {
-      endpoint,
-      method,
-      success
-    }
-  });
-};

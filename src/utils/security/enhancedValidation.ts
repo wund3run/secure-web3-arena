@@ -1,153 +1,154 @@
 
-import { InputSanitizer } from './inputSanitizer';
-
 export interface ValidationResult {
   isValid: boolean;
   errors: string[];
   sanitizedValue?: any;
 }
 
+export interface ValidationOptions {
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  pattern?: RegExp;
+  allowHTML?: boolean;
+  min?: number;
+  max?: number;
+  integer?: boolean;
+  allowedTypes?: string[];
+  maxSizeMB?: number;
+}
+
 export class EnhancedValidation {
-  /**
-   * Validates and sanitizes email input
-   */
-  static validateEmail(email: string): ValidationResult {
-    const sanitized = InputSanitizer.sanitizeText(email);
+  // Enhanced text validation with XSS protection
+  static validateText(input: string, options: ValidationOptions = {}): ValidationResult {
     const errors: string[] = [];
     
-    if (!sanitized) {
+    if (options.required && (!input || input.trim().length === 0)) {
+      errors.push('This field is required');
+      return { isValid: false, errors };
+    }
+
+    if (!input) {
+      return { isValid: true, errors: [], sanitizedValue: '' };
+    }
+
+    if (options.minLength && input.length < options.minLength) {
+      errors.push(`Must be at least ${options.minLength} characters`);
+    }
+
+    if (options.maxLength && input.length > options.maxLength) {
+      errors.push(`Must be no more than ${options.maxLength} characters`);
+    }
+
+    if (options.pattern && !options.pattern.test(input)) {
+      errors.push('Invalid format');
+    }
+
+    // XSS protection
+    let sanitizedValue = input;
+    if (!options.allowHTML) {
+      sanitizedValue = this.sanitizeHTML(input);
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+      sanitizedValue
+    };
+  }
+
+  // Enhanced email validation
+  static validateEmail(email: string): ValidationResult {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const errors: string[] = [];
+
+    if (!email || email.trim().length === 0) {
       errors.push('Email is required');
       return { isValid: false, errors };
     }
-    
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    
-    if (!emailRegex.test(sanitized)) {
-      errors.push('Please enter a valid email address');
+
+    if (!emailRegex.test(email)) {
+      errors.push('Invalid email format');
     }
-    
-    if (sanitized.length > 254) {
-      errors.push('Email address is too long');
+
+    // Check for common email security issues
+    if (email.includes('..') || email.startsWith('.') || email.endsWith('.')) {
+      errors.push('Invalid email format');
     }
-    
+
+    const sanitizedValue = email.toLowerCase().trim();
+
     return {
       isValid: errors.length === 0,
       errors,
-      sanitizedValue: sanitized
+      sanitizedValue
     };
   }
 
-  /**
-   * Validates and sanitizes URL input
-   */
-  static validateURL(url: string, required: boolean = false): ValidationResult {
+  // Enhanced URL validation
+  static validateURL(url: string): ValidationResult {
     const errors: string[] = [];
-    
-    if (!url) {
-      if (required) {
-        errors.push('URL is required');
-      }
-      return { isValid: !required, errors, sanitizedValue: '' };
-    }
-    
-    const sanitized = InputSanitizer.sanitizeURL(url);
-    
-    if (!sanitized) {
-      errors.push('Invalid URL format or protocol');
+
+    if (!url || url.trim().length === 0) {
+      errors.push('URL is required');
       return { isValid: false, errors };
     }
-    
+
     try {
-      new URL(sanitized);
+      const urlObj = new URL(url);
+      
+      // Only allow HTTP/HTTPS protocols
+      if (!['http:', 'https:'].includes(urlObj.protocol)) {
+        errors.push('Only HTTP and HTTPS URLs are allowed');
+      }
+
+      // Prevent localhost/internal IPs in production
+      if (urlObj.hostname === 'localhost' || 
+          urlObj.hostname.startsWith('127.') ||
+          urlObj.hostname.startsWith('192.168.') ||
+          urlObj.hostname.startsWith('10.')) {
+        errors.push('Internal URLs are not allowed');
+      }
+
     } catch {
-      errors.push('Please enter a valid URL');
+      errors.push('Invalid URL format');
     }
-    
-    if (sanitized.length > 2048) {
-      errors.push('URL is too long');
-    }
-    
+
     return {
       isValid: errors.length === 0,
       errors,
-      sanitizedValue: sanitized
+      sanitizedValue: url.trim()
     };
   }
 
-  /**
-   * Validates and sanitizes text input
-   */
-  static validateText(text: string, options: {
-    required?: boolean;
-    minLength?: number;
-    maxLength?: number;
-    allowHTML?: boolean;
-  } = {}): ValidationResult {
-    const { required = false, minLength = 0, maxLength = 10000, allowHTML = false } = options;
+  // Enhanced number validation
+  static validateNumber(input: any, options: ValidationOptions = {}): ValidationResult {
     const errors: string[] = [];
     
-    if (!text) {
-      if (required) {
-        errors.push('This field is required');
-      }
-      return { isValid: !required, errors, sanitizedValue: '' };
+    if (options.required && (input === null || input === undefined || input === '')) {
+      errors.push('This field is required');
+      return { isValid: false, errors };
     }
-    
-    const sanitized = allowHTML ? InputSanitizer.sanitizeHTML(text) : InputSanitizer.sanitizeText(text);
-    
-    if (sanitized.length < minLength) {
-      errors.push(`Must be at least ${minLength} characters long`);
-    }
-    
-    if (sanitized.length > maxLength) {
-      errors.push(`Must be no more than ${maxLength} characters long`);
-    }
-    
-    return {
-      isValid: errors.length === 0,
-      errors,
-      sanitizedValue: sanitized
-    };
-  }
 
-  /**
-   * Validates numeric input with range checking
-   */
-  static validateNumber(value: any, options: {
-    required?: boolean;
-    min?: number;
-    max?: number;
-    integer?: boolean;
-  } = {}): ValidationResult {
-    const { required = false, min, max, integer = false } = options;
-    const errors: string[] = [];
-    
-    if (value === null || value === undefined || value === '') {
-      if (required) {
-        errors.push('This field is required');
-      }
-      return { isValid: !required, errors, sanitizedValue: null };
-    }
-    
-    const num = Number(value);
+    const num = Number(input);
     
     if (isNaN(num)) {
-      errors.push('Please enter a valid number');
+      errors.push('Must be a valid number');
       return { isValid: false, errors };
     }
-    
-    if (integer && !Number.isInteger(num)) {
-      errors.push('Please enter a whole number');
+
+    if (options.integer && !Number.isInteger(num)) {
+      errors.push('Must be a whole number');
     }
-    
-    if (min !== undefined && num < min) {
-      errors.push(`Must be at least ${min}`);
+
+    if (options.min !== undefined && num < options.min) {
+      errors.push(`Must be at least ${options.min}`);
     }
-    
-    if (max !== undefined && num > max) {
-      errors.push(`Must be no more than ${max}`);
+
+    if (options.max !== undefined && num > options.max) {
+      errors.push(`Must be no more than ${options.max}`);
     }
-    
+
     return {
       isValid: errors.length === 0,
       errors,
@@ -155,45 +156,81 @@ export class EnhancedValidation {
     };
   }
 
-  /**
-   * Validates file uploads
-   */
-  static validateFile(file: File, options: {
-    allowedTypes?: string[];
-    maxSizeMB?: number;
-    required?: boolean;
-  } = {}): ValidationResult {
-    const { allowedTypes = [], maxSizeMB = 10, required = false } = options;
+  // File validation
+  static validateFile(file: File, options: ValidationOptions = {}): ValidationResult {
     const errors: string[] = [];
-    
+
+    if (options.required && !file) {
+      errors.push('File is required');
+      return { isValid: false, errors };
+    }
+
     if (!file) {
-      if (required) {
-        errors.push('File is required');
+      return { isValid: true, errors: [] };
+    }
+
+    if (options.allowedTypes && !options.allowedTypes.includes(file.type)) {
+      errors.push(`File type not allowed. Allowed types: ${options.allowedTypes.join(', ')}`);
+    }
+
+    if (options.maxSizeMB) {
+      const maxSizeBytes = options.maxSizeMB * 1024 * 1024;
+      if (file.size > maxSizeBytes) {
+        errors.push(`File size must be less than ${options.maxSizeMB}MB`);
       }
-      return { isValid: !required, errors };
     }
-    
-    // Validate file type
-    if (allowedTypes.length > 0 && !allowedTypes.includes(file.type)) {
-      errors.push(`File type ${file.type} is not allowed. Allowed types: ${allowedTypes.join(', ')}`);
-    }
-    
-    // Validate file size
-    const maxSizeBytes = maxSizeMB * 1024 * 1024;
-    if (file.size > maxSizeBytes) {
-      errors.push(`File size ${(file.size / 1024 / 1024).toFixed(2)}MB exceeds maximum allowed size of ${maxSizeMB}MB`);
-    }
-    
-    // Validate file name
-    const sanitizedName = InputSanitizer.sanitizeFileName(file.name);
-    if (!sanitizedName) {
-      errors.push('Invalid file name');
-    }
-    
+
     return {
       isValid: errors.length === 0,
       errors,
       sanitizedValue: file
+    };
+  }
+
+  // Sanitize HTML to prevent XSS
+  private static sanitizeHTML(input: string): string {
+    const div = document.createElement('div');
+    div.textContent = input;
+    return div.innerHTML;
+  }
+
+  // SQL injection prevention for dynamic queries
+  static sanitizeForSQL(input: string): string {
+    return input.replace(/['";\\]/g, '');
+  }
+
+  // Validate blockchain address
+  static validateBlockchainAddress(address: string, blockchain: string): ValidationResult {
+    const errors: string[] = [];
+
+    if (!address || address.trim().length === 0) {
+      errors.push('Address is required');
+      return { isValid: false, errors };
+    }
+
+    switch (blockchain.toLowerCase()) {
+      case 'ethereum':
+        if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
+          errors.push('Invalid Ethereum address format');
+        }
+        break;
+      case 'bitcoin':
+        if (!/^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address) && 
+            !/^bc1[a-z0-9]{39,59}$/.test(address)) {
+          errors.push('Invalid Bitcoin address format');
+        }
+        break;
+      default:
+        // Generic validation for other blockchains
+        if (address.length < 20 || address.length > 100) {
+          errors.push('Invalid address length');
+        }
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+      sanitizedValue: address.trim()
     };
   }
 }
