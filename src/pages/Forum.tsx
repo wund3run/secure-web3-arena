@@ -1,312 +1,305 @@
 
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { StandardLayout } from '@/components/layout/StandardLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, MessageCircle, TrendingUp, Clock, Pin, Users } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { 
+  MessageSquare, 
+  Search, 
+  TrendingUp, 
+  Clock, 
+  Users, 
+  Pin,
+  ThumbsUp,
+  Reply,
+  Star,
+  Filter
+} from 'lucide-react';
 
-export default function Forum() {
-  const [searchTerm, setSearchTerm] = useState('');
+const Forum = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
   const categories = [
-    { name: "Smart Contract Security", count: 1247, color: "bg-blue-500" },
-    { name: "DeFi Protocols", count: 892, color: "bg-green-500" },
-    { name: "NFT Security", count: 634, color: "bg-purple-500" },
-    { name: "Cross-Chain Bridges", count: 428, color: "bg-orange-500" },
-    { name: "General Discussion", count: 2156, color: "bg-gray-500" }
+    { id: 'all', name: 'All Topics', count: 234 },
+    { id: 'smart-contracts', name: 'Smart Contracts', count: 89 },
+    { id: 'defi', name: 'DeFi Security', count: 67 },
+    { id: 'nft', name: 'NFT Security', count: 45 },
+    { id: 'general', name: 'General Discussion', count: 33 }
   ];
 
-  const featuredThreads = [
+  const forumTopics = [
     {
       id: 1,
-      title: "Critical Vulnerability Found in Popular DeFi Protocol",
-      author: "SecurityExpert_Alice",
-      category: "DeFi Protocols",
-      replies: 45,
-      views: 1289,
-      lastActivity: "2 hours ago",
+      title: 'Best practices for Solidity smart contract security',
+      content: 'What are the most critical security considerations when developing Solidity smart contracts?',
+      author: {
+        name: 'Sarah Chen',
+        avatar: '/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png',
+        reputation: 2847,
+        badge: 'Expert'
+      },
+      category: 'smart-contracts',
+      replies: 24,
+      views: 1523,
+      lastActivity: '2 hours ago',
       isPinned: true,
-      isHot: true
+      likes: 67,
+      tags: ['solidity', 'smart-contracts', 'security']
     },
     {
       id: 2,
-      title: "Best Practices for Cross-Chain Security Audits in 2025",
-      author: "AuditPro_Bob",
-      category: "Cross-Chain Bridges",
-      replies: 32,
-      views: 967,
-      lastActivity: "4 hours ago",
-      isPinned: true,
-      isHot: false
-    }
-  ];
-
-  const recentThreads = [
+      title: 'Common vulnerabilities in DeFi protocols',
+      content: 'Discussion on the most frequent security issues found in DeFi applications and how to prevent them.',
+      author: {
+        name: 'Marcus Rodriguez',
+        avatar: '/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png',
+        reputation: 1956,
+        badge: 'Verified'
+      },
+      category: 'defi',
+      replies: 18,
+      views: 892,
+      lastActivity: '4 hours ago',
+      isPinned: false,
+      likes: 43,
+      tags: ['defi', 'vulnerabilities', 'protocols']
+    },
     {
       id: 3,
-      title: "Gas Optimization vs Security Trade-offs",
-      author: "DevSecOps_Charlie",
-      category: "Smart Contract Security",
-      replies: 18,
-      views: 423,
-      lastActivity: "1 hour ago",
-      isHot: true
-    },
-    {
-      id: 4,
-      title: "New Attack Vector: Sandwich Attacks on AMM Protocols",
-      author: "ResearcherDave",
-      category: "DeFi Protocols",
-      replies: 27,
-      views: 672,
-      lastActivity: "3 hours ago",
-      isHot: true
-    },
-    {
-      id: 5,
-      title: "NFT Metadata Security Considerations",
-      author: "NFTAuditor_Eve",
-      category: "NFT Security",
-      replies: 12,
-      views: 298,
-      lastActivity: "6 hours ago",
-      isHot: false
-    },
-    {
-      id: 6,
-      title: "Tools and Frameworks for Automated Security Testing",
-      author: "ToolMaster_Frank",
-      category: "General Discussion",
-      replies: 35,
-      views: 834,
-      lastActivity: "8 hours ago",
-      isHot: false
+      title: 'Flash loan attack vectors and prevention',
+      content: 'Let\'s discuss different types of flash loan attacks and mitigation strategies.',
+      author: {
+        name: 'Alex Kim',
+        avatar: null,
+        reputation: 1234,
+        badge: 'Active'
+      },
+      category: 'defi',
+      replies: 31,
+      views: 2156,
+      lastActivity: '6 hours ago',
+      isPinned: false,
+      likes: 89,
+      tags: ['flash-loans', 'attacks', 'prevention']
     }
   ];
 
+  const trendingTopics = [
+    'Reentrancy attacks',
+    'Oracle manipulation',
+    'MEV protection',
+    'Cross-chain security',
+    'Governance attacks'
+  ];
+
+  const filteredTopics = forumTopics.filter(topic => {
+    const matchesSearch = topic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         topic.content.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || topic.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
   return (
-    <>
-      <Helmet>
-        <title>Security Forum | Hawkly</title>
-        <meta name="description" content="Join discussions with Web3 security experts. Share knowledge, ask questions, and stay updated on the latest security trends." />
-      </Helmet>
+    <StandardLayout
+      title="Security Forum | Hawkly"
+      description="Join discussions about Web3 security, share knowledge, and connect with security experts"
+    >
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-hawkly-gradient mb-4">
+            Security Forum
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Connect with security experts, discuss best practices, and share knowledge 
+            about Web3 security challenges and solutions.
+          </p>
+        </div>
 
-      <StandardLayout 
-        title="Security Forum" 
-        description="Connect and discuss with the Web3 security community"
-      >
-        <div className="container py-12">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Security Discussions</h1>
-              <p className="text-muted-foreground">
-                Join conversations with 2,400+ security experts worldwide
-              </p>
-            </div>
-            <Button className="mt-4 md:mt-0">
-              <MessageCircle className="mr-2 h-4 w-4" />
-              New Discussion
-            </Button>
-          </div>
-
-          {/* Search */}
-          <div className="relative mb-8">
+        {/* Search and Filters */}
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div className="flex-1 relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search discussions..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
             />
           </div>
+          <Button variant="outline" className="flex items-center gap-2">
+            <Filter className="h-4 w-4" />
+            Filters
+          </Button>
+          <Button>New Topic</Button>
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Categories Sidebar */}
-            <div className="lg:col-span-1">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Categories</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {categories.map((category, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 cursor-pointer">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-3 h-3 rounded-full ${category.color}`} />
-                        <span className="text-sm font-medium">{category.name}</span>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-3">
+            <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
+              <TabsList className="grid w-full grid-cols-5">
+                {categories.map((category) => (
+                  <TabsTrigger key={category.id} value={category.id} className="text-xs">
+                    {category.name}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+
+              <TabsContent value={selectedCategory} className="mt-6">
+                <div className="space-y-4">
+                  {filteredTopics.map((topic) => (
+                    <Card key={topic.id} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-6">
+                        <div className="flex items-start gap-4">
+                          <Avatar className="h-12 w-12">
+                            <AvatarImage src={topic.author.avatar} />
+                            <AvatarFallback>
+                              {topic.author.name.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between mb-2">
+                              <div className="flex items-center gap-2">
+                                {topic.isPinned && <Pin className="h-4 w-4 text-primary" />}
+                                <h3 className="font-semibold text-lg hover:text-primary cursor-pointer">
+                                  {topic.title}
+                                </h3>
+                              </div>
+                              <Badge variant="outline">{topic.category}</Badge>
+                            </div>
+                            
+                            <p className="text-muted-foreground mb-3 line-clamp-2">
+                              {topic.content}
+                            </p>
+                            
+                            <div className="flex flex-wrap gap-2 mb-3">
+                              {topic.tags.map((tag) => (
+                                <Badge key={tag} variant="secondary" className="text-xs">
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
+                            
+                            <div className="flex items-center justify-between text-sm text-muted-foreground">
+                              <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-1">
+                                  <MessageSquare className="h-4 w-4" />
+                                  {topic.replies} replies
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Users className="h-4 w-4" />
+                                  {topic.views} views
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <ThumbsUp className="h-4 w-4" />
+                                  {topic.likes}
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span>by {topic.author.name}</span>
+                                <Badge variant="outline" className="text-xs">
+                                  {topic.author.badge}
+                                </Badge>
+                                <Clock className="h-3 w-3" />
+                                <span>{topic.lastActivity}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Stats */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Community Stats</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-between">
+                  <span>Total Topics</span>
+                  <span className="font-semibold">1,247</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Active Members</span>
+                  <span className="font-semibold">5,892</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Expert Contributors</span>
+                  <span className="font-semibold">156</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Trending Topics */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Trending Topics
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {trendingTopics.map((topic, index) => (
+                    <Button key={topic} variant="ghost" className="w-full justify-start text-sm">
+                      #{index + 1} {topic}
+                    </Button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Top Contributors */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Star className="h-5 w-5" />
+                  Top Contributors
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {[
+                    { name: 'Sarah Chen', points: 2847, avatar: '/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png' },
+                    { name: 'Marcus Rodriguez', points: 1956, avatar: '/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png' },
+                    { name: 'Alex Kim', points: 1234, avatar: null }
+                  ].map((contributor, index) => (
+                    <div key={contributor.name} className="flex items-center gap-3">
+                      <span className="text-sm font-semibold w-6">#{index + 1}</span>
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={contributor.avatar} />
+                        <AvatarFallback className="text-xs">
+                          {contributor.name.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">{contributor.name}</div>
+                        <div className="text-xs text-muted-foreground">{contributor.points} points</div>
                       </div>
-                      <Badge variant="secondary" className="text-xs">
-                        {category.count}
-                      </Badge>
                     </div>
                   ))}
-                </CardContent>
-              </Card>
-
-              <Card className="mt-6">
-                <CardHeader>
-                  <CardTitle className="text-lg">Quick Stats</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Total Discussions</span>
-                    <span className="font-semibold">5,357</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Active Members</span>
-                    <span className="font-semibold">2,401</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Today's Posts</span>
-                    <span className="font-semibold">87</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Main Content */}
-            <div className="lg:col-span-3">
-              <Tabs defaultValue="recent" className="space-y-6">
-                <TabsList>
-                  <TabsTrigger value="recent">Recent</TabsTrigger>
-                  <TabsTrigger value="trending">Trending</TabsTrigger>
-                  <TabsTrigger value="pinned">Pinned</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="recent" className="space-y-4">
-                  {/* Featured Threads */}
-                  {featuredThreads.map((thread) => (
-                    <Card key={thread.id} className="border-l-4 border-l-primary">
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              {thread.isPinned && (
-                                <Pin className="h-4 w-4 text-primary" />
-                              )}
-                              {thread.isHot && (
-                                <Badge variant="destructive" className="text-xs">
-                                  <TrendingUp className="mr-1 h-3 w-3" />
-                                  Hot
-                                </Badge>
-                              )}
-                              <Badge variant="outline">{thread.category}</Badge>
-                            </div>
-                            <h3 className="font-semibold text-lg mb-2 hover:text-primary cursor-pointer">
-                              {thread.title}
-                            </h3>
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                              <span>by {thread.author}</span>
-                              <span className="flex items-center gap-1">
-                                <MessageCircle className="h-4 w-4" />
-                                {thread.replies}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Users className="h-4 w-4" />
-                                {thread.views}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Clock className="h-4 w-4" />
-                                {thread.lastActivity}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-
-                  {/* Recent Threads */}
-                  {recentThreads.map((thread) => (
-                    <Card key={thread.id} className="hover:shadow-md transition-shadow">
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              {thread.isHot && (
-                                <Badge variant="secondary" className="text-xs">
-                                  <TrendingUp className="mr-1 h-3 w-3" />
-                                  Trending
-                                </Badge>
-                              )}
-                              <Badge variant="outline">{thread.category}</Badge>
-                            </div>
-                            <h3 className="font-semibold mb-2 hover:text-primary cursor-pointer">
-                              {thread.title}
-                            </h3>
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                              <span>by {thread.author}</span>
-                              <span className="flex items-center gap-1">
-                                <MessageCircle className="h-4 w-4" />
-                                {thread.replies}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Users className="h-4 w-4" />
-                                {thread.views}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Clock className="h-4 w-4" />
-                                {thread.lastActivity}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </TabsContent>
-
-                <TabsContent value="trending">
-                  <div className="text-center py-12">
-                    <TrendingUp className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Trending Discussions</h3>
-                    <p className="text-muted-foreground">
-                      Most active discussions from the past 24 hours
-                    </p>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="pinned">
-                  <div className="space-y-4">
-                    {featuredThreads.filter(thread => thread.isPinned).map((thread) => (
-                      <Card key={thread.id} className="border-l-4 border-l-primary">
-                        <CardContent className="p-6">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                <Pin className="h-4 w-4 text-primary" />
-                                <Badge variant="outline">{thread.category}</Badge>
-                              </div>
-                              <h3 className="font-semibold text-lg mb-2 hover:text-primary cursor-pointer">
-                                {thread.title}
-                              </h3>
-                              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                                <span>by {thread.author}</span>
-                                <span className="flex items-center gap-1">
-                                  <MessageCircle className="h-4 w-4" />
-                                  {thread.replies}
-                                </span>
-                                <span className="flex items-center gap-1">
-                                  <Users className="h-4 w-4" />
-                                  {thread.views}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
-      </StandardLayout>
-    </>
+      </div>
+    </StandardLayout>
   );
-}
+};
+
+export default Forum;

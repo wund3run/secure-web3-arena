@@ -1,4 +1,3 @@
-
 import { Suspense, lazy } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -43,6 +42,12 @@ const SecurityInsights = lazy(() => import("./pages/SecurityInsights"));
 const AITools = lazy(() => import("./pages/AITools"));
 const VulnerabilityScanner = lazy(() => import("./pages/VulnerabilityScanner"));
 const PlatformReports = lazy(() => import("./pages/tools/PlatformReportsPage"));
+
+// Phase 2 Implementation - Community Pages
+const Forum = lazy(() => import("./pages/Forum"));
+const Events = lazy(() => import("./pages/Events"));
+const Challenges = lazy(() => import("./pages/Challenges"));
+const Leaderboard = lazy(() => import("./pages/Leaderboard"));
 
 // Business pages
 const AboutPage = lazy(() => import("./pages/business/AboutPage"));
@@ -103,6 +108,12 @@ const App = () => (
                         <Route path="/vulnerability-scanner" element={<VulnerabilityScanner />} />
                         <Route path="/platform-reports" element={<PlatformReports />} />
 
+                        {/* Phase 2 - Community Pages */}
+                        <Route path="/forum" element={<Forum />} />
+                        <Route path="/events" element={<Events />} />
+                        <Route path="/challenges" element={<Challenges />} />
+                        <Route path="/leaderboard" element={<Leaderboard />} />
+
                         {/* Business routes */}
                         <Route path="/business/about" element={<AboutPage />} />
                         <Route path="/about" element={<AboutPage />} />
@@ -126,6 +137,7 @@ const App = () => (
                         <Route path="/security-audits" element={<Marketplace />} />
                         <Route path="/resources/*" element={<SupportPage />} />
                         <Route path="/tools/*" element={<AdvancedFeaturesHub />} />
+                        <Route path="/community" element={<Forum />} />
 
                         {/* 404 page */}
                         <Route path="*" element={<NotFoundPage />} />

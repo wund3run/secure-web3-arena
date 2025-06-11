@@ -1,298 +1,341 @@
 
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { StandardLayout } from '@/components/layout/StandardLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trophy, Star, Shield, Award, TrendingUp, Users } from 'lucide-react';
+import { 
+  Trophy, 
+  Medal, 
+  Award, 
+  Star, 
+  TrendingUp,
+  Shield,
+  Target,
+  Zap,
+  Crown,
+  ChevronUp,
+  ChevronDown
+} from 'lucide-react';
 
-export default function Leaderboard() {
-  const topAuditors = [
-    {
-      rank: 1,
-      name: "Alex Chen",
-      username: "sec_master_alex",
-      score: 9850,
-      auditsCompleted: 127,
-      vulnerabilitiesFound: 1247,
-      rating: 4.9,
-      specializations: ["DeFi", "Smart Contracts"],
-      badge: "Legendary",
-      change: "+12"
-    },
-    {
-      rank: 2,
-      name: "Sarah Wilson",
-      username: "defi_security_pro",
-      score: 9720,
-      auditsCompleted: 98,
-      vulnerabilitiesFound: 1089,
-      rating: 4.8,
-      specializations: ["Bridge Security", "DeFi"],
-      badge: "Master",
-      change: "+5"
-    },
-    {
-      rank: 3,
-      name: "Michael Rodriguez",
-      username: "crypto_auditor_mike",
-      score: 9680,
-      auditsCompleted: 112,
-      vulnerabilitiesFound: 1156,
-      rating: 4.8,
-      specializations: ["Smart Contracts", "NFT"],
-      badge: "Master",
-      change: "-1"
-    },
-    {
-      rank: 4,
-      name: "Emily Zhang",
-      username: "blockchain_sec_emily",
-      score: 9540,
-      auditsCompleted: 89,
-      vulnerabilitiesFound: 967,
-      rating: 4.7,
-      specializations: ["Cross-Chain", "DeFi"],
-      badge: "Expert",
-      change: "+3"
-    },
-    {
-      rank: 5,
-      name: "David Kumar",
-      username: "security_guru_david",
-      score: 9420,
-      auditsCompleted: 104,
-      vulnerabilitiesFound: 1034,
-      rating: 4.7,
-      specializations: ["Smart Contracts", "GameFi"],
-      badge: "Expert",
-      change: "+7"
-    }
+const Leaderboard = () => {
+  const [selectedCategory, setSelectedCategory] = useState('overall');
+
+  const categories = [
+    { id: 'overall', name: 'Overall', icon: Trophy },
+    { id: 'auditors', name: 'Top Auditors', icon: Shield },
+    { id: 'contributors', name: 'Contributors', icon: Star },
+    { id: 'challenges', name: 'Challenges', icon: Target }
   ];
 
-  const monthlyLeaders = [
-    {
-      rank: 1,
-      name: "Jennifer Liu",
-      auditsThisMonth: 12,
-      score: 1240,
-      change: "new"
-    },
-    {
-      rank: 2,
-      name: "Robert Singh",
-      auditsThisMonth: 10,
-      score: 1180,
-      change: "+2"
-    },
-    {
-      rank: 3,
-      name: "Maria Garcia",
-      auditsThisMonth: 9,
-      score: 1095,
-      change: "-1"
-    }
-  ];
-
-  const getBadgeColor = (badge: string) => {
-    switch (badge) {
-      case "Legendary": return "bg-gradient-to-r from-yellow-400 to-orange-500 text-white";
-      case "Master": return "bg-gradient-to-r from-purple-500 to-blue-500 text-white";
-      case "Expert": return "bg-gradient-to-r from-green-500 to-teal-500 text-white";
-      default: return "bg-gray-500 text-white";
-    }
+  const leaderboardData = {
+    overall: [
+      {
+        rank: 1,
+        name: 'Sarah Chen',
+        avatar: '/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png',
+        points: 15847,
+        change: 'up',
+        changeAmount: 125,
+        badges: ['Expert', 'Top Contributor', 'Verified'],
+        specialization: 'DeFi Security',
+        completedAudits: 47,
+        vulnerabilitiesFound: 312
+      },
+      {
+        rank: 2,
+        name: 'Marcus Rodriguez',
+        avatar: '/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png',
+        points: 14293,
+        change: 'up',
+        changeAmount: 89,
+        badges: ['Expert', 'Verified'],
+        specialization: 'Smart Contracts',
+        completedAudits: 38,
+        vulnerabilitiesFound: 267
+      },
+      {
+        rank: 3,
+        name: 'Alex Kim',
+        avatar: null,
+        points: 12956,
+        change: 'down',
+        changeAmount: 23,
+        badges: ['Verified', 'Active'],
+        specialization: 'Protocol Security',
+        completedAudits: 31,
+        vulnerabilitiesFound: 198
+      },
+      {
+        rank: 4,
+        name: 'Emma Thompson',
+        avatar: '/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png',
+        points: 11487,
+        change: 'up',
+        changeAmount: 156,
+        badges: ['Expert', 'Rising Star'],
+        specialization: 'NFT Security',
+        completedAudits: 24,
+        vulnerabilitiesFound: 176
+      },
+      {
+        rank: 5,
+        name: 'David Park',
+        avatar: null,
+        points: 10238,
+        change: 'same',
+        changeAmount: 0,
+        badges: ['Verified'],
+        specialization: 'Cross-chain',
+        completedAudits: 19,
+        vulnerabilitiesFound: 143
+      }
+    ]
   };
+
+  const achievements = [
+    {
+      title: 'Vulnerability Hunter',
+      description: 'Found 100+ critical vulnerabilities',
+      icon: Target,
+      rarity: 'legendary',
+      holders: 12
+    },
+    {
+      title: 'Audit Master',
+      description: 'Completed 50+ security audits',
+      icon: Shield,
+      rarity: 'epic',
+      holders: 28
+    },
+    {
+      title: 'Community Champion',
+      description: 'Top contributor to forum discussions',
+      icon: Star,
+      rarity: 'rare',
+      holders: 67
+    }
+  ];
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
-      case 1: return <Trophy className="h-6 w-6 text-yellow-500" />;
-      case 2: return <Award className="h-6 w-6 text-gray-400" />;
-      case 3: return <Award className="h-6 w-6 text-amber-600" />;
-      default: return <span className="h-6 w-6 flex items-center justify-center text-sm font-bold">{rank}</span>;
+      case 1:
+        return <Crown className="h-6 w-6 text-yellow-500" />;
+      case 2:
+        return <Medal className="h-6 w-6 text-gray-400" />;
+      case 3:
+        return <Award className="h-6 w-6 text-amber-600" />;
+      default:
+        return <span className="text-lg font-bold">#{rank}</span>;
+    }
+  };
+
+  const getChangeIcon = (change: string, amount: number) => {
+    if (change === 'up') {
+      return <ChevronUp className="h-4 w-4 text-green-500" />;
+    } else if (change === 'down') {
+      return <ChevronDown className="h-4 w-4 text-red-500" />;
+    }
+    return null;
+  };
+
+  const getRarityColor = (rarity: string) => {
+    switch (rarity) {
+      case 'legendary':
+        return 'border-orange-500 bg-orange-50';
+      case 'epic':
+        return 'border-purple-500 bg-purple-50';
+      case 'rare':
+        return 'border-blue-500 bg-blue-50';
+      default:
+        return 'border-gray-300 bg-gray-50';
     }
   };
 
   return (
-    <>
-      <Helmet>
-        <title>Security Expert Leaderboard | Hawkly</title>
-        <meta name="description" content="Discover top Web3 security auditors and experts. View rankings based on audit performance, vulnerabilities found, and community ratings." />
-      </Helmet>
+    <StandardLayout
+      title="Security Leaderboard | Hawkly"
+      description="Rankings of top security experts, auditors, and contributors in the Web3 space"
+    >
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-hawkly-gradient mb-4">
+            Security Leaderboard
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Discover and celebrate the top security experts, auditors, and contributors 
+            making the Web3 ecosystem safer.
+          </p>
+        </div>
 
-      <StandardLayout 
-        title="Security Expert Leaderboard" 
-        description="Top-performing Web3 security auditors and experts"
-      >
-        <div className="container py-12">
-          {/* Hero Section */}
-          <div className="text-center mb-16">
-            <Badge variant="secondary" className="mb-4">Updated March 2025</Badge>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Security Expert Leaderboard
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-              Discover the top-performing security auditors and experts in the Web3 ecosystem. 
-              Rankings based on audit quality, vulnerabilities found, and community feedback.
-            </p>
-          </div>
+        {/* Category Tabs */}
+        <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="mb-8">
+          <TabsList className="grid w-full grid-cols-4 max-w-2xl mx-auto">
+            {categories.map((category) => (
+              <TabsTrigger key={category.id} value={category.id} className="flex items-center gap-2">
+                <category.icon className="h-4 w-4" />
+                {category.name}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
 
-          {/* Stats Overview */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Main Leaderboard */}
+          <div className="lg:col-span-3">
             <Card>
-              <CardContent className="p-6 text-center">
-                <Users className="h-8 w-8 text-primary mx-auto mb-2" />
-                <div className="text-2xl font-bold">2,401</div>
-                <div className="text-sm text-muted-foreground">Active Auditors</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-6 text-center">
-                <Shield className="h-8 w-8 text-green-500 mx-auto mb-2" />
-                <div className="text-2xl font-bold">7,129</div>
-                <div className="text-sm text-muted-foreground">Vulnerabilities Found</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-6 text-center">
-                <Trophy className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
-                <div className="text-2xl font-bold">2,387</div>
-                <div className="text-sm text-muted-foreground">Audits Completed</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-6 text-center">
-                <Star className="h-8 w-8 text-purple-500 mx-auto mb-2" />
-                <div className="text-2xl font-bold">4.7</div>
-                <div className="text-sm text-muted-foreground">Average Rating</div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Leaderboard Tabs */}
-          <Tabs defaultValue="overall" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="overall">Overall Rankings</TabsTrigger>
-              <TabsTrigger value="monthly">This Month</TabsTrigger>
-              <TabsTrigger value="rising">Rising Stars</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="overall" className="space-y-4">
-              <div className="space-y-4">
-                {topAuditors.map((auditor, index) => (
-                  <Card key={index} className={`hover:shadow-lg transition-shadow ${index < 3 ? 'border-primary/20' : ''}`}>
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center justify-center w-12 h-12 bg-muted rounded-full">
-                            {getRankIcon(auditor.rank)}
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Trophy className="h-5 w-5 text-primary" />
+                  Top Security Experts
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {leaderboardData.overall.map((user) => (
+                    <div key={user.rank} className="flex items-center gap-4 p-4 rounded-lg border hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center justify-center w-12 h-12">
+                        {getRankIcon(user.rank)}
+                      </div>
+                      
+                      <Avatar className="h-12 w-12">
+                        <AvatarImage src={user.avatar} />
+                        <AvatarFallback>
+                          {user.name.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-semibold text-lg">{user.name}</h3>
+                          {user.change !== 'same' && (
+                            <div className="flex items-center gap-1 text-sm">
+                              {getChangeIcon(user.change, user.changeAmount)}
+                              <span className={user.change === 'up' ? 'text-green-500' : 'text-red-500'}>
+                                {user.changeAmount}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">{user.specialization}</p>
+                        <div className="flex flex-wrap gap-1">
+                          {user.badges.map((badge) => (
+                            <Badge key={badge} variant="secondary" className="text-xs">
+                              {badge}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-primary">
+                          {user.points.toLocaleString()}
+                        </div>
+                        <div className="text-sm text-muted-foreground">points</div>
+                        <div className="grid grid-cols-2 gap-2 mt-2 text-xs">
+                          <div>
+                            <div className="font-medium">{user.completedAudits}</div>
+                            <div className="text-muted-foreground">audits</div>
                           </div>
                           <div>
-                            <div className="flex items-center gap-3 mb-1">
-                              <h3 className="font-semibold text-lg">{auditor.name}</h3>
-                              <Badge className={getBadgeColor(auditor.badge)}>
-                                {auditor.badge}
-                              </Badge>
-                              <div className="flex items-center gap-1">
-                                {auditor.change.startsWith('+') ? (
-                                  <TrendingUp className="h-4 w-4 text-green-500" />
-                                ) : auditor.change.startsWith('-') ? (
-                                  <TrendingUp className="h-4 w-4 text-red-500 rotate-180" />
-                                ) : null}
-                                <span className={`text-sm ${
-                                  auditor.change.startsWith('+') ? 'text-green-500' : 
-                                  auditor.change.startsWith('-') ? 'text-red-500' : 'text-muted-foreground'
-                                }`}>
-                                  {auditor.change}
-                                </span>
-                              </div>
-                            </div>
-                            <p className="text-sm text-muted-foreground">@{auditor.username}</p>
-                            <div className="flex flex-wrap gap-1 mt-2">
-                              {auditor.specializations.map((spec, idx) => (
-                                <Badge key={idx} variant="outline" className="text-xs">
-                                  {spec}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-primary mb-1">
-                            {auditor.score.toLocaleString()}
-                          </div>
-                          <div className="text-sm text-muted-foreground space-y-1">
-                            <div>{auditor.auditsCompleted} audits</div>
-                            <div>{auditor.vulnerabilitiesFound} vulnerabilities</div>
-                            <div className="flex items-center gap-1">
-                              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                              <span>{auditor.rating}</span>
-                            </div>
+                            <div className="font-medium">{user.vulnerabilitiesFound}</div>
+                            <div className="text-muted-foreground">bugs</div>
                           </div>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-            <TabsContent value="monthly" className="space-y-4">
-              <div className="space-y-4">
-                {monthlyLeaders.map((leader, index) => (
-                  <Card key={index} className="hover:shadow-lg transition-shadow">
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center justify-center w-12 h-12 bg-muted rounded-full">
-                            {getRankIcon(leader.rank)}
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-lg">{leader.name}</h3>
-                            <p className="text-sm text-muted-foreground">
-                              {leader.auditsThisMonth} audits this month
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-xl font-bold text-primary">
-                            {leader.score}
-                          </div>
-                          <div className="text-sm text-muted-foreground">points</div>
-                        </div>
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Current Season */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Current Season</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center space-y-2">
+                  <div className="text-3xl font-bold text-primary">Q1 2024</div>
+                  <div className="text-sm text-muted-foreground">Security Champions</div>
+                  <div className="mt-4 space-y-2">
+                    <div className="flex justify-between">
+                      <span>Time left</span>
+                      <span className="font-semibold">45 days</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Total participants</span>
+                      <span className="font-semibold">1,247</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Achievements */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Award className="h-5 w-5" />
+                  Achievements
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {achievements.map((achievement) => (
+                    <div key={achievement.title} className={`p-3 rounded-lg border-2 ${getRarityColor(achievement.rarity)}`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <achievement.icon className="h-5 w-5" />
+                        <span className="font-semibold text-sm">{achievement.title}</span>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
+                      <p className="text-xs text-muted-foreground mb-2">
+                        {achievement.description}
+                      </p>
+                      <div className="text-xs">
+                        <Badge variant="outline" className="text-xs">
+                          {achievement.holders} holders
+                        </Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
-            <TabsContent value="rising">
-              <div className="text-center py-12">
-                <TrendingUp className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Rising Stars</h3>
-                <p className="text-muted-foreground">
-                  Auditors with the highest growth in rankings this month
-                </p>
-              </div>
-            </TabsContent>
-          </Tabs>
-
-          {/* Join CTA */}
-          <div className="mt-16 text-center bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-8">
-            <Trophy className="h-12 w-12 text-primary mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-4">Join the Leaderboard</h2>
-            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Become a verified security auditor and compete with the best experts in Web3 security.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg">Become an Auditor</Button>
-              <Button variant="outline" size="lg">Learn More</Button>
-            </div>
+            {/* Quick Stats */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  This Week
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-sm">New vulnerabilities</span>
+                  <span className="font-semibold text-green-600">+127</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm">Audits completed</span>
+                  <span className="font-semibold text-blue-600">23</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm">New experts</span>
+                  <span className="font-semibold text-purple-600">8</span>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
-      </StandardLayout>
-    </>
+      </div>
+    </StandardLayout>
   );
-}
+};
+
+export default Leaderboard;
