@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { StandardLayout } from '@/components/layout/StandardLayout';
-import { WizardRequestForm } from '@/components/audit-request/WizardRequestForm';
+import WizardRequestForm from '@/components/audit-request/WizardRequestForm';
 
 const AuditRequests = () => {
   return (

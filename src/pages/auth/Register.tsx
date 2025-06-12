@@ -17,12 +17,7 @@ const Register = () => {
 
   return (
     <AuthLayout>
-      <CompleteAuthFlow
-        onSignIn={handleSignIn}
-        onSignUp={handleSignUp}
-        isLoading={loading}
-        error={error}
-      />
+      <CompleteAuthFlow />
     </AuthLayout>
   );
 };

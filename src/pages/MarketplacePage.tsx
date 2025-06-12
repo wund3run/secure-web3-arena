@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { StandardLayout } from '@/components/layout/StandardLayout';
 import { ServiceCard } from '@/components/marketplace/card/ServiceCard';
@@ -43,8 +44,8 @@ const MarketplacePage = () => {
 
     const categoryMatch = categoryFilter ? service.category === categoryFilter : true;
 
-    const priceMatch = service.min_price && service.max_price
-      ? service.min_price >= priceRange[0] && service.max_price <= priceRange[1]
+    const priceMatch = service.pricing && service.pricing.amount 
+      ? service.pricing.amount >= priceRange[0] && service.pricing.amount <= priceRange[1]
       : true;
 
     return searchMatch && categoryMatch && priceMatch;
@@ -149,16 +150,17 @@ const MarketplacePage = () => {
                 avatarUrl: service.provider?.avatarUrl
               }}
               pricing={{
-                amount: service.min_price || 0,
+                amount: service.pricing?.amount || 0,
                 currency: 'USD',
                 model: 'fixed'
               }}
-              rating={service.average_rating || 0}
-              completedJobs={service.review_count || 0}
+              rating={service.rating || 0}
+              completedJobs={service.completedJobs || 0}
               category={service.category || 'General'}
               tags={service.tags || []}
-              imageUrl={service.image_url}
+              imageUrl={service.imageUrl}
               securityScore={85}
+              responseTime="24h"
               onClick={() => handleServiceClick(service.id)}
             />
           ))}
