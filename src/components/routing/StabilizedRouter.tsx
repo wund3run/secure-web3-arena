@@ -98,7 +98,7 @@ export function StabilizedRouter() {
       <Route path="/dashboard" element={<RouteWrapper><Dashboard /></RouteWrapper>} />
       <Route path="/marketplace" element={<RouteWrapper><Marketplace /></RouteWrapper>} />
       <Route path="/request-audit" element={<RouteWrapper><RequestAudit /></RouteWrapper>} />
-      <Route path="/pricing" element={<RouteWrapper><Pricing /></RouteWrapper>} />
+      <Route path="/pricing" element={<RouteWrapper><PricingINR /></RouteWrapper>} />
       <Route path="/contact" element={<RouteWrapper><Contact /></RouteWrapper>} />
       <Route path="/about" element={<RouteWrapper><About /></RouteWrapper>} />
       <Route path="/privacy" element={<RouteWrapper><Privacy /></RouteWrapper>} />
