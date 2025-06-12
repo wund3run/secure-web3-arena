@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
@@ -31,7 +30,7 @@ function App() {
   }, []);
 
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="hawkly-theme">
+    <ThemeProvider storageKey="hawkly-theme">
       <AuthProvider>
         <Router>
           <Navbar />
