@@ -8,7 +8,7 @@ const Auth = React.lazy(() => import('@/pages/Auth'));
 const Dashboard = React.lazy(() => import('@/pages/Dashboard'));
 const Marketplace = React.lazy(() => import('@/pages/Marketplace'));
 const RequestAudit = React.lazy(() => import('@/pages/RequestAudit'));
-const Pricing = React.lazy(() => import('@/pages/PricingINR'));
+const Pricing = React.lazy(() => import('@/pages/Pricing'));
 const Contact = React.lazy(() => import('@/pages/Contact'));
 const About = React.lazy(() => import('@/pages/About'));
 const Privacy = React.lazy(() => import('@/pages/Privacy'));
