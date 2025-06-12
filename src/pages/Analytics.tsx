@@ -1,31 +1,23 @@
 
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { AdvancedAnalyticsDashboard } from '@/components/analytics/AdvancedAnalyticsDashboard';
+import { StandardLayout } from '@/components/layout/StandardLayout';
+import { EnhancedAnalyticsDashboard } from '@/components/analytics/EnhancedAnalyticsDashboard';
 
-const Analytics = () => {
+export default function Analytics() {
   return (
-    <>
+    <StandardLayout
+      title="Analytics - Hawkly"
+      description="Advanced analytics and insights for security auditing"
+    >
       <Helmet>
-        <title>Advanced Analytics | Hawkly</title>
-        <meta 
-          name="description" 
-          content="Advanced analytics dashboard with AI-powered insights, gamification tracking, and comprehensive reporting for the Hawkly security platform." 
-        />
+        <title>Analytics Dashboard - Hawkly</title>
+        <meta name="description" content="Comprehensive analytics dashboard with AI-powered insights, data consistency checking, and enhanced KPI visualizations for security auditing" />
       </Helmet>
 
       <div className="container py-8 max-w-7xl">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Advanced Analytics Dashboard</h1>
-          <p className="text-muted-foreground">
-            Comprehensive insights and gamification tracking
-          </p>
-        </header>
-        
-        <AdvancedAnalyticsDashboard />
+        <EnhancedAnalyticsDashboard />
       </div>
-    </>
+    </StandardLayout>
   );
-};
-
-export default Analytics;
+}

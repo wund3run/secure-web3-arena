@@ -262,21 +262,18 @@ export type Database = {
           audit_request_id: string
           created_at: string
           id: string
-          user_id: string
         }
         Insert: {
           action: string
           audit_request_id: string
           created_at?: string
           id?: string
-          user_id?: string
         }
         Update: {
           action?: string
           audit_request_id?: string
           created_at?: string
           id?: string
-          user_id?: string
         }
         Relationships: [
           {
@@ -1520,60 +1517,6 @@ export type Database = {
           },
         ]
       }
-      knowledge_base_articles: {
-        Row: {
-          author_id: string
-          category: string
-          content: string
-          created_at: string | null
-          deleted_at: string | null
-          excerpt: string | null
-          featured: boolean | null
-          helpful_count: number | null
-          id: string
-          slug: string
-          status: string | null
-          tags: string[] | null
-          title: string
-          updated_at: string | null
-          view_count: number | null
-        }
-        Insert: {
-          author_id: string
-          category: string
-          content: string
-          created_at?: string | null
-          deleted_at?: string | null
-          excerpt?: string | null
-          featured?: boolean | null
-          helpful_count?: number | null
-          id?: string
-          slug: string
-          status?: string | null
-          tags?: string[] | null
-          title: string
-          updated_at?: string | null
-          view_count?: number | null
-        }
-        Update: {
-          author_id?: string
-          category?: string
-          content?: string
-          created_at?: string | null
-          deleted_at?: string | null
-          excerpt?: string | null
-          featured?: boolean | null
-          helpful_count?: number | null
-          id?: string
-          slug?: string
-          status?: string | null
-          tags?: string[] | null
-          title?: string
-          updated_at?: string | null
-          view_count?: number | null
-        }
-        Relationships: []
-      }
       message_notifications: {
         Row: {
           created_at: string
@@ -2323,32 +2266,6 @@ export type Database = {
       add_dispute_comment: {
         Args: { dispute_id: string; user_id: string; comment: string }
         Returns: string
-      }
-      advanced_search: {
-        Args: {
-          search_term?: string
-          filter_types?: string[]
-          filter_tags?: string[]
-          filter_category?: string
-          sort_by?: string
-          page_num?: number
-          page_size?: number
-        }
-        Returns: {
-          id: string
-          type: string
-          title: string
-          slug: string
-          excerpt: string
-          tags: string[]
-          author_id: string
-          author_name: string
-          author_avatar_url: string
-          relevance_score: number
-          rating_average: number
-          created_at: string
-          total_count: number
-        }[]
       }
       calculate_auditor_match_score: {
         Args: { p_audit_request_id: string; p_auditor_id: string }

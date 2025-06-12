@@ -1,34 +1,10 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { SmartNavigation } from './navigation/SmartNavigation';
 import { RoleBasedAuthButtons } from './navigation/role-based-auth-buttons';
 import { MobileNavigation } from './navigation/MobileNavigation';
-
-const navigationItems = [
-  { name: 'Home', href: '/' },
-  { name: 'Marketplace', href: '/marketplace' },
-  { name: 'Community', href: '/community' },
-  { name: 'Analytics', href: '/analytics' },
-  { name: 'Gamification', href: '/gamification' },
-  { 
-    name: 'Tools', 
-    href: '/tools',
-    subItems: [
-      { name: 'Security Insights', href: '/tools/security-insights' },
-      { name: 'Platform Reports', href: '/tools/platform-reports' },
-      { name: 'Vulnerability Scanner', href: '/tools/vulnerability-scanner' }
-    ]
-  },
-  { 
-    name: 'Resources', 
-    href: '/resources',
-    subItems: [
-      { name: 'Knowledge Base', href: '/resources/knowledge-base' },
-      { name: 'Tutorials', href: '/resources/tutorials' }
-    ]
-  }
-];
 
 export function Navbar() {
   return (
