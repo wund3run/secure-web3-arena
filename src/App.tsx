@@ -1,77 +1,73 @@
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Toaster } from '@/components/ui/sonner';
+import { ThemeProvider } from '@/components/theme-provider';
+import { AuthProvider } from '@/contexts/auth';
+import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter } from "react-router-dom";
-import { HelmetProvider } from 'react-helmet-async';
-import { AuthProvider } from "@/contexts/auth/AuthContext";
-import { NotificationProvider } from "@/contexts/NotificationContext";
-import { EscrowProvider } from "@/contexts/EscrowContext";
-import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
-import { ThemeProvider } from "@/components/ui/theme-provider";
-import { ComprehensiveErrorBoundary } from "@/components/error/comprehensive-error-boundary";
-import { StabilizedRouter } from "@/components/routing/StabilizedRouter";
-import { SystemHealthMonitor } from "@/components/system/SystemHealthMonitor";
-
-// Configure React Query with better defaults for stability
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: (failureCount, error) => {
-        // Don't retry on 4xx errors (client errors)
-        if (error && typeof error === 'object' && 'status' in error) {
-          const status = (error as any).status;
-          if (status >= 400 && status < 500) return false;
-        }
-        return failureCount < 3;
-      },
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes (was cacheTime in v4)
-      refetchOnWindowFocus: false,
-    },
-    mutations: {
-      retry: 1,
-    },
-  },
-});
+// Pages
+import Index from '@/pages/Index';
+import Auth from '@/pages/Auth';
+import Dashboard from '@/pages/Dashboard';
+import SecurityAudits from '@/pages/SecurityAudits';
+import Marketplace from '@/pages/Marketplace';
+import Community from '@/pages/Community';
+import KnowledgeBase from '@/pages/KnowledgeBase';
+import Forum from '@/pages/Forum';
+import Tutorials from '@/pages/Tutorials';
+import Search from '@/pages/Search';
+import PlatformReports from '@/pages/tools/PlatformReports';
+import SecurityInsights from '@/pages/tools/SecurityInsights';
+import VulnerabilityScanner from '@/pages/tools/VulnerabilityScanner';
+import BusinessPricing from '@/pages/business/BusinessPricing';
+import KnowledgeBasePage from '@/pages/resources/KnowledgeBase';
+import TutorialsPage from '@/pages/resources/Tutorials';
 
 function App() {
+  useEffect(() => {
+    // Initialize any global services or listeners here
+  }, []);
+
   return (
-    <ComprehensiveErrorBoundary>
-      <HelmetProvider>
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <NotificationProvider>
-              <AccessibilityProvider>
-                <ThemeProvider storageKey="vite-ui-theme">
-                  <TooltipProvider>
-                    <BrowserRouter>
-                      <EscrowProvider>
-                        <StabilizedRouter />
-                        <SystemHealthMonitor />
-                      </EscrowProvider>
-                    </BrowserRouter>
-                    <Toaster />
-                    <Sonner 
-                      position="top-right"
-                      toastOptions={{
-                        duration: 4000,
-                        style: {
-                          background: 'hsl(var(--card))',
-                          color: 'hsl(var(--card-foreground))',
-                          border: '1px solid hsl(var(--border))',
-                        },
-                      }}
-                    />
-                  </TooltipProvider>
-                </ThemeProvider>
-              </AccessibilityProvider>
-            </NotificationProvider>
-          </AuthProvider>
-        </QueryClientProvider>
-      </HelmetProvider>
-    </ComprehensiveErrorBoundary>
+    <ThemeProvider defaultTheme="dark" storageKey="hawkly-theme">
+      <AuthProvider>
+        <Router>
+          <Navbar />
+          <main className="min-h-[calc(100vh-64px-80px)]">
+            <Routes>
+              {/* Existing routes */}
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/security-audits" element={<SecurityAudits />} />
+              <Route path="/marketplace" element={<Marketplace />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/knowledge-base" element={<KnowledgeBase />} />
+              <Route path="/forum" element={<Forum />} />
+              <Route path="/tutorials" element={<Tutorials />} />
+              
+              {/* New search route */}
+              <Route path="/search" element={<Search />} />
+
+              {/* Tool routes */}
+              <Route path="/tools/platform-reports" element={<PlatformReports />} />
+              <Route path="/tools/security-insights" element={<SecurityInsights />} />
+              <Route path="/tools/vulnerability-scanner" element={<VulnerabilityScanner />} />
+              
+              {/* Business routes */}
+              <Route path="/business/pricing" element={<BusinessPricing />} />
+              
+              {/* Resource routes */}
+              <Route path="/resources/knowledge-base" element={<KnowledgeBasePage />} />
+              <Route path="/resources/tutorials" element={<TutorialsPage />} />
+            </Routes>
+          </main>
+          <Footer />
+          <Toaster position="bottom-right" />
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
