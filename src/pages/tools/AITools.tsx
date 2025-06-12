@@ -73,6 +73,62 @@ const quickActions = [
 export default function AITools() {
   const [activeAction, setActiveAction] = useState<string | null>(null);
   const [codeInput, setCodeInput] = useState('');
+  const [repoUrl, setRepoUrl] = useState('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  // Handler functions for button actions
+  const handleAnalyzeCode = async () => {
+    if (!codeInput.trim()) return;
+    
+    setIsAnalyzing(true);
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      alert('Code analysis complete! Check the results panel.');
+      setCodeInput('');
+      setActiveAction(null);
+    } catch (error) {
+      alert('Analysis failed. Please try again.');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      alert(`Selected ${files.length} file(s) for analysis`);
+      // Process files here
+      setActiveAction(null);
+    }
+  };
+
+  const handleConnectRepository = async () => {
+    if (!repoUrl.trim()) {
+      alert('Please enter a repository URL');
+      return;
+    }
+    
+    try {
+      // Simulate repository connection
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      alert('Repository connected successfully!');
+      setRepoUrl('');
+      setActiveAction(null);
+    } catch (error) {
+      alert('Failed to connect repository. Please check the URL.');
+    }
+  };
+
+  const handleViewApiDocs = () => {
+    // Open API documentation
+    window.open('/api-docs', '_blank');
+  };
+
+  const handleSetupGuide = () => {
+    // Open CI/CD setup guide
+    window.open('/setup-guide', '_blank');
+  };
 
   return (
     <ProductionLayout>
@@ -129,9 +185,12 @@ export default function AITools() {
                     className="font-mono text-sm"
                   />
                   <div className="flex gap-2">
-                    <Button disabled={!codeInput.trim()}>
+                    <Button 
+                      disabled={!codeInput.trim() || isAnalyzing}
+                      onClick={handleAnalyzeCode}
+                    >
                       <Play className="h-4 w-4 mr-2" />
-                      Analyze Code
+                      {isAnalyzing ? 'Analyzing...' : 'Analyze Code'}
                     </Button>
                     <Button variant="outline" onClick={() => setActiveAction(null)}>
                       Cancel
@@ -148,7 +207,19 @@ export default function AITools() {
                     Drag and drop your .sol files or click to browse
                   </p>
                   <div className="flex gap-2 justify-center">
-                    <Button>Browse Files</Button>
+                    <Button asChild>
+                      <label htmlFor="file-upload" className="cursor-pointer">
+                        Browse Files
+                        <input
+                          id="file-upload"
+                          type="file"
+                          multiple
+                          accept=".sol,.js,.ts"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    </Button>
                     <Button variant="outline" onClick={() => setActiveAction(null)}>
                       Cancel
                     </Button>
@@ -160,10 +231,14 @@ export default function AITools() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Repository URL</label>
-                    <Input placeholder="https://github.com/your-username/your-repo" />
+                    <Input 
+                      placeholder="https://github.com/your-username/your-repo"
+                      value={repoUrl}
+                      onChange={(e) => setRepoUrl(e.target.value)}
+                    />
                   </div>
                   <div className="flex gap-2">
-                    <Button>
+                    <Button onClick={handleConnectRepository} disabled={!repoUrl.trim()}>
                       <Bot className="h-4 w-4 mr-2" />
                       Connect Repository
                     </Button>
@@ -233,7 +308,7 @@ export default function AITools() {
                 <p className="text-muted-foreground mb-4">
                   Integrate our AI security tools directly into your development workflow
                 </p>
-                <Button variant="outline">
+                <Button variant="outline" onClick={handleViewApiDocs}>
                   <Download className="h-4 w-4 mr-2" />
                   View API Docs
                 </Button>
@@ -243,7 +318,7 @@ export default function AITools() {
                 <p className="text-muted-foreground mb-4">
                   Add automated security checks to your continuous integration pipeline
                 </p>
-                <Button variant="outline">
+                <Button variant="outline" onClick={handleSetupGuide}>
                   <Code className="h-4 w-4 mr-2" />
                   Setup Guide
                 </Button>
