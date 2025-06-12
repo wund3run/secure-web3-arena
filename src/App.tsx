@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from '@/components/ui/sonner';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { AuthProvider } from '@/contexts/auth';
@@ -30,44 +31,46 @@ function App() {
   }, []);
 
   return (
-    <ThemeProvider storageKey="hawkly-theme">
-      <AuthProvider>
-        <Router>
-          <Navbar />
-          <main className="min-h-[calc(100vh-64px-80px)]">
-            <Routes>
-              {/* Existing routes */}
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/security-audits" element={<SecurityAudits />} />
-              <Route path="/marketplace" element={<Marketplace />} />
-              <Route path="/community" element={<Community />} />
-              <Route path="/knowledge-base" element={<KnowledgeBase />} />
-              <Route path="/forum" element={<Forum />} />
-              <Route path="/tutorials" element={<Tutorials />} />
-              
-              {/* New search route */}
-              <Route path="/search" element={<Search />} />
+    <HelmetProvider>
+      <ThemeProvider storageKey="hawkly-theme">
+        <AuthProvider>
+          <Router>
+            <Navbar />
+            <main className="min-h-[calc(100vh-64px-80px)]">
+              <Routes>
+                {/* Existing routes */}
+                <Route path="/" element={<Index />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/security-audits" element={<SecurityAudits />} />
+                <Route path="/marketplace" element={<Marketplace />} />
+                <Route path="/community" element={<Community />} />
+                <Route path="/knowledge-base" element={<KnowledgeBase />} />
+                <Route path="/forum" element={<Forum />} />
+                <Route path="/tutorials" element={<Tutorials />} />
+                
+                {/* New search route */}
+                <Route path="/search" element={<Search />} />
 
-              {/* Tool routes */}
-              <Route path="/tools/platform-reports" element={<PlatformReports />} />
-              <Route path="/tools/security-insights" element={<SecurityInsights />} />
-              <Route path="/tools/vulnerability-scanner" element={<VulnerabilityScanner />} />
-              
-              {/* Business routes */}
-              <Route path="/business/pricing" element={<BusinessPricing />} />
-              
-              {/* Resource routes */}
-              <Route path="/resources/knowledge-base" element={<KnowledgeBasePage />} />
-              <Route path="/resources/tutorials" element={<TutorialsPage />} />
-            </Routes>
-          </main>
-          <Footer />
-          <Toaster position="bottom-right" />
-        </Router>
-      </AuthProvider>
-    </ThemeProvider>
+                {/* Tool routes */}
+                <Route path="/tools/platform-reports" element={<PlatformReports />} />
+                <Route path="/tools/security-insights" element={<SecurityInsights />} />
+                <Route path="/tools/vulnerability-scanner" element={<VulnerabilityScanner />} />
+                
+                {/* Business routes */}
+                <Route path="/business/pricing" element={<BusinessPricing />} />
+                
+                {/* Resource routes */}
+                <Route path="/resources/knowledge-base" element={<KnowledgeBasePage />} />
+                <Route path="/resources/tutorials" element={<TutorialsPage />} />
+              </Routes>
+            </main>
+            <Footer />
+            <Toaster position="bottom-right" />
+          </Router>
+        </AuthProvider>
+      </ThemeProvider>
+    </HelmetProvider>
   );
 }
 
