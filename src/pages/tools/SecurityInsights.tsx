@@ -379,4 +379,4 @@ const SecurityInsightsPage = () => {
                     ))}
                 };
 
-export default SecurityInsightsPage;
+export default SecurityInsights;
