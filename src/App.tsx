@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from "@/contexts/auth/AuthContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
@@ -13,6 +13,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { ComprehensiveErrorBoundary } from "@/components/error/comprehensive-error-boundary";
 import { StabilizedRouter } from "@/components/routing/StabilizedRouter";
 import { SystemHealthMonitor } from "@/components/system/SystemHealthMonitor";
+import { GamificationProvider } from "@/components/gamification/GamificationEngine";
 
 // Configure React Query with better defaults for stability
 const queryClient = new QueryClient({
@@ -47,10 +48,12 @@ function App() {
                 <ThemeProvider storageKey="vite-ui-theme">
                   <TooltipProvider>
                     <BrowserRouter>
-                      <EscrowProvider>
-                        <StabilizedRouter />
-                        <SystemHealthMonitor />
-                      </EscrowProvider>
+                      <GamificationProvider>
+                        <EscrowProvider>
+                          <StabilizedRouter />
+                          <SystemHealthMonitor />
+                        </EscrowProvider>
+                      </GamificationProvider>
                     </BrowserRouter>
                     <Toaster />
                     <Sonner 
