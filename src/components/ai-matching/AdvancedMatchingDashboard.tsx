@@ -1,12 +1,20 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Brain, Cpu, Zap } from 'lucide-react';
 import { TensorFlowMatchingDashboard } from './TensorFlowMatchingDashboard';
 import { EnhancedAIMatchingEngine } from './EnhancedAIMatchingEngine';
+import { toast } from '@/components/ui/use-toast';
 
 export const AdvancedMatchingDashboard: React.FC = () => {
+  const handleMatchesFound = () => {
+    toast({
+      title: "Matches Found",
+      description: "The AI matching process has successfully found potential matches.",
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -61,7 +69,7 @@ export const AdvancedMatchingDashboard: React.FC = () => {
         <TabsContent value="enhanced">
           <EnhancedAIMatchingEngine 
             criteria={{}} 
-            onMatchesFound={() => {}} 
+            onMatchesFound={handleMatchesFound} 
           />
         </TabsContent>
       </Tabs>
