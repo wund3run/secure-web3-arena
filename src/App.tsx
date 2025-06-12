@@ -23,9 +23,19 @@ import NotFound from '@/pages/NotFound';
 import Escrow from '@/pages/Escrow';
 import ServiceDetails from '@/pages/ServiceDetails';
 
-// Import new Phase 2 pages
+// Import existing Phase 2 pages
 import ServiceManagement from '@/pages/ServiceManagement';
 import DeliveryTracking from '@/pages/DeliveryTracking';
+
+// Import new Phase 3 pages
+import KnowledgeBase from '@/pages/KnowledgeBase';
+import KnowledgeBaseArticle from '@/pages/KnowledgeBaseArticle';
+import Forum from '@/pages/Forum';
+import ForumTopic from '@/pages/ForumTopic';
+import ForumCategory from '@/pages/ForumCategory';
+import Tutorials from '@/pages/Tutorials';
+import TutorialDetail from '@/pages/TutorialDetail';
+import AITools from '@/pages/AITools';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -59,10 +69,20 @@ function App() {
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/escrow" element={<Escrow />} />
                 
-                {/* New Phase 2 routes */}
+                {/* Phase 2 routes */}
                 <Route path="/service-management" element={<ServiceManagement />} />
                 <Route path="/delivery-tracking/:auditId" element={<DeliveryTracking />} />
                 <Route path="/delivery-tracking" element={<DeliveryTracking />} />
+                
+                {/* New Phase 3 routes */}
+                <Route path="/knowledge-base" element={<KnowledgeBase />} />
+                <Route path="/knowledge-base/:slug" element={<KnowledgeBaseArticle />} />
+                <Route path="/forum" element={<Forum />} />
+                <Route path="/forum/category/:categorySlug" element={<ForumCategory />} />
+                <Route path="/forum/topic/:topicSlug" element={<ForumTopic />} />
+                <Route path="/tutorials" element={<Tutorials />} />
+                <Route path="/tutorials/:slug" element={<TutorialDetail />} />
+                <Route path="/ai-tools" element={<AITools />} />
                 
                 <Route path="*" element={<NotFound />} />
               </Routes>
