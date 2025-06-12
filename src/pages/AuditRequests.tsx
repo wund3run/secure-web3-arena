@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { StandardLayout } from '@/components/layout/StandardLayout';
-import { AuditRequestForm } from '@/components/audit-request/AuditRequestForm';
+import { WizardRequestForm } from '@/components/audit-request/WizardRequestForm';
 
 const AuditRequests = () => {
   return (
@@ -9,7 +9,7 @@ const AuditRequests = () => {
       title="Audit Requests"
       description="Submit and manage your security audit requests"
     >
-      <AuditRequestForm />
+      <WizardRequestForm />
     </StandardLayout>
   );
 };

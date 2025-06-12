@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { StandardLayout } from '@/components/layout/StandardLayout';
-import { RealtimeChat } from '@/components/chat/RealtimeChat';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { MessageSquare } from 'lucide-react';
 
 const Messages = () => {
   return (
@@ -9,7 +10,19 @@ const Messages = () => {
       title="Messages"
       description="Communicate with auditors and project owners"
     >
-      <RealtimeChat />
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MessageSquare className="h-5 w-5" />
+            Messages
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">
+            Real-time messaging system coming soon. Connect with auditors and project owners directly.
+          </p>
+        </CardContent>
+      </Card>
     </StandardLayout>
   );
 };
