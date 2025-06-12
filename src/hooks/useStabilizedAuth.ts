@@ -1,96 +1,40 @@
 
-import { useAuth } from '@/contexts/auth';
-import { LoadingStateManager } from '@/utils/performance/loadingStates';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
+import { useState, useCallback } from 'react';
+import { useAuth } from '@/context/AuthContext'; // Assuming you have an Auth context
 
-/**
- * Enhanced auth hook with better error handling and loading states
- */
-export function useStabilizedAuth() {
-  const auth = useAuth();
+// This hook stabilizes the auth functions so they can be used in effects
+// without causing infinite loops. It also centralizes loading and error states.
+export const useStabilizedAuth = () => {
+  const { signIn: contextSignIn, signUp: contextSignUp } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (auth.loading) {
-      LoadingStateManager.setLoading('auth', 'Checking authentication...');
-    } else {
-      LoadingStateManager.setComplete('auth');
-    }
-  }, [auth.loading]);
-
-  const signInWithFeedback = async (email: string, password: string) => {
+  const signIn = useCallback(async (email: string, password: string) => {
+    setLoading(true);
+    setError(null);
     try {
-      LoadingStateManager.setLoading('auth', 'Signing in...');
-      const result = await auth.signIn(email, password);
-      
-      if (result.error) {
-        LoadingStateManager.setError('auth', result.error.message);
-        toast.error('Sign in failed', {
-          description: result.error.message
-        });
-        return result;
-      }
-
-      LoadingStateManager.setComplete('auth');
-      toast.success('Welcome back!', {
-        description: 'You have been signed in successfully.'
-      });
-      
-      return result;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'An unexpected error occurred';
-      LoadingStateManager.setError('auth', message);
-      toast.error('Sign in failed', { description: message });
-      throw error;
+      await contextSignIn(email, password);
+    } catch (err: any) {
+      setError(err.message || 'Failed to sign in.');
+      // Re-throw the error so the component can also catch it if needed
+      throw err;
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [contextSignIn]);
 
-  const signUpWithFeedback = async (email: string, password: string, fullName: string, userType: 'auditor' | 'project_owner') => {
+  const signUp = useCallback(async (email: string, password: string, fullName: string, userType: 'auditor' | 'project_owner') => {
+    setLoading(true);
+    setError(null);
     try {
-      LoadingStateManager.setLoading('auth', 'Creating account...');
-      // Fix: Use correct signUp signature with all 4 required parameters
-      const result = await auth.signUp(email, password, fullName, userType);
-      
-      if (result.error) {
-        LoadingStateManager.setError('auth', result.error.message);
-        toast.error('Sign up failed', {
-          description: result.error.message
-        });
-        return result;
-      }
-
-      LoadingStateManager.setComplete('auth');
-      toast.success('Account created!', {
-        description: 'Please check your email to verify your account.'
-      });
-      
-      return result;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'An unexpected error occurred';
-      LoadingStateManager.setError('auth', message);
-      toast.error('Sign up failed', { description: message });
-      throw error;
+      await contextSignUp(email, password, fullName, userType);
+    } catch (err: any) {
+      setError(err.message || 'Failed to sign up.');
+      throw err;
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [contextSignUp]);
 
-  const signOutWithFeedback = async () => {
-    try {
-      LoadingStateManager.setLoading('auth', 'Signing out...');
-      await auth.signOut();
-      LoadingStateManager.setComplete('auth');
-      toast.success('Signed out successfully');
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'An unexpected error occurred';
-      LoadingStateManager.setError('auth', message);
-      toast.error('Sign out failed', { description: message });
-      throw error;
-    }
-  };
-
-  return {
-    ...auth,
-    signIn: signInWithFeedback,
-    signUp: signUpWithFeedback,
-    signOut: signOutWithFeedback,
-  };
-}
+  return { signIn, signUp, loading, error };
+};
