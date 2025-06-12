@@ -90,7 +90,7 @@ export const AIMatchingInterface: React.FC = () => {
                 <SelectContent>
                   <SelectItem value="low">Flexible (4+ weeks)</SelectItem>
                   <SelectItem value="normal">Standard (2-4 weeks)</SelectItem>
-                  <SelectItem value="high">Urgent (< 2 weeks)</SelectItem>
+                  <SelectItem value="high">Urgent (&lt; 2 weeks)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
