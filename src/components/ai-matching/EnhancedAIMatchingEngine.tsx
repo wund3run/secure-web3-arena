@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,6 +16,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { useEnhancedAIMatching } from '@/hooks/useEnhancedAIMatching';
+import { toast } from '@/components/ui/use-toast';
 
 interface EnhancedAIMatchingEngineProps {
   criteria: any;
@@ -68,10 +69,22 @@ export const EnhancedAIMatchingEngine: React.FC<EnhancedAIMatchingEngineProps> =
     }
     
     // Run the actual enhanced matching
-    const results = await findEnhancedMatches(criteria);
-    onMatchesFound(results);
-    
-    setIsProcessing(false);
+    try {
+      const results = await findEnhancedMatches(criteria);
+      onMatchesFound(results);
+      toast({
+        title: "Matches Found",
+        description: "The AI matching process has successfully found potential matches.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to find matches. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
