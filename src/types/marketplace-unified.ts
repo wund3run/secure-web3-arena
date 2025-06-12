@@ -76,7 +76,7 @@ export interface ServiceCardProps {
   tags: string[];
   imageUrl?: string;
   securityScore?: number;
-  responseTime?: string; // Add responseTime property
+  responseTime?: string;
   onClick?: () => void;
 }
 

@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { navigationItems } from '@/components/layout/navigation/navigation-links.tsx';
+import { navigationLinks } from '@/components/layout/navigation/navigation-links.tsx';
 import { getFallbackRoute, routeExists } from '@/utils/navigation';
 
 type RouteStatus = 'valid' | 'invalid' | 'checking';
@@ -24,8 +24,8 @@ export function useRouteChecker() {
     const allResults: RouteCheckResult[] = [];
     const invalid: string[] = [];
     
-    // Check all navigation links using the navigationItems array
-    const processLinks = (links: typeof navigationItems, section: string) => {
+    // Check all navigation links using the navigationLinks array
+    const processLinks = (links: typeof navigationLinks, section: string) => {
       links.forEach(link => {
         const route = link.href;
         const isValid = routeExists(route);
@@ -60,7 +60,7 @@ export function useRouteChecker() {
       });
     };
     
-    processLinks(navigationItems, 'Navigation');
+    processLinks(navigationLinks, 'Navigation');
     
     setResults(allResults);
     setInvalidRoutes(invalid);

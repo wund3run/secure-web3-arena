@@ -1,150 +1,107 @@
 
-import { 
-  Home, 
-  Search, 
-  FileText, 
-  MessageSquare, 
-  Shield, 
-  Settings, 
-  CreditCard,
-  BookOpen,
-  Users,
-  GraduationCap,
-  Bot,
-  TrendingUp
-} from 'lucide-react';
-
-export interface NavigationItem {
-  title: string;
-  href: string;
-  icon?: React.ComponentType<any>;
-  description?: string;
-  badge?: string;
-  children?: NavigationItem[];
-}
-
-// Main navigation items for authenticated users
-export const navigationItems: NavigationItem[] = [
+export const navigationLinks = [
   {
-    title: 'Dashboard',
-    href: '/dashboard',
-    icon: Home,
-    description: 'Overview of your activities'
+    title: "Services",
+    href: "/marketplace",
+    children: [
+      {
+        title: "Browse Services",
+        href: "/marketplace",
+        description: "Find security experts for your project"
+      },
+      {
+        title: "Security Audits",
+        href: "/security-audits",
+        description: "Comprehensive smart contract audits"
+      },
+      {
+        title: "Code Reviews",
+        href: "/code-reviews",
+        description: "Expert code analysis and review"
+      },
+      {
+        title: "Penetration Testing",
+        href: "/penetration-testing",
+        description: "Advanced security testing"
+      },
+      {
+        title: "Security Consulting",
+        href: "/consulting",
+        description: "Strategic security guidance"
+      },
+      {
+        title: "Request Audit",
+        href: "/request-audit",
+        description: "Submit your project for review"
+      }
+    ]
   },
   {
-    title: 'Marketplace',
-    href: '/marketplace',
-    icon: Search,
-    description: 'Find security audit services'
+    title: "Resources",
+    href: "/resources",
+    children: [
+      {
+        title: "Security Guides",
+        href: "/resources",
+        description: "Best practices and tutorials"
+      },
+      {
+        title: "Vulnerability Database",
+        href: "/vulnerabilities",
+        description: "Known security issues and fixes"
+      },
+      {
+        title: "Audit Reports",
+        href: "/audits",
+        description: "Browse completed security audits",
+        requiresAuth: true
+      },
+      {
+        title: "FAQ",
+        href: "/faq",
+        description: "Frequently asked questions"
+      },
+      {
+        title: "Support",
+        href: "/support",
+        description: "Get help from our team"
+      }
+    ]
   },
   {
-    title: 'Audit Requests',
-    href: '/audit-requests',
-    icon: FileText,
-    description: 'Submit and manage audit requests'
+    title: "Community",
+    href: "/community",
+    children: [
+      {
+        title: "Join Community",
+        href: "/community",
+        description: "Connect with security experts"
+      },
+      {
+        title: "Web3 Security",
+        href: "/web3-security",
+        description: "Learn about Web3 security"
+      },
+      {
+        title: "AI Tools",
+        href: "/ai-tools",
+        description: "AI-powered security tools"
+      },
+      {
+        title: "Careers",
+        href: "/careers",
+        description: "Join the Hawkly team"
+      }
+    ]
   },
   {
-    title: 'Messages',
-    href: '/messages',
-    icon: MessageSquare,
-    description: 'Communicate with auditors'
+    title: "Dashboard",
+    href: "/dashboard",
+    requiresAuth: true
+  },
+  {
+    title: "My Audits",
+    href: "/audits",
+    requiresAuth: true
   }
 ];
-
-// Phase 3: Content & Community navigation items
-export const communityNavigationItems: NavigationItem[] = [
-  {
-    title: 'Knowledge Base',
-    href: '/knowledge-base',
-    icon: BookOpen,
-    description: 'Comprehensive security guides'
-  },
-  {
-    title: 'Community Forum',
-    href: '/forum',
-    icon: Users,
-    description: 'Connect with security experts'
-  },
-  {
-    title: 'Tutorials',
-    href: '/tutorials',
-    icon: GraduationCap,
-    description: 'Learn through video tutorials'
-  },
-  {
-    title: 'AI Tools',
-    href: '/ai-tools',
-    icon: Bot,
-    description: 'Automated security analysis',
-    badge: 'New'
-  }
-];
-
-// Auditor-specific navigation items
-export const auditorNavigationItems: NavigationItem[] = [
-  {
-    title: 'Service Management',
-    href: '/service-management',
-    icon: TrendingUp,
-    description: 'Manage your audit services'
-  }
-];
-
-// Settings and account navigation items
-export const accountNavigationItems: NavigationItem[] = [
-  {
-    title: 'Profile',
-    href: '/profile',
-    icon: Shield,
-    description: 'Manage your profile'
-  },
-  {
-    title: 'Billing',
-    href: '/billing',
-    icon: CreditCard,
-    description: 'Billing and payments'
-  },
-  {
-    title: 'Settings',
-    href: '/settings',
-    icon: Settings,
-    description: 'Account preferences'
-  }
-];
-
-// Public navigation items for non-authenticated users
-export const publicNavigationItems: NavigationItem[] = [
-  {
-    title: 'Home',
-    href: '/',
-    icon: Home
-  },
-  {
-    title: 'Marketplace',
-    href: '/marketplace',
-    icon: Search
-  },
-  {
-    title: 'Knowledge Base',
-    href: '/knowledge-base',
-    icon: BookOpen
-  },
-  {
-    title: 'Community',
-    href: '/forum',
-    icon: Users
-  },
-  {
-    title: 'Tutorials',
-    href: '/tutorials',
-    icon: GraduationCap
-  }
-];
-
-// Combined navigation structure for authenticated users
-export const mainNavigation = {
-  main: navigationItems,
-  community: communityNavigationItems,
-  auditor: auditorNavigationItems,
-  account: accountNavigationItems
-};
