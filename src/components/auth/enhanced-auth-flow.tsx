@@ -16,7 +16,7 @@ import { Eye, EyeOff, Shield, Users, CheckCircle, AlertCircle, Loader2 } from 'l
 import { toast } from 'sonner';
 
 // ============================================================================
-// 1. ZOD SCHEMAS
+// 1. ZOD SCHEMAS: The single source of truth for validation
 // ============================================================================
 const SignInSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -38,7 +38,7 @@ type SignInFormData = z.infer<typeof SignInSchema>;
 type SignUpFormData = z.infer<typeof SignUpSchema>;
 
 // ============================================================================
-// 2. CHILD COMPONENTS (Correctly using Controller)
+// 2. CHILD COMPONENTS: Using React Hook Form's Controller
 // ============================================================================
 type CommonFormProps = {
   control: any;
@@ -46,7 +46,6 @@ type CommonFormProps = {
   onTogglePassword: () => void;
 };
 
-// --- SignInFormFields ---
 const SignInFormFields = ({ control, showPassword, onTogglePassword }: CommonFormProps) => (
   <>
     <Controller
@@ -79,7 +78,6 @@ const SignInFormFields = ({ control, showPassword, onTogglePassword }: CommonFor
   </>
 );
 
-// --- SignUpFormFields ---
 const SignUpFormFields = ({ control, showPassword, onTogglePassword }: CommonFormProps) => (
   <>
     <Controller
@@ -127,7 +125,7 @@ const SignUpFormFields = ({ control, showPassword, onTogglePassword }: CommonFor
 );
 
 // ============================================================================
-// 3. MAIN COMPONENT
+// 3. MAIN PARENT COMPONENT
 // ============================================================================
 export function EnhancedAuthFlow() {
   const [activeTab, setActiveTab] = useState('signin');
@@ -144,9 +142,7 @@ export function EnhancedAuthFlow() {
   };
   
   const isSubmitting = signInForm.formState.isSubmitting || signUpForm.formState.isSubmitting;
-  const currentForm = activeTab === 'signin' ? signInForm : signUpForm;
-  const currentOnSubmit = activeTab === 'signin' ? onSignInSubmit : onSignUpSubmit;
-
+  
   return (
     <div className="w-full max-w-md mx-auto space-y-6">
       <div className="text-center space-y-2">
@@ -163,22 +159,27 @@ export function EnhancedAuthFlow() {
           </TabsList>
 
           <CardContent className="pt-6">
-            <form onSubmit={currentForm.handleSubmit(currentOnSubmit)} className="space-y-4">
-              <TabsContent value="signin" className="space-y-4 m-0">
+            <TabsContent value="signin" className="m-0">
+              <form onSubmit={signInForm.handleSubmit(onSignInSubmit)} className="space-y-4">
                 <CardHeader className="p-0 mb-4"><CardTitle>Welcome Back</CardTitle><CardDescription>Sign in to access your dashboard</CardDescription></CardHeader>
                 <SignInFormFields control={signInForm.control} showPassword={showPassword} onTogglePassword={() => setShowPassword(!showPassword)} />
-              </TabsContent>
+                <Button type="submit" className="w-full" disabled={isSubmitting || authLoading}>
+                  {isSubmitting || authLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Shield className="mr-2 h-4 w-4" />}
+                  {isSubmitting || authLoading ? 'Signing in...' : 'Sign In'}
+                </Button>
+              </form>
+            </TabsContent>
 
-              <TabsContent value="signup" className="space-y-4 m-0">
+            <TabsContent value="signup" className="m-0">
+              <form onSubmit={signUpForm.handleSubmit(onSignUpSubmit)} className="space-y-4">
                 <CardHeader className="p-0 mb-4"><CardTitle>Create Account</CardTitle><CardDescription>Join to connect with auditors or offer services</CardDescription></CardHeader>
                 <SignUpFormFields control={signUpForm.control} showPassword={showPassword} onTogglePassword={() => setShowPassword(!showPassword)} />
-              </TabsContent>
-              
-              <Button type="submit" className="w-full" disabled={isSubmitting || authLoading}>
-                {isSubmitting || authLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (activeTab === 'signin' ? <Shield className="mr-2 h-4 w-4" /> : <CheckCircle className="mr-2 h-4 w-4" />)}
-                {isSubmitting || authLoading ? (activeTab === 'signin' ? 'Signing in...' : 'Creating account...') : (activeTab === 'signin' ? 'Sign In' : 'Create Account')}
-              </Button>
-            </form>
+                <Button type="submit" className="w-full" disabled={isSubmitting || authLoading}>
+                  {isSubmitting || authLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
+                  {isSubmitting || authLoading ? 'Creating account...' : 'Create Account'}
+                </Button>
+              </form>
+            </TabsContent>
           </CardContent>
         </Tabs>
       </Card>
