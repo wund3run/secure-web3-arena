@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { navigationItems } from '@/components/layout/navigation/navigation-links';
+import { navigationItems } from '@/components/layout/navigation/navigation-links.tsx';
 import { getFallbackRoute, routeExists } from '@/utils/navigation';
 
 type RouteStatus = 'valid' | 'invalid' | 'checking';
