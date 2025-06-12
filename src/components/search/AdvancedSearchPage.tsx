@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Search, Loader2 } from 'lucide-react';
 import { AdvancedSearchFilters } from './AdvancedSearchFilters';
 import { SearchResultCard } from './SearchResultCard';
-import { useAdvancedSearch } from '@/hooks/useAdvancedSearch';
+import { useAdvancedSearch, type SearchFilters } from '@/hooks/useAdvancedSearch';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDebounce } from '@/hooks/useDebounce';
 
@@ -14,7 +14,7 @@ export const AdvancedSearchPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get('q') || '');
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<SearchFilters>({
     types: [],
     tags: [],
     category: undefined,
@@ -58,6 +58,15 @@ export const AdvancedSearchPage: React.FC = () => {
     }
   };
 
+  const handleClearFilters = () => {
+    setFilters({
+      types: [],
+      tags: [],
+      category: undefined,
+      sortBy: 'relevance'
+    });
+  };
+
   return (
     <StandardLayout
       title="Advanced Search | Hawkly"
@@ -92,12 +101,7 @@ export const AdvancedSearchPage: React.FC = () => {
               <AdvancedSearchFilters
                 filters={filters}
                 onFiltersChange={setFilters}
-                onClear={() => setFilters({
-                  types: [],
-                  tags: [],
-                  category: undefined,
-                  sortBy: 'relevance'
-                })}
+                onClear={handleClearFilters}
               />
             </div>
 

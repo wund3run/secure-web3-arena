@@ -1,7 +1,8 @@
+
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
-import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeProvider } from '@/components/ui/theme-provider';
 import { AuthProvider } from '@/contexts/auth';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
