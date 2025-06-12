@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import { RouteErrorBoundary } from '@/components/error-handling/RouteErrorBoundary';
 import LoadingState from '@/components/ui/loading-state';
 
-// Lazy load all page components for better performance
+// Core pages
 const Index = React.lazy(() => import('@/pages/Index'));
 const Auth = React.lazy(() => import('@/pages/Auth'));
 const Dashboard = React.lazy(() => import('@/pages/Dashboard'));
@@ -18,13 +18,13 @@ const Terms = React.lazy(() => import('@/pages/Terms'));
 const Enhanced404 = React.lazy(() => import('@/pages/Enhanced404'));
 const PricingCalculator = React.lazy(() => import('@/pages/PricingCalculator'));
 
-// Service pages
+// Services pages
 const SecurityAudits = React.lazy(() => import('@/pages/services/SecurityAudits'));
 const CodeReviews = React.lazy(() => import('@/pages/services/CodeReviews'));
 const PenetrationTesting = React.lazy(() => import('@/pages/services/PenetrationTesting'));
 const Consulting = React.lazy(() => import('@/pages/services/Consulting'));
 
-// Resource pages
+// Resources pages
 const SecurityGuides = React.lazy(() => import('@/pages/resources/SecurityGuides'));
 const KnowledgeBase = React.lazy(() => import('@/pages/resources/KnowledgeBase'));
 const Tutorials = React.lazy(() => import('@/pages/resources/Tutorials'));
@@ -53,17 +53,15 @@ const Partners = React.lazy(() => import('@/pages/business/Partners'));
 
 // Support pages
 const FAQ = React.lazy(() => import('@/pages/support/FAQ'));
-const Support = React.lazy(() => import('@/pages/support/Support'));
+const Support = React.lazy(() => import('@/pages/Support'));
 const Documentation = React.lazy(() => import('@/pages/support/Documentation'));
 
 // User pages
 const Profile = React.lazy(() => import('@/pages/user/Profile'));
 const Settings = React.lazy(() => import('@/pages/user/Settings'));
 
-// Service Provider
+// Additional pages
 const ServiceProviderOnboarding = React.lazy(() => import('@/pages/ServiceProviderOnboarding'));
-
-// New Core Pages
 const Analytics = React.lazy(() => import('@/pages/Analytics'));
 const AIAnalysisPage = React.lazy(() => import('@/pages/AIAnalysisPage'));
 const AIMatchingHub = React.lazy(() => import('@/pages/AIMatchingHub'));
@@ -75,28 +73,34 @@ const Escrow = React.lazy(() => import('@/pages/Escrow'));
 const IntegrationsPage = React.lazy(() => import('@/pages/IntegrationsPage'));
 const LaunchReadiness = React.lazy(() => import('@/pages/LaunchReadiness'));
 
-// Admin Pages
-const AdminDashboard = React.lazy(() => import('@/pages/admin/AdminDashboard'));
-const AdminDisputes = React.lazy(() => import('@/pages/admin/AdminDisputes'));
-const AdminFinance = React.lazy(() => import('@/pages/admin/AdminFinance'));
-const AdminProviders = React.lazy(() => import('@/pages/admin/AdminProviders'));
-const AdminReports = React.lazy(() => import('@/pages/admin/AdminReports'));
-const AdminSecurity = React.lazy(() => import('@/pages/admin/AdminSecurity'));
-const AdminServices = React.lazy(() => import('@/pages/admin/AdminServices'));
-const AdminSettings = React.lazy(() => import('@/pages/admin/AdminSettings'));
-const AdminUsers = React.lazy(() => import('@/pages/admin/AdminUsers'));
+// Fixed admin pages - these are in the root pages directory, not admin subdirectory
+const AdminDashboard = React.lazy(() => import('@/pages/AdminDashboard'));
+const AdminDisputes = React.lazy(() => import('@/pages/AdminDisputes'));
+const AdminFinance = React.lazy(() => import('@/pages/AdminFinance'));
+const AdminProviders = React.lazy(() => import('@/pages/AdminProviders'));
+const AdminReports = React.lazy(() => import('@/pages/AdminReports'));
+const AdminSecurity = React.lazy(() => import('@/pages/AdminSecurity'));
+const AdminServices = React.lazy(() => import('@/pages/AdminServices'));
+const AdminSettings = React.lazy(() => import('@/pages/AdminSettings'));
+const AdminUsers = React.lazy(() => import('@/pages/AdminUsers'));
 
-// Enhanced User Experience Pages
+// Auditor pages
 const AuditorDashboard = React.lazy(() => import('@/pages/auditor/AuditorDashboard'));
 const AuditorOnboarding = React.lazy(() => import('@/pages/auditor/AuditorOnboarding'));
+
+// Project pages
 const DashboardProject = React.lazy(() => import('@/pages/projects/DashboardProject'));
+
+// Enhanced pages
 const EnhancedAuth = React.lazy(() => import('@/pages/auth/EnhancedAuth'));
 const EnhancedMarketplace = React.lazy(() => import('@/pages/marketplace/EnhancedMarketplace'));
 const EnhancedRequestAudit = React.lazy(() => import('@/pages/request-audit/EnhancedRequestAudit'));
+
+// Onboarding and profile pages
 const Onboarding = React.lazy(() => import('@/pages/onboarding/Onboarding'));
 const ProfileCompletion = React.lazy(() => import('@/pages/profile/ProfileCompletion'));
 
-// Specialized Tools & Features
+// Additional tool pages
 const AIMatchingV2 = React.lazy(() => import('@/pages/tools/AIMatchingV2'));
 const CompetitiveAdvantages = React.lazy(() => import('@/pages/tools/CompetitiveAdvantages'));
 const ComprehensiveSecurity = React.lazy(() => import('@/pages/tools/ComprehensiveSecurity'));
@@ -108,7 +112,7 @@ const PerformanceOptimization = React.lazy(() => import('@/pages/tools/Performan
 const PlatformAnalysisPage = React.lazy(() => import('@/pages/tools/PlatformAnalysisPage'));
 const SecurityMonitoringPage = React.lazy(() => import('@/pages/tools/SecurityMonitoringPage'));
 
-const RouteWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+const RouteWrapper = ({ children }: { children: React.ReactNode }) => (
   <RouteErrorBoundary>
     <Suspense fallback={<LoadingState message="Loading page..." />}>
       {children}
@@ -119,77 +123,86 @@ const RouteWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 export function StabilizedRouter() {
   return (
     <Routes>
-      {/* Core Routes */}
+      {/* Core routes */}
       <Route path="/" element={<RouteWrapper><Index /></RouteWrapper>} />
       <Route path="/auth" element={<RouteWrapper><Auth /></RouteWrapper>} />
       <Route path="/dashboard" element={<RouteWrapper><Dashboard /></RouteWrapper>} />
       <Route path="/marketplace" element={<RouteWrapper><Marketplace /></RouteWrapper>} />
       <Route path="/request-audit" element={<RouteWrapper><RequestAudit /></RouteWrapper>} />
-      <Route path="/pricing" element={<RouteWrapper><PricingINR /></RouteWrapper>} />
-      <Route path="/pricing-inr" element={<RouteWrapper><PricingINR /></RouteWrapper>} />
-      <Route path="/pricing-calculator" element={<RouteWrapper><PricingCalculator /></RouteWrapper>} />
+      <Route path="/pricing" element={<RouteWrapper><Pricing /></RouteWrapper>} />
       <Route path="/contact" element={<RouteWrapper><Contact /></RouteWrapper>} />
       <Route path="/about" element={<RouteWrapper><About /></RouteWrapper>} />
       <Route path="/privacy" element={<RouteWrapper><Privacy /></RouteWrapper>} />
       <Route path="/terms" element={<RouteWrapper><Terms /></RouteWrapper>} />
+      <Route path="/pricing-calculator" element={<RouteWrapper><PricingCalculator /></RouteWrapper>} />
+
+      {/* Services routes */}
+      <Route path="/services/security-audits" element={<RouteWrapper><SecurityAudits /></RouteWrapper>} />
+      <Route path="/services/code-reviews" element={<RouteWrapper><CodeReviews /></RouteWrapper>} />
+      <Route path="/services/penetration-testing" element={<RouteWrapper><PenetrationTesting /></RouteWrapper>} />
+      <Route path="/services/consulting" element={<RouteWrapper><Consulting /></RouteWrapper>} />
+
+      {/* Resources routes */}
+      <Route path="/resources/security-guides" element={<RouteWrapper><SecurityGuides /></RouteWrapper>} />
+      <Route path="/resources/knowledge-base" element={<RouteWrapper><KnowledgeBase /></RouteWrapper>} />
+      <Route path="/resources/tutorials" element={<RouteWrapper><Tutorials /></RouteWrapper>} />
+      <Route path="/resources/templates" element={<RouteWrapper><Templates /></RouteWrapper>} />
+      <Route path="/resources/audit-guidelines" element={<RouteWrapper><AuditGuidelines /></RouteWrapper>} />
+      <Route path="/resources/vulnerability-database" element={<RouteWrapper><VulnerabilityDatabase /></RouteWrapper>} />
+
+      {/* Community routes */}
+      <Route path="/community/forum" element={<RouteWrapper><Forum /></RouteWrapper>} />
+      <Route path="/community/events" element={<RouteWrapper><Events /></RouteWrapper>} />
+      <Route path="/community/challenges" element={<RouteWrapper><Challenges /></RouteWrapper>} />
+      <Route path="/community/leaderboard" element={<RouteWrapper><Leaderboard /></RouteWrapper>} />
+
+      {/* Tools routes */}
+      <Route path="/tools/ai-tools" element={<RouteWrapper><AITools /></RouteWrapper>} />
+      <Route path="/tools/security-insights" element={<RouteWrapper><SecurityInsights /></RouteWrapper>} />
+      <Route path="/tools/vulnerability-scanner" element={<RouteWrapper><VulnerabilityScanner /></RouteWrapper>} />
+      <Route path="/tools/platform-reports" element={<RouteWrapper><PlatformReports /></RouteWrapper>} />
+      <Route path="/tools/file-management" element={<RouteWrapper><FileManagement /></RouteWrapper>} />
+      <Route path="/tools/ai-matching-v2" element={<RouteWrapper><AIMatchingV2 /></RouteWrapper>} />
+      <Route path="/tools/competitive-advantages" element={<RouteWrapper><CompetitiveAdvantages /></RouteWrapper>} />
+      <Route path="/tools/comprehensive-security" element={<RouteWrapper><ComprehensiveSecurity /></RouteWrapper>} />
+      <Route path="/tools/database-tools" element={<RouteWrapper><DatabaseTools /></RouteWrapper>} />
+      <Route path="/tools/distribution-strategy" element={<RouteWrapper><DistributionStrategy /></RouteWrapper>} />
+      <Route path="/tools/enterprise-control" element={<RouteWrapper><EnterpriseControlPage /></RouteWrapper>} />
+      <Route path="/tools/production-readiness" element={<RouteWrapper><FinalProductionReadiness /></RouteWrapper>} />
+      <Route path="/tools/performance-optimization" element={<RouteWrapper><PerformanceOptimization /></RouteWrapper>} />
+      <Route path="/tools/platform-analysis" element={<RouteWrapper><PlatformAnalysisPage /></RouteWrapper>} />
+      <Route path="/tools/security-monitoring" element={<RouteWrapper><SecurityMonitoringPage /></RouteWrapper>} />
+
+      {/* Business routes */}
+      <Route path="/business/contact" element={<RouteWrapper><ContactPage /></RouteWrapper>} />
+      <Route path="/business/careers" element={<RouteWrapper><Careers /></RouteWrapper>} />
+      <Route path="/business/pricing" element={<RouteWrapper><BusinessPricing /></RouteWrapper>} />
+      <Route path="/business/partners" element={<RouteWrapper><Partners /></RouteWrapper>} />
+
+      {/* Support routes */}
+      <Route path="/support/faq" element={<RouteWrapper><FAQ /></RouteWrapper>} />
+      <Route path="/support" element={<RouteWrapper><Support /></RouteWrapper>} />
+      <Route path="/support/documentation" element={<RouteWrapper><Documentation /></RouteWrapper>} />
+
+      {/* User routes */}
+      <Route path="/user/profile" element={<RouteWrapper><Profile /></RouteWrapper>} />
+      <Route path="/user/settings" element={<RouteWrapper><Settings /></RouteWrapper>} />
+
+      {/* Additional feature routes */}
+      <Route path="/service-provider-onboarding" element={<RouteWrapper><ServiceProviderOnboarding /></RouteWrapper>} />
       <Route path="/analytics" element={<RouteWrapper><Analytics /></RouteWrapper>} />
       <Route path="/ai-analysis" element={<RouteWrapper><AIAnalysisPage /></RouteWrapper>} />
       <Route path="/ai-matching" element={<RouteWrapper><AIMatchingHub /></RouteWrapper>} />
       <Route path="/advanced-features" element={<RouteWrapper><AdvancedFeaturesHub /></RouteWrapper>} />
-      <Route path="/audits/:id" element={<RouteWrapper><AuditDetails /></RouteWrapper>} />
+      <Route path="/audit-details/:id" element={<RouteWrapper><AuditDetails /></RouteWrapper>} />
       <Route path="/calendar" element={<RouteWrapper><Calendar /></RouteWrapper>} />
       <Route path="/collaboration" element={<RouteWrapper><Collaboration /></RouteWrapper>} />
       <Route path="/escrow" element={<RouteWrapper><Escrow /></RouteWrapper>} />
       <Route path="/integrations" element={<RouteWrapper><IntegrationsPage /></RouteWrapper>} />
       <Route path="/launch-readiness" element={<RouteWrapper><LaunchReadiness /></RouteWrapper>} />
 
-      {/* Service Routes */}
-      <Route path="/security-audits" element={<RouteWrapper><SecurityAudits /></RouteWrapper>} />
-      <Route path="/code-reviews" element={<RouteWrapper><CodeReviews /></RouteWrapper>} />
-      <Route path="/penetration-testing" element={<RouteWrapper><PenetrationTesting /></RouteWrapper>} />
-      <Route path="/consulting" element={<RouteWrapper><Consulting /></RouteWrapper>} />
-
-      {/* Resource Routes */}
-      <Route path="/security-guides" element={<RouteWrapper><SecurityGuides /></RouteWrapper>} />
-      <Route path="/knowledge-base" element={<RouteWrapper><KnowledgeBase /></RouteWrapper>} />
-      <Route path="/tutorials" element={<RouteWrapper><Tutorials /></RouteWrapper>} />
-      <Route path="/templates" element={<RouteWrapper><Templates /></RouteWrapper>} />
-      <Route path="/audit-guidelines" element={<RouteWrapper><AuditGuidelines /></RouteWrapper>} />
-      <Route path="/vulnerabilities" element={<RouteWrapper><VulnerabilityDatabase /></RouteWrapper>} />
-
-      {/* Community Routes */}
-      <Route path="/forum" element={<RouteWrapper><Forum /></RouteWrapper>} />
-      <Route path="/events" element={<RouteWrapper><Events /></RouteWrapper>} />
-      <Route path="/challenges" element={<RouteWrapper><Challenges /></RouteWrapper>} />
-      <Route path="/leaderboard" element={<RouteWrapper><Leaderboard /></RouteWrapper>} />
-
-      {/* Tools Routes */}
-      <Route path="/ai-tools" element={<RouteWrapper><AITools /></RouteWrapper>} />
-      <Route path="/security-insights" element={<RouteWrapper><SecurityInsights /></RouteWrapper>} />
-      <Route path="/vulnerability-scanner" element={<RouteWrapper><VulnerabilityScanner /></RouteWrapper>} />
-      <Route path="/platform-reports" element={<RouteWrapper><PlatformReports /></RouteWrapper>} />
-      <Route path="/files" element={<RouteWrapper><FileManagement /></RouteWrapper>} />
-
-      {/* Business Routes */}
-      <Route path="/business/contact" element={<RouteWrapper><ContactPage /></RouteWrapper>} />
-      <Route path="/careers" element={<RouteWrapper><Careers /></RouteWrapper>} />
-      <Route path="/business/pricing" element={<RouteWrapper><BusinessPricing /></RouteWrapper>} />
-      <Route path="/partners" element={<RouteWrapper><Partners /></RouteWrapper>} />
-
-      {/* Support Routes */}
-      <Route path="/faq" element={<RouteWrapper><FAQ /></RouteWrapper>} />
-      <Route path="/support" element={<RouteWrapper><Support /></RouteWrapper>} />
-      <Route path="/documentation" element={<RouteWrapper><Documentation /></RouteWrapper>} />
-
-      {/* User Routes */}
-      <Route path="/profile" element={<RouteWrapper><Profile /></RouteWrapper>} />
-      <Route path="/settings" element={<RouteWrapper><Settings /></RouteWrapper>} />
-
-      {/* Service Provider */}
-      <Route path="/service-provider-onboarding" element={<RouteWrapper><ServiceProviderOnboarding /></RouteWrapper>} />
-
-      {/* Admin Routes */}
-      <Route path="/admin" element={<RouteWrapper><AdminDashboard /></RouteWrapper>} />
+      {/* Admin routes - now using correct paths */}
+      <Route path="/admin/dashboard" element={<RouteWrapper><AdminDashboard /></RouteWrapper>} />
       <Route path="/admin/disputes" element={<RouteWrapper><AdminDisputes /></RouteWrapper>} />
       <Route path="/admin/finance" element={<RouteWrapper><AdminFinance /></RouteWrapper>} />
       <Route path="/admin/providers" element={<RouteWrapper><AdminProviders /></RouteWrapper>} />
@@ -199,7 +212,23 @@ export function StabilizedRouter() {
       <Route path="/admin/settings" element={<RouteWrapper><AdminSettings /></RouteWrapper>} />
       <Route path="/admin/users" element={<RouteWrapper><AdminUsers /></RouteWrapper>} />
 
-      {/* Enhanced 404 for unmatched routes */}
+      {/* Auditor routes */}
+      <Route path="/auditor/dashboard" element={<RouteWrapper><AuditorDashboard /></RouteWrapper>} />
+      <Route path="/auditor/onboarding" element={<RouteWrapper><AuditorOnboarding /></RouteWrapper>} />
+
+      {/* Project routes */}
+      <Route path="/projects/dashboard" element={<RouteWrapper><DashboardProject /></RouteWrapper>} />
+
+      {/* Enhanced routes */}
+      <Route path="/auth/enhanced" element={<RouteWrapper><EnhancedAuth /></RouteWrapper>} />
+      <Route path="/marketplace/enhanced" element={<RouteWrapper><EnhancedMarketplace /></RouteWrapper>} />
+      <Route path="/request-audit/enhanced" element={<RouteWrapper><EnhancedRequestAudit /></RouteWrapper>} />
+
+      {/* Onboarding and profile routes */}
+      <Route path="/onboarding" element={<RouteWrapper><Onboarding /></RouteWrapper>} />
+      <Route path="/profile/completion" element={<RouteWrapper><ProfileCompletion /></RouteWrapper>} />
+
+      {/* 404 route */}
       <Route path="*" element={<RouteWrapper><Enhanced404 /></RouteWrapper>} />
     </Routes>
   );
