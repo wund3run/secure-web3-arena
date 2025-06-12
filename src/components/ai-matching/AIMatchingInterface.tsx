@@ -19,6 +19,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { useAIMatching } from '@/hooks/useAIMatching';
+import { toast } from '@/components/ui/use-toast';
 
 export const AIMatchingInterface = () => {
   const [criteria, setCriteria] = useState({
@@ -33,9 +34,20 @@ export const AIMatchingInterface = () => {
   const { loading, matchingResults, calculateMatchingScore } = useAIMatching();
 
   const handleFindMatches = async () => {
-    // For demo purposes, we'll use a mock audit request ID
     const mockAuditRequestId = 'demo-audit-request';
-    await calculateMatchingScore(mockAuditRequestId);
+    try {
+      await calculateMatchingScore(mockAuditRequestId);
+      toast({
+        title: "Analysis Started",
+        description: "Your requirements are being analyzed for the best matches.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to find matches. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleRequirementAdd = (requirement: string) => {
@@ -44,6 +56,10 @@ export const AIMatchingInterface = () => {
         ...prev,
         specific_requirements: [...prev.specific_requirements, requirement],
       }));
+      toast({
+        title: "Requirement Added",
+        description: `${requirement} has been added.`,
+      });
     }
   };
 
@@ -52,6 +68,10 @@ export const AIMatchingInterface = () => {
       ...prev,
       specific_requirements: prev.specific_requirements.filter(r => r !== requirement),
     }));
+    toast({
+      title: "Requirement Removed",
+      description: `${requirement} has been removed.`,
+    });
   };
 
   return (
