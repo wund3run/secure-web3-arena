@@ -10,8 +10,7 @@ const Auth = React.lazy(() => import('@/pages/Auth'));
 const Dashboard = React.lazy(() => import('@/pages/Dashboard'));
 const Marketplace = React.lazy(() => import('@/pages/Marketplace'));
 const RequestAudit = React.lazy(() => import('@/pages/RequestAudit'));
-const Pricing = React.lazy(() => import('@/pages/Pricing'));
-const PricingINR = React.lazy(() => import('@/pages/PricingINR'));
+const Pricing = React.lazy(() => import('@/pages/PricingINR'));
 const Contact = React.lazy(() => import('@/pages/Contact'));
 const About = React.lazy(() => import('@/pages/About'));
 const Privacy = React.lazy(() => import('@/pages/Privacy'));
@@ -64,6 +63,51 @@ const Settings = React.lazy(() => import('@/pages/user/Settings'));
 // Service Provider
 const ServiceProviderOnboarding = React.lazy(() => import('@/pages/ServiceProviderOnboarding'));
 
+// New Core Pages
+const Analytics = React.lazy(() => import('@/pages/Analytics'));
+const AIAnalysisPage = React.lazy(() => import('@/pages/AIAnalysisPage'));
+const AIMatchingHub = React.lazy(() => import('@/pages/AIMatchingHub'));
+const AdvancedFeaturesHub = React.lazy(() => import('@/pages/AdvancedFeaturesHub'));
+const AuditDetails = React.lazy(() => import('@/pages/AuditDetails'));
+const Calendar = React.lazy(() => import('@/pages/Calendar'));
+const Collaboration = React.lazy(() => import('@/pages/Collaboration'));
+const Escrow = React.lazy(() => import('@/pages/Escrow'));
+const IntegrationsPage = React.lazy(() => import('@/pages/IntegrationsPage'));
+const LaunchReadiness = React.lazy(() => import('@/pages/LaunchReadiness'));
+
+// Admin Pages
+const AdminDashboard = React.lazy(() => import('@/pages/admin/AdminDashboard'));
+const AdminDisputes = React.lazy(() => import('@/pages/admin/AdminDisputes'));
+const AdminFinance = React.lazy(() => import('@/pages/admin/AdminFinance'));
+const AdminProviders = React.lazy(() => import('@/pages/admin/AdminProviders'));
+const AdminReports = React.lazy(() => import('@/pages/admin/AdminReports'));
+const AdminSecurity = React.lazy(() => import('@/pages/admin/AdminSecurity'));
+const AdminServices = React.lazy(() => import('@/pages/admin/AdminServices'));
+const AdminSettings = React.lazy(() => import('@/pages/admin/AdminSettings'));
+const AdminUsers = React.lazy(() => import('@/pages/admin/AdminUsers'));
+
+// Enhanced User Experience Pages
+const AuditorDashboard = React.lazy(() => import('@/pages/auditor/AuditorDashboard'));
+const AuditorOnboarding = React.lazy(() => import('@/pages/auditor/AuditorOnboarding'));
+const DashboardProject = React.lazy(() => import('@/pages/projects/DashboardProject'));
+const EnhancedAuth = React.lazy(() => import('@/pages/auth/EnhancedAuth'));
+const EnhancedMarketplace = React.lazy(() => import('@/pages/marketplace/EnhancedMarketplace'));
+const EnhancedRequestAudit = React.lazy(() => import('@/pages/request-audit/EnhancedRequestAudit'));
+const Onboarding = React.lazy(() => import('@/pages/onboarding/Onboarding'));
+const ProfileCompletion = React.lazy(() => import('@/pages/profile/ProfileCompletion'));
+
+// Specialized Tools & Features
+const AIMatchingV2 = React.lazy(() => import('@/pages/tools/AIMatchingV2'));
+const CompetitiveAdvantages = React.lazy(() => import('@/pages/tools/CompetitiveAdvantages'));
+const ComprehensiveSecurity = React.lazy(() => import('@/pages/tools/ComprehensiveSecurity'));
+const DatabaseTools = React.lazy(() => import('@/pages/tools/DatabaseTools'));
+const DistributionStrategy = React.lazy(() => import('@/pages/tools/DistributionStrategy'));
+const EnterpriseControlPage = React.lazy(() => import('@/pages/tools/EnterpriseControlPage'));
+const FinalProductionReadiness = React.lazy(() => import('@/pages/tools/FinalProductionReadiness'));
+const PerformanceOptimization = React.lazy(() => import('@/pages/tools/PerformanceOptimization'));
+const PlatformAnalysisPage = React.lazy(() => import('@/pages/tools/PlatformAnalysisPage'));
+const SecurityMonitoringPage = React.lazy(() => import('@/pages/tools/SecurityMonitoringPage'));
+
 const RouteWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <RouteErrorBoundary>
     <Suspense fallback={<LoadingState message="Loading page..." />}>
@@ -81,13 +125,23 @@ export function StabilizedRouter() {
       <Route path="/dashboard" element={<RouteWrapper><Dashboard /></RouteWrapper>} />
       <Route path="/marketplace" element={<RouteWrapper><Marketplace /></RouteWrapper>} />
       <Route path="/request-audit" element={<RouteWrapper><RequestAudit /></RouteWrapper>} />
-      <Route path="/pricing" element={<RouteWrapper><Pricing /></RouteWrapper>} />
+      <Route path="/pricing" element={<RouteWrapper><PricingINR /></RouteWrapper>} />
       <Route path="/pricing-inr" element={<RouteWrapper><PricingINR /></RouteWrapper>} />
       <Route path="/pricing-calculator" element={<RouteWrapper><PricingCalculator /></RouteWrapper>} />
       <Route path="/contact" element={<RouteWrapper><Contact /></RouteWrapper>} />
       <Route path="/about" element={<RouteWrapper><About /></RouteWrapper>} />
       <Route path="/privacy" element={<RouteWrapper><Privacy /></RouteWrapper>} />
       <Route path="/terms" element={<RouteWrapper><Terms /></RouteWrapper>} />
+      <Route path="/analytics" element={<RouteWrapper><Analytics /></RouteWrapper>} />
+      <Route path="/ai-analysis" element={<RouteWrapper><AIAnalysisPage /></RouteWrapper>} />
+      <Route path="/ai-matching" element={<RouteWrapper><AIMatchingHub /></RouteWrapper>} />
+      <Route path="/advanced-features" element={<RouteWrapper><AdvancedFeaturesHub /></RouteWrapper>} />
+      <Route path="/audits/:id" element={<RouteWrapper><AuditDetails /></RouteWrapper>} />
+      <Route path="/calendar" element={<RouteWrapper><Calendar /></RouteWrapper>} />
+      <Route path="/collaboration" element={<RouteWrapper><Collaboration /></RouteWrapper>} />
+      <Route path="/escrow" element={<RouteWrapper><Escrow /></RouteWrapper>} />
+      <Route path="/integrations" element={<RouteWrapper><IntegrationsPage /></RouteWrapper>} />
+      <Route path="/launch-readiness" element={<RouteWrapper><LaunchReadiness /></RouteWrapper>} />
 
       {/* Service Routes */}
       <Route path="/security-audits" element={<RouteWrapper><SecurityAudits /></RouteWrapper>} />
@@ -133,6 +187,17 @@ export function StabilizedRouter() {
 
       {/* Service Provider */}
       <Route path="/service-provider-onboarding" element={<RouteWrapper><ServiceProviderOnboarding /></RouteWrapper>} />
+
+      {/* Admin Routes */}
+      <Route path="/admin" element={<RouteWrapper><AdminDashboard /></RouteWrapper>} />
+      <Route path="/admin/disputes" element={<RouteWrapper><AdminDisputes /></RouteWrapper>} />
+      <Route path="/admin/finance" element={<RouteWrapper><AdminFinance /></RouteWrapper>} />
+      <Route path="/admin/providers" element={<RouteWrapper><AdminProviders /></RouteWrapper>} />
+      <Route path="/admin/reports" element={<RouteWrapper><AdminReports /></RouteWrapper>} />
+      <Route path="/admin/security" element={<RouteWrapper><AdminSecurity /></RouteWrapper>} />
+      <Route path="/admin/services" element={<RouteWrapper><AdminServices /></RouteWrapper>} />
+      <Route path="/admin/settings" element={<RouteWrapper><AdminSettings /></RouteWrapper>} />
+      <Route path="/admin/users" element={<RouteWrapper><AdminUsers /></RouteWrapper>} />
 
       {/* Enhanced 404 for unmatched routes */}
       <Route path="*" element={<RouteWrapper><Enhanced404 /></RouteWrapper>} />
