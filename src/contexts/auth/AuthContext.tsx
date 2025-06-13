@@ -1,28 +1,12 @@
+
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { SupabaseClient, User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import type { UserProfile, UserRole } from './types';
+import type { UserProfile, UserRole, AuthContextProps } from './types';
 
-interface AuthContextType {
-  user: User | null;
-  session: Session | null;
-  userProfile: UserProfile | null;
-  userRoles: UserRole[];
-  signIn: (email: string, password: string) => Promise<any>;
-  signUp: (email: string, password: string, fullName: string, userType: 'auditor' | 'project_owner') => Promise<any>;
-  signOut: () => Promise<any>;
-  forgotPassword: (email: string) => Promise<any>;
-  updateProfile: (updates: Partial<UserProfile>) => Promise<any>;
-  updateUserProfile: (updates: Partial<UserProfile>) => Promise<any>;
-  getUserType: () => 'auditor' | 'project_owner' | 'admin' | 'general';
-  hasRole: (role: string) => boolean;
-  loading: boolean;
-  error: string | null;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -90,11 +74,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       
       if (data) {
-        // Ensure verification_status matches our type
+        // Ensure verification_status matches our type and handle social_links properly
         const profile: UserProfile = {
           ...data,
           verification_status: (data.verification_status as UserProfile['verification_status']) || 'unverified',
-          social_links: data.social_links || {},
+          social_links: (typeof data.social_links === 'object' && data.social_links !== null && !Array.isArray(data.social_links)) 
+            ? data.social_links as Record<string, string>
+            : {},
           skills: data.skills || [],
           specializations: data.specializations || []
         };
@@ -232,7 +218,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const profile: UserProfile = {
           ...data,
           verification_status: (data.verification_status as UserProfile['verification_status']) || 'unverified',
-          social_links: data.social_links || {},
+          social_links: (typeof data.social_links === 'object' && data.social_links !== null && !Array.isArray(data.social_links)) 
+            ? data.social_links as Record<string, string>
+            : {},
           skills: data.skills || [],
           specializations: data.specializations || []
         };
