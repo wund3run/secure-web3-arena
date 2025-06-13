@@ -1,21 +1,11 @@
 
-
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SupabaseClient, User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-
-interface UserProfile {
-  id: string;
-  full_name?: string;
-  avatar_url?: string;
-  user_type?: 'auditor' | 'project_owner' | 'admin';
-  email?: string;
-  created_at?: string;
-  updated_at?: string;
-}
+import type { UserProfile } from './types';
 
 interface AuthContextType {
   user: User | null;
@@ -102,7 +92,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchUserProfile = async (userId: string) => {
     try {
       const { data, error } = await supabase
-        .from('profiles')
+        .from('extended_profiles')
         .select('*')
         .eq('id', userId)
         .single();
@@ -113,7 +103,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       
       if (data) {
-        setUserProfile(data);
+        const typedProfile: UserProfile = {
+          ...data,
+          user_type: data.user_type as UserProfile['user_type'] || 'general',
+          verification_status: (data.verification_status as UserProfile['verification_status']) || 'pending',
+          social_links: (data.social_links as Record<string, string>) || {},
+          skills: data.skills || [],
+          specializations: data.specializations || []
+        };
+        setUserProfile(typedProfile);
       }
     } catch (err) {
       console.error('Error fetching user profile:', err);
@@ -206,7 +204,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setError(null);
       const { data, error } = await supabase
-        .from('profiles')
+        .from('extended_profiles')
         .upsert({ id: user.id, ...updates })
         .select()
         .single();
@@ -216,7 +214,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { error };
       }
       
-      setUserProfile(data);
+      if (data) {
+        const typedProfile: UserProfile = {
+          ...data,
+          user_type: data.user_type as UserProfile['user_type'] || 'general',
+          verification_status: (data.verification_status as UserProfile['verification_status']) || 'pending',
+          social_links: (data.social_links as Record<string, string>) || {},
+          skills: data.skills || [],
+          specializations: data.specializations || []
+        };
+        setUserProfile(typedProfile);
+      }
       return { data };
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Profile update failed';

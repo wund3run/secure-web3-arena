@@ -1,6 +1,6 @@
 
 import { useState, useCallback } from 'react';
-import { useAuth } from '@/context/AuthContext'; // Assuming you have an Auth context
+import { useAuth } from '@/contexts/auth'; // Fix the import path
 
 // This hook stabilizes the auth functions so they can be used in effects
 // without causing infinite loops. It also centralizes loading and error states.
