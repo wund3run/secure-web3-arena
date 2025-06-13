@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { AuthLayout } from '@/components/auth/AuthLayout';
 import { CompleteAuthFlow } from '@/components/auth/CompleteAuthFlow';
 import { useAuthPage } from '@/hooks/useAuthPage';
 
-const Auth = () => {
-  const { loading } = useAuthPage();
+const Auth: React.FC = () => {
+  const { loading, error } = useAuthPage(); // Assuming error is part of the hook
 
   if (loading) {
     return (
@@ -17,7 +16,17 @@ const Auth = () => {
             className="h-16 w-16 object-contain bg-transparent animate-pulse"
             style={{ backgroundColor: 'transparent' }}
           />
-          <p className="text-sm text-muted-foreground">Loading...</p>
+          <p className="text-sm text-muted-foreground" aria-live="polite">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-red-50">
+        <div className="flex flex-col items-center space-y-4">
+          <p className="text-sm text-red-600">An error occurred: {error.message}</p>
         </div>
       </div>
     );
