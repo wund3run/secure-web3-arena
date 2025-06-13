@@ -2,7 +2,6 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { SupabaseClient, User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import type { UserProfile } from './types';
@@ -30,7 +29,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     // Check for an active session when the component mounts
@@ -68,26 +66,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else {
         setUserProfile(null);
       }
-      
-      // === THIS IS THE ROUTING LOGIC ===
-      if (event === 'SIGNED_IN' && currentUser) {
-        // Supabase stores custom sign-up data in user_metadata
-        const userRole = currentUser.user_metadata.userType || 'project_owner';
-        
-        if (userRole === 'auditor') {
-          navigate('/dashboard/auditor');
-        } else {
-          navigate('/dashboard/project-owner');
-        }
-      } else if (event === 'SIGNED_OUT') {
-        navigate('/auth');
-      }
     });
 
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, []);
 
   const fetchUserProfile = async (userId: string) => {
     try {
