@@ -4,12 +4,13 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { SupabaseClient, User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import type { UserProfile } from './types';
+import type { UserProfile, UserRole } from './types';
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   userProfile: UserProfile | null;
+  userRoles: UserRole[];
   signIn: (email: string, password: string) => Promise<any>;
   signUp: (email: string, password: string, fullName: string, userType: 'auditor' | 'project_owner') => Promise<any>;
   signOut: () => Promise<any>;
@@ -17,6 +18,7 @@ interface AuthContextType {
   updateProfile: (updates: Partial<UserProfile>) => Promise<any>;
   updateUserProfile: (updates: Partial<UserProfile>) => Promise<any>;
   getUserType: () => 'auditor' | 'project_owner' | 'admin' | 'general';
+  hasRole: (role: string) => boolean;
   loading: boolean;
   error: string | null;
 }
@@ -27,11 +29,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userRoles, setUserRoles] = useState<UserRole[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check for an active session when the component mounts
     const getSession = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
@@ -45,6 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
         if (session?.user) {
           await fetchUserProfile(session.user.id);
+          await fetchUserRoles(session.user.id);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
@@ -55,7 +58,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     
     getSession();
 
-    // Listen for changes in authentication state (login, logout, etc.)
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session);
       const currentUser = session?.user ?? null;
@@ -63,8 +65,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (currentUser) {
         await fetchUserProfile(currentUser.id);
+        await fetchUserRoles(currentUser.id);
       } else {
         setUserProfile(null);
+        setUserRoles([]);
       }
     });
 
@@ -81,39 +85,55 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         .eq('id', userId)
         .single();
       
-      if (error && error.code !== 'PGRST116') { // PGRST116 is "not found"
+      if (error && error.code !== 'PGRST116') {
         console.error('Error fetching user profile:', error);
         return;
       }
       
       if (data) {
-        const typedProfile: UserProfile = {
-          ...data,
-          user_type: data.user_type as UserProfile['user_type'] || 'general',
-          verification_status: (data.verification_status as UserProfile['verification_status']) || 'pending',
-          social_links: (data.social_links as Record<string, string>) || {},
-          skills: data.skills || [],
-          specializations: data.specializations || []
-        };
-        setUserProfile(typedProfile);
+        setUserProfile(data);
       }
     } catch (err) {
       console.error('Error fetching user profile:', err);
     }
   };
 
-  const getUserType = (): 'auditor' | 'project_owner' | 'admin' | 'general' => {
-    if (userProfile?.user_type) {
-      // Map 'visitor' to 'general' if it exists
-      if (userProfile.user_type === 'visitor') {
-        return 'general';
+  const fetchUserRoles = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('is_active', true);
+      
+      if (error) {
+        console.error('Error fetching user roles:', error);
+        return;
       }
-      return userProfile.user_type as 'auditor' | 'project_owner' | 'admin' | 'general';
+      
+      setUserRoles(data || []);
+    } catch (err) {
+      console.error('Error fetching user roles:', err);
     }
-    if (user?.user_metadata?.userType) {
-      return user.user_metadata.userType;
+  };
+
+  const getUserType = (): 'auditor' | 'project_owner' | 'admin' | 'general' => {
+    // Check for admin role first
+    if (userRoles.some(role => role.role === 'admin' && role.is_active)) {
+      return 'admin';
     }
+    
+    // Check for other roles
+    const activeRole = userRoles.find(role => role.is_active && role.role !== 'general');
+    if (activeRole) {
+      return activeRole.role as 'auditor' | 'project_owner' | 'admin' | 'general';
+    }
+    
     return 'general';
+  };
+
+  const hasRole = (role: string): boolean => {
+    return userRoles.some(userRole => userRole.role === role && userRole.is_active);
   };
 
   const signIn = async (email: string, password: string) => {
@@ -138,10 +158,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         email,
         password,
         options: {
-          // This is how you pass custom data during sign-up with Supabase
           data: {
             full_name: fullName,
-            userType: userType, // 'auditor' or 'project_owner'
+            userType: userType,
           },
         },
       });
@@ -203,15 +222,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       
       if (data) {
-        const typedProfile: UserProfile = {
-          ...data,
-          user_type: data.user_type as UserProfile['user_type'] || 'general',
-          verification_status: (data.verification_status as UserProfile['verification_status']) || 'pending',
-          social_links: (data.social_links as Record<string, string>) || {},
-          skills: data.skills || [],
-          specializations: data.specializations || []
-        };
-        setUserProfile(typedProfile);
+        setUserProfile(data);
       }
       return { data };
     } catch (err) {
@@ -229,6 +240,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     user,
     session,
     userProfile,
+    userRoles,
     signIn,
     signUp,
     signOut,
@@ -236,15 +248,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     updateProfile,
     updateUserProfile,
     getUserType,
+    hasRole,
     loading,
     error,
   };
 
-  // Don't render children until we've checked for a session
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
 };
 
-// Custom hook to easily access the context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

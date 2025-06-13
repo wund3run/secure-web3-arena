@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAuth } from '@/contexts/auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -167,7 +168,6 @@ export const RoleBasedDashboardContent = () => {
     </div>
   );
 
-  // Fix the visitor comparison by removing it since getUserType doesn't return 'visitor'
   const renderGeneralContent = () => (
     <div className="space-y-6">
       <Card>

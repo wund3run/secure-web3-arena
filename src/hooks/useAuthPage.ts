@@ -1,68 +1,26 @@
 
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth';
-import { toast } from 'sonner';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const useAuthPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { signIn, signUp, user, loading, error } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = location.state?.from?.pathname || '/dashboard';
-
   useEffect(() => {
-    if (user && !loading) {
-      console.log('User authenticated, redirecting to:', from);
-      navigate(from, { replace: true });
+    if (!authLoading) {
+      if (user) {
+        // User is already authenticated, redirect to dashboard
+        const from = location.state?.from?.pathname || '/dashboard';
+        navigate(from, { replace: true });
+      } else {
+        setLoading(false);
+      }
     }
-  }, [user, loading, navigate, from]);
+  }, [user, authLoading, navigate, location.state]);
 
-  const handleSignIn = async (email: string, password: string) => {
-    if (!email || !password) {
-      toast.error('Please fill in all fields');
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      console.log('Attempting sign in for:', email);
-      await signIn(email, password);
-    } catch (error: any) {
-      console.error('Sign in failed:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSignUp = async (email: string, password: string, fullName: string, userType: 'auditor' | 'project_owner') => {
-    if (!email || !password || !fullName) {
-      toast.error('Please fill in all fields');
-      return;
-    }
-
-    if (password.length < 6) {
-      toast.error('Password must be at least 6 characters long');
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      console.log('Attempting sign up for:', email, 'as', userType);
-      await signUp(email, password, fullName, userType);
-    } catch (error: any) {
-      console.error('Sign up failed:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return {
-    isLoading,
-    loading,
-    error,
-    handleSignIn,
-    handleSignUp
-  };
+  return { loading, error };
 };
