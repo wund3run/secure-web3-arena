@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,7 +21,7 @@ import { ProjectMarketplace } from './ProjectMarketplace';
 
 // Mock data for dashboard metrics
 const dashboardMetrics = {
-  activeAu dits: 3,
+  activeAudits: 3,
   completedAudits: 47,
   totalEarnings: 127500,
   averageRating: 4.9,
