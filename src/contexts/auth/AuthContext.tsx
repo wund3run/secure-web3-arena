@@ -120,7 +120,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const getUserType = (): 'auditor' | 'project_owner' | 'admin' | 'general' => {
     if (userProfile?.user_type) {
-      return userProfile.user_type;
+      // Map 'visitor' to 'general' if it exists
+      if (userProfile.user_type === 'visitor') {
+        return 'general';
+      }
+      return userProfile.user_type as 'auditor' | 'project_owner' | 'admin' | 'general';
     }
     if (user?.user_metadata?.userType) {
       return user.user_metadata.userType;

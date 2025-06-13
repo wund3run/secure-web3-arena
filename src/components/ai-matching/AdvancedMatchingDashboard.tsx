@@ -1,16 +1,14 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Brain, Cpu, Zap } from 'lucide-react';
 import { TensorFlowMatchingDashboard } from './TensorFlowMatchingDashboard';
 import { EnhancedAIMatchingEngine } from './EnhancedAIMatchingEngine';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 export const AdvancedMatchingDashboard: React.FC = () => {
   const handleMatchesFound = () => {
-    toast({
-      title: "Matches Found",
+    toast("Matches Found", {
       description: "The AI matching process has successfully found potential matches.",
     });
   };
