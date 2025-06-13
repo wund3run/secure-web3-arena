@@ -1,9 +1,10 @@
+
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useRouter } from 'next/navigation'; // Using Next.js 13+ App Router
+import { useNavigate } from 'react-router-dom';
 import { SupabaseClient, User } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase-client'; // Your initialized Supabase client
+import { supabase } from '@/integrations/supabase/client';
 
 interface AuthContextType {
   user: User | null;
@@ -18,7 +19,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check for an active session when the component mounts
@@ -41,19 +42,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const userRole = currentUser.user_metadata.userType || 'project_owner';
         
         if (userRole === 'auditor') {
-          router.push('/dashboard/auditor');
+          navigate('/dashboard/auditor');
         } else {
-          router.push('/dashboard/project-owner');
+          navigate('/dashboard/project-owner');
         }
       } else if (event === 'SIGNED_OUT') {
-        router.push('/login');
+        navigate('/auth');
       }
     });
 
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, [router]);
+  }, [navigate]);
 
   const signIn = async (email: string, password: string) => {
     return supabase.auth.signInWithPassword({ email, password });
