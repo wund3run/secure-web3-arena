@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,10 +15,16 @@ import {
   Briefcase,
   Target,
   Users,
-  CheckCircle
+  CheckCircle,
+  Code2,
+  Brain,
+  GraduationCap
 } from 'lucide-react';
 import { AuditorWorkspace } from './AuditorWorkspace';
 import { ProjectMarketplace } from './ProjectMarketplace';
+import { TechnicalToolsHub } from './technical-tools/TechnicalToolsHub';
+import { AIMatchingEngine } from './ai-matching/AIMatchingEngine';
+import { ProfessionalDevelopmentHub } from './professional-development/ProfessionalDevelopmentHub';
 
 // Mock data for dashboard metrics
 const dashboardMetrics = {
@@ -160,11 +167,13 @@ export function EnhancedAuditorDashboard() {
 
       {/* Main Dashboard Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="workspace">Active Workspace</TabsTrigger>
-          <TabsTrigger value="marketplace">Find Projects</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="workspace">Workspace</TabsTrigger>
+          <TabsTrigger value="marketplace">Projects</TabsTrigger>
+          <TabsTrigger value="tools">Tools</TabsTrigger>
+          <TabsTrigger value="ai-matching">AI Matching</TabsTrigger>
+          <TabsTrigger value="development">Development</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -243,21 +252,16 @@ export function EnhancedAuditorDashboard() {
           <ProjectMarketplace />
         </TabsContent>
 
-        <TabsContent value="analytics">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5" />
-                Analytics & Insights
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-center py-8">
-                Detailed analytics dashboard with earnings trends, project performance,
-                and market insights would be implemented here.
-              </p>
-            </CardContent>
-          </Card>
+        <TabsContent value="tools">
+          <TechnicalToolsHub />
+        </TabsContent>
+
+        <TabsContent value="ai-matching">
+          <AIMatchingEngine />
+        </TabsContent>
+
+        <TabsContent value="development">
+          <ProfessionalDevelopmentHub />
         </TabsContent>
       </Tabs>
     </div>
