@@ -1,18 +1,19 @@
-
 import React, { useEffect } from 'react';
 import { useAuth } from '@/contexts/auth';
 import { useUserProfiling } from '@/hooks/useUserProfiling';
 
 export function UserProfileDetector() {
-  const { user, userProfile } = useAuth();
+  const { user, userProfile, getUserType } = useAuth();
   const { trackBehavior } = useUserProfiling();
 
   useEffect(() => {
+    const userType = getUserType(); // Use getUserType() method instead of userProfile.user_type
+    
     // Track page visit
     trackBehavior('page_visit', {
       page: window.location.pathname,
       timestamp: new Date().toISOString(),
-      userType: userProfile?.user_type || 'visitor',
+      userType: userType || 'visitor',
       authenticated: !!user
     });
 
@@ -98,7 +99,7 @@ export function UserProfileDetector() {
       document.removeEventListener('submit', handleFormSubmit);
       document.removeEventListener('input', handleFormInput);
     };
-  }, [user, userProfile, trackBehavior]);
+  }, [user, userProfile, trackBehavior, getUserType]);
 
   return null;
 }

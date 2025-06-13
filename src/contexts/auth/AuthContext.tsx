@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
@@ -91,7 +90,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       
       if (data) {
-        setUserProfile(data);
+        // Ensure verification_status matches our type
+        const profile: UserProfile = {
+          ...data,
+          verification_status: (data.verification_status as UserProfile['verification_status']) || 'unverified',
+          social_links: data.social_links || {},
+          skills: data.skills || [],
+          specializations: data.specializations || []
+        };
+        setUserProfile(profile);
       }
     } catch (err) {
       console.error('Error fetching user profile:', err);
@@ -222,7 +229,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       
       if (data) {
-        setUserProfile(data);
+        const profile: UserProfile = {
+          ...data,
+          verification_status: (data.verification_status as UserProfile['verification_status']) || 'unverified',
+          social_links: data.social_links || {},
+          skills: data.skills || [],
+          specializations: data.specializations || []
+        };
+        setUserProfile(profile);
       }
       return { data };
     } catch (err) {

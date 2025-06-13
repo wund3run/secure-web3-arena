@@ -91,14 +91,13 @@ export const OnboardingWizard: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      // Update user profile with onboarding data
+      // Update user profile with onboarding data (without user_type since it's in separate table)
       await updateProfile({
         full_name: data.profileData.fullName,
         display_name: data.profileData.displayName,
         bio: data.profileData.bio,
         website: data.profileData.website,
         social_links: data.profileData.socialLinks,
-        user_type: data.userType,
         skills: data.skillsData.skills,
         specializations: data.skillsData.specializations,
         years_of_experience: data.skillsData.experience,

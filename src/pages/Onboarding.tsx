@@ -6,7 +6,7 @@ import { Navigate } from 'react-router-dom';
 import LoadingState from '@/components/ui/loading-state';
 
 const Onboarding: React.FC = () => {
-  const { user, loading, userProfile } = useAuth();
+  const { user, loading, userProfile, getUserType } = useAuth();
 
   if (loading) {
     return <LoadingState message="Loading..." />;
@@ -17,8 +17,9 @@ const Onboarding: React.FC = () => {
   }
 
   // If user already completed onboarding, redirect to dashboard
-  if (userProfile?.user_type) {
-    const dashboardPath = userProfile.user_type === 'auditor' 
+  const userType = getUserType(); // Use getUserType() method
+  if (userType && userType !== 'general') {
+    const dashboardPath = userType === 'auditor' 
       ? '/dashboard/auditor' 
       : '/dashboard/project';
     return <Navigate to={dashboardPath} replace />;

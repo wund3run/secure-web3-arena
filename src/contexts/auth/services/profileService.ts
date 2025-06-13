@@ -20,8 +20,7 @@ export const profileService = {
       if (profile) {
         const typedProfile: UserProfile = {
           ...profile,
-          user_type: profile.user_type as UserProfile['user_type'] || 'project_owner',
-          verification_status: (profile.verification_status as UserProfile['verification_status']) || 'pending',
+          verification_status: (profile.verification_status as UserProfile['verification_status']) || 'unverified',
           social_links: (profile.social_links as Record<string, string>) || {},
           skills: profile.skills || [],
           specializations: profile.specializations || []
@@ -44,7 +43,6 @@ export const profileService = {
         .insert({
           id: userId,
           full_name: fullName,
-          user_type: userType,
           display_name: fullName,
           verification_status: 'pending'
         });
@@ -80,8 +78,7 @@ export const profileService = {
     if (updatedProfile) {
       const typedProfile: UserProfile = {
         ...updatedProfile,
-        user_type: updatedProfile.user_type as UserProfile['user_type'] || 'project_owner',
-        verification_status: (updatedProfile.verification_status as UserProfile['verification_status']) || 'pending',
+        verification_status: (updatedProfile.verification_status as UserProfile['verification_status']) || 'unverified',
         social_links: (updatedProfile.social_links as Record<string, string>) || {},
         skills: updatedProfile.skills || [],
         specializations: updatedProfile.specializations || []

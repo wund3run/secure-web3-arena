@@ -28,7 +28,7 @@ export const EnhancedProfileDisplay: React.FC<EnhancedProfileDisplayProps> = ({
   isOwnProfile = false,
   onEdit
 }) => {
-  const { userProfile } = useAuth();
+  const { userProfile, getUserType } = useAuth();
 
   if (!userProfile) {
     return (
@@ -65,7 +65,8 @@ export const EnhancedProfileDisplay: React.FC<EnhancedProfileDisplayProps> = ({
   };
 
   const getUserTypeDisplay = () => {
-    switch (userProfile.user_type) {
+    const userType = getUserType(); // Use getUserType() method
+    switch (userType) {
       case 'auditor':
         return 'Security Auditor';
       case 'project_owner':

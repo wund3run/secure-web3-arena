@@ -25,3 +25,20 @@ export interface UserRole {
   assigned_at: string;
   assigned_by?: string;
 }
+
+export interface AuthContextProps {
+  user: any;
+  session: any;
+  userProfile: UserProfile | null;
+  userRoles: UserRole[];
+  signIn: (email: string, password: string) => Promise<any>;
+  signUp: (email: string, password: string, fullName: string, userType: 'auditor' | 'project_owner') => Promise<any>;
+  signOut: () => Promise<any>;
+  forgotPassword: (email: string) => Promise<any>;
+  updateProfile: (updates: Partial<UserProfile>) => Promise<any>;
+  updateUserProfile: (updates: Partial<UserProfile>) => Promise<any>;
+  getUserType: () => 'auditor' | 'project_owner' | 'admin' | 'general';
+  hasRole: (role: string) => boolean;
+  loading: boolean;
+  error: string | null;
+}

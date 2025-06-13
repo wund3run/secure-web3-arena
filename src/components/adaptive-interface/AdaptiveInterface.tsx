@@ -13,11 +13,11 @@ interface AdaptiveInterfaceProps {
 }
 
 export function AdaptiveInterface({ children, variant = 'full' }: AdaptiveInterfaceProps) {
-  const { user, userProfile } = useAuth();
+  const { user, userProfile, getUserType } = useAuth();
   const { preferences, behaviorProfile, getUserSegment } = useUserProfiling();
   
   const userSegment = getUserSegment();
-  const userType = userProfile?.user_type || 'general';
+  const userType = getUserType(); // Use getUserType() method instead of userProfile.user_type
   
   // Don't render adaptive interface for new visitors to avoid layout shift
   if (!behaviorProfile || behaviorProfile.visitCount < 2) {
