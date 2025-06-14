@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/auth';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -88,7 +87,8 @@ export const EnhancedAuditorDashboard = () => {
 
       {/* Main Dashboard Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid grid-cols-4 lg:grid-cols-8 w-full">
+        {/* Simplified: 5 main tabs, clear labels, no duplicate 'Projects' */}
+        <TabsList className="grid grid-cols-5 w-full">
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
             Overview
@@ -99,27 +99,15 @@ export const EnhancedAuditorDashboard = () => {
           </TabsTrigger>
           <TabsTrigger value="marketplace" className="flex items-center gap-2">
             <Target className="h-4 w-4" />
-            Projects
+            Marketplace
           </TabsTrigger>
           <TabsTrigger value="collaboration" className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4" />
-            Collaborate
+            Collaboration
           </TabsTrigger>
-          <TabsTrigger value="analyzer" className="flex items-center gap-2">
-            <FileCode className="h-4 w-4" />
-            Analyzer
-          </TabsTrigger>
-          <TabsTrigger value="lifecycle" className="flex items-center gap-2">
-            <Calendar className="h-4 w-4" />
-            Projects
-          </TabsTrigger>
-          <TabsTrigger value="tools" className="flex items-center gap-2">
+          <TabsTrigger value="tools-growth" className="flex items-center gap-2">
             <Shield className="h-4 w-4" />
-            Tools
-          </TabsTrigger>
-          <TabsTrigger value="development" className="flex items-center gap-2">
-            <Brain className="h-4 w-4" />
-            Growth
+            Tools & Growth
           </TabsTrigger>
         </TabsList>
 
@@ -183,24 +171,18 @@ export const EnhancedAuditorDashboard = () => {
           <CollaborationHub />
         </TabsContent>
 
-        {/* Smart Contract Analyzer Tab */}
-        <TabsContent value="analyzer">
-          <SmartContractAnalyzer />
-        </TabsContent>
-
-        {/* Audit Lifecycle Manager Tab */}
-        <TabsContent value="lifecycle">
-          <AuditLifecycleManager />
-        </TabsContent>
-
-        {/* Technical Tools Tab */}
-        <TabsContent value="tools">
-          <TechnicalToolsHub />
-        </TabsContent>
-
-        {/* Professional Development Tab */}
-        <TabsContent value="development">
-          <ProfessionalDevelopmentHub />
+        {/* Tools & Growth Tab, combining analyzer/lifecycle/tools/development for clarity */}
+        <TabsContent value="tools-growth">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <SmartContractAnalyzer />
+              <AuditLifecycleManager />
+            </div>
+            <div>
+              <TechnicalToolsHub />
+              <ProfessionalDevelopmentHub />
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
