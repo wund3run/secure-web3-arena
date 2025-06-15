@@ -6,17 +6,14 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/auth';
 import { 
-  User, 
   MapPin, 
-  Calendar, 
-  Award, 
-  Star, 
   Globe, 
-  Edit2, 
-  Mail, 
-  CheckCircle,
-  Clock,
-  XCircle
+  Calendar, 
+  Star, 
+  Shield, 
+  Edit,
+  ExternalLink,
+  Wallet
 } from 'lucide-react';
 
 interface EnhancedProfileDisplayProps {
@@ -24,137 +21,78 @@ interface EnhancedProfileDisplayProps {
   onEdit?: () => void;
 }
 
-export const EnhancedProfileDisplay: React.FC<EnhancedProfileDisplayProps> = ({
-  isOwnProfile = false,
-  onEdit
-}) => {
+export function EnhancedProfileDisplay({ isOwnProfile = false, onEdit }: EnhancedProfileDisplayProps) {
   const { userProfile, getUserType } = useAuth();
+  const userType = getUserType();
 
   if (!userProfile) {
     return (
-      <Card>
-        <CardContent className="p-6">
-          <div className="text-center text-muted-foreground">
-            No profile data available
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex items-center justify-center h-64">
+        <p className="text-muted-foreground">Loading profile...</p>
+      </div>
     );
   }
 
-  const getVerificationBadge = () => {
-    switch (userProfile.verification_status) {
-      case 'verified':
-        return <Badge variant="default" className="flex items-center gap-1">
-          <CheckCircle className="h-3 w-3" />
-          Verified
-        </Badge>;
-      case 'pending':
-        return <Badge variant="secondary" className="flex items-center gap-1">
-          <Clock className="h-3 w-3" />
-          Pending
-        </Badge>;
-      case 'rejected':
-        return <Badge variant="destructive" className="flex items-center gap-1">
-          <XCircle className="h-3 w-3" />
-          Rejected
-        </Badge>;
-      default:
-        return null;
-    }
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
   };
 
-  const getUserTypeDisplay = () => {
-    const userType = getUserType(); // Use getUserType() method
-    switch (userType) {
-      case 'auditor':
-        return 'Security Auditor';
-      case 'project_owner':
-        return 'Project Owner';
-      case 'admin':
-        return 'Platform Administrator';
-      default:
-        return 'User';
-    }
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long'
+    });
   };
 
   return (
     <div className="space-y-6">
-      {/* Header Card */}
+      {/* Profile Header */}
       <Card>
         <CardHeader className="pb-4">
           <div className="flex items-start justify-between">
-            <div className="flex items-start space-x-4">
+            <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20">
-                <AvatarImage 
-                  src={userProfile.avatar_url} 
-                  alt={userProfile.display_name || userProfile.full_name || 'User'} 
-                />
+                <AvatarImage src={userProfile.avatar_url || ''} />
                 <AvatarFallback className="text-lg">
-                  {((userProfile.display_name || userProfile.full_name || 'U').charAt(0)).toUpperCase()}
+                  {getInitials(userProfile.display_name || userProfile.full_name || 'U')}
                 </AvatarFallback>
               </Avatar>
-              
               <div className="space-y-2">
                 <div>
                   <h1 className="text-2xl font-bold">
-                    {userProfile.display_name || userProfile.full_name || 'User'}
+                    {userProfile.display_name || userProfile.full_name}
                   </h1>
-                  {userProfile.full_name && userProfile.display_name && (
-                    <p className="text-muted-foreground">{userProfile.full_name}</p>
+                  <p className="text-muted-foreground capitalize">
+                    {userType} • Member since {formatDate(userProfile.created_at)}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary" className="flex items-center gap-1">
+                    <Shield className="h-3 w-3" />
+                    {userProfile.verification_status || 'Pending'}
+                  </Badge>
+                  {userProfile.projects_completed && (
+                    <Badge variant="outline">
+                      {userProfile.projects_completed} Projects Completed
+                    </Badge>
                   )}
                 </div>
-                
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline">{getUserTypeDisplay()}</Badge>
-                  {getVerificationBadge()}
-                </div>
-                
-                {userProfile.bio && (
-                  <p className="text-muted-foreground max-w-2xl">{userProfile.bio}</p>
-                )}
               </div>
             </div>
-            
-            {isOwnProfile && onEdit && (
-              <Button onClick={onEdit} variant="outline" size="sm">
-                <Edit2 className="h-4 w-4 mr-2" />
+            {isOwnProfile && (
+              <Button variant="outline" onClick={onEdit}>
+                <Edit className="h-4 w-4 mr-2" />
                 Edit Profile
               </Button>
             )}
           </div>
         </CardHeader>
-      </Card>
-
-      {/* Details Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Professional Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5" />
-              Professional Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {userProfile.years_of_experience !== undefined && (
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">
-                  {userProfile.years_of_experience} years of experience
-                </span>
-              </div>
-            )}
-            
-            {userProfile.projects_completed !== undefined && (
-              <div className="flex items-center gap-2">
-                <Award className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">
-                  {userProfile.projects_completed} projects completed
-                </span>
-              </div>
-            )}
-            
+        <CardContent>
+          {userProfile.bio && (
+            <p className="text-muted-foreground mb-4">{userProfile.bio}</p>
+          )}
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {userProfile.website && (
               <div className="flex items-center gap-2">
                 <Globe className="h-4 w-4 text-muted-foreground" />
@@ -162,83 +100,92 @@ export const EnhancedProfileDisplay: React.FC<EnhancedProfileDisplayProps> = ({
                   href={userProfile.website} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline"
+                  className="text-blue-600 hover:underline flex items-center gap-1"
                 >
-                  {userProfile.website}
+                  Website
+                  <ExternalLink className="h-3 w-3" />
                 </a>
               </div>
             )}
-          </CardContent>
-        </Card>
-
-        {/* Specializations */}
-        {userProfile.specializations && userProfile.specializations.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Star className="h-5 w-5" />
-                Specializations
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {userProfile.specializations.map((spec, index) => (
-                  <Badge key={index} variant="secondary">
-                    {spec}
-                  </Badge>
-                ))}
+            
+            {userProfile.wallet_address && (
+              <div className="flex items-center gap-2">
+                <Wallet className="h-4 w-4 text-muted-foreground" />
+                <span className="font-mono text-sm">
+                  {userProfile.wallet_address.slice(0, 6)}...{userProfile.wallet_address.slice(-4)}
+                </span>
               </div>
-            </CardContent>
-          </Card>
-        )}
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
-        {/* Skills */}
-        {userProfile.skills && userProfile.skills.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Award className="h-5 w-5" />
-                Skills
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+      {/* Skills & Specializations */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Skills</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {userProfile.skills && userProfile.skills.length > 0 ? (
               <div className="flex flex-wrap gap-2">
-                {userProfile.skills.map((skill, index) => (
-                  <Badge key={index} variant="outline">
+                {userProfile.skills.map((skill) => (
+                  <Badge key={skill} variant="secondary">
                     {skill}
                   </Badge>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        )}
+            ) : (
+              <p className="text-muted-foreground">No skills listed</p>
+            )}
+          </CardContent>
+        </Card>
 
-        {/* Social Links */}
-        {userProfile.social_links && Object.keys(userProfile.social_links).length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Globe className="h-5 w-5" />
-                Social Links
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {Object.entries(userProfile.social_links).map(([platform, url]) => (
-                <a
-                  key={platform}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-primary hover:underline"
-                >
-                  <Globe className="h-4 w-4" />
-                  {platform.charAt(0).toUpperCase() + platform.slice(1)}
-                </a>
-              ))}
-            </CardContent>
-          </Card>
-        )}
+        <Card>
+          <CardHeader>
+            <CardTitle>Specializations</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {userProfile.specializations && userProfile.specializations.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {userProfile.specializations.map((spec) => (
+                  <Badge key={spec} variant="outline">
+                    {spec}
+                  </Badge>
+                ))}
+              </div>
+            ) : (
+              <p className="text-muted-foreground">No specializations listed</p>
+            )}
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Statistics */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Profile Statistics</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="text-center p-4 border rounded-lg">
+              <div className="text-2xl font-bold">{userProfile.projects_completed || 0}</div>
+              <div className="text-sm text-muted-foreground">Projects Completed</div>
+            </div>
+            <div className="text-center p-4 border rounded-lg">
+              <div className="text-2xl font-bold">{userProfile.years_of_experience || 0}</div>
+              <div className="text-sm text-muted-foreground">Years Experience</div>
+            </div>
+            <div className="text-center p-4 border rounded-lg">
+              <div className="text-2xl font-bold flex items-center justify-center gap-1">
+                <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                4.9
+              </div>
+              <div className="text-sm text-muted-foreground">Average Rating</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
-};
+}

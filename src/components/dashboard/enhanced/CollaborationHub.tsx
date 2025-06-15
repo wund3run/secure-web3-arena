@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Users, Video, FileShare } from 'lucide-react';
+import { MessageSquare, Users, Video, Share } from 'lucide-react';
 
 export function CollaborationHub() {
   return (
@@ -79,7 +79,7 @@ export function CollaborationHub() {
         <Card className="md:col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FileShare className="h-5 w-5" />
+              <Share className="h-5 w-5" />
               Shared Files
             </CardTitle>
           </CardHeader>

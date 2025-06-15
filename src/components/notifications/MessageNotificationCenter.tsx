@@ -3,188 +3,129 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Bell, Check, MessageSquare, FileText, Clock } from 'lucide-react';
-import { useAuth } from '@/contexts/auth';
-import { supabase } from '@/integrations/supabase/client';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Bell, Check, MessageSquare, FileText, AlertCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
-interface MessageNotification {
+interface NotificationItem {
   id: string;
   user_id: string;
-  message_id: string;
-  notification_type: string;
-  read_at: string | null;
+  message_id?: string;
+  notification_type: 'message' | 'file_shared' | 'milestone_update' | 'audit_update';
+  is_read: boolean;
   created_at: string;
-  message?: {
-    content: string;
-    sender_id: string;
-    conversation_id: string;
-    sender_profile?: {
-      full_name: string;
-    };
+  sender?: {
+    name: string;
+    avatar_url?: string;
   };
+  content?: string;
+  title?: string;
 }
 
-export const MessageNotificationCenter: React.FC = () => {
-  const { user } = useAuth();
-  const [notifications, setNotifications] = useState<MessageNotification[]>([]);
+export function MessageNotificationCenter() {
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
+    // Mock notifications for demonstration
+    const mockNotifications: NotificationItem[] = [
+      {
+        id: '1',
+        user_id: 'current-user',
+        message_id: 'msg-1',
+        notification_type: 'message',
+        is_read: false,
+        created_at: new Date(Date.now() - 300000).toISOString(),
+        sender: {
+          name: 'Sarah Chen',
+          avatar_url: ''
+        },
+        title: 'New message from Sarah Chen',
+        content: 'I\'ve completed the initial review of your smart contract.'
+      },
+      {
+        id: '2',
+        user_id: 'current-user',
+        notification_type: 'file_shared',
+        is_read: false,
+        created_at: new Date(Date.now() - 600000).toISOString(),
+        sender: {
+          name: 'Alex Rodriguez',
+          avatar_url: ''
+        },
+        title: 'File shared by Alex Rodriguez',
+        content: 'Security Report Draft - DeFi Protocol Audit'
+      },
+      {
+        id: '3',
+        user_id: 'current-user',
+        notification_type: 'milestone_update',
+        is_read: true,
+        created_at: new Date(Date.now() - 3600000).toISOString(),
+        sender: {
+          name: 'Maya Patel',
+          avatar_url: ''
+        },
+        title: 'Milestone completed',
+        content: 'Code Review phase has been completed for NFT Marketplace audit'
+      },
+      {
+        id: '4',
+        user_id: 'current-user',
+        notification_type: 'audit_update',
+        is_read: true,
+        created_at: new Date(Date.now() - 7200000).toISOString(),
+        title: 'Audit status update',
+        content: 'Your DeFi Protocol audit has moved to the Testing phase'
+      }
+    ];
 
-    fetchNotifications();
-    setupRealtimeSubscription();
-  }, [user]);
+    setNotifications(mockNotifications);
+    setLoading(false);
+  }, []);
 
-  const fetchNotifications = async () => {
-    if (!user) return;
-
-    try {
-      const { data: notificationData, error } = await supabase
-        .from('message_notifications')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(50);
-
-      if (error) throw error;
-
-      // Fetch related chat messages and sender profiles separately
-      const messageIds = notificationData?.map(n => n.message_id).filter(Boolean) || [];
-      const { data: messages } = await supabase
-        .from('chat_messages')
-        .select('*')
-        .in('id', messageIds);
-
-      const senderIds = messages?.map(m => m.sender_id).filter(Boolean) || [];
-      const { data: senderProfiles } = await supabase
-        .from('extended_profiles')
-        .select('*')
-        .in('id', senderIds);
-
-      const formattedNotifications = (notificationData || []).map(notification => {
-        const message = messages?.find(m => m.id === notification.message_id);
-        const senderProfile = message ? senderProfiles?.find(p => p.id === message.sender_id) : null;
-
-        return {
-          ...notification,
-          message: message ? {
-            content: message.content,
-            sender_id: message.sender_id,
-            conversation_id: message.conversation_id,
-            sender_profile: {
-              full_name: senderProfile?.full_name || 'Unknown User'
-            }
-          } : undefined
-        };
-      });
-
-      setNotifications(formattedNotifications);
-    } catch (error) {
-      console.error('Error fetching notifications:', error);
-    } finally {
-      setLoading(false);
-    }
+  const markAsRead = (notificationId: string) => {
+    setNotifications(prev => 
+      prev.map(notification => 
+        notification.id === notificationId 
+          ? { ...notification, is_read: true }
+          : notification
+      )
+    );
   };
 
-  const setupRealtimeSubscription = () => {
-    if (!user) return;
-
-    const channel = supabase
-      .channel('notification_updates')
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'message_notifications',
-        filter: `user_id=eq.${user.id}`
-      }, () => {
-        fetchNotifications();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  };
-
-  const markAsRead = async (notificationId: string) => {
-    try {
-      const { error } = await supabase
-        .from('message_notifications')
-        .update({ read_at: new Date().toISOString() })
-        .eq('id', notificationId);
-
-      if (error) throw error;
-
-      setNotifications(prev =>
-        prev.map(notification =>
-          notification.id === notificationId
-            ? { ...notification, read_at: new Date().toISOString() }
-            : notification
-        )
-      );
-    } catch (error) {
-      console.error('Error marking notification as read:', error);
-    }
-  };
-
-  const markAllAsRead = async () => {
-    const unreadIds = notifications
-      .filter(n => !n.read_at)
-      .map(n => n.id);
-
-    if (unreadIds.length === 0) return;
-
-    try {
-      const { error } = await supabase
-        .from('message_notifications')
-        .update({ read_at: new Date().toISOString() })
-        .in('id', unreadIds);
-
-      if (error) throw error;
-
-      setNotifications(prev =>
-        prev.map(notification => ({
-          ...notification,
-          read_at: notification.read_at || new Date().toISOString()
-        }))
-      );
-    } catch (error) {
-      console.error('Error marking all notifications as read:', error);
-    }
+  const markAllAsRead = () => {
+    setNotifications(prev => 
+      prev.map(notification => ({ ...notification, is_read: true }))
+    );
   };
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
+      case 'message':
+        return <MessageSquare className="h-4 w-4 text-blue-500" />;
       case 'file_shared':
-        return <FileText className="h-4 w-4" />;
+        return <FileText className="h-4 w-4 text-green-500" />;
       case 'milestone_update':
-        return <Clock className="h-4 w-4" />;
+        return <Check className="h-4 w-4 text-purple-500" />;
+      case 'audit_update':
+        return <AlertCircle className="h-4 w-4 text-orange-500" />;
       default:
-        return <MessageSquare className="h-4 w-4" />;
+        return <Bell className="h-4 w-4 text-gray-500" />;
     }
   };
 
-  const getNotificationTitle = (type: string) => {
-    switch (type) {
-      case 'file_shared':
-        return 'File Shared';
-      case 'milestone_update':
-        return 'Milestone Update';
-      default:
-        return 'New Message';
-    }
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
   };
 
-  const unreadCount = notifications.filter(n => !n.read_at).length;
+  const unreadCount = notifications.filter(n => !n.is_read).length;
 
   if (loading) {
     return (
       <Card className="w-full max-w-2xl">
-        <CardContent className="flex justify-center items-center h-32">
-          <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-primary"></div>
+        <CardContent className="flex items-center justify-center h-64">
+          <p className="text-muted-foreground">Loading notifications...</p>
         </CardContent>
       </Card>
     );
@@ -193,26 +134,24 @@ export const MessageNotificationCenter: React.FC = () => {
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
             <Bell className="h-5 w-5" />
             Notifications
             {unreadCount > 0 && (
-              <Badge variant="default" className="ml-2">
+              <Badge variant="destructive" className="text-xs">
                 {unreadCount}
               </Badge>
             )}
-          </CardTitle>
+          </div>
           {unreadCount > 0 && (
             <Button variant="outline" size="sm" onClick={markAllAsRead}>
-              <Check className="h-4 w-4 mr-2" />
-              Mark all read
+              Mark all as read
             </Button>
           )}
-        </div>
+        </CardTitle>
       </CardHeader>
-
-      <CardContent className="space-y-4">
+      <CardContent>
         {notifications.length === 0 ? (
           <div className="text-center py-8">
             <Bell className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
@@ -222,51 +161,51 @@ export const MessageNotificationCenter: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
-            {notifications.map(notification => (
+          <div className="space-y-4">
+            {notifications.map((notification) => (
               <div
                 key={notification.id}
-                className={`p-4 rounded-lg border transition-colors ${
-                  notification.read_at ? 'bg-background' : 'bg-muted/50'
+                className={`p-4 rounded-lg border cursor-pointer transition-colors hover:bg-muted/50 ${
+                  !notification.is_read ? 'bg-blue-50 border-blue-200' : ''
                 }`}
+                onClick={() => markAsRead(notification.id)}
               >
                 <div className="flex items-start gap-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback>
-                      {notification.message?.sender_profile?.full_name?.[0] || 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-
+                  <div className="flex-shrink-0">
+                    {notification.sender ? (
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={notification.sender.avatar_url} />
+                        <AvatarFallback>
+                          {getInitials(notification.sender.name)}
+                        </AvatarFallback>
+                      </Avatar>
+                    ) : (
+                      <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
+                        {getNotificationIcon(notification.notification_type)}
+                      </div>
+                    )}
+                  </div>
+                  
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      {getNotificationIcon(notification.notification_type)}
-                      <span className="font-medium text-sm">
-                        {getNotificationTitle(notification.notification_type)}
-                      </span>
-                      <span className="text-sm text-muted-foreground">
-                        from {notification.message?.sender_profile?.full_name || 'Unknown User'}
-                      </span>
-                    </div>
-
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                      {notification.message?.content || 'New notification'}
-                    </p>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
-                      </span>
-
-                      {!notification.read_at && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => markAsRead(notification.id)}
-                        >
-                          <Check className="h-3 w-3 mr-1" />
-                          Mark read
-                        </Button>
-                      )}
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4 className="font-medium text-sm">
+                          {notification.title}
+                        </h4>
+                        {notification.content && (
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {notification.content}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 ml-2">
+                        {!notification.is_read && (
+                          <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
+                        )}
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">
+                          {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -277,4 +216,4 @@ export const MessageNotificationCenter: React.FC = () => {
       </CardContent>
     </Card>
   );
-};
+}

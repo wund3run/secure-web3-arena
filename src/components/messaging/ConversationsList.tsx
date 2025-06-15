@@ -1,12 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Search, MessageSquare } from 'lucide-react';
-import { useAuth } from '@/contexts/auth';
-import { supabase } from '@/integrations/supabase/client';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Search, MessageSquare, Plus } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 interface Conversation {
@@ -20,11 +19,12 @@ interface Conversation {
   other_participant?: {
     id: string;
     name: string;
+    avatar_url?: string;
   };
-  latest_message?: {
+  last_message?: {
     content: string;
-    created_at: string;
-    sender_id: string;
+    timestamp: string;
+    sender_name: string;
   };
   unread_count?: number;
 }
@@ -34,179 +34,180 @@ interface ConversationsListProps {
   selectedConversationId?: string;
 }
 
-export const ConversationsList: React.FC<ConversationsListProps> = ({
-  onSelectConversation,
-  selectedConversationId,
-}) => {
-  const { user } = useAuth();
+export function ConversationsList({ onSelectConversation, selectedConversationId }: ConversationsListProps) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
-
-    fetchConversations();
-  }, [user]);
-
-  const fetchConversations = async () => {
-    if (!user) return;
-
-    try {
-      // For demo purposes, create mock conversations
-      const mockConversations: Conversation[] = [
-        {
-          id: 'conv-1',
-          audit_request_id: 'audit-1',
-          client_id: user.id === 'client-1' ? user.id : 'client-1',
-          auditor_id: user.id === 'auditor-1' ? user.id : 'auditor-1',
-          status: 'active',
-          created_at: new Date(Date.now() - 86400000).toISOString(),
-          updated_at: new Date(Date.now() - 3600000).toISOString(),
-          other_participant: {
-            id: user.id === 'client-1' ? 'auditor-1' : 'client-1',
-            name: user.id === 'client-1' ? 'Alice Security' : 'DeFi Protocol Team'
-          },
-          latest_message: {
-            content: 'I\'ve completed the initial review and found several issues to discuss.',
-            created_at: new Date(Date.now() - 3600000).toISOString(),
-            sender_id: user.id === 'client-1' ? 'auditor-1' : 'client-1'
-          },
-          unread_count: 2
+    // Mock data for demonstration
+    const mockConversations: Conversation[] = [
+      {
+        id: '1',
+        audit_request_id: 'audit-1',
+        status: 'active',
+        created_at: new Date(Date.now() - 86400000).toISOString(),
+        updated_at: new Date(Date.now() - 3600000).toISOString(),
+        other_participant: {
+          id: 'user-1',
+          name: 'Sarah Chen',
+          avatar_url: ''
         },
-        {
-          id: 'conv-2',
-          audit_request_id: 'audit-2',
-          client_id: user.id === 'client-2' ? user.id : 'client-2',
-          auditor_id: user.id === 'auditor-2' ? user.id : 'auditor-2',
-          status: 'active',
-          created_at: new Date(Date.now() - 172800000).toISOString(),
-          updated_at: new Date(Date.now() - 7200000).toISOString(),
-          other_participant: {
-            id: user.id === 'client-2' ? 'auditor-2' : 'client-2',
-            name: user.id === 'client-2' ? 'Bob Auditor' : 'NFT Marketplace'
-          },
-          latest_message: {
-            content: 'The final report is ready for your review.',
-            created_at: new Date(Date.now() - 7200000).toISOString(),
-            sender_id: user.id === 'client-2' ? 'auditor-2' : 'client-2'
-          },
-          unread_count: 0
-        }
-      ];
+        last_message: {
+          content: 'I\'ve completed the initial review of your smart contract.',
+          timestamp: new Date(Date.now() - 3600000).toISOString(),
+          sender_name: 'Sarah Chen'
+        },
+        unread_count: 2
+      },
+      {
+        id: '2',
+        audit_request_id: 'audit-2',
+        status: 'active',
+        created_at: new Date(Date.now() - 172800000).toISOString(),
+        updated_at: new Date(Date.now() - 7200000).toISOString(),
+        other_participant: {
+          id: 'user-2',
+          name: 'Alex Rodriguez',
+          avatar_url: ''
+        },
+        last_message: {
+          content: 'Thanks for the detailed report. When can we schedule a call?',
+          timestamp: new Date(Date.now() - 7200000).toISOString(),
+          sender_name: 'You'
+        },
+        unread_count: 0
+      },
+      {
+        id: '3',
+        audit_request_id: 'audit-3',
+        status: 'active',
+        created_at: new Date(Date.now() - 259200000).toISOString(),
+        updated_at: new Date(Date.now() - 86400000).toISOString(),
+        other_participant: {
+          id: 'user-3',
+          name: 'Maya Patel',
+          avatar_url: ''
+        },
+        last_message: {
+          content: 'The vulnerability assessment is ready for your review.',
+          timestamp: new Date(Date.now() - 86400000).toISOString(),
+          sender_name: 'Maya Patel'
+        },
+        unread_count: 1
+      }
+    ];
 
-      setConversations(mockConversations);
-    } catch (error) {
-      console.error('Error fetching conversations:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setConversations(mockConversations);
+    setLoading(false);
+  }, []);
 
-  const filteredConversations = conversations.filter(conv =>
-    conv.other_participant?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    conv.latest_message?.content.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredConversations = conversations.filter(conversation =>
+    conversation.other_participant?.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const renderConversation = (conversation: Conversation) => {
-    const isSelected = conversation.id === selectedConversationId;
-    const isFromCurrentUser = conversation.latest_message?.sender_id === user?.id;
-
-    return (
-      <div
-        key={conversation.id}
-        className={`p-4 cursor-pointer border-b transition-colors ${
-          isSelected ? 'bg-muted' : 'hover:bg-muted/50'
-        }`}
-        onClick={() => onSelectConversation(conversation)}
-      >
-        <div className="flex items-start gap-3">
-          <Avatar className="h-10 w-10">
-            <AvatarFallback>
-              {conversation.other_participant?.name?.split(' ').map(n => n[0]).join('') || 'U'}
-            </AvatarFallback>
-          </Avatar>
-
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-1">
-              <h3 className="font-medium truncate">
-                {conversation.other_participant?.name || 'Unknown User'}
-              </h3>
-              <div className="flex items-center gap-2">
-                {(conversation.unread_count || 0) > 0 && (
-                  <Badge variant="default" className="h-5 w-5 rounded-full p-0 text-xs">
-                    {conversation.unread_count}
-                  </Badge>
-                )}
-                {conversation.latest_message && (
-                  <span className="text-xs text-muted-foreground">
-                    {formatDistanceToNow(new Date(conversation.latest_message.created_at), { addSuffix: true })}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {conversation.latest_message && (
-              <p className="text-sm text-muted-foreground truncate">
-                {isFromCurrentUser && 'You: '}
-                {conversation.latest_message.content}
-              </p>
-            )}
-
-            <div className="flex items-center gap-2 mt-2">
-              <Badge variant="outline" className="text-xs">
-                Audit Project
-              </Badge>
-              <Badge 
-                variant={conversation.status === 'active' ? 'default' : 'secondary'} 
-                className="text-xs"
-              >
-                {conversation.status}
-              </Badge>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
   };
+
+  if (loading) {
+    return (
+      <Card className="h-full">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MessageSquare className="h-5 w-5" />
+            Conversations
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center h-64">
+            <p className="text-muted-foreground">Loading conversations...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="h-full">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2">
-          <MessageSquare className="h-5 w-5" />
-          Conversations
+      <CardHeader>
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <MessageSquare className="h-5 w-5" />
+            Conversations
+          </div>
+          <Button size="sm" variant="outline">
+            <Plus className="h-4 w-4" />
+          </Button>
         </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
         <div className="relative">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search conversations..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-8"
+            className="pl-10"
           />
         </div>
-      </CardHeader>
 
-      <CardContent className="p-0">
-        {loading ? (
-          <div className="flex justify-center items-center h-32">
-            <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-primary"></div>
-          </div>
-        ) : filteredConversations.length > 0 ? (
-          <div className="max-h-[500px] overflow-y-auto">
-            {filteredConversations.map(renderConversation)}
-          </div>
-        ) : (
-          <div className="text-center p-8">
-            <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-lg font-medium mb-2">No conversations yet</h3>
-            <p className="text-muted-foreground">
-              Start a conversation by requesting an audit or responding to a project.
-            </p>
-          </div>
-        )}
+        <div className="space-y-2">
+          {filteredConversations.length === 0 ? (
+            <div className="text-center py-8">
+              <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+              <h3 className="text-lg font-medium mb-2">No conversations</h3>
+              <p className="text-muted-foreground">
+                Start a new conversation with a project or auditor
+              </p>
+            </div>
+          ) : (
+            filteredConversations.map((conversation) => (
+              <div
+                key={conversation.id}
+                onClick={() => onSelectConversation(conversation)}
+                className={`p-3 rounded-lg border cursor-pointer transition-colors hover:bg-muted/50 ${
+                  selectedConversationId === conversation.id ? 'bg-muted border-primary' : ''
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={conversation.other_participant?.avatar_url} />
+                    <AvatarFallback>
+                      {getInitials(conversation.other_participant?.name || 'U')}
+                    </AvatarFallback>
+                  </Avatar>
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <h4 className="font-medium truncate">
+                        {conversation.other_participant?.name}
+                      </h4>
+                      <div className="flex items-center gap-1">
+                        {conversation.unread_count && conversation.unread_count > 0 && (
+                          <Badge variant="default" className="text-xs px-1.5">
+                            {conversation.unread_count}
+                          </Badge>
+                        )}
+                        <span className="text-xs text-muted-foreground">
+                          {formatDistanceToNow(new Date(conversation.last_message?.timestamp || conversation.updated_at), { addSuffix: true })}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    {conversation.last_message && (
+                      <p className="text-sm text-muted-foreground truncate">
+                        {conversation.last_message.sender_name === 'You' ? 'You: ' : ''}
+                        {conversation.last_message.content}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </CardContent>
     </Card>
   );
-};
+}

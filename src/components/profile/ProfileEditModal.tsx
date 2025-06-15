@@ -1,11 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/auth';
 import { toast } from 'sonner';
@@ -16,46 +15,73 @@ interface ProfileEditModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
-  open,
-  onOpenChange
-}) => {
-  const { userProfile, updateUserProfile } = useAuth();
+export function ProfileEditModal({ open, onOpenChange }: ProfileEditModalProps) {
+  const { user, userProfile, updateUserProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    full_name: userProfile?.full_name || '',
-    display_name: userProfile?.display_name || '',
-    bio: userProfile?.bio || '',
-    website: userProfile?.website || '',
-    years_of_experience: userProfile?.years_of_experience || 0,
-    specializations: userProfile?.specializations || []
+    display_name: '',
+    full_name: '',
+    bio: '',
+    website: '',
+    wallet_address: '',
+    skills: [] as string[],
+    specializations: [] as string[]
   });
+  const [newSkill, setNewSkill] = useState('');
   const [newSpecialization, setNewSpecialization] = useState('');
 
-  const availableSpecializations = [
-    'Smart Contract Security',
-    'DeFi Protocols',
-    'NFT Security',
-    'Layer 2 Solutions',
-    'Cross-chain Bridges',
-    'DAO Governance',
-    'Tokenomics',
-    'Flash Loan Attacks',
-    'Reentrancy Vulnerabilities',
-    'Access Control',
-    'Oracle Security',
-    'Gas Optimization'
-  ];
+  useEffect(() => {
+    if (userProfile) {
+      setFormData({
+        display_name: userProfile.display_name || '',
+        full_name: userProfile.full_name || '',
+        bio: userProfile.bio || '',
+        website: userProfile.website || '',
+        wallet_address: userProfile.wallet_address || '',
+        skills: userProfile.skills || [],
+        specializations: userProfile.specializations || []
+      });
+    }
+  }, [userProfile]);
 
-  const handleInputChange = (field: string, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+
+    setLoading(true);
+    try {
+      await updateUserProfile(user.id, formData);
+      onOpenChange(false);
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+      toast.error('Failed to update profile');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const addSpecialization = (spec: string) => {
-    if (spec && !formData.specializations.includes(spec)) {
+  const addSkill = () => {
+    if (newSkill.trim() && !formData.skills.includes(newSkill.trim())) {
       setFormData(prev => ({
         ...prev,
-        specializations: [...prev.specializations, spec]
+        skills: [...prev.skills, newSkill.trim()]
+      }));
+      setNewSkill('');
+    }
+  };
+
+  const removeSkill = (skill: string) => {
+    setFormData(prev => ({
+      ...prev,
+      skills: prev.skills.filter(s => s !== skill)
+    }));
+  };
+
+  const addSpecialization = () => {
+    if (newSpecialization.trim() && !formData.specializations.includes(newSpecialization.trim())) {
+      setFormData(prev => ({
+        ...prev,
+        specializations: [...prev.specializations, newSpecialization.trim()]
       }));
       setNewSpecialization('');
     }
@@ -68,133 +94,128 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      await updateUserProfile(formData);
-      toast.success('Profile updated successfully');
-      onOpenChange(false);
-    } catch (error) {
-      toast.error('Failed to update profile');
-      console.error('Profile update error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Profile</DialogTitle>
         </DialogHeader>
-
+        
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="full_name">Full Name</Label>
-              <Input
-                id="full_name"
-                value={formData.full_name}
-                onChange={(e) => handleInputChange('full_name', e.target.value)}
-                placeholder="Enter your full name"
-              />
-            </div>
-
-            <div className="space-y-2">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
               <Label htmlFor="display_name">Display Name</Label>
               <Input
                 id="display_name"
                 value={formData.display_name}
-                onChange={(e) => handleInputChange('display_name', e.target.value)}
-                placeholder="Enter your display name"
+                onChange={(e) => setFormData(prev => ({ ...prev, display_name: e.target.value }))}
+                placeholder="How you want to be displayed"
+              />
+            </div>
+            <div>
+              <Label htmlFor="full_name">Full Name</Label>
+              <Input
+                id="full_name"
+                value={formData.full_name}
+                onChange={(e) => setFormData(prev => ({ ...prev, full_name: e.target.value }))}
+                placeholder="Your legal name"
               />
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div>
             <Label htmlFor="bio">Bio</Label>
             <Textarea
               id="bio"
               value={formData.bio}
-              onChange={(e) => handleInputChange('bio', e.target.value)}
-              placeholder="Tell us about yourself and your expertise..."
+              onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
+              placeholder="Tell us about yourself and your expertise"
               rows={3}
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
               <Label htmlFor="website">Website</Label>
               <Input
                 id="website"
                 type="url"
                 value={formData.website}
-                onChange={(e) => handleInputChange('website', e.target.value)}
-                placeholder="https://your-website.com"
+                onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
+                placeholder="https://yourwebsite.com"
               />
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="years_of_experience">Years of Experience</Label>
+            <div>
+              <Label htmlFor="wallet_address">Wallet Address</Label>
               <Input
-                id="years_of_experience"
-                type="number"
-                min="0"
-                max="50"
-                value={formData.years_of_experience}
-                onChange={(e) => handleInputChange('years_of_experience', parseInt(e.target.value) || 0)}
+                id="wallet_address"
+                value={formData.wallet_address}
+                onChange={(e) => setFormData(prev => ({ ...prev, wallet_address: e.target.value }))}
+                placeholder="0x..."
               />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label>Specializations</Label>
+          <div>
+            <Label>Skills</Label>
             <div className="flex gap-2 mb-2">
-              <Select value={newSpecialization} onValueChange={setNewSpecialization}>
-                <SelectTrigger className="flex-1">
-                  <SelectValue placeholder="Add a specialization" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableSpecializations
-                    .filter(spec => !formData.specializations.includes(spec))
-                    .map(spec => (
-                      <SelectItem key={spec} value={spec}>{spec}</SelectItem>
-                    ))
-                  }
-                </SelectContent>
-              </Select>
-              <Button
-                type="button"
-                onClick={() => addSpecialization(newSpecialization)}
-                disabled={!newSpecialization}
-              >
+              <Input
+                value={newSkill}
+                onChange={(e) => setNewSkill(e.target.value)}
+                placeholder="Add a skill"
+                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill())}
+              />
+              <Button type="button" onClick={addSkill} variant="outline">
                 Add
               </Button>
             </div>
-            
             <div className="flex flex-wrap gap-2">
-              {formData.specializations.map((spec, index) => (
-                <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                  {spec}
-                  <X 
-                    className="h-3 w-3 cursor-pointer" 
-                    onClick={() => removeSpecialization(spec)}
-                  />
+              {formData.skills.map((skill) => (
+                <Badge key={skill} variant="secondary" className="flex items-center gap-1">
+                  {skill}
+                  <button
+                    type="button"
+                    onClick={() => removeSkill(skill)}
+                    className="ml-1 hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
                 </Badge>
               ))}
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={loading}
-            >
+          <div>
+            <Label>Specializations</Label>
+            <div className="flex gap-2 mb-2">
+              <Input
+                value={newSpecialization}
+                onChange={(e) => setNewSpecialization(e.target.value)}
+                placeholder="Add a specialization"
+                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSpecialization())}
+              />
+              <Button type="button" onClick={addSpecialization} variant="outline">
+                Add
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {formData.specializations.map((spec) => (
+                <Badge key={spec} variant="secondary" className="flex items-center gap-1">
+                  {spec}
+                  <button
+                    type="button"
+                    onClick={() => removeSpecialization(spec)}
+                    className="ml-1 hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>
@@ -205,4 +226,4 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       </DialogContent>
     </Dialog>
   );
-};
+}
