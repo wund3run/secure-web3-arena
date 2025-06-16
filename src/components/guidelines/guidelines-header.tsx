@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { HawklyLogo } from '@/components/layout/hawkly-logo';
+import { HawklyLogo } from '@/components/layout/HawklyLogo';
 
 export function GuidelinesHeader() {
   return (

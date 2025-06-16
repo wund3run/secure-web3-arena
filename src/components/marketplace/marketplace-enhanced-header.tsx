@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Search, Filter, Star } from 'lucide-react';
-import { HawklyLogo } from '@/components/layout/hawkly-logo';
+import { HawklyLogo } from '@/components/layout/HawklyLogo';
 
 export function MarketplaceEnhancedHeader() {
   return (
