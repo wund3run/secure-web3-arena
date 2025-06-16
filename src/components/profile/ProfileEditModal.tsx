@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -50,7 +49,7 @@ export function ProfileEditModal({ open, onOpenChange }: ProfileEditModalProps) 
 
     setLoading(true);
     try {
-      await updateUserProfile(user.id, formData);
+      await updateUserProfile(formData);
       onOpenChange(false);
     } catch (error) {
       console.error('Failed to update profile:', error);
