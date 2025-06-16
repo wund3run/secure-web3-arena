@@ -4,9 +4,12 @@ import { StandardizedLayout } from "@/components/layout/StandardizedLayout";
 import { SkipLink } from "@/components/ui/skip-link";
 import { EnhancedErrorBoundary } from "@/components/error-handling/EnhancedErrorBoundary";
 import { NavigationOptimizer } from "@/components/layout/navigation/NavigationOptimizer";
-import { TrustBuildingHero } from "@/components/home/TrustBuildingHero";
 
 // Lazy load heavy components
+const IndexPageLayout = React.lazy(() => 
+  import("@/components/home/index-page-layout").then(m => ({ default: m.IndexPageLayout }))
+);
+
 const SupportButtonEnhanced = React.lazy(() => 
   import("@/components/ui/support-button-enhanced").then(m => ({ default: m.SupportButtonEnhanced }))
 );
@@ -30,7 +33,9 @@ export default function Home() {
         
         <main id="main-content">
           <EnhancedErrorBoundary>
-            <TrustBuildingHero />
+            <React.Suspense fallback={<ComponentFallback />}>
+              <IndexPageLayout />
+            </React.Suspense>
           </EnhancedErrorBoundary>
         </main>
         
