@@ -16,24 +16,34 @@ export async function fetchRecentActivity(userId: string): Promise<RecentActivit
   try {
     const activities: RecentActivity[] = [];
 
-    // Fetch recent messages
+    // Fetch recent messages - using basic query without join since relation doesn't exist
     const { data: messages } = await supabase
       .from('chat_messages')
-      .select('*, sender:profiles!sender_id(full_name, avatar_url)')
+      .select('*')
       .eq('receiver_id', userId)
       .order('created_at', { ascending: false })
       .limit(5);
 
     if (messages) {
+      // Get unique sender IDs and fetch their profiles
+      const senderIds = [...new Set(messages.map(msg => msg.sender_id))];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, avatar_url')
+        .in('id', senderIds);
+
+      const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+
       messages.forEach(message => {
+        const senderProfile = profileMap.get(message.sender_id);
         activities.push({
           id: message.id,
           type: 'message',
           title: 'New Message',
           description: message.content.substring(0, 100) + (message.content.length > 100 ? '...' : ''),
           timestamp: message.created_at,
-          user_name: message.sender?.full_name || 'Unknown User',
-          avatar_url: message.sender?.avatar_url,
+          user_name: senderProfile?.full_name || 'Unknown User',
+          avatar_url: senderProfile?.avatar_url,
         });
       });
     }
@@ -81,7 +91,7 @@ export async function fetchRecentActivity(userId: string): Promise<RecentActivit
     // Fetch recent milestone completions
     const { data: milestones } = await supabase
       .from('audit_milestones')
-      .select('*, audit_request:audit_requests!audit_request_id(client_id)')
+      .select('*, audit_requests!inner(client_id)')
       .eq('audit_requests.client_id', userId)
       .eq('status', 'completed')
       .order('completed_at', { ascending: false })

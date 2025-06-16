@@ -1,6 +1,6 @@
 
 // Define types for our escrow system
-export type EscrowStatus = 'pending' | 'in_progress' | 'completed' | 'disputed' | 'refunded' | 'cancelled';
+export type EscrowStatus = 'pending' | 'active' | 'completed' | 'disputed' | 'cancelled';
 export type TransactionType = 'deposit' | 'milestone_payment' | 'refund' | 'fee' | 'dispute_resolution';
 export type DisputeStatus = 'opened' | 'in_review' | 'resolved' | 'closed';
 

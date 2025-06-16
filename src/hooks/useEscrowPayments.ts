@@ -21,7 +21,7 @@ interface Milestone {
   title: string;
   description: string;
   amount: number;
-  deadline?: Date;
+  deadline?: string;
   is_completed: boolean;
   completed_at?: string;
 }
@@ -34,7 +34,7 @@ export function useEscrowPayments() {
   const createEscrowContract = async (
     auditorId: string,
     totalAmount: number,
-    currency: string = 'USD',
+    currency: string = 'ETH',
     milestones: Omit<Milestone, 'id' | 'is_completed' | 'completed_at'>[]
   ): Promise<EscrowContract> => {
     if (!user) throw new Error('User not authenticated');
@@ -59,11 +59,12 @@ export function useEscrowPayments() {
 
       if (contractError) throw contractError;
 
-      // Create milestones
-      const milestonesToInsert = milestones.map((milestone, index) => ({
+      // Create milestones - convert dates to strings
+      const milestonesToInsert = milestones.map((milestone) => ({
         ...milestone,
         escrow_contract_id: contract.id,
         is_completed: false,
+        deadline: milestone.deadline ? new Date(milestone.deadline).toISOString() : null,
       }));
 
       const { data: createdMilestones, error: milestonesError } = await supabase
@@ -158,7 +159,7 @@ export function useEscrowPayments() {
             milestone_id: milestoneId,
             sender_id: user.id,
             amount: milestone.amount,
-            type: 'release',
+            type: 'milestone_payment',
             status: 'completed',
           });
 

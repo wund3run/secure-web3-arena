@@ -18,6 +18,7 @@ export function useRealtimeSync({ channel, userId }: UseRealtimeSyncProps) {
   const [notifications, setNotifications] = useState<RealtimeNotification[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('disconnected');
+  const [lastSync, setLastSync] = useState<Date | null>(null);
 
   const clearNotifications = () => {
     setNotifications([]);
@@ -32,6 +33,16 @@ export function useRealtimeSync({ channel, userId }: UseRealtimeSyncProps) {
     setNotifications(prev => [newNotification, ...prev.slice(0, 49)]); // Keep max 50 notifications
   };
 
+  const forceSync = () => {
+    setLastSync(new Date());
+    // Trigger a manual sync by refreshing the connection
+    setConnectionStatus('connecting');
+  };
+
+  const sendNotification = (notification: Omit<RealtimeNotification, 'id' | 'timestamp'>) => {
+    addNotification(notification);
+  };
+
   useEffect(() => {
     setConnectionStatus('connecting');
     
@@ -40,6 +51,7 @@ export function useRealtimeSync({ channel, userId }: UseRealtimeSyncProps) {
       .on('presence', { event: 'sync' }, () => {
         setIsConnected(true);
         setConnectionStatus('connected');
+        setLastSync(new Date());
       })
       .on('presence', { event: 'join' }, ({ key, newPresences }) => {
         addNotification({
@@ -60,6 +72,7 @@ export function useRealtimeSync({ channel, userId }: UseRealtimeSyncProps) {
         if (status === 'SUBSCRIBED') {
           setIsConnected(true);
           setConnectionStatus('connected');
+          setLastSync(new Date());
           
           // Track user presence if userId is provided
           if (userId) {
@@ -85,7 +98,10 @@ export function useRealtimeSync({ channel, userId }: UseRealtimeSyncProps) {
     notifications,
     isConnected,
     connectionStatus,
+    lastSync,
     clearNotifications,
     addNotification,
+    forceSync,
+    sendNotification,
   };
 }

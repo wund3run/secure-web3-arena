@@ -40,7 +40,21 @@ export function useRealtimeMessages({ conversationId, receiverId }: UseRealtimeM
         .order('created_at', { ascending: true });
 
       if (error) throw error;
-      setMessages(data || []);
+      
+      // Convert the data to match our Message interface
+      const convertedMessages: Message[] = (data || []).map(msg => ({
+        id: msg.id,
+        content: msg.content,
+        sender_id: msg.sender_id,
+        receiver_id: msg.receiver_id,
+        conversation_id: msg.conversation_id,
+        created_at: msg.created_at,
+        read_at: msg.read_at || undefined,
+        message_type: (msg.message_type as 'text' | 'file' | 'image') || 'text',
+        file_attachments: msg.file_attachments ? JSON.parse(JSON.stringify(msg.file_attachments)) : undefined,
+      }));
+      
+      setMessages(convertedMessages);
     } catch (error) {
       console.error('Error fetching messages:', error);
       toast.error('Failed to load messages');
@@ -126,8 +140,19 @@ export function useRealtimeMessages({ conversationId, receiverId }: UseRealtimeM
           filter: `conversation_id=eq.${conversationId}`,
         },
         (payload) => {
-          const newMessage = payload.new as Message;
-          setMessages(prev => [...prev, newMessage]);
+          const newMessage = payload.new as any;
+          const convertedMessage: Message = {
+            id: newMessage.id,
+            content: newMessage.content,
+            sender_id: newMessage.sender_id,
+            receiver_id: newMessage.receiver_id,
+            conversation_id: newMessage.conversation_id,
+            created_at: newMessage.created_at,
+            read_at: newMessage.read_at || undefined,
+            message_type: newMessage.message_type || 'text',
+            file_attachments: newMessage.file_attachments || undefined,
+          };
+          setMessages(prev => [...prev, convertedMessage]);
           setIsConnected(true);
         }
       )

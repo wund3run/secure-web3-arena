@@ -70,7 +70,7 @@ export const LiveAuditProgress: React.FC<LiveAuditProgressProps> = ({
   ]);
 
   const [overallProgress, setOverallProgress] = useState(41);
-  const { isConnected } = useRealtimeSync();
+  const { isConnected } = useRealtimeSync({ channel: `audit-${auditId}` });
 
   useEffect(() => {
     // Simulate real-time updates
