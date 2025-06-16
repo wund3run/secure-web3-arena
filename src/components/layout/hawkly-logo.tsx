@@ -4,58 +4,43 @@ import { Link } from 'react-router-dom';
 
 interface HawklyLogoProps {
   className?: string;
-  textSize?: string;
+  linkClassName?: string;
   showText?: boolean;
-  onClick?: () => void;
-  linkTo?: string;
-  variant?: 'small' | 'default' | 'large' | 'full';
-  asLink?: boolean;
+  variant?: 'light' | 'dark' | 'auto';
 }
 
 export function HawklyLogo({ 
-  className = '', 
-  textSize = 'text-lg', 
+  className = "h-8 w-auto", 
+  linkClassName = "",
   showText = true,
-  onClick,
-  linkTo = '/',
-  variant = 'default',
-  asLink = true
+  variant = 'auto'
 }: HawklyLogoProps) {
-  const sizeClasses = {
-    small: 'w-8 h-8',
-    default: 'w-12 h-12',
-    large: 'w-16 h-16',
-    full: 'w-20 h-20'
-  };
+  const [imageError, setImageError] = React.useState(false);
 
-  const logoContent = (
-    <div className={`flex items-center space-x-3 ${className}`} onClick={onClick}>
-      <img 
-        src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
-        alt="Hawkly Logo"
-        className={`${sizeClasses[variant]} object-contain bg-transparent`}
-        style={{ backgroundColor: 'transparent' }}
-      />
-      {showText && (
-        <span className={`font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent ${textSize}`}>
-          Hawkly
-        </span>
-      )}
-    </div>
-  );
-
-  // If onClick is provided or asLink is false, render as a clickable div
-  if (onClick || !asLink) {
+  // Fallback to text logo if image fails to load
+  if (imageError || !showText) {
     return (
-      <button type="button" className="flex items-center focus:outline-none bg-transparent">
-        {logoContent}
-      </button>
+      <Link to="/" className={`flex items-center ${linkClassName}`}>
+        <div className={`font-bold text-2xl text-blue-600 ${className}`}>
+          Hawkly
+        </div>
+      </Link>
     );
   }
 
   return (
-    <Link to={linkTo} className="flex items-center hover:opacity-80 transition-opacity bg-transparent">
-      {logoContent}
+    <Link to="/" className={`flex items-center ${linkClassName}`}>
+      <img
+        className={className}
+        src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png"
+        alt="Hawkly"
+        onError={() => setImageError(true)}
+      />
+      {showText && (
+        <span className="ml-2 text-xl font-semibold text-gray-900 dark:text-white">
+          Hawkly
+        </span>
+      )}
     </Link>
   );
 }

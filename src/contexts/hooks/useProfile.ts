@@ -13,27 +13,34 @@ export const useProfile = () => {
   // Fetch user profile
   useEffect(() => {
     const fetchProfile = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        setLoading(false);
-        return;
-      }
-      
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single();
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
         
-      if (error) {
-        console.error('Error fetching profile:', error);
-        toast.error('Failed to load user profile');
-      } else {
-        setProfile(data);
+        if (!session?.user) {
+          setLoading(false);
+          return;
+        }
+        
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .maybeSingle(); // Use maybeSingle instead of single to handle no results gracefully
+          
+        if (error) {
+          console.error('Error fetching profile:', error);
+          // Only show toast for actual errors, not missing profiles
+          if (error.code !== 'PGRST116') {
+            toast.error('Failed to load user profile');
+          }
+        } else if (data) {
+          setProfile(data);
+        }
+      } catch (error) {
+        console.error('Unexpected error fetching profile:', error);
+      } finally {
+        setLoading(false);
       }
-      
-      setLoading(false);
     };
     
     fetchProfile();
