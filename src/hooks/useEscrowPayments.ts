@@ -1,169 +1,199 @@
 
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/auth';
 import { toast } from 'sonner';
 
-export interface EscrowMilestone {
+interface EscrowContract {
+  id: string;
+  title: string;
+  client_id: string;
+  auditor_id: string;
+  total_amount: number;
+  currency: string;
+  status: 'pending' | 'active' | 'completed' | 'disputed' | 'cancelled';
+  milestones: Milestone[];
+  created_at: string;
+}
+
+interface Milestone {
   id: string;
   title: string;
   description: string;
   amount: number;
-  deadline: Date;
-  status: 'pending' | 'approved' | 'completed' | 'disputed';
-  completedAt?: Date;
+  deadline?: Date;
+  is_completed: boolean;
+  completed_at?: string;
 }
 
-export interface EscrowContract {
-  id: string;
-  clientId: string;
-  auditorId: string;
-  totalAmount: number;
-  currency: string;
-  status: 'pending' | 'active' | 'completed' | 'disputed' | 'cancelled';
-  milestones: EscrowMilestone[];
-  platformFeePercentage: number;
-  createdAt: Date;
-  stripePaymentIntentId?: string;
-}
-
-export const useEscrowPayments = () => {
+export function useEscrowPayments() {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const createEscrowContract = async (
     auditorId: string,
     totalAmount: number,
-    currency: string,
-    milestones: Omit<EscrowMilestone, 'id' | 'status'>[]
+    currency: string = 'USD',
+    milestones: Omit<Milestone, 'id' | 'is_completed' | 'completed_at'>[]
   ): Promise<EscrowContract> => {
-    try {
-      setLoading(true);
-      setError(null);
+    if (!user) throw new Error('User not authenticated');
 
-      const { data, error } = await supabase.functions.invoke('create-escrow-contract', {
-        body: {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Create escrow contract
+      const { data: contract, error: contractError } = await supabase
+        .from('escrow_contracts')
+        .insert({
+          title: `Audit Contract - ${new Date().toLocaleDateString()}`,
+          client_id: user.id,
           auditor_id: auditorId,
           total_amount: totalAmount,
           currency,
-          milestones,
-          platform_fee_percentage: 5, // 5% platform fee
-        },
-      });
+          status: 'pending',
+        })
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (contractError) throw contractError;
+
+      // Create milestones
+      const milestonesToInsert = milestones.map((milestone, index) => ({
+        ...milestone,
+        escrow_contract_id: contract.id,
+        is_completed: false,
+      }));
+
+      const { data: createdMilestones, error: milestonesError } = await supabase
+        .from('milestones')
+        .insert(milestonesToInsert)
+        .select();
+
+      if (milestonesError) throw milestonesError;
+
+      const result = {
+        ...contract,
+        milestones: createdMilestones || [],
+      };
 
       toast.success('Escrow contract created successfully');
-      return data as EscrowContract;
+      return result;
     } catch (err: any) {
       const errorMessage = err.message || 'Failed to create escrow contract';
       setError(errorMessage);
-      toast.error('Escrow creation failed', { description: errorMessage });
+      toast.error(errorMessage);
       throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  const fundEscrow = async (contractId: string, paymentMethodId: string) => {
+  const fundEscrow = async (contractId: string, paymentMethod: string) => {
+    setLoading(true);
+    setError(null);
+
     try {
-      setLoading(true);
-      
-      const { data, error } = await supabase.functions.invoke('fund-escrow', {
+      // This would integrate with Stripe or other payment processor
+      const { data, error } = await supabase.functions.invoke('create-payment-intent', {
         body: {
           contract_id: contractId,
-          payment_method_id: paymentMethodId,
+          payment_method: paymentMethod,
         },
       });
 
       if (error) throw error;
+
+      // Update contract status to active after successful payment
+      const { error: updateError } = await supabase
+        .from('escrow_contracts')
+        .update({ status: 'active' })
+        .eq('id', contractId);
+
+      if (updateError) throw updateError;
 
       toast.success('Escrow funded successfully');
       return data;
     } catch (err: any) {
       const errorMessage = err.message || 'Failed to fund escrow';
       setError(errorMessage);
-      toast.error('Escrow funding failed', { description: errorMessage });
+      toast.error(errorMessage);
       throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  const releaseMilestone = async (contractId: string, milestoneId: string) => {
-    try {
-      setLoading(true);
-      
-      const { data, error } = await supabase.functions.invoke('release-milestone', {
-        body: {
-          contract_id: contractId,
-          milestone_id: milestoneId,
-        },
-      });
+  const releaseMilestonePayment = async (milestoneId: string) => {
+    if (!user) throw new Error('User not authenticated');
 
-      if (error) throw error;
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Mark milestone as completed
+      const { error: milestoneError } = await supabase
+        .from('milestones')
+        .update({
+          is_completed: true,
+          completed_at: new Date().toISOString(),
+        })
+        .eq('id', milestoneId);
+
+      if (milestoneError) throw milestoneError;
+
+      // Create transaction record
+      const { data: milestone } = await supabase
+        .from('milestones')
+        .select('*, escrow_contract_id')
+        .eq('id', milestoneId)
+        .single();
+
+      if (milestone) {
+        const { error: transactionError } = await supabase
+          .from('transactions')
+          .insert({
+            escrow_contract_id: milestone.escrow_contract_id,
+            milestone_id: milestoneId,
+            sender_id: user.id,
+            amount: milestone.amount,
+            type: 'release',
+            status: 'completed',
+          });
+
+        if (transactionError) throw transactionError;
+      }
 
       toast.success('Milestone payment released');
-      return data;
     } catch (err: any) {
       const errorMessage = err.message || 'Failed to release milestone payment';
       setError(errorMessage);
-      toast.error('Milestone release failed', { description: errorMessage });
+      toast.error(errorMessage);
       throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  const initiateDispute = async (contractId: string, milestoneId: string, reason: string, evidence?: string) => {
+  const getEscrowContracts = async () => {
+    if (!user) return [];
+
     try {
-      setLoading(true);
-      
-      const { data, error } = await supabase.functions.invoke('initiate-dispute', {
-        body: {
-          contract_id: contractId,
-          milestone_id: milestoneId,
-          reason,
-          evidence,
-        },
-      });
+      const { data, error } = await supabase
+        .from('escrow_contracts')
+        .select(`
+          *,
+          milestones (*)
+        `)
+        .or(`client_id.eq.${user.id},auditor_id.eq.${user.id}`)
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
-
-      toast.success('Dispute initiated successfully');
-      return data;
+      return data || [];
     } catch (err: any) {
-      const errorMessage = err.message || 'Failed to initiate dispute';
-      setError(errorMessage);
-      toast.error('Dispute initiation failed', { description: errorMessage });
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const processRefund = async (contractId: string, refundAmount: number, reason: string) => {
-    try {
-      setLoading(true);
-      
-      const { data, error } = await supabase.functions.invoke('process-refund', {
-        body: {
-          contract_id: contractId,
-          refund_amount: refundAmount,
-          reason,
-        },
-      });
-
-      if (error) throw error;
-
-      toast.success('Refund processed successfully');
-      return data;
-    } catch (err: any) {
-      const errorMessage = err.message || 'Failed to process refund';
-      setError(errorMessage);
-      toast.error('Refund processing failed', { description: errorMessage });
-      throw err;
-    } finally {
-      setLoading(false);
+      console.error('Error fetching escrow contracts:', err);
+      return [];
     }
   };
 
@@ -172,8 +202,7 @@ export const useEscrowPayments = () => {
     error,
     createEscrowContract,
     fundEscrow,
-    releaseMilestone,
-    initiateDispute,
-    processRefund,
+    releaseMilestonePayment,
+    getEscrowContracts,
   };
-};
+}

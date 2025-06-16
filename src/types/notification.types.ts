@@ -3,8 +3,8 @@ export interface Notification {
   id: string;
   title: string;
   message: string;
-  type: 'success' | 'error' | 'warning' | 'info';
-  category: string;
+  type: 'info' | 'success' | 'warning' | 'error';
+  category: 'message' | 'audit' | 'payment' | 'escrow' | 'proposal' | 'milestone' | 'system';
   timestamp: Date;
   read: boolean;
   actionUrl?: string;

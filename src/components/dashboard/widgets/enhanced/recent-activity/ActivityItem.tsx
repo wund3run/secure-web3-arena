@@ -1,40 +1,101 @@
 
 import React from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Clock } from 'lucide-react';
+import { 
+  MessageSquare, 
+  FileText, 
+  DollarSign, 
+  CheckCircle, 
+  Users 
+} from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { ActivityIcon } from './ActivityIcon';
-import type { ActivityItem as ActivityItemType } from './RecentActivityService';
+import { RecentActivity } from './RecentActivityService';
 
 interface ActivityItemProps {
-  activity: ActivityItemType;
+  activity: RecentActivity;
 }
 
 export function ActivityItem({ activity }: ActivityItemProps) {
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case 'message':
+        return <MessageSquare className="h-4 w-4 text-blue-500" />;
+      case 'audit_update':
+        return <FileText className="h-4 w-4 text-green-500" />;
+      case 'payment':
+        return <DollarSign className="h-4 w-4 text-yellow-500" />;
+      case 'milestone':
+        return <CheckCircle className="h-4 w-4 text-purple-500" />;
+      case 'proposal':
+        return <Users className="h-4 w-4 text-orange-500" />;
+      default:
+        return <FileText className="h-4 w-4 text-gray-500" />;
+    }
+  };
+
+  const getActivityColor = (type: string) => {
+    switch (type) {
+      case 'message':
+        return 'bg-blue-50 border-blue-200';
+      case 'audit_update':
+        return 'bg-green-50 border-green-200';
+      case 'payment':
+        return 'bg-yellow-50 border-yellow-200';
+      case 'milestone':
+        return 'bg-purple-50 border-purple-200';
+      case 'proposal':
+        return 'bg-orange-50 border-orange-200';
+      default:
+        return 'bg-gray-50 border-gray-200';
+    }
+  };
+
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  };
+
   return (
-    <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
-      <ActivityIcon type={activity.type} />
-      
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between">
-          <h4 className="font-medium text-sm truncate">
-            {activity.title}
-          </h4>
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Clock className="h-3 w-3" />
-            {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
+    <div className={`p-3 rounded-lg border ${getActivityColor(activity.type)} transition-colors hover:shadow-sm`}>
+      <div className="flex items-start gap-3">
+        {activity.user_name ? (
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={activity.avatar_url} />
+            <AvatarFallback className="text-xs">
+              {getInitials(activity.user_name)}
+            </AvatarFallback>
+          </Avatar>
+        ) : (
+          <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
+            {getActivityIcon(activity.type)}
+          </div>
+        )}
+        
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between">
+            <div className="space-y-1">
+              <h4 className="font-medium text-sm leading-tight">
+                {activity.title}
+              </h4>
+              <p className="text-xs text-muted-foreground line-clamp-2">
+                {activity.description}
+              </p>
+              {activity.user_name && (
+                <p className="text-xs text-muted-foreground">
+                  by {activity.user_name}
+                </p>
+              )}
+            </div>
+            <div className="flex items-center gap-2 ml-2">
+              <Badge variant="outline" className="text-xs">
+                {activity.type.replace('_', ' ')}
+              </Badge>
+              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
+              </span>
+            </div>
           </div>
         </div>
-        
-        <p className="text-sm text-muted-foreground truncate">
-          {activity.description}
-        </p>
-        
-        {activity.metadata?.status && (
-          <Badge variant="outline" className="mt-1">
-            {activity.metadata.status.replace('_', ' ')}
-          </Badge>
-        )}
       </div>
     </div>
   );

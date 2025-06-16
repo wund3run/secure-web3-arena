@@ -1,150 +1,244 @@
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Progress } from '@/components/ui/progress';
 import { useEscrowPayments } from '@/hooks/useEscrowPayments';
-import { usePaymentProcessing } from '@/hooks/usePaymentProcessing';
-import { EnhancedToastSystem } from '@/components/ui/enhanced-toast-system';
-import { Loader2, Shield, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import { useAuth } from '@/contexts/auth';
+import { 
+  Shield, 
+  Clock, 
+  CheckCircle, 
+  AlertTriangle,
+  DollarSign,
+  FileText,
+  Calendar
+} from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
+
+interface EscrowContract {
+  id: string;
+  title: string;
+  client_id: string;
+  auditor_id: string;
+  total_amount: number;
+  currency: string;
+  status: 'pending' | 'active' | 'completed' | 'disputed' | 'cancelled';
+  created_at: string;
+  milestones: any[];
+}
 
 export function EscrowManager() {
-  const [activeContracts, setActiveContracts] = useState([]);
-  const { loading: escrowLoading, createEscrowContract, releaseMilestone } = useEscrowPayments();
-  const { loading: paymentLoading, createPaymentIntent } = usePaymentProcessing();
+  const { user } = useAuth();
+  const { getEscrowContracts, releaseMilestonePayment, loading } = useEscrowPayments();
+  const [contracts, setContracts] = useState<EscrowContract[]>([]);
+  const [selectedContract, setSelectedContract] = useState<EscrowContract | null>(null);
 
-  const handleCreateEscrow = async () => {
+  useEffect(() => {
+    loadContracts();
+  }, []);
+
+  const loadContracts = async () => {
+    const data = await getEscrowContracts();
+    setContracts(data);
+  };
+
+  const handleReleaseMilestone = async (milestoneId: string) => {
     try {
-      const contract = await createEscrowContract(
-        'auditor-id',
-        5000, // $50.00
-        'usd',
-        [
-          { title: 'Initial Review', description: 'Initial code review', amount: 2000, deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) },
-          { title: 'Detailed Analysis', description: 'Comprehensive security analysis', amount: 2000, deadline: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000) },
-          { title: 'Final Report', description: 'Security audit report delivery', amount: 1000, deadline: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000) }
-        ]
-      );
-      
-      if (contract) {
-        EnhancedToastSystem.success('Escrow Created', 'Your escrow contract has been established');
-      }
+      await releaseMilestonePayment(milestoneId);
+      await loadContracts();
     } catch (error) {
-      EnhancedToastSystem.error('Escrow Creation Failed', error instanceof Error ? error.message : 'Unknown error');
+      console.error('Failed to release milestone payment:', error);
     }
   };
 
-  const handlePayment = async () => {
-    try {
-      const paymentResult = await createPaymentIntent({
-        amount: 50.00,
-        currency: 'usd',
-        description: 'Security Audit Payment',
-        escrowContractId: 'contract-id'
-      });
-      
-      if (paymentResult) {
-        EnhancedToastSystem.payment.processing();
-        // Redirect to Stripe Checkout
-        window.open(paymentResult.clientSecret, '_blank');
-      }
-    } catch (error) {
-      EnhancedToastSystem.payment.failed(error instanceof Error ? error.message : undefined);
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'active': return 'bg-green-500';
+      case 'completed': return 'bg-blue-500';
+      case 'disputed': return 'bg-red-500';
+      case 'cancelled': return 'bg-gray-500';
+      default: return 'bg-yellow-500';
     }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'active': return <CheckCircle className="h-4 w-4" />;
+      case 'completed': return <CheckCircle className="h-4 w-4" />;
+      case 'disputed': return <AlertTriangle className="h-4 w-4" />;
+      case 'cancelled': return <AlertTriangle className="h-4 w-4" />;
+      default: return <Clock className="h-4 w-4" />;
+    }
+  };
+
+  const calculateProgress = (milestones: any[]) => {
+    if (!milestones || milestones.length === 0) return 0;
+    const completed = milestones.filter(m => m.is_completed).length;
+    return (completed / milestones.length) * 100;
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Escrow Management</h1>
-          <p className="text-muted-foreground">Secure payment management for audit services</p>
+        <h1 className="text-3xl font-bold">Escrow Management</h1>
+        <div className="flex items-center gap-2">
+          <Shield className="h-5 w-5 text-primary" />
+          <span className="text-sm text-muted-foreground">Secure Payment Processing</span>
         </div>
-        <Button onClick={handleCreateEscrow} disabled={escrowLoading}>
-          {escrowLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Create Escrow Contract
-        </Button>
       </div>
 
-      <Tabs defaultValue="active" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="active">Active Contracts</TabsTrigger>
-          <TabsTrigger value="completed">Completed</TabsTrigger>
-          <TabsTrigger value="disputed">Disputed</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="active" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <Shield className="h-5 w-5" />
-                    Smart Contract Security Audit
-                  </CardTitle>
-                  <CardDescription>Comprehensive security review for DeFi protocol</CardDescription>
-                </div>
-                <Badge variant="default">Active</Badge>
+      {/* Contracts Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {contracts.map((contract) => (
+          <Card 
+            key={contract.id}
+            className={`cursor-pointer transition-all hover:shadow-lg ${
+              selectedContract?.id === contract.id ? 'ring-2 ring-primary' : ''
+            }`}
+            onClick={() => setSelectedContract(contract)}
+          >
+            <CardHeader className="pb-3">
+              <div className="flex items-start justify-between">
+                <CardTitle className="text-lg">{contract.title}</CardTitle>
+                <Badge 
+                  variant="secondary" 
+                  className={`${getStatusColor(contract.status)} text-white flex items-center gap-1`}
+                >
+                  {getStatusIcon(contract.status)}
+                  {contract.status}
+                </Badge>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">Initial Review</span>
-                  </div>
-                  <div className="text-2xl font-bold">$20.00</div>
-                  <Badge variant="outline">Pending</Badge>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-semibold">
+                    {contract.total_amount} {contract.currency}
+                  </span>
                 </div>
-                
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm font-medium">Detailed Analysis</span>
-                  </div>
-                  <div className="text-2xl font-bold">$20.00</div>
-                  <Badge variant="secondary">Completed</Badge>
-                </div>
-                
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <AlertCircle className="h-4 w-4 text-orange-600" />
-                    <span className="text-sm font-medium">Final Report</span>
-                  </div>
-                  <div className="text-2xl font-bold">$10.00</div>
-                  <Badge variant="outline">Awaiting</Badge>
+                <div className="text-sm text-muted-foreground">
+                  {formatDistanceToNow(new Date(contract.created_at), { addSuffix: true })}
                 </div>
               </div>
-              
-              <div className="flex gap-2">
-                <Button onClick={handlePayment} disabled={paymentLoading}>
-                  {paymentLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Fund Escrow
-                </Button>
-                <Button variant="outline">View Details</Button>
+
+              {contract.milestones && contract.milestones.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span>Progress</span>
+                    <span>{Math.round(calculateProgress(contract.milestones))}%</span>
+                  </div>
+                  <Progress value={calculateProgress(contract.milestones)} className="h-2" />
+                  <div className="text-xs text-muted-foreground">
+                    {contract.milestones.filter(m => m.is_completed).length} of {contract.milestones.length} milestones completed
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <FileText className="h-4 w-4" />
+                <span>{contract.milestones?.length || 0} milestones</span>
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        ))}
+      </div>
 
-        <TabsContent value="completed">
-          <Card>
-            <CardContent className="text-center py-8">
-              <p className="text-muted-foreground">No completed contracts yet</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {contracts.length === 0 && (
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <Shield className="h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-medium mb-2">No Escrow Contracts</h3>
+            <p className="text-muted-foreground text-center">
+              You don't have any escrow contracts yet. 
+              Start an audit to create your first secure payment contract.
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
-        <TabsContent value="disputed">
-          <Card>
-            <CardContent className="text-center py-8">
-              <p className="text-muted-foreground">No disputed contracts</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      {/* Selected Contract Details */}
+      {selectedContract && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>Contract Details: {selectedContract.title}</span>
+              <Badge variant="outline">
+                {selectedContract.client_id === user?.id ? 'Client' : 'Auditor'}
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Contract Summary */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted rounded-lg">
+              <div className="text-center">
+                <div className="text-2xl font-bold">{selectedContract.total_amount}</div>
+                <div className="text-sm text-muted-foreground">{selectedContract.currency}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold">{selectedContract.milestones?.length || 0}</div>
+                <div className="text-sm text-muted-foreground">Milestones</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold">{Math.round(calculateProgress(selectedContract.milestones))}%</div>
+                <div className="text-sm text-muted-foreground">Complete</div>
+              </div>
+            </div>
+
+            {/* Milestones */}
+            {selectedContract.milestones && selectedContract.milestones.length > 0 && (
+              <div className="space-y-4">
+                <h4 className="font-semibold">Milestones</h4>
+                {selectedContract.milestones.map((milestone, index) => (
+                  <div key={milestone.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="space-y-1">
+                      <div className="font-medium">{milestone.title}</div>
+                      {milestone.description && (
+                        <div className="text-sm text-muted-foreground">{milestone.description}</div>
+                      )}
+                      <div className="flex items-center gap-4 text-sm">
+                        <div className="flex items-center gap-1">
+                          <DollarSign className="h-3 w-3" />
+                          {milestone.amount} {selectedContract.currency}
+                        </div>
+                        {milestone.deadline && (
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {formatDistanceToNow(new Date(milestone.deadline), { addSuffix: true })}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {milestone.is_completed ? (
+                        <Badge variant="default" className="bg-green-500">
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                          Completed
+                        </Badge>
+                      ) : (
+                        <>
+                          <Badge variant="outline">Pending</Badge>
+                          {selectedContract.client_id === user?.id && selectedContract.status === 'active' && (
+                            <Button
+                              size="sm"
+                              onClick={() => handleReleaseMilestone(milestone.id)}
+                              disabled={loading}
+                            >
+                              Release Payment
+                            </Button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

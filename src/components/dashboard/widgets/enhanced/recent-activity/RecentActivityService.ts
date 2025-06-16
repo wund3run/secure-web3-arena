@@ -1,59 +1,111 @@
 
 import { supabase } from '@/integrations/supabase/client';
 
-export interface ActivityItem {
+export interface RecentActivity {
   id: string;
-  type: 'audit_created' | 'audit_updated' | 'message_received' | 'report_generated';
+  type: 'message' | 'audit_update' | 'payment' | 'milestone' | 'proposal';
   title: string;
   description: string;
   timestamp: string;
   metadata?: any;
+  user_name?: string;
+  avatar_url?: string;
 }
 
-export async function fetchRecentActivity(userId: string): Promise<ActivityItem[]> {
+export async function fetchRecentActivity(userId: string): Promise<RecentActivity[]> {
   try {
-    // Fetch recent audit activities
-    const { data: auditData, error: auditError } = await supabase
-      .from('audit_requests')
-      .select('id, project_name, status, created_at, updated_at')
-      .eq('client_id', userId)
-      .order('updated_at', { ascending: false })
-      .limit(10);
+    const activities: RecentActivity[] = [];
 
-    if (auditError) throw auditError;
+    // Fetch recent messages
+    const { data: messages } = await supabase
+      .from('chat_messages')
+      .select('*, sender:profiles!sender_id(full_name, avatar_url)')
+      .eq('receiver_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(5);
 
-    const activities: ActivityItem[] = [];
-
-    // Convert audit data to activities
-    auditData?.forEach(audit => {
-      activities.push({
-        id: `audit-${audit.id}`,
-        type: 'audit_created',
-        title: 'Audit Request Created',
-        description: audit.project_name || 'New audit request',
-        timestamp: audit.created_at,
-        metadata: { auditId: audit.id, status: audit.status }
-      });
-
-      if (audit.updated_at !== audit.created_at) {
+    if (messages) {
+      messages.forEach(message => {
         activities.push({
-          id: `audit-updated-${audit.id}`,
-          type: 'audit_updated',
-          title: 'Audit Updated',
-          description: `Status changed for "${audit.project_name}"`,
-          timestamp: audit.updated_at,
-          metadata: { auditId: audit.id, status: audit.status }
+          id: message.id,
+          type: 'message',
+          title: 'New Message',
+          description: message.content.substring(0, 100) + (message.content.length > 100 ? '...' : ''),
+          timestamp: message.created_at,
+          user_name: message.sender?.full_name || 'Unknown User',
+          avatar_url: message.sender?.avatar_url,
         });
-      }
-    });
+      });
+    }
 
-    // Sort by timestamp and limit to recent activities
+    // Fetch recent audit updates
+    const { data: auditUpdates } = await supabase
+      .from('audit_status_updates')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(5);
+
+    if (auditUpdates) {
+      auditUpdates.forEach(update => {
+        activities.push({
+          id: update.id,
+          type: 'audit_update',
+          title: update.title,
+          description: update.message || 'Audit status updated',
+          timestamp: update.created_at,
+        });
+      });
+    }
+
+    // Fetch recent payment transactions
+    const { data: payments } = await supabase
+      .from('payment_transactions')
+      .select('*')
+      .or(`client_id.eq.${userId},auditor_id.eq.${userId}`)
+      .order('created_at', { ascending: false })
+      .limit(3);
+
+    if (payments) {
+      payments.forEach(payment => {
+        activities.push({
+          id: payment.id,
+          type: 'payment',
+          title: 'Payment Update',
+          description: `Payment ${payment.status}: $${payment.amount}`,
+          timestamp: payment.created_at,
+        });
+      });
+    }
+
+    // Fetch recent milestone completions
+    const { data: milestones } = await supabase
+      .from('audit_milestones')
+      .select('*, audit_request:audit_requests!audit_request_id(client_id)')
+      .eq('audit_requests.client_id', userId)
+      .eq('status', 'completed')
+      .order('completed_at', { ascending: false })
+      .limit(3);
+
+    if (milestones) {
+      milestones.forEach(milestone => {
+        activities.push({
+          id: milestone.id,
+          type: 'milestone',
+          title: 'Milestone Completed',
+          description: `"${milestone.title}" has been completed`,
+          timestamp: milestone.completed_at || milestone.updated_at,
+        });
+      });
+    }
+
+    // Sort all activities by timestamp and return top 10
     return activities
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-      .slice(0, 8);
+      .slice(0, 10);
 
   } catch (error) {
     console.error('Error fetching recent activity:', error);
-    throw error;
+    return [];
   }
 }

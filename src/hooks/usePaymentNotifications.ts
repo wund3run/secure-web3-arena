@@ -1,110 +1,137 @@
 
 import { useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/auth';
 import { useNotifications } from '@/contexts/NotificationContext';
+import { supabase } from '@/integrations/supabase/client';
 
 export function usePaymentNotifications() {
   const { user } = useAuth();
   const { addNotification } = useNotifications();
 
   useEffect(() => {
-    if (!user?.id) return;
+    if (!user) return;
 
-    const channel = supabase
-      .channel('payment-events')
+    // Subscribe to payment transaction updates
+    const paymentChannel = supabase
+      .channel('payment_updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'payment_transactions',
+          filter: `client_id=eq.${user.id}`,
+        },
+        (payload) => {
+          const transaction = payload.new;
+          addNotification({
+            title: 'Payment Processing',
+            message: `Payment of $${transaction.amount} is being processed`,
+            type: 'info',
+            category: 'payment',
+            actionUrl: '/escrow',
+            actionLabel: 'View Transactions',
+          });
+        }
+      )
       .on(
         'postgres_changes',
         {
           event: 'UPDATE',
           schema: 'public',
           table: 'payment_transactions',
+          filter: `client_id=eq.${user.id}`,
         },
         (payload) => {
-          const oldRecord = payload.old;
-          const newRecord = payload.new;
-
-          // Only notify users involved in the transaction
-          const isUserInvolved = 
-            newRecord.client_id === user.id || 
-            newRecord.auditor_id === user.id;
-
-          if (!isUserInvolved) return;
-
-          // Payment status change notifications
-          if (oldRecord.status !== newRecord.status) {
-            let notificationType: 'success' | 'error' | 'warning' | 'info' = 'info';
-            let message = '';
-
-            switch (newRecord.status) {
-              case 'completed':
-                notificationType = 'success';
-                message = newRecord.auditor_id === user.id 
-                  ? `Payment of $${newRecord.amount} received successfully`
-                  : `Payment of $${newRecord.amount} completed successfully`;
-                break;
-              case 'failed':
-                notificationType = 'error';
-                message = `Payment of $${newRecord.amount} failed. Please check your payment method.`;
-                break;
-              case 'pending':
-                notificationType = 'info';
-                message = `Payment of $${newRecord.amount} is being processed`;
-                break;
-              case 'refunded':
-                notificationType = 'warning';
-                message = `Payment of $${newRecord.amount} has been refunded`;
-                break;
-              default:
-                return;
-            }
-
+          const oldTransaction = payload.old;
+          const newTransaction = payload.new;
+          
+          if (oldTransaction.status !== newTransaction.status) {
+            const isSuccess = newTransaction.status === 'completed';
             addNotification({
-              title: 'Payment Update',
-              message,
-              type: notificationType,
+              title: isSuccess ? 'Payment Successful' : 'Payment Update',
+              message: `Payment ${newTransaction.status}: $${newTransaction.amount}`,
+              type: isSuccess ? 'success' : newTransaction.status === 'failed' ? 'error' : 'info',
               category: 'payment',
-              actionUrl: `/payments/${newRecord.id}`,
-              actionLabel: 'View Details'
+              actionUrl: '/escrow',
+              actionLabel: 'View Details',
             });
           }
         }
       )
+      .subscribe();
+
+    // Subscribe to escrow contract updates
+    const escrowChannel = supabase
+      .channel('escrow_updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'escrow_contracts',
+          filter: `client_id=eq.${user.id}`,
+        },
+        (payload) => {
+          const oldContract = payload.old;
+          const newContract = payload.new;
+          
+          if (oldContract.status !== newContract.status) {
+            addNotification({
+              title: 'Escrow Status Updated',
+              message: `Escrow contract status changed to ${newContract.status}`,
+              type: newContract.status === 'completed' ? 'success' : 'info',
+              category: 'escrow',
+              actionUrl: '/escrow',
+              actionLabel: 'View Contract',
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    // Subscribe to milestone payment releases
+    const milestonePaymentChannel = supabase
+      .channel('milestone_payments')
       .on(
         'postgres_changes',
         {
           event: 'INSERT',
           schema: 'public',
           table: 'transactions',
+          filter: `type=eq.release`,
         },
-        (payload) => {
+        async (payload) => {
           const transaction = payload.new;
+          
+          // Check if this transaction belongs to current user's contract
+          const { data: contract } = await supabase
+            .from('escrow_contracts')
+            .select('client_id, auditor_id')
+            .eq('id', transaction.escrow_contract_id)
+            .single();
 
-          // Escrow milestone notifications
-          if (transaction.type === 'milestone_payment') {
-            const isUserInvolved = 
-              transaction.sender_id === user.id || 
-              transaction.recipient_id === user.id;
-
-            if (isUserInvolved) {
-              addNotification({
-                title: 'Milestone Payment',
-                message: transaction.recipient_id === user.id
-                  ? `You received a milestone payment of $${transaction.amount}`
-                  : `Milestone payment of $${transaction.amount} sent successfully`,
-                type: 'success',
-                category: 'escrow',
-                actionUrl: `/escrow/${transaction.escrow_contract_id}`,
-                actionLabel: 'View Escrow'
-              });
-            }
+          if (contract && (contract.client_id === user.id || contract.auditor_id === user.id)) {
+            const isClient = contract.client_id === user.id;
+            addNotification({
+              title: 'Milestone Payment Released',
+              message: isClient 
+                ? `Payment of $${transaction.amount} released to auditor`
+                : `You received a payment of $${transaction.amount}`,
+              type: 'success',
+              category: 'payment',
+              actionUrl: '/escrow',
+              actionLabel: 'View Details',
+            });
           }
         }
       )
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(paymentChannel);
+      supabase.removeChannel(escrowChannel);
+      supabase.removeChannel(milestonePaymentChannel);
     };
-  }, [user?.id, addNotification]);
+  }, [user, addNotification]);
 }

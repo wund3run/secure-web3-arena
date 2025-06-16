@@ -1,145 +1,110 @@
 
 import { useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/auth';
 import { useNotifications } from '@/contexts/NotificationContext';
-import { EmailService } from '@/services/emailService';
+import { supabase } from '@/integrations/supabase/client';
 
 export function useAuditNotifications() {
-  const { user, userProfile } = useAuth();
+  const { user } = useAuth();
   const { addNotification } = useNotifications();
 
   useEffect(() => {
-    if (!user?.id) return;
+    if (!user) return;
 
-    const channel = supabase
-      .channel('audit-events')
+    // Subscribe to audit request updates
+    const auditRequestChannel = supabase
+      .channel('audit_request_updates')
       .on(
         'postgres_changes',
         {
           event: 'UPDATE',
           schema: 'public',
           table: 'audit_requests',
+          filter: `client_id=eq.${user.id}`,
         },
-        async (payload) => {
+        (payload) => {
           const oldRecord = payload.old;
           const newRecord = payload.new;
-
-          // Status change notifications
+          
           if (oldRecord.status !== newRecord.status) {
-            const isUserInvolved = 
-              newRecord.client_id === user.id || 
-              newRecord.assigned_auditor_id === user.id;
-
-            if (isUserInvolved) {
-              addNotification({
-                title: 'Audit Status Update',
-                message: `Audit "${newRecord.project_name}" status changed to ${newRecord.status}`,
-                type: newRecord.status === 'completed' ? 'success' : 'info',
-                category: 'audit_status',
-                actionUrl: `/audits/${newRecord.id}`,
-                actionLabel: 'View Details'
-              });
-
-              // Send email notification
-              if (user.email) {
-                await EmailService.sendAuditStatusUpdate(
-                  user.email,
-                  {
-                    projectName: newRecord.project_name,
-                    status: newRecord.status,
-                    message: `Your audit status has been updated to ${newRecord.status}`,
-                    actionUrl: `${window.location.origin}/audits/${newRecord.id}`
-                  }
-                );
-              }
-            }
-          }
-
-          // Auditor assignment notifications
-          if (!oldRecord.assigned_auditor_id && newRecord.assigned_auditor_id) {
-            if (newRecord.client_id === user.id) {
-              addNotification({
-                title: 'Auditor Assigned',
-                message: `An auditor has been assigned to "${newRecord.project_name}"`,
-                type: 'success',
-                category: 'audit_assignment',
-                actionUrl: `/audits/${newRecord.id}`,
-                actionLabel: 'Meet Your Auditor'
-              });
-            }
-
-            if (newRecord.assigned_auditor_id === user.id) {
-              addNotification({
-                title: 'New Audit Assignment',
-                message: `You've been assigned to audit "${newRecord.project_name}"`,
-                type: 'info',
-                category: 'audit_assignment',
-                actionUrl: `/audits/${newRecord.id}`,
-                actionLabel: 'Start Audit'
-              });
-            }
-          }
-
-          // Progress updates
-          if (oldRecord.completion_percentage !== newRecord.completion_percentage) {
-            const isUserInvolved = 
-              newRecord.client_id === user.id || 
-              newRecord.assigned_auditor_id === user.id;
-
-            if (isUserInvolved && newRecord.completion_percentage > oldRecord.completion_percentage) {
-              addNotification({
-                title: 'Audit Progress Update',
-                message: `"${newRecord.project_name}" is now ${newRecord.completion_percentage}% complete`,
-                type: 'info',
-                category: 'audit_progress',
-                actionUrl: `/audits/${newRecord.id}`,
-                actionLabel: 'View Progress'
-              });
-            }
+            addNotification({
+              title: 'Audit Status Updated',
+              message: `Your audit request status changed to ${newRecord.status}`,
+              type: 'info',
+              category: 'audit',
+              actionUrl: `/audit/${newRecord.id}`,
+              actionLabel: 'View Audit',
+            });
           }
         }
       )
+      .subscribe();
+
+    // Subscribe to audit proposals
+    const proposalChannel = supabase
+      .channel('audit_proposals')
       .on(
         'postgres_changes',
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'audit_findings',
+          table: 'audit_proposals',
         },
         async (payload) => {
-          const finding = payload.new;
-
-          // Get audit details to check if user is involved
-          const { data: audit } = await supabase
+          const proposal = payload.new;
+          
+          // Check if this proposal is for the current user's audit request
+          const { data: auditRequest } = await supabase
             .from('audit_requests')
-            .select('client_id, assigned_auditor_id, project_name')
-            .eq('id', finding.audit_request_id)
+            .select('client_id')
+            .eq('id', proposal.audit_request_id)
             .single();
 
-          if (audit && (audit.client_id === user.id || audit.assigned_auditor_id === user.id)) {
-            const isHighSeverity = ['critical', 'high'].includes(finding.severity);
-            
+          if (auditRequest?.client_id === user.id) {
             addNotification({
-              title: `${finding.severity.toUpperCase()} Finding Detected`,
-              message: `New ${finding.severity} security finding in "${audit.project_name}": ${finding.title}`,
-              type: isHighSeverity ? 'error' : 'warning',
-              category: 'security_finding',
-              actionUrl: `/audits/${finding.audit_request_id}/findings/${finding.id}`,
-              actionLabel: 'Review Finding'
+              title: 'New Audit Proposal',
+              message: 'You have received a new audit proposal',
+              type: 'info',
+              category: 'proposal',
+              actionUrl: `/audit/${proposal.audit_request_id}`,
+              actionLabel: 'View Proposal',
             });
+          }
+        }
+      )
+      .subscribe();
 
-            // Send email for high-severity findings
-            if (isHighSeverity && user.email) {
-              await EmailService.sendFindingAlert(
-                user.email,
-                {
-                  severity: finding.severity,
-                  title: finding.title,
-                  description: finding.description,
-                  actionUrl: `${window.location.origin}/audits/${finding.audit_request_id}/findings/${finding.id}`
-                }
-              );
+    // Subscribe to milestone completions
+    const milestoneChannel = supabase
+      .channel('milestone_updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'audit_milestones',
+        },
+        async (payload) => {
+          const oldMilestone = payload.old;
+          const newMilestone = payload.new;
+          
+          if (oldMilestone.status !== newMilestone.status && newMilestone.status === 'completed') {
+            // Check if this milestone belongs to current user's audit
+            const { data: auditRequest } = await supabase
+              .from('audit_requests')
+              .select('client_id')
+              .eq('id', newMilestone.audit_request_id)
+              .single();
+
+            if (auditRequest?.client_id === user.id) {
+              addNotification({
+                title: 'Milestone Completed',
+                message: `Milestone "${newMilestone.title}" has been completed`,
+                type: 'success',
+                category: 'milestone',
+                actionUrl: `/audit/${newMilestone.audit_request_id}`,
+                actionLabel: 'View Progress',
+              });
             }
           }
         }
@@ -147,7 +112,9 @@ export function useAuditNotifications() {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(auditRequestChannel);
+      supabase.removeChannel(proposalChannel);
+      supabase.removeChannel(milestoneChannel);
     };
-  }, [user?.id, addNotification]);
+  }, [user, addNotification]);
 }
