@@ -8,13 +8,16 @@ import { useRealtimeSync } from '@/hooks/useRealtimeSync';
 import { Send, TestTube } from 'lucide-react';
 
 export function NotificationTester() {
-  const { sendNotification } = useRealtimeSync({ channel: 'notifications' });
+  const { addNotification } = useRealtimeSync({ channel: 'notifications' });
   const [message, setMessage] = useState('');
   const [type, setType] = useState<'info' | 'success' | 'warning' | 'error'>('info');
 
   const handleSendNotification = () => {
     if (message.trim()) {
-      sendNotification(message, type);
+      addNotification({
+        message: message,
+        type: type,
+      });
       setMessage('');
     }
   };
@@ -29,7 +32,7 @@ export function NotificationTester() {
 
     testMessages.forEach((test, index) => {
       setTimeout(() => {
-        sendNotification(test.message, test.type);
+        addNotification(test);
       }, index * 500);
     });
   };

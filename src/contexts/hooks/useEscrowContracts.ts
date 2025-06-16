@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -34,11 +35,14 @@ export const useEscrowContracts = (profile: Profile | null) => {
           contract.auditor as Profile : 
           undefined;
         
+        // Map database status to our EscrowStatus type
+        const mappedStatus = mapDatabaseStatus(contract.status);
+        
         return {
           ...contract,
           client,
           auditor,
-          status: contract.status as EscrowStatus
+          status: mappedStatus
         };
       }) as EscrowContract[];
       
@@ -46,6 +50,18 @@ export const useEscrowContracts = (profile: Profile | null) => {
     } catch (error) {
       console.error('Error fetching contracts:', error);
       toast.error('Failed to load escrow contracts');
+    }
+  };
+
+  const mapDatabaseStatus = (dbStatus: string): EscrowStatus => {
+    // Map database status values to our TypeScript enum
+    switch (dbStatus) {
+      case 'in_progress':
+        return 'active';
+      case 'refunded':
+        return 'cancelled';
+      default:
+        return dbStatus as EscrowStatus;
     }
   };
 
@@ -59,13 +75,17 @@ export const useEscrowContracts = (profile: Profile | null) => {
     }
     
     try {
-      // Make sure auditor_id is provided (it's required by the database)
+      // Prepare contract data for database insertion
       const contractData = {
-        ...contract,
-        auditor_id: contract.auditor_id || '', // Empty string as fallback
+        auditor_id: contract.auditor_id || '', 
         client_id: contract.client_id || profile.id,
-        title: contract.title || '', // Ensure required fields have values
-        total_amount: contract.total_amount || 0
+        title: contract.title || '', 
+        total_amount: contract.total_amount || 0,
+        description: contract.description || null,
+        currency: contract.currency || 'ETH',
+        smart_contract_address: contract.smart_contract_address || null,
+        requires_multisig: contract.requires_multisig || false,
+        // Don't include status - let database handle default
       };
       
       // Insert the contract
@@ -82,8 +102,8 @@ export const useEscrowContracts = (profile: Profile | null) => {
         const milestonesWithContractId = initialMilestones.map(milestone => ({
           ...milestone,
           escrow_contract_id: insertedContract.id,
-          title: milestone.title || 'Untitled Milestone', // Ensure required field
-          amount: milestone.amount || 0 // Ensure required field
+          title: milestone.title || 'Untitled Milestone', 
+          amount: milestone.amount || 0 
         }));
         
         const { error: milestonesError } = await supabase

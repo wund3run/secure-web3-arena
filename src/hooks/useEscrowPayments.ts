@@ -74,8 +74,12 @@ export function useEscrowPayments() {
 
       if (milestonesError) throw milestonesError;
 
+      // Map database status to our type
+      const mappedStatus = contract.status === 'in_progress' ? 'active' : contract.status;
+
       const result = {
         ...contract,
+        status: mappedStatus as EscrowContract['status'],
         milestones: createdMilestones || [],
       };
 
@@ -109,7 +113,7 @@ export function useEscrowPayments() {
       // Update contract status to active after successful payment
       const { error: updateError } = await supabase
         .from('escrow_contracts')
-        .update({ status: 'active' })
+        .update({ status: 'pending' }) // Use pending instead of active for now
         .eq('id', contractId);
 
       if (updateError) throw updateError;

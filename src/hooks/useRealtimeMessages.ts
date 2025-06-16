@@ -165,7 +165,10 @@ export function useRealtimeMessages({ conversationId, receiverId }: UseRealtimeM
         const state = typingChannel.presenceState();
         const typingUserIds = Object.keys(state)
           .filter(key => key !== user.id)
-          .filter(key => state[key]?.[0]?.typing);
+          .filter(key => {
+            const presenceData = state[key]?.[0];
+            return presenceData && (presenceData as any).typing === true;
+          });
         setTypingUsers(typingUserIds);
       })
       .subscribe();

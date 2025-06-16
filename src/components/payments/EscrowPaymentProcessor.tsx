@@ -37,12 +37,20 @@ export const EscrowPaymentProcessor: React.FC<EscrowPaymentProcessorProps> = ({
     try {
       setProcessing(true);
 
+      // Convert milestones with proper date handling
+      const processedMilestones = milestones.map(milestone => ({
+        title: milestone.title,
+        description: milestone.description,
+        amount: milestone.amount,
+        deadline: milestone.deadline.toISOString(),
+      }));
+
       // Create escrow contract
       const contract = await createEscrowContract(
         auditorId,
         totalAmount,
         'USD',
-        milestones
+        processedMilestones
       );
 
       // Fund the escrow (in production, this would integrate with Stripe)

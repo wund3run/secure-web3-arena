@@ -39,16 +39,19 @@ export const PaymentManager: React.FC<PaymentManagerProps> = ({
     try {
       setProcessing(true);
       
+      // Convert milestones with proper date handling
+      const processedMilestones = milestones.map(m => ({
+        title: m.title,
+        description: m.description,
+        amount: m.amount,
+        deadline: m.deadline.toISOString()
+      }));
+      
       const escrowContract = await createEscrowContract(
         auditorId,
         totalAmount,
         'USD',
-        milestones.map(m => ({
-          title: m.title,
-          description: m.description,
-          amount: m.amount,
-          deadline: m.deadline
-        }))
+        processedMilestones
       );
 
       toast.success('Escrow contract created successfully');
