@@ -1,48 +1,34 @@
 
 import React from 'react';
-import { Outlet } from 'react-router-dom';
-import { ProductionNavbar } from './production-navbar';
-import { EnhancedFooter } from '@/components/home/enhanced-footer';
-import { SupportButtonEnhanced } from '@/components/ui/support-button-enhanced';
-import { AdaptiveInterface } from '@/components/adaptive-interface/AdaptiveInterface';
-import { ComprehensiveErrorBoundary } from '@/components/error/comprehensive-error-boundary';
+import { Helmet } from 'react-helmet-async';
+import { UnifiedNavbar } from './unified-navbar';
+import { Footer } from './footer';
 
 interface ProductionLayoutProps {
-  children?: React.ReactNode;
-  variant?: 'default' | 'minimal' | 'dashboard';
-  showFooter?: boolean;
-  showSupport?: boolean;
+  children: React.ReactNode;
+  title?: string;
+  description?: string;
 }
 
 export function ProductionLayout({ 
   children, 
-  variant = 'default',
-  showFooter = true,
-  showSupport = true 
+  title = "Hawkly | Web3 Security Marketplace",
+  description = "Connect with verified Web3 security experts for smart contract audits"
 }: ProductionLayoutProps) {
   return (
-    <ComprehensiveErrorBoundary>
-      <div className="min-h-screen flex flex-col bg-background">
-        <ProductionNavbar />
-        
-        <main className="flex-1">
-          <AdaptiveInterface variant={variant === 'dashboard' ? 'dashboard-only' : 'full'}>
-            {children || <Outlet />}
-          </AdaptiveInterface>
+    <>
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+      </Helmet>
+      
+      <div className="min-h-screen bg-background flex flex-col">
+        <UnifiedNavbar />
+        <main className="flex-grow">
+          {children}
         </main>
-        
-        {showFooter && (
-          <React.Suspense fallback={<div className="h-20" />}>
-            <EnhancedFooter />
-          </React.Suspense>
-        )}
-        
-        {showSupport && (
-          <React.Suspense fallback={null}>
-            <SupportButtonEnhanced />
-          </React.Suspense>
-        )}
+        <Footer />
       </div>
-    </ComprehensiveErrorBoundary>
+    </>
   );
 }

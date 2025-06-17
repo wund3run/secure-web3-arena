@@ -7,8 +7,16 @@ import { Footer } from '@/components/layout/footer';
 import { EnhancedRouteGuard } from '@/components/routing/EnhancedRouteGuard';
 import { EnhancedBreadcrumbs } from '@/components/navigation/EnhancedBreadcrumbs';
 import { ResponsiveLayout } from '@/components/layout/ResponsiveLayout';
+import { ConnectionTest } from '@/components/debug/ConnectionTest';
+import { useAuth } from '@/contexts/auth';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { Settings } from 'lucide-react';
 
 const Dashboard = () => {
+  const { user } = useAuth();
+  const [showDebug, setShowDebug] = useState(false);
+
   return (
     <>
       <Helmet>
@@ -20,7 +28,26 @@ const Dashboard = () => {
         <Navbar />
         <main className="flex-grow">
           <ResponsiveLayout maxWidth="2xl" padding="md">
-            <EnhancedBreadcrumbs />
+            <div className="flex justify-between items-center mb-4">
+              <EnhancedBreadcrumbs />
+              {user && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setShowDebug(!showDebug)}
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  {showDebug ? 'Hide' : 'Show'} Debug
+                </Button>
+              )}
+            </div>
+            
+            {showDebug && (
+              <div className="mb-6">
+                <ConnectionTest />
+              </div>
+            )}
+            
             <EnhancedRouteGuard 
               requiresAuth={true}
               allowedRoles={['auditor', 'project_owner', 'admin']}

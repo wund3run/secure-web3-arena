@@ -8,12 +8,14 @@ import { useNavigate } from "react-router-dom";
 export const useProfile = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   
   // Fetch user profile
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        setError(null);
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session?.user) {
@@ -21,23 +23,35 @@ export const useProfile = () => {
           return;
         }
         
-        const { data, error } = await supabase
-          .from('profiles')
+        // Try extended_profiles first, then fall back to profiles
+        const { data: extendedProfile, error: extendedError } = await supabase
+          .from('extended_profiles')
           .select('*')
           .eq('id', session.user.id)
-          .maybeSingle(); // Use maybeSingle instead of single to handle no results gracefully
+          .maybeSingle();
           
-        if (error) {
-          console.error('Error fetching profile:', error);
-          // Only show toast for actual errors, not missing profiles
-          if (error.code !== 'PGRST116') {
-            toast.error('Failed to load user profile');
+        if (extendedError && extendedError.code !== 'PGRST116') {
+          console.error('Error fetching extended profile:', extendedError);
+          
+          // Fallback to basic profiles table
+          const { data: basicProfile, error: basicError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .maybeSingle();
+            
+          if (basicError && basicError.code !== 'PGRST116') {
+            console.error('Error fetching basic profile:', basicError);
+            setError('Failed to load user profile');
+          } else if (basicProfile) {
+            setProfile(basicProfile as Profile);
           }
-        } else if (data) {
-          setProfile(data);
+        } else if (extendedProfile) {
+          setProfile(extendedProfile as Profile);
         }
       } catch (error) {
         console.error('Unexpected error fetching profile:', error);
+        setError('Authentication system unavailable');
       } finally {
         setLoading(false);
       }
@@ -49,6 +63,7 @@ export const useProfile = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') {
         setProfile(null);
+        setError(null);
         navigate('/');
       } else if (session && event === 'SIGNED_IN') {
         fetchProfile();
@@ -62,6 +77,7 @@ export const useProfile = () => {
 
   return {
     profile,
-    loading
+    loading,
+    error
   };
 };
