@@ -48,13 +48,16 @@ export const useEscrowTransactions = (profile: Profile | null) => {
             } as MultisigApproval;
           }) : 
           undefined;
+
+        // Map database type to our TransactionType
+        const mappedType = mapDatabaseTransactionType(tx.type);
           
         return {
           ...tx,
           sender,
           recipient,
           approvals,
-          type: tx.type as TransactionType
+          type: mappedType
         } as Transaction;
       });
       
@@ -71,6 +74,18 @@ export const useEscrowTransactions = (profile: Profile | null) => {
     }
   };
 
+  const mapDatabaseTransactionType = (dbType: string): TransactionType => {
+    // Map database type values to our TypeScript enum
+    switch (dbType) {
+      case 'release':
+        return 'milestone_payment';
+      case 'dispute_payout':
+        return 'dispute_resolution';
+      default:
+        return dbType as TransactionType;
+    }
+  };
+
   const createTransaction = async (transaction: Partial<Transaction>) => {
     if (!profile) {
       toast.error('You must be logged in to create a transaction');
@@ -83,12 +98,21 @@ export const useEscrowTransactions = (profile: Profile | null) => {
     }
     
     try {
+      // Map our TransactionType to database enum values
+      let dbTransactionType = transaction.type || 'deposit';
+      if (transaction.type === 'milestone_payment') {
+        dbTransactionType = 'milestone_payment'; // This matches database enum
+      }
+      
       const transactionData = {
-        ...transaction,
         sender_id: transaction.sender_id || profile.id,
-        escrow_contract_id: transaction.escrow_contract_id,  // Explicitly add this as a required field
-        amount: transaction.amount || 0,  // Ensure required field
-        type: transaction.type || 'deposit' as TransactionType  // Ensure required field
+        escrow_contract_id: transaction.escrow_contract_id,
+        amount: transaction.amount || 0,
+        type: dbTransactionType,
+        recipient_id: transaction.recipient_id || null,
+        status: transaction.status || 'pending',
+        transaction_hash: transaction.transaction_hash || null,
+        milestone_id: transaction.milestone_id || null
       };
       
       const { data, error } = await supabase

@@ -14,10 +14,12 @@ export interface Profile {
   years_of_experience?: number;
   projects_completed?: number;
   user_type?: string;
+  is_arbitrator?: boolean;
   created_at: string;
   updated_at: string;
 }
 
+// Update types to match database enum values
 export type EscrowStatus = 'pending' | 'active' | 'completed' | 'disputed' | 'cancelled';
 
 export interface EscrowContract {
@@ -51,7 +53,8 @@ export interface Milestone {
   updated_at: string;
 }
 
-export type TransactionType = 'deposit' | 'release' | 'refund' | 'dispute_payout';
+// Update to match database enum values
+export type TransactionType = 'deposit' | 'milestone_payment' | 'refund' | 'fee' | 'dispute_resolution';
 
 export interface Transaction {
   id: string;
@@ -81,7 +84,8 @@ export interface MultisigApproval {
   approver?: Profile;
 }
 
-export type DisputeStatus = 'opened' | 'in_progress' | 'resolved' | 'escalated';
+// Update to match database enum values
+export type DisputeStatus = 'opened' | 'in_review' | 'resolved' | 'closed';
 
 export interface Dispute {
   id: string;

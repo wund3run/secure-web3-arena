@@ -49,13 +49,16 @@ export const useEscrowDisputes = (profile: Profile | null) => {
             } as DisputeComment;
           }) :
           undefined;
+
+        // Map database status to our DisputeStatus type
+        const mappedStatus = mapDatabaseDisputeStatus(dispute.status);
           
         return {
           ...dispute,
           raiser,
           arbitrator,
           comments,
-          status: dispute.status as DisputeStatus
+          status: mappedStatus
         } as Dispute;
       });
       
@@ -69,6 +72,18 @@ export const useEscrowDisputes = (profile: Profile | null) => {
       console.error('Error fetching disputes:', error);
       toast.error('Failed to load disputes');
       return [];
+    }
+  };
+
+  const mapDatabaseDisputeStatus = (dbStatus: string): DisputeStatus => {
+    // Map database status values to our TypeScript enum
+    switch (dbStatus) {
+      case 'in_progress':
+        return 'in_review';
+      case 'escalated':
+        return 'in_review';
+      default:
+        return dbStatus as DisputeStatus;
     }
   };
 
@@ -89,12 +104,15 @@ export const useEscrowDisputes = (profile: Profile | null) => {
     }
     
     try {
+      // Prepare data for database insertion, mapping our types to database types
       const disputeData = {
-        ...dispute,
         raised_by: dispute.raised_by || profile.id,
         reason: dispute.reason,
-        escrow_contract_id: dispute.escrow_contract_id,  // Explicitly add this as a required field
-        status: dispute.status || 'opened' as DisputeStatus
+        escrow_contract_id: dispute.escrow_contract_id,
+        status: 'opened', // Use database enum value directly
+        evidence: dispute.evidence || null,
+        arbitrator_id: dispute.arbitrator_id || null,
+        milestone_id: dispute.milestone_id || null
       };
       
       const { data, error } = await supabase
@@ -171,7 +189,7 @@ export const useEscrowDisputes = (profile: Profile | null) => {
       const { data, error } = await supabase
         .from('disputes')
         .update({
-          status: 'resolved',
+          status: 'resolved', // Use database enum value directly
           resolution,
           arbitrator_id: profile.id
         })

@@ -13,18 +13,20 @@ export const useEscrowMilestones = () => {
         .from('milestones')
         .select('*')
         .eq('escrow_contract_id', contractId)
-        .order('created_at');
+        .order('created_at', { ascending: true });
         
       if (error) {
         throw error;
       }
       
+      const typedMilestones = (data || []) as Milestone[];
+      
       setMilestones(prev => ({
         ...prev,
-        [contractId]: data || []
+        [contractId]: typedMilestones
       }));
       
-      return data || [];
+      return typedMilestones;
     } catch (error) {
       console.error('Error fetching milestones:', error);
       toast.error('Failed to load milestones');
@@ -32,25 +34,37 @@ export const useEscrowMilestones = () => {
     }
   };
 
-  const updateMilestone = async (milestone: Partial<Milestone>) => {
-    if (!milestone.id) {
-      toast.error('Milestone ID is required');
-      return false;
-    }
-    
+  const updateMilestone = async (milestoneId: string, completed: boolean) => {
     try {
+      const updateData: any = {
+        is_completed: completed
+      };
+      
+      if (completed) {
+        updateData.completed_at = new Date().toISOString();
+      } else {
+        updateData.completed_at = null;
+      }
+
       const { error } = await supabase
         .from('milestones')
-        .update(milestone)
-        .eq('id', milestone.id);
+        .update(updateData)
+        .eq('id', milestoneId);
         
       if (error) throw error;
       
-      if (milestone.escrow_contract_id) {
-        await fetchMilestones(milestone.escrow_contract_id);
+      // Refresh milestones for the related contract
+      const { data } = await supabase
+        .from('milestones')
+        .select('escrow_contract_id')
+        .eq('id', milestoneId)
+        .single();
+        
+      if (data?.escrow_contract_id) {
+        await fetchMilestones(data.escrow_contract_id);
       }
       
-      toast.success('Milestone updated successfully');
+      toast.success(`Milestone ${completed ? 'completed' : 'reopened'} successfully`);
       return true;
     } catch (error) {
       console.error('Error updating milestone:', error);
