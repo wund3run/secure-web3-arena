@@ -18,6 +18,8 @@ export interface Profile {
   updated_at: string;
 }
 
+export type EscrowStatus = 'pending' | 'active' | 'completed' | 'disputed' | 'cancelled';
+
 export interface EscrowContract {
   id: string;
   title: string;
@@ -26,11 +28,14 @@ export interface EscrowContract {
   auditor_id: string;
   total_amount: number;
   currency: string;
-  status: 'pending' | 'active' | 'completed' | 'disputed' | 'cancelled';
+  status: EscrowStatus;
   smart_contract_address?: string;
   requires_multisig: boolean;
   created_at: string;
   updated_at: string;
+  // Added missing properties for joined data
+  client?: Profile;
+  auditor?: Profile;
 }
 
 export interface Milestone {
@@ -44,4 +49,87 @@ export interface Milestone {
   completed_at?: string;
   created_at: string;
   updated_at: string;
+}
+
+export type TransactionType = 'deposit' | 'release' | 'refund' | 'dispute_payout';
+
+export interface Transaction {
+  id: string;
+  escrow_contract_id: string;
+  sender_id: string;
+  recipient_id?: string;
+  amount: number;
+  type: TransactionType;
+  status: string;
+  transaction_hash?: string;
+  milestone_id?: string;
+  created_at: string;
+  updated_at: string;
+  // Added for joined data
+  sender?: Profile;
+  recipient?: Profile;
+  approvals?: MultisigApproval[];
+}
+
+export interface MultisigApproval {
+  id: string;
+  transaction_id: string;
+  approver_id: string;
+  signature: string;
+  approved_at: string;
+  // Added for joined data
+  approver?: Profile;
+}
+
+export type DisputeStatus = 'opened' | 'in_progress' | 'resolved' | 'escalated';
+
+export interface Dispute {
+  id: string;
+  escrow_contract_id: string;
+  raised_by: string;
+  arbitrator_id?: string;
+  milestone_id?: string;
+  reason: string;
+  evidence?: string;
+  status: DisputeStatus;
+  resolution?: string;
+  created_at: string;
+  updated_at: string;
+  // Added for joined data
+  raiser?: Profile;
+  arbitrator?: Profile;
+  comments?: DisputeComment[];
+}
+
+export interface DisputeComment {
+  id: string;
+  dispute_id: string;
+  user_id: string;
+  comment: string;
+  created_at: string;
+  // Added for joined data
+  user?: Profile;
+}
+
+// Context type definition
+export interface EscrowContextType {
+  contracts: EscrowContract[];
+  milestones: Record<string, Milestone[]>;
+  transactions: Record<string, Transaction[]>;
+  disputes: Record<string, Dispute[]>;
+  loading: boolean;
+  profile: Profile | null;
+  fetchContracts: () => Promise<void>;
+  fetchMilestones: (contractId: string) => Promise<Milestone[]>;
+  fetchTransactions: (contractId: string) => Promise<Transaction[]>;
+  fetchDisputes: (contractId: string) => Promise<Dispute[]>;
+  createContract: (contract: Partial<EscrowContract>, milestones: Partial<Milestone>[]) => Promise<string | null>;
+  updateMilestone: (milestoneId: string, completed: boolean) => Promise<boolean>;
+  createTransaction: (transaction: Partial<Transaction>) => Promise<string | null>;
+  approveTransaction: (transactionId: string, signature: string) => Promise<boolean>;
+  createDispute: (dispute: Partial<Dispute>) => Promise<string | null>;
+  addDisputeComment: (disputeId: string, comment: string) => Promise<boolean>;
+  resolveDispute: (disputeId: string, resolution: string) => Promise<boolean>;
+  cancelContract: (contractId: string) => Promise<boolean>;
+  completeContract: (contractId: string) => Promise<boolean>;
 }

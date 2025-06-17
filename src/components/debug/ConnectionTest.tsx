@@ -96,20 +96,20 @@ export function ConnectionTest() {
       }
     }
 
-    // Test 4: Database Tables
-    const tables = ['services', 'audit_requests', 'escrow_contracts'];
-    for (const table of tables) {
+    // Test 4: Database Tables - Fix the table name issue
+    const tablesToTest = ['services', 'audit_requests', 'escrow_contracts'] as const;
+    for (const tableName of tablesToTest) {
       try {
-        const { error } = await supabase.from(table).select('count', { count: 'exact', head: true });
+        const { error } = await supabase.from(tableName).select('count', { count: 'exact', head: true });
         testResults.push({
-          name: `Table: ${table}`,
+          name: `Table: ${tableName}`,
           status: error ? 'error' : 'success',
           message: error ? 'Table access failed' : 'Table accessible',
           details: error?.message
         });
       } catch (err) {
         testResults.push({
-          name: `Table: ${table}`,
+          name: `Table: ${tableName}`,
           status: 'error',
           message: 'Table test failed',
           details: err instanceof Error ? err.message : 'Unknown error'
