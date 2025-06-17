@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Profile } from "../types/escrow-types";
@@ -11,73 +11,104 @@ export const useProfile = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   
+  const fetchProfile = useCallback(async (userId: string) => {
+    try {
+      setError(null);
+      setLoading(true);
+      
+      // Try extended_profiles first with optimized query
+      const { data: extendedProfile, error: extendedError } = await supabase
+        .from('extended_profiles')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle();
+        
+      if (extendedError) {
+        console.error('Extended profile fetch error:', extendedError);
+        
+        // Only try basic profiles if extended profiles truly failed (not just no data)
+        if (extendedError.code !== 'PGRST116') {
+          const { data: basicProfile, error: basicError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', userId)
+            .maybeSingle();
+            
+          if (basicError) {
+            console.error('Basic profile fetch error:', basicError);
+            setError('Failed to load user profile');
+          } else if (basicProfile) {
+            setProfile(basicProfile as Profile);
+          }
+        }
+      } else if (extendedProfile) {
+        setProfile(extendedProfile as Profile);
+      }
+    } catch (error) {
+      console.error('Unexpected error fetching profile:', error);
+      setError('Authentication system unavailable');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+  
   // Fetch user profile
   useEffect(() => {
-    const fetchProfile = async () => {
+    let mounted = true;
+    
+    const initializeProfile = async () => {
       try {
-        setError(null);
         const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!mounted) return;
         
         if (!session?.user) {
           setLoading(false);
           return;
         }
         
-        // Try extended_profiles first, then fall back to profiles
-        const { data: extendedProfile, error: extendedError } = await supabase
-          .from('extended_profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .maybeSingle();
-          
-        if (extendedError && extendedError.code !== 'PGRST116') {
-          console.error('Error fetching extended profile:', extendedError);
-          
-          // Fallback to basic profiles table
-          const { data: basicProfile, error: basicError } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .maybeSingle();
-            
-          if (basicError && basicError.code !== 'PGRST116') {
-            console.error('Error fetching basic profile:', basicError);
-            setError('Failed to load user profile');
-          } else if (basicProfile) {
-            setProfile(basicProfile as Profile);
-          }
-        } else if (extendedProfile) {
-          setProfile(extendedProfile as Profile);
-        }
+        await fetchProfile(session.user.id);
       } catch (error) {
-        console.error('Unexpected error fetching profile:', error);
-        setError('Authentication system unavailable');
-      } finally {
-        setLoading(false);
+        if (mounted) {
+          console.error('Session error:', error);
+          setError('Failed to initialize user session');
+          setLoading(false);
+        }
       }
     };
     
-    fetchProfile();
+    initializeProfile();
     
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    // Set up auth state listener with cleanup
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!mounted) return;
+      
       if (event === 'SIGNED_OUT') {
         setProfile(null);
         setError(null);
         navigate('/');
       } else if (session && event === 'SIGNED_IN') {
-        fetchProfile();
+        await fetchProfile(session.user.id);
       }
     });
     
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate, fetchProfile]);
 
   return {
     profile,
     loading,
-    error
+    error,
+    refetchProfile: useCallback(() => {
+      const session = supabase.auth.getSession();
+      session.then(({ data: { session } }) => {
+        if (session?.user) {
+          fetchProfile(session.user.id);
+        }
+      });
+    }, [fetchProfile])
   };
 };

@@ -1,9 +1,10 @@
-
-// Performance monitoring and optimization utilities
+// Performance monitoring and optimization utilities with reduced overhead
 
 export class PerformanceMonitor {
   private static instance: PerformanceMonitor;
   private metrics: Map<string, number[]> = new Map();
+  private maxMetrics = 50; // Reduced from 100
+  private isEnabled = process.env.NODE_ENV === 'development';
 
   static getInstance(): PerformanceMonitor {
     if (!PerformanceMonitor.instance) {
@@ -16,6 +17,8 @@ export class PerformanceMonitor {
     componentName: string,
     renderFunction: T
   ): T {
+    if (!this.isEnabled) return renderFunction;
+    
     return ((...args: any[]) => {
       const startTime = performance.now();
       const result = renderFunction(...args);
@@ -30,6 +33,8 @@ export class PerformanceMonitor {
     operationName: string,
     operation: Promise<T>
   ): Promise<T> {
+    if (!this.isEnabled) return operation;
+    
     const startTime = performance.now();
     
     return operation.finally(() => {
@@ -39,6 +44,8 @@ export class PerformanceMonitor {
   }
 
   private recordMetric(name: string, value: number) {
+    if (!this.isEnabled) return;
+    
     if (!this.metrics.has(name)) {
       this.metrics.set(name, []);
     }
@@ -46,40 +53,57 @@ export class PerformanceMonitor {
     const values = this.metrics.get(name)!;
     values.push(value);
     
-    // Keep only last 100 measurements
-    if (values.length > 100) {
+    // Keep only recent measurements (reduced limit)
+    if (values.length > this.maxMetrics) {
       values.shift();
     }
   }
 
   getMetrics() {
+    if (!this.isEnabled) return {};
+    
     const result: Record<string, { avg: number; min: number; max: number; count: number }> = {};
     
     this.metrics.forEach((values, name) => {
-      result[name] = {
-        avg: values.reduce((sum, val) => sum + val, 0) / values.length,
-        min: Math.min(...values),
-        max: Math.max(...values),
-        count: values.length
-      };
+      if (values.length > 0) {
+        result[name] = {
+          avg: values.reduce((sum, val) => sum + val, 0) / values.length,
+          min: Math.min(...values),
+          max: Math.max(...values),
+          count: values.length
+        };
+      }
     });
     
     return result;
   }
 
+  // Simplified web vitals logging with error handling
   logWebVitals() {
-    // Core Web Vitals monitoring with correct v5 function names
-    if (typeof window !== 'undefined') {
+    if (!this.isEnabled || typeof window === 'undefined') return;
+    
+    try {
       import('web-vitals').then(({ onCLS, onINP, onFCP, onLCP, onTTFB }) => {
-        onCLS(console.log);
-        onINP(console.log);
-        onFCP(console.log);
-        onLCP(console.log);
-        onTTFB(console.log);
+        const logMetric = (metric: any) => {
+          this.recordMetric(`web-vital-${metric.name}`, metric.value);
+        };
+        
+        onCLS(logMetric);
+        onINP(logMetric);
+        onFCP(logMetric);
+        onLCP(logMetric);
+        onTTFB(logMetric);
       }).catch(() => {
         // Silently fail if web-vitals is not available
       });
+    } catch (error) {
+      // Silently handle import errors
     }
+  }
+
+  // Clear metrics to prevent memory buildup
+  clear() {
+    this.metrics.clear();
   }
 }
 
