@@ -109,7 +109,7 @@ export const useEscrowDisputes = (profile: Profile | null) => {
         raised_by: dispute.raised_by || profile.id,
         reason: dispute.reason,
         escrow_contract_id: dispute.escrow_contract_id,
-        status: 'opened', // Use database enum value directly
+        status: 'opened' as const, // Use const assertion to ensure exact type
         evidence: dispute.evidence || null,
         arbitrator_id: dispute.arbitrator_id || null,
         milestone_id: dispute.milestone_id || null
@@ -189,7 +189,7 @@ export const useEscrowDisputes = (profile: Profile | null) => {
       const { data, error } = await supabase
         .from('disputes')
         .update({
-          status: 'resolved', // Use database enum value directly
+          status: 'resolved' as const, // Use const assertion to ensure exact type
           resolution,
           arbitrator_id: profile.id
         })
