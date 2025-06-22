@@ -1,3 +1,4 @@
+
 import React, { Suspense } from "react";
 import { LazySection } from "@/components/performance/LazySection";
 import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
@@ -7,18 +8,15 @@ import { AdaptiveContentRenderer } from "@/components/home/adaptive-content-rend
 import { SmartResourceManager } from "@/components/performance/SmartResourceManager";
 import { IntelligentAnalytics } from "@/components/analytics/IntelligentAnalytics";
 
-// Core journey components (loaded immediately) - update to use enhanced hero
-import { EnhancedHero } from "@/components/home/EnhancedHero";
-import { TrustIndicators } from "@/components/home/trust-indicators";
-import { ValuePropositionSection } from "@/components/home/value-proposition-section";
-import { HowItWorksSection } from "@/components/home/how-it-works-section";
-import { UserJourneySection } from "@/components/home/user-journey-section";
+// New redesigned components
+import { UnifiedHero } from "@/components/home/UnifiedHero";
+import { TrustSection } from "@/components/home/TrustSection";
+import { UserPaths } from "@/components/home/UserPaths";
+import { ProcessVisualization } from "@/components/home/ProcessVisualization";
+import { VisibleFAQ } from "@/components/home/VisibleFAQ";
 
 // Lazy-loaded sections
-import {
-  FaqSection,
-  QuickStartSection
-} from "./index-page-sections";
+import { QuickStartSection } from "./index-page-sections";
 
 // Enhanced loading fallback component
 const SectionLoadingFallback = ({ height = "h-64" }: { height?: string }) => (
@@ -27,31 +25,31 @@ const SectionLoadingFallback = ({ height = "h-64" }: { height?: string }) => (
   </div>
 );
 
-// Progressive loading stages for the homepage - update to use enhanced hero
+// Progressive loading stages for the redesigned homepage
 const homePageStages = [
   {
-    name: "Enhanced Hero Section",
-    component: EnhancedHero,
+    name: "Unified Hero Section",
+    component: UnifiedHero,
     loadTime: 50
   },
   {
-    name: "Trust Indicators", 
-    component: TrustIndicators,
+    name: "Trust & Certifications", 
+    component: TrustSection,
     loadTime: 100
   },
   {
-    name: "Value Proposition",
-    component: ValuePropositionSection,
+    name: "User Path Selection",
+    component: UserPaths,
     loadTime: 150
   },
   {
-    name: "How It Works",
-    component: HowItWorksSection,
+    name: "Process Visualization",
+    component: ProcessVisualization,
     loadTime: 100
   },
   {
-    name: "User Journey",
-    component: UserJourneySection,
+    name: "Visible FAQ",
+    component: VisibleFAQ,
     loadTime: 100
   }
 ];
@@ -60,8 +58,8 @@ export function IndexPageLayout() {
   return (
     <SmartResourceManager>
       <OptimizedRoute
-        title="Hawkly | Leading Web3 Security Marketplace"
-        description="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions."
+        title="Hawkly | Secure Your Web3 Project in Days, Not Months"
+        description="Connect with verified security experts for fast, comprehensive smart contract audits. AI-powered matching, transparent pricing, guaranteed results."
         preloadRoutes={['/marketplace', '/request-audit', '/auth']}
       >
         <AdaptiveContentRenderer>
@@ -72,23 +70,13 @@ export function IndexPageLayout() {
               className="space-y-0"
             />
             
-            {/* Below-the-fold content - lazy loaded with enhanced loading states */}
+            {/* Below-the-fold content - lazy loaded */}
             <LazySection 
               fallback={<SectionLoadingFallback />}
               threshold={0.1}
               rootMargin="200px"
             >
               <QuickStartSection />
-            </LazySection>
-            
-            <LazySection 
-              fallback={<SectionLoadingFallback height="h-80" />}
-              threshold={0.1}
-              rootMargin="100px"
-            >
-              <Suspense fallback={<SectionLoadingFallback height="h-80" />}>
-                <FaqSection />
-              </Suspense>
             </LazySection>
           </div>
         </AdaptiveContentRenderer>
