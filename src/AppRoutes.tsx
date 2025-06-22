@@ -3,6 +3,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from '@/pages/Home';
 import Auth from '@/pages/Auth';
+import AuthCallback from '@/pages/AuthCallback';
 import Dashboard from '@/pages/Dashboard';
 import Marketplace from '@/pages/Marketplace';
 import RequestAudit from '@/pages/RequestAudit';
@@ -18,6 +19,7 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/auth" element={<Auth />} />
+      <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/marketplace" element={<Marketplace />} />
       <Route path="/request-audit" element={<RequestAudit />} />

@@ -6,32 +6,35 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Mail, Lock, Github } from 'lucide-react';
-import { useEnhancedAuth } from '@/hooks/useEnhancedAuth';
+import { useAuth } from '@/contexts/auth';
+import { toast } from 'sonner';
+import { SocialAuthButtons } from './SocialAuthButtons';
 
 export const EnhancedSignInForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   
-  const { signInWithEmail, signInWithProvider, loading } = useEnhancedAuth();
+  const { signIn } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
     
     try {
-      await signInWithEmail(email, password);
+      const result = await signIn(email, password);
+      if (result.error) {
+        setError(result.error.message);
+      } else {
+        toast.success('Welcome back!');
+      }
     } catch (err: any) {
-      setError(err.message);
-    }
-  };
-
-  const handleSocialSignIn = async (provider: 'google' | 'github') => {
-    try {
-      await signInWithProvider(provider);
-    } catch (err: any) {
-      setError(err.message);
+      setError(err.message || 'Failed to sign in');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -54,6 +57,7 @@ export const EnhancedSignInForm = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -70,11 +74,13 @@ export const EnhancedSignInForm = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={isLoading}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                disabled={isLoading}
               >
                 {showPassword ? (
                   <EyeOff className="h-4 w-4 text-muted-foreground" />
@@ -91,37 +97,12 @@ export const EnhancedSignInForm = () => {
             </Alert>
           )}
 
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign in'}
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? 'Signing in...' : 'Sign In'}
           </Button>
         </form>
-
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">Or continue with</span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <Button 
-            variant="outline" 
-            onClick={() => handleSocialSignIn('google')}
-            disabled={loading}
-          >
-            Google
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={() => handleSocialSignIn('github')}
-            disabled={loading}
-          >
-            <Github className="h-4 w-4 mr-2" />
-            GitHub
-          </Button>
-        </div>
+        
+        <SocialAuthButtons mode="signin" />
       </CardContent>
     </Card>
   );

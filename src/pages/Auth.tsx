@@ -1,22 +1,19 @@
+
 import React from 'react';
 import { AuthLayout } from '@/components/auth/AuthLayout';
 import { CompleteAuthFlow } from '@/components/auth/CompleteAuthFlow';
 import { useAuthPage } from '@/hooks/useAuthPage';
+import { Loader2 } from 'lucide-react';
 
 const Auth: React.FC = () => {
-  const { loading, error } = useAuthPage(); // Assuming error is part of the hook
+  const { loading, error } = useAuthPage();
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-secondary/5">
         <div className="flex flex-col items-center space-y-4">
-          <img 
-            src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
-            alt="Hawkly Logo"
-            className="h-16 w-16 object-contain bg-transparent animate-pulse"
-            style={{ backgroundColor: 'transparent' }}
-          />
-          <p className="text-sm text-muted-foreground" aria-live="polite">Loading...</p>
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground" aria-live="polite">Checking authentication...</p>
         </div>
       </div>
     );
@@ -25,8 +22,11 @@ const Auth: React.FC = () => {
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-red-50">
-        <div className="flex flex-col items-center space-y-4">
-          <p className="text-sm text-red-600">An error occurred: {error.message}</p>
+        <div className="flex flex-col items-center space-y-4 max-w-md mx-auto p-6">
+          <div className="text-red-600 text-center">
+            <h2 className="text-xl font-semibold mb-2">Authentication Error</h2>
+            <p className="text-sm">{error.message}</p>
+          </div>
         </div>
       </div>
     );
@@ -34,7 +34,7 @@ const Auth: React.FC = () => {
 
   return (
     <AuthLayout>
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-md mx-auto">
         <CompleteAuthFlow />
       </div>
     </AuthLayout>
