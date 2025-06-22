@@ -1,20 +1,17 @@
 
 import React, { useState } from 'react';
-import { ProductionLayout } from '@/components/layout/ProductionLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Mail, MessageSquare, Phone, MapPin, Clock, Send } from 'lucide-react';
-import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
+import { Mail, Phone, MapPin, Clock, Send, MessageSquare } from 'lucide-react';
 
-export default function Contact() {
+const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    company: '',
     subject: '',
     category: '',
     message: ''
@@ -23,85 +20,91 @@ export default function Contact() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission
-    toast.success('Message sent successfully! We\'ll get back to you within 24 hours.');
-    setFormData({ name: '', email: '', company: '', subject: '', category: '', message: '' });
+    console.log('Form submitted:', formData);
   };
 
-  const handleChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   return (
-    <ProductionLayout>
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5">
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
-          {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Have questions about our security services? Need help with your audit? 
-              Our team is here to assist you every step of the way.
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <MessageSquare className="h-8 w-8 text-primary" />
+              <h1 className="text-4xl font-bold">Contact Us</h1>
+            </div>
+            <p className="text-xl text-muted-foreground">
+              Get in touch with our Web3 security experts
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Contact Information */}
-            <div className="lg:col-span-1">
+            <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Get in Touch</CardTitle>
+                  <CardTitle className="text-lg">Get in Touch</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="flex items-start space-x-3">
-                    <Mail className="h-5 w-5 text-primary mt-1" />
+                <CardContent className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Mail className="h-5 w-5 text-primary" />
                     <div>
                       <p className="font-medium">Email</p>
                       <p className="text-sm text-muted-foreground">join@hawkly.com</p>
-                      <p className="text-sm text-muted-foreground">support@hawkly.com</p>
                     </div>
                   </div>
-                  
-                  <div className="flex items-start space-x-3">
-                    <MessageSquare className="h-5 w-5 text-primary mt-1" />
+                  <div className="flex items-center gap-3">
+                    <Phone className="h-5 w-5 text-primary" />
                     <div>
-                      <p className="font-medium">Discord Community</p>
-                      <p className="text-sm text-muted-foreground">Join our active community for real-time support</p>
+                      <p className="font-medium">Phone</p>
+                      <p className="text-sm text-muted-foreground">+1 (555) 123-4567</p>
                     </div>
                   </div>
-                  
-                  <div className="flex items-start space-x-3">
-                    <Clock className="h-5 w-5 text-primary mt-1" />
+                  <div className="flex items-center gap-3">
+                    <MapPin className="h-5 w-5 text-primary" />
                     <div>
-                      <p className="font-medium">Response Time</p>
-                      <p className="text-sm text-muted-foreground">Within 24 hours</p>
-                      <p className="text-sm text-muted-foreground">Urgent security issues: Within 2 hours</p>
+                      <p className="font-medium">Address</p>
+                      <p className="text-sm text-muted-foreground">
+                        123 Security Blvd<br />
+                        Web3 District, CA 94105
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Clock className="h-5 w-5 text-primary" />
+                    <div>
+                      <p className="font-medium">Business Hours</p>
+                      <p className="text-sm text-muted-foreground">
+                        Mon-Fri: 9:00 AM - 6:00 PM PST
+                      </p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Quick Links */}
-              <Card className="mt-6">
+              <Card>
                 <CardHeader>
-                  <CardTitle>Quick Links</CardTitle>
+                  <CardTitle className="text-lg">Support Categories</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <div>
-                    <p className="font-medium">For Project Owners</p>
-                    <p className="text-sm text-muted-foreground">Ready to secure your project?</p>
-                    <Button variant="link" className="p-0 h-auto">Request Security Audit</Button>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">General Inquiry</span>
+                    <Badge variant="outline">24h response</Badge>
                   </div>
-                  
-                  <div>
-                    <p className="font-medium">For Security Experts</p>
-                    <p className="text-sm text-muted-foreground">Join our network of professionals</p>
-                    <Button variant="link" className="p-0 h-auto">Become a Provider</Button>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Technical Support</span>
+                    <Badge variant="outline">12h response</Badge>
                   </div>
-                  
-                  <div>
-                    <p className="font-medium">Support Center</p>
-                    <p className="text-sm text-muted-foreground">Find answers to common questions</p>
-                    <Button variant="link" className="p-0 h-auto">Visit FAQ</Button>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Security Emergency</span>
+                    <Badge variant="destructive">Immediate</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Partnership</span>
+                    <Badge variant="outline">48h response</Badge>
                   </div>
                 </CardContent>
               </Card>
@@ -112,81 +115,85 @@ export default function Contact() {
               <Card>
                 <CardHeader>
                   <CardTitle>Send us a Message</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Fill out the form below and we'll get back to you as soon as possible.
+                  </p>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="name">Full Name *</Label>
-                        <Input
-                          id="name"
+                        <label className="text-sm font-medium">Name *</label>
+                        <Input 
+                          placeholder="Your full name"
                           value={formData.name}
-                          onChange={(e) => handleChange('name', e.target.value)}
+                          onChange={(e) => handleInputChange('name', e.target.value)}
                           required
                         />
                       </div>
                       <div>
-                        <Label htmlFor="email">Email Address *</Label>
-                        <Input
-                          id="email"
+                        <label className="text-sm font-medium">Email *</label>
+                        <Input 
+                          placeholder="your@email.com"
                           type="email"
                           value={formData.email}
-                          onChange={(e) => handleChange('email', e.target.value)}
+                          onChange={(e) => handleInputChange('email', e.target.value)}
                           required
                         />
                       </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="company">Company/Project</Label>
-                        <Input
-                          id="company"
-                          value={formData.company}
-                          onChange={(e) => handleChange('company', e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="category">Category</Label>
-                        <Select value={formData.category} onValueChange={(value) => handleChange('category', value)}>
+                        <label className="text-sm font-medium">Category *</label>
+                        <Select onValueChange={(value) => handleInputChange('category', value)}>
                           <SelectTrigger>
                             <SelectValue placeholder="Select a category" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="audit-inquiry">Audit Inquiry</SelectItem>
-                            <SelectItem value="technical-support">Technical Support</SelectItem>
-                            <SelectItem value="partnership">Partnership Opportunity</SelectItem>
-                            <SelectItem value="media-press">Media & Press</SelectItem>
-                            <SelectItem value="general">General Question</SelectItem>
-                            <SelectItem value="urgent-security">Urgent Security Issue</SelectItem>
+                            <SelectItem value="general">General Inquiry</SelectItem>
+                            <SelectItem value="technical">Technical Support</SelectItem>
+                            <SelectItem value="security">Security Emergency</SelectItem>
+                            <SelectItem value="partnership">Partnership</SelectItem>
+                            <SelectItem value="billing">Billing & Payments</SelectItem>
+                            <SelectItem value="feedback">Feedback</SelectItem>
                           </SelectContent>
                         </Select>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium">Subject *</label>
+                        <Input 
+                          placeholder="Brief description of your inquiry"
+                          value={formData.subject}
+                          onChange={(e) => handleInputChange('subject', e.target.value)}
+                          required
+                        />
                       </div>
                     </div>
 
                     <div>
-                      <Label htmlFor="subject">Subject *</Label>
-                      <Input
-                        id="subject"
-                        value={formData.subject}
-                        onChange={(e) => handleChange('subject', e.target.value)}
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="message">Message *</Label>
-                      <Textarea
-                        id="message"
+                      <label className="text-sm font-medium">Message *</label>
+                      <Textarea 
+                        placeholder="Please provide details about your inquiry or how we can help you..."
                         rows={6}
                         value={formData.message}
-                        onChange={(e) => handleChange('message', e.target.value)}
-                        placeholder="Please provide as much detail as possible about your inquiry..."
+                        onChange={(e) => handleInputChange('message', e.target.value)}
                         required
                       />
                     </div>
 
-                    <Button type="submit" size="lg" className="w-full">
+                    <div className="bg-muted p-4 rounded-lg">
+                      <p className="text-sm text-muted-foreground">
+                        <strong>Security Emergency?</strong> If you've discovered a critical vulnerability 
+                        in a live system, please email us directly at{' '}
+                        <a href="mailto:security@hawkly.com" className="text-primary hover:underline">
+                          security@hawkly.com
+                        </a>{' '}
+                        for immediate assistance.
+                      </p>
+                    </div>
+
+                    <Button type="submit" className="w-full" size="lg">
                       <Send className="mr-2 h-4 w-4" />
                       Send Message
                     </Button>
@@ -195,20 +202,10 @@ export default function Contact() {
               </Card>
             </div>
           </div>
-
-          {/* Emergency Contact */}
-          <div className="mt-12 p-6 bg-red-50 border border-red-200 rounded-lg">
-            <h3 className="text-lg font-semibold text-red-800 mb-2">🚨 Security Emergency?</h3>
-            <p className="text-red-700 mb-4">
-              If you've discovered a critical security vulnerability that requires immediate attention, 
-              please contact us directly at <strong>security@hawkly.com</strong> with "URGENT SECURITY" in the subject line.
-            </p>
-            <p className="text-sm text-red-600">
-              For active exploits or time-sensitive vulnerabilities, we monitor this email 24/7 and will respond within 2 hours.
-            </p>
-          </div>
         </div>
       </div>
-    </ProductionLayout>
+    </div>
   );
-}
+};
+
+export default Contact;

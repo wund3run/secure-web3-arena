@@ -39,7 +39,7 @@ export function EnhancedFooter() {
         <div>
           <h3 className="font-medium mb-3">Resources</h3>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/docs" className="text-muted-foreground hover:text-foreground transition-colors">Documentation</Link></li>
+            <li><Link to="/audit-guidelines" className="text-muted-foreground hover:text-foreground transition-colors">Guidelines</Link></li>
             <li><Link to="/blog" className="text-muted-foreground hover:text-foreground transition-colors">Security Blog</Link></li>
             <li><Link to="/tutorials" className="text-muted-foreground hover:text-foreground transition-colors">Video Tutorials</Link></li>
             <li><Link to="/vulnerabilities" className="text-muted-foreground hover:text-foreground transition-colors">Vulnerability Database</Link></li>
@@ -75,7 +75,7 @@ export function EnhancedFooter() {
       <div className="container mt-8 pt-8 border-t">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} Hawkly Inc. All rights reserved. • Updated March 2025
+            &copy; 2025 Hawkly Inc. All rights reserved. • Updated March 2025
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a 

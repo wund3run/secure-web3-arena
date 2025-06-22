@@ -31,8 +31,8 @@ export function Footer() {
           <div>
             <h3 className="font-semibold mb-4">Resources</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/guidelines" className="text-gray-300 hover:text-white">Guidelines</Link></li>
-              <li><Link to="/help" className="text-gray-300 hover:text-white">Help Center</Link></li>
+              <li><Link to="/audit-guidelines" className="text-gray-300 hover:text-white">Guidelines</Link></li>
+              <li><Link to="/support" className="text-gray-300 hover:text-white">Help Center</Link></li>
               <li><Link to="/contact" className="text-gray-300 hover:text-white">Contact</Link></li>
             </ul>
           </div>
@@ -47,7 +47,7 @@ export function Footer() {
         </div>
         
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-300">
-          <p>&copy; 2024 Hawkly. All rights reserved.</p>
+          <p>&copy; 2025 Hawkly. All rights reserved.</p>
         </div>
       </div>
     </footer>
