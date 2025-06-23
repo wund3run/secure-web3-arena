@@ -7,21 +7,21 @@ import { AdaptiveContentRenderer } from "@/components/home/adaptive-content-rend
 import { SmartResourceManager } from "@/components/performance/SmartResourceManager";
 import { IntelligentAnalytics } from "@/components/analytics/IntelligentAnalytics";
 import { SimpleErrorBoundary } from "@/components/home/SimpleErrorBoundary";
+import { ProgressiveLoader } from "@/components/home/ProgressiveLoader";
 
-// Core components
+// Core components with fallbacks
 import { UnifiedHero } from "@/components/home/UnifiedHero";
-import { TrustSection } from "@/components/home/TrustSection";
-import { UserPaths } from "@/components/home/UserPaths";
 import { ProcessVisualization } from "@/components/home/ProcessVisualization";
 import { VisibleFAQ } from "@/components/home/VisibleFAQ";
+import { OptimizedTrustSection } from "@/components/home/OptimizedTrustSection";
+import { UserPaths } from "@/components/home/UserPaths";
 
-// Fallback hero
-import { EnhancedHero } from "@/components/home/EnhancedHero";
+// Fallback components
+import { HeroFallback, TrustFallback, ProcessFallback, ErrorFallback } from "@/components/home/FallbackComponents";
 
 // Lazy-loaded sections
 import { QuickStartSection } from "./index-page-sections";
 
-// Enhanced loading fallback component
 const SectionLoadingFallback = ({ height = "h-64" }: { height?: string }) => (
   <div className={`${height} p-6`}>
     <EnhancedSkeleton variant="card" className="h-full w-full" />
@@ -38,44 +38,58 @@ export function IndexPageLayout() {
       >
         <AdaptiveContentRenderer>
           <div className="flex-grow">
-            {/* Core content with simple error boundaries */}
-            <SimpleErrorBoundary fallback={<EnhancedHero />}>
-              <UnifiedHero />
-            </SimpleErrorBoundary>
+            {/* Critical above-the-fold content - loads immediately */}
+            <ProgressiveLoader priority="high" fallback={<HeroFallback />}>
+              <SimpleErrorBoundary fallback={<HeroFallback />}>
+                <UnifiedHero />
+              </SimpleErrorBoundary>
+            </ProgressiveLoader>
             
-            <SimpleErrorBoundary>
-              <TrustSection />
-            </SimpleErrorBoundary>
+            {/* Secondary content - loads with short delay */}
+            <ProgressiveLoader delay={100} fallback={<TrustFallback />}>
+              <SimpleErrorBoundary fallback={<TrustFallback />}>
+                <OptimizedTrustSection />
+              </SimpleErrorBoundary>
+            </ProgressiveLoader>
             
-            <SimpleErrorBoundary>
-              <UserPaths />
-            </SimpleErrorBoundary>
+            {/* Tertiary content - loads progressively */}
+            <ProgressiveLoader delay={300} priority="medium">
+              <SimpleErrorBoundary fallback={<ErrorFallback />}>
+                <UserPaths />
+              </SimpleErrorBoundary>
+            </ProgressiveLoader>
             
-            <SimpleErrorBoundary>
-              <ProcessVisualization />
-            </SimpleErrorBoundary>
+            <ProgressiveLoader delay={500} fallback={<ProcessFallback />}>
+              <SimpleErrorBoundary fallback={<ProcessFallback />}>
+                <ProcessVisualization />
+              </SimpleErrorBoundary>
+            </ProgressiveLoader>
             
-            <SimpleErrorBoundary>
-              <VisibleFAQ />
-            </SimpleErrorBoundary>
+            <ProgressiveLoader delay={700} priority="low">
+              <SimpleErrorBoundary fallback={<ErrorFallback />}>
+                <VisibleFAQ />
+              </SimpleErrorBoundary>
+            </ProgressiveLoader>
             
-            {/* Below-the-fold content - lazy loaded */}
+            {/* Below-the-fold content - lazy loaded with intersection observer */}
             <LazySection 
               fallback={<SectionLoadingFallback />}
               threshold={0.1}
               rootMargin="200px"
             >
-              <SimpleErrorBoundary>
+              <SimpleErrorBoundary fallback={<ErrorFallback />}>
                 <QuickStartSection />
               </SimpleErrorBoundary>
             </LazySection>
           </div>
         </AdaptiveContentRenderer>
         
-        {/* Development Analytics Dashboard */}
-        <SimpleErrorBoundary>
-          <IntelligentAnalytics />
-        </SimpleErrorBoundary>
+        {/* Analytics - loads last and handles failures gracefully */}
+        <ProgressiveLoader delay={1000} priority="low" fallback={null}>
+          <SimpleErrorBoundary fallback={null}>
+            <IntelligentAnalytics />
+          </SimpleErrorBoundary>
+        </ProgressiveLoader>
       </OptimizedRoute>
     </SmartResourceManager>
   );

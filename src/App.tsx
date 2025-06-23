@@ -15,8 +15,11 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: (failureCount, error: any) => {
-        // Don't retry on 4xx errors
+        // Don't retry on 4xx errors or content blocker errors
         if (error?.status >= 400 && error?.status < 500) {
+          return false;
+        }
+        if (error?.message?.includes('blocked') || error?.message?.includes('ERR_BLOCKED')) {
           return false;
         }
         return failureCount < 2;
