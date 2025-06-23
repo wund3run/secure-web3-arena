@@ -35,33 +35,36 @@ export function ProcessVisualization() {
     }
   ];
 
-  const colorClasses = {
-    blue: "from-blue-500/20 to-cyan-500/20 border-blue-500/30 text-blue-400",
-    purple: "from-purple-500/20 to-pink-500/20 border-purple-500/30 text-purple-400",
-    green: "from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-400",
-    orange: "from-orange-500/20 to-red-500/20 border-orange-500/30 text-orange-400"
+  const getColorClasses = (color: string) => {
+    const colorMap = {
+      blue: "from-blue-500/20 to-cyan-500/20 border-blue-500/30 text-blue-400",
+      purple: "from-purple-500/20 to-pink-500/20 border-purple-500/30 text-purple-400",
+      green: "from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-400",
+      orange: "from-orange-500/20 to-red-500/20 border-orange-500/30 text-orange-400"
+    };
+    return colorMap[color as keyof typeof colorMap] || colorMap.blue;
   };
 
   return (
-    <section className="py-20 bg-gray-900">
-      <div className="container">
-        <div className="text-center mb-16">
+    <section className="py-16 md:py-20 bg-gray-900">
+      <div className="container px-4">
+        <div className="text-center mb-12 md:mb-16">
           <Badge variant="outline" className="mb-4 bg-blue-900/30 border-blue-600 text-blue-300">
             Simple 4-Step Process
           </Badge>
-          <h2 className="text-4xl font-bold text-white mb-6">How Hawkly Works</h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 md:mb-6">How Hawkly Works</h2>
+          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
             From submission to security report in days, not weeks. Our streamlined process gets you results fast.
           </p>
         </div>
         
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
             {steps.map((step, index) => (
-              <div key={index} className="relative">
+              <div key={`step-${index}`} className="relative">
                 {/* Connecting arrow - hidden on mobile, shown on desktop */}
                 {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
+                  <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
                     <ArrowRight className="h-6 w-6 text-gray-500" />
                   </div>
                 )}
@@ -75,18 +78,18 @@ export function ProcessVisualization() {
                   </div>
                   
                   {/* Icon */}
-                  <div className={`w-20 h-20 mx-auto mb-6 bg-gradient-to-br ${colorClasses[step.color as keyof typeof colorClasses]} rounded-xl flex items-center justify-center border`}>
-                    <div className={colorClasses[step.color as keyof typeof colorClasses].split(' ').slice(-1)[0]}>
+                  <div className={`w-16 h-16 md:w-20 md:h-20 mx-auto mb-6 bg-gradient-to-br ${getColorClasses(step.color)} rounded-xl flex items-center justify-center border`}>
+                    <div className={getColorClasses(step.color).split(' ').slice(-1)[0]}>
                       {step.icon}
                     </div>
                   </div>
                   
                   {/* Content */}
-                  <h3 className="text-xl font-bold text-white mb-3">{step.title}</h3>
-                  <p className="text-gray-300 mb-4 text-sm leading-relaxed">{step.description}</p>
+                  <h3 className="text-lg md:text-xl font-bold text-white mb-3">{step.title}</h3>
+                  <p className="text-gray-300 mb-4 text-sm leading-relaxed px-2">{step.description}</p>
                   
                   {/* Time estimate */}
-                  <Badge variant="secondary" className="bg-gray-800 text-gray-300 border-gray-700">
+                  <Badge variant="secondary" className="bg-gray-800 text-gray-300 border-gray-700 text-xs">
                     ⏱️ {step.time}
                   </Badge>
                 </div>
@@ -95,9 +98,9 @@ export function ProcessVisualization() {
           </div>
           
           {/* Total time callout */}
-          <div className="text-center mt-12 p-6 bg-gradient-to-r from-blue-900/30 to-purple-900/30 rounded-xl border border-blue-500/30">
-            <h3 className="text-2xl font-bold text-white mb-2">Total Time: 3-6 Days</h3>
-            <p className="text-gray-300">From submission to comprehensive security report</p>
+          <div className="text-center mt-8 md:mt-12 p-4 md:p-6 bg-gradient-to-r from-blue-900/30 to-purple-900/30 rounded-xl border border-blue-500/30">
+            <h3 className="text-xl md:text-2xl font-bold text-white mb-2">Total Time: 3-6 Days</h3>
+            <p className="text-gray-300 text-sm md:text-base">From submission to comprehensive security report</p>
           </div>
         </div>
       </div>
