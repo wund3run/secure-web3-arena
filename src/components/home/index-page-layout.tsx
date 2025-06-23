@@ -3,19 +3,19 @@ import React, { Suspense } from "react";
 import { LazySection } from "@/components/performance/LazySection";
 import { EnhancedSkeleton } from "@/components/ui/enhanced-skeleton";
 import { OptimizedRoute } from "@/components/performance/OptimizedRoute";
-import { ProgressiveLoader } from "@/components/performance/ProgressiveLoader";
 import { AdaptiveContentRenderer } from "@/components/home/adaptive-content-renderer";
 import { SmartResourceManager } from "@/components/performance/SmartResourceManager";
 import { IntelligentAnalytics } from "@/components/analytics/IntelligentAnalytics";
+import { SimpleErrorBoundary } from "@/components/home/SimpleErrorBoundary";
 
-// Fallback to existing components if new ones fail
+// Core components
 import { UnifiedHero } from "@/components/home/UnifiedHero";
 import { TrustSection } from "@/components/home/TrustSection";
 import { UserPaths } from "@/components/home/UserPaths";
 import { ProcessVisualization } from "@/components/home/ProcessVisualization";
 import { VisibleFAQ } from "@/components/home/VisibleFAQ";
 
-// Import existing hero as fallback
+// Fallback hero
 import { EnhancedHero } from "@/components/home/EnhancedHero";
 
 // Lazy-loaded sections
@@ -28,16 +28,6 @@ const SectionLoadingFallback = ({ height = "h-64" }: { height?: string }) => (
   </div>
 );
 
-// Safe component wrapper to catch individual component errors
-const SafeComponent = ({ children, fallback }: { children: React.ReactNode; fallback?: React.ReactNode }) => {
-  try {
-    return <>{children}</>;
-  } catch (error) {
-    console.error("Component error:", error);
-    return fallback || <div className="p-6 text-center text-muted-foreground">Section temporarily unavailable</div>;
-  }
-};
-
 export function IndexPageLayout() {
   return (
     <SmartResourceManager>
@@ -48,26 +38,26 @@ export function IndexPageLayout() {
       >
         <AdaptiveContentRenderer>
           <div className="flex-grow">
-            {/* Core content with error boundaries for each section */}
-            <SafeComponent fallback={<EnhancedHero />}>
+            {/* Core content with simple error boundaries */}
+            <SimpleErrorBoundary fallback={<EnhancedHero />}>
               <UnifiedHero />
-            </SafeComponent>
+            </SimpleErrorBoundary>
             
-            <SafeComponent>
+            <SimpleErrorBoundary>
               <TrustSection />
-            </SafeComponent>
+            </SimpleErrorBoundary>
             
-            <SafeComponent>
+            <SimpleErrorBoundary>
               <UserPaths />
-            </SafeComponent>
+            </SimpleErrorBoundary>
             
-            <SafeComponent>
+            <SimpleErrorBoundary>
               <ProcessVisualization />
-            </SafeComponent>
+            </SimpleErrorBoundary>
             
-            <SafeComponent>
+            <SimpleErrorBoundary>
               <VisibleFAQ />
-            </SafeComponent>
+            </SimpleErrorBoundary>
             
             {/* Below-the-fold content - lazy loaded */}
             <LazySection 
@@ -75,13 +65,17 @@ export function IndexPageLayout() {
               threshold={0.1}
               rootMargin="200px"
             >
-              <QuickStartSection />
+              <SimpleErrorBoundary>
+                <QuickStartSection />
+              </SimpleErrorBoundary>
             </LazySection>
           </div>
         </AdaptiveContentRenderer>
         
         {/* Development Analytics Dashboard */}
-        <IntelligentAnalytics />
+        <SimpleErrorBoundary>
+          <IntelligentAnalytics />
+        </SimpleErrorBoundary>
       </OptimizedRoute>
     </SmartResourceManager>
   );

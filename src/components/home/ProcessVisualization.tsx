@@ -10,40 +10,34 @@ export function ProcessVisualization() {
       title: "Submit Project",
       description: "Upload your smart contract code and requirements",
       time: "5 minutes",
-      color: "blue"
+      colorClass: "from-blue-500/20 to-cyan-500/20 border-blue-500/30",
+      iconColor: "text-blue-400"
     },
     {
       icon: <Search className="h-8 w-8" />,
       title: "AI Matching",
       description: "Our AI finds the perfect security expert for your project",
       time: "1 hour",
-      color: "purple"
+      colorClass: "from-purple-500/20 to-pink-500/20 border-purple-500/30",
+      iconColor: "text-purple-400"
     },
     {
       icon: <Shield className="h-8 w-8" />,
       title: "Security Audit",
       description: "Expert conducts comprehensive vulnerability assessment",
       time: "2-5 days",
-      color: "green"
+      colorClass: "from-green-500/20 to-emerald-500/20 border-green-500/30",
+      iconColor: "text-green-400"
     },
     {
       icon: <CheckCircle className="h-8 w-8" />,
       title: "Report Delivery",
       description: "Receive detailed security report with recommendations",
       time: "Same day",
-      color: "orange"
+      colorClass: "from-orange-500/20 to-red-500/20 border-orange-500/30",
+      iconColor: "text-orange-400"
     }
   ];
-
-  const getColorClasses = (color: string) => {
-    const colorMap = {
-      blue: "from-blue-500/20 to-cyan-500/20 border-blue-500/30 text-blue-400",
-      purple: "from-purple-500/20 to-pink-500/20 border-purple-500/30 text-purple-400",
-      green: "from-green-500/20 to-emerald-500/20 border-green-500/30 text-green-400",
-      orange: "from-orange-500/20 to-red-500/20 border-orange-500/30 text-orange-400"
-    };
-    return colorMap[color as keyof typeof colorMap] || colorMap.blue;
-  };
 
   return (
     <section className="py-16 md:py-20 bg-gray-900">
@@ -78,8 +72,8 @@ export function ProcessVisualization() {
                   </div>
                   
                   {/* Icon */}
-                  <div className={`w-16 h-16 md:w-20 md:h-20 mx-auto mb-6 bg-gradient-to-br ${getColorClasses(step.color)} rounded-xl flex items-center justify-center border`}>
-                    <div className={getColorClasses(step.color).split(' ').slice(-1)[0]}>
+                  <div className={`w-16 h-16 md:w-20 md:h-20 mx-auto mb-6 bg-gradient-to-br ${step.colorClass} rounded-xl flex items-center justify-center border`}>
+                    <div className={step.iconColor}>
                       {step.icon}
                     </div>
                   </div>
