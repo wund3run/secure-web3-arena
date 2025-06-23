@@ -5,13 +5,19 @@ import { SkipLink } from "@/components/ui/skip-link";
 import { EnhancedErrorBoundary } from "@/components/error-handling/EnhancedErrorBoundary";
 import { NavigationOptimizer } from "@/components/layout/navigation/NavigationOptimizer";
 
-// Lazy load heavy components
+// Lazy load heavy components with error handling
 const IndexPageLayout = React.lazy(() => 
-  import("@/components/home/index-page-layout").then(m => ({ default: m.IndexPageLayout }))
+  import("@/components/home/index-page-layout").then(m => ({ default: m.IndexPageLayout })).catch(() => {
+    console.error("Failed to load IndexPageLayout, falling back to simple content");
+    return import("@/components/home/EnhancedHero").then(m => ({ default: m.EnhancedHero }));
+  })
 );
 
 const SupportButtonEnhanced = React.lazy(() => 
-  import("@/components/ui/support-button-enhanced").then(m => ({ default: m.SupportButtonEnhanced }))
+  import("@/components/ui/support-button-enhanced").then(m => ({ default: m.SupportButtonEnhanced })).catch(() => {
+    console.error("Failed to load SupportButtonEnhanced");
+    return { default: () => null };
+  })
 );
 
 const ComponentFallback = () => (

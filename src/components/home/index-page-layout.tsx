@@ -8,12 +8,15 @@ import { AdaptiveContentRenderer } from "@/components/home/adaptive-content-rend
 import { SmartResourceManager } from "@/components/performance/SmartResourceManager";
 import { IntelligentAnalytics } from "@/components/analytics/IntelligentAnalytics";
 
-// New redesigned components
+// Fallback to existing components if new ones fail
 import { UnifiedHero } from "@/components/home/UnifiedHero";
 import { TrustSection } from "@/components/home/TrustSection";
 import { UserPaths } from "@/components/home/UserPaths";
 import { ProcessVisualization } from "@/components/home/ProcessVisualization";
 import { VisibleFAQ } from "@/components/home/VisibleFAQ";
+
+// Import existing hero as fallback
+import { EnhancedHero } from "@/components/home/EnhancedHero";
 
 // Lazy-loaded sections
 import { QuickStartSection } from "./index-page-sections";
@@ -25,34 +28,15 @@ const SectionLoadingFallback = ({ height = "h-64" }: { height?: string }) => (
   </div>
 );
 
-// Progressive loading stages for the redesigned homepage
-const homePageStages = [
-  {
-    name: "Unified Hero Section",
-    component: UnifiedHero,
-    loadTime: 50
-  },
-  {
-    name: "Trust & Certifications", 
-    component: TrustSection,
-    loadTime: 100
-  },
-  {
-    name: "User Path Selection",
-    component: UserPaths,
-    loadTime: 150
-  },
-  {
-    name: "Process Visualization",
-    component: ProcessVisualization,
-    loadTime: 100
-  },
-  {
-    name: "Visible FAQ",
-    component: VisibleFAQ,
-    loadTime: 100
+// Safe component wrapper to catch individual component errors
+const SafeComponent = ({ children, fallback }: { children: React.ReactNode; fallback?: React.ReactNode }) => {
+  try {
+    return <>{children}</>;
+  } catch (error) {
+    console.error("Component error:", error);
+    return fallback || <div className="p-6 text-center text-muted-foreground">Section temporarily unavailable</div>;
   }
-];
+};
 
 export function IndexPageLayout() {
   return (
@@ -64,11 +48,26 @@ export function IndexPageLayout() {
       >
         <AdaptiveContentRenderer>
           <div className="flex-grow">
-            {/* Core content with progressive loading */}
-            <ProgressiveLoader 
-              stages={homePageStages}
-              className="space-y-0"
-            />
+            {/* Core content with error boundaries for each section */}
+            <SafeComponent fallback={<EnhancedHero />}>
+              <UnifiedHero />
+            </SafeComponent>
+            
+            <SafeComponent>
+              <TrustSection />
+            </SafeComponent>
+            
+            <SafeComponent>
+              <UserPaths />
+            </SafeComponent>
+            
+            <SafeComponent>
+              <ProcessVisualization />
+            </SafeComponent>
+            
+            <SafeComponent>
+              <VisibleFAQ />
+            </SafeComponent>
             
             {/* Below-the-fold content - lazy loaded */}
             <LazySection 
