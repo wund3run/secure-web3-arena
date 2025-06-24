@@ -42,14 +42,18 @@ export class SecurityService {
         user?.id
       );
 
-      // Log to database via RPC with type assertion
+      // Log to database via RPC - use proper type assertion for custom function
       if (user) {
-        await (supabase as any).rpc('log_security_event', {
+        const { error } = await (supabase.rpc as any)('log_security_event', {
           p_user_id: user.id,
           p_event_type: eventType,
           p_event_description: description,
           p_metadata: metadata
         });
+
+        if (error) {
+          console.error('Failed to log security event to database:', error);
+        }
       }
     } catch (error) {
       console.error('Failed to log security event:', error);
