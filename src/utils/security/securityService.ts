@@ -42,9 +42,9 @@ export class SecurityService {
         user?.id
       );
 
-      // Log to database via RPC
+      // Log to database via RPC with type assertion
       if (user) {
-        await supabase.rpc('log_security_event', {
+        await (supabase as any).rpc('log_security_event', {
           p_user_id: user.id,
           p_event_type: eventType,
           p_event_description: description,
