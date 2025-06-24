@@ -10,7 +10,7 @@ export function ProcessVisualization() {
       title: "Submit Project",
       description: "Upload your smart contract code and requirements",
       time: "5 minutes",
-      colorClass: "from-blue-500/20 to-cyan-500/20 border-blue-500/30",
+      colorClasses: "from-blue-500/20 to-cyan-500/20 border-blue-500/30",
       iconColor: "text-blue-400"
     },
     {
@@ -18,7 +18,7 @@ export function ProcessVisualization() {
       title: "AI Matching",
       description: "Our AI finds the perfect security expert for your project",
       time: "1 hour",
-      colorClass: "from-purple-500/20 to-pink-500/20 border-purple-500/30",
+      colorClasses: "from-purple-500/20 to-pink-500/20 border-purple-500/30",
       iconColor: "text-purple-400"
     },
     {
@@ -26,7 +26,7 @@ export function ProcessVisualization() {
       title: "Security Audit",
       description: "Expert conducts comprehensive vulnerability assessment",
       time: "2-5 days",
-      colorClass: "from-green-500/20 to-emerald-500/20 border-green-500/30",
+      colorClasses: "from-green-500/20 to-emerald-500/20 border-green-500/30",
       iconColor: "text-green-400"
     },
     {
@@ -34,7 +34,7 @@ export function ProcessVisualization() {
       title: "Report Delivery",
       description: "Receive detailed security report with recommendations",
       time: "Same day",
-      colorClass: "from-orange-500/20 to-red-500/20 border-orange-500/30",
+      colorClasses: "from-orange-500/20 to-red-500/20 border-orange-500/30",
       iconColor: "text-orange-400"
     }
   ];
@@ -54,41 +54,60 @@ export function ProcessVisualization() {
         
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
-            {steps.map((step, index) => (
-              <div key={`step-${index}`} className="relative">
-                {/* Connecting arrow - hidden on mobile, shown on desktop */}
-                {index < steps.length - 1 && (
-                  <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
-                    <ArrowRight className="h-6 w-6 text-gray-500" />
-                  </div>
-                )}
-                
-                <div className="text-center">
-                  {/* Step number */}
-                  <div className="mb-4">
-                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-sm">
-                      {index + 1}
-                    </span>
-                  </div>
-                  
-                  {/* Icon */}
-                  <div className={`w-16 h-16 md:w-20 md:h-20 mx-auto mb-6 bg-gradient-to-br ${step.colorClass} rounded-xl flex items-center justify-center border`}>
-                    <div className={step.iconColor}>
-                      {step.icon}
+            {steps.map((step, index) => {
+              try {
+                return (
+                  <div key={`step-${index}`} className="relative">
+                    {/* Connecting arrow - hidden on mobile, shown on desktop */}
+                    {index < steps.length - 1 && (
+                      <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
+                        <ArrowRight className="h-6 w-6 text-gray-500" />
+                      </div>
+                    )}
+                    
+                    <div className="text-center">
+                      {/* Step number */}
+                      <div className="mb-4">
+                        <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-sm">
+                          {index + 1}
+                        </span>
+                      </div>
+                      
+                      {/* Icon */}
+                      <div className={`w-16 h-16 md:w-20 md:h-20 mx-auto mb-6 bg-gradient-to-br ${step.colorClasses || 'from-gray-500/20 to-gray-600/20 border-gray-500/30'} rounded-xl flex items-center justify-center border`}>
+                        <div className={step.iconColor || 'text-gray-400'}>
+                          {step.icon}
+                        </div>
+                      </div>
+                      
+                      {/* Content */}
+                      <h3 className="text-lg md:text-xl font-bold text-white mb-3">{step.title || 'Step'}</h3>
+                      <p className="text-gray-300 mb-4 text-sm leading-relaxed px-2">{step.description || 'Description'}</p>
+                      
+                      {/* Time estimate */}
+                      <Badge variant="secondary" className="bg-gray-800 text-gray-300 border-gray-700 text-xs">
+                        ⏱️ {step.time || 'TBD'}
+                      </Badge>
                     </div>
                   </div>
-                  
-                  {/* Content */}
-                  <h3 className="text-lg md:text-xl font-bold text-white mb-3">{step.title}</h3>
-                  <p className="text-gray-300 mb-4 text-sm leading-relaxed px-2">{step.description}</p>
-                  
-                  {/* Time estimate */}
-                  <Badge variant="secondary" className="bg-gray-800 text-gray-300 border-gray-700 text-xs">
-                    ⏱️ {step.time}
-                  </Badge>
-                </div>
-              </div>
-            ))}
+                );
+              } catch (err) {
+                console.warn(`Error rendering step ${index}:`, err);
+                return (
+                  <div key={`step-error-${index}`} className="relative">
+                    <div className="text-center">
+                      <div className="w-16 h-16 md:w-20 md:h-20 mx-auto mb-6 bg-gray-500/20 rounded-xl flex items-center justify-center border border-gray-500/30">
+                        <div className="text-gray-400">
+                          <div className="w-8 h-8 bg-gray-400 rounded" />
+                        </div>
+                      </div>
+                      <h3 className="text-lg md:text-xl font-bold text-white mb-3">Step {index + 1}</h3>
+                      <p className="text-gray-300 mb-4 text-sm leading-relaxed px-2">Loading...</p>
+                    </div>
+                  </div>
+                );
+              }
+            })}
           </div>
           
           {/* Total time callout */}

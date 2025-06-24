@@ -22,7 +22,12 @@ const ProgressiveLoader = memo(({
     if (priority === 'high') return;
 
     const timer = setTimeout(() => {
-      setIsLoaded(true);
+      try {
+        setIsLoaded(true);
+      } catch (err) {
+        console.warn('Progressive loader error:', err);
+        setError(true);
+      }
     }, delay);
 
     return () => clearTimeout(timer);
@@ -47,9 +52,13 @@ const ProgressiveLoader = memo(({
   try {
     return <>{children}</>;
   } catch (err) {
-    console.warn('Progressive loader error:', err);
+    console.warn('Progressive loader render error:', err);
     setError(true);
-    return null;
+    return fallback || (
+      <div className="p-4 text-center text-gray-500">
+        <p>Content temporarily unavailable</p>
+      </div>
+    );
   }
 });
 
