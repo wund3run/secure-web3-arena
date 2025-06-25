@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { cn } from "@/lib/utils";
 
 interface PulseButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -97,7 +97,7 @@ export function HoverCard({
 
 // Focus visible indicator for improved accessibility and visual feedback
 export function FocusVisibleProvider({ children }: { children: React.ReactNode }) {
-  React.useEffect(() => {
+  useEffect(() => {
     // Add a class to the body when using keyboard navigation
     const handleFirstTab = (e: KeyboardEvent) => {
       if (e.key === 'Tab') {
