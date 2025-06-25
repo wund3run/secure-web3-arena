@@ -12,6 +12,7 @@ import Support from '@/pages/Support';
 import Contact from '@/pages/Contact';
 import Terms from '@/pages/Terms';
 import Privacy from '@/pages/Privacy';
+import AIToolsPage from '@/pages/tools/AIToolsPage';
 import NotFound from '@/pages/NotFound';
 
 export default function AppRoutes() {
@@ -24,6 +25,7 @@ export default function AppRoutes() {
       <Route path="/marketplace" element={<Marketplace />} />
       <Route path="/request-audit" element={<RequestAudit />} />
       <Route path="/audit-guidelines" element={<AuditGuidelines />} />
+      <Route path="/ai-tools" element={<AIToolsPage />} />
       <Route path="/support" element={<Support />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/terms" element={<Terms />} />
