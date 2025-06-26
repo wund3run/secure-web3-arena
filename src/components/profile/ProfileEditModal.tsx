@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/auth';
 import { toast } from 'sonner';
-import { X } from 'lucide-react';
 
 interface ProfileEditModalProps {
   open: boolean;
@@ -15,210 +14,132 @@ interface ProfileEditModalProps {
 }
 
 export function ProfileEditModal({ open, onOpenChange }: ProfileEditModalProps) {
-  const { user, userProfile, updateUserProfile } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const { userProfile, updateProfile } = useAuth();
+  const [isUpdating, setIsUpdating] = useState(false);
   const [formData, setFormData] = useState({
-    display_name: '',
-    full_name: '',
-    bio: '',
-    website: '',
-    wallet_address: '',
-    skills: [] as string[],
-    specializations: [] as string[]
+    full_name: userProfile?.full_name || '',
+    display_name: userProfile?.display_name || '',
+    bio: userProfile?.bio || '',
+    website: userProfile?.website || '',
+    skills: userProfile?.skills?.join(', ') || '',
+    specializations: userProfile?.specializations?.join(', ') || '',
+    years_of_experience: userProfile?.years_of_experience || 0
   });
-  const [newSkill, setNewSkill] = useState('');
-  const [newSpecialization, setNewSpecialization] = useState('');
-
-  useEffect(() => {
-    if (userProfile) {
-      setFormData({
-        display_name: userProfile.display_name || '',
-        full_name: userProfile.full_name || '',
-        bio: userProfile.bio || '',
-        website: userProfile.website || '',
-        wallet_address: userProfile.wallet_address || '',
-        skills: userProfile.skills || [],
-        specializations: userProfile.specializations || []
-      });
-    }
-  }, [userProfile]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    setIsUpdating(true);
 
-    setLoading(true);
     try {
-      await updateUserProfile(formData);
+      const updateData = {
+        ...formData,
+        skills: formData.skills.split(',').map(s => s.trim()).filter(Boolean),
+        specializations: formData.specializations.split(',').map(s => s.trim()).filter(Boolean)
+      };
+
+      await updateProfile(updateData);
+      toast.success('Profile updated successfully');
       onOpenChange(false);
     } catch (error) {
-      console.error('Failed to update profile:', error);
       toast.error('Failed to update profile');
     } finally {
-      setLoading(false);
+      setIsUpdating(false);
     }
-  };
-
-  const addSkill = () => {
-    if (newSkill.trim() && !formData.skills.includes(newSkill.trim())) {
-      setFormData(prev => ({
-        ...prev,
-        skills: [...prev.skills, newSkill.trim()]
-      }));
-      setNewSkill('');
-    }
-  };
-
-  const removeSkill = (skill: string) => {
-    setFormData(prev => ({
-      ...prev,
-      skills: prev.skills.filter(s => s !== skill)
-    }));
-  };
-
-  const addSpecialization = () => {
-    if (newSpecialization.trim() && !formData.specializations.includes(newSpecialization.trim())) {
-      setFormData(prev => ({
-        ...prev,
-        specializations: [...prev.specializations, newSpecialization.trim()]
-      }));
-      setNewSpecialization('');
-    }
-  };
-
-  const removeSpecialization = (spec: string) => {
-    setFormData(prev => ({
-      ...prev,
-      specializations: prev.specializations.filter(s => s !== spec)
-    }));
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Edit Profile</DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="display_name">Display Name</Label>
-              <Input
-                id="display_name"
-                value={formData.display_name}
-                onChange={(e) => setFormData(prev => ({ ...prev, display_name: e.target.value }))}
-                placeholder="How you want to be displayed"
-              />
-            </div>
-            <div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
               <Label htmlFor="full_name">Full Name</Label>
               <Input
                 id="full_name"
                 value={formData.full_name}
                 onChange={(e) => setFormData(prev => ({ ...prev, full_name: e.target.value }))}
-                placeholder="Your legal name"
+                required
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="display_name">Display Name</Label>
+              <Input
+                id="display_name"
+                value={formData.display_name}
+                onChange={(e) => setFormData(prev => ({ ...prev, display_name: e.target.value }))}
               />
             </div>
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="bio">Bio</Label>
             <Textarea
               id="bio"
               value={formData.bio}
               onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-              placeholder="Tell us about yourself and your expertise"
               rows={3}
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="website">Website</Label>
-              <Input
-                id="website"
-                type="url"
-                value={formData.website}
-                onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
-                placeholder="https://yourwebsite.com"
-              />
-            </div>
-            <div>
-              <Label htmlFor="wallet_address">Wallet Address</Label>
-              <Input
-                id="wallet_address"
-                value={formData.wallet_address}
-                onChange={(e) => setFormData(prev => ({ ...prev, wallet_address: e.target.value }))}
-                placeholder="0x..."
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="website">Website</Label>
+            <Input
+              id="website"
+              type="url"
+              value={formData.website}
+              onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
+              placeholder="https://example.com"
+            />
           </div>
 
-          <div>
-            <Label>Skills</Label>
-            <div className="flex gap-2 mb-2">
-              <Input
-                value={newSkill}
-                onChange={(e) => setNewSkill(e.target.value)}
-                placeholder="Add a skill"
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill())}
-              />
-              <Button type="button" onClick={addSkill} variant="outline">
-                Add
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {formData.skills.map((skill) => (
-                <Badge key={skill} variant="secondary" className="flex items-center gap-1">
-                  {skill}
-                  <button
-                    type="button"
-                    onClick={() => removeSkill(skill)}
-                    className="ml-1 hover:text-destructive"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="skills">Skills (comma-separated)</Label>
+            <Input
+              id="skills"
+              value={formData.skills}
+              onChange={(e) => setFormData(prev => ({ ...prev, skills: e.target.value }))}
+              placeholder="Smart Contract Security, DeFi, Penetration Testing"
+            />
           </div>
 
-          <div>
-            <Label>Specializations</Label>
-            <div className="flex gap-2 mb-2">
-              <Input
-                value={newSpecialization}
-                onChange={(e) => setNewSpecialization(e.target.value)}
-                placeholder="Add a specialization"
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSpecialization())}
-              />
-              <Button type="button" onClick={addSpecialization} variant="outline">
-                Add
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {formData.specializations.map((spec) => (
-                <Badge key={spec} variant="secondary" className="flex items-center gap-1">
-                  {spec}
-                  <button
-                    type="button"
-                    onClick={() => removeSpecialization(spec)}
-                    className="ml-1 hover:text-destructive"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="specializations">Specializations (comma-separated)</Label>
+            <Input
+              id="specializations"
+              value={formData.specializations}
+              onChange={(e) => setFormData(prev => ({ ...prev, specializations: e.target.value }))}
+              placeholder="Ethereum, Solana, Layer 2"
+            />
           </div>
 
-          <div className="flex justify-end gap-3">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+          <div className="space-y-2">
+            <Label htmlFor="years_of_experience">Years of Experience</Label>
+            <Input
+              id="years_of_experience"
+              type="number"
+              min="0"
+              max="50"
+              value={formData.years_of_experience}
+              onChange={(e) => setFormData(prev => ({ ...prev, years_of_experience: parseInt(e.target.value) || 0 }))}
+            />
+          </div>
+
+          <div className="flex gap-3 pt-4">
+            <Button type="submit" disabled={isUpdating} className="flex-1">
+              {isUpdating ? 'Updating...' : 'Update Profile'}
             </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Saving...' : 'Save Changes'}
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => onOpenChange(false)}
+              disabled={isUpdating}
+            >
+              Cancel
             </Button>
           </div>
         </form>
