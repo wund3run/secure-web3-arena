@@ -36,6 +36,11 @@ export default function Index() {
                   Browse Auditors
                 </Link>
               </Button>
+              <Button variant="outline" size="lg" asChild>
+                <Link to="/auditor/signup">
+                  Become an Auditor
+                </Link>
+              </Button>
             </div>
           </div>
           
@@ -70,6 +75,20 @@ export default function Index() {
                 Clear, upfront pricing with no hidden fees or surprises.
               </p>
             </div>
+          </div>
+
+          {/* Call to Action for Auditors */}
+          <div className="mt-20 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-8 text-center">
+            <h2 className="text-2xl font-bold mb-4">Join Our Network of Security Experts</h2>
+            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+              Earn from your Web3 security expertise. Join our platform as a verified auditor 
+              and start receiving high-quality audit opportunities.
+            </p>
+            <Button asChild size="lg">
+              <Link to="/auditor/signup">
+                Start Your Auditor Journey
+              </Link>
+            </Button>
           </div>
         </div>
       </main>

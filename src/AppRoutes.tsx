@@ -15,6 +15,13 @@ import Privacy from '@/pages/Privacy';
 import AIToolsPage from '@/pages/tools/AIToolsPage';
 import NotFound from '@/pages/NotFound';
 
+// Auditor Journey Pages
+import AuditorSignUp from '@/pages/AuditorSignUp';
+import EmailVerification from '@/pages/auditor/EmailVerification';
+import AuditorOnboarding from '@/pages/auditor/AuditorOnboarding';
+import AuditorDashboard from '@/pages/auditor/AuditorDashboard';
+import AuditDetails from '@/pages/AuditDetails';
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -30,6 +37,14 @@ export default function AppRoutes() {
       <Route path="/contact" element={<Contact />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/privacy" element={<Privacy />} />
+      
+      {/* Auditor Journey Routes */}
+      <Route path="/auditor/signup" element={<AuditorSignUp />} />
+      <Route path="/auditor/email-verification" element={<EmailVerification />} />
+      <Route path="/auditor/onboarding" element={<AuditorOnboarding />} />
+      <Route path="/auditor/dashboard" element={<AuditorDashboard />} />
+      <Route path="/audit/:id" element={<AuditDetails />} />
+      
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

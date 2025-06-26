@@ -1,400 +1,364 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+
+import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
+import { toast } from 'sonner';
 import { 
   FileText, 
-  Calendar, 
-  User, 
-  Shield, 
   Clock, 
+  DollarSign, 
+  User, 
+  Github, 
+  MessageSquare, 
+  Upload,
   CheckCircle,
   AlertTriangle,
-  Download,
-  MessageSquare,
-  Settings,
-  TrendingUp
+  Shield
 } from 'lucide-react';
-import { useAuditDetails } from '@/hooks/useAuditDetails';
-import { Input } from '@/components/ui/input';
 
 const AuditDetails = () => {
-  const { id } = useParams<{ id: string }>();
-  const { 
-    auditData, 
-    isLoading, 
-    activeTab, 
-    setActiveTab,
-    handleSendMessage,
-    updateFindingStatus,
-    milestones,
-    reports,
-    timeTracking
-  } = useAuditDetails(id);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [reportContent, setReportContent] = useState('');
+  const [currentPhase, setCurrentPhase] = useState('preparation');
 
-  if (isLoading) {
-    return (
-      <StandardLayout title="Loading... | Hawkly" description="Loading audit details">
-        <div className="container mx-auto px-4 py-8">
-          <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-muted rounded w-1/3"></div>
-            <div className="h-4 bg-muted rounded w-2/3"></div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-24 bg-muted rounded"></div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </StandardLayout>
-    );
-  }
-
-  if (!auditData) {
-    return (
-      <StandardLayout title="Audit Not Found | Hawkly" description="Audit not found">
-        <div className="container mx-auto px-4 py-8 text-center">
-          <h1 className="text-2xl font-bold mb-4">Audit Not Found</h1>
-          <p className="text-muted-foreground">The audit you're looking for doesn't exist.</p>
-        </div>
-      </StandardLayout>
-    );
-  }
-
-  const getStatusColor = (status: string) => {
-    switch (status?.toLowerCase()) {
-      case 'completed': return 'default';
-      case 'in_progress': return 'secondary';
-      case 'pending': return 'outline';
-      default: return 'outline';
-    }
+  // Mock audit data
+  const auditData = {
+    id: id || '101',
+    title: 'GameFi Token Contract Audit',
+    client: 'PlayToken',
+    clientAvatar: '',
+    budget: '$4,500',
+    deadline: '2024-02-08',
+    status: 'In Progress',
+    progress: 75,
+    description: 'Comprehensive security audit for a GameFi token contract including staking mechanisms, reward distribution, and governance features.',
+    repository: 'https://github.com/playtoken/contracts',
+    technologies: ['Solidity', 'OpenZeppelin', 'Hardhat', 'Chainlink'],
+    scope: [
+      'Smart contract security review',
+      'Gas optimization analysis',
+      'Access control validation',
+      'Economic model assessment',
+      'Integration testing review'
+    ]
   };
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority?.toLowerCase()) {
+  const auditPhases = [
+    { id: 'preparation', name: 'Preparation', progress: 100, status: 'completed' },
+    { id: 'review', name: 'Code Review', progress: 85, status: 'active' },
+    { id: 'testing', name: 'Testing', progress: 45, status: 'active' },
+    { id: 'reporting', name: 'Reporting', progress: 20, status: 'pending' },
+    { id: 'completion', name: 'Completion', progress: 0, status: 'pending' }
+  ];
+
+  const findings = [
+    {
+      id: 1,
+      severity: 'High',
+      title: 'Reentrancy vulnerability in reward claim function',
+      description: 'The claimReward function is susceptible to reentrancy attacks due to external call before state update.',
+      status: 'Open',
+      line: 145
+    },
+    {
+      id: 2,
+      severity: 'Medium',
+      title: 'Gas optimization opportunity in batch operations',
+      description: 'Loop operations can be optimized to reduce gas costs by up to 30%.',
+      status: 'Fixed',
+      line: 78
+    },
+    {
+      id: 3,
+      severity: 'Low',
+      title: 'Missing event emission in admin functions',
+      description: 'Administrative functions should emit events for better transparency.',
+      status: 'Open',
+      line: 234
+    }
+  ];
+
+  const handlePhaseUpdate = (phase: string) => {
+    setCurrentPhase(phase);
+    toast.success(`Moved to ${phase} phase`);
+  };
+
+  const handleSubmitReport = () => {
+    if (!reportContent.trim()) {
+      toast.error('Please provide report content');
+      return;
+    }
+    
+    toast.success('Audit report submitted successfully!');
+    navigate('/auditor/dashboard');
+  };
+
+  const getSeverityColor = (severity: string) => {
+    switch (severity.toLowerCase()) {
+      case 'critical': return 'destructive';
       case 'high': return 'destructive';
-      case 'medium': return 'secondary';
-      case 'low': return 'outline';
+      case 'medium': return 'default';
+      case 'low': return 'secondary';
       default: return 'outline';
     }
   };
 
   return (
-    <StandardLayout
-      title={`${auditData.project_name} | Hawkly`}
-      description="Detailed view of security audit progress and findings"
-    >
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold">{auditData.project_name}</h1>
-            <div className="flex gap-2">
-              <Badge variant={getStatusColor(auditData.status || '')}>{auditData.status || 'Unknown'}</Badge>
-              <Badge variant={getPriorityColor(auditData.priority_level || '')}>{auditData.priority_level || 'Normal'} Priority</Badge>
+    <>
+      <Helmet>
+        <title>{auditData.title} | Hawkly</title>
+        <meta name="description" content={`Audit details for ${auditData.title}`} />
+      </Helmet>
+
+      <StandardLayout title="Audit Details" description="Comprehensive audit management and reporting">
+        <div className="container py-6">
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h1 className="text-2xl font-bold mb-2">{auditData.title}</h1>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <User className="h-4 w-4" />
+                    {auditData.client}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <DollarSign className="h-4 w-4" />
+                    {auditData.budget}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4" />
+                    Due {auditData.deadline}
+                  </div>
+                </div>
+              </div>
+              <Badge variant="outline">{auditData.status}</Badge>
             </div>
+
+            {/* Progress Overview */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Overall Progress</span>
+                  <span className="text-sm text-muted-foreground">{auditData.progress}%</span>
+                </div>
+                <Progress value={auditData.progress} className="h-2" />
+              </CardContent>
+            </Card>
           </div>
-          <p className="text-muted-foreground">{auditData.project_description}</p>
-        </div>
 
-        {/* Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <User className="h-8 w-8 text-blue-500" />
-                <div>
-                  <p className="text-sm text-muted-foreground">Auditor</p>
-                  <p className="font-semibold">{auditData.auditor?.full_name || 'Not assigned'}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <Calendar className="h-8 w-8 text-green-500" />
-                <div>
-                  <p className="text-sm text-muted-foreground">Deadline</p>
-                  <p className="font-semibold">{auditData.deadline || 'TBD'}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <Clock className="h-8 w-8 text-yellow-500" />
-                <div>
-                  <p className="text-sm text-muted-foreground">Progress</p>
-                  <p className="font-semibold">{auditData.completion_percentage}%</p>
-                  <Progress value={auditData.completion_percentage} className="mt-2" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <AlertTriangle className="h-8 w-8 text-red-500" />
-                <div>
-                  <p className="text-sm text-muted-foreground">Findings</p>
-                  <p className="font-semibold">
-                    {auditData.findings.length} ({auditData.findings_count.critical} critical)
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+          <Tabs defaultValue="overview" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="phases">Phases</TabsTrigger>
+              <TabsTrigger value="findings">Findings</TabsTrigger>
+              <TabsTrigger value="communication">Communication</TabsTrigger>
+              <TabsTrigger value="reporting">Reporting</TabsTrigger>
+            </TabsList>
 
-        {/* Main Content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="milestones">Milestones</TabsTrigger>
-            <TabsTrigger value="findings">Findings</TabsTrigger>
-            <TabsTrigger value="reports">Reports</TabsTrigger>
-            <TabsTrigger value="time">Time Tracking</TabsTrigger>
-            <TabsTrigger value="communication">Communication</TabsTrigger>
-          </TabsList>
+            <TabsContent value="overview" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Project Details</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <h4 className="font-semibold mb-2">Description</h4>
+                      <p className="text-sm text-muted-foreground">{auditData.description}</p>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-semibold mb-2">Repository</h4>
+                      <Button variant="outline" size="sm" asChild>
+                        <a href={auditData.repository} target="_blank" rel="noopener noreferrer">
+                          <Github className="h-4 w-4 mr-2" />
+                          View Repository
+                        </a>
+                      </Button>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-semibold mb-2">Technologies</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {auditData.technologies.map((tech) => (
+                          <Badge key={tech} variant="secondary">{tech}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
 
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Audit Scope</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2">
+                      {auditData.scope.map((item, index) => (
+                        <li key={index} className="flex items-center gap-2 text-sm">
+                          <CheckCircle className="h-4 w-4 text-green-600" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="phases" className="space-y-4">
+              <div className="grid gap-4">
+                {auditPhases.map((phase) => (
+                  <Card key={phase.id} className={`${currentPhase === phase.id ? 'ring-2 ring-primary' : ''}`}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold">{phase.name}</h3>
+                        <div className="flex items-center gap-2">
+                          {phase.status === 'completed' && <CheckCircle className="h-5 w-5 text-green-600" />}
+                          {phase.status === 'active' && <Clock className="h-5 w-5 text-blue-600" />}
+                          <Badge variant={phase.status === 'completed' ? 'default' : 
+                                        phase.status === 'active' ? 'outline' : 'secondary'}>
+                            {phase.status}
+                          </Badge>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span>Progress</span>
+                          <span>{phase.progress}%</span>
+                        </div>
+                        <Progress value={phase.progress} className="h-1" />
+                      </div>
+                      
+                      {phase.status === 'pending' && (
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="mt-3"
+                          onClick={() => handlePhaseUpdate(phase.id)}
+                        >
+                          Start Phase
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="findings" className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-semibold">Security Findings</h2>
+                <Badge variant="outline">{findings.length} findings</Badge>
+              </div>
+              
+              <div className="grid gap-4">
+                {findings.map((finding) => (
+                  <Card key={finding.id}>
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <CardTitle className="text-lg">{finding.title}</CardTitle>
+                          <p className="text-sm text-muted-foreground">Line {finding.line}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant={getSeverityColor(finding.severity)}>
+                            {finding.severity}
+                          </Badge>
+                          <Badge variant={finding.status === 'Fixed' ? 'default' : 'destructive'}>
+                            {finding.status}
+                          </Badge>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">{finding.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="communication" className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Project Details</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <MessageSquare className="h-5 w-5" />
+                    Client Communication
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Blockchain:</span>
-                    <span className="font-medium">{auditData.blockchain}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Contract Count:</span>
-                    <span className="font-medium">{auditData.contract_count || 'N/A'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Lines of Code:</span>
-                    <span className="font-medium">{auditData.lines_of_code || 'N/A'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Security Score:</span>
-                    <span className="font-medium">{auditData.security_score}/100</span>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="bg-muted/50 p-3 rounded-lg">
+                      <p className="text-sm"><strong>PlayToken:</strong> Hi! Looking forward to the audit results. Any preliminary findings?</p>
+                      <p className="text-xs text-muted-foreground mt-1">2 hours ago</p>
+                    </div>
+                    
+                    <div className="bg-primary/10 p-3 rounded-lg ml-8">
+                      <p className="text-sm"><strong>You:</strong> Hello! I've identified a few issues including a critical reentrancy vulnerability. I'll have the detailed report ready by tomorrow.</p>
+                      <p className="text-xs text-muted-foreground mt-1">1 hour ago</p>
+                    </div>
+                    
+                    <Textarea 
+                      placeholder="Type your message..."
+                      className="mt-4"
+                    />
+                    <Button size="sm">Send Message</Button>
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
 
+            <TabsContent value="reporting" className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Quick Actions</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="h-5 w-5" />
+                    Audit Report
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <Button className="w-full justify-start">
-                    <FileText className="h-4 w-4 mr-2" />
-                    View Latest Report
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <Download className="h-4 w-4 mr-2" />
-                    Download Documents
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start"
-                    onClick={() => handleSendMessage('Hello, I have a question about this audit.')}
-                  >
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    Message Auditor
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Audit Settings
-                  </Button>
+                <CardContent className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold mb-2">Report Template</h4>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Use our structured template to ensure comprehensive coverage of all audit aspects.
+                    </p>
+                    
+                    <Textarea
+                      placeholder="Enter your audit findings, recommendations, and conclusions..."
+                      value={reportContent}
+                      onChange={(e) => setReportContent(e.target.value)}
+                      rows={12}
+                      className="font-mono text-sm"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <Button onClick={handleSubmitReport}>
+                      Submit Final Report
+                    </Button>
+                    <Button variant="outline">
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload Files
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="milestones" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Project Milestones</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {milestones.isLoading ? (
-                  <div className="text-center py-8">Loading milestones...</div>
-                ) : milestones.milestones.length > 0 ? (
-                  <div className="space-y-4">
-                    {milestones.milestones.map((milestone) => (
-                      <div key={milestone.id} className="flex items-center gap-4 p-4 border rounded-lg">
-                        <div className={`w-3 h-3 rounded-full ${
-                          milestone.status === 'completed' ? 'bg-green-500' :
-                          milestone.status === 'in_progress' ? 'bg-yellow-500' : 'bg-gray-300'
-                        }`} />
-                        <div className="flex-1">
-                          <h4 className="font-medium">{milestone.title}</h4>
-                          <p className="text-sm text-muted-foreground">{milestone.description}</p>
-                          {milestone.due_date && (
-                            <p className="text-xs text-muted-foreground">Due: {milestone.due_date}</p>
-                          )}
-                        </div>
-                        <Badge variant={getStatusColor(milestone.status)}>{milestone.status}</Badge>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <TrendingUp className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                    <h3 className="text-lg font-medium mb-2">No Milestones Yet</h3>
-                    <p className="text-muted-foreground">
-                      Milestones will appear here as the audit progresses.
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="findings" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Security Findings</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {auditData.findings.length > 0 ? (
-                  <div className="space-y-4">
-                    {auditData.findings.map((finding) => (
-                      <div key={finding.id} className="p-4 border rounded-lg">
-                        <h4 className="font-medium">{finding.title}</h4>
-                        <p className="text-sm text-muted-foreground">{finding.description}</p>
-                        <div className="flex items-center justify-between mt-2">
-                          <Badge variant={getStatusColor(finding.status)}>{finding.status}</Badge>
-                          <Button variant="outline" size="sm">
-                            View Details
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <Shield className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                    <h3 className="text-lg font-medium mb-2">No Findings Yet</h3>
-                    <p className="text-muted-foreground">
-                      Detailed findings will appear here as the audit progresses.
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="reports" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Audit Reports</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {reports.isLoading ? (
-                  <div className="text-center py-8">Loading reports...</div>
-                ) : reports.reports.length > 0 ? (
-                  <div className="space-y-4">
-                    {reports.reports.map((report) => (
-                      <div key={report.id} className="p-4 border rounded-lg">
-                        <h4 className="font-medium">{report.title}</h4>
-                        <p className="text-sm text-muted-foreground">Type: {report.report_type}</p>
-                        <div className="flex items-center justify-between mt-2">
-                          <Badge variant={getStatusColor(report.status)}>{report.status}</Badge>
-                          <Button variant="outline" size="sm">
-                            Download
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                    <h3 className="text-lg font-medium mb-2">No Reports Available</h3>
-                    <p className="text-muted-foreground">
-                      Reports will be generated and available here as the audit progresses.
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="time" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Time Tracking</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {timeTracking.isLoading ? (
-                  <div className="text-center py-8">Loading time entries...</div>
-                ) : timeTracking.timeEntries.length > 0 ? (
-                  <div className="space-y-4">
-                    {timeTracking.timeEntries.map((entry) => (
-                      <div key={entry.id} className="p-4 border rounded-lg">
-                        <h4 className="font-medium">{entry.description || 'No Description'}</h4>
-                        <p className="text-sm text-muted-foreground">Date: {entry.date}</p>
-                        <div className="flex items-center justify-between mt-2">
-                          <span>Hours: {entry.hours}</span>
-                        </div>
-                      </div>
-                    ))}
-                    <div className="text-right font-semibold">
-                      Total Hours: {timeTracking.totalHours}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <Clock className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                    <h3 className="text-lg font-medium mb-2">No Time Entries Yet</h3>
-                    <p className="text-muted-foreground">
-                      Time entries will appear here as the audit progresses.
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="communication" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Communication Log</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {auditData.status_updates.map((update) => (
-                    <div key={update.id} className="p-4 border rounded-lg">
-                      <h4 className="font-medium">{update.title}</h4>
-                      <p className="text-sm text-muted-foreground">{update.message}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(update.created_at).toLocaleString()}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-4">
-                  <Input type="text" placeholder="Type your message here..." />
-                  <Button className="mt-2">Send Message</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
-    </StandardLayout>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </StandardLayout>
+    </>
   );
 };
 
