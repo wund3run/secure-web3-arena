@@ -6,72 +6,73 @@ import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { Upload, X, Plus, FileText, Code, Calendar, DollarSign } from 'lucide-react';
-import { useAuth } from '@/contexts/auth';
+import { Upload, FileText, Shield, Clock, DollarSign, Users, ArrowRight, CheckCircle } from 'lucide-react';
+
+interface ProjectFormData {
+  projectName: string;
+  projectDescription: string;
+  blockchain: string;
+  repositoryUrl: string;
+  contractCount: string;
+  linesOfCode: string;
+  auditScope: string[];
+  timeline: string;
+  budget: string;
+  urgency: string;
+  previousAudits: boolean;
+  specificRequirements: string;
+  contactEmail: string;
+}
 
 const SubmitProject = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [step, setStep] = useState(1);
-  
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ProjectFormData>({
     projectName: '',
     projectDescription: '',
-    repositoryUrl: '',
-    techStack: [] as string[],
     blockchain: '',
-    projectType: '',
-    auditScope: [] as string[],
+    repositoryUrl: '',
+    contractCount: '',
+    linesOfCode: '',
+    auditScope: [],
     timeline: '',
     budget: '',
+    urgency: 'normal',
     previousAudits: false,
-    previousAuditLinks: '',
-    requirements: '',
-    preferredAuditorSkills: [] as string[],
-    urgency: 'normal'
+    specificRequirements: '',
+    contactEmail: '',
   });
 
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-
-  const blockchains = ['Ethereum', 'Solana', 'Polygon', 'Binance Smart Chain', 'Avalanche', 'Arbitrum', 'Optimism', 'Other'];
-  const projectTypes = ['DeFi Protocol', 'NFT Marketplace', 'Gaming Platform', 'DAO', 'Token Contract', 'Bridge', 'Other'];
-  const auditScopes = ['Smart Contract Security', 'Architecture Review', 'Gas Optimization', 'Vulnerability Assessment', 'Compliance Check'];
-  const techStacks = ['Solidity', 'Rust', 'JavaScript', 'TypeScript', 'Python', 'Go', 'Move'];
-  const auditorSkills = ['Smart Contract Security', 'DeFi Protocols', 'NFT Standards', 'Gas Optimization', 'Formal Verification'];
-
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: keyof ProjectFormData, value: string | boolean | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleArrayToggle = (field: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: prev[field as keyof typeof prev].includes(value)
-        ? (prev[field as keyof typeof prev] as string[]).filter(item => item !== value)
-        : [...(prev[field as keyof typeof prev] as string[]), value]
-    }));
-  };
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-    setUploadedFiles(prev => [...prev, ...files]);
-  };
-
-  const removeFile = (index: number) => {
-    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
+  const handleScopeChange = (scope: string, checked: boolean) => {
+    const currentScope = Array.isArray(formData.auditScope) ? formData.auditScope : [];
+    
+    if (checked) {
+      setFormData(prev => ({
+        ...prev,
+        auditScope: [...currentScope, scope]
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        auditScope: currentScope.filter(s => s !== scope)
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) {
-      toast.error('Please sign in to submit a project');
+    
+    if (!formData.projectName || !formData.projectDescription || !formData.blockchain) {
+      toast.error('Please fill in all required fields');
       return;
     }
 
@@ -81,11 +82,8 @@ const SubmitProject = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      toast.success('Project submitted successfully!', {
-        description: 'Your project will be reviewed and published to the marketplace.'
-      });
-      
-      navigate('/dashboard');
+      toast.success('Project submitted successfully! We\'ll match you with qualified auditors.');
+      navigate('/project-dashboard');
     } catch (error) {
       toast.error('Failed to submit project. Please try again.');
     } finally {
@@ -93,159 +91,120 @@ const SubmitProject = () => {
     }
   };
 
-  const nextStep = () => setStep(prev => Math.min(prev + 1, 3));
-  const prevStep = () => setStep(prev => Math.max(prev - 1, 1));
+  const auditScopeOptions = [
+    'Smart Contract Logic',
+    'Access Controls',
+    'Token Economics',
+    'Upgrade Mechanisms',
+    'External Integrations',
+    'Gas Optimization',
+    'Documentation Review'
+  ];
 
-  if (!user) {
-    return (
-      <StandardLayout title="Submit Project | Hawkly" description="Submit your project for security audit">
-        <div className="container max-w-md py-12">
-          <Card>
-            <CardContent className="p-8 text-center">
-              <FileText className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-4">Authentication Required</h3>
-              <p className="text-gray-600 mb-6">
-                Please sign in to submit your project for audit.
-              </p>
-              <Button asChild>
-                <a href="/auth">Sign In</a>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </StandardLayout>
-    );
-  }
+  const currentScope = Array.isArray(formData.auditScope) ? formData.auditScope : [];
 
   return (
     <>
       <Helmet>
-        <title>Submit Project | Hawkly</title>
-        <meta name="description" content="Submit your project for professional security audit" />
+        <title>Submit Project for Audit | Hawkly</title>
+        <meta name="description" content="Submit your Web3 project for professional security audit" />
       </Helmet>
 
-      <StandardLayout title="Submit Project" description="Get your project audited by security experts">
+      <StandardLayout title="Submit Project" description="Get your Web3 project audited by security experts">
         <div className="container max-w-4xl py-8">
-          {/* Progress Steps */}
-          <div className="flex items-center justify-center mb-8">
-            {[1, 2, 3].map((stepNum) => (
-              <React.Fragment key={stepNum}>
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
-                  step >= stepNum ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
-                }`}>
-                  {stepNum}
-                </div>
-                {stepNum < 3 && (
-                  <div className={`w-16 h-1 mx-2 ${
-                    step > stepNum ? 'bg-primary' : 'bg-muted'
-                  }`} />
-                )}
-              </React.Fragment>
-            ))}
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Form */}
+            <div className="lg:col-span-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Upload className="h-5 w-5" />
+                    Project Information
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Basic Information */}
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="projectName">Project Name *</Label>
+                        <Input
+                          id="projectName"
+                          placeholder="Enter your project name"
+                          value={formData.projectName}
+                          onChange={(e) => handleInputChange('projectName', e.target.value)}
+                          required
+                        />
+                      </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                {step === 1 && <><Code className="h-5 w-5" />Project Details</>}
-                {step === 2 && <><FileText className="h-5 w-5" />Requirements & Scope</>}
-                {step === 3 && <><Calendar className="h-5 w-5" />Timeline & Budget</>}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {step === 1 && (
-                  <div className="space-y-6">
-                    <div>
-                      <Label htmlFor="projectName">Project Name *</Label>
-                      <Input
-                        id="projectName"
-                        value={formData.projectName}
-                        onChange={(e) => handleInputChange('projectName', e.target.value)}
-                        placeholder="Enter your project name"
-                        required
-                      />
-                    </div>
+                      <div>
+                        <Label htmlFor="projectDescription">Project Description *</Label>
+                        <Textarea
+                          id="projectDescription"
+                          placeholder="Describe your project, its purpose, and key features"
+                          rows={4}
+                          value={formData.projectDescription}
+                          onChange={(e) => handleInputChange('projectDescription', e.target.value)}
+                          required
+                        />
+                      </div>
 
-                    <div>
-                      <Label htmlFor="projectDescription">Project Description *</Label>
-                      <Textarea
-                        id="projectDescription"
-                        value={formData.projectDescription}
-                        onChange={(e) => handleInputChange('projectDescription', e.target.value)}
-                        placeholder="Describe your project, its purpose, and key features"
-                        rows={4}
-                        required
-                      />
-                    </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="blockchain">Blockchain *</Label>
+                          <Select value={formData.blockchain} onValueChange={(value) => handleInputChange('blockchain', value)}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select blockchain" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="ethereum">Ethereum</SelectItem>
+                              <SelectItem value="polygon">Polygon</SelectItem>
+                              <SelectItem value="bsc">Binance Smart Chain</SelectItem>
+                              <SelectItem value="arbitrum">Arbitrum</SelectItem>
+                              <SelectItem value="optimism">Optimism</SelectItem>
+                              <SelectItem value="solana">Solana</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
 
-                    <div>
-                      <Label htmlFor="repositoryUrl">Repository URL</Label>
-                      <Input
-                        id="repositoryUrl"
-                        value={formData.repositoryUrl}
-                        onChange={(e) => handleInputChange('repositoryUrl', e.target.value)}
-                        placeholder="https://github.com/your-username/your-project"
-                      />
-                    </div>
+                        <div>
+                          <Label htmlFor="contractCount">Number of Contracts</Label>
+                          <Select value={formData.contractCount} onValueChange={(value) => handleInputChange('contractCount', value)}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select range" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1-5">1-5 contracts</SelectItem>
+                              <SelectItem value="6-10">6-10 contracts</SelectItem>
+                              <SelectItem value="11-20">11-20 contracts</SelectItem>
+                              <SelectItem value="20+">20+ contracts</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
 
-                    <div>
-                      <Label>Blockchain *</Label>
-                      <Select value={formData.blockchain} onValueChange={(value) => handleInputChange('blockchain', value)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select blockchain" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {blockchains.map(blockchain => (
-                            <SelectItem key={blockchain} value={blockchain}>{blockchain}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label>Project Type *</Label>
-                      <Select value={formData.projectType} onValueChange={(value) => handleInputChange('projectType', value)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select project type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {projectTypes.map(type => (
-                            <SelectItem key={type} value={type}>{type}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label>Tech Stack</Label>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-                        {techStacks.map(tech => (
-                          <div key={tech} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={tech}
-                              checked={formData.techStack.includes(tech)}
-                              onCheckedChange={() => handleArrayToggle('techStack', tech)}
-                            />
-                            <Label htmlFor={tech} className="text-sm">{tech}</Label>
-                          </div>
-                        ))}
+                      <div>
+                        <Label htmlFor="repositoryUrl">Repository URL</Label>
+                        <Input
+                          id="repositoryUrl"
+                          placeholder="https://github.com/your-org/project"
+                          value={formData.repositoryUrl}
+                          onChange={(e) => handleInputChange('repositoryUrl', e.target.value)}
+                        />
                       </div>
                     </div>
-                  </div>
-                )}
 
-                {step === 2 && (
-                  <div className="space-y-6">
-                    <div>
-                      <Label>Audit Scope *</Label>
-                      <div className="space-y-2 mt-2">
-                        {auditScopes.map(scope => (
+                    {/* Audit Scope */}
+                    <div className="space-y-4">
+                      <Label>Audit Scope</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {auditScopeOptions.map((scope) => (
                           <div key={scope} className="flex items-center space-x-2">
                             <Checkbox
                               id={scope}
-                              checked={formData.auditScope.includes(scope)}
-                              onCheckedChange={() => handleArrayToggle('auditScope', scope)}
+                              checked={currentScope.includes(scope)}
+                              onCheckedChange={(checked) => handleScopeChange(scope, checked === true)}
                             />
                             <Label htmlFor={scope} className="text-sm">{scope}</Label>
                           </div>
@@ -253,194 +212,161 @@ const SubmitProject = () => {
                       </div>
                     </div>
 
-                    <div>
-                      <Label htmlFor="requirements">Specific Requirements</Label>
-                      <Textarea
-                        id="requirements"
-                        value={formData.requirements}
-                        onChange={(e) => handleInputChange('requirements', e.target.value)}
-                        placeholder="Any specific requirements, concerns, or areas of focus for the audit"
-                        rows={4}
-                      />
-                    </div>
-
-                    <div>
-                      <Label>Preferred Auditor Skills</Label>
-                      <div className="space-y-2 mt-2">
-                        {auditorSkills.map(skill => (
-                          <div key={skill} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={skill}
-                              checked={formData.preferredAuditorSkills.includes(skill)}
-                              onCheckedChange={() => handleArrayToggle('preferredAuditorSkills', skill)}
-                            />
-                            <Label htmlFor={skill} className="text-sm">{skill}</Label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="fileUpload">Supporting Documents</Label>
-                      <div className="mt-2">
-                        <input
-                          type="file"
-                          id="fileUpload"
-                          multiple
-                          accept=".pdf,.doc,.docx,.txt,.md"
-                          onChange={handleFileUpload}
-                          className="hidden"
-                        />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => document.getElementById('fileUpload')?.click()}
-                          className="w-full"
-                        >
-                          <Upload className="h-4 w-4 mr-2" />
-                          Upload Documents
-                        </Button>
-                        {uploadedFiles.length > 0 && (
-                          <div className="mt-4 space-y-2">
-                            {uploadedFiles.map((file, index) => (
-                              <div key={index} className="flex items-center justify-between p-2 bg-muted rounded">
-                                <span className="text-sm">{file.name}</span>
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => removeFile(index)}
-                                >
-                                  <X className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="previousAudits"
-                        checked={formData.previousAudits}
-                        onCheckedChange={(checked) => handleInputChange('previousAudits', checked)}
-                      />
-                      <Label htmlFor="previousAudits">This project has been audited before</Label>
-                    </div>
-
-                    {formData.previousAudits && (
+                    {/* Timeline & Budget */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="previousAuditLinks">Previous Audit Links</Label>
+                        <Label htmlFor="timeline">Preferred Timeline</Label>
+                        <Select value={formData.timeline} onValueChange={(value) => handleInputChange('timeline', value)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select timeline" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="1-2weeks">1-2 weeks</SelectItem>
+                            <SelectItem value="3-4weeks">3-4 weeks</SelectItem>
+                            <SelectItem value="1-2months">1-2 months</SelectItem>
+                            <SelectItem value="flexible">Flexible</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="budget">Budget Range</Label>
+                        <Select value={formData.budget} onValueChange={(value) => handleInputChange('budget', value)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select budget" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="5k-10k">$5,000 - $10,000</SelectItem>
+                            <SelectItem value="10k-25k">$10,000 - $25,000</SelectItem>
+                            <SelectItem value="25k-50k">$25,000 - $50,000</SelectItem>
+                            <SelectItem value="50k+">$50,000+</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    {/* Additional Information */}
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="specificRequirements">Specific Requirements</Label>
                         <Textarea
-                          id="previousAuditLinks"
-                          value={formData.previousAuditLinks}
-                          onChange={(e) => handleInputChange('previousAuditLinks', e.target.value)}
-                          placeholder="Links to previous audit reports"
+                          id="specificRequirements"
+                          placeholder="Any specific requirements, concerns, or areas of focus"
                           rows={3}
+                          value={formData.specificRequirements}
+                          onChange={(e) => handleInputChange('specificRequirements', e.target.value)}
                         />
                       </div>
-                    )}
-                  </div>
-                )}
 
-                {step === 3 && (
-                  <div className="space-y-6">
-                    <div>
-                      <Label>Timeline *</Label>
-                      <Select value={formData.timeline} onValueChange={(value) => handleInputChange('timeline', value)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select timeline" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1-week">1 Week</SelectItem>
-                          <SelectItem value="2-weeks">2 Weeks</SelectItem>
-                          <SelectItem value="1-month">1 Month</SelectItem>
-                          <SelectItem value="2-months">2 Months</SelectItem>
-                          <SelectItem value="flexible">Flexible</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                      <div>
+                        <Label htmlFor="contactEmail">Contact Email</Label>
+                        <Input
+                          id="contactEmail"
+                          type="email"
+                          placeholder="your@email.com"
+                          value={formData.contactEmail}
+                          onChange={(e) => handleInputChange('contactEmail', e.target.value)}
+                        />
+                      </div>
 
-                    <div>
-                      <Label>Budget Range *</Label>
-                      <Select value={formData.budget} onValueChange={(value) => handleInputChange('budget', value)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select budget range" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="under-5k">Under $5,000</SelectItem>
-                          <SelectItem value="5k-10k">$5,000 - $10,000</SelectItem>
-                          <SelectItem value="10k-25k">$10,000 - $25,000</SelectItem>
-                          <SelectItem value="25k-50k">$25,000 - $50,000</SelectItem>
-                          <SelectItem value="50k-plus">$50,000+</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label>Urgency Level</Label>
-                      <Select value={formData.urgency} onValueChange={(value) => handleInputChange('urgency', value)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select urgency" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="low">Low - Standard timeline</SelectItem>
-                          <SelectItem value="normal">Normal - Preferred timeline</SelectItem>
-                          <SelectItem value="high">High - Rush job</SelectItem>
-                          <SelectItem value="urgent">Urgent - ASAP</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* Summary */}
-                    <div className="border rounded-lg p-4 bg-muted/50">
-                      <h3 className="font-semibold mb-3">Project Summary</h3>
-                      <div className="space-y-2 text-sm">
-                        <p><strong>Project:</strong> {formData.projectName}</p>
-                        <p><strong>Blockchain:</strong> {formData.blockchain}</p>
-                        <p><strong>Type:</strong> {formData.projectType}</p>
-                        <p><strong>Timeline:</strong> {formData.timeline}</p>
-                        <p><strong>Budget:</strong> {formData.budget}</p>
-                        {formData.auditScope.length > 0 && (
-                          <div>
-                            <strong>Audit Scope:</strong>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {formData.auditScope.map(scope => (
-                                <Badge key={scope} variant="outline" className="text-xs">
-                                  {scope}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        )}
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="previousAudits"
+                          checked={formData.previousAudits}
+                          onCheckedChange={(checked) => handleInputChange('previousAudits', checked === true)}
+                        />
+                        <Label htmlFor="previousAudits" className="text-sm">
+                          This project has had previous security audits
+                        </Label>
                       </div>
                     </div>
-                  </div>
-                )}
 
-                <div className="flex justify-between pt-6">
-                  {step > 1 && (
-                    <Button type="button" variant="outline" onClick={prevStep}>
-                      Previous
+                    <Button 
+                      type="submit" 
+                      className="w-full" 
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Shield className="mr-2 h-4 w-4 animate-spin" />
+                          Submitting Project...
+                        </>
+                      ) : (
+                        <>
+                          Submit Project
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </>
+                      )}
                     </Button>
-                  )}
-                  
-                  <div className="ml-auto">
-                    {step < 3 ? (
-                      <Button type="button" onClick={nextStep}>
-                        Next
-                      </Button>
-                    ) : (
-                      <Button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? 'Submitting...' : 'Submit Project'}
-                      </Button>
-                    )}
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Sidebar */}
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">What Happens Next?</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium">AI Matching</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Our AI will match you with qualified auditors based on your project requirements.
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
+                  
+                  <div className="flex items-start gap-3">
+                    <Users className="h-5 w-5 text-blue-500 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium">Auditor Selection</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Review auditor profiles and select the best fit for your project.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <Shield className="h-5 w-5 text-purple-500 mt-0.5" />
+                    <div>
+                      <h4 className="font-medium">Secure Audit</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Professional audit with detailed security report and recommendations.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Audit Benefits</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <FileText className="h-4 w-4 text-green-500" />
+                    <span>Comprehensive security report</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Shield className="h-4 w-4 text-blue-500" />
+                    <span>Vulnerability identification</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Clock className="h-4 w-4 text-orange-500" />
+                    <span>Fast turnaround time</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <DollarSign className="h-4 w-4 text-purple-500" />
+                    <span>Transparent pricing</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </StandardLayout>
     </>
