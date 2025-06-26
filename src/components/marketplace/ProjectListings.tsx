@@ -14,10 +14,9 @@ interface ProjectListing {
   project_description: string;
   blockchain: string;
   budget?: number;
-  timeline: string;
+  deadline?: string;
   status: string;
   urgency_level?: string;
-  required_expertise: string[];
   client_id: string;
   created_at: string;
   profiles?: {
@@ -41,7 +40,16 @@ export function ProjectListings() {
       const { data, error } = await supabase
         .from('audit_requests')
         .select(`
-          *,
+          id,
+          project_name,
+          project_description,
+          blockchain,
+          budget,
+          deadline,
+          status,
+          urgency_level,
+          client_id,
+          created_at,
           profiles:client_id (
             full_name,
             avatar_url
@@ -80,8 +88,9 @@ export function ProjectListings() {
     }
   };
 
-  const formatTimeline = (timeline: string) => {
-    return timeline.replace('_', ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+  const formatDeadline = (deadline?: string) => {
+    if (!deadline) return 'Flexible timeline';
+    return new Date(deadline).toLocaleDateString();
   };
 
   if (loading) {
@@ -187,7 +196,7 @@ export function ProjectListings() {
                   </div>
                   <div className="flex items-center space-x-1">
                     <Clock className="h-4 w-4 text-muted-foreground" />
-                    <span>{formatTimeline(project.timeline)}</span>
+                    <span>{formatDeadline(project.deadline)}</span>
                   </div>
                   <div className="flex items-center space-x-1">
                     <Users className="h-4 w-4 text-muted-foreground" />
@@ -197,22 +206,6 @@ export function ProjectListings() {
                     {project.blockchain}
                   </Badge>
                 </div>
-
-                {/* Required Expertise */}
-                {project.required_expertise && project.required_expertise.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {project.required_expertise.slice(0, 3).map((skill) => (
-                      <Badge key={skill} variant="secondary" className="text-xs">
-                        {skill}
-                      </Badge>
-                    ))}
-                    {project.required_expertise.length > 3 && (
-                      <Badge variant="secondary" className="text-xs">
-                        +{project.required_expertise.length - 3} more
-                      </Badge>
-                    )}
-                  </div>
-                )}
 
                 {/* Actions */}
                 <div className="flex space-x-2">
