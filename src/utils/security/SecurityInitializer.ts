@@ -1,4 +1,6 @@
 
+import { EnhancedCSP } from './enhancedCSP';
+import { EnhancedSecurityService } from './enhancedSecurityService';
 import { SecurityHeadersManager } from './SecurityHeadersManager';
 import { auditLogger } from './AuditLogger';
 
@@ -6,160 +8,116 @@ export class SecurityInitializer {
   private static initialized = false;
 
   static async initialize(): Promise<void> {
-    if (this.initialized) return;
-
-    console.log('🔒 Initializing Hawkly Security Systems...');
+    if (SecurityInitializer.initialized) {
+      return;
+    }
 
     try {
-      // Apply security headers
-      const headerManager = SecurityHeadersManager.getInstance();
-      headerManager.applyHeaders();
-      await headerManager.validateCSP();
+      console.log('🔒 Initializing security systems...');
 
-      // Initialize session monitoring
-      this.initializeSessionMonitoring();
+      // Apply enhanced CSP and security headers
+      EnhancedCSP.applyHeaders();
+      EnhancedCSP.setupViolationReporting();
 
-      // Initialize security event listeners
-      this.initializeSecurityListeners();
+      // Initialize security headers manager
+      const headersManager = SecurityHeadersManager.getInstance();
+      headersManager.applyHeaders();
 
-      // Log security initialization
+      // Setup session monitoring
+      SecurityInitializer.setupSessionMonitoring();
+
+      // Setup activity monitoring
+      SecurityInitializer.setupActivityMonitoring();
+
+      // Initialize audit logging
       await auditLogger.log(
-        'system_configuration_changed',
-        'Security systems initialized',
-        {
+        'security_initialization',
+        'Security systems initialized successfully',
+        { 
           timestamp: new Date().toISOString(),
-          components: ['security_headers', 'audit_logging', 'session_monitoring']
+          userAgent: navigator.userAgent,
+          url: window.location.href
         },
-        'medium'
+        'low'
       );
 
-      this.initialized = true;
-      console.log('✅ Security systems initialized successfully');
+      SecurityInitializer.initialized = true;
+      console.log('✅ Security initialization complete');
 
     } catch (error) {
-      console.error('❌ Failed to initialize security systems:', error);
-      
-      await auditLogger.log(
-        'security_violation',
-        'Security initialization failed',
-        { error: error instanceof Error ? error.message : 'Unknown error' },
-        'critical'
-      );
+      console.error('❌ Security initialization failed:', error);
+      throw error;
     }
   }
 
-  private static initializeSessionMonitoring(): void {
-    // Generate session ID
-    if (!sessionStorage.getItem('hawkly_session_id')) {
-      const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      sessionStorage.setItem('hawkly_session_id', sessionId);
-    }
-
-    // Monitor for session tampering
-    const originalSessionId = sessionStorage.getItem('hawkly_session_id');
-    
-    setInterval(() => {
-      const currentSessionId = sessionStorage.getItem('hawkly_session_id');
-      if (currentSessionId !== originalSessionId) {
-        auditLogger.log(
-          'security_violation',
-          'Session ID tampering detected',
-          {
-            original: originalSessionId,
-            current: currentSessionId
-          },
-          'critical'
-        );
+  private static setupSessionMonitoring(): void {
+    // Monitor for session changes
+    setInterval(async () => {
+      const isValid = await EnhancedSecurityService.validateSession();
+      if (!isValid) {
+        console.warn('⚠️ Invalid session detected');
+        // Could trigger logout or session refresh
       }
-    }, 30000); // Check every 30 seconds
-  }
+    }, 5 * 60 * 1000); // Check every 5 minutes
 
-  private static initializeSecurityListeners(): void {
-    // Monitor for console access (potential developer tools usage)
-    let devtoolsOpen = false;
-    setInterval(() => {
-      const threshold = 160;
-      if (window.outerHeight - window.innerHeight > threshold || 
-          window.outerWidth - window.innerWidth > threshold) {
-        if (!devtoolsOpen) {
-          devtoolsOpen = true;
-          auditLogger.log(
-            'security_violation',
-            'Developer tools detected',
-            { 
-              viewport: {
-                outer: { width: window.outerWidth, height: window.outerHeight },
-                inner: { width: window.innerWidth, height: window.innerHeight }
-              }
-            },
-            'medium'
-          );
-        }
-      } else {
-        devtoolsOpen = false;
-      }
-    }, 1000);
-
-    // Monitor for rapid API calls (potential abuse)
-    let apiCallCount = 0;
-    const originalFetch = window.fetch;
-    
-    window.fetch = async (...args) => {
-      apiCallCount++;
-      
-      // Reset counter every minute
-      setTimeout(() => apiCallCount--, 60000);
-      
-      // Alert on suspicious activity
-      if (apiCallCount > 100) {
-        auditLogger.log(
-          'security_violation',
-          'Excessive API calls detected',
-          { callCount: apiCallCount, url: args[0] },
-          'high'
-        );
-      }
-      
-      return originalFetch.apply(window, args);
+    // Track activity for session timeout
+    let lastActivity = Date.now();
+    const updateActivity = () => {
+      lastActivity = Date.now();
+      localStorage.setItem('last_activity', lastActivity.toString());
     };
 
-    // Monitor for copy/paste in sensitive fields
-    document.addEventListener('paste', (event) => {
-      const target = event.target as HTMLElement;
-      if (target.matches('input[type="password"], input[data-sensitive]')) {
-        auditLogger.log(
-          'data_access',
-          'Paste operation in sensitive field',
-          { fieldType: target.getAttribute('type') || 'unknown' },
-          'low'
-        );
-      }
-    });
-
-    // Monitor for page visibility changes (potential security concern)
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        auditLogger.log(
-          'data_access',
-          'Page became hidden',
-          { timestamp: new Date().toISOString() },
-          'low'
-        );
-      }
+    ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(event => {
+      document.addEventListener(event, updateActivity, { passive: true });
     });
   }
 
-  static getSecurityStatus(): {
-    initialized: boolean;
-    timestamp: string;
-    components: string[];
-  } {
+  private static setupActivityMonitoring(): void {
+    // Monitor for suspicious rapid clicks
+    let clickCount = 0;
+    let clickTimer: NodeJS.Timeout;
+
+    document.addEventListener('click', () => {
+      clickCount++;
+      
+      clearTimeout(clickTimer);
+      clickTimer = setTimeout(() => {
+        if (clickCount > 50) { // More than 50 clicks in 10 seconds
+          EnhancedSecurityService.logSecurityEvent(
+            'SUSPICIOUS_ACTIVITY',
+            'Rapid clicking detected',
+            { clickCount, timeWindow: '10 seconds' }
+          );
+        }
+        clickCount = 0;
+      }, 10000);
+    });
+
+    // Monitor for multiple rapid form submissions
+    let submitCount = 0;
+    let submitTimer: NodeJS.Timeout;
+
+    document.addEventListener('submit', () => {
+      submitCount++;
+      
+      clearTimeout(submitTimer);
+      submitTimer = setTimeout(() => {
+        if (submitCount > 10) { // More than 10 submissions in 1 minute
+          EnhancedSecurityService.logSecurityEvent(
+            'SUSPICIOUS_ACTIVITY',
+            'Rapid form submissions detected',
+            { submitCount, timeWindow: '1 minute' }
+          );
+        }
+        submitCount = 0;
+      }, 60000);
+    });
+  }
+
+  static getStatus(): { initialized: boolean; timestamp?: string } {
     return {
-      initialized: this.initialized,
-      timestamp: new Date().toISOString(),
-      components: this.initialized 
-        ? ['security_headers', 'audit_logging', 'session_monitoring', 'security_listeners']
-        : []
+      initialized: SecurityInitializer.initialized,
+      timestamp: SecurityInitializer.initialized ? new Date().toISOString() : undefined
     };
   }
 }
