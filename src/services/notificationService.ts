@@ -17,21 +17,24 @@ export class NotificationService {
     notification: NotificationData
   ): Promise<boolean> {
     try {
-      // Save to database
-      const { error } = await supabase
-        .from('notifications')
-        .insert({
-          user_id: userId,
-          title: notification.title,
-          message: notification.message,
-          type: notification.type,
-          priority: notification.priority,
-          action_url: notification.actionUrl,
-          metadata: notification.metadata,
-          read: false
-        });
+      // For now, save to localStorage until database schema is ready
+      const notificationData = {
+        id: Date.now().toString(),
+        user_id: userId,
+        title: notification.title,
+        message: notification.message,
+        type: notification.type,
+        priority: notification.priority,
+        action_url: notification.actionUrl,
+        metadata: notification.metadata,
+        is_read: false,
+        created_at: new Date().toISOString()
+      };
 
-      if (error) throw error;
+      // Store in localStorage temporarily
+      const existingNotifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+      existingNotifications.push(notificationData);
+      localStorage.setItem('notifications', JSON.stringify(existingNotifications));
 
       // Send browser notification if permission granted
       if (Notification.permission === 'granted') {
@@ -110,12 +113,12 @@ export class NotificationService {
 
   static async markAsRead(notificationId: string): Promise<boolean> {
     try {
-      const { error } = await supabase
-        .from('notifications')
-        .update({ read: true })
-        .eq('id', notificationId);
-
-      if (error) throw error;
+      // For localStorage implementation
+      const existingNotifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+      const updatedNotifications = existingNotifications.map((notification: any) => 
+        notification.id === notificationId ? { ...notification, is_read: true } : notification
+      );
+      localStorage.setItem('notifications', JSON.stringify(updatedNotifications));
       return true;
     } catch (error) {
       console.error('Error marking notification as read:', error);
@@ -125,14 +128,12 @@ export class NotificationService {
 
   static async getUnreadCount(userId: string): Promise<number> {
     try {
-      const { count, error } = await supabase
-        .from('notifications')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', userId)
-        .eq('read', false);
-
-      if (error) throw error;
-      return count || 0;
+      // For localStorage implementation
+      const existingNotifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+      const userNotifications = existingNotifications.filter((notification: any) => 
+        notification.user_id === userId && !notification.is_read
+      );
+      return userNotifications.length;
     } catch (error) {
       console.error('Error getting unread count:', error);
       return 0;
