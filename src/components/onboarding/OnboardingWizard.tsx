@@ -133,23 +133,15 @@ export const OnboardingWizard: React.FC = () => {
   const renderCurrentStep = () => {
     const CurrentStepComponent = steps[currentStep].component;
     
-    // Pass appropriate props based on the step
-    const commonProps = {
-      onNext: handleNext,
-      onPrev: handlePrev,
-      onComplete: handleComplete,
-      isSubmitting
-    };
-
     switch (currentStep) {
       case 0: // Welcome
-        return <CurrentStepComponent {...commonProps} />;
+        return <CurrentStepComponent onNext={handleNext} />;
       case 1: // User Type Selection
         return (
           <CurrentStepComponent
             selected={userType}
             onSelect={setUserType}
-            {...commonProps}
+            onNext={handleNext}
           />
         );
       case 2: // Profile Setup
@@ -158,25 +150,35 @@ export const OnboardingWizard: React.FC = () => {
             data={profileData}
             userType={userType}
             onChange={setProfileData}
-            {...commonProps}
+            onNext={handleNext}
+            onPrev={handlePrev}
           />
         );
-      case 3: // Skills Assessment (only for auditors)
-        if (userType === 'auditor') {
+      case 3: // Skills Assessment (only for auditors) or Verification
+        if (userType === 'auditor' && currentStep === 3) {
           return (
             <CurrentStepComponent
               skillsData={skillsData}
               onSkillsChange={setSkillsData}
-              {...commonProps}
+              onNext={handleNext}
+              onPrev={handlePrev}
             />
           );
         }
-        // Fall through to verification if not auditor
-      case steps.length - 1: // Verification
+        // Fall through to verification
         return (
           <CurrentStepComponent
             userType={userType}
-            {...commonProps}
+            onComplete={handleComplete}
+            isSubmitting={isSubmitting}
+          />
+        );
+      case 4: // Verification (for auditors)
+        return (
+          <CurrentStepComponent
+            userType={userType}
+            onComplete={handleComplete}
+            isSubmitting={isSubmitting}
           />
         );
       default:

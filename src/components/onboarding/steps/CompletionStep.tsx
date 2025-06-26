@@ -65,40 +65,40 @@ export const CompletionStep: React.FC<CompletionStepProps> = ({
               <div>
                 <h4 className="font-medium">Experience</h4>
                 <p className="text-muted-foreground">
-                  {data.skillsData.experience} {data.skillsData.experience === 1 ? 'year' : 'years'}
+                  {data.skillsData.experience}
                 </p>
               </div>
 
-              {data.skillsData.skills.length > 0 && (
+              {data.skillsData.expertise.length > 0 && (
                 <div>
-                  <h4 className="font-medium">Skills</h4>
+                  <h4 className="font-medium">Expertise Areas</h4>
                   <div className="flex flex-wrap gap-1 mt-1">
-                    {data.skillsData.skills.slice(0, 5).map(skill => (
+                    {data.skillsData.expertise.slice(0, 5).map(skill => (
                       <Badge key={skill} variant="outline" className="text-xs">
                         {skill}
                       </Badge>
                     ))}
-                    {data.skillsData.skills.length > 5 && (
+                    {data.skillsData.expertise.length > 5 && (
                       <Badge variant="outline" className="text-xs">
-                        +{data.skillsData.skills.length - 5} more
+                        +{data.skillsData.expertise.length - 5} more
                       </Badge>
                     )}
                   </div>
                 </div>
               )}
 
-              {data.skillsData.blockchainExpertise.length > 0 && (
+              {data.skillsData.languages.length > 0 && (
                 <div>
-                  <h4 className="font-medium">Blockchain Networks</h4>
+                  <h4 className="font-medium">Programming Languages</h4>
                   <div className="flex flex-wrap gap-1 mt-1">
-                    {data.skillsData.blockchainExpertise.slice(0, 3).map(network => (
-                      <Badge key={network} variant="outline" className="text-xs">
-                        {network}
+                    {data.skillsData.languages.slice(0, 3).map(language => (
+                      <Badge key={language} variant="outline" className="text-xs">
+                        {language}
                       </Badge>
                     ))}
-                    {data.skillsData.blockchainExpertise.length > 3 && (
+                    {data.skillsData.languages.length > 3 && (
                       <Badge variant="outline" className="text-xs">
-                        +{data.skillsData.blockchainExpertise.length - 3} more
+                        +{data.skillsData.languages.length - 3} more
                       </Badge>
                     )}
                   </div>
