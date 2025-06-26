@@ -6,367 +6,253 @@ import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { Upload, FileText, Shield, Clock, DollarSign, Users, ArrowRight, CheckCircle } from 'lucide-react';
-
-interface ProjectFormData {
-  projectName: string;
-  projectDescription: string;
-  blockchain: string;
-  repositoryUrl: string;
-  contractCount: string;
-  linesOfCode: string;
-  auditScope: string[];
-  timeline: string;
-  budget: string;
-  urgency: string;
-  previousAudits: boolean;
-  specificRequirements: string;
-  contactEmail: string;
-}
+import { Upload, FileText, Code, Shield, Clock, DollarSign } from 'lucide-react';
 
 const SubmitProject = () => {
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState<ProjectFormData>({
+  const [formData, setFormData] = useState({
     projectName: '',
-    projectDescription: '',
-    blockchain: '',
+    description: '',
     repositoryUrl: '',
-    contractCount: '',
-    linesOfCode: '',
-    auditScope: [],
+    techStack: [] as string[],
+    auditScope: [] as string[],
     timeline: '',
     budget: '',
-    urgency: 'normal',
-    previousAudits: false,
-    specificRequirements: '',
-    contactEmail: '',
+    requirements: ''
   });
 
-  const handleInputChange = (field: keyof ProjectFormData, value: string | boolean | string[]) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const techStackOptions = [
+    'Solidity', 'Rust', 'JavaScript', 'TypeScript', 'Python', 'Go', 'Move'
+  ];
+
+  const auditScopeOptions = [
+    'Smart Contracts', 'Frontend Security', 'API Security', 'Infrastructure', 'Token Economics'
+  ];
+
+  const handleTechStackChange = (tech: string, checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      techStack: checked 
+        ? [...prev.techStack, tech]
+        : prev.techStack.filter(t => t !== tech)
+    }));
   };
 
-  const handleScopeChange = (scope: string, checked: boolean) => {
-    const currentScope = Array.isArray(formData.auditScope) ? formData.auditScope : [];
-    
-    if (checked) {
-      setFormData(prev => ({
-        ...prev,
-        auditScope: [...currentScope, scope]
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        auditScope: currentScope.filter(s => s !== scope)
-      }));
-    }
+  const handleAuditScopeChange = (scope: string, checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      auditScope: checked 
+        ? [...prev.auditScope, scope]
+        : prev.auditScope.filter(s => s !== scope)
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.projectName || !formData.projectDescription || !formData.blockchain) {
+    if (!formData.projectName || !formData.description || !formData.repositoryUrl || 
+        formData.auditScope.length === 0) {
       toast.error('Please fill in all required fields');
       return;
     }
 
-    setIsSubmitting(true);
-    
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      toast.success('Project submitted successfully! We\'ll match you with qualified auditors.');
+      toast.success('Project submitted successfully!');
       navigate('/project-dashboard');
     } catch (error) {
       toast.error('Failed to submit project. Please try again.');
-    } finally {
-      setIsSubmitting(false);
     }
   };
-
-  const auditScopeOptions = [
-    'Smart Contract Logic',
-    'Access Controls',
-    'Token Economics',
-    'Upgrade Mechanisms',
-    'External Integrations',
-    'Gas Optimization',
-    'Documentation Review'
-  ];
-
-  const currentScope = Array.isArray(formData.auditScope) ? formData.auditScope : [];
 
   return (
     <>
       <Helmet>
-        <title>Submit Project for Audit | Hawkly</title>
-        <meta name="description" content="Submit your Web3 project for professional security audit" />
+        <title>Submit Project | Hawkly</title>
+        <meta name="description" content="Submit your Web3 project for security audit" />
       </Helmet>
 
-      <StandardLayout title="Submit Project" description="Get your Web3 project audited by security experts">
-        <div className="container max-w-4xl py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Main Form */}
-            <div className="lg:col-span-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Upload className="h-5 w-5" />
-                    Project Information
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Basic Information */}
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="projectName">Project Name *</Label>
-                        <Input
-                          id="projectName"
-                          placeholder="Enter your project name"
-                          value={formData.projectName}
-                          onChange={(e) => handleInputChange('projectName', e.target.value)}
-                          required
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="projectDescription">Project Description *</Label>
-                        <Textarea
-                          id="projectDescription"
-                          placeholder="Describe your project, its purpose, and key features"
-                          rows={4}
-                          value={formData.projectDescription}
-                          onChange={(e) => handleInputChange('projectDescription', e.target.value)}
-                          required
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="blockchain">Blockchain *</Label>
-                          <Select value={formData.blockchain} onValueChange={(value) => handleInputChange('blockchain', value)}>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select blockchain" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="ethereum">Ethereum</SelectItem>
-                              <SelectItem value="polygon">Polygon</SelectItem>
-                              <SelectItem value="bsc">Binance Smart Chain</SelectItem>
-                              <SelectItem value="arbitrum">Arbitrum</SelectItem>
-                              <SelectItem value="optimism">Optimism</SelectItem>
-                              <SelectItem value="solana">Solana</SelectItem>
-                              <SelectItem value="other">Other</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div>
-                          <Label htmlFor="contractCount">Number of Contracts</Label>
-                          <Select value={formData.contractCount} onValueChange={(value) => handleInputChange('contractCount', value)}>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select range" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="1-5">1-5 contracts</SelectItem>
-                              <SelectItem value="6-10">6-10 contracts</SelectItem>
-                              <SelectItem value="11-20">11-20 contracts</SelectItem>
-                              <SelectItem value="20+">20+ contracts</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label htmlFor="repositoryUrl">Repository URL</Label>
-                        <Input
-                          id="repositoryUrl"
-                          placeholder="https://github.com/your-org/project"
-                          value={formData.repositoryUrl}
-                          onChange={(e) => handleInputChange('repositoryUrl', e.target.value)}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Audit Scope */}
-                    <div className="space-y-4">
-                      <Label>Audit Scope</Label>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {auditScopeOptions.map((scope) => (
-                          <div key={scope} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={scope}
-                              checked={currentScope.includes(scope)}
-                              onCheckedChange={(checked) => handleScopeChange(scope, checked === true)}
-                            />
-                            <Label htmlFor={scope} className="text-sm">{scope}</Label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Timeline & Budget */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="timeline">Preferred Timeline</Label>
-                        <Select value={formData.timeline} onValueChange={(value) => handleInputChange('timeline', value)}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select timeline" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="1-2weeks">1-2 weeks</SelectItem>
-                            <SelectItem value="3-4weeks">3-4 weeks</SelectItem>
-                            <SelectItem value="1-2months">1-2 months</SelectItem>
-                            <SelectItem value="flexible">Flexible</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <Label htmlFor="budget">Budget Range</Label>
-                        <Select value={formData.budget} onValueChange={(value) => handleInputChange('budget', value)}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select budget" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="5k-10k">$5,000 - $10,000</SelectItem>
-                            <SelectItem value="10k-25k">$10,000 - $25,000</SelectItem>
-                            <SelectItem value="25k-50k">$25,000 - $50,000</SelectItem>
-                            <SelectItem value="50k+">$50,000+</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    {/* Additional Information */}
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="specificRequirements">Specific Requirements</Label>
-                        <Textarea
-                          id="specificRequirements"
-                          placeholder="Any specific requirements, concerns, or areas of focus"
-                          rows={3}
-                          value={formData.specificRequirements}
-                          onChange={(e) => handleInputChange('specificRequirements', e.target.value)}
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="contactEmail">Contact Email</Label>
-                        <Input
-                          id="contactEmail"
-                          type="email"
-                          placeholder="your@email.com"
-                          value={formData.contactEmail}
-                          onChange={(e) => handleInputChange('contactEmail', e.target.value)}
-                        />
-                      </div>
-
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="previousAudits"
-                          checked={formData.previousAudits}
-                          onCheckedChange={(checked) => handleInputChange('previousAudits', checked === true)}
-                        />
-                        <Label htmlFor="previousAudits" className="text-sm">
-                          This project has had previous security audits
-                        </Label>
-                      </div>
-                    </div>
-
-                    <Button 
-                      type="submit" 
-                      className="w-full" 
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Shield className="mr-2 h-4 w-4 animate-spin" />
-                          Submitting Project...
-                        </>
-                      ) : (
-                        <>
-                          Submit Project
-                          <ArrowRight className="ml-2 h-4 w-4" />
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Sidebar */}
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">What Happens Next?</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
-                    <div>
-                      <h4 className="font-medium">AI Matching</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Our AI will match you with qualified auditors based on your project requirements.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <Users className="h-5 w-5 text-blue-500 mt-0.5" />
-                    <div>
-                      <h4 className="font-medium">Auditor Selection</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Review auditor profiles and select the best fit for your project.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <Shield className="h-5 w-5 text-purple-500 mt-0.5" />
-                    <div>
-                      <h4 className="font-medium">Secure Audit</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Professional audit with detailed security report and recommendations.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Audit Benefits</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <FileText className="h-4 w-4 text-green-500" />
-                    <span>Comprehensive security report</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Shield className="h-4 w-4 text-blue-500" />
-                    <span>Vulnerability identification</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Clock className="h-4 w-4 text-orange-500" />
-                    <span>Fast turnaround time</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <DollarSign className="h-4 w-4 text-purple-500" />
-                    <span>Transparent pricing</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+      <StandardLayout title="Submit Your Project" description="Get your Web3 project audited by security experts">
+        <div className="container max-w-4xl py-12">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-4">Submit Your Project for Audit</h1>
+            <p className="text-muted-foreground">
+              Provide details about your Web3 project and we'll match you with the best security auditors.
+            </p>
           </div>
+
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Project Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label htmlFor="projectName">Project Name *</Label>
+                    <Input
+                      id="projectName"
+                      placeholder="Enter your project name"
+                      value={formData.projectName}
+                      onChange={(e) => setFormData(prev => ({ ...prev, projectName: e.target.value }))}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="repositoryUrl">Repository URL *</Label>
+                    <Input
+                      id="repositoryUrl"
+                      placeholder="https://github.com/yourproject"
+                      value={formData.repositoryUrl}
+                      onChange={(e) => setFormData(prev => ({ ...prev, repositoryUrl: e.target.value }))}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="description">Project Description *</Label>
+                  <Textarea
+                    id="description"
+                    placeholder="Describe your project, its purpose, and key features..."
+                    value={formData.description}
+                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                    rows={4}
+                    required
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Code className="h-5 w-5" />
+                  Technical Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <Label>Tech Stack</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2">
+                    {techStackOptions.map((tech) => (
+                      <div key={tech} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={tech}
+                          checked={formData.techStack.includes(tech)}
+                          onCheckedChange={(checked) => handleTechStackChange(tech, checked as boolean)}
+                        />
+                        <Label htmlFor={tech} className="text-sm">{tech}</Label>
+                      </div>
+                    ))}
+                  </div>
+                  {formData.techStack.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {formData.techStack.map((tech) => (
+                        <Badge key={tech} variant="secondary">{tech}</Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <Label>Audit Scope *</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+                    {auditScopeOptions.map((scope) => (
+                      <div key={scope} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={scope}
+                          checked={formData.auditScope.includes(scope)}
+                          onCheckedChange={(checked) => handleAuditScopeChange(scope, checked as boolean)}
+                        />
+                        <Label htmlFor={scope} className="text-sm">{scope}</Label>
+                      </div>
+                    ))}
+                  </div>
+                  {formData.auditScope.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {formData.auditScope.map((scope) => (
+                        <Badge key={scope} variant="outline">{scope}</Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5" />
+                  Audit Requirements
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label htmlFor="timeline">Preferred Timeline</Label>
+                    <Select value={formData.timeline} onValueChange={(value) => setFormData(prev => ({ ...prev, timeline: value }))}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select timeline" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1-2 weeks">1-2 weeks</SelectItem>
+                        <SelectItem value="2-4 weeks">2-4 weeks</SelectItem>
+                        <SelectItem value="1-2 months">1-2 months</SelectItem>
+                        <SelectItem value="flexible">Flexible</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="budget">Budget Range</Label>
+                    <Select value={formData.budget} onValueChange={(value) => setFormData(prev => ({ ...prev, budget: value }))}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select budget range" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="$5k-$10k">$5,000 - $10,000</SelectItem>
+                        <SelectItem value="$10k-$25k">$10,000 - $25,000</SelectItem>
+                        <SelectItem value="$25k-$50k">$25,000 - $50,000</SelectItem>
+                        <SelectItem value="$50k+">$50,000+</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="requirements">Additional Requirements</Label>
+                  <Textarea
+                    id="requirements"
+                    placeholder="Any specific requirements, compliance needs, or areas of concern..."
+                    value={formData.requirements}
+                    onChange={(e) => setFormData(prev => ({ ...prev, requirements: e.target.value }))}
+                    rows={3}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="flex justify-end space-x-4">
+              <Button type="button" variant="outline" onClick={() => navigate('/marketplace')}>
+                Cancel
+              </Button>
+              <Button type="submit" className="flex items-center gap-2">
+                <Upload className="h-4 w-4" />
+                Submit Project
+              </Button>
+            </div>
+          </form>
         </div>
       </StandardLayout>
     </>
