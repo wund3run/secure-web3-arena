@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 
 export type UserType = 'auditor' | 'project_owner' | null;
 
-interface ProfileData {
+export interface ProfileData {
   fullName: string;
   displayName: string;
   bio: string;
@@ -23,15 +23,21 @@ interface ProfileData {
   socialLinks: Record<string, string>;
 }
 
-interface SkillsData {
+export interface SkillsData {
   expertise: string[];
   experience: string;
   certifications: string[];
   languages: string[];
 }
 
+export interface OnboardingData {
+  userType: UserType;
+  profileData: ProfileData;
+  skillsData: SkillsData;
+}
+
 export const OnboardingWizard: React.FC = () => {
-  const { user, refreshUserProfile } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [userType, setUserType] = useState<UserType>(null);
@@ -108,7 +114,6 @@ export const OnboardingWizard: React.FC = () => {
         if (auditorError) throw auditorError;
       }
 
-      await refreshUserProfile();
       toast.success('Welcome to Hawkly!', {
         description: 'Your profile has been set up successfully.'
       });
@@ -125,7 +130,59 @@ export const OnboardingWizard: React.FC = () => {
     }
   };
 
-  const CurrentStepComponent = steps[currentStep].component;
+  const renderCurrentStep = () => {
+    const CurrentStepComponent = steps[currentStep].component;
+    
+    // Pass appropriate props based on the step
+    const commonProps = {
+      onNext: handleNext,
+      onPrev: handlePrev,
+      onComplete: handleComplete,
+      isSubmitting
+    };
+
+    switch (currentStep) {
+      case 0: // Welcome
+        return <CurrentStepComponent {...commonProps} />;
+      case 1: // User Type Selection
+        return (
+          <CurrentStepComponent
+            selected={userType}
+            onSelect={setUserType}
+            {...commonProps}
+          />
+        );
+      case 2: // Profile Setup
+        return (
+          <CurrentStepComponent
+            data={profileData}
+            userType={userType}
+            onChange={setProfileData}
+            {...commonProps}
+          />
+        );
+      case 3: // Skills Assessment (only for auditors)
+        if (userType === 'auditor') {
+          return (
+            <CurrentStepComponent
+              skillsData={skillsData}
+              onSkillsChange={setSkillsData}
+              {...commonProps}
+            />
+          );
+        }
+        // Fall through to verification if not auditor
+      case steps.length - 1: // Verification
+        return (
+          <CurrentStepComponent
+            userType={userType}
+            {...commonProps}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 flex items-center justify-center p-4">
@@ -145,18 +202,7 @@ export const OnboardingWizard: React.FC = () => {
           <Progress value={progress} className="w-full" />
         </CardHeader>
         <CardContent>
-          <CurrentStepComponent
-            userType={userType}
-            profileData={profileData}
-            skillsData={skillsData}
-            onUserTypeSelect={setUserType}
-            onProfileChange={setProfileData}
-            onSkillsChange={setSkillsData}
-            onNext={handleNext}
-            onPrev={handlePrev}
-            onComplete={handleComplete}
-            isSubmitting={isSubmitting}
-          />
+          {renderCurrentStep()}
           
           <div className="flex justify-between mt-6">
             <Button

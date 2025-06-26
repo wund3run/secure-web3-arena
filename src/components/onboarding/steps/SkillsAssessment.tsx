@@ -84,8 +84,13 @@ export const SkillsAssessment: React.FC<SkillsAssessmentProps> = ({
     });
   };
 
-  const updateField = (field: keyof SkillsData, value: string) => {
+  const updateField = (field: keyof SkillsData, value: string | string[]) => {
     onSkillsChange({ ...skillsData, [field]: value });
+  };
+
+  const handleCertificationsChange = (value: string) => {
+    const certifications = value.split('\n').filter(cert => cert.trim() !== '');
+    updateField('certifications', certifications);
   };
 
   const isValid = skillsData.expertise.length > 0 && skillsData.experience && skillsData.languages.length > 0;
@@ -192,7 +197,7 @@ export const SkillsAssessment: React.FC<SkillsAssessmentProps> = ({
           <Textarea
             placeholder="e.g., CEH, CISSP, blockchain security certifications..."
             value={skillsData.certifications.join('\n')}
-            onChange={(e) => updateField('certifications', e.target.value.split('\n').filter(Boolean))}
+            onChange={(e) => handleCertificationsChange(e.target.value)}
             rows={4}
           />
         </CardContent>

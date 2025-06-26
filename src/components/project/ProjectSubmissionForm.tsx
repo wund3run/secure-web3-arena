@@ -7,58 +7,34 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Upload, X, Calendar, DollarSign, FileText } from 'lucide-react';
-import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
+import { Upload, FileText, X, Calendar, DollarSign } from 'lucide-react';
 import { useAuth } from '@/contexts/auth';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
-interface ProjectSubmissionData {
+interface ProjectData {
   name: string;
   description: string;
-  repository_url: string;
-  project_type: string;
-  tech_stack: string[];
-  audit_scope: string[];
-  budget_range: string;
+  repositoryUrl: string;
+  techStack: string[];
+  auditType: string;
   timeline: string;
+  budget: string;
   requirements: string;
 }
 
 const TECH_STACK_OPTIONS = [
-  'Solidity', 'Vyper', 'Rust', 'Move', 'JavaScript', 'TypeScript',
-  'React', 'Vue', 'Angular', 'Node.js', 'Python', 'Go'
+  'Solidity', 'Vyper', 'Rust', 'JavaScript', 'TypeScript', 'Python', 'Go', 'C++', 'Move'
 ];
 
-const AUDIT_SCOPE_OPTIONS = [
-  'Smart Contract Security',
-  'Access Control',
-  'Business Logic',
-  'Gas Optimization',
-  'Reentrancy Analysis',
-  'Integer Overflow/Underflow',
-  'Front-end Security',
-  'Integration Testing',
-  'Economic Security'
-];
-
-const PROJECT_TYPES = [
-  { value: 'defi', label: 'DeFi Protocol' },
-  { value: 'nft', label: 'NFT Platform' },
-  { value: 'dao', label: 'DAO Governance' },
-  { value: 'bridge', label: 'Cross-Chain Bridge' },
-  { value: 'wallet', label: 'Wallet Application' },
-  { value: 'exchange', label: 'DEX/Exchange' },
-  { value: 'other', label: 'Other' }
-];
-
-const BUDGET_RANGES = [
-  { value: '1000-5000', label: '$1,000 - $5,000' },
-  { value: '5000-15000', label: '$5,000 - $15,000' },
-  { value: '15000-50000', label: '$15,000 - $50,000' },
-  { value: '50000-100000', label: '$50,000 - $100,000' },
-  { value: '100000+', label: '$100,000+' },
-  { value: 'custom', label: 'Custom Quote' }
+const AUDIT_TYPES = [
+  'Smart Contract Audit',
+  'DeFi Protocol Audit',
+  'NFT Security Review',
+  'Token Security Audit',
+  'Bridge Security Review',
+  'DAO Governance Audit'
 ];
 
 export const ProjectSubmissionForm: React.FC = () => {
@@ -66,30 +42,29 @@ export const ProjectSubmissionForm: React.FC = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [documents, setDocuments] = useState<File[]>([]);
-  const [formData, setFormData] = useState<ProjectSubmissionData>({
+  const [projectData, setProjectData] = useState<ProjectData>({
     name: '',
     description: '',
-    repository_url: '',
-    project_type: '',
-    tech_stack: [],
-    audit_scope: [],
-    budget_range: '',
+    repositoryUrl: '',
+    techStack: [],
+    auditType: '',
     timeline: '',
+    budget: '',
     requirements: ''
   });
 
-  const updateField = (field: keyof ProjectSubmissionData, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const updateField = (field: keyof ProjectData, value: string | string[]) => {
+    setProjectData(prev => ({ ...prev, [field]: value }));
   };
 
-  const addToArray = (field: 'tech_stack' | 'audit_scope', value: string) => {
-    if (!formData[field].includes(value)) {
-      updateField(field, [...formData[field], value]);
+  const addTechStack = (tech: string) => {
+    if (!projectData.techStack.includes(tech)) {
+      updateField('techStack', [...projectData.techStack, tech]);
     }
   };
 
-  const removeFromArray = (field: 'tech_stack' | 'audit_scope', value: string) => {
-    updateField(field, formData[field].filter(item => item !== value));
+  const removeTechStack = (tech: string) => {
+    updateField('techStack', projectData.techStack.filter(t => t !== tech));
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,50 +78,47 @@ export const ProjectSubmissionForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    
+    if (!user) {
+      toast.error('Please log in to submit a project');
+      return;
+    }
+
+    if (!projectData.name || !projectData.description || !projectData.auditType) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
 
     setIsSubmitting(true);
+    
     try {
-      // Submit project to database
-      const { data: project, error: projectError } = await supabase
-        .from('projects')
+      // Submit audit request to database
+      const { data, error } = await supabase
+        .from('audit_requests')
         .insert({
-          name: formData.name,
-          description: formData.description,
-          owner_id: user.id,
-          repository_url: formData.repository_url,
-          project_type: formData.project_type,
-          tech_stack: formData.tech_stack,
-          audit_scope: formData.audit_scope,
-          budget_range: formData.budget_range,
-          timeline: formData.timeline,
-          requirements: formData.requirements,
-          status: 'pending_review'
+          project_owner_id: user.id,
+          title: projectData.name,
+          description: projectData.description,
+          repository_url: projectData.repositoryUrl,
+          tech_stack: projectData.techStack,
+          audit_type: projectData.auditType,
+          timeline: projectData.timeline,
+          budget: projectData.budget ? parseFloat(projectData.budget) : null,
+          requirements: projectData.requirements,
+          status: 'pending'
         })
         .select()
         .single();
 
-      if (projectError) throw projectError;
-
-      // Upload documents if any
-      if (documents.length > 0) {
-        for (const doc of documents) {
-          const fileName = `${project.id}/${doc.name}`;
-          const { error: uploadError } = await supabase.storage
-            .from('project-documents')
-            .upload(fileName, doc);
-
-          if (uploadError) {
-            console.error('Document upload error:', uploadError);
-          }
-        }
-      }
+      if (error) throw error;
 
       toast.success('Project submitted successfully!', {
-        description: 'We\'ll match you with suitable auditors within 24 hours.'
+        description: 'Your audit request has been submitted and is being reviewed.'
       });
 
+      // Navigate to project dashboard
       navigate('/project-dashboard');
+      
     } catch (error) {
       console.error('Project submission error:', error);
       toast.error('Failed to submit project', {
@@ -157,52 +129,36 @@ export const ProjectSubmissionForm: React.FC = () => {
     }
   };
 
-  const isValid = formData.name && formData.description && formData.project_type && 
-                  formData.tech_stack.length > 0 && formData.audit_scope.length > 0 &&
-                  formData.budget_range && formData.timeline;
+  const isValid = projectData.name && projectData.description && projectData.auditType;
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-2">Submit Your Project</h1>
+    <div className="container max-w-4xl mx-auto py-8">
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl font-bold mb-2">Submit Your Project for Audit</h1>
         <p className="text-muted-foreground">
           Get your Web3 project audited by top security experts
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Basic Project Information */}
         <Card>
           <CardHeader>
             <CardTitle>Project Information</CardTitle>
-            <CardDescription>Basic details about your project</CardDescription>
+            <CardDescription>
+              Tell us about your project and what you need audited
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Project Name *</Label>
-                <Input
-                  id="name"
-                  placeholder="My DeFi Protocol"
-                  value={formData.name}
-                  onChange={(e) => updateField('name', e.target.value)}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="type">Project Type *</Label>
-                <Select value={formData.project_type} onValueChange={(value) => updateField('project_type', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select project type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PROJECT_TYPES.map(type => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="name">Project Name *</Label>
+              <Input
+                id="name"
+                placeholder="My DeFi Protocol"
+                value={projectData.name}
+                onChange={(e) => updateField('name', e.target.value)}
+                required
+              />
             </div>
 
             <div className="space-y-2">
@@ -210,7 +166,7 @@ export const ProjectSubmissionForm: React.FC = () => {
               <Textarea
                 id="description"
                 placeholder="Describe your project, its purpose, and key features..."
-                value={formData.description}
+                value={projectData.description}
                 onChange={(e) => updateField('description', e.target.value)}
                 rows={4}
                 required
@@ -222,183 +178,162 @@ export const ProjectSubmissionForm: React.FC = () => {
               <Input
                 id="repository"
                 placeholder="https://github.com/yourproject/repo"
-                value={formData.repository_url}
-                onChange={(e) => updateField('repository_url', e.target.value)}
+                value={projectData.repositoryUrl}
+                onChange={(e) => updateField('repositoryUrl', e.target.value)}
               />
             </div>
           </CardContent>
         </Card>
 
+        {/* Technical Details */}
         <Card>
           <CardHeader>
-            <CardTitle>Technical Stack</CardTitle>
-            <CardDescription>Technologies and frameworks used in your project</CardDescription>
+            <CardTitle>Technical Details</CardTitle>
+            <CardDescription>
+              Help auditors understand your technology stack
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-              {TECH_STACK_OPTIONS.map(tech => (
-                <Button
-                  key={tech}
-                  type="button"
-                  variant={formData.tech_stack.includes(tech) ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => 
-                    formData.tech_stack.includes(tech)
-                      ? removeFromArray('tech_stack', tech)
-                      : addToArray('tech_stack', tech)
-                  }
-                >
-                  {tech}
-                </Button>
-              ))}
-            </div>
-            
-            {formData.tech_stack.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {formData.tech_stack.map(tech => (
-                  <Badge key={tech} variant="secondary" className="flex items-center gap-1">
+            <div className="space-y-2">
+              <Label>Technology Stack</Label>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+                {TECH_STACK_OPTIONS.map((tech) => (
+                  <Button
+                    key={tech}
+                    type="button"
+                    variant={projectData.techStack.includes(tech) ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => 
+                      projectData.techStack.includes(tech)
+                        ? removeTechStack(tech)
+                        : addTechStack(tech)
+                    }
+                  >
                     {tech}
-                    <X
-                      className="h-3 w-3 cursor-pointer"
-                      onClick={() => removeFromArray('tech_stack', tech)}
-                    />
-                  </Badge>
+                  </Button>
                 ))}
               </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Audit Scope</CardTitle>
-            <CardDescription>Areas you want the audit to focus on</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-              {AUDIT_SCOPE_OPTIONS.map(scope => (
-                <Button
-                  key={scope}
-                  type="button"
-                  variant={formData.audit_scope.includes(scope) ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => 
-                    formData.audit_scope.includes(scope)
-                      ? removeFromArray('audit_scope', scope)
-                      : addToArray('audit_scope', scope)
-                  }
-                >
-                  {scope}
-                </Button>
-              ))}
+              {projectData.techStack.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {projectData.techStack.map((tech) => (
+                    <Badge key={tech} variant="secondary" className="flex items-center gap-1">
+                      {tech}
+                      <X
+                        className="h-3 w-3 cursor-pointer"
+                        onClick={() => removeTechStack(tech)}
+                      />
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
-            
-            {formData.audit_scope.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {formData.audit_scope.map(scope => (
-                  <Badge key={scope} variant="secondary" className="flex items-center gap-1">
-                    {scope}
-                    <X
-                      className="h-3 w-3 cursor-pointer"
-                      onClick={() => removeFromArray('audit_scope', scope)}
-                    />
-                  </Badge>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5" />
-                Budget Range
-              </CardTitle>
-              <CardDescription>Expected budget for the audit</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Select value={formData.budget_range} onValueChange={(value) => updateField('budget_range', value)}>
+            <div className="space-y-2">
+              <Label htmlFor="auditType">Audit Type *</Label>
+              <Select value={projectData.auditType} onValueChange={(value) => updateField('auditType', value)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select budget range" />
+                  <SelectValue placeholder="Select audit type" />
                 </SelectTrigger>
                 <SelectContent>
-                  {BUDGET_RANGES.map(budget => (
-                    <SelectItem key={budget.value} value={budget.value}>
-                      {budget.label}
+                  {AUDIT_TYPES.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-            </CardContent>
-          </Card>
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
-                Timeline
-              </CardTitle>
-              <CardDescription>When do you need the audit completed?</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Select value={formData.timeline} onValueChange={(value) => updateField('timeline', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select timeline" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="asap">ASAP (Rush job)</SelectItem>
-                  <SelectItem value="1-2weeks">1-2 weeks</SelectItem>
-                  <SelectItem value="2-4weeks">2-4 weeks</SelectItem>
-                  <SelectItem value="1-2months">1-2 months</SelectItem>
-                  <SelectItem value="flexible">Flexible</SelectItem>
-                </SelectContent>
-              </Select>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Timeline and Budget */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calendar className="h-5 w-5" />
+              Timeline & Budget
+            </CardTitle>
+            <CardDescription>
+              When do you need the audit completed and what's your budget?
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="timeline">Preferred Timeline</Label>
+                <Select value={projectData.timeline} onValueChange={(value) => updateField('timeline', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select timeline" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1-2 weeks">1-2 weeks</SelectItem>
+                    <SelectItem value="2-4 weeks">2-4 weeks</SelectItem>
+                    <SelectItem value="1-2 months">1-2 months</SelectItem>
+                    <SelectItem value="flexible">Flexible</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="budget" className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4" />
+                  Budget (USD)
+                </Label>
+                <Input
+                  id="budget"
+                  placeholder="5000"
+                  type="number"
+                  value={projectData.budget}
+                  onChange={(e) => updateField('budget', e.target.value)}
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Additional Requirements */}
         <Card>
           <CardHeader>
             <CardTitle>Additional Requirements</CardTitle>
-            <CardDescription>Any specific requirements or concerns</CardDescription>
+            <CardDescription>
+              Any specific requirements or areas of focus for the audit?
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Textarea
-              placeholder="Describe any specific requirements, concerns, or areas you want extra attention on..."
-              value={formData.requirements}
+              placeholder="Specific vulnerabilities to check, compliance requirements, etc..."
+              value={projectData.requirements}
               onChange={(e) => updateField('requirements', e.target.value)}
               rows={4}
             />
           </CardContent>
         </Card>
 
+        {/* Document Upload */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5" />
-              Project Documentation
-            </CardTitle>
-            <CardDescription>Upload any relevant documents or specifications</CardDescription>
+            <CardTitle>Supporting Documents</CardTitle>
+            <CardDescription>
+              Upload any relevant documentation, whitepapers, or specifications
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center">
               <input
                 type="file"
                 multiple
-                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.md,.txt"
+                accept=".pdf,.doc,.docx,.md,.txt"
                 onChange={handleFileUpload}
                 className="hidden"
-                id="doc-upload"
+                id="file-upload"
               />
-              <label htmlFor="doc-upload" className="cursor-pointer">
+              <label htmlFor="file-upload" className="cursor-pointer">
                 <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
                 <p className="text-sm text-muted-foreground">
-                  Click to upload project documents
+                  Click to upload or drag and drop
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  PDF, DOC, images, markdown files up to 10MB each
+                  PDF, DOC, MD, TXT up to 10MB each
                 </p>
               </label>
             </div>
@@ -412,6 +347,7 @@ export const ProjectSubmissionForm: React.FC = () => {
                       <span className="text-sm">{doc.name}</span>
                     </div>
                     <Button
+                      type="button"
                       size="sm"
                       variant="ghost"
                       onClick={() => removeDocument(index)}
@@ -425,14 +361,15 @@ export const ProjectSubmissionForm: React.FC = () => {
           </CardContent>
         </Card>
 
-        <div className="flex justify-center">
+        {/* Submit Button */}
+        <div className="flex justify-end">
           <Button
             type="submit"
-            size="lg"
             disabled={!isValid || isSubmitting}
+            size="lg"
             className="px-8"
           >
-            {isSubmitting ? 'Submitting Project...' : 'Submit for Review'}
+            {isSubmitting ? 'Submitting...' : 'Submit Project for Audit'}
           </Button>
         </div>
       </form>
