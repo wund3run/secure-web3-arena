@@ -6,6 +6,7 @@ import Auth from '@/pages/Auth';
 import AuthCallback from '@/pages/AuthCallback';
 import Dashboard from '@/pages/Dashboard';
 import Marketplace from '@/pages/Marketplace';
+import ProjectDetails from '@/pages/ProjectDetails';
 import RequestAudit from '@/pages/RequestAudit';
 import AuditGuidelines from '@/pages/AuditGuidelines';
 import Support from '@/pages/Support';
@@ -39,6 +40,7 @@ export default function AppRoutes() {
       <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/marketplace" element={<Marketplace />} />
+      <Route path="/project/:id" element={<ProjectDetails />} />
       <Route path="/request-audit" element={<RequestAudit />} />
       <Route path="/audit-guidelines" element={<AuditGuidelines />} />
       <Route path="/ai-tools" element={<AIToolsPage />} />
