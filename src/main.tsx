@@ -3,7 +3,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
-import { FocusVisibleProvider } from "./components/ui/interactive-elements";
 
 // Enhanced service worker registration with better error handling
 if ('serviceWorker' in navigator) {
@@ -34,33 +33,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Prevent ethereum property conflicts
-const originalDefineProperty = Object.defineProperty;
-Object.defineProperty = function(obj, prop, descriptor) {
-  if (prop === 'ethereum' && obj === window && window.ethereum) {
-    console.warn('Preventing ethereum property redefinition');
-    return obj;
-  }
-  return originalDefineProperty.call(this, obj, prop, descriptor);
-};
-
-// Remove any blocked external scripts gracefully
-const originalCreateElement = document.createElement;
-document.createElement = function(tagName, options) {
-  const element = originalCreateElement.call(this, tagName, options);
-  
-  // Prevent loading of potentially blocked scripts
-  if (tagName === 'script' && element.src) {
-    const blockedDomains = ['cloudflareinsights.com', 'google-analytics.com', 'evmAsk.js'];
-    if (blockedDomains.some(domain => element.src.includes(domain))) {
-      console.log('Blocked potentially problematic script:', element.src);
-      return document.createElement('div'); // Return harmless element
-    }
-  }
-  
-  return element;
-};
-
 // Global error handler for uncaught errors
 window.addEventListener('error', (event) => {
   console.error('Global error caught:', event.error);
@@ -74,8 +46,6 @@ window.addEventListener('unhandledrejection', (event) => {
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <FocusVisibleProvider>
-      <App />
-    </FocusVisibleProvider>
+    <App />
   </React.StrictMode>
 );

@@ -95,29 +95,26 @@ export function HoverCard({
   );
 }
 
-// Focus visible indicator for improved accessibility and visual feedback
+// Simplified focus visible provider that won't cause initialization issues
 export function FocusVisibleProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    // Add a class to the body when using keyboard navigation
-    const handleFirstTab = (e: KeyboardEvent) => {
+    // Simple keyboard navigation detection
+    const handleKeydown = (e: KeyboardEvent) => {
       if (e.key === 'Tab') {
         document.body.classList.add('keyboard-mode');
-        window.removeEventListener('keydown', handleFirstTab);
       }
     };
     
-    window.addEventListener('keydown', handleFirstTab);
-    
-    // Reset when clicking with mouse
-    const handleMouseDown = () => {
+    const handleMousedown = () => {
       document.body.classList.remove('keyboard-mode');
     };
     
-    window.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('keydown', handleKeydown);
+    document.addEventListener('mousedown', handleMousedown);
     
     return () => {
-      window.removeEventListener('keydown', handleFirstTab);
-      window.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('keydown', handleKeydown);
+      document.removeEventListener('mousedown', handleMousedown);
     };
   }, []);
   

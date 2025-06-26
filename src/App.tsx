@@ -8,7 +8,6 @@ import { Toaster as Sonner } from "sonner";
 import AppRoutes from "./AppRoutes";
 import { AuthProvider } from "@/contexts/auth";
 import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
-import { GlobalErrorHandler, useGlobalErrorHandler } from "@/components/error-handling/GlobalErrorHandler";
 import "./App.css";
 
 const queryClient = new QueryClient({
@@ -29,9 +28,7 @@ const queryClient = new QueryClient({
   },
 });
 
-function AppContent() {
-  useGlobalErrorHandler();
-  
+function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -46,14 +43,6 @@ function AppContent() {
         </AccessibilityProvider>
       </TooltipProvider>
     </QueryClientProvider>
-  );
-}
-
-function App() {
-  return (
-    <GlobalErrorHandler>
-      <AppContent />
-    </GlobalErrorHandler>
   );
 }
 
