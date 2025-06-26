@@ -22,7 +22,7 @@ interface ProjectListing {
   profiles?: {
     full_name: string;
     avatar_url?: string;
-  };
+  } | null;
 }
 
 export function ProjectListings() {
@@ -50,7 +50,7 @@ export function ProjectListings() {
           urgency_level,
           client_id,
           created_at,
-          profiles:client_id (
+          profiles!client_id (
             full_name,
             avatar_url
           )
