@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -27,8 +26,8 @@ export default function Index() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg">
-                <Link to="/request-audit">
-                  Request Audit
+                <Link to="/submit-project">
+                  Submit Project
                 </Link>
               </Button>
               <Button variant="outline" size="lg" asChild>
@@ -77,18 +76,35 @@ export default function Index() {
             </div>
           </div>
 
-          {/* Call to Action for Auditors */}
-          <div className="mt-20 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-8 text-center">
-            <h2 className="text-2xl font-bold mb-4">Join Our Network of Security Experts</h2>
-            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Earn from your Web3 security expertise. Join our platform as a verified auditor 
-              and start receiving high-quality audit opportunities.
-            </p>
-            <Button asChild size="lg">
-              <Link to="/auditor/signup">
-                Start Your Auditor Journey
-              </Link>
-            </Button>
+          {/* Dual Call to Action */}
+          <div className="mt-20 grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* For Project Owners */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 text-center">
+              <h2 className="text-2xl font-bold mb-4">Need a Security Audit?</h2>
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                Submit your Web3 project and get matched with verified security experts. 
+                Protect your users and assets with professional audits.
+              </p>
+              <Button asChild size="lg">
+                <Link to="/submit-project">
+                  Submit Your Project
+                </Link>
+              </Button>
+            </div>
+
+            {/* For Auditors */}
+            <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-8 text-center">
+              <h2 className="text-2xl font-bold mb-4">Join Our Network of Security Experts</h2>
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                Earn from your Web3 security expertise. Join our platform as a verified auditor 
+                and start receiving high-quality audit opportunities.
+              </p>
+              <Button asChild size="lg">
+                <Link to="/auditor/signup">
+                  Start Your Auditor Journey
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </main>

@@ -22,6 +22,8 @@ export const DashboardRouter = () => {
 
   switch (userType) {
     case 'project_owner':
+      // Redirect to dedicated project dashboard
+      window.location.href = '/project-dashboard';
       return <ProjectOwnerDashboard />;
     case 'auditor':
       return <EnhancedAuditorDashboard />;

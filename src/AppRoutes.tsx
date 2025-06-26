@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Index from '@/pages/Index';
@@ -22,6 +21,10 @@ import AuditorOnboarding from '@/pages/auditor/AuditorOnboarding';
 import AuditorDashboard from '@/pages/auditor/AuditorDashboard';
 import AuditDetails from '@/pages/AuditDetails';
 
+// Add new imports for project owner journey
+import SubmitProject from '@/pages/SubmitProject';
+import ProjectDashboard from '@/pages/ProjectDashboard';
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -44,6 +47,10 @@ export default function AppRoutes() {
       <Route path="/auditor/onboarding" element={<AuditorOnboarding />} />
       <Route path="/auditor/dashboard" element={<AuditorDashboard />} />
       <Route path="/audit/:id" element={<AuditDetails />} />
+      
+      {/* Project Owner Journey Routes */}
+      <Route path="/submit-project" element={<SubmitProject />} />
+      <Route path="/project-dashboard" element={<ProjectDashboard />} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>
