@@ -61,7 +61,7 @@ export class EnhancedSecurityService {
       /data:text\/html/i,
       /vbscript:/i,
       /on\w+\s*=/i,
-      /\\\x[0-9a-f]{2}/i,
+      /\\x[0-9a-f]{2}/i,
       /[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/
     ];
 
