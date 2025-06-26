@@ -1,197 +1,184 @@
 
 import React, { useState } from 'react';
-import { useAuth } from '@/contexts/auth';
-import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { UserTypeSelection } from './steps/UserTypeSelection';
 import { ProfileSetup } from './steps/ProfileSetup';
-import { SkillsAndExpertise } from './steps/SkillsAndExpertise';
+import { SkillsAssessment } from './steps/SkillsAssessment';
 import { VerificationStep } from './steps/VerificationStep';
-import { CompletionStep } from './steps/CompletionStep';
+import { WelcomeStep } from './steps/WelcomeStep';
+import { useAuth } from '@/contexts/auth';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
-export type UserType = 'auditor' | 'project_owner';
+export type UserType = 'auditor' | 'project_owner' | null;
 
-export interface OnboardingData {
-  userType: UserType | null;
-  profileData: {
-    fullName: string;
-    displayName: string;
-    bio: string;
-    website: string;
-    socialLinks: Record<string, string>;
-  };
-  skillsData: {
-    skills: string[];
-    specializations: string[];
-    experience: number;
-    blockchainExpertise: string[];
-  };
-  verificationData: {
-    documents: File[];
-    portfolioLinks: string[];
-    githubUsername: string;
-    linkedinUrl: string;
-  };
+interface ProfileData {
+  fullName: string;
+  displayName: string;
+  bio: string;
+  website: string;
+  socialLinks: Record<string, string>;
 }
 
-const initialData: OnboardingData = {
-  userType: null,
-  profileData: {
+interface SkillsData {
+  expertise: string[];
+  experience: string;
+  certifications: string[];
+  languages: string[];
+}
+
+export const OnboardingWizard: React.FC = () => {
+  const { user, refreshUserProfile } = useAuth();
+  const navigate = useNavigate();
+  const [currentStep, setCurrentStep] = useState(0);
+  const [userType, setUserType] = useState<UserType>(null);
+  const [profileData, setProfileData] = useState<ProfileData>({
     fullName: '',
     displayName: '',
     bio: '',
     website: '',
     socialLinks: {}
-  },
-  skillsData: {
-    skills: [],
-    specializations: [],
-    experience: 0,
-    blockchainExpertise: []
-  },
-  verificationData: {
-    documents: [],
-    portfolioLinks: [],
-    githubUsername: '',
-    linkedinUrl: ''
-  }
-};
-
-export const OnboardingWizard: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [data, setData] = useState<OnboardingData>(initialData);
+  });
+  const [skillsData, setSkillsData] = useState<SkillsData>({
+    expertise: [],
+    experience: '',
+    certifications: [],
+    languages: []
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user, updateProfile } = useAuth();
-  const navigate = useNavigate();
 
-  const totalSteps = 5;
-  const progress = (currentStep / totalSteps) * 100;
+  const steps = [
+    { title: 'Welcome', component: WelcomeStep },
+    { title: 'User Type', component: UserTypeSelection },
+    { title: 'Profile Setup', component: ProfileSetup },
+    ...(userType === 'auditor' ? [{ title: 'Skills Assessment', component: SkillsAssessment }] : []),
+    { title: 'Verification', component: VerificationStep }
+  ];
 
-  const updateData = (stepData: Partial<OnboardingData>) => {
-    setData(prev => ({ ...prev, ...stepData }));
-  };
+  const progress = ((currentStep + 1) / steps.length) * 100;
 
-  const nextStep = () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep(prev => prev + 1);
+  const handleNext = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(currentStep + 1);
     }
   };
 
-  const prevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(prev => prev - 1);
+  const handlePrev = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
     }
   };
 
-  const completeOnboarding = async () => {
-    if (!user || !data.userType) return;
-
+  const handleComplete = async () => {
+    if (!user) return;
+    
     setIsSubmitting(true);
     try {
-      // Update user profile with onboarding data (without user_type since it's in separate table)
-      await updateProfile({
-        full_name: data.profileData.fullName,
-        display_name: data.profileData.displayName,
-        bio: data.profileData.bio,
-        website: data.profileData.website,
-        social_links: data.profileData.socialLinks,
-        skills: data.skillsData.skills,
-        specializations: data.skillsData.specializations,
-        years_of_experience: data.skillsData.experience,
-        verification_status: 'pending'
+      // Update user profile
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          full_name: profileData.fullName,
+          display_name: profileData.displayName,
+          bio: profileData.bio,
+          website: profileData.website,
+          user_type: userType,
+          onboarding_completed: true
+        })
+        .eq('id', user.id);
+
+      if (profileError) throw profileError;
+
+      // If auditor, create auditor profile
+      if (userType === 'auditor') {
+        const { error: auditorError } = await supabase
+          .from('auditor_profiles')
+          .insert({
+            user_id: user.id,
+            expertise_areas: skillsData.expertise,
+            experience_level: skillsData.experience,
+            certifications: skillsData.certifications,
+            programming_languages: skillsData.languages,
+            verification_status: 'pending'
+          });
+
+        if (auditorError) throw auditorError;
+      }
+
+      await refreshUserProfile();
+      toast.success('Welcome to Hawkly!', {
+        description: 'Your profile has been set up successfully.'
       });
 
-      toast.success('Onboarding completed successfully!');
-      
-      // Redirect based on user type
-      const redirectPath = data.userType === 'auditor' 
-        ? '/dashboard/auditor' 
-        : '/dashboard/project';
-      
-      navigate(redirectPath, { replace: true });
+      // Navigate to appropriate dashboard
+      navigate(userType === 'auditor' ? '/auditor/dashboard' : '/project-dashboard');
     } catch (error) {
       console.error('Onboarding completion error:', error);
-      toast.error('Failed to complete onboarding. Please try again.');
+      toast.error('Failed to complete onboarding', {
+        description: 'Please try again or contact support.'
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <UserTypeSelection 
-            selected={data.userType}
-            onSelect={(userType) => updateData({ userType })}
-            onNext={nextStep}
-          />
-        );
-      case 2:
-        return (
-          <ProfileSetup
-            data={data.profileData}
-            userType={data.userType}
-            onChange={(profileData) => updateData({ profileData })}
-            onNext={nextStep}
-            onPrev={prevStep}
-          />
-        );
-      case 3:
-        return (
-          <SkillsAndExpertise
-            data={data.skillsData}
-            userType={data.userType}
-            onChange={(skillsData) => updateData({ skillsData })}
-            onNext={nextStep}
-            onPrev={prevStep}
-          />
-        );
-      case 4:
-        return (
-          <VerificationStep
-            data={data.verificationData}
-            userType={data.userType}
-            onChange={(verificationData) => updateData({ verificationData })}
-            onNext={nextStep}
-            onPrev={prevStep}
-          />
-        );
-      case 5:
-        return (
-          <CompletionStep
-            data={data}
-            onComplete={completeOnboarding}
-            onPrev={prevStep}
-            isSubmitting={isSubmitting}
-          />
-        );
-      default:
-        return null;
-    }
-  };
+  const CurrentStepComponent = steps[currentStep].component;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-8">
-      <div className="container max-w-2xl mx-auto px-4">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-center">Welcome to Hawkly</CardTitle>
-            <div className="space-y-2">
-              <Progress value={progress} className="h-2" />
-              <p className="text-sm text-muted-foreground text-center">
-                Step {currentStep} of {totalSteps}
-              </p>
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 flex items-center justify-center p-4">
+      <Card className="w-full max-w-2xl">
+        <CardHeader>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <CardTitle>Welcome to Hawkly</CardTitle>
+              <CardDescription>
+                Step {currentStep + 1} of {steps.length}: {steps[currentStep].title}
+              </CardDescription>
             </div>
-          </CardHeader>
-          <CardContent>
-            {renderStep()}
-          </CardContent>
-        </Card>
-      </div>
+            <div className="text-sm text-muted-foreground">
+              {Math.round(progress)}%
+            </div>
+          </div>
+          <Progress value={progress} className="w-full" />
+        </CardHeader>
+        <CardContent>
+          <CurrentStepComponent
+            userType={userType}
+            profileData={profileData}
+            skillsData={skillsData}
+            onUserTypeSelect={setUserType}
+            onProfileChange={setProfileData}
+            onSkillsChange={setSkillsData}
+            onNext={handleNext}
+            onPrev={handlePrev}
+            onComplete={handleComplete}
+            isSubmitting={isSubmitting}
+          />
+          
+          <div className="flex justify-between mt-6">
+            <Button
+              variant="outline"
+              onClick={handlePrev}
+              disabled={currentStep === 0}
+            >
+              Previous
+            </Button>
+            
+            {currentStep === steps.length - 1 ? (
+              <Button onClick={handleComplete} disabled={isSubmitting}>
+                {isSubmitting ? 'Completing...' : 'Complete Setup'}
+              </Button>
+            ) : (
+              <Button onClick={handleNext}>
+                Next
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

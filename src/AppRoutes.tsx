@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Index from '@/pages/Index';
@@ -13,17 +14,22 @@ import Terms from '@/pages/Terms';
 import Privacy from '@/pages/Privacy';
 import AIToolsPage from '@/pages/tools/AIToolsPage';
 import NotFound from '@/pages/NotFound';
+import Onboarding from '@/pages/Onboarding';
+import ProfileCompletion from '@/pages/ProfileCompletion';
 
 // Auditor Journey Pages
 import AuditorSignUp from '@/pages/AuditorSignUp';
 import EmailVerification from '@/pages/auditor/EmailVerification';
-import AuditorOnboarding from '@/pages/auditor/AuditorOnboarding';
+import AuditorOnboarding from '@/pages/AuditorOnboarding';
 import AuditorDashboard from '@/pages/auditor/AuditorDashboard';
 import AuditDetails from '@/pages/AuditDetails';
 
-// Add new imports for project owner journey
+// Project Owner Journey Pages
 import SubmitProject from '@/pages/SubmitProject';
 import ProjectDashboard from '@/pages/ProjectDashboard';
+
+// Service Provider Pages
+import ServiceProviderOnboarding from '@/pages/onboarding/ServiceProviderOnboarding';
 
 export default function AppRoutes() {
   return (
@@ -40,6 +46,11 @@ export default function AppRoutes() {
       <Route path="/contact" element={<Contact />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/privacy" element={<Privacy />} />
+      
+      {/* Enhanced Onboarding Routes */}
+      <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/profile-completion" element={<ProfileCompletion />} />
+      <Route path="/service-provider-onboarding" element={<ServiceProviderOnboarding />} />
       
       {/* Auditor Journey Routes */}
       <Route path="/auditor/signup" element={<AuditorSignUp />} />
