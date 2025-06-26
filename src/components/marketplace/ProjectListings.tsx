@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -37,7 +36,8 @@ export function ProjectListings() {
 
   const fetchProjects = async () => {
     try {
-      const { data, error } = await supabase
+      // First, get the audit requests
+      const { data: auditData, error: auditError } = await supabase
         .from('audit_requests')
         .select(`
           id,
@@ -49,19 +49,44 @@ export function ProjectListings() {
           status,
           urgency_level,
           client_id,
-          created_at,
-          profiles!client_id (
-            full_name,
-            avatar_url
-          )
+          created_at
         `)
         .eq('status', 'pending')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setProjects(data || []);
+      if (auditError) throw auditError;
+
+      if (auditData && auditData.length > 0) {
+        // Get unique client IDs
+        const clientIds = [...new Set(auditData.map(project => project.client_id))];
+        
+        // Fetch profiles for all client IDs
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, full_name, avatar_url')
+          .in('id', clientIds);
+
+        // Create a map of profiles by ID for quick lookup
+        const profilesMap = new Map();
+        if (profilesData) {
+          profilesData.forEach(profile => {
+            profilesMap.set(profile.id, profile);
+          });
+        }
+
+        // Combine audit data with profile data
+        const projectsWithProfiles = auditData.map(project => ({
+          ...project,
+          profiles: profilesMap.get(project.client_id) || null
+        }));
+
+        setProjects(projectsWithProfiles);
+      } else {
+        setProjects([]);
+      }
     } catch (error) {
       console.error('Error fetching projects:', error);
+      setProjects([]);
     } finally {
       setLoading(false);
     }
