@@ -57,11 +57,11 @@ export const OnboardingWizard: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const steps = [
-    { title: 'Welcome', component: WelcomeStep },
-    { title: 'User Type', component: UserTypeSelection },
-    { title: 'Profile Setup', component: ProfileSetup },
-    ...(userType === 'auditor' ? [{ title: 'Skills Assessment', component: SkillsAssessment }] : []),
-    { title: 'Verification', component: VerificationStep }
+    { title: 'Welcome', component: 'welcome' },
+    { title: 'User Type', component: 'userType' },
+    { title: 'Profile Setup', component: 'profile' },
+    ...(userType === 'auditor' ? [{ title: 'Skills Assessment', component: 'skills' }] : []),
+    { title: 'Verification', component: 'verification' }
   ];
 
   const progress = ((currentStep + 1) / steps.length) * 100;
@@ -131,22 +131,24 @@ export const OnboardingWizard: React.FC = () => {
   };
 
   const renderCurrentStep = () => {
-    const CurrentStepComponent = steps[currentStep].component;
+    const currentStepType = steps[currentStep]?.component;
     
-    switch (currentStep) {
-      case 0: // Welcome
-        return <CurrentStepComponent onNext={handleNext} />;
-      case 1: // User Type Selection
+    switch (currentStepType) {
+      case 'welcome':
+        return <WelcomeStep onNext={handleNext} />;
+      
+      case 'userType':
         return (
-          <CurrentStepComponent
+          <UserTypeSelection
             selected={userType}
             onSelect={setUserType}
             onNext={handleNext}
           />
         );
-      case 2: // Profile Setup
+      
+      case 'profile':
         return (
-          <CurrentStepComponent
+          <ProfileSetup
             data={profileData}
             userType={userType}
             onChange={setProfileData}
@@ -154,33 +156,26 @@ export const OnboardingWizard: React.FC = () => {
             onPrev={handlePrev}
           />
         );
-      case 3: // Skills Assessment (only for auditors) or Verification
-        if (userType === 'auditor' && currentStep === 3) {
-          return (
-            <CurrentStepComponent
-              skillsData={skillsData}
-              onSkillsChange={setSkillsData}
-              onNext={handleNext}
-              onPrev={handlePrev}
-            />
-          );
-        }
-        // Fall through to verification
+      
+      case 'skills':
         return (
-          <CurrentStepComponent
+          <SkillsAssessment
+            skillsData={skillsData}
+            onSkillsChange={setSkillsData}
+            onNext={handleNext}
+            onPrev={handlePrev}
+          />
+        );
+      
+      case 'verification':
+        return (
+          <VerificationStep
             userType={userType}
             onComplete={handleComplete}
             isSubmitting={isSubmitting}
           />
         );
-      case 4: // Verification (for auditors)
-        return (
-          <CurrentStepComponent
-            userType={userType}
-            onComplete={handleComplete}
-            isSubmitting={isSubmitting}
-          />
-        );
+      
       default:
         return null;
     }
@@ -194,7 +189,7 @@ export const OnboardingWizard: React.FC = () => {
             <div>
               <CardTitle>Welcome to Hawkly</CardTitle>
               <CardDescription>
-                Step {currentStep + 1} of {steps.length}: {steps[currentStep].title}
+                Step {currentStep + 1} of {steps.length}: {steps[currentStep]?.title}
               </CardDescription>
             </div>
             <div className="text-sm text-muted-foreground">
