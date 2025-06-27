@@ -1,5 +1,6 @@
 
 import { lazy } from 'react';
+import React from 'react';
 
 // Lazy load heavy components to improve initial bundle size
 export const LazyComponents = {
@@ -25,7 +26,7 @@ export const LazyComponents = {
 };
 
 // Component loading wrapper with error boundary
-export function withSuspense<T extends object>(
+export function withSuspense<T extends Record<string, any>>(
   Component: React.LazyExoticComponent<React.ComponentType<T>>,
   fallback?: React.ReactNode
 ) {
