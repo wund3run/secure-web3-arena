@@ -4,30 +4,15 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-// Enhanced service worker registration with better error handling
-if ('serviceWorker' in navigator) {
+// Simplified service worker registration with better error handling
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then(registration => {
         console.log('ServiceWorker registration successful');
-        
-        // Handle updates
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          if (newWorker) {
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                // New content is available, refresh the page
-                if (confirm('New version available! Refresh to update?')) {
-                  window.location.reload();
-                }
-              }
-            });
-          }
-        });
       })
       .catch(error => {
-        console.warn('ServiceWorker registration failed, continuing without offline support:', error);
+        console.warn('ServiceWorker registration failed:', error);
         // App continues to work without service worker
       });
   });
@@ -35,13 +20,17 @@ if ('serviceWorker' in navigator) {
 
 // Global error handler for uncaught errors
 window.addEventListener('error', (event) => {
-  console.error('Global error caught:', event.error);
-  // Don't prevent default behavior, just log
+  // Only log non-network errors to avoid spam from content blockers
+  if (!event.message.includes('net::ERR_BLOCKED_BY_CONTENT_BLOCKER')) {
+    console.error('Global error caught:', event.error);
+  }
 });
 
 window.addEventListener('unhandledrejection', (event) => {
-  console.error('Unhandled promise rejection:', event.reason);
-  // Don't prevent default behavior, just log
+  // Only log non-network promise rejections
+  if (!event.reason?.message?.includes('net::ERR_BLOCKED_BY_CONTENT_BLOCKER')) {
+    console.error('Unhandled promise rejection:', event.reason);
+  }
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

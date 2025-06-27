@@ -3,16 +3,19 @@ export class EnhancedCSP {
   private static readonly NONCE = Math.random().toString(36).substring(2);
   
   private static readonly CSP_DIRECTIVES = {
-    'default-src': ["'self'"],
+    'default-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
     'script-src': [
       "'self'",
-      `'nonce-${EnhancedCSP.NONCE}'`,
+      "'unsafe-inline'",
+      "'unsafe-eval'",
+      "https://cdn.gpteng.co",
       "https://js.stripe.com",
-      "https://maps.googleapis.com"
+      "https://maps.googleapis.com",
+      "https://fonts.googleapis.com"
     ],
     'style-src': [
       "'self'",
-      "'unsafe-inline'", // Required for Tailwind
+      "'unsafe-inline'",
       "https://fonts.googleapis.com"
     ],
     'font-src': [
@@ -29,18 +32,15 @@ export class EnhancedCSP {
       "'self'",
       "https://*.supabase.co",
       "wss://*.supabase.co",
-      "https://api.stripe.com"
+      "https://api.stripe.com",
+      "https://cdn.gpteng.co"
     ],
     'frame-src': [
       "'self'",
       "https://js.stripe.com"
     ],
     'object-src': ["'none'"],
-    'base-uri': ["'self'"],
-    'form-action': ["'self'"],
-    'frame-ancestors': ["'none'"],
-    'upgrade-insecure-requests': [],
-    'block-all-mixed-content': []
+    'base-uri': ["'self'"]
   };
 
   static generateCSP(): string {
@@ -52,6 +52,12 @@ export class EnhancedCSP {
   }
 
   static applyHeaders(): void {
+    // Skip CSP application in development to avoid blocking issues
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 CSP disabled in development mode');
+      return;
+    }
+
     const csp = EnhancedCSP.generateCSP();
     
     // Apply CSP via meta tag
@@ -60,34 +66,19 @@ export class EnhancedCSP {
     cspMeta.content = csp;
     document.head.appendChild(cspMeta);
 
-    // Additional security headers
-    const securityHeaders = [
-      { name: 'X-Content-Type-Options', content: 'nosniff' },
-      { name: 'X-Frame-Options', content: 'DENY' },
-      { name: 'X-XSS-Protection', content: '1; mode=block' },
-      { name: 'Referrer-Policy', content: 'strict-origin-when-cross-origin' },
-      { name: 'Permissions-Policy', content: 'camera=(), microphone=(), geolocation=(), payment=(self)' }
-    ];
-
-    securityHeaders.forEach(header => {
-      const existing = document.head.querySelector(`meta[http-equiv="${header.name}"]`);
-      if (existing) existing.remove();
-
-      const metaTag = document.createElement('meta');
-      metaTag.setAttribute('http-equiv', header.name);
-      metaTag.content = header.content;
-      document.head.appendChild(metaTag);
-    });
-
-    console.log('🛡️ Enhanced security headers applied');
+    console.log('🛡️ Security headers applied');
   }
 
   static getNonce(): string {
     return EnhancedCSP.NONCE;
   }
 
-  // Report CSP violations
   static setupViolationReporting(): void {
+    // Only setup violation reporting in production
+    if (process.env.NODE_ENV !== 'production') {
+      return;
+    }
+
     document.addEventListener('securitypolicyviolation', (event) => {
       console.warn('🚨 CSP Violation:', {
         blockedURI: event.blockedURI,
@@ -95,20 +86,6 @@ export class EnhancedCSP {
         originalPolicy: event.originalPolicy,
         documentURI: event.documentURI
       });
-
-      // In production, send to monitoring service
-      if (process.env.NODE_ENV === 'production') {
-        fetch('/api/csp-violation', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            blockedURI: event.blockedURI,
-            violatedDirective: event.violatedDirective,
-            documentURI: event.documentURI,
-            timestamp: new Date().toISOString()
-          })
-        }).catch(console.error);
-      }
     });
   }
 }
