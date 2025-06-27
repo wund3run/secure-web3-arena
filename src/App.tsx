@@ -7,14 +7,16 @@ import { BrowserRouter } from "react-router-dom";
 import { Toaster as Sonner } from "sonner";
 import AppRoutes from "./AppRoutes";
 import { AuthProvider } from "@/contexts/auth";
-import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
+import { AccessibilityProvider } from "@/components/accessibility/AccessibilityProvider";
+import GlobalErrorBoundary from "@/components/error-handling/GlobalErrorBoundary";
+import { SkipLink } from "@/components/ui/skip-link";
 import "./App.css";
+import "./styles/design-system.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: (failureCount, error: any) => {
-        // Don't retry on 4xx errors or content blocker errors
         if (error?.status >= 400 && error?.status < 500) {
           return false;
         }
@@ -23,26 +25,29 @@ const queryClient = new QueryClient({
         }
         return failureCount < 2;
       },
-      staleTime: 1000 * 60 * 5, // 5 minutes
+      staleTime: 1000 * 60 * 5,
     },
   },
 });
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <AccessibilityProvider>
-          <AuthProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <AppRoutes />
-            </BrowserRouter>
-          </AuthProvider>
-        </AccessibilityProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <GlobalErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <AccessibilityProvider>
+            <AuthProvider>
+              <SkipLink targetId="main-content" />
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <AppRoutes />
+              </BrowserRouter>
+            </AuthProvider>
+          </AccessibilityProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </GlobalErrorBoundary>
   );
 }
 
