@@ -4,33 +4,73 @@ import React from 'react';
 
 // Lazy load heavy components to improve initial bundle size
 export const LazyComponents = {
-  // Dashboard components
-  AuditorDashboard: lazy(() => import('@/components/dashboard/enhanced/EnhancedAuditorDashboard')),
-  ProjectOwnerDashboard: lazy(() => import('@/components/dashboard/enhanced/EnhancedProjectOwnerDashboard')),
-  AdminDashboard: lazy(() => import('@/components/admin/AdminDashboard')),
+  // Dashboard components - using named exports
+  AuditorDashboard: lazy(() => 
+    import('@/components/dashboard/enhanced/EnhancedAuditorDashboard').then(module => ({
+      default: module.EnhancedAuditorDashboard
+    }))
+  ),
+  ProjectOwnerDashboard: lazy(() => 
+    import('@/components/dashboard/enhanced/EnhancedProjectOwnerDashboard').then(module => ({
+      default: module.EnhancedProjectOwnerDashboard
+    }))
+  ),
+  AdminDashboard: lazy(() => 
+    import('@/components/admin/AdminDashboard').then(module => ({
+      default: module.AdminDashboard
+    }))
+  ),
   
   // Analytics components
-  AnalyticsDashboard: lazy(() => import('@/components/analytics/EnhancedAnalyticsDashboard')),
-  ComprehensiveAnalytics: lazy(() => import('@/components/analytics/ComprehensiveAnalyticsDashboard')),
+  AnalyticsDashboard: lazy(() => 
+    import('@/components/analytics/EnhancedAnalyticsDashboard').then(module => ({
+      default: module.EnhancedAnalyticsDashboard
+    }))
+  ),
+  ComprehensiveAnalytics: lazy(() => 
+    import('@/components/analytics/ComprehensiveAnalyticsDashboard').then(module => ({
+      default: module.ComprehensiveAnalyticsDashboard
+    }))
+  ),
   
   // AI components
-  AIMatchingInterface: lazy(() => import('@/components/ai-matching/AIMatchingInterface')),
-  IntelligentRecommendations: lazy(() => import('@/components/ai-recommendations/IntelligentRecommendationEngine')),
+  AIMatchingInterface: lazy(() => 
+    import('@/components/ai-matching/AIMatchingInterface').then(module => ({
+      default: module.AIMatchingInterface
+    }))
+  ),
+  IntelligentRecommendations: lazy(() => 
+    import('@/components/ai-recommendations/IntelligentRecommendationEngine').then(module => ({
+      default: module.IntelligentRecommendationEngine
+    }))
+  ),
   
   // Workspace components
-  AuditWorkspace: lazy(() => import('@/components/workspace/AuditWorkspace')),
+  AuditWorkspace: lazy(() => 
+    import('@/components/workspace/AuditWorkspace').then(module => ({
+      default: module.AuditWorkspace
+    }))
+  ),
   
   // Chat components
-  RealtimeChat: lazy(() => import('@/components/chat/RealtimeChat')),
-  ProjectChatRoom: lazy(() => import('@/components/chat/ProjectChatRoom'))
+  RealtimeChat: lazy(() => 
+    import('@/components/chat/RealtimeChat').then(module => ({
+      default: module.RealtimeChat
+    }))
+  ),
+  ProjectChatRoom: lazy(() => 
+    import('@/components/chat/ProjectChatRoom').then(module => ({
+      default: module.ProjectChatRoom
+    }))
+  )
 };
 
-// Component loading wrapper with error boundary
-export function withSuspense<T extends Record<string, any>>(
-  Component: React.LazyExoticComponent<React.ComponentType<T>>,
+// Simplified component loading wrapper with error boundary
+export function withSuspense(
+  Component: React.LazyExoticComponent<React.ComponentType<any>>,
   fallback?: React.ReactNode
 ) {
-  return function WrappedComponent(props: T) {
+  return function WrappedComponent(props: any) {
     return (
       <React.Suspense 
         fallback={
@@ -47,21 +87,22 @@ export function withSuspense<T extends Record<string, any>>(
   };
 }
 
-// Preload components based on user role
+// Simplified preload functionality (manual component loading)
 export const preloadComponents = {
   auditor: () => {
-    LazyComponents.AuditorDashboard.preload?.();
-    LazyComponents.AuditWorkspace.preload?.();
+    // Trigger the import to preload the component
+    import('@/components/dashboard/enhanced/EnhancedAuditorDashboard');
+    import('@/components/workspace/AuditWorkspace');
   },
   
   project_owner: () => {
-    LazyComponents.ProjectOwnerDashboard.preload?.();
-    LazyComponents.AIMatchingInterface.preload?.();
+    import('@/components/dashboard/enhanced/EnhancedProjectOwnerDashboard');
+    import('@/components/ai-matching/AIMatchingInterface');
   },
   
   admin: () => {
-    LazyComponents.AdminDashboard.preload?.();
-    LazyComponents.AnalyticsDashboard.preload?.();
+    import('@/components/admin/AdminDashboard');
+    import('@/components/analytics/EnhancedAnalyticsDashboard');
   }
 };
 
