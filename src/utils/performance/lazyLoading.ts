@@ -1,4 +1,5 @@
 
+
 import { lazy } from 'react';
 import React from 'react';
 
@@ -30,19 +31,21 @@ export function withSuspense<T extends Record<string, any>>(
   Component: React.LazyExoticComponent<React.ComponentType<T>>,
   fallback?: React.ReactNode
 ) {
-  return (props: T) => (
-    <React.Suspense 
-      fallback={
-        fallback || (
-          <div className="flex items-center justify-center p-8">
-            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-          </div>
-        )
-      }
-    >
-      <Component {...props} />
-    </React.Suspense>
-  );
+  return function WrappedComponent(props: T) {
+    return (
+      <React.Suspense 
+        fallback={
+          fallback || (
+            <div className="flex items-center justify-center p-8">
+              <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            </div>
+          )
+        }
+      >
+        <Component {...props} />
+      </React.Suspense>
+    );
+  };
 }
 
 // Preload components based on user role
@@ -75,3 +78,4 @@ export async function dynamicImport<T>(
     throw error;
   }
 }
+
