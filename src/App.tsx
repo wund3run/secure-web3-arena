@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,6 +11,7 @@ import GlobalErrorBoundary from "@/components/error-handling/GlobalErrorBoundary
 import { SkipLink } from "@/components/ui/skip-link";
 import "./App.css";
 import "./styles/design-system.css";
+import "./styles/mobile-optimizations.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {
