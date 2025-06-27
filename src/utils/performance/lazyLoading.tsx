@@ -1,5 +1,4 @@
 
-
 import { lazy } from 'react';
 import React from 'react';
 
@@ -78,4 +77,3 @@ export async function dynamicImport<T>(
     throw error;
   }
 }
-
