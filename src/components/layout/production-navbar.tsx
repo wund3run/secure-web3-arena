@@ -8,10 +8,11 @@ import { AuthButtons } from "./navigation/auth-buttons";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { BreadcrumbTrail } from "./navigation/breadcrumb-trail";
 import { X } from "lucide-react";
-import { navigationLinks } from "./navigation/navigation-links";
+import { useRoleBasedNavigation } from '@/hooks/useRoleBasedNavigation';
 
 export function ProductionNavbar() {
   const { user, signOut } = useAuth();
+  const { navigation } = useRoleBasedNavigation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(true);
@@ -80,7 +81,7 @@ export function ProductionNavbar() {
             />
           </Link>
           
-          {/* Enhanced Desktop Navigation - show for all users but with different items */}
+          {/* Enhanced Desktop Navigation */}
           <EnhancedNavigationDropdown 
             activeDropdown={activeDropdown} 
             handleDropdownToggle={handleDropdownToggle} 
@@ -92,7 +93,7 @@ export function ProductionNavbar() {
         
         {/* Enhanced Mobile Navigation */}
         <MobileNavigation 
-          navigationLinks={navigationLinks} 
+          navigationLinks={navigation} 
           isOpen={isMobileMenuOpen} 
           setIsOpen={setIsMobileMenuOpen}
           isAuthenticated={!!user}
@@ -100,7 +101,7 @@ export function ProductionNavbar() {
         />
       </div>
       
-      {/* Breadcrumb navigation for deep pages - show for authenticated users */}
+      {/* Breadcrumb navigation for deep pages */}
       {location.pathname !== '/' && user && <BreadcrumbTrail />}
     </header>
   );

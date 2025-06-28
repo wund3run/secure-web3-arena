@@ -16,25 +16,11 @@ import { Search } from "lucide-react";
 import { EnhancedMobileMenu } from '@/components/ui/enhanced-mobile-menu';
 import { RealtimeNotificationSystem } from '@/components/notifications/RealtimeNotificationSystem';
 import { RealtimeConnectionStatus } from '@/components/realtime/RealtimeConnectionStatus';
-
-interface NavigationLink {
-  label: string;
-  href: string;
-  requiresAuth?: boolean;
-  mobileOnly?: boolean;
-}
-
-const navigationLinks: NavigationLink[] = [
-  { label: "Home", href: "/" },
-  { label: "Marketplace", href: "/marketplace" },
-  { label: "Security Audits", href: "/security-audits" },
-  { label: "Request Audit", href: "/request-audit", requiresAuth: true },
-  { label: "Dashboard", href: "/dashboard", requiresAuth: true },
-  { label: "Active Audits", href: "/audits", requiresAuth: true },
-];
+import { useRoleBasedNavigation } from '@/hooks/useRoleBasedNavigation';
 
 export function ConsolidatedNavbar() {
   const { user, signOut, userProfile } = useAuth();
+  const { navigation } = useRoleBasedNavigation();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -46,11 +32,6 @@ export function ConsolidatedNavbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Filter navigation links based on auth status
-  const filteredLinks = navigationLinks.filter(link => 
-    !link.requiresAuth || (link.requiresAuth && user)
-  );
 
   const isAuthPage = location.pathname === '/auth';
 
@@ -82,20 +63,20 @@ export function ConsolidatedNavbar() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-1" role="navigation">
-            {filteredLinks.map((link) => (
+            {navigation.slice(0, 4).map((section) => (
               <Link
-                key={link.href}
-                to={link.href}
+                key={section.href}
+                to={section.href}
                 className={`
                   px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200
                   focus-modern
-                  ${location.pathname === link.href
+                  ${location.pathname === section.href
                     ? 'text-hawkly-primary bg-hawkly-primary/10'
                     : 'text-muted-foreground hover:text-hawkly-primary hover:bg-muted/50'
                   }
                 `}
               >
-                {link.label}
+                {section.title}
               </Link>
             ))}
           </nav>
