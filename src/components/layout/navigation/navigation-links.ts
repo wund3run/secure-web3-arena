@@ -15,7 +15,7 @@ export const navigationLinks: NavigationLink[] = [
       {
         title: "Browse Marketplace",
         href: "/marketplace",
-        description: "Find security experts for your project"
+        description: "Find verified security experts for your project"
       },
       {
         title: "Security Audits",
@@ -25,7 +25,7 @@ export const navigationLinks: NavigationLink[] = [
       {
         title: "Code Reviews",
         href: "/code-reviews",
-        description: "Expert code analysis and feedback"
+        description: "Expert code analysis and improvement recommendations"
       },
       {
         title: "Penetration Testing",
@@ -45,59 +45,13 @@ export const navigationLinks: NavigationLink[] = [
     ]
   },
   {
-    title: "Tools",
-    href: "/ai-tools",
-    children: [
-      {
-        title: "AI Security Tools",
-        href: "/ai-tools",
-        description: "AI-powered security analysis tools"
-      },
-      {
-        title: "Security Insights",
-        href: "/security-insights",
-        description: "Real-time vulnerability analysis"
-      },
-      {
-        title: "Vulnerability Scanner",
-        href: "/vulnerability-scanner",
-        description: "Automated security scanning"
-      },
-      {
-        title: "Platform Reports",
-        href: "/platform-reports",
-        description: "Comprehensive security reports"
-      },
-      {
-        title: "File Management",
-        href: "/files",
-        description: "Secure file upload and management"
-      }
-    ]
-  },
-  {
     title: "Resources",
-    href: "/security-guides",
+    href: "/resources",
     children: [
       {
-        title: "Security Guides",
-        href: "/security-guides",
-        description: "Best practices and security guidelines"
-      },
-      {
-        title: "Knowledge Base",
-        href: "/knowledge-base",
-        description: "Comprehensive security documentation"
-      },
-      {
-        title: "Tutorials",
-        href: "/tutorials",
-        description: "Step-by-step security tutorials"
-      },
-      {
-        title: "Templates",
-        href: "/templates",
-        description: "Ready-to-use security templates"
+        title: "Resource Hub",
+        href: "/resources",
+        description: "Comprehensive security resources and guides"
       },
       {
         title: "Audit Guidelines",
@@ -105,67 +59,36 @@ export const navigationLinks: NavigationLink[] = [
         description: "Professional audit standards and procedures"
       },
       {
-        title: "Vulnerability Database",
-        href: "/vulnerabilities",
-        description: "Known vulnerabilities and fixes"
-      }
-    ]
-  },
-  {
-    title: "Community",
-    href: "/forum",
-    children: [
-      {
-        title: "Forum",
-        href: "/forum",
-        description: "Community discussions and support"
-      },
-      {
-        title: "Events",
-        href: "/events",
-        description: "Security events and workshops"
-      },
-      {
-        title: "Challenges",
-        href: "/challenges",
-        description: "Security challenges and competitions"
-      },
-      {
-        title: "Leaderboard",
-        href: "/leaderboard",
-        description: "Top security experts rankings"
-      }
-    ]
-  },
-  {
-    title: "Support",
-    href: "/support",
-    children: [
-      {
-        title: "Help Center",
+        title: "Support Center",
         href: "/support",
-        description: "Get help and support"
+        description: "Get help and find answers to common questions"
       },
       {
-        title: "FAQ",
-        href: "/faq",
-        description: "Frequently asked questions"
+        title: "AI Security Tools",
+        href: "/ai-tools",
+        description: "AI-powered security analysis tools"
+      }
+    ]
+  },
+  {
+    title: "Company",
+    href: "/about",
+    children: [
+      {
+        title: "About Hawkly",
+        href: "/about",
+        description: "Learn about our mission and team"
       },
       {
-        title: "Documentation",
-        href: "/documentation",
-        description: "Platform documentation"
+        title: "Contact Us",
+        href: "/contact",
+        description: "Get in touch with our team"
       }
     ]
   },
   {
     title: "Dashboard",
     href: "/dashboard",
-    requiresAuth: true
-  },
-  {
-    title: "My Audits",
-    href: "/audits",
     requiresAuth: true
   }
 ];

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Index from '@/pages/Index';
@@ -18,6 +17,21 @@ import NotFound from '@/pages/NotFound';
 import Onboarding from '@/pages/Onboarding';
 import ProfileCompletion from '@/pages/ProfileCompletion';
 
+// Service Pages
+import SecurityAudits from '@/pages/SecurityAudits';
+import CodeReviews from '@/pages/CodeReviews';
+import PenetrationTesting from '@/pages/PenetrationTesting';
+import Consulting from '@/pages/Consulting';
+
+// Resource Pages
+import Resources from '@/pages/Resources';
+import SecurityGuides from '@/pages/SecurityGuides';
+import Tutorials from '@/pages/Tutorials';
+import Documentation from '@/pages/Documentation';
+
+// Business Pages
+import About from '@/pages/About';
+
 // Auditor Journey Pages
 import AuditorSignUp from '@/pages/AuditorSignUp';
 import EmailVerification from '@/pages/auditor/EmailVerification';
@@ -35,6 +49,7 @@ import ServiceProviderOnboarding from '@/pages/onboarding/ServiceProviderOnboard
 export default function AppRoutes() {
   return (
     <Routes>
+      {/* Core Routes */}
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
@@ -42,12 +57,27 @@ export default function AppRoutes() {
       <Route path="/marketplace" element={<Marketplace />} />
       <Route path="/project/:id" element={<ProjectDetails />} />
       <Route path="/request-audit" element={<RequestAudit />} />
-      <Route path="/audit-guidelines" element={<AuditGuidelines />} />
       <Route path="/ai-tools" element={<AIToolsPage />} />
       <Route path="/support" element={<Support />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/privacy" element={<Privacy />} />
+      
+      {/* Service Pages */}
+      <Route path="/security-audits" element={<SecurityAudits />} />
+      <Route path="/code-reviews" element={<CodeReviews />} />
+      <Route path="/penetration-testing" element={<PenetrationTesting />} />
+      <Route path="/consulting" element={<Consulting />} />
+      
+      {/* Resource Pages */}
+      <Route path="/resources" element={<Resources />} />
+      <Route path="/audit-guidelines" element={<AuditGuidelines />} />
+      <Route path="/security-guides" element={<SecurityGuides />} />
+      <Route path="/tutorials" element={<Tutorials />} />
+      <Route path="/documentation" element={<Documentation />} />
+      
+      {/* Business Pages */}
+      <Route path="/about" element={<About />} />
       
       {/* Enhanced Onboarding Routes */}
       <Route path="/onboarding" element={<Onboarding />} />
