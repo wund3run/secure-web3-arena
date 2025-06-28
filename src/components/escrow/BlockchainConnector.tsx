@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -103,8 +104,10 @@ export function BlockchainConnector({ onConnect, connected = false, address, cha
     window.ethereum.on('chainChanged', handleChainChanged);
     
     return () => {
-      window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
-      window.ethereum.removeListener('chainChanged', handleChainChanged);
+      if (window.ethereum) {
+        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        window.ethereum.removeListener('chainChanged', handleChainChanged);
+      }
     };
   }, [address, onConnect]);
   
@@ -172,22 +175,4 @@ export function BlockchainConnector({ onConnect, connected = false, address, cha
       </CardContent>
     </Card>
   );
-}
-
-// Define ethereum interface properly to fix type errors
-declare global {
-  interface Window {
-    ethereum?: {
-      isMetaMask?: boolean;
-      isCoinbaseWallet?: boolean;
-      request: (args: { method: string; params?: any[] }) => Promise<any>;
-      on: (event: string, callback: any) => void;
-      removeListener: (event: string, callback: any) => void;
-    };
-    phantom?: {
-      solana?: {
-        connect: () => Promise<{ publicKey: { toString: () => string } }>;
-      };
-    };
-  }
 }

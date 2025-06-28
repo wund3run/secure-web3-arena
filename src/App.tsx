@@ -39,29 +39,29 @@ function App() {
     <GlobalErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <EnhancedThemeProvider>
-            <UnifiedFeedbackProvider>
-              <AccessibilityProvider>
-                <AuthProvider>
-                  <SkipLink targetId="main-content" />
-                  <Toaster />
-                  <Sonner 
-                    position="bottom-right"
-                    expand={true}
-                    richColors
-                    closeButton
-                    toastOptions={{
-                      className: "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg animate-fade-in",
-                      duration: 4000,
-                    }}
-                  />
-                  <BrowserRouter>
+          <BrowserRouter>
+            <EnhancedThemeProvider>
+              <UnifiedFeedbackProvider>
+                <AccessibilityProvider>
+                  <AuthProvider>
+                    <SkipLink targetId="main-content" />
+                    <Toaster />
+                    <Sonner 
+                      position="bottom-right"
+                      expand={true}
+                      richColors
+                      closeButton
+                      toastOptions={{
+                        className: "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg animate-fade-in",
+                        duration: 4000,
+                      }}
+                    />
                     <AppRoutes />
-                  </BrowserRouter>
-                </AuthProvider>
-              </AccessibilityProvider>
-            </UnifiedFeedbackProvider>
-          </EnhancedThemeProvider>
+                  </AuthProvider>
+                </AccessibilityProvider>
+              </UnifiedFeedbackProvider>
+            </EnhancedThemeProvider>
+          </BrowserRouter>
         </TooltipProvider>
       </QueryClientProvider>
     </GlobalErrorBoundary>
