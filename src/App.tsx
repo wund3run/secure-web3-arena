@@ -40,10 +40,10 @@ function App() {
     <GlobalErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <BrowserRouter>
-            <RouterErrorBoundary>
-              <EnhancedThemeProvider>
-                <UnifiedFeedbackProvider>
+          <UnifiedFeedbackProvider>
+            <BrowserRouter>
+              <RouterErrorBoundary>
+                <EnhancedThemeProvider>
                   <AccessibilityProvider>
                     <AuthProvider>
                       <SkipLink targetId="main-content" />
@@ -61,10 +61,10 @@ function App() {
                       <AppRoutes />
                     </AuthProvider>
                   </AccessibilityProvider>
-                </UnifiedFeedbackProvider>
-              </EnhancedThemeProvider>
-            </RouterErrorBoundary>
-          </BrowserRouter>
+                </EnhancedThemeProvider>
+              </RouterErrorBoundary>
+            </BrowserRouter>
+          </UnifiedFeedbackProvider>
         </TooltipProvider>
       </QueryClientProvider>
     </GlobalErrorBoundary>
