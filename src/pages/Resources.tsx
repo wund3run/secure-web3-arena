@@ -3,31 +3,104 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen, FileText, Video, Download, ExternalLink, Search } from 'lucide-react';
+import { StandardizedPageLayout } from '@/components/layout/StandardizedPageLayout';
+import { BookOpen, Shield, Video, FileText, Users, Zap, ArrowRight, ExternalLink } from 'lucide-react';
 
 export default function Resources() {
+  const resourceCategories = [
+    {
+      title: "Security Guides",
+      icon: Shield,
+      description: "Comprehensive security best practices and tutorials",
+      items: [
+        { title: "Smart Contract Security Checklist", href: "/security-guides", type: "guide" },
+        { title: "Common Vulnerabilities Guide", href: "/security-guides", type: "guide" },
+        { title: "DeFi Security Best Practices", href: "/security-guides", type: "guide" },
+        { title: "NFT Security Guidelines", href: "/security-guides", type: "guide" }
+      ]
+    },
+    {
+      title: "Video Tutorials",
+      icon: Video,
+      description: "Step-by-step video content for auditors and developers",
+      items: [
+        { title: "How to Conduct a Security Audit", href: "/tutorials", type: "video" },
+        { title: "Using Hawkly Platform Guide", href: "/tutorials", type: "video" },
+        { title: "Smart Contract Testing Techniques", href: "/tutorials", type: "video" },
+        { title: "Vulnerability Assessment Methods", href: "/tutorials", type: "video" }
+      ]
+    },
+    {
+      title: "Documentation",
+      icon: FileText,
+      description: "Technical documentation and API references",
+      items: [
+        { title: "Platform API Documentation", href: "/documentation", type: "docs" },
+        { title: "Integration Guides", href: "/documentation", type: "docs" },
+        { title: "Audit Report Templates", href: "/documentation", type: "docs" },
+        { title: "Security Standards Reference", href: "/documentation", type: "docs" }
+      ]
+    },
+    {
+      title: "Tools & Resources",
+      icon: Zap,
+      description: "AI-powered tools and utilities for security analysis",
+      items: [
+        { title: "AI Security Scanner", href: "/ai-tools", type: "tool" },
+        { title: "Vulnerability Database", href: "/ai-tools", type: "tool" },
+        { title: "Code Analysis Tools", href: "/ai-tools", type: "tool" },
+        { title: "Risk Assessment Calculator", href: "/ai-tools", type: "tool" }
+      ]
+    }
+  ];
+
+  const externalResources = [
+    {
+      title: "OpenZeppelin Security Guidelines",
+      description: "Industry-standard security practices for smart contracts",
+      url: "https://docs.openzeppelin.com/contracts/security",
+      category: "External Guide"
+    },
+    {
+      title: "ConsenSys Security Best Practices",
+      description: "Comprehensive security development lifecycle guidelines",
+      url: "https://consensys.github.io/smart-contract-best-practices/",
+      category: "External Guide"
+    },
+    {
+      title: "Ethereum Security Resources",
+      description: "Official Ethereum security documentation and tools",
+      url: "https://ethereum.org/en/developers/docs/smart-contracts/security/",
+      category: "External Guide"
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-background">
+    <StandardizedPageLayout
+      title="Web3 Security Resources Hub"
+      description="Comprehensive collection of security guides, tutorials, documentation, and tools for Web3 developers and security auditors."
+      keywords={['web3 security resources', 'smart contract security guides', 'blockchain security tutorials', 'audit documentation']}
+    >
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-green-50 via-background to-blue-50 dark:from-green-950/20 dark:to-blue-950/20 py-20">
+      <section className="bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-20">
         <div className="container mx-auto px-4 text-center">
-          <div className="inline-flex items-center bg-green-100 dark:bg-green-900/20 px-4 py-2 rounded-full text-green-600 dark:text-green-400 mb-6">
-            <BookOpen className="h-5 w-5 mr-2" />
-            <span className="font-medium">Security Resources</span>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-            Security Resources Hub
+          <BookOpen className="h-16 w-16 text-primary mx-auto mb-6" />
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Web3 Security Resources
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            Comprehensive collection of security guides, best practices, and educational 
-            materials for Web3 developers and security professionals.
+            Everything you need to build, audit, and secure Web3 applications. 
+            From beginner guides to advanced security techniques.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" asChild>
-              <Link to="/audit-guidelines">View Audit Guidelines</Link>
+            <Button size="lg" asChild className="group">
+              <Link to="/security-guides">
+                Start Learning
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <Link to="/vulnerabilities">Browse Vulnerabilities</Link>
+              <Link to="/support">Get Support</Link>
             </Button>
           </div>
         </div>
@@ -37,132 +110,40 @@ export default function Resources() {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Resource Categories</h2>
+            <h2 className="text-3xl font-bold mb-4">Browse by Category</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Find the information you need to build secure Web3 applications
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <BookOpen className="h-12 w-12 text-green-600 mb-4" />
-                <CardTitle>Security Guides</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-4">
-                  Comprehensive guides covering Web3 security best practices, 
-                  common vulnerabilities, and prevention strategies.
-                </p>
-                <Button variant="outline" size="sm" asChild>
-                  <Link to="/security-guides">
-                    Browse Guides
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <FileText className="h-12 w-12 text-blue-600 mb-4" />
-                <CardTitle>Documentation</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-4">
-                  Technical documentation for platform features, API references, 
-                  and integration guides for developers.
-                </p>
-                <Button variant="outline" size="sm" asChild>
-                  <Link to="/documentation">
-                    View Docs
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <Video className="h-12 w-12 text-purple-600 mb-4" />
-                <CardTitle>Video Tutorials</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-4">
-                  Step-by-step video tutorials covering security auditing, 
-                  platform usage, and Web3 development best practices.
-                </p>
-                <Button variant="outline" size="sm" asChild>
-                  <Link to="/tutorials">
-                    Watch Tutorials
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Resources */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Featured Resources</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Popular and recently updated security resources
+              Find the resources you need to enhance your Web3 security knowledge
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[
-              {
-                title: "Smart Contract Security Checklist",
-                description: "Comprehensive checklist for auditing smart contracts",
-                type: "Guide",
-                updated: "March 2025"
-              },
-              {
-                title: "Common DeFi Vulnerabilities",
-                description: "Database of known DeFi protocol vulnerabilities",
-                type: "Database",
-                updated: "March 2025"
-              },
-              {
-                title: "Gas Optimization Techniques",
-                description: "Best practices for reducing gas costs in smart contracts",
-                type: "Tutorial",
-                updated: "February 2025"
-              },
-              {
-                title: "Web3 Security Testing Framework",
-                description: "Complete framework for testing Web3 applications",
-                type: "Framework",
-                updated: "March 2025"
-              }
-            ].map((resource, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="text-xl font-semibold mb-2">{resource.title}</h3>
-                      <p className="text-muted-foreground mb-4">{resource.description}</p>
-                    </div>
-                    <div className="flex flex-col items-end gap-2">
-                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
-                        {resource.type}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        Updated {resource.updated}
-                      </span>
-                    </div>
+            {resourceCategories.map((category, index) => (
+              <Card key={index} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex items-center gap-3 mb-2">
+                    <category.icon className="h-8 w-8 text-primary" />
+                    <CardTitle className="text-xl">{category.title}</CardTitle>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Button size="sm" variant="outline">
-                      <Download className="h-4 w-4 mr-2" />
-                      Download
-                    </Button>
-                    <Button size="sm" variant="ghost">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      View
-                    </Button>
-                  </div>
+                  <p className="text-muted-foreground">{category.description}</p>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3">
+                    {category.items.map((item, itemIndex) => (
+                      <li key={itemIndex}>
+                        <Link 
+                          to={item.href}
+                          className="flex items-center justify-between p-2 rounded-md hover:bg-muted/50 transition-colors group"
+                        >
+                          <span className="text-sm">{item.title}</span>
+                          <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button variant="outline" size="sm" asChild className="w-full mt-4">
+                    <Link to={category.items[0].href}>
+                      View All {category.title}
+                    </Link>
+                  </Button>
                 </CardContent>
               </Card>
             ))}
@@ -170,25 +151,63 @@ export default function Resources() {
         </div>
       </section>
 
-      {/* Search Section */}
+      {/* External Resources */}
+      <section className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4">External Resources</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Curated links to essential security resources from across the Web3 ecosystem
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {externalResources.map((resource, index) => (
+              <Card key={index} className="hover:shadow-lg transition-shadow">
+                <CardContent className="pt-6">
+                  <div className="flex items-start justify-between mb-3">
+                    <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                      {resource.category}
+                    </span>
+                    <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  <h3 className="font-semibold mb-2">{resource.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-4">{resource.description}</p>
+                  <Button variant="outline" size="sm" asChild className="w-full">
+                    <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                      Visit Resource
+                    </a>
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Community Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <div className="bg-card border rounded-lg p-8 text-center">
-            <Search className="h-16 w-16 text-primary mx-auto mb-6" />
-            <h3 className="text-2xl font-bold mb-4">Can't Find What You're Looking For?</h3>
-            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Use our advanced search to find specific security topics, vulnerabilities, 
-              or best practices across all our resources.
+          <div className="text-center mb-16">
+            <Users className="h-16 w-16 text-primary mx-auto mb-6" />
+            <h2 className="text-3xl font-bold mb-4">Join Our Community</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
+              Connect with security experts, share knowledge, and stay updated on the latest Web3 security trends
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-              <input
-                type="text"
-                placeholder="Search resources..."
-                className="flex-1 px-4 py-2 border border-input rounded-lg bg-background"
-              />
-              <Button>
-                <Search className="h-4 w-4 mr-2" />
-                Search
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button asChild>
+                <a href="https://discord.gg/hawkly" target="_blank" rel="noopener noreferrer">
+                  Join Discord
+                </a>
+              </Button>
+              <Button variant="outline" asChild>
+                <a href="https://github.com/hawkly" target="_blank" rel="noopener noreferrer">
+                  GitHub
+                </a>
+              </Button>
+              <Button variant="outline" asChild>
+                <a href="https://twitter.com/hawkly_security" target="_blank" rel="noopener noreferrer">
+                  Twitter
+                </a>
               </Button>
             </div>
           </div>
@@ -196,22 +215,17 @@ export default function Resources() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-green-600 to-blue-600 text-white">
+      <section className="py-20 bg-gradient-to-r from-primary to-secondary text-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Stay Updated</h2>
+          <h2 className="text-3xl font-bold mb-4">Ready to Secure Your Project?</h2>
           <p className="text-xl mb-8 opacity-90">
-            Subscribe to our newsletter for the latest security resources and updates
+            Get professional security audit from verified experts
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-4 py-2 rounded-lg text-gray-900"
-            />
-            <Button variant="secondary">Subscribe</Button>
-          </div>
+          <Button size="lg" variant="secondary" asChild>
+            <Link to="/request-audit">Request Security Audit</Link>
+          </Button>
         </div>
       </section>
-    </div>
+    </StandardizedPageLayout>
   );
 }
