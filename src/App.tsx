@@ -5,13 +5,14 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import { Toaster as Sonner } from "sonner";
-import AppRoutes from "./AppRoutes";
 import { AuthProvider } from "@/contexts/auth";
 import { AccessibilityProvider } from "@/components/accessibility/AccessibilityProvider";
 import GlobalErrorBoundary from "@/components/error-handling/GlobalErrorBoundary";
+import { RouterErrorBoundary } from "@/components/error/RouterErrorBoundary";
 import { SkipLink } from "@/components/ui/skip-link";
 import { UnifiedFeedbackProvider } from "@/components/feedback/UnifiedFeedbackSystem";
 import { EnhancedThemeProvider } from "@/components/theme/EnhancedThemeSystem";
+import AppRoutes from "./AppRoutes";
 import "./App.css";
 import "./styles/design-system.css";
 import "./styles/mobile-optimizations.css";
@@ -40,27 +41,29 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <BrowserRouter>
-            <EnhancedThemeProvider>
-              <UnifiedFeedbackProvider>
-                <AccessibilityProvider>
-                  <AuthProvider>
-                    <SkipLink targetId="main-content" />
-                    <Toaster />
-                    <Sonner 
-                      position="bottom-right"
-                      expand={true}
-                      richColors
-                      closeButton
-                      toastOptions={{
-                        className: "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg animate-fade-in",
-                        duration: 4000,
-                      }}
-                    />
-                    <AppRoutes />
-                  </AuthProvider>
-                </AccessibilityProvider>
-              </UnifiedFeedbackProvider>
-            </EnhancedThemeProvider>
+            <RouterErrorBoundary>
+              <EnhancedThemeProvider>
+                <UnifiedFeedbackProvider>
+                  <AccessibilityProvider>
+                    <AuthProvider>
+                      <SkipLink targetId="main-content" />
+                      <Toaster />
+                      <Sonner 
+                        position="bottom-right"
+                        expand={true}
+                        richColors
+                        closeButton
+                        toastOptions={{
+                          className: "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg animate-fade-in",
+                          duration: 4000,
+                        }}
+                      />
+                      <AppRoutes />
+                    </AuthProvider>
+                  </AccessibilityProvider>
+                </UnifiedFeedbackProvider>
+              </EnhancedThemeProvider>
+            </RouterErrorBoundary>
           </BrowserRouter>
         </TooltipProvider>
       </QueryClientProvider>

@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { EnhancedPageMeta } from '@/components/seo/EnhancedPageMeta';
-import { EnhancedBreadcrumbTrail } from '@/components/layout/navigation/enhanced-breadcrumb-trail';
 
 interface StandardizedPageLayoutProps {
   title: string;
@@ -30,8 +29,6 @@ export function StandardizedPageLayout({
         keywords={keywords}
         structuredData={structuredData}
       />
-      
-      {showBreadcrumbs && <EnhancedBreadcrumbTrail />}
       
       <main className="flex-grow">
         {children}
