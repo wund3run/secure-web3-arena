@@ -25,7 +25,7 @@ export default function Home() {
     <StandardizedLayout
       title="Hawkly | Leading Web3 Security Marketplace"
       description="Connect with verified Web3 security experts for smart contract audits. Fast, secure, affordable blockchain security solutions."
-      keywords={['web3 security', 'smart contract audit', 'blockchain security']}
+      keywords="web3 security, smart contract audit, blockchain security"
       showBreadcrumbs={false}
     >
       <SkipLink targetId="main-content" />
