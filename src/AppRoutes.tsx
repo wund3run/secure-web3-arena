@@ -1,6 +1,8 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { Shield, MessageCircle, BarChart3, Handshake, Users, HelpCircle, Briefcase } from 'lucide-react';
 import Index from '@/pages/Index';
+import Home from '@/pages/Home';
 import Auth from '@/pages/Auth';
 import AuthCallback from '@/pages/AuthCallback';
 import Dashboard from '@/pages/Dashboard';
@@ -31,6 +33,11 @@ import Documentation from '@/pages/Documentation';
 
 // Business Pages
 import About from '@/pages/About';
+import Pricing from '@/pages/Pricing';
+import Careers from '@/pages/Careers';
+
+// Platform Pages  
+import { PlaceholderPage } from '@/pages/placeholder-template';
 
 // Auditor Journey Pages
 import AuditorSignUp from '@/pages/AuditorSignUp';
@@ -78,6 +85,17 @@ export default function AppRoutes() {
       
       {/* Business Pages */}
       <Route path="/about" element={<About />} />
+      <Route path="/pricing" element={<Pricing />} />
+      <Route path="/careers" element={<Careers />} />
+      
+      {/* Platform Pages */}
+      <Route path="/features" element={<PlaceholderPage title="Platform Features" description="Comprehensive platform capabilities and tools" icon={<Shield className="h-8 w-8" />} />} />
+      <Route path="/escrow" element={<PlaceholderPage title="Escrow System" description="Secure milestone-based payment system" icon={<Handshake className="h-8 w-8" />} />} />
+      <Route path="/collaboration" element={<PlaceholderPage title="Collaboration Tools" description="Real-time collaboration and communication" icon={<Users className="h-8 w-8" />} />} />
+      <Route path="/analytics" element={<PlaceholderPage title="Analytics Dashboard" description="Advanced insights and performance metrics" icon={<BarChart3 className="h-8 w-8" />} />} />
+      <Route path="/audits" element={<PlaceholderPage title="My Audits" description="Manage and track your security audits" icon={<Shield className="h-8 w-8" />} />} />
+      <Route path="/messages" element={<PlaceholderPage title="Messages" description="Communication center for all your projects" icon={<MessageCircle className="h-8 w-8" />} />} />
+      <Route path="/faq" element={<PlaceholderPage title="FAQ" description="Frequently asked questions and answers" icon={<HelpCircle className="h-8 w-8" />} />} />
       
       {/* Enhanced Onboarding Routes */}
       <Route path="/onboarding" element={<Onboarding />} />
