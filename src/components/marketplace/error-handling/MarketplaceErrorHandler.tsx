@@ -1,7 +1,6 @@
-
 import { toast } from "sonner";
 import { useEffect } from "react";
-import { handleError } from "@/utils/error-handling";
+import { handleApiError } from '@/utils/apiErrorHandler';
 
 export interface ErrorHandlerProps {
   error: Error | null;
@@ -24,7 +23,7 @@ export function MarketplaceErrorHandler({
     if (!error) return;
     
     // Use the centralized error handling utility
-    handleError(error, `marketplace ${context}`);
+    handleApiError(error, { context: `marketplace ${context}` });
     
     // Show appropriate toast message with retry action if available
     const isNetworkError = error.message.includes("network") || 

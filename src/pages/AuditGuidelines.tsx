@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -97,24 +96,28 @@ const AuditGuidelines = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    Verified security credentials and experience
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    Proficiency in relevant blockchain technologies
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    Adherence to professional communication standards
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    Commitment to confidentiality and ethical practices
-                  </li>
-                </ul>
+                <div className="space-y-4">
+                  {severityLevels.map((severity, index) => (
+                    <div key={index} className="border rounded-lg p-4">
+                      <div className="flex items-center gap-3 mb-3">
+                        <Badge variant={severity.color as any}>{severity.level}</Badge>
+                        <h3 className="font-semibold">{severity.level} Severity</h3>
+                      </div>
+                      <p className="text-muted-foreground mb-3">{severity.description}</p>
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-medium">Examples:</h4>
+                        <ul className="text-sm text-muted-foreground space-y-1">
+                          {severity.examples.map((example, i) => (
+                            <li key={i} className="flex items-center gap-2">
+                              <AlertTriangle className="h-3 w-3" />
+                              {example}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
 

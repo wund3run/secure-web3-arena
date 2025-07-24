@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,7 +7,6 @@ import { useAuth } from '@/contexts/auth';
 import { useRealtimeMessages } from '@/hooks/useRealtimeMessages';
 import { Send, Paperclip, MoreVertical } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { cn } from '@/lib/utils';
 
 interface RealtimeMessagingInterfaceProps {
   conversationId: string;
@@ -92,11 +90,66 @@ export function RealtimeMessagingInterface({
 
   if (loading) {
     return (
-      <Card className={cn("h-full", className)}>
-        <CardContent className="flex items-center justify-center h-full">
-          <p className="text-muted-foreground">Loading conversation...</p>
-        </CardContent>
-      </Card>
+      <div
+        key={message.id}
+        className={`flex gap-3 ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'}`}
+      >
+        <Avatar className="h-8 w-8">
+          <AvatarFallback>{senderName[0]}</AvatarFallback>
+        </Avatar>
+        
+        <div className={`flex flex-col ${isOwnMessage ? 'items-end' : 'items-start'} max-w-[70%]`}>
+          {message.reply_to_id && (
+            <div className="text-xs text-muted-foreground mb-1 px-2 py-1 bg-muted/50 rounded">
+              Replying to message
+            </div>
+          )}
+          
+          <div
+            className={`px-4 py-2 rounded-lg ${
+              isOwnMessage
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted'
+            }`}
+          >
+            <p className="text-sm">{message.content}</p>
+            
+            {message.file_attachments.length > 0 && (
+              <div className="mt-2 space-y-1">
+                {message.file_attachments.map((file, index) => (
+                  <div key={index} className="flex items-center gap-2 p-2 bg-background/10 rounded">
+                    {file.type.startsWith('image/') ? (
+                      <ImageIcon className="h-4 w-4" />
+                    ) : (
+                      <File className="h-4 w-4" />
+                    )}
+                    <span className="text-xs truncate">{file.name}</span>
+                    <Button variant="ghost" size="sm">
+                      <Download className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-xs text-muted-foreground">
+              {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
+            </span>
+            {!isOwnMessage && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setReplyToMessage(message)}
+                className="h-6 w-6 p-0"
+              >
+                <Reply className="h-3 w-3" />
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
     );
   }
 

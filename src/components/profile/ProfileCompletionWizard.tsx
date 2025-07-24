@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/auth';
 import { useNavigate } from 'react-router-dom';
@@ -7,10 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 export const ProfileCompletionWizard: React.FC = () => {
-  const { user, userProfile, updateProfile, getUserType } = useAuth();
+  const { user, userProfile, getUserType } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   
@@ -37,15 +37,23 @@ export const ProfileCompletionWizard: React.FC = () => {
     setLoading(true);
     try {
       const updateData = {
-        display_name: formData.display_name,
+        full_name: formData.display_name,
         bio: formData.bio,
         website: formData.website,
         years_of_experience: Number(formData.years_of_experience),
-        skills: formData.skills.split(',').map(s => s.trim()).filter(Boolean),
-        specializations: formData.specializations.split(',').map(s => s.trim()).filter(Boolean)
+        skills: formData.skills.split(',').map((s: string) => s.trim()).filter(Boolean),
+        specializations: formData.specializations.split(',').map((s: string) => s.trim()).filter(Boolean)
       };
 
-      await updateProfile(updateData);
+      const { error } = await supabase
+        .from('profiles')
+        .update(updateData)
+        .eq('id', user.id);
+        
+      if (error) {
+        throw error;
+      }
+
       toast.success('Profile updated successfully!');
       
       // Redirect based on user type from roles

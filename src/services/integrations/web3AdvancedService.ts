@@ -1,10 +1,10 @@
-
 import { toast } from 'sonner';
+import { withErrorHandling } from '@/utils/apiErrorHandler';
 
 export interface GraphQueryConfig {
   endpoint: string;
   query: string;
-  variables?: Record<string, any>;
+  variables?: Record<string, unknown>;
 }
 
 export interface ChainlinkPriceFeed {
@@ -22,7 +22,7 @@ export interface WalletConnectSession {
   expiry: number;
   acknowledged: boolean;
   controller: string;
-  namespaces: Record<string, any>;
+  namespaces: Record<string, unknown>;
 }
 
 export class Web3AdvancedService {
@@ -33,8 +33,8 @@ export class Web3AdvancedService {
   };
 
   // The Graph Protocol Integration
-  static async querySubgraph(config: GraphQueryConfig): Promise<any> {
-    try {
+  static async querySubgraph(config: GraphQueryConfig): Promise<unknown> {
+    return withErrorHandling(async () => {
       const response = await fetch(config.endpoint, {
         method: 'POST',
         headers: {
@@ -57,14 +57,10 @@ export class Web3AdvancedService {
       }
 
       return data.data;
-    } catch (error) {
-      console.error('Error querying subgraph:', error);
-      toast.error('Failed to query blockchain data');
-      return null;
-    }
+    }, { customMessage: 'Failed to query subgraph', context: 'Web3AdvancedService', retryable: true });
   }
 
-  static async getContractInteractions(contractAddress: string, network: string = 'ethereum'): Promise<any[]> {
+  static async getContractInteractions(contractAddress: string, network: string = 'ethereum'): Promise<unknown[] | null> {
     const endpoint = this.graphEndpoints[network];
     if (!endpoint) {
       throw new Error(`Unsupported network: ${network}`);
@@ -89,14 +85,18 @@ export class Web3AdvancedService {
       }
     `;
 
-    return this.querySubgraph({
-      endpoint,
-      query,
-      variables: { contractAddress: contractAddress.toLowerCase() }
-    });
+    return withErrorHandling(async () => {
+      const result = await this.querySubgraph({
+        endpoint,
+        query,
+        variables: { contractAddress: contractAddress.toLowerCase() }
+      });
+      // Defensive: ensure result is array or null
+      return Array.isArray(result) ? result : null;
+    }, { customMessage: 'Failed to get contract interactions', context: 'Web3AdvancedService', retryable: true });
   }
 
-  static async getTokenMetrics(tokenAddress: string, network: string = 'ethereum'): Promise<any> {
+  static async getTokenMetrics(tokenAddress: string, network: string = 'ethereum'): Promise<unknown> {
     const query = `
       query GetTokenMetrics($tokenAddress: String!) {
         token(id: $tokenAddress) {
@@ -122,8 +122,8 @@ export class Web3AdvancedService {
   }
 
   // WalletConnect v2 Integration
-  static async initializeWalletConnect(): Promise<any> {
-    try {
+  static async initializeWalletConnect(): Promise<unknown> {
+    return withErrorHandling(async () => {
       // Mock WalletConnect v2 initialization
       console.log('Initializing WalletConnect v2...');
       
@@ -139,15 +139,11 @@ export class Web3AdvancedService {
 
       toast.success('WalletConnect v2 initialized');
       return client;
-    } catch (error) {
-      console.error('Error initializing WalletConnect:', error);
-      toast.error('Failed to initialize WalletConnect');
-      return null;
-    }
+    }, { customMessage: 'Failed to initialize WalletConnect', context: 'Web3AdvancedService', retryable: true });
   }
 
   static async connectWallet(walletType: string): Promise<WalletConnectSession | null> {
-    try {
+    return withErrorHandling(async () => {
       // Mock wallet connection
       const session: WalletConnectSession = {
         topic: `session_${Date.now()}`,
@@ -166,16 +162,12 @@ export class Web3AdvancedService {
 
       toast.success(`Connected to ${walletType} wallet`);
       return session;
-    } catch (error) {
-      console.error('Error connecting wallet:', error);
-      toast.error('Failed to connect wallet');
-      return null;
-    }
+    }, { customMessage: 'Failed to connect wallet', context: 'Web3AdvancedService', retryable: true });
   }
 
   // Chainlink Oracle Integration
   static async getChainlinkPrice(priceFeedAddress: string, network: string = 'ethereum'): Promise<ChainlinkPriceFeed | null> {
-    try {
+    return withErrorHandling(async () => {
       // Mock Chainlink price feed data
       const priceFeed: ChainlinkPriceFeed = {
         pair: 'ETH/USD',
@@ -187,14 +179,11 @@ export class Web3AdvancedService {
       };
 
       return priceFeed;
-    } catch (error) {
-      console.error('Error fetching Chainlink price:', error);
-      return null;
-    }
+    }, { customMessage: 'Failed to fetch Chainlink price', context: 'Web3AdvancedService', retryable: true });
   }
 
   static async getSecurityScore(contractAddress: string, network: string): Promise<number> {
-    try {
+    return withErrorHandling(async () => {
       // Mock security score calculation using multiple data sources
       const interactions = await this.getContractInteractions(contractAddress, network);
       const baseScore = 75;
@@ -204,9 +193,6 @@ export class Web3AdvancedService {
       const finalScore = Math.min(100, baseScore + activityBonus);
       
       return Math.round(finalScore);
-    } catch (error) {
-      console.error('Error calculating security score:', error);
-      return 50; // Default medium score
-    }
+    }, { customMessage: 'Failed to calculate security score', context: 'Web3AdvancedService', retryable: true });
   }
 }

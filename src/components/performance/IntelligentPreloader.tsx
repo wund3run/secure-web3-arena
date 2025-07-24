@@ -1,9 +1,8 @@
-
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 interface PreloadConfig {
-  component: () => Promise<any>;
+  component: () => Promise<unknown>;
   priority: 'high' | 'medium' | 'low';
   condition?: () => boolean;
 }
@@ -54,7 +53,7 @@ export function IntelligentPreloader({ preloadMap, children }: IntelligentPreloa
       );
 
       if ('requestIdleCallback' in window) {
-        (window as any).requestIdleCallback(() => {
+        ((window as unknown as { requestIdleCallback?: typeof window.requestIdleCallback }).requestIdleCallback)?.(() => {
           lowPriorityConfigs.forEach(config => {
             config.component().catch(err => {
               console.warn('Failed to preload low priority component:', err);

@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { UserBehaviorProfile } from '@/types/user-profiling';
 import { saveBehaviorProfile } from './useLocalStorage';
@@ -6,11 +5,13 @@ import { saveBehaviorProfile } from './useLocalStorage';
 export const useBehaviorTracking = (userId?: string) => {
   const [behaviorProfile, setBehaviorProfile] = useState<UserBehaviorProfile | null>(null);
 
-  const trackBehavior = useCallback((action: string, metadata?: any) => {
+  const trackBehavior = useCallback((action: string, metadata?: unknown) => {
     setBehaviorProfile(current => {
       if (!current) return current;
       
-      const page = typeof metadata === 'string' ? metadata : metadata?.page || window.location.pathname;
+      const page = typeof metadata === 'string' ? metadata : 
+                   (metadata && typeof metadata === 'object' && 'page' in metadata) ? 
+                   (metadata as any).page : window.location.pathname;
       
       const updated = {
         ...current,

@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/auth';
 interface SecurityContextType {
   securityInitialized: boolean;
   auditLog: typeof auditLogger;
-  reportSecurityIncident: (incident: string, details?: Record<string, any>) => void;
+  reportSecurityIncident: (incident: string, details?: Record<string, unknown>) => void;
 }
 
 const SecurityContext = createContext<SecurityContextType | undefined>(undefined);
@@ -44,7 +44,7 @@ export function SecurityProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user, securityInitialized]);
 
-  const reportSecurityIncident = (incident: string, details?: Record<string, any>) => {
+  const reportSecurityIncident = (incident: string, details?: Record<string, unknown>) => {
     auditLogger.log(
       'security_violation',
       incident,

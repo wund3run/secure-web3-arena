@@ -1,4 +1,5 @@
-// Performance monitoring and optimization utilities with reduced overhead
+
+// Performance monitoring and optimization utilities
 
 export class PerformanceMonitor {
   private static instance: PerformanceMonitor;
@@ -13,12 +14,10 @@ export class PerformanceMonitor {
     return PerformanceMonitor.instance;
   }
 
-  measureComponentRender<T extends (...args: any[]) => any>(
+  measureComponentRender<T extends (...args: unknown[]) => unknown>(
     componentName: string,
     renderFunction: T
   ): T {
-    if (!this.isEnabled) return renderFunction;
-    
     return ((...args: any[]) => {
       const startTime = performance.now();
       const result = renderFunction(...args);

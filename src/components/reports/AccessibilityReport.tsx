@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { usePlatformValidator } from "@/utils/validation";
+import { usePlatformValidator } from "@/utils/validation/hooks/usePlatformValidator";
 import { Button } from "@/components/ui/button";
 import { ValidationIssue } from "@/utils/validation/types";
 

@@ -1,8 +1,8 @@
-
 import React from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { CircleCheck, FilePlus, FileWarning, ShieldCheck } from "lucide-react";
+import { CheckCircle, FilePlus, FileWarning, ShieldCheck, AlertTriangle, XCircle, Info } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface ActivityLogProps {
   userType: string;
@@ -18,7 +18,7 @@ export function ActivityLog({ userType }: ActivityLogProps) {
       title: 'Completed audit review',
       project: 'DeFi Protocol XYZ',
       time: '2 hours ago',
-      icon: <CircleCheck className="h-4 w-4 text-green-500" />,
+      icon: <CheckCircle className="h-4 w-4 text-green-500" />,
       type: 'completion'
     },
     {
@@ -61,7 +61,7 @@ export function ActivityLog({ userType }: ActivityLogProps) {
       title: 'Fixed critical vulnerability',
       project: 'DEX Protocol',
       time: '2 days ago',
-      icon: <CircleCheck className="h-4 w-4 text-green-500" />,
+      icon: <CheckCircle className="h-4 w-4 text-green-500" />,
       type: 'fix'
     },
     {
@@ -85,23 +85,24 @@ export function ActivityLog({ userType }: ActivityLogProps) {
   const activities = isAuditor ? auditorActivities : projectOwnerActivities;
 
   return (
-    <ScrollArea className="h-[320px] w-full pr-4">
-      <div className="space-y-4 pr-3">
-        {activities.map((activity) => (
-          <div key={activity.id} className="flex items-start space-x-4 rounded-lg border p-3">
-            <div className="mt-1">{activity.icon}</div>
-            <div className="flex-1 space-y-1">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium leading-none">{activity.title}</p>
-                <Badge variant="outline" className="text-xs">
-                  {activity.time}
-                </Badge>
-              </div>
-              <p className="text-sm text-muted-foreground">{activity.project}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </ScrollArea>
+    <Card className="bg-card rounded-[1.15rem] shadow-[0_8px_40px_0_rgba(50,60,130,0.23)] p-6">
+      <CardContent>
+        <h3 className="font-black uppercase tracking-tight text-accent-primary mb-3" style={{ fontFamily: "'Space Grotesk', Arial, sans-serif", letterSpacing: '0.08em' }}>
+          Recent Activity
+        </h3>
+        <ul className="space-y-3">
+          {activities.map((item, idx) => (
+            <li key={idx} className="flex items-center gap-3">
+              {item.type === 'success' && <CheckCircle className="h-4 w-4 text-success" />}
+              {item.type === 'warning' && <AlertTriangle className="h-4 w-4 text-warning" />}
+              {item.type === 'error' && <XCircle className="h-4 w-4 text-error" />}
+              {item.type === 'info' && <Info className="h-4 w-4 text-info" />}
+              <span className="text-sm text-primary" style={{ fontFamily: "'Space Grotesk', Arial, sans-serif" }}>{item.title}</span>
+              <span className="text-xs text-secondary ml-auto" style={{ fontFamily: "'Space Grotesk', Arial, sans-serif" }}>{item.time}</span>
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
   );
 }

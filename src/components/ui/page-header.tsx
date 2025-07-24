@@ -1,4 +1,3 @@
-
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
@@ -33,7 +32,11 @@ export function PageHeader({
   };
 
   return (
-    <div className={cn("space-y-4 pb-6 border-b border-border", className)}>
+    <header className={cn(
+      "space-y-4 pb-8 border-b border-border bg-transparent",
+      "pt-8 px-0 md:px-2 lg:px-0",
+      className
+    )}>
       {showBackButton && (
         <Button
           variant="ghost"
@@ -45,25 +48,31 @@ export function PageHeader({
           Back
         </Button>
       )}
-      
+
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight bg-brand-gradient bg-clip-text text-transparent">
+          <h1
+            className={cn(
+              "text-h1 font-black leading-tight tracking-tight",
+              "bg-gradient-to-r from-accent-primary to-accent-secondary bg-clip-text text-transparent",
+              "uppercase drop-shadow-lg"
+            )}
+          >
             {title}
           </h1>
           {description && (
-            <p className="text-lg text-muted-foreground max-w-2xl">
+            <p className="text-body-large text-secondary max-w-2xl mt-1">
               {description}
             </p>
           )}
         </div>
-        
+
         {children && (
           <div className="flex items-center gap-3 flex-shrink-0">
             {children}
           </div>
         )}
       </div>
-    </div>
+    </header>
   );
 }

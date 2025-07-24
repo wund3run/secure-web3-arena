@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { wcagValidator, WCAGViolation } from '@/utils/accessibility/wcag-validator';
 import { themeSystem } from '@/utils/theme/advanced-theme-system';
@@ -18,7 +17,7 @@ interface UXEnhancementsState {
   };
   i18n: {
     currentLocale: string;
-    availableLocales: any[];
+    availableLocales: unknown[];
   };
   chat: {
     isConnected: boolean;
@@ -71,7 +70,7 @@ export function useUXEnhancements() {
           lastValidation: new Date()
         }
       }));
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Accessibility validation failed:', error);
       setState(prev => ({
         ...prev,
@@ -185,7 +184,7 @@ export function useUXEnhancements() {
       realtimeChat.off('typingChanged', handleTypingChanged);
       window.removeEventListener('localechange', handleLocaleChange as EventListener);
     };
-  }, []);
+  }, [realtimeChat, setState]);
 
   // Auto-validate accessibility on page changes
   useEffect(() => {
@@ -194,7 +193,7 @@ export function useUXEnhancements() {
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [validateAccessibility]);
 
   return {
     // State

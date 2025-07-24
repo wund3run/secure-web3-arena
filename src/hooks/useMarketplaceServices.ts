@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -11,7 +10,7 @@ export interface MarketplaceService {
   category: string;
   blockchain_ecosystems?: string[];
   tags?: string[];
-  price_range?: any;
+  price_range?: unknown;
   delivery_time?: number;
   featured?: boolean;
   average_rating?: number;
@@ -20,7 +19,7 @@ export interface MarketplaceService {
   min_price?: number;
   max_price?: number;
   estimated_delivery_days?: number;
-  requirements_checklist?: any;
+  requirements_checklist?: unknown;
   sample_reports?: string[];
   verification_status?: string;
   created_at: string;
@@ -61,9 +60,10 @@ export const useMarketplaceServices = () => {
         .order('average_rating', { ascending: false });
 
       if (error) throw error;
-      setServices(data || []);
-    } catch (err: any) {
-      setError(err.message);
+      setServices((data as MarketplaceService[]) || []);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch services';
+      setError(errorMessage);
       toast.error('Failed to fetch services');
     } finally {
       setLoading(false);
@@ -92,7 +92,7 @@ export const useMarketplaceServices = () => {
 
       const { data, error } = await supabase
         .from('services')
-        .insert(insertData)
+        .insert(insertData as any)
         .select()
         .single();
 
@@ -101,8 +101,9 @@ export const useMarketplaceServices = () => {
       toast.success('Service created successfully');
       await fetchServices();
       return data;
-    } catch (err: any) {
-      toast.error('Failed to create service');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create service';
+      toast.error(errorMessage);
       throw err;
     }
   };
@@ -111,15 +112,16 @@ export const useMarketplaceServices = () => {
     try {
       const { error } = await supabase
         .from('services')
-        .update(updates)
+        .update(updates as any)
         .eq('id', id);
 
       if (error) throw error;
       
       toast.success('Service updated successfully');
       await fetchServices();
-    } catch (err: any) {
-      toast.error('Failed to update service');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update service';
+      toast.error(errorMessage);
       throw err;
     }
   };

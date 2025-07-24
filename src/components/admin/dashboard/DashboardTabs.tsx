@@ -19,7 +19,7 @@ export function DashboardTabs({ activeTab, onTabChange }: DashboardTabsProps) {
   }, [location.search, activeTab, onTabChange]);
   
   return (
-    <Tabs value={activeTab} onValueChange={onTabChange as any} className="space-y-4">
+    <Tabs value={activeTab} onValueChange={onTabChange as (value: string) => void} className="space-y-4">
       <TabsList className="grid grid-cols-8 gap-2">
         <TabsTrigger value="dashboard">Overview</TabsTrigger>
         <TabsTrigger value="users">Users</TabsTrigger>

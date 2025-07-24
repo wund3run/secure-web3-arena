@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CircleCheck, RefreshCw, Wifi, WifiOff, AlertTriangle, Server } from "lucide-react";
+import { CheckCircle, RefreshCw, Wifi, WifiOff, AlertTriangle, Server } from "lucide-react";
 import { toast } from "sonner";
 
 type ServiceStatus = 'operational' | 'degraded' | 'outage' | 'unknown';
@@ -73,7 +73,7 @@ export function PlatformStatusMonitor() {
       case 'operational':
         return (
           <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-            <CircleCheck className="h-3 w-3 mr-1" /> Operational
+            <CheckCircle className="h-3 w-3 mr-1" /> Operational
           </Badge>
         );
       case 'degraded':

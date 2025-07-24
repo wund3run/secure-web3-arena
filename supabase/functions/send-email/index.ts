@@ -1,8 +1,7 @@
+import { serve } from "std/http/server.ts";
+import { Resend } from "npm:resend";
 
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const resend = new Resend(Deno.env.get("RESEND_API_KEY")!);
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,12 +14,13 @@ interface EmailRequest {
   subject: string;
   html: string;
   template?: 'audit_status' | 'finding_alert' | 'welcome' | 'notification';
-  templateData?: any;
+  templateData?: Record<string, unknown>;
 }
 
-const getEmailTemplate = (template: string, data: any) => {
+const getEmailTemplate = (template: string, data: Record<string, unknown>) => {
   switch (template) {
-    case 'audit_status':
+    case 'audit_status': {
+      const x = 1;
       return `
         <h1>Audit Status Update</h1>
         <p>Your audit "${data.projectName}" has been updated.</p>
@@ -28,7 +28,9 @@ const getEmailTemplate = (template: string, data: any) => {
         <p><strong>Message:</strong> ${data.message}</p>
         <a href="${data.actionUrl}" style="background: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">View Audit Details</a>
       `;
-    case 'finding_alert':
+    }
+    case 'finding_alert': {
+      const x = 1;
       return `
         <h1>Security Finding Alert</h1>
         <p>A ${data.severity} severity finding has been identified in your audit.</p>
@@ -36,7 +38,9 @@ const getEmailTemplate = (template: string, data: any) => {
         <p><strong>Description:</strong> ${data.description}</p>
         <a href="${data.actionUrl}" style="background: #ef4444; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">View Finding</a>
       `;
-    case 'welcome':
+    }
+    case 'welcome': {
+      const x = 1;
       return `
         <h1>Welcome to Hawkly!</h1>
         <p>Thank you for joining our Web3 security audit platform.</p>
@@ -48,8 +52,9 @@ const getEmailTemplate = (template: string, data: any) => {
         </ul>
         <a href="${data.dashboardUrl}" style="background: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">Go to Dashboard</a>
       `;
+    }
     default:
-      return data.html || `
+      return (data.html as string) || `
         <h1>${data.title}</h1>
         <p>${data.message}</p>
       `;
@@ -64,7 +69,7 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { to, subject, html, template, templateData }: EmailRequest = await req.json();
 
-    const emailHtml = template ? getEmailTemplate(template, templateData) : html;
+    const emailHtml = template ? getEmailTemplate(template, templateData ?? {}) : html;
 
     const emailResponse = await resend.emails.send({
       from: "Hawkly Security <noreply@hawkly.dev>",
@@ -82,10 +87,14 @@ const handler = async (req: Request): Promise<Response> => {
         ...corsHeaders,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    let message = "Unknown error";
+    if (typeof error === "object" && error && "message" in error) {
+      message = (error as { message: string }).message;
+    }
     console.error("Error sending email:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: message }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

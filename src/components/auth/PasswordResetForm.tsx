@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -26,9 +25,10 @@ export const PasswordResetForm = () => {
     try {
       await forgotPassword(email);
       setIsSubmitted(true);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to send reset email';
       toast.error('Failed to send reset email', {
-        description: error.message
+        description: errorMessage
       });
     } finally {
       setIsLoading(false);

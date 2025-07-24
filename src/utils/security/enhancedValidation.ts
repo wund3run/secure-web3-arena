@@ -5,7 +5,19 @@ export interface ValidationResult {
   isValid: boolean;
   errors: string[];
   sanitizedValue?: any;
-  securityLevel: 'low' | 'medium' | 'high';
+}
+
+export interface ValidationOptions {
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  pattern?: RegExp;
+  allowHTML?: boolean;
+  min?: number;
+  max?: number;
+  integer?: boolean;
+  allowedTypes?: string[];
+  maxSizeMB?: number;
 }
 
 export class EnhancedValidation {
@@ -165,12 +177,7 @@ export class EnhancedValidation {
   }
 
   // Enhanced number validation
-  static validateNumber(value: any, options: {
-    min?: number;
-    max?: number;
-    integer?: boolean;
-    required?: boolean;
-  } = {}): ValidationResult {
+  static validateNumber(input: any, options: ValidationOptions = {}): ValidationResult {
     const errors: string[] = [];
 
     if (value === null || value === undefined || value === '') {

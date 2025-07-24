@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -204,7 +203,8 @@ export const RealisticAIMatching = () => {
 
             <div className="space-y-2">
               <Label htmlFor="complexity">Project Complexity</Label>
-              <Select value={criteria.complexity} onValueChange={(value) => setCriteria(prev => ({ ...prev, complexity: value as any }))}>
+              <Select value={criteria.complexity} onValueChange={(value) => setCriteria(prev => ({ ...prev, complexity: value as unknown as 'low' | 'medium' | 'high' }))}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>

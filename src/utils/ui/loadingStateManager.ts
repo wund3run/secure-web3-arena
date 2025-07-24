@@ -133,7 +133,7 @@ class LoadingInstance {
 // React hook for using loading state
 export function useLoadingState(id: string, config?: LoadingConfig) {
   const [state, setState] = React.useState<LoadingState>('idle');
-  const instanceRef = React.useRef<LoadingInstance>();
+  const instanceRef = React.useRef<LoadingInstance | undefined>(undefined);
 
   React.useEffect(() => {
     instanceRef.current = LoadingStateManager.create(id, config);

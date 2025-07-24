@@ -1,4 +1,3 @@
-
 import React, { useRef } from "react";
 import { useMediaQuery } from "@/hooks/use-mobile";
 import { ServiceCardProps } from "@/types/marketplace-unified";
@@ -7,7 +6,7 @@ import { MobileComparisonTable } from "./MobileComparisonTable";
 import { convertToMarketplaceService } from "../comparison-manager/utils/ServiceConverter";
 import { MarketplaceErrorBoundary } from "@/components/marketplace/error-handling/MarketplaceErrorBoundary";
 import { Button } from "@/components/ui/button";
-import { useAccessibility } from "@/contexts/AccessibilityContext";
+import { useAccessibility } from "@/contexts/AccessibilityContext.tsx";
 
 interface ComparisonResponsiveProps {
   services: ServiceCardProps[];
@@ -16,7 +15,7 @@ interface ComparisonResponsiveProps {
 
 export function ComparisonResponsive({ services, onRemoveService }: ComparisonResponsiveProps) {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const { screenReaderFriendly } = useAccessibility();
+  const { preferences } = useAccessibility();
   const containerRef = useRef<HTMLDivElement>(null);
   
   // Convert ServiceCardProps to MarketplaceService for the internal components
@@ -37,14 +36,14 @@ export function ComparisonResponsive({ services, onRemoveService }: ComparisonRe
   // When services change, announce to screen readers
   React.useEffect(() => {
     // Only announce if there are services to compare
-    if (services.length > 0 && screenReaderFriendly) {
+    if (services.length > 0 && preferences.screenReaderMode) {
       const announcement = `Comparing ${services.length} services: ${services.map(s => s.title).join(', ')}`;
       const ariaLive = document.getElementById('comparison-announcement');
       if (ariaLive) {
         ariaLive.textContent = announcement;
       }
     }
-  }, [services, screenReaderFriendly]);
+  }, [services, preferences.screenReaderMode]);
   
   return (
     <div className="space-y-6 mt-4" ref={containerRef}>
@@ -57,7 +56,7 @@ export function ComparisonResponsive({ services, onRemoveService }: ComparisonRe
       ></div>
       
       {/* For screen readers, provide additional context */}
-      {screenReaderFriendly && (
+      {preferences.screenReaderMode && (
         <div className="sr-only" aria-live="polite">
           {services.length > 0 ? (
             <p>Comparing {services.length} services: {services.map(s => s.title).join(', ')}</p>

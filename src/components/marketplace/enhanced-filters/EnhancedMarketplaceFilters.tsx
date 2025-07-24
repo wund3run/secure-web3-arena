@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { FilterSection } from './FilterSection';
 import { PriceRangeFilter } from './PriceRangeFilter';
@@ -8,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { X, Filter } from 'lucide-react';
 
 interface EnhancedMarketplaceFiltersProps {
-  onFiltersChange: (filters: any) => void;
+  onFiltersChange: (filters: unknown) => void;
   activeFiltersCount: number;
   onClearAll: () => void;
 }
@@ -63,7 +62,7 @@ export function EnhancedMarketplaceFilters({ onFiltersChange, activeFiltersCount
     { id: 'continuous-monitoring', label: 'Continuous Monitoring', count: 12 }
   ];
 
-  const toggleSection = (section: string) => {
+  const toggleSection = (section: keyof typeof collapsedSections) => {
     setCollapsedSections(prev => ({
       ...prev,
       [section]: !prev[section]

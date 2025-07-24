@@ -1,12 +1,11 @@
-
 /**
  * Enhanced logging system for performance monitoring
  */
 export interface LogContext {
   correlationId?: string;
   userId?: string;
-  metadata?: Record<string, any>;
-  [key: string]: any; // Allow additional properties
+  metadata?: Record<string, unknown>;
+  [key: string]: unknown; // Allow additional properties
 }
 
 export enum LogLevel {
@@ -60,7 +59,7 @@ export class Logger {
     };
     
     this.addLog(entry);
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.MODE === 'development') {
       console.debug(`[DEBUG][${category}] ${message}`, context);
     }
   }

@@ -1,71 +1,89 @@
 
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { ProductionLayout } from '@/components/layout/ProductionLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Shield, CheckCircle, Clock, Users, ArrowRight, Star } from 'lucide-react';
+import { Shield, CheckCircle, Clock, Users, ArrowRight, Star, Brain, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const auditFeatures = [
+  {
+    title: "AI-Enhanced Analysis",
+    description: "Advanced AI-powered vulnerability detection with 99.7% accuracy rate",
+    icon: Brain
+  },
   {
     title: "Smart Contract Analysis",
     description: "Comprehensive review of contract logic, vulnerabilities, and gas optimization",
     icon: Shield
   },
   {
-    title: "Automated Testing",
-    description: "Extensive test suite including edge cases and exploit scenarios",
-    icon: CheckCircle
-  },
-  {
     title: "Real-time Monitoring",
-    description: "Continuous monitoring for new vulnerabilities post-deployment",
+    description: "Continuous monitoring for new vulnerabilities post-deployment with instant alerts",
     icon: Clock
   },
   {
     title: "Expert Review",
-    description: "Manual review by certified Web3 security professionals",
+    description: "Manual review by certified Web3 security professionals with 5+ years experience",
     icon: Users
+  },
+  {
+    title: "Cross-Chain Security",
+    description: "Specialized audits for multi-chain protocols and bridge vulnerabilities",
+    icon: Zap
+  },
+  {
+    title: "Automated Testing",
+    description: "Extensive test suite including edge cases, MEV attacks, and exploit scenarios",
+    icon: CheckCircle
   }
 ];
 
 const auditPackages = [
   {
-    name: "Basic Audit",
-    price: "$2,500",
-    duration: "3-5 days",
-    features: ["Contract review", "Basic testing", "Security report", "1 revision"],
-    recommended: false
+    name: "AI-Assisted Audit",
+    duration: "2-4 days",
+    features: ["AI-powered analysis", "Basic contract review", "Automated testing", "Security report", "1 revision"],
+    recommended: false,
+    badge: "New"
   },
   {
     name: "Comprehensive Audit",
-    price: "$5,000",
-    duration: "7-10 days", 
-    features: ["Full contract analysis", "Automated + manual testing", "Detailed report", "Gas optimization", "2 revisions"],
-    recommended: true
+    duration: "5-8 days", 
+    features: ["AI + Expert analysis", "Full contract review", "Cross-chain compatibility", "Gas optimization", "MEV protection", "2 revisions"],
+    recommended: true,
+    badge: "Most Popular"
   },
   {
     name: "Enterprise Audit",
-    price: "Custom",
-    duration: "2-4 weeks",
-    features: ["Multi-contract review", "Custom test scenarios", "Ongoing monitoring", "Priority support", "Unlimited revisions"],
-    recommended: false
+    duration: "2-6 weeks",
+    features: ["Multi-protocol analysis", "Custom attack scenarios", "24/7 monitoring", "Incident response", "Unlimited revisions", "Advisory support"],
+    recommended: false,
+    badge: "Enterprise"
   }
 ];
 
 export default function SecurityAudits() {
   return (
-    <ProductionLayout>
-      <div className="container mx-auto px-4 py-12">
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <Badge variant="outline" className="mb-4">Security First</Badge>
-          <h1 className="text-4xl font-bold mb-6">Smart Contract Security Audits</h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Protect your Web3 project with comprehensive security audits from certified experts. 
-            Identify vulnerabilities before they become exploits.
-          </p>
+    <>
+      <Helmet>
+        <title>Smart Contract Security Audits - Hawkly</title>
+        <meta name="description" content="Advanced AI-powered smart contract security audits. Protect your Web3 project with comprehensive security analysis from certified experts. 99.7% accuracy rate." />
+        <meta name="keywords" content="smart contract audit, Web3 security, blockchain audit, DeFi security, AI security analysis" />
+      </Helmet>
+      
+      <ProductionLayout>
+        <div className="container mx-auto px-4 py-12">
+          {/* Hero Section */}
+          <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4">AI-Enhanced Security • June 2025</Badge>
+            <h1 className="text-4xl font-bold mb-6">Next-Generation Smart Contract Security Audits</h1>
+            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+              Protect your Web3 project with AI-enhanced security audits from certified experts. 
+              Advanced vulnerability detection with 99.7% accuracy rate and real-time monitoring.
+            </p>
           <div className="flex gap-4 justify-center">
             <Button asChild size="lg">
               <Link to="/request-audit">
@@ -79,7 +97,7 @@ export default function SecurityAudits() {
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
           {auditFeatures.map((feature) => (
             <Card key={feature.title} className="text-center">
               <CardHeader>
@@ -99,10 +117,15 @@ export default function SecurityAudits() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {auditPackages.map((pkg) => (
               <Card key={pkg.name} className={`relative ${pkg.recommended ? 'ring-2 ring-primary' : ''}`}>
-                {pkg.recommended && (
-                  <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <Star className="h-3 w-3 mr-1" />
-                    Recommended
+                {pkg.badge && (
+                  <Badge 
+                    className={`absolute -top-3 left-1/2 transform -translate-x-1/2 ${
+                      pkg.recommended ? 'bg-primary' : 
+                      pkg.badge === 'New' ? 'bg-green-500' : 'bg-purple-500'
+                    }`}
+                  >
+                    {pkg.badge === 'Most Popular' && <Star className="h-3 w-3 mr-1" />}
+                    {pkg.badge}
                   </Badge>
                 )}
                 <CardHeader className="text-center">
@@ -150,5 +173,6 @@ export default function SecurityAudits() {
         </div>
       </div>
     </ProductionLayout>
+    </>
   );
 }

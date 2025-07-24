@@ -34,7 +34,7 @@ export const useWebSocketConnection = () => {
         lastPing: new Date()
       }));
       return realtimeConnected;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Connection check failed:', error);
       setState(prev => ({ ...prev, isConnected: false }));
       return false;
@@ -52,7 +52,7 @@ export const useWebSocketConnection = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       await supabase.realtime.connect();
       await checkConnection();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Reconnection failed:', error);
       toast.error('Failed to reconnect to real-time services');
     }

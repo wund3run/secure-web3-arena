@@ -5,9 +5,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+interface ProjectFormData {
+  projectName?: string;
+  projectDescription?: string;
+  blockchain?: string;
+  projectType?: string;
+  repositoryUrl?: string;
+}
+
 interface ProjectInformationStepProps {
-  formData: any;
-  handleInputChange: (field: string, value: any) => void;
+  formData: ProjectFormData;
+  handleInputChange: (field: string, value: unknown) => void;
 }
 
 export const ProjectInformationStep = ({ formData, handleInputChange }: ProjectInformationStepProps) => {
@@ -21,7 +29,7 @@ export const ProjectInformationStep = ({ formData, handleInputChange }: ProjectI
             <Input
               id="projectName"
               placeholder="Enter your project name"
-              value={formData.projectName}
+              value={formData.projectName || '' || ''}
               onChange={(e) => handleInputChange('projectName', e.target.value)}
               required
             />
@@ -33,7 +41,7 @@ export const ProjectInformationStep = ({ formData, handleInputChange }: ProjectI
               id="projectDescription"
               placeholder="Describe your project, its purpose, and key features"
               rows={4}
-              value={formData.projectDescription}
+              value={formData.projectDescription || ''}
               onChange={(e) => handleInputChange('projectDescription', e.target.value)}
               required
             />
@@ -42,7 +50,7 @@ export const ProjectInformationStep = ({ formData, handleInputChange }: ProjectI
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="blockchain">Blockchain *</Label>
-              <Select value={formData.blockchain} onValueChange={(value) => handleInputChange('blockchain', value)}>
+              <Select value={formData.blockchain || '' || ''} onValueChange={(value) => handleInputChange('blockchain', value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select blockchain" />
                 </SelectTrigger>
@@ -60,7 +68,7 @@ export const ProjectInformationStep = ({ formData, handleInputChange }: ProjectI
 
             <div>
               <Label htmlFor="projectType">Project Type *</Label>
-              <Select value={formData.projectType} onValueChange={(value) => handleInputChange('projectType', value)}>
+              <Select value={formData.projectType || '' || ''} onValueChange={(value) => handleInputChange('projectType', value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select project type" />
                 </SelectTrigger>
@@ -82,7 +90,7 @@ export const ProjectInformationStep = ({ formData, handleInputChange }: ProjectI
             <Input
               id="repositoryUrl"
               placeholder="https://github.com/your-org/project"
-              value={formData.repositoryUrl}
+              value={formData.repositoryUrl || ''}
               onChange={(e) => handleInputChange('repositoryUrl', e.target.value)}
             />
           </div>

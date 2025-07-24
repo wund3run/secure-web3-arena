@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,16 +24,17 @@ export const EnhancedSignInForm = () => {
     setIsLoading(true);
     
     try {
-      const result = await signIn(email, password);
-      if (result.error) {
-        setError(result.error.message);
-      } else {
-        toast.success('Welcome back!');
-      }
+      await signInWithEmail(email, password);
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in');
-    } finally {
-      setIsLoading(false);
+      setError(err.message);
+    }
+  };
+
+  const handleSocialSignIn = async (provider: 'google' | 'github') => {
+    try {
+      await signInWithProvider(provider);
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 

@@ -3,11 +3,11 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { Compare } from "../icons/Compare";
 import { CompareButton } from "../comparison";
-import { MarketplaceService } from "@/types/marketplace-unified";
+import { ServiceCardProps } from "@/types/marketplace-unified";
 
 interface ComparisonFloatingIndicatorProps {
-  servicesForComparison: MarketplaceService[];
-  toggleCompareService: (service: MarketplaceService | MarketplaceService[]) => void;
+  servicesForComparison: ServiceCardProps[];
+  toggleCompareService: (service: ServiceCardProps | ServiceCardProps[]) => void;
   handleOpenComparison: () => void;
 }
 

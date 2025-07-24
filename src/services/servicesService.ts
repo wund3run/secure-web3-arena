@@ -8,7 +8,7 @@ export interface Service {
   title: string;
   description: string;
   category: string;
-  price_range?: any;
+  price_range?: unknown;
   delivery_time?: number;
   blockchain_ecosystems?: string[];
   tags?: string[];

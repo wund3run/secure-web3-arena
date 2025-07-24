@@ -1,15 +1,41 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
 import { Activity, FileText, CheckCircle, AlertTriangle } from 'lucide-react';
 
+interface ActivityItem {
+  id: string | number;
+  status_type: string;
+  title: string;
+  message: string;
+  created_at: string;
+  audit_requests?: {
+    project_name: string;
+  };
+  [key: string]: unknown;
+}
+
 interface RecentActivityProps {
-  activities: any[];
+  activities: unknown[];
 }
 
 export const RecentActivity = ({ activities }: RecentActivityProps) => {
+  // Type guard function for activity items
+  const isValidActivityItem = (activity: unknown): activity is ActivityItem => {
+    return (
+      typeof activity === 'object' && 
+      activity !== null && 
+      'id' in activity &&
+      'status_type' in activity &&
+      'title' in activity &&
+      'message' in activity &&
+      'created_at' in activity
+    );
+  };
+
+  const validActivities = activities.filter(isValidActivityItem);
+
   const getActivityIcon = (type: string) => {
     switch (type) {
       case 'milestone_update': return CheckCircle;
@@ -28,7 +54,7 @@ export const RecentActivity = ({ activities }: RecentActivityProps) => {
     }
   };
 
-  if (activities.length === 0) {
+  if (validActivities.length === 0) {
     return (
       <Card>
         <CardHeader>
@@ -47,21 +73,21 @@ export const RecentActivity = ({ activities }: RecentActivityProps) => {
         <CardTitle>Recent Activity</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {activities.map((activity) => {
-          const Icon = getActivityIcon(activity.status_type);
+        {validActivities.map((activity) => {
+          const Icon = getActivityIcon(String(activity.status_type));
           return (
-            <div key={activity.id} className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
-              <Icon className={`h-5 w-5 mt-0.5 ${getActivityColor(activity.status_type)}`} />
+            <div key={String(activity.id)} className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
+              <Icon className={`h-5 w-5 mt-0.5 ${getActivityColor(String(activity.status_type))}`} />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="font-medium">{activity.title}</span>
+                  <span className="font-medium">{String(activity.title)}</span>
                   <Badge variant="outline" className="text-xs">
-                    {activity.audit_requests?.project_name}
+                    {String(activity.audit_requests?.project_name || '')}
                   </Badge>
                 </div>
-                <p className="text-sm text-muted-foreground">{activity.message}</p>
+                <p className="text-sm text-muted-foreground">{String(activity.message)}</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {formatDistanceToNow(new Date(activity.created_at), { addSuffix: true })}
+                  {formatDistanceToNow(new Date(String(activity.created_at)), { addSuffix: true })}
                 </p>
               </div>
             </div>

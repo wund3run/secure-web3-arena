@@ -68,7 +68,7 @@ export const useTimeTracking = (auditId: string) => {
             start_time: active.start_time || active.created_at
           });
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('Error fetching time entries:', error);
       } finally {
         setIsLoading(false);
@@ -117,7 +117,7 @@ export const useTimeTracking = (auditId: string) => {
 
       if (error) throw error;
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error adding time entry:', error);
       return false;
     }
@@ -152,7 +152,7 @@ export const useTimeTracking = (auditId: string) => {
       }
       
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error starting timer:', error);
       return false;
     }
@@ -178,7 +178,7 @@ export const useTimeTracking = (auditId: string) => {
       
       setActiveEntry(null);
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error stopping timer:', error);
       return false;
     }

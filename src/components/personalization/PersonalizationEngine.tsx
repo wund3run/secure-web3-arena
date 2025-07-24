@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { useAuth } from '@/contexts/auth/AuthContext';
+import { useAuth } from '@/contexts/auth';
 import { PersonalizedRecommendations } from '@/components/recommendations/PersonalizedRecommendations';
 import { useUserBehavior } from './hooks/useUserBehavior';
 import { generatePersonalizedContent } from './utils/contentGenerator';
@@ -29,7 +28,7 @@ export function PersonalizationEngine() {
       <PersonalizedFeatures content={personalizedContent} />
 
       <PersonalizedRecommendations 
-        userType={userBehavior?.userType as any || 'general'} 
+        userType={(userBehavior?.userType as 'general' | 'auditor' | 'project_owner' | 'admin') || 'general'} 
       />
     </div>
   );

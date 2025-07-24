@@ -109,7 +109,7 @@ export class DatabaseRelationshipManager {
     return { data, error };
   }
 
-  static async createAuditRequestWithProfile(clientId: string, requestData: any) {
+  static async createAuditRequestWithProfile(clientId: string, requestData: unknown) {
     await this.ensureExtendedProfile(clientId);
     
     const { data, error } = await supabase

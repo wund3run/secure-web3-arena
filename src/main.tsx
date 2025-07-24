@@ -1,11 +1,13 @@
+// Import ethereum conflict resolver FIRST to handle wallet conflicts
+import './utils/ethereum-conflict-resolver';
 
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-// Simplified service worker registration with better error handling
-if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+// Register the service worker only in production
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then(registration => {

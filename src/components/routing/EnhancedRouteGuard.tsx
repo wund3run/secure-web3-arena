@@ -1,10 +1,9 @@
-
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShieldX, Home, LogIn, UserPlus } from 'lucide-react';
+import { Shield, Home, LogIn, UserPlus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface EnhancedRouteGuardProps {
@@ -92,7 +91,7 @@ export const EnhancedRouteGuard: React.FC<EnhancedRouteGuardProps> = ({
           <div className="min-h-screen flex items-center justify-center bg-muted/50">
             <Card className="max-w-md w-full mx-4">
               <CardHeader className="text-center">
-                <ShieldX className="mx-auto h-12 w-12 text-destructive mb-4" />
+                <Shield className="mx-auto h-12 w-12 text-destructive mb-4" />
                 <CardTitle>Access Restricted</CardTitle>
                 <CardDescription>
                   {fallbackMessage || `This area is restricted to ${requiredRole ? requiredRole.replace('_', ' ') : 'authorized'} users only.`}

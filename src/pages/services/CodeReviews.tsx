@@ -1,30 +1,59 @@
 
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { ProductionLayout } from '@/components/layout/ProductionLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Code, FileText, Users, Star, ArrowRight } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Code, FileText, Users, Star, ArrowRight, Brain, Zap, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function CodeReviews() {
   return (
-    <ProductionLayout>
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-6xl mx-auto">
-          {/* Hero Section */}
-          <div className="text-center mb-12">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Code className="h-8 w-8 text-primary" />
-              <h1 className="text-4xl font-bold">Code Reviews</h1>
+    <>
+      <Helmet>
+        <title>AI-Enhanced Code Reviews - Hawkly</title>
+        <meta name="description" content="Expert code reviews with AI assistance. Improve code quality, security, and maintainability with advanced analysis and experienced developer feedback." />
+        <meta name="keywords" content="code review, smart contract review, Web3 code analysis, blockchain development, AI code analysis" />
+      </Helmet>
+      
+      <ProductionLayout>
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-6xl mx-auto">
+            {/* Hero Section */}
+            <div className="text-center mb-12">
+              <Badge variant="outline" className="mb-4">AI-Enhanced Reviews • June 2025</Badge>
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Code className="h-8 w-8 text-primary" />
+                <h1 className="text-4xl font-bold">Advanced Code Reviews</h1>
+              </div>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                AI-enhanced code reviews combining automated analysis with expert human insight. 
+                Improve quality, security, and maintainability with cutting-edge review technology.
+              </p>
             </div>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Expert code reviews to improve quality, security, and maintainability. 
-              Get feedback from experienced developers and security experts.
-            </p>
-          </div>
 
           {/* Service Types */}
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            <Card>
+              <CardHeader>
+                <Brain className="h-8 w-8 text-purple-500 mb-2" />
+                <CardTitle>AI-Powered Review</CardTitle>
+                <Badge variant="secondary" className="w-fit">New</Badge>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">
+                  Advanced AI analysis with pattern recognition, vulnerability detection, and automated suggestions.
+                </p>
+                <ul className="space-y-2 text-sm">
+                  <li>• Automated vulnerability scanning</li>
+                  <li>• Code pattern analysis</li>
+                  <li>• Performance bottleneck detection</li>
+                  <li>• Real-time suggestions</li>
+                </ul>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <FileText className="h-8 w-8 text-blue-500 mb-2" />
@@ -32,13 +61,13 @@ export default function CodeReviews() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground mb-4">
-                  Comprehensive review of smart contract code focusing on security, gas optimization, and best practices.
+                  Comprehensive review combining AI analysis with expert human insight for maximum security.
                 </p>
                 <ul className="space-y-2 text-sm">
-                  <li>• Security vulnerability assessment</li>
-                  <li>• Gas optimization recommendations</li>
-                  <li>• Code quality improvements</li>
-                  <li>• Best practices guidance</li>
+                  <li>• AI + Expert dual analysis</li>
+                  <li>• Cross-chain compatibility check</li>
+                  <li>• MEV protection assessment</li>
+                  <li>• Gas optimization strategies</li>
                 </ul>
               </CardContent>
             </Card>
@@ -46,17 +75,17 @@ export default function CodeReviews() {
             <Card>
               <CardHeader>
                 <Users className="h-8 w-8 text-green-500 mb-2" />
-                <CardTitle>Peer Code Review</CardTitle>
+                <CardTitle>Team Code Review</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground mb-4">
-                  Collaborative code review process with experienced developers providing detailed feedback.
+                  Collaborative review process with multiple experts providing comprehensive feedback.
                 </p>
                 <ul className="space-y-2 text-sm">
-                  <li>• Line-by-line feedback</li>
-                  <li>• Architecture recommendations</li>
-                  <li>• Performance optimizations</li>
-                  <li>• Documentation improvements</li>
+                  <li>• Multi-expert analysis</li>
+                  <li>• Architecture deep-dive</li>
+                  <li>• Performance optimization</li>
+                  <li>• Documentation enhancement</li>
                 </ul>
               </CardContent>
             </Card>
@@ -150,5 +179,6 @@ export default function CodeReviews() {
         </div>
       </div>
     </ProductionLayout>
+    </>
   );
 }

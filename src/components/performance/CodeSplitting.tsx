@@ -41,7 +41,7 @@ const AnalyticsCharts = lazy(() => Promise.resolve({
 interface CodeSplittingWrapperProps {
   component: 'admin' | 'audit-queue' | 'analytics';
   fallbackHeight?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export const CodeSplittingWrapper: React.FC<CodeSplittingWrapperProps> = ({

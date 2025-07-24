@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -17,7 +16,7 @@ interface PerformanceMetric {
 
 export function PerformanceMonitor() {
   const [metrics, setMetrics] = useState<PerformanceMetric[]>([]);
-  const [webVitals, setWebVitals] = useState<any[]>([]);
+  const [webVitals, setWebVitals] = useState<unknown[]>([]);
   const [isMonitoring, setIsMonitoring] = useState(false);
 
   useEffect(() => {
@@ -53,8 +52,8 @@ export function PerformanceMonitor() {
         },
         {
           name: 'Memory Usage',
-          value: (performance as any).memory ? 
-            Math.round((performance as any).memory.usedJSHeapSize / 1024 / 1024) : 0,
+          value: (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory ?
+            Math.round((performance as unknown as { memory: { usedJSHeapSize: number } }).memory.usedJSHeapSize / 1024 / 1024) : 0,
           unit: 'MB',
           status: 'good',
           threshold: 100
@@ -72,8 +71,11 @@ export function PerformanceMonitor() {
       const componentMetrics = performanceMonitor.getMetrics();
       
       // Update web vitals if available
-      if (typeof window !== 'undefined' && (window as any).webVitalsData) {
-        setWebVitals((window as any).webVitalsData);
+      if (typeof window !== 'undefined') {
+        const webVitalsData = (window as unknown as { webVitalsData?: unknown[] }).webVitalsData;
+        if (webVitalsData) {
+          setWebVitals(webVitalsData);
+        }
       }
     }, 5000);
 

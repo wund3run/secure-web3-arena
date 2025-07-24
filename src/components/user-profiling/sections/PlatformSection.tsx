@@ -7,7 +7,7 @@ import { Zap } from 'lucide-react';
 import { PreferenceSectionProps } from '../types';
 
 export function PlatformSection({ preferences, updatePreferences }: PreferenceSectionProps) {
-  const handlePreferenceChange = (key: string, value: any) => {
+  const handlePreferenceChange = (key: string, value: unknown) => {
     updatePreferences({
       [key]: value,
     });

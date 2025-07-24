@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/auth';
 import { hasRouteAccess, getUserDashboard } from '@/utils/auth/roleBasedRouting';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShieldX, Home, LogIn } from 'lucide-react';
+import { Shield, Home, LogIn } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface RoleBasedRouteProps {
@@ -47,7 +47,7 @@ export const RoleBasedRoute: React.FC<RoleBasedRouteProps> = ({
       <div className="min-h-screen flex items-center justify-center bg-muted/50">
         <Card className="max-w-md w-full mx-4">
           <CardHeader className="text-center">
-            <ShieldX className="mx-auto h-12 w-12 text-destructive mb-4" />
+            <Shield className="mx-auto h-12 w-12 text-destructive mb-4" />
             <CardTitle>Access Restricted</CardTitle>
             <CardDescription>
               You don't have permission to access this page. This area is restricted to specific user roles.

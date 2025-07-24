@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Volume2, VolumeX } from 'lucide-react';
@@ -14,7 +13,7 @@ export const NotificationSound = () => {
       
       try {
         // Create a simple notification sound using Web Audio API
-        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)();
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
         
@@ -35,10 +34,10 @@ export const NotificationSound = () => {
     };
 
     // Make the function globally available
-    (window as any).playNotificationSound = playNotificationSound;
+    (window as unknown as { playNotificationSound?: () => void }).playNotificationSound = playNotificationSound;
 
     return () => {
-      delete (window as any).playNotificationSound;
+      delete (window as unknown as { playNotificationSound?: () => void }).playNotificationSound;
     };
   }, [soundEnabled]);
 

@@ -17,7 +17,7 @@ interface SyncStatus {
 class SyncManager {
   private syncConfigs = new Map<string, SyncConfig>();
   private syncStatuses = new Map<string, SyncStatus>();
-  private pendingChanges = new Map<string, any[]>();
+  private pendingChanges = new Map<string, unknown[]>();
   private syncIntervals = new Map<string, NodeJS.Timeout>();
 
   initSync(config: SyncConfig): void {
@@ -41,7 +41,7 @@ class SyncManager {
     this.syncIntervals.set(config.tableName, interval);
   }
 
-  queueLocalChange(tableName: string, operation: 'insert' | 'update' | 'delete', data: any): void {
+  queueLocalChange(tableName: string, operation: 'insert' | 'update' | 'delete', data: unknown): void {
     if (!this.pendingChanges.has(tableName)) {
       this.pendingChanges.set(tableName, []);
     }

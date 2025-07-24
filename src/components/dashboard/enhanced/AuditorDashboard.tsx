@@ -1,12 +1,13 @@
-
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Star, DollarSign, Clock, Trophy, TrendingUp, Calendar, FileText, Award } from "lucide-react";
+import { Star, DollarSign, Clock, Trophy, TrendingUp, Calendar, FileText, Award, User, Briefcase, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
+import AuditorProjectBrowser from "@/components/auditor-parameters/AuditorProjectBrowser";
+import AuditorNavigationGuide from "@/components/navigation/AuditorNavigationGuide";
 
 export function AuditorDashboard() {
   const mockAudits = [
@@ -104,15 +105,17 @@ export function AuditorDashboard() {
           <TabsTrigger value="opportunities">Opportunities</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="skills">Skills & Certs</TabsTrigger>
+          <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
+          <TabsTrigger value="navigation">Navigation Guide</TabsTrigger>
         </TabsList>
 
         <TabsContent value="audits" className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold">Current Projects</h3>
             <Button asChild>
-              <Link to="/marketplace">
+              <Link to="/auditor/opportunities">
                 <Calendar className="mr-2 h-4 w-4" />
-                Browse Projects
+                Browse Opportunities
               </Link>
             </Button>
           </div>
@@ -148,8 +151,10 @@ export function AuditorDashboard() {
                       >
                         {audit.complexity} Complexity
                       </Badge>
-                      <Button variant="outline" size="sm">
-                        Continue Audit
+                      <Button variant="outline" size="sm" asChild>
+                        <Link to={audit.status === "In Progress" ? "/auditor/preparation" : "/audits"}>
+                          {audit.status === "In Progress" ? "Continue Audit" : "View Details"}
+                        </Link>
                       </Button>
                     </div>
                   </div>
@@ -160,51 +165,7 @@ export function AuditorDashboard() {
         </TabsContent>
 
         <TabsContent value="opportunities" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Available Projects</CardTitle>
-              <CardDescription>New audit opportunities matching your expertise</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="p-4 border rounded-lg">
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-semibold">Layer 2 Scaling Solution</h4>
-                    <Badge variant="secondary">$18,000</Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Comprehensive audit of a new Ethereum Layer 2 solution with focus on bridge security and state transitions.
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      <Badge variant="outline">Ethereum</Badge>
-                      <Badge variant="outline">L2</Badge>
-                      <Badge variant="outline">High Priority</Badge>
-                    </div>
-                    <Button size="sm">Apply</Button>
-                  </div>
-                </div>
-                
-                <div className="p-4 border rounded-lg">
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-semibold">DeFi Yield Farming Protocol</h4>
-                    <Badge variant="secondary">$12,000</Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Security review of smart contracts for an innovative yield farming protocol with automated strategies.
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      <Badge variant="outline">DeFi</Badge>
-                      <Badge variant="outline">Solidity</Badge>
-                      <Badge variant="outline">Medium Priority</Badge>
-                    </div>
-                    <Button size="sm">Apply</Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <AuditorProjectBrowser />
         </TabsContent>
 
         <TabsContent value="performance" className="space-y-4">
@@ -326,10 +287,186 @@ export function AuditorDashboard() {
                       Skill Development
                     </Link>
                   </Button>
+                  <Button size="sm" className="mt-2 ml-2" asChild>
+                    <Link to="/portfolio/create">
+                      <User className="mr-2 h-4 w-4" />
+                      Create Portfolio
+                    </Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="portfolio" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Professional Portfolio</h3>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/portfolio/demo-auditor">
+                  <Eye className="mr-2 h-4 w-4" />
+                  Preview Portfolio
+                </Link>
+              </Button>
+              <Button size="sm" asChild>
+                <Link to="/portfolio/create">
+                  <Briefcase className="mr-2 h-4 w-4" />
+                  Build Portfolio
+                </Link>
+              </Button>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Portfolio Status</CardTitle>
+                <CardDescription>Complete your professional showcase</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Profile Completeness</span>
+                    <span className="text-sm font-medium">65%</span>
+                  </div>
+                  <Progress value={65} className="h-2" />
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">✅ Basic Information</span>
+                      <Badge variant="default" size="sm">Complete</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">✅ Skills & Expertise</span>
+                      <Badge variant="default" size="sm">Complete</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">⚠️ Past Projects</span>
+                      <Badge variant="secondary" size="sm">Partial</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">❌ Testimonials</span>
+                      <Badge variant="outline" size="sm">Missing</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">❌ Portfolio Media</span>
+                      <Badge variant="outline" size="sm">Missing</Badge>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t">
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Complete your portfolio to attract premium audit opportunities
+                    </p>
+                    <Button size="sm" className="w-full" asChild>
+                      <Link to="/portfolio/create">
+                        Complete Portfolio Setup
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Portfolio Analytics</CardTitle>
+                <CardDescription>Track your portfolio performance</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-sm">Profile Views</span>
+                    <span className="font-mono text-blue-600">47</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">Contact Requests</span>
+                    <span className="font-mono text-green-600">12</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">Project Invitations</span>
+                    <span className="font-mono text-purple-600">8</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm">Portfolio Rating</span>
+                    <div className="flex items-center gap-1">
+                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                      <span className="font-mono">4.2</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t">
+                    <div className="text-xs text-muted-foreground mb-2">This Week's Activity</div>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <span>5 new profile views</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span>2 contact requests</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <span>1 project invitation</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="md:col-span-2">
+              <CardHeader>
+                <CardTitle>Featured Work</CardTitle>
+                <CardDescription>Showcase your best audit projects</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">DeFi Lending Protocol</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Comprehensive security audit with 12 vulnerabilities found
+                    </p>
+                    <div className="flex items-center justify-between text-xs">
+                      <Badge variant="secondary">High Impact</Badge>
+                      <span>Jan 2024</span>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4 border rounded-lg">
+                    <h4 className="font-medium mb-2">Cross-Chain Bridge</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Critical vulnerability in bridge logic prevented $2M exploit
+                    </p>
+                    <div className="flex items-center justify-between text-xs">
+                      <Badge variant="destructive">Critical</Badge>
+                      <span>Dec 2023</span>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4 border rounded-lg bg-muted/50 border-dashed">
+                    <div className="text-center py-4">
+                      <FileText className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Add more projects to showcase your expertise
+                      </p>
+                      <Button size="sm" variant="outline" asChild>
+                        <Link to="/portfolio/create">
+                          Add Project
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="navigation" className="space-y-4">
+          <AuditorNavigationGuide />
         </TabsContent>
       </Tabs>
     </div>

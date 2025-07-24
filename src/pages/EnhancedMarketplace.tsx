@@ -48,6 +48,13 @@ interface AuditorCardProps {
   successRate: number;
 }
 
+interface FilterOptions {
+  experience?: string;
+  hourlyRate?: [number, number];
+  blockchains?: string[];
+  availability?: string;
+}
+
 const mockAuditors: AuditorCardProps[] = [
   {
     id: '1',
@@ -125,37 +132,42 @@ export default function EnhancedMarketplace() {
     setFilteredAuditors(filtered);
   };
 
-  const handleFilters = (filters: any) => {
+  const handleFilters = (filters: unknown) => {
     let filtered = auditors;
+    
+    // Type guard to ensure filters is the expected shape
+    if (filters && typeof filters === 'object') {
+      const typedFilters = filters as FilterOptions;
+      
+      if (typedFilters.experience && typedFilters.experience !== 'all') {
+        filtered = filtered.filter(auditor => {
+          switch (typedFilters.experience) {
+            case 'junior': return auditor.experience <= 3;
+            case 'mid': return auditor.experience > 3 && auditor.experience <= 7;
+            case 'senior': return auditor.experience > 7;
+            default: return true;
+          }
+        });
+      }
 
-    if (filters.experience && filters.experience !== 'all') {
-      filtered = filtered.filter(auditor => {
-        switch (filters.experience) {
-          case 'junior': return auditor.experience <= 3;
-          case 'mid': return auditor.experience > 3 && auditor.experience <= 7;
-          case 'senior': return auditor.experience > 7;
-          default: return true;
-        }
-      });
-    }
+      if (typedFilters.hourlyRate && typedFilters.hourlyRate.length === 2) {
+        filtered = filtered.filter(auditor => 
+          auditor.hourlyRate.min >= typedFilters.hourlyRate![0] && 
+          auditor.hourlyRate.max <= typedFilters.hourlyRate![1]
+        );
+      }
 
-    if (filters.hourlyRate && filters.hourlyRate.length === 2) {
-      filtered = filtered.filter(auditor => 
-        auditor.hourlyRate.min >= filters.hourlyRate[0] && 
-        auditor.hourlyRate.max <= filters.hourlyRate[1]
-      );
-    }
+      if (typedFilters.blockchains && typedFilters.blockchains.length > 0) {
+        filtered = filtered.filter(auditor =>
+          typedFilters.blockchains!.some((blockchain: string) =>
+            auditor.blockchains.includes(blockchain)
+          )
+        );
+      }
 
-    if (filters.blockchains && filters.blockchains.length > 0) {
-      filtered = filtered.filter(auditor =>
-        filters.blockchains.some((blockchain: string) =>
-          auditor.blockchains.includes(blockchain)
-        )
-      );
-    }
-
-    if (filters.availability && filters.availability !== 'all') {
-      filtered = filtered.filter(auditor => auditor.availability === filters.availability);
+      if (typedFilters.availability && typedFilters.availability !== 'all') {
+        filtered = filtered.filter(auditor => auditor.availability === typedFilters.availability);
+      }
     }
 
     setFilteredAuditors(filtered);

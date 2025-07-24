@@ -1,76 +1,67 @@
 
-import React from "react";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
-import { Toaster as Sonner } from "sonner";
-import { HelmetProvider } from "react-helmet-async";
+import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from "@/contexts/auth";
-import { AccessibilityProvider } from "@/components/accessibility/AccessibilityProvider";
-import GlobalErrorBoundary from "@/components/error-handling/GlobalErrorBoundary";
-import { RouterErrorBoundary } from "@/components/error/RouterErrorBoundary";
-import { SkipLink } from "@/components/ui/skip-link";
-import { UnifiedFeedbackProvider } from "@/components/feedback/UnifiedFeedbackSystem";
-import { EnhancedThemeProvider } from "@/components/theme/EnhancedThemeSystem";
-import AppRoutes from "./AppRoutes";
-import "./App.css";
-import "./styles/design-system.css";
-import "./styles/mobile-optimizations.css";
-import "./styles/enhanced-animations.css";
+import { AuthNavigationHandler } from "@/components/auth/AuthNavigationHandler";
+import { NotificationProvider } from "@/contexts/NotificationContext.tsx";
+import { EscrowProvider } from "@/contexts/EscrowContext";
+import { AccessibilityProvider } from "@/contexts/AccessibilityContext.tsx";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+import { ComprehensiveErrorBoundary } from "@/components/error/comprehensive-error-boundary";
+import { StabilizedRouter } from "@/components/routing/StabilizedRouter";
+import { SystemHealthMonitor } from "@/components/system/SystemHealthMonitor";
 
+// Configure React Query with better defaults for stability
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: (failureCount, error: any) => {
-        if (error?.status >= 400 && error?.status < 500) {
-          return false;
+      retry: (failureCount, error) => {
+        // Don't retry on 4xx errors (client errors)
+        if (error && typeof error === 'object' && 'status' in error) {
+          const status = (error as any).status;
+          if (status >= 400 && status < 500) return false;
         }
-        if (error?.message?.includes('blocked') || error?.message?.includes('ERR_BLOCKED')) {
-          return false;
-        }
-        return failureCount < 2;
+        return failureCount < 3;
       },
-      staleTime: 1000 * 60 * 5,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (was cacheTime in v4)
+      refetchOnWindowFocus: false,
+    },
+    mutations: {
+      retry: 1,
     },
   },
 });
 
 function App() {
   return (
-    <GlobalErrorBoundary>
+    <ComprehensiveErrorBoundary>
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <UnifiedFeedbackProvider>
-            <BrowserRouter>
-              <RouterErrorBoundary>
-                <EnhancedThemeProvider>
-                  <AccessibilityProvider>
-                    <AuthProvider>
-                      <SkipLink targetId="main-content" />
-                      <Toaster />
-                      <Sonner 
-                        position="bottom-right"
-                        expand={true}
-                        richColors
-                        closeButton
-                        toastOptions={{
-                          className: "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg animate-fade-in",
-                          duration: 4000,
-                        }}
-                      />
-                      <AppRoutes />
-                    </AuthProvider>
-                  </AccessibilityProvider>
-                </EnhancedThemeProvider>
-              </RouterErrorBoundary>
-            </BrowserRouter>
-          </UnifiedFeedbackProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
+          <AuthProvider>
+            <NotificationProvider>
+              <AccessibilityProvider>
+                <ThemeProvider storageKey="vite-ui-theme">
+                  <TooltipProvider>
+                    <BrowserRouter>
+                      <AuthNavigationHandler />
+                      <EscrowProvider>
+                        <StabilizedRouter />
+                        <SystemHealthMonitor />
+                      </EscrowProvider>
+                    </BrowserRouter>
+                    <Toaster />
+                  </TooltipProvider>
+                </ThemeProvider>
+              </AccessibilityProvider>
+            </NotificationProvider>
+          </AuthProvider>
+        </QueryClientProvider>
       </HelmetProvider>
-    </GlobalErrorBoundary>
+    </ComprehensiveErrorBoundary>
   );
 }
 

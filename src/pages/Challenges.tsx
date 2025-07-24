@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,6 +19,7 @@ import {
   Code,
   Search
 } from 'lucide-react';
+import { AppContainer } from '@/components/layout/AppContainer';
 
 const Challenges = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -145,7 +145,7 @@ const Challenges = () => {
       title="Security Challenges | Hawkly"
       description="Practice and improve your security skills with hands-on challenges and competitions"
     >
-      <div className="container mx-auto px-4 py-8">
+      <AppContainer maxWidth="max-w-7xl" padding="px-4 py-8" elevation>
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-hawkly-gradient mb-4">
@@ -390,7 +390,7 @@ const Challenges = () => {
             </Card>
           </div>
         </div>
-      </div>
+      </AppContainer>
     </StandardLayout>
   );
 };

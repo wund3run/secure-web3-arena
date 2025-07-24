@@ -1,10 +1,9 @@
-
 import { useState, useCallback } from 'react';
 
 export const useVisibility = () => {
   const [visible, setVisible] = useState(() => {
     // Only show in development by default
-    return process.env.NODE_ENV === 'development';
+    return import.meta.env.MODE === 'development';
   });
 
   const toggleVisibility = useCallback(() => {

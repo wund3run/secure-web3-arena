@@ -1,160 +1,626 @@
+/* Import Google Fonts for the design system */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
   :root {
-    /* Official Hawkly Brand Colors */
-    --hawkly-primary: 217 71% 58%;         /* #4a90e2 - Professional Blue */
-    --hawkly-secondary: 193 85% 56%;       /* #33c3f0 - Trust Cyan */
-    --hawkly-accent: 254 85% 75%;          /* #9b87f5 - Innovation Purple */
-    --hawkly-orange: 14 100% 60%;          /* #ff6b35 - Warm Orange */
+    /* Design System Colors from design.json */
+    --bg-primary: #131822;
+    --bg-secondary: #181f2f;
+    --bg-gradient: linear-gradient(135deg, #212842 0%, #2a224e 100%);
+    --sidebar: #232b3a;
+    --surface: #181e2c;
+    --card: #1e2332;
+    --border: #23283e;
+    --elevation1: #1a2130;
     
-    /* Semantic Hawkly Colors */
-    --hawkly-success: 142 71% 45%;         /* #22c55e - Green */
-    --hawkly-warning: 43 96% 56%;          /* #f59e0b - Orange Warning */
-    --hawkly-error: 0 84% 60%;             /* #ef4444 - Error Red */
-    --hawkly-info: var(--hawkly-primary);  /* Use primary for info */
-
-    /* Dark Theme Colors - Security Professional Optimized */
-    --background: 217 32% 6%;              /* Deep navy background */
-    --foreground: 217 30% 94%;             /* Light text */
-    --card: 217 32% 8%;                    /* Card background */
-    --card-foreground: 217 30% 94%;       /* Card text */
-    --popover: 217 32% 8%;                 /* Popover background */
-    --popover-foreground: 217 30% 94%;    /* Popover text */
+    /* Accent Colors */
+    --accent-primary: #a879ef;
+    --accent-secondary: #32d9fa;
+    --accent-glow-blue: rgba(50, 217, 250, 0.35);
+    --accent-glow-purple: rgba(168, 121, 239, 0.28);
     
-    /* Use Hawkly brand colors for UI elements */
-    --primary: var(--hawkly-primary);
-    --primary-foreground: 0 0% 100%;
-    --secondary: var(--hawkly-secondary);
-    --secondary-foreground: 0 0% 100%;
-    --accent: var(--hawkly-accent);
-    --accent-foreground: 0 0% 100%;
+    /* Button Gradients */
+    --button-primary: linear-gradient(90deg, #a879ef 60%, #32d9fa 100%);
+    --button-hover: linear-gradient(90deg, #7d49ca 0%, #24bad7 100%);
     
-    /* Neutral colors with blue undertones for security feel */
-    --muted: 217 32% 15%;                  /* Muted background */
-    --muted-foreground: 217 20% 65%;      /* Muted text */
-    --border: 217 32% 18%;                 /* Border color */
-    --input: 217 32% 18%;                  /* Input background */
-    --ring: var(--hawkly-primary);        /* Focus ring */
+    /* Typography Colors */
+    --text-primary: #f8f9fb;
+    --text-secondary: #b2bfd4;
+    --text-disabled: #8391ad;
+    --text-inverse: #1e2230;
     
-    /* Destructive colors */
-    --destructive: var(--hawkly-error);
-    --destructive-foreground: 0 0% 100%;
+    /* Status Colors */
+    --error: #fc3574;
+    --success: #2de08e;
+    --warning: #ffd553;
+    --info: #32d9fa;
     
-    /* Border radius */
-    --radius: 0.5rem;
+    /* Effects */
+    --card-shadow-strong: 0 8px 40px 0 rgba(50, 60, 130, 0.23);
+    --card-shadow-glow: 0 0 24px 8px rgba(168, 121, 239, 0.15);
+    --focus-ring: 0 0 0 3px rgba(50, 217, 250, 0.65);
+    --accent-glow: 0 0 18px 4px #a879ef, 0 2px 40px 12px #32d9fa;
+    --disabled-opacity: 0.53;
+    
+    /* Border Radius */
+    --radius-small: 0.5rem;
+    --radius-medium: 1.15rem;
+    --radius-large: 2rem;
+    --radius-full: 9999px;
+    
+    /* Spacing Scale */
+    --spacing-0: 0px;
+    --spacing-1: 4px;
+    --spacing-2: 8px;
+    --spacing-3: 12px;
+    --spacing-4: 16px;
+    --spacing-5: 24px;
+    --spacing-6: 32px;
+    --spacing-7: 48px;
+    --spacing-8: 64px;
+    
+    /* Typography Scale */
+    --font-display: 2.8rem;
+    --font-h1: 2.2rem;
+    --font-h2: 1.6rem;
+    --font-h3: 1.2rem;
+    --font-body-large: 1.1rem;
+    --font-body: 1rem;
+    --font-body-small: 0.925rem;
+    --font-caption: 0.8rem;
+    
+    /* Line Heights */
+    --line-height-tight: 1.1;
+    --line-height-normal: 1.4;
+    --line-height-relaxed: 1.7;
+    
+    /* Letter Spacing */
+    --letter-spacing-loose: 0.08em;
+    --letter-spacing-normal: 0.02em;
+    --letter-spacing-tight: -0.01em;
+    
+    /* Structure */
+    --navbar-height: 4.5rem;
+    --sidebar-width: 15rem;
+    --content-max-width: 1320px;
+    --gutter: 2.5rem;
+    --section-spacing: 4rem;
+    
+    /* Glassmorphism */
+    --glass-bg: rgba(24, 31, 47, 0.58);
+    --glass-border: rgba(168, 121, 239, 0.08);
+    --glass-blur: blur(20px);
+    
+    /* Transition */
+    --transition-hover: all 0.23s cubic-bezier(0.23, 1, 0.32, 1);
   }
 
   * {
-    @apply border-border;
+    border-color: var(--border);
+  }
+
+  /* Base Typography - Apply to all elements */
+  html {
+    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 
   body {
-    @apply bg-background text-foreground;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-weight: 400;
+    font-size: var(--font-body);
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-normal);
     font-feature-settings: "rlig" 1, "calt" 1;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Hawkly Brand Gradients */
-  .hawkly-primary-gradient {
-    background: linear-gradient(135deg, hsl(var(--hawkly-primary)), hsl(var(--hawkly-secondary)));
+  /* Headings - Ensure all use Space Grotesk with proper hierarchy */
+  h1, .h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-h1);
+    font-weight: 700;
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--text-primary);
   }
 
-  .hawkly-accent-gradient {
-    background: linear-gradient(135deg, hsl(var(--hawkly-accent)), hsl(var(--hawkly-primary)));
+  h2, .h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-h2);
+    font-weight: 700;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-normal);
+    color: var(--text-primary);
   }
 
-  .hawkly-hero-gradient {
-    background: linear-gradient(135deg, hsl(var(--background)), hsl(var(--hawkly-primary) / 0.1));
+  h3, .h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-h3);
+    font-weight: 500;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-normal);
+    color: var(--text-primary);
   }
 
-  /* Text gradients */
-  .text-hawkly-gradient {
-    background: linear-gradient(135deg, hsl(var(--hawkly-primary)), hsl(var(--hawkly-secondary)));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  h4, .h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-body-large);
+    font-weight: 500;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-normal);
+    color: var(--text-primary);
   }
 
-  .text-hawkly-accent-gradient {
-    background: linear-gradient(135deg, hsl(var(--hawkly-accent)), hsl(var(--hawkly-orange)));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  h5, .h5 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-body);
+    font-weight: 500;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-normal);
+    color: var(--text-primary);
   }
 
-  /* Modern container utility */
-  .container-modern {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  h6, .h6 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-body-small);
+    font-weight: 500;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-normal);
+    color: var(--text-primary);
   }
 
-  /* Modern focus utility */
-  .focus-modern {
-    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
+  /* Body text and paragraphs */
+  p, .text-body {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-body);
+    font-weight: 400;
+    line-height: var(--line-height-relaxed);
+    letter-spacing: var(--letter-spacing-normal);
+    color: var(--text-primary);
   }
 
-  /* Modern button utilities */
-  .btn-modern {
-    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  /* Code elements - Use IBM Plex Mono */
+  code, pre, kbd, samp, .font-mono {
+    font-family: 'IBM Plex Mono', Menlo, Consolas, 'Courier New', monospace !important;
+    font-feature-settings: "liga" 0;
+  }
+
+  /* Form elements */
+  input, textarea, select, button {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  /* Override legacy Inter usage */
+  .font-inter {
+    font-family: 'Space Grotesk', sans-serif !important;
+  }
+
+  /* Typography Utilities */
+  .text-display {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-display);
+    font-weight: 900;
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--text-primary);
+  }
+
+  .text-h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-h1);
+    font-weight: 700;
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--text-primary);
+  }
+
+  .text-h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-h2);
+    font-weight: 700;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-normal);
+    color: var(--text-primary);
+  }
+
+  .text-h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-h3);
+    font-weight: 500;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-normal);
+    color: var(--text-primary);
+  }
+
+  .text-body-large {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-body-large);
+    font-weight: 400;
+    line-height: var(--line-height-relaxed);
+    color: var(--text-primary);
+  }
+
+  .text-body {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-body);
+    font-weight: 400;
+    line-height: var(--line-height-normal);
+    color: var(--text-primary);
+  }
+
+  .text-body-small {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-body-small);
+    font-weight: 400;
+    line-height: var(--line-height-normal);
+    color: var(--text-primary);
+  }
+
+  .text-caption {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-caption);
+    font-weight: 500;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-loose);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .font-mono {
+    font-family: 'IBM Plex Mono', Menlo, Consolas, monospace !important;
+  }
+
+  /* Tailwind Typography Overrides - Map legacy classes to design system */
+  .text-3xl {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-h1);
+    font-weight: 700;
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+  }
+
+  .text-2xl {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-h2);
+    font-weight: 700;
+    line-height: var(--line-height-normal);
+  }
+
+  .text-xl {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-h3);
+    font-weight: 500;
+    line-height: var(--line-height-normal);
+  }
+
+  .text-lg {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-body-large);
+    line-height: var(--line-height-normal);
+  }
+
+  .text-base {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-body);
+    line-height: var(--line-height-normal);
+  }
+
+  .text-sm {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-body-small);
+    line-height: var(--line-height-normal);
+  }
+
+  .text-xs {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-caption);
+    line-height: var(--line-height-normal);
+  }
+
+  /* Font Weight Overrides */
+  .font-bold {
+    font-weight: 700;
+  }
+
+  .font-semibold {
+    font-weight: 500;
+  }
+
+  .font-medium {
+    font-weight: 500;
+  }
+
+  .font-normal {
+    font-weight: 400;
+  }
+
+  .font-light {
+    font-weight: 300;
+  }
+
+  .font-black {
+    font-weight: 900;
+  }
+
+  /* Color Utilities */
+  .text-primary { color: var(--text-primary); }
+  .text-secondary { color: var(--text-secondary); }
+  .text-disabled { color: var(--text-disabled); }
+  .text-inverse { color: var(--text-inverse); }
+  .text-error { color: var(--error); }
+  .text-success { color: var(--success); }
+  .text-warning { color: var(--warning); }
+  .text-info { color: var(--info); }
+  .text-accent-primary { color: var(--accent-primary); }
+  .text-accent-secondary { color: var(--accent-secondary); }
+
+  /* Background Utilities */
+  .bg-primary { background: var(--bg-primary); }
+  .bg-secondary { background: var(--bg-secondary); }
+  .bg-gradient { background: var(--bg-gradient); }
+  .bg-sidebar { background: var(--sidebar); }
+  .bg-surface { background: var(--surface); }
+  .bg-card { background: var(--card); }
+  .bg-elevation1 { background: var(--elevation1); }
+  .bg-accent-primary { background: var(--accent-primary); }
+  .bg-accent-secondary { background: var(--accent-secondary); }
+  .bg-error { background: var(--error); }
+  .bg-success { background: var(--success); }
+  .bg-warning { background: var(--warning); }
+  .bg-info { background: var(--info); }
+
+  /* Gradient Utilities */
+  .bg-button-primary { background: var(--button-primary); }
+  .bg-button-hover { background: var(--button-hover); }
+
+  /* Border Radius Utilities */
+  .rounded-small { border-radius: var(--radius-small); }
+  .rounded-medium { border-radius: var(--radius-medium); }
+  .rounded-large { border-radius: var(--radius-large); }
+  .rounded-full { border-radius: var(--radius-full); }
+
+  /* Spacing Utilities */
+  .space-0 { gap: var(--spacing-0); }
+  .space-1 { gap: var(--spacing-1); }
+  .space-2 { gap: var(--spacing-2); }
+  .space-3 { gap: var(--spacing-3); }
+  .space-4 { gap: var(--spacing-4); }
+  .space-5 { gap: var(--spacing-5); }
+  .space-6 { gap: var(--spacing-6); }
+  .space-7 { gap: var(--spacing-7); }
+  .space-8 { gap: var(--spacing-8); }
+
+  /* Shadow Utilities */
+  .shadow-card { box-shadow: var(--card-shadow-strong); }
+  .shadow-glow { box-shadow: var(--card-shadow-glow); }
+  .shadow-accent { box-shadow: var(--accent-glow); }
+
+  /* Glassmorphism Utilities */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+  }
+
+  /* Focus Utilities */
+  .focus-ring:focus {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  /* Transition Utilities */
+  .transition-hover {
+    transition: var(--transition-hover);
+  }
+
+  /* Button Components */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    padding: 0.75rem 2rem;
+    border-radius: var(--radius-medium);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-body);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-normal);
+    transition: var(--transition-hover);
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+  }
+
+  .btn:focus {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  .btn:disabled {
+    opacity: var(--disabled-opacity);
+    cursor: not-allowed;
   }
 
   .btn-primary {
-    background: linear-gradient(135deg, hsl(var(--hawkly-primary)), hsl(var(--hawkly-secondary)));
-    @apply text-white hover:opacity-90 shadow-md hover:shadow-lg;
+    background: var(--button-primary);
+    color: white;
+    box-shadow: 0 2px 20px 0 rgba(168, 121, 239, 0.19);
   }
 
-  .btn-secondary {
-    background: linear-gradient(135deg, hsl(var(--hawkly-secondary)), hsl(var(--hawkly-accent)));
-    @apply text-white hover:opacity-90 shadow-md hover:shadow-lg;
+  .btn-primary:hover:not(:disabled) {
+    background: var(--button-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 24px 0 rgba(168, 121, 239, 0.25);
   }
 
-  /* Grid pattern for backgrounds */
-  .bg-grid-hawkly {
-    background-image: linear-gradient(hsl(var(--hawkly-primary) / 0.1) 1px, transparent 1px),
-                      linear-gradient(90deg, hsl(var(--hawkly-primary) / 0.1) 1px, transparent 1px);
-    background-size: 50px 50px;
+  .btn-ghost {
+    background: transparent;
+    color: var(--accent-primary);
   }
 
-  /* Custom scrollbar */
+  .btn-ghost:hover:not(:disabled) {
+    background: rgba(168, 121, 239, 0.07);
+  }
+
+  /* Card Components */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius-medium);
+    box-shadow: var(--card-shadow-strong);
+    padding: 2rem;
+    transition: var(--transition-hover);
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow-glow);
+  }
+
+  /* Input Components */
+  .input {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-small);
+    color: var(--text-primary);
+    padding: 0.85rem 1.2rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--font-body);
+    transition: var(--transition-hover);
+    width: 100%;
+  }
+
+  .input::placeholder {
+    color: var(--text-disabled);
+  }
+
+  .input:focus {
+    outline: none;
+    border-color: var(--accent-secondary);
+    box-shadow: 0 0 0 2px var(--accent-secondary);
+  }
+
+  /* Tag Components */
+  .tag {
+    background: var(--elevation1);
+    color: var(--accent-primary);
+    border-radius: var(--radius-full);
+    padding: 0.22em 1em;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 0.95em;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* Navigation Components */
+  .nav {
+    background: var(--sidebar);
+    color: var(--text-primary);
+    height: var(--navbar-height);
+    display: flex;
+    align-items: center;
+    padding: 0 var(--gutter);
+  }
+
+  .nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-small);
+    font-family: 'Space Grotesk', sans-serif;
+    transition: var(--transition-hover);
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--accent-primary);
+    background: rgba(168, 121, 239, 0.1);
+  }
+
+  /* Custom Scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
 
   ::-webkit-scrollbar-track {
-    background: hsl(var(--muted));
+    background: var(--bg-secondary);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--hawkly-primary) / 0.6);
+    background: var(--accent-primary);
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--hawkly-primary));
+    background: var(--accent-secondary);
   }
 
-  /* Selection colors */
+  /* Selection Colors */
   ::selection {
-    background: hsl(var(--hawkly-primary) / 0.3);
-    color: hsl(var(--foreground));
+    background: var(--accent-glow-purple);
+    color: var(--text-primary);
   }
 
-  /* Ensure consistent dark theme across all components */
-  .light {
-    display: none !important;
+  /* Container Utilities */
+  .container-modern {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
   }
 
-  /* Security-focused shadow utilities */
-  .shadow-hawkly {
-    box-shadow: 0 4px 20px hsl(var(--hawkly-primary) / 0.15);
+  /* Animations */
+  @keyframes glow-pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 var(--accent-glow-purple);
+    }
+    70% {
+      box-shadow: 0 0 0 10px transparent;
+    }
   }
 
-  .shadow-hawkly-lg {
-    box-shadow: 0 8px 32px hsl(var(--hawkly-primary) / 0.2);
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 2s infinite;
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(90deg, transparent, var(--accent-glow-purple), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
   }
 }
+

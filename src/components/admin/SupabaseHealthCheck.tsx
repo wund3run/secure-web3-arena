@@ -40,12 +40,12 @@ export function SupabaseHealthCheck() {
           message: "Successfully connected to Supabase",
           details: `Profiles table accessible`
         });
-      } catch (err: any) {
+      } catch (err: unknown) {
         checkResults.push({
           name: "Database Connection",
           status: 'error',
           message: "Failed to connect to database",
-          details: err.message
+          details: err instanceof Error ? err.message : String(err)
         });
       }
 
@@ -60,12 +60,12 @@ export function SupabaseHealthCheck() {
           message: session ? "User session active" : "Authentication system functional",
           details: session ? `User: ${session.user.email}` : "No active session"
         });
-      } catch (err: any) {
+      } catch (err: unknown) {
         checkResults.push({
           name: "Authentication System",
           status: 'error',
           message: "Authentication system error",
-          details: err.message
+          details: err instanceof Error ? err.message : String(err)
         });
       }
 
@@ -121,12 +121,12 @@ export function SupabaseHealthCheck() {
           message: "Real-time subscriptions working",
           details: "Channel subscription successful"
         });
-      } catch (err: any) {
+      } catch (err: unknown) {
         checkResults.push({
           name: "Real-time System",
           status: 'warning',
           message: "Real-time system may have issues",
-          details: err.message
+          details: err instanceof Error ? err.message : String(err)
         });
       }
 
@@ -143,9 +143,9 @@ export function SupabaseHealthCheck() {
         toast.success("All systems operational");
       }
       
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Health check failed:", err);
-      toast.error("Health check failed", { description: err.message });
+      toast.error("Health check failed", { description: err instanceof Error ? err.message : String(err) });
     } finally {
       setChecking(false);
     }

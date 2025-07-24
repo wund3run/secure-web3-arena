@@ -60,7 +60,7 @@ export const EscrowPaymentProcessor: React.FC<EscrowPaymentProcessorProps> = ({
 
       onPaymentComplete(contract.id);
       toast.success('Escrow payment processed successfully');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Payment processing error:', error);
       toast.error('Payment processing failed');
     } finally {

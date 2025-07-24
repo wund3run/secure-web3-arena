@@ -1,4 +1,3 @@
-
 export interface PublicNavigationLink {
   title: string;
   href: string;
@@ -13,7 +12,7 @@ export const publicNavigationLinks: PublicNavigationLink[] = [
     children: [
       {
         title: "Security Audits",
-        href: "/security-audits",
+        href: "/services/security-audits",
         description: "Comprehensive smart contract security reviews"
       },
       {
@@ -30,32 +29,58 @@ export const publicNavigationLinks: PublicNavigationLink[] = [
   },
   {
     title: "Platform",
-    href: "/features",
+    href: "/auditor/enhanced-dashboard",
     children: [
       {
         title: "Advanced Features",
-        href: "/features",
+        href: "/auditor/enhanced-dashboard",
         description: "Explore our comprehensive platform capabilities"
       },
       {
         title: "Escrow & Payments",
-        href: "/escrow",
+        href: "/dashboard",
         description: "Secure milestone-based payment system"
       },
       {
         title: "Real-time Collaboration",
-        href: "/collaboration",
+        href: "/project-management",
         description: "Live document editing and team communication"
       },
       {
         title: "Analytics Dashboard",
-        href: "/analytics",
+        href: "/dashboard",
         description: "Advanced insights and performance metrics"
       }
     ]
   },
   {
     title: "Resources",
+    href: "/resources/security-guides",
+    children: [
+      {
+        title: "Security Guides",
+        href: "/resources/security-guides",
+        description: "Best practices and security guidelines"
+      },
+      {
+        title: "Knowledge Base",
+        href: "/resources/knowledge-base",
+        description: "Comprehensive security documentation"
+      },
+      {
+        title: "Tutorials",
+        href: "/resources/tutorials",
+        description: "Step-by-step security tutorials"
+      },
+      {
+        title: "Vulnerability Database",
+        href: "/resources/vulnerability-database",
+        description: "Known vulnerabilities and fixes"
+      }
+    ]
+  },
+  {
+    title: "Support",
     href: "/support",
     children: [
       {
@@ -70,23 +95,23 @@ export const publicNavigationLinks: PublicNavigationLink[] = [
       },
       {
         title: "Documentation",
-        href: "/support",
+        href: "/support/documentation",
         description: "Comprehensive platform guides"
       }
     ]
   },
   {
     title: "Company",
-    href: "/business/about",
+    href: "/about",
     children: [
       {
         title: "About",
-        href: "/business/about",
+        href: "/about",
         description: "Learn about Hawkly's mission"
       },
       {
         title: "Pricing",
-        href: "/business/pricing",
+        href: "/pricing",
         description: "Transparent pricing for all services"
       },
       {
@@ -96,9 +121,12 @@ export const publicNavigationLinks: PublicNavigationLink[] = [
       },
       {
         title: "Contact",
-        href: "/business/contact",
+        href: "/contact",
         description: "Get in touch with us"
       }
     ]
   }
 ];
+
+console.log('VITE_SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL);
+console.log('VITE_SUPABASE_ANON_KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY);

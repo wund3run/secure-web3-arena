@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,15 +6,15 @@ import { Badge } from '@/components/ui/badge';
 import { Check, ArrowRight, IndianRupee, DollarSign, Calculator } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export default function PricingINR() {
+export default function Pricing() {
   const [currency, setCurrency] = useState<'USD' | 'INR'>('INR');
-  const [exchangeRate] = useState(83.30); // Current USD to INR rate
+  const [exchangeRate] = useState(86.00); // Current USD to INR rate
 
   const plans = [
     {
       name: "Smart Contract Audit",
-      priceUSD: 5000,
-      priceINR: 416500,
+      priceUSD: 1500,
+      priceINR: 129000,
       duration: "5-7 days",
       description: "Comprehensive security audit for smart contracts up to 1000 lines of code",
       features: [
@@ -31,8 +30,8 @@ export default function PricingINR() {
     },
     {
       name: "DeFi Protocol Audit",
-      priceUSD: 15000,
-      priceINR: 1249500,
+      priceUSD: 12000,
+      priceINR: 1032000,
       duration: "7-10 days",
       description: "Complete security assessment for DeFi protocols and complex dApps",
       features: [
@@ -48,8 +47,8 @@ export default function PricingINR() {
     },
     {
       name: "Enterprise Security Suite",
-      priceUSD: 50000,
-      priceINR: 4165000,
+      priceUSD: 100000,
+      priceINR: 8600000,
       duration: "14-21 days",
       description: "Full-scale security assessment for enterprise blockchain solutions",
       features: [

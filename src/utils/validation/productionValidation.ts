@@ -4,9 +4,9 @@ import { InputSanitizer } from '../security/inputSanitizer';
 
 export class ProductionValidation {
   // Validate audit request data before submission
-  static validateAuditRequest(data: any): { isValid: boolean; errors: string[]; sanitizedData?: any } {
+  static validateAuditRequest(data: unknown): { isValid: boolean; errors: string[]; sanitizedData?: unknown } {
     const errors: string[] = [];
-    const sanitizedData: any = {};
+    const sanitizedData: unknown = {};
 
     // Validate and sanitize project name
     const projectNameResult = EnhancedValidation.validateText(data.project_name, {
@@ -97,9 +97,9 @@ export class ProductionValidation {
   }
 
   // Validate auditor profile data
-  static validateAuditorProfile(data: any): { isValid: boolean; errors: string[]; sanitizedData?: any } {
+  static validateAuditorProfile(data: unknown): { isValid: boolean; errors: string[]; sanitizedData?: unknown } {
     const errors: string[] = [];
-    const sanitizedData: any = {};
+    const sanitizedData: unknown = {};
 
     if (!data.user_id) {
       errors.push('User authentication required');

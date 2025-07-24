@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,7 +17,8 @@ import {
   CheckCircle,
   Target,
   Activity,
-  Star
+  Star,
+  type LucideIcon
 } from 'lucide-react';
 
 interface ReadinessComponent {
@@ -27,7 +27,7 @@ interface ReadinessComponent {
   description: string;
   score: number;
   status: 'completed' | 'in_progress' | 'pending';
-  icon: React.ComponentType<any>;
+  icon: LucideIcon;
   color: string;
 }
 
@@ -94,7 +94,7 @@ export const FinalProductionReadiness = () => {
     }, 3000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [readinessComponents]);
 
   useEffect(() => {
     const totalScore = components.reduce((sum, component) => sum + component.score, 0);

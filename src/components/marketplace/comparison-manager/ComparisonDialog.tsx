@@ -6,7 +6,7 @@ import { convertToMarketplaceService, convertToServiceCardProps } from "./utils/
 import { ServiceCardProps } from "@/types/marketplace-unified";
 
 interface ComparisonDialogProps {
-  services?: any[];
+  services?: unknown[];
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }

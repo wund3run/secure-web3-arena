@@ -1,56 +1,15 @@
-
-import React, { createContext, useContext, useReducer, useCallback } from 'react';
+import React, { useReducer, useCallback } from 'react';
 import { ServiceCardProps } from "@/components/marketplace/card/ServiceCardProps";
 import { toast } from "sonner";
 import { handleApiError } from "@/utils/apiErrorHandler";
 import { useQuery } from '@tanstack/react-query';
-
-// Define the state type
-export interface MarketplaceState {
-  viewMode: "grid" | "list";
-  showFilters: boolean;
-  activeCategory: string;
-  isLoading: boolean;
-  showOnboarding: boolean;
-  showEnhancedOnboarding: boolean;
-  selectedService: ServiceCardProps | null;
-  activeFilters: Record<string, any>;
-  showAIRecommendations: boolean;
-  servicesForComparison: ServiceCardProps[];
-  showComparison: boolean;
-}
-
-// Define action types
-type MarketplaceAction = 
-  | { type: 'SET_VIEW_MODE'; payload: "grid" | "list" }
-  | { type: 'SET_SHOW_FILTERS'; payload: boolean }
-  | { type: 'SET_ACTIVE_CATEGORY'; payload: string }
-  | { type: 'SET_IS_LOADING'; payload: boolean }
-  | { type: 'SET_SHOW_ONBOARDING'; payload: boolean }
-  | { type: 'SET_SHOW_ENHANCED_ONBOARDING'; payload: boolean }
-  | { type: 'SET_SELECTED_SERVICE'; payload: ServiceCardProps | null }
-  | { type: 'SET_ACTIVE_FILTERS'; payload: Record<string, any> }
-  | { type: 'SET_SHOW_AI_RECOMMENDATIONS'; payload: boolean }
-  | { type: 'TOGGLE_COMPARE_SERVICE'; payload: ServiceCardProps }
-  | { type: 'SET_SERVICES_FOR_COMPARISON'; payload: ServiceCardProps[] }
-  | { type: 'SET_SHOW_COMPARISON'; payload: boolean }
-  | { type: 'APPLY_FILTERS'; payload: Record<string, any> }
-  | { type: 'COMPLETE_ONBOARDING' };
-
-// Define the initial state
-const initialState: MarketplaceState = {
-  viewMode: "grid",
-  showFilters: false,
-  activeCategory: "all",
-  isLoading: true,
-  showOnboarding: false,
-  showEnhancedOnboarding: false,
-  selectedService: null,
-  activeFilters: {},
-  showAIRecommendations: false,
-  servicesForComparison: [],
-  showComparison: false,
-};
+import { 
+  MarketplaceState, 
+  MarketplaceAction, 
+  initialState, 
+  MarketplaceContextType, 
+  MarketplaceContext 
+} from './MarketplaceContextTypes';
 
 // Create the reducer
 const marketplaceReducer = (state: MarketplaceState, action: MarketplaceAction): MarketplaceState => {
@@ -116,38 +75,6 @@ const marketplaceReducer = (state: MarketplaceState, action: MarketplaceAction):
   }
 };
 
-// Create the context
-interface MarketplaceContextType {
-  state: MarketplaceState;
-  dispatch: React.Dispatch<MarketplaceAction>;
-  setViewMode: (mode: "grid" | "list") => void;
-  setShowFilters: (show: boolean) => void;
-  setActiveCategory: (category: string) => void;
-  setSelectedService: (service: ServiceCardProps | null) => void;
-  handleApplyFilters: (filters: Record<string, any>) => void;
-  handleOnboardingComplete: () => void;
-  toggleCompareService: (service: ServiceCardProps) => void;
-  isServiceInComparison: (serviceId: string) => boolean;
-  handleOpenComparison: () => void;
-  setShowComparison: (show: boolean) => void;
-  filterServices: (services: ServiceCardProps[]) => ServiceCardProps[];
-  servicesQuery: {
-    data?: ServiceCardProps[];
-    isLoading: boolean;
-    error: Error | null;
-  };
-}
-
-const MarketplaceContext = createContext<MarketplaceContextType | undefined>(undefined);
-
-export const useMarketplace = () => {
-  const context = useContext(MarketplaceContext);
-  if (!context) {
-    throw new Error("useMarketplace must be used within a MarketplaceProvider");
-  }
-  return context;
-};
-
 interface MarketplaceProviderProps {
   children: React.ReactNode;
   services?: ServiceCardProps[];
@@ -169,7 +96,7 @@ export const MarketplaceProvider: React.FC<MarketplaceProviderProps> = ({ childr
       );
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [dispatch]);
   
   // Simulate loading state for better UX
   React.useEffect(() => {
@@ -178,7 +105,7 @@ export const MarketplaceProvider: React.FC<MarketplaceProviderProps> = ({ childr
       800
     );
     return () => clearTimeout(timer);
-  }, []);
+  }, [dispatch]);
 
   // Use React Query to fetch services
   const servicesQuery = useQuery({
@@ -212,7 +139,7 @@ export const MarketplaceProvider: React.FC<MarketplaceProviderProps> = ({ childr
     dispatch({ type: 'SET_SELECTED_SERVICE', payload: service });
   }, []);
 
-  const handleApplyFilters = useCallback((filters: Record<string, any>) => {
+  const handleApplyFilters = useCallback((filters: Record<string, unknown>) => {
     dispatch({ type: 'APPLY_FILTERS', payload: filters });
     console.log("Applied filters:", filters);
   }, []);
@@ -221,8 +148,14 @@ export const MarketplaceProvider: React.FC<MarketplaceProviderProps> = ({ childr
     dispatch({ type: 'COMPLETE_ONBOARDING' });
   }, []);
 
-  const toggleCompareService = useCallback((service: ServiceCardProps) => {
-    dispatch({ type: 'TOGGLE_COMPARE_SERVICE', payload: service });
+  const toggleCompareService = useCallback((service: ServiceCardProps | ServiceCardProps[]) => {
+    if (Array.isArray(service)) {
+      // Handle array input - clear all services
+      dispatch({ type: 'SET_SERVICES_FOR_COMPARISON', payload: [] });
+    } else {
+      // Handle single service input - toggle it
+      dispatch({ type: 'TOGGLE_COMPARE_SERVICE', payload: service });
+    }
   }, []);
 
   const isServiceInComparison = useCallback((serviceId: string) => {
@@ -317,4 +250,12 @@ export const MarketplaceProvider: React.FC<MarketplaceProviderProps> = ({ childr
       {children}
     </MarketplaceContext.Provider>
   );
+};
+
+export const useMarketplace = () => {
+  const context = React.useContext(MarketplaceContext);
+  if (!context) {
+    throw new Error('useMarketplace must be used within a MarketplaceProvider');
+  }
+  return context;
 };

@@ -1,10 +1,22 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Brain, Star, Clock, DollarSign, CheckCircle } from 'lucide-react';
+
+// Extend Window interface for analytics tracking
+declare global {
+  interface Window {
+    trackConversion?: (data: {
+      action: string;
+      category: string;
+      label: string;
+      value?: number;
+      metadata?: Record<string, unknown>;
+    }) => void;
+  }
+}
 
 interface AuditorMatch {
   id: string;
@@ -41,11 +53,7 @@ export function AIMatchingEngine({ projectData, onAuditorSelect }: AIMatchingEng
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [analysisSteps, setAnalysisSteps] = useState<string[]>([]);
 
-  useEffect(() => {
-    simulateAIAnalysis();
-  }, [projectData]);
-
-  const simulateAIAnalysis = async () => {
+  const simulateAIAnalysis = useCallback(async () => {
     const steps = [
       'Analyzing project requirements...',
       'Processing smart contract complexity...',
@@ -120,8 +128,8 @@ export function AIMatchingEngine({ projectData, onAuditorSelect }: AIMatchingEng
     setIsAnalyzing(false);
 
     // Track AI matching completion
-    if ((window as any).trackConversion) {
-      (window as any).trackConversion({
+    if (window.trackConversion) {
+      window.trackConversion({
         action: 'ai_matching_completed',
         category: 'matching',
         label: 'auditor_recommendations',
@@ -132,7 +140,11 @@ export function AIMatchingEngine({ projectData, onAuditorSelect }: AIMatchingEng
         }
       });
     }
-  };
+  }, [projectData]);
+
+  useEffect(() => {
+    simulateAIAnalysis();
+  }, [simulateAIAnalysis]);
 
   const getAvailabilityColor = (availability: string) => {
     switch (availability) {
@@ -145,8 +157,8 @@ export function AIMatchingEngine({ projectData, onAuditorSelect }: AIMatchingEng
 
   const handleSelectAuditor = (auditor: AuditorMatch) => {
     // Track auditor selection
-    if ((window as any).trackConversion) {
-      (window as any).trackConversion({
+    if (window.trackConversion) {
+      window.trackConversion({
         action: 'auditor_selected',
         category: 'matching',
         label: auditor.name,

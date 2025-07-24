@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -31,6 +30,9 @@ export function EnhancedFooter() {
             <li><Link to="/marketplace" className="text-muted-foreground hover:text-foreground transition-colors">Browse Services</Link></li>
             <li><Link to="/request-audit" className="text-muted-foreground hover:text-foreground transition-colors">Request Audit</Link></li>
             <li><Link to="/auth" className="text-muted-foreground hover:text-foreground transition-colors">Join Platform</Link></li>
+            <li><Link to="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">Pricing</Link></li>
+            <li><Link to="/service-provider-onboarding" className="text-muted-foreground hover:text-foreground transition-colors">Become a Provider</Link></li>
+            <li><Link to="/resources/templates" className="text-muted-foreground hover:text-foreground transition-colors">Audit Templates</Link></li>
             <li><Link to="/audit-guidelines" className="text-muted-foreground hover:text-foreground transition-colors">Guidelines</Link></li>
           </ul>
         </div>
@@ -38,38 +40,46 @@ export function EnhancedFooter() {
         <div>
           <h3 className="font-medium mb-3">Resources</h3>
           <ul className="space-y-2 text-sm">
+            <li><Link to="/support/documentation" className="text-muted-foreground hover:text-foreground transition-colors">Documentation</Link></li>
+            <li><Link to="/resources/security-guides" className="text-muted-foreground hover:text-foreground transition-colors">Security Blog</Link></li>
+            <li><Link to="/resources/tutorials" className="text-muted-foreground hover:text-foreground transition-colors">Video Tutorials</Link></li>
+            <li><Link to="/resources/vulnerability-database" className="text-muted-foreground hover:text-foreground transition-colors">Vulnerability Database</Link></li>
+            <li><Link to="/tools/security-insights" className="text-muted-foreground hover:text-foreground transition-colors">Security Insights</Link></li>
+            <li><Link to="/support/faq" className="text-muted-foreground hover:text-foreground transition-colors">FAQ</Link></li>
             <li><Link to="/audit-guidelines" className="text-muted-foreground hover:text-foreground transition-colors">Audit Guidelines</Link></li>
             <li><Link to="/support" className="text-muted-foreground hover:text-foreground transition-colors">Help Center</Link></li>
             <li><Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">Contact</Link></li>
-            <li><Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">FAQ</Link></li>
           </ul>
         </div>
         
         <div>
           <h3 className="font-medium mb-3">Community</h3>
           <ul className="space-y-2 text-sm">
-            <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Discord</a></li>
-            <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Twitter</a></li>
-            <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">GitHub</a></li>
-            <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">LinkedIn</a></li>
+            <li><Link to="/community/forum" className="text-muted-foreground hover:text-foreground transition-colors">Join Community</Link></li>
+            <li><Link to="/community/forum" className="text-muted-foreground hover:text-foreground transition-colors">Discussion Forum</Link></li>
+            <li><Link to="/community/events" className="text-muted-foreground hover:text-foreground transition-colors">Events & Workshops</Link></li>
+            <li><Link to="/community/challenges" className="text-muted-foreground hover:text-foreground transition-colors">Security Challenges</Link></li>
+            <li><Link to="/community/leaderboard" className="text-muted-foreground hover:text-foreground transition-colors">Expert Leaderboard</Link></li>
           </ul>
         </div>
         
         <div>
           <h3 className="font-medium mb-3">Company</h3>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">About</Link></li>
-            <li><Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">Contact</Link></li>
-            <li><Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">Terms</Link></li>
-            <li><Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">Privacy</Link></li>
+            <li><Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">About Us</Link></li>
+            <li><Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">Contact Support</Link></li>
+            <li><Link to="/business/careers" className="text-muted-foreground hover:text-foreground transition-colors">Careers</Link></li>
+            <li><Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">Terms of Service</Link></li>
+            <li><Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link></li>
+            <li><Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">Security Policy</Link></li>
           </ul>
         </div>
       </div>
       
-      <div className="container mt-8 pt-8 border-t px-4">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground text-center md:text-left">
-            &copy; 2025 Hawkly Inc. All rights reserved.
+      <div className="container mt-8 pt-8 border-t">
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <p className="text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear()} Hawkly Inc. All rights reserved. • Updated June 2025
           </p>
           <div className="flex flex-wrap justify-center md:justify-end gap-4">
             <a 

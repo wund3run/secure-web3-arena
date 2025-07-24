@@ -1,5 +1,24 @@
-
 /// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly VITE_SUPABASE_URL: string
+  readonly VITE_SUPABASE_ANON_KEY: string
+  readonly VITE_STRIPE_PUBLISHABLE_KEY: string
+  readonly VITE_GOOGLE_ANALYTICS_ID: string
+  readonly VITE_SENTRY_DSN: string
+  readonly VITE_APP_ENV: 'development' | 'staging' | 'production'
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
+
+declare global {
+  interface Window {
+    session: unknown | null;
+    user: unknown | null;
+  }
+}
 
 declare namespace Auth {
   interface UserProfile {
@@ -14,12 +33,12 @@ declare namespace Auth {
 
   interface AuthEventPayload {
     event: string;
-    session: any | null;
+    session: unknown | null;
   }
 
   interface AuthResponse {
-    user: any | null;
-    session: any | null;
+    user: unknown | null;
+    session: unknown | null;
     error: Error | null;
   }
 }

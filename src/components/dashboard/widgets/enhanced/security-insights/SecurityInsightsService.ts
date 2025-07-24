@@ -22,13 +22,13 @@ export async function fetchSecurityInsights(userId: string): Promise<SecurityDat
 
     if (error) throw error;
 
-    const scores = data?.map(d => d.security_score).filter(Boolean) || [];
-    const averageScore = scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
+    const scores = data?.map(d => d.security_score).filter((score): score is number => score !== null && score !== undefined) || [];
+    const averageScore = scores.length ? scores.reduce((a, b) => (a || 0) + (b || 0), 0) / scores.length : 0;
 
     // Fetch audit findings for vulnerability count
     const auditRequestIds = data?.map(req => req.id) || [];
     
-    let findingsData = [];
+    let findingsData: Array<{ severity: string; status: string }> = [];
     if (auditRequestIds.length > 0) {
       const { data: findings, error: findingsError } = await supabase
         .from('audit_findings')

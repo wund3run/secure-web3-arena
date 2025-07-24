@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -9,7 +8,7 @@ import { Bell } from 'lucide-react';
 import { NotificationSettingsProps } from '../types';
 
 export function CommunicationSection({ preferences, updatePreferences, onNotificationChange }: NotificationSettingsProps) {
-  const handlePreferenceChange = (key: string, value: any) => {
+  const handlePreferenceChange = (key: string, value: string | boolean) => {
     updatePreferences({
       [key]: value,
     });

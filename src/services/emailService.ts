@@ -5,7 +5,7 @@ export interface EmailTemplate {
   to: string;
   subject: string;
   template: 'audit_status' | 'finding_alert' | 'welcome' | 'notification';
-  templateData: any;
+  templateData: unknown;
 }
 
 export class EmailService {

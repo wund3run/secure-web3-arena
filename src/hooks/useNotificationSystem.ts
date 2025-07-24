@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -12,15 +11,58 @@ export interface Notification {
   priority: 'low' | 'medium' | 'high' | 'urgent';
   isRead: boolean;
   actionUrl?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   createdAt: Date;
   expiresAt?: Date;
+}
+
+if (!crypto.randomUUID) {
+  (crypto as any).randomUUID = function () {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c: string) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  };
 }
 
 export const useNotificationSystem = (userId?: string) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isConnected, setIsConnected] = useState(false);
+
+  const loadNotifications = useCallback(async () => {
+    if (!userId) return;
+    
+    try {
+      // Load recent audit log entries as notifications
+      const { data, error } = await supabase
+        .from('audit_log')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (error) throw error;
+
+      const mappedNotifications: Notification[] = data.map(item => ({
+        id: item.id,
+        userId: userId,
+        type: 'audit_update',
+        title: 'Audit Update',
+        message: item.action,
+        priority: 'medium',
+        isRead: false,
+        actionUrl: `/audits/${item.audit_request_id}`,
+        metadata: { audit_request_id: item.audit_request_id },
+        createdAt: new Date(item.created_at),
+      }));
+
+      setNotifications(mappedNotifications);
+      setUnreadCount(mappedNotifications.filter(n => !n.isRead).length);
+    } catch (error: unknown) {
+      console.error('Failed to load notifications:', error);
+    }
+  }, [userId]);
 
   useEffect(() => {
     if (!userId) return;
@@ -63,40 +105,7 @@ export const useNotificationSystem = (userId?: string) => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [userId]);
-
-  const loadNotifications = useCallback(async () => {
-    if (!userId) return;
-
-    try {
-      // Load recent audit log entries as notifications
-      const { data, error } = await supabase
-        .from('audit_log')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(50);
-
-      if (error) throw error;
-
-      const mappedNotifications: Notification[] = data.map(item => ({
-        id: item.id,
-        userId: userId,
-        type: 'audit_update',
-        title: 'Audit Update',
-        message: item.action,
-        priority: 'medium',
-        isRead: false,
-        actionUrl: `/audits/${item.audit_request_id}`,
-        metadata: { audit_request_id: item.audit_request_id },
-        createdAt: new Date(item.created_at),
-      }));
-
-      setNotifications(mappedNotifications);
-      setUnreadCount(mappedNotifications.filter(n => !n.isRead).length);
-    } catch (error) {
-      console.error('Failed to load notifications:', error);
-    }
-  }, [userId]);
+  }, [userId, supabase, setNotifications, setUnreadCount, loadNotifications, toast]);
 
   const markAsRead = useCallback(async (notificationIds: string[]) => {
     if (!userId || !notificationIds.length) return;
@@ -112,7 +121,7 @@ export const useNotificationSystem = (userId?: string) => {
       );
       
       setUnreadCount(prev => Math.max(0, prev - notificationIds.length));
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to mark notifications as read:', error);
       toast.error('Failed to update notifications');
     }
@@ -125,7 +134,7 @@ export const useNotificationSystem = (userId?: string) => {
       setNotifications(prev => prev.map(notif => ({ ...notif, isRead: true })));
       setUnreadCount(0);
       toast.success('All notifications marked as read');
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to mark all notifications as read:', error);
       toast.error('Failed to update notifications');
     }
@@ -137,7 +146,7 @@ export const useNotificationSystem = (userId?: string) => {
     try {
       setNotifications(prev => prev.filter(n => n.id !== notificationId));
       toast.success('Notification deleted');
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to delete notification:', error);
       toast.error('Failed to delete notification');
     }
@@ -150,7 +159,7 @@ export const useNotificationSystem = (userId?: string) => {
     message: string,
     priority: Notification['priority'] = 'medium',
     actionUrl?: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ) => {
     try {
       // Since we don't have edge functions set up, we'll simulate sending
@@ -174,7 +183,7 @@ export const useNotificationSystem = (userId?: string) => {
         setNotifications(prev => [newNotification, ...prev]);
         setUnreadCount(prev => prev + 1);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to send notification:', error);
       throw error;
     }

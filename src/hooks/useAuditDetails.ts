@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,8 +11,8 @@ export interface AuditStatusUpdate {
   audit_request_id: string;
   status_type: string;
   title: string;
-  message?: string;
-  metadata?: any;
+  message?: string | null;
+  metadata?: Record<string, unknown> | null;
   user_id: string;
   created_at: string;
 }
@@ -53,8 +52,8 @@ export interface EnhancedAuditData {
     full_name?: string;
     avatar_url?: string;
   };
-  findings: any[];
-  deliverables: any[];
+  findings: Record<string, unknown>[];
+  deliverables: Record<string, unknown>[];
   status_updates: AuditStatusUpdate[];
   findings_count: {
     critical: number;
@@ -142,13 +141,13 @@ export const useAuditDetails = (auditId?: string) => {
         };
 
         // Type guard for client data
-        const isValidClientObject = (client: any): client is { id: string; full_name?: string; avatar_url?: string } => {
-          return client && typeof client === 'object' && typeof client.id === 'string';
+        const isValidClientObject = (client: unknown): client is { id: string; full_name?: string; avatar_url?: string } => {
+          return client !== null && typeof client === 'object' && 'id' in client && typeof (client as any).id === 'string';
         };
 
         // Type guard for auditor data
-        const isValidAuditorObject = (auditor: any): auditor is { id: string; full_name?: string; avatar_url?: string } => {
-          return auditor && typeof auditor === 'object' && typeof auditor.id === 'string';
+        const isValidAuditorObject = (auditor: unknown): auditor is { id: string; full_name?: string; avatar_url?: string } => {
+          return auditor !== null && typeof auditor === 'object' && 'id' in auditor && typeof (auditor as any).id === 'string';
         };
 
         // Ensure client data has proper structure with type guards
@@ -167,11 +166,14 @@ export const useAuditDetails = (auditId?: string) => {
           auditor: auditorData,
           findings: findings || [],
           deliverables: deliverables || [],
-          status_updates: statusUpdates || [],
+          status_updates: (statusUpdates || []).map(update => ({
+            ...update,
+            metadata: update.metadata as Record<string, unknown> | null
+          })) as AuditStatusUpdate[],
           findings_count: findingsCount,
-        });
+        } as EnhancedAuditData);
 
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('Error fetching audit details:', error);
       } finally {
         setIsLoading(false);
@@ -196,7 +198,7 @@ export const useAuditDetails = (auditId?: string) => {
       
       // Refresh data
       window.location.reload();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error sending message:', error);
     }
   };
@@ -210,8 +212,61 @@ export const useAuditDetails = (auditId?: string) => {
       
       // Refresh data
       window.location.reload();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error updating finding status:', error);
+    }
+  };
+
+  const requestClarification = async (message: string) => {
+    if (!id || !user) return;
+    try {
+      await supabase.from('audit_status_updates').insert({
+        audit_request_id: id,
+        status_type: 'clarification_request',
+        title: 'Clarification Requested',
+        message,
+        user_id: user.id,
+      });
+      // Notify auditor
+      if (auditData?.auditor?.id) {
+        await supabase.from('notifications').insert({
+          user_id: auditData.auditor.id,
+          title: 'Clarification Requested',
+          message: `A clarification was requested for audit ${auditData.project_name}.`,
+          type: 'info',
+          metadata: { audit_request_id: id }
+        });
+      }
+      window.location.reload();
+    } catch (error) {
+      console.error('Error requesting clarification:', error);
+    }
+  };
+
+  const markAuditComplete = async () => {
+    if (!id || !user) return;
+    try {
+      await supabase.from('audit_requests').update({ status: 'completed' }).eq('id', id);
+      await supabase.from('audit_status_updates').insert({
+        audit_request_id: id,
+        status_type: 'completion',
+        title: 'Audit Marked Complete',
+        message: 'The project owner has marked the audit as complete.',
+        user_id: user.id,
+      });
+      // Notify auditor
+      if (auditData?.auditor?.id) {
+        await supabase.from('notifications').insert({
+          user_id: auditData.auditor.id,
+          title: 'Audit Marked Complete',
+          message: `The audit for ${auditData.project_name} was marked complete by the project owner.`,
+          type: 'info',
+          metadata: { audit_request_id: id }
+        });
+      }
+      window.location.reload();
+    } catch (error) {
+      console.error('Error marking audit complete:', error);
     }
   };
 
@@ -225,5 +280,7 @@ export const useAuditDetails = (auditId?: string) => {
     milestones,
     reports,
     timeTracking,
+    requestClarification,
+    markAuditComplete,
   };
 };

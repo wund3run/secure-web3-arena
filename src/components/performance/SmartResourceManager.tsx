@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -102,7 +101,7 @@ function predictNextRoutes(currentPath: string): string[] {
 
 function prefetchRouteResources(routes: string[]) {
   if ('requestIdleCallback' in window) {
-    (window as any).requestIdleCallback(() => {
+    ((window as unknown as { requestIdleCallback?: typeof window.requestIdleCallback }).requestIdleCallback)?.(() => {
       routes.forEach(route => {
         const link = document.createElement('link');
         link.rel = 'prefetch';

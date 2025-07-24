@@ -3,10 +3,10 @@
  * Analytics tracking for performance optimization insights
  */
 class AnalyticsTracker {
-  private events: Array<{ event: string; category: string; data: any; timestamp: number }> = [];
+  private events: Array<{ event: string; category: string; data: unknown; timestamp: number }> = [];
   private readonly MAX_EVENTS = 1000;
 
-  track(category: string, event: string, data: any = {}): void {
+  track(category: string, event: string, data: unknown = {}): void {
     this.events.push({
       event,
       category,
@@ -36,7 +36,7 @@ class AnalyticsTracker {
     };
   }
 
-  getRecentEvents(limit: number = 10): Array<{ event: string; category: string; data: any; timestamp: number }> {
+  getRecentEvents(limit: number = 10): Array<{ event: string; category: string; data: unknown; timestamp: number }> {
     return this.events.slice(-limit);
   }
 

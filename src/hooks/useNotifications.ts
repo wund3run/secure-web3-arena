@@ -38,7 +38,7 @@ export const useNotifications = () => {
       
       setNotifications(mockNotifications);
       setUnreadCount(mockNotifications.filter(n => !n.is_read).length);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to fetch notifications:', err);
     } finally {
       setLoading(false);
@@ -55,7 +55,7 @@ export const useNotifications = () => {
         )
       );
       setUnreadCount(prev => Math.max(0, prev - 1));
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error('Failed to mark notification as read');
     }
   };
@@ -67,7 +67,7 @@ export const useNotifications = () => {
       );
       setUnreadCount(0);
       toast.success('All notifications marked as read');
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error('Failed to mark all notifications as read');
     }
   };
@@ -93,7 +93,7 @@ export const useNotifications = () => {
 
       setNotifications(prev => [newNotification, ...prev]);
       setUnreadCount(prev => prev + 1);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to create notification:', err);
     }
   };

@@ -1,0 +1,189 @@
+{
+  "name": "Web3 SaaS Sci-Fi Dark Modern Design System",
+  "description": "A dark, high-contrast, futuristic visual system inspired by sci-fi, data, and dashboard UIs. Features neon accents, glowing gradients, and accessible modern typography.",
+  "task3Status": "complete",
+  "task4Status": "complete",
+  "task5Status": "complete",
+  "task6Status": "complete",
+  "colors": {
+    "backgroundPrimary": "#131822",
+    "backgroundSecondary": "#181f2f",
+    "backgroundGradient": "linear-gradient(135deg, #212842 0%, #2a224e 100%)",
+    "sidebar": "#232b3a",
+    "surface": "#181e2c",
+    "card": "#1e2332",
+    "border": "#23283e",
+    "elevation1": "#1a2130",
+    "accentPrimary": "#a879ef",
+    "accentSecondary": "#32d9fa",
+    "accentGlowBlue": "rgba(50, 217, 250, 0.35)",
+    "accentGlowPurple": "rgba(168, 121, 239, 0.28)",
+    "buttonPrimary": "linear-gradient(90deg, #a879ef 60%, #32d9fa 100%)",
+    "buttonHover": "linear-gradient(90deg, #7d49ca 0%, #24bad7 100%)",
+    "textPrimary": "#f8f9fb",
+    "textSecondary": "#b2bfd4",
+    "textDisabled": "#8391ad",
+    "textInverse": "#1e2230",
+    "error": "#fc3574",
+    "success": "#2de08e",
+    "warning": "#ffd553",
+    "info": "#32d9fa"
+  },
+  "typography": {
+    "fontFamily": [
+      "'Space Grotesk'",
+      "'IBM Plex Mono'",
+      "'Roboto'",
+      "Arial",
+      "sans-serif"
+    ],
+    "fontMono": [
+      "'IBM Plex Mono'",
+      "Menlo",
+      "Consolas",
+      "monospace"
+    ],
+    "fontWeights": {
+      "regular": 400,
+      "medium": 500,
+      "bold": 700,
+      "black": 900
+    },
+    "fontSizes": {
+      "display": "2.8rem",
+      "h1": "2.2rem",
+      "h2": "1.6rem",
+      "h3": "1.2rem",
+      "bodyLarge": "1.1rem",
+      "body": "1rem",
+      "bodySmall": "0.925rem",
+      "caption": "0.8rem"
+    },
+    "lineHeights": {
+      "tight": 1.1,
+      "normal": 1.4,
+      "relaxed": 1.7
+    },
+    "letterSpacing": {
+      "loose": "0.08em",
+      "normal": "0.02em",
+      "tight": "-0.01em"
+    }
+  },
+  "effects": {
+    "cardShadowStrong": "0 8px 40px 0 rgba(50, 60, 130, 0.23)",
+    "cardShadowGlow": "0 0 24px 8px rgba(168, 121, 239, 0.15)",
+    "focusRing": "0 0 0 3px rgba(50, 217, 250, 0.65)",
+    "accentGlow": "0 0 18px 4px #a879ef, 0 2px 40px 12px #32d9fa",
+    "disabledOpacity": 0.53
+  },
+  "borderRadius": {
+    "small": "0.5rem",
+    "medium": "1.15rem",
+    "large": "2rem",
+    "full": "9999px"
+  },
+  "spacing": {
+    "0": "0px",
+    "1": "4px",
+    "2": "8px",
+    "3": "12px",
+    "4": "16px",
+    "5": "24px",
+    "6": "32px",
+    "7": "48px",
+    "8": "64px"
+  },
+  "components": {
+    "button": {
+      "borderRadius": "1.15rem",
+      "padding": "0.75rem 2rem",
+      "fontWeight": 700,
+      "fontSize": "1rem",
+      "textTransform": "uppercase",
+      "primary": {
+        "background": "linear-gradient(90deg, #a879ef 60%, #32d9fa 100%)",
+        "color": "#fff",
+        "boxShadow": "0 2px 20px 0 rgba(168, 121, 239, 0.19)"
+      },
+      "ghost": {
+        "background": "transparent",
+        "color": "#a879ef",
+        "hover": {
+          "background": "rgba(168, 121, 239, 0.07)"
+        }
+      }
+    },
+    "card": {
+      "background": "#1e2332",
+      "borderRadius": "1.15rem",
+      "boxShadow": "0 8px 40px 0 rgba(50, 60, 130, 0.23)",
+      "padding": "2rem"
+    },
+    "input": {
+      "background": "#181e2c",
+      "border": "1.5px solid #23283e",
+      "borderRadius": "0.5rem",
+      "color": "#f8f9fb",
+      "padding": "0.85rem 1.2rem",
+      "placeholderColor": "#8391ad",
+      "focusRing": "0 0 0 2px #32d9fa"
+    },
+    "nav": {
+      "background": "#232b3a",
+      "color": "#f8f9fb",
+      "activeColor": "#a879ef",
+      "spacingX": "2.25rem",
+      "height": "4.5rem"
+    },
+    "tag": {
+      "background": "#212842",
+      "color": "#a879ef",
+      "borderRadius": "9999px",
+      "padding": "0.22em 1em",
+      "fontWeight": 500,
+      "fontSize": "0.95em"
+    },
+    "chart": {
+      "gridColor": "#23283e",
+      "axisColor": "#32d9fa",
+      "labelColor": "#b2bfd4",
+      "linePrimary": "#a879ef",
+      "lineSecondary": "#32d9fa",
+      "barPrimary": "#a879ef",
+      "barSecondary": "#32d9fa"
+    }
+  },
+  "structure": {
+    "navbarHeight": "4.5rem",
+    "sidebarWidth": "15rem",
+    "contentMaxWidth": "1320px",
+    "gutter": "2.5rem",
+    "sectionSpacing": "4rem"
+  },
+  "imagery": {
+    "style": "Futuristic, neon, glowing, energetic digital/tech art, purple/blue/pink gradients, soft glows, and 3D interfaces.",
+    "hero": {
+      "background": "linear-gradient(135deg, #181e2c 0%, #2a224e 100%)",
+      "accentGlow": "#a879ef",
+      "secondaryGlow": "#32d9fa"
+    },
+    "iconStyle": "Line, duotone, neon, or flat icons with accent blue or purple and soft glow."
+  },
+  "special": {
+    "glassmorphism": {
+      "enabled": true,
+      "background": "rgba(24, 31, 47, 0.58)",
+      "backdropFilter": "blur(20px)",
+      "border": "1px solid rgba(168, 121, 239, 0.08)"
+    },
+    "dataEffects": {
+      "matrixBinary": true,
+      "glowingMath": true,
+      "motionBlur": true
+    },
+    "transition": {
+      "hover": "all 0.23s cubic-bezier(0.23, 1, 0.32, 1)"
+    }
+  }
+}

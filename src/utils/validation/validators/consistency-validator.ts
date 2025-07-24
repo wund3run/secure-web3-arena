@@ -1,4 +1,3 @@
-
 import { ValidationIssue } from "../types";
 
 /**
@@ -73,7 +72,7 @@ export const validateConsistency = (currentPath: string): ValidationIssue[] => {
     
     elements.forEach(el => {
       const style = window.getComputedStyle(el);
-      const value = style[property as any];
+      const value = style[property as keyof CSSStyleDeclaration];
       if (value && value !== '0px') {
         spacingValues.add(value);
       }

@@ -21,10 +21,14 @@ import {
   Eye,
   MessageSquare
 } from 'lucide-react';
+import DisputeList from '@/components/disputes/DisputeList';
+import RaiseDisputeModal from '@/components/disputes/RaiseDisputeModal';
 
 const ProjectDashboard = () => {
   const { user, userProfile } = useAuth();
   const [activeTab, setActiveTab] = useState('active');
+  const [showDisputeModal, setShowDisputeModal] = useState(false);
+  const [disputeRefreshKey, setDisputeRefreshKey] = useState(0);
 
   // Mock data for projects
   const projects = [
@@ -215,7 +219,7 @@ const ProjectDashboard = () => {
         </div>
 
         <div className="flex flex-wrap gap-1">
-          {project.scope.map((item) => (
+          {project.scope.map((item: string) => (
             <Badge key={item} variant="outline" className="text-xs">
               {item}
             </Badge>
@@ -358,6 +362,26 @@ const ProjectDashboard = () => {
               </div>
             </TabsContent>
           </Tabs>
+
+          {/* Disputes Section */}
+          <div className="mt-10">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-accent-cyan">Disputes</h2>
+              <Button onClick={() => setShowDisputeModal(true)} variant="default">Raise Dispute</Button>
+            </div>
+            <DisputeList key={disputeRefreshKey} projectId={projects[0]?.id || ''} onViewDispute={() => {}} />
+            {showDisputeModal && (
+              <RaiseDisputeModal
+                projectId={projects[0]?.id || ''}
+                raisedById={user?.id || 'user-123'}
+                againstId={'auditor-456'} // TODO: Use real auditor ID when available
+                onClose={() => {
+                  setShowDisputeModal(false);
+                  setDisputeRefreshKey((k) => k + 1);
+                }}
+              />
+            )}
+          </div>
         </div>
       </StandardLayout>
     </>

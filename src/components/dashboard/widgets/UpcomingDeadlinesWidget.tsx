@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -39,47 +38,19 @@ export function UpcomingDeadlinesWidget() {
   ];
 
   return (
-    <Card className="h-full">
-      <CardContent className="pt-6">
-        <ScrollArea className="h-[300px] pr-4">
-          <div className="space-y-4">
-            {deadlines.map((item) => (
-              <div 
-                key={item.id} 
-                className="flex items-start space-x-3 p-3 rounded-md border"
-              >
-                <CalendarClock className={`h-5 w-5 mt-0.5 ${
-                  item.status === 'urgent' 
-                    ? 'text-red-500' 
-                    : item.status === 'upcoming' 
-                      ? 'text-amber-500'
-                      : 'text-blue-500'
-                }`} />
-                
-                <div className="flex-1">
-                  <div className="flex justify-between items-start">
-                    <h4 className="font-medium">{item.project}</h4>
-                    <Badge 
-                      variant={
-                        item.status === 'urgent' 
-                          ? 'destructive' 
-                          : item.status === 'upcoming' 
-                            ? 'default'
-                            : 'outline'
-                      }
-                      className="text-xs"
-                    >
-                      {item.daysLeft} days left
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Due: {new Date(item.deadline).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </ScrollArea>
+    <Card className="bg-card rounded-[1.15rem] shadow-[0_8px_40px_0_rgba(50,60,130,0.23)] p-6">
+      <CardContent>
+        <h3 className="font-black uppercase tracking-tight text-accent-primary mb-3" style={{ fontFamily: "'Space Grotesk', Arial, sans-serif", letterSpacing: '0.08em' }}>
+          Upcoming Deadlines
+        </h3>
+        <ul className="space-y-3">
+          {deadlines.map((deadline, idx) => (
+            <li key={idx} className="flex items-center justify-between">
+              <span className="font-medium text-primary" style={{ fontFamily: "'Space Grotesk', Arial, sans-serif" }}>{deadline.project}</span>
+              <span className="text-xs text-accent-primary font-bold uppercase tracking-wide" style={{ fontFamily: "'Space Grotesk', Arial, sans-serif" }}>{deadline.daysLeft} days left</span>
+            </li>
+          ))}
+        </ul>
       </CardContent>
     </Card>
   );

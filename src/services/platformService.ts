@@ -6,7 +6,7 @@ export class PlatformService {
   // Dashboard statistics
   static async getDashboardStats(userId: string, userType: string) {
     try {
-      const stats: any = {};
+      const stats: unknown = {};
 
       if (userType === 'project_owner') {
         // Get client-specific stats
@@ -49,7 +49,7 @@ export class PlatformService {
       }
 
       return stats;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to fetch dashboard stats:', error);
       return {};
     }
@@ -62,7 +62,7 @@ export class PlatformService {
     blockchain?: string;
   }) {
     try {
-      const results: any = {
+      const results: unknown = {
         services: [],
         auditors: [],
         requests: []
@@ -100,7 +100,7 @@ export class PlatformService {
       }
 
       return results;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Search failed:', error);
       toast.error('Search failed');
       return { services: [], auditors: [], requests: [] };
@@ -130,7 +130,7 @@ export class PlatformService {
 
       // Sort by a simple metric (could be reputation when available)
       return matchedAuditors.sort((a, b) => (a.full_name || '').localeCompare(b.full_name || ''));
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to match auditors:', error);
       return [];
     }
@@ -158,7 +158,7 @@ export class PlatformService {
         completedAudits: completedAudits || 0,
         successRate: totalAuditRequests ? ((completedAudits || 0) / totalAuditRequests * 100).toFixed(1) : '0'
       };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to fetch platform analytics:', error);
       return {
         totalUsers: 0,

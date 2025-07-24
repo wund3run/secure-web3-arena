@@ -1,7 +1,6 @@
-
 import React, { useEffect } from 'react';
 import { useAuth } from '@/contexts/auth';
-import { useNotifications } from '@/contexts/NotificationContext';
+import { useNotifications } from '@/contexts/useNotifications';
 import { supabase } from '@/integrations/supabase/client';
 
 export const MessageNotificationHandler = () => {

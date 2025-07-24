@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { tensorflowMatchingEngine } from '@/utils/ai/tensorflowMatchingEngine';
@@ -18,10 +17,16 @@ import {
   mapExperienceToScore
 } from './useEnhancedAIMatchingV2/utils';
 
+interface ModelMetrics {
+  precision: number;
+  recall: number;
+  f1Score: number;
+}
+
 export const useEnhancedAIMatchingV2 = () => {
   const [isInitializing, setIsInitializing] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [modelMetrics, setModelMetrics] = useState<any>(null);
+  const [modelMetrics, setModelMetrics] = useState<ModelMetrics | null>(null);
   const [huggingFaceIntegration, setHuggingFaceIntegration] = useState<HuggingFaceIntegration | null>(null);
 
   const initializeAI = useCallback(async () => {
@@ -34,7 +39,7 @@ export const useEnhancedAIMatchingV2 = () => {
       
       // Initialize Hugging Face integration
       const hfIntegration = new HuggingFaceIntegration({
-        apiKey: process.env.NEXT_PUBLIC_HUGGING_FACE_TOKEN || 'demo-token',
+        apiKey: import.meta.env.VITE_HUGGING_FACE_TOKEN || 'demo-token',
         model: 'sentence-transformers/all-MiniLM-L6-v2' // Lightweight embedding model
       });
       
@@ -42,12 +47,13 @@ export const useEnhancedAIMatchingV2 = () => {
       
       // Evaluate model performance
       const metrics = await tensorflowMatchingEngine.evaluateModel();
-      setModelMetrics(metrics);
+      setModelMetrics(metrics as ModelMetrics);
       
       Logger.info('Enhanced AI matching system initialized', { metrics });
-      toast.success(`AI Matching Engine Ready! Precision: ${(metrics.precision * 100).toFixed(1)}%`);
+      const precision = (metrics as ModelMetrics)?.precision || 0;
+      toast.success(`AI Matching Engine Ready! Precision: ${(precision * 100).toFixed(1)}%`);
       
-    } catch (error) {
+    } catch (error: unknown) {
       Logger.error('Failed to initialize AI matching system', { 
         error: error instanceof Error ? error.message : 'Unknown error' 
       });
@@ -55,7 +61,7 @@ export const useEnhancedAIMatchingV2 = () => {
     } finally {
       setIsInitializing(false);
     }
-  }, []);
+  }, [huggingFaceIntegration]);
 
   const findEnhancedMatches = useCallback(async (
     criteria: EnhancedMatchingCriteria,
@@ -123,9 +129,9 @@ export const useEnhancedAIMatchingV2 = () => {
           recommendation_reason: semanticResult?.recommendationReason || 'Standard matching algorithm applied',
           feature_importance: tfPrediction?.featureImportance || {},
           precision_metrics: {
-            precision: modelMetrics?.precision || 0,
-            recall: modelMetrics?.recall || 0,
-            f1_score: modelMetrics?.f1Score || 0
+            precision: (modelMetrics as any)?.precision || 0,
+            recall: (modelMetrics as any)?.recall || 0,
+            f1_score: (modelMetrics as any)?.f1Score || 0
           }
         });
       }
@@ -141,7 +147,7 @@ export const useEnhancedAIMatchingV2 = () => {
 
       return enhancedResults;
 
-    } catch (error) {
+    } catch (error: unknown) {
       Logger.error('Enhanced AI matching failed', { 
         error: error instanceof Error ? error.message : 'Unknown error' 
       });

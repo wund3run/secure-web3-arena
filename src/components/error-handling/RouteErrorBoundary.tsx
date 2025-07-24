@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { AlertTriangle, Home, RefreshCw } from 'lucide-react';
@@ -58,7 +57,7 @@ export function RouteErrorBoundary({ children, fallback }: RouteErrorBoundaryPro
       onError={(error, errorInfo) => {
         console.error('Route Error:', error, errorInfo);
         // In production, send to error reporting service
-        if (process.env.NODE_ENV === 'production') {
+        if (import.meta.env.MODE === 'production') {
           // Example: sendErrorToService(error, errorInfo);
         }
       }}

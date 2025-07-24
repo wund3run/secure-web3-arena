@@ -5,9 +5,32 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { BarChart3, TrendingUp, Target, Zap } from 'lucide-react';
 
+interface MatchResult {
+  auditor_id: string;
+  ml_confidence_score: number;
+  success_probability: number;
+  estimated_project_outcome: {
+    quality_score: number;
+  };
+  auditor_profile: {
+    name: string;
+  };
+}
+
+interface Insights {
+  summary?: {
+    total_candidates?: number;
+    average_confidence?: number;
+    recommendation?: string;
+  };
+  risk_analysis?: {
+    overall_risk_level?: string;
+  };
+}
+
 interface MLMatchingVisualizationProps {
-  matchResults: any[];
-  insights: any;
+  matchResults: MatchResult[];
+  insights: Insights | null;
 }
 
 export const MLMatchingVisualization: React.FC<MLMatchingVisualizationProps> = ({ 

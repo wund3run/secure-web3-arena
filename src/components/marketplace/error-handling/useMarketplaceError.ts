@@ -1,6 +1,5 @@
-
 import { useState, useCallback } from "react";
-import { toast } from "sonner";
+import { withErrorHandling } from '@/utils/apiErrorHandler';
 
 /**
  * A hook for managing marketplace errors consistently
@@ -24,35 +23,17 @@ export function useMarketplaceError() {
     } else {
       setError(new Error('An unknown error occurred'));
     }
-    
-    // Show toast notification for user feedback
-    toast.error("Error", {
-      description: errorMessage.substring(0, 100), // Truncate very long messages
-    });
   }, []);
   
   const clearError = useCallback(() => {
     setError(null);
   }, []);
   
-  const wrapAsync = useCallback(async <T,>(
-    asyncFn: () => Promise<T>,
-    context?: string
-  ): Promise<T | null> => {
-    try {
-      clearError();
-      return await asyncFn();
-    } catch (caught) {
-      handleError(caught, context);
-      return null;
-    }
-  }, [handleError, clearError]);
-  
   return {
     error,
     setError,
     handleError,
     clearError,
-    wrapAsync
+    withErrorHandling
   };
 }

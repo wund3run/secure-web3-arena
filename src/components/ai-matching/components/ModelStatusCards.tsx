@@ -1,12 +1,18 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Cpu, Target, Activity, Award } from 'lucide-react';
 
+interface ModelMetrics {
+  precision: number;
+  recall: number;
+  f1Score: number;
+  [key: string]: unknown;
+}
+
 interface ModelStatusCardsProps {
   isInitializing: boolean;
-  modelMetrics: any;
+  modelMetrics: ModelMetrics | null;
 }
 
 export const ModelStatusCards: React.FC<ModelStatusCardsProps> = ({

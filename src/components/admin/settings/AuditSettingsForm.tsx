@@ -1,6 +1,5 @@
-
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
 import { 
   Card, 
@@ -34,7 +33,7 @@ const AuditSettingsForm = () => {
     },
   });
 
-  const onSubmit = (values: AuditFormValues) => {
+  const onSubmit: SubmitHandler<AuditFormValues> = (values: AuditFormValues) => {
     console.log("Audit settings:", values);
     toast.success("Audit settings updated successfully");
   };

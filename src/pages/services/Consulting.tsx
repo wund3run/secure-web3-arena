@@ -1,30 +1,58 @@
 
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { ProductionLayout } from '@/components/layout/ProductionLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, BookOpen, Lightbulb, Zap, ArrowRight, Calendar } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Users, BookOpen, Lightbulb, Zap, ArrowRight, Calendar, Brain, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Consulting() {
   return (
-    <ProductionLayout>
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-6xl mx-auto">
-          {/* Hero Section */}
-          <div className="text-center mb-12">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Users className="h-8 w-8 text-primary" />
-              <h1 className="text-4xl font-bold">Security Consulting</h1>
+    <>
+      <Helmet>
+        <title>AI-Enhanced Security Consulting - Hawkly</title>
+        <meta name="description" content="Strategic security consulting with AI insights. Expert guidance for Web3 applications, smart contracts, and DeFi protocols. Build secure blockchain applications." />
+        <meta name="keywords" content="security consulting, Web3 consulting, blockchain security advisory, smart contract consulting, DeFi security" />
+      </Helmet>
+      
+      <ProductionLayout>
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-6xl mx-auto">
+            {/* Hero Section */}
+            <div className="text-center mb-12">
+              <Badge variant="outline" className="mb-4">AI-Enhanced Consulting • June 2025</Badge>
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Users className="h-8 w-8 text-primary" />
+                <h1 className="text-4xl font-bold">Advanced Security Consulting</h1>
+              </div>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                Strategic security guidance combining AI insights with expert knowledge. Build secure Web3 applications 
+                with cutting-edge best practices, architecture reviews, and continuous security support.
+              </p>
             </div>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Strategic security guidance from industry experts. Build secure Web3 applications 
-              with best practices, architecture reviews, and ongoing security support.
-            </p>
-          </div>
 
           {/* Consulting Services */}
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <Card>
+              <CardHeader>
+                <Brain className="h-8 w-8 text-purple-500 mb-2" />
+                <CardTitle>AI Security Analysis</CardTitle>
+                <Badge variant="secondary" className="w-fit">New</Badge>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">
+                  Advanced AI-powered security analysis and threat modeling for complex Web3 systems.
+                </p>
+                <ul className="space-y-2 text-sm">
+                  <li>• AI-driven threat modeling</li>
+                  <li>• Automated risk assessment</li>
+                  <li>• Predictive vulnerability analysis</li>
+                  <li>• Real-time security insights</li>
+                </ul>
+              </CardContent>
+            </Card>
             <Card>
               <CardHeader>
                 <BookOpen className="h-8 w-8 text-blue-500 mb-2" />
@@ -135,42 +163,54 @@ export default function Consulting() {
 
           {/* Expertise Areas */}
           <div className="mb-12">
-            <h2 className="text-2xl font-bold text-center mb-8">Areas of Expertise</h2>
-            <div className="grid md:grid-cols-3 gap-6">
+            <h2 className="text-2xl font-bold text-center mb-8">Areas of Expertise - 2025</h2>
+            <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
               <div className="text-center">
-                <h3 className="font-semibold mb-2">DeFi Protocols</h3>
+                <h3 className="font-semibold mb-2">AI-Enhanced DeFi</h3>
                 <p className="text-sm text-muted-foreground">
-                  Security consulting for decentralized finance applications and protocols
+                  Security consulting for AI-powered DeFi protocols and automated trading systems
                 </p>
               </div>
               <div className="text-center">
-                <h3 className="font-semibold mb-2">NFT Platforms</h3>
+                <h3 className="font-semibold mb-2">Cross-Chain Infrastructure</h3>
                 <p className="text-sm text-muted-foreground">
-                  Security guidance for NFT marketplaces and digital asset platforms
+                  Advanced security for multi-chain protocols and interoperability solutions
                 </p>
               </div>
               <div className="text-center">
-                <h3 className="font-semibold mb-2">DAOs & Governance</h3>
+                <h3 className="font-semibold mb-2">Zero-Knowledge Systems</h3>
                 <p className="text-sm text-muted-foreground">
-                  Security architecture for decentralized autonomous organizations
+                  Security architecture for ZK-rollups, zk-SNARKs, and privacy protocols
                 </p>
               </div>
               <div className="text-center">
-                <h3 className="font-semibold mb-2">Layer 2 Solutions</h3>
+                <h3 className="font-semibold mb-2">Modular Blockchain</h3>
                 <p className="text-sm text-muted-foreground">
-                  Security consulting for scaling solutions and sidechains
+                  Security guidance for modular blockchain architectures and data availability
                 </p>
               </div>
               <div className="text-center">
-                <h3 className="font-semibold mb-2">Cross-Chain Bridges</h3>
+                <h3 className="font-semibold mb-2">RWA Tokenization</h3>
                 <p className="text-sm text-muted-foreground">
-                  Security guidance for interoperability and bridge protocols
+                  Security consulting for real-world asset tokenization platforms
                 </p>
               </div>
               <div className="text-center">
-                <h3 className="font-semibold mb-2">Gaming & Metaverse</h3>
+                <h3 className="font-semibold mb-2">Intent-Based Systems</h3>
                 <p className="text-sm text-muted-foreground">
-                  Security architecture for blockchain gaming and virtual worlds
+                  Security architecture for intent-based protocols and account abstraction
+                </p>
+              </div>
+              <div className="text-center">
+                <h3 className="font-semibold mb-2">Decentralized AI</h3>
+                <p className="text-sm text-muted-foreground">
+                  Security guidance for decentralized AI networks and compute protocols
+                </p>
+              </div>
+              <div className="text-center">
+                <h3 className="font-semibold mb-2">Web3 Gaming</h3>
+                <p className="text-sm text-muted-foreground">
+                  Advanced security for blockchain gaming and virtual asset economies
                 </p>
               </div>
             </div>
@@ -196,5 +236,6 @@ export default function Consulting() {
         </div>
       </div>
     </ProductionLayout>
+    </>
   );
 }

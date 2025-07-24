@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,11 +14,11 @@ interface ProjectsOverviewProps {
 interface Project {
   id: string;
   project_name: string;
-  status: string;
+  status: string | null;
   created_at: string;
-  completion_percentage: number;
-  security_score?: number;
-  budget?: number;
+  completion_percentage: number | null;
+  security_score?: number | null;
+  budget?: number | null;
 }
 
 async function fetchUserProjects(userId: string): Promise<Project[]> {
@@ -102,7 +101,7 @@ export function EnhancedProjectsOverview({ userId }: ProjectsOverviewProps) {
 
     return (
       <Badge variant={variants[status as keyof typeof variants] || 'secondary'}>
-        {status.replace('_', ' ')}
+        {status?.replace('_', ' ')}
       </Badge>
     );
   };
@@ -144,11 +143,11 @@ export function EnhancedProjectsOverview({ userId }: ProjectsOverviewProps) {
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    {getStatusIcon(project.status)}
+                    {getStatusIcon(project.status || '')}
                     <h4 className="font-medium truncate">{project.project_name}</h4>
                   </div>
                   <div className="flex items-center gap-2">
-                    {getStatusBadge(project.status)}
+                    {getStatusBadge(project.status || '')}
                     <ExternalLink className="h-4 w-4 text-muted-foreground" />
                   </div>
                 </div>
@@ -162,7 +161,7 @@ export function EnhancedProjectsOverview({ userId }: ProjectsOverviewProps) {
                   )}
                 </div>
                 
-                {project.completion_percentage > 0 && (
+                {project.completion_percentage && project.completion_percentage > 0 && (
                   <div className="mt-2">
                     <div className="flex justify-between text-xs mb-1">
                       <span>Progress</span>

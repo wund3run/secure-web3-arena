@@ -1,15 +1,23 @@
-
 import { useState, useCallback } from 'react';
 
-interface AdvancedMatchingCriteria {
-  technical_requirements: string[];
-  project_complexity: 'low' | 'medium' | 'high';
-  budget_range: [number, number];
-  timeline_urgency: 'low' | 'normal' | 'high';
-  quality_threshold: number;
-  past_performance_weight: number;
-  availability_weight: number;
-  cost_weight: number;
+interface MatchingResult {
+  auditor_id: string;
+  auditor_profile: {
+    name: string;
+    rating: number;
+    past_audits: number;
+    experience_years: number;
+    expertise: string[];
+  };
+  ml_confidence_score: number;
+  success_probability: number;
+  risk_factors: string[];
+  optimization_suggestions: string[];
+  estimated_project_outcome: {
+    completion_probability: number;
+    quality_score: number;
+    timeline_accuracy: number;
+  };
 }
 
 interface ModelMetrics {
@@ -36,9 +44,20 @@ interface MatchingReport {
   optimization_opportunities: string[];
 }
 
+interface AdvancedMatchingCriteria {
+  technical_requirements: string[];
+  project_complexity: 'low' | 'medium' | 'high';
+  budget_range: [number, number];
+  timeline_urgency: 'low' | 'normal' | 'high';
+  quality_threshold: number;
+  past_performance_weight: number;
+  availability_weight: number;
+  cost_weight: number;
+}
+
 export const useAdvancedMatching = () => {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [mlResults, setMlResults] = useState<any[]>([]);
+  const [mlResults, setMlResults] = useState<MatchingResult[]>([]);
   const [modelMetrics, setModelMetrics] = useState<ModelMetrics | null>(null);
 
   const runAdvancedMatching = useCallback(async (criteria: AdvancedMatchingCriteria) => {
@@ -107,7 +126,7 @@ export const useAdvancedMatching = () => {
     }
   }, []);
 
-  const generateMatchingReport = useCallback((results: any[]): MatchingReport => {
+  const generateMatchingReport = useCallback((results: MatchingResult[]): MatchingReport => {
     if (results.length === 0) {
       return {
         summary: {

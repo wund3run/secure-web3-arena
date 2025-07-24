@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -78,7 +77,7 @@ export function SystemHealthDashboard() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant={healthStatus.color as any}>
+          <Badge variant={healthStatus.color as 'default' | 'secondary' | 'destructive'}>
             {healthStatus.status === 'healthy' && <CheckCircle className="h-3 w-3 mr-1" />}
             {healthStatus.status === 'warning' && <AlertTriangle className="h-3 w-3 mr-1" />}
             {healthStatus.status === 'critical' && <AlertTriangle className="h-3 w-3 mr-1" />}

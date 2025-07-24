@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -38,9 +37,10 @@ export const useMessages = (conversationWith?: string) => {
       ] : [];
       
       setMessages(mockMessages);
-    } catch (err: any) {
-      setError(err.message);
-      console.warn('Failed to fetch messages:', err);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch messages';
+      setError(errorMessage);
+      console.warn('Failed to fetch messages:', err instanceof Error ? err.message : String(err));
       setMessages([]);
     } finally {
       setLoading(false);
@@ -75,7 +75,7 @@ export const useMessages = (conversationWith?: string) => {
       toast.success('Message sent successfully');
       
       return newMessage;
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error('Failed to send message');
       throw err;
     }
@@ -88,7 +88,7 @@ export const useMessages = (conversationWith?: string) => {
           msg.id === messageId ? { ...msg, is_read: true } : msg
         )
       );
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error('Failed to mark message as read');
     }
   };

@@ -100,7 +100,7 @@ export interface AIAnalysisResult {
   analysis_type: 'security' | 'gas' | 'compliance' | 'full';
   input_code: string;
   language: string;
-  results: any;
+  results: unknown;
   security_score?: number;
   vulnerability_count: number;
   gas_optimization_count: number;

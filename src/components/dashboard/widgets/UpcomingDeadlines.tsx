@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,11 +6,29 @@ import { Link } from 'react-router-dom';
 import { Calendar, Clock, ExternalLink } from 'lucide-react';
 import { formatDistanceToNow, isAfter, isBefore, addDays } from 'date-fns';
 
+interface ProjectDeadline {
+  id: string;
+  project_name: string;
+  deadline: string;
+  [key: string]: unknown;
+}
+
 interface UpcomingDeadlinesProps {
-  deadlines: any[];
+  deadlines: unknown[];
 }
 
 export const UpcomingDeadlines = ({ deadlines }: UpcomingDeadlinesProps) => {
+  // Type guard for project deadline
+  const isProjectDeadline = (project: unknown): project is ProjectDeadline => {
+    return typeof project === 'object' && 
+           project !== null && 
+           'id' in project && 
+           'project_name' in project && 
+           'deadline' in project;
+  };
+
+  const validDeadlines = deadlines.filter(isProjectDeadline);
+
   const getUrgencyBadge = (deadline: string) => {
     const deadlineDate = new Date(deadline);
     const now = new Date();
@@ -28,7 +45,7 @@ export const UpcomingDeadlines = ({ deadlines }: UpcomingDeadlinesProps) => {
     return { text: 'Upcoming', variant: 'outline' as const };
   };
 
-  if (deadlines.length === 0) {
+  if (validDeadlines.length === 0) {
     return (
       <Card>
         <CardHeader>
@@ -53,7 +70,7 @@ export const UpcomingDeadlines = ({ deadlines }: UpcomingDeadlinesProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {deadlines.map((project) => {
+        {validDeadlines.map((project) => {
           const urgency = getUrgencyBadge(project.deadline);
           return (
             <div key={project.id} className="p-3 border rounded-lg">

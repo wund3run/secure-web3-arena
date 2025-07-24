@@ -56,10 +56,10 @@ const AuthCallback = () => {
           navigate('/auth');
         }, 3000);
         
-      } catch (err: any) {
-        setError(err.message || "Authentication error");
+      } catch (err: unknown) {
+        setError((err as Error).message || "Authentication error");
         toast.error("Authentication error", { 
-          description: err.message || "An unknown error occurred" 
+          description: (err as Error).message || "An unknown error occurred" 
         });
         
         // Redirect to auth page after a short delay

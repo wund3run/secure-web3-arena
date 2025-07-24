@@ -9,7 +9,12 @@ interface Message {
   content: string;
   sender_id: string;
   receiver_id: string;
-  conversation_id: string;
+  conversation_id?: string;
+  content: string;
+  message_type: string;
+  file_attachments: any[];
+  read_at: string | null;
+  reply_to_id?: string;
   created_at: string;
   read_at?: string;
   message_type: 'text' | 'file' | 'image';
@@ -54,7 +59,7 @@ export function useRealtimeMessages({ conversationId, receiverId }: UseRealtimeM
         file_attachments: msg.file_attachments ? JSON.parse(JSON.stringify(msg.file_attachments)) : undefined,
       }));
       
-      setMessages(convertedMessages);
+      setMessages(transformedMessages);
     } catch (error) {
       console.error('Error fetching messages:', error);
       toast.error('Failed to load messages');
@@ -63,9 +68,13 @@ export function useRealtimeMessages({ conversationId, receiverId }: UseRealtimeM
     }
   }, [conversationId]);
 
-  // Send message
-  const sendMessage = useCallback(async (content: string, type: 'text' | 'file' = 'text') => {
-    if (!user || !conversationId) return;
+  const sendMessage = useCallback(async (
+    content: string,
+    messageType: string = 'text',
+    attachments: any[] = [],
+    replyToId?: string
+  ) => {
+    if (!user || !receiverId || !content.trim()) return;
 
     try {
       const { data, error } = await supabase
@@ -81,7 +90,6 @@ export function useRealtimeMessages({ conversationId, receiverId }: UseRealtimeM
         .single();
 
       if (error) throw error;
-      return data;
     } catch (error) {
       console.error('Error sending message:', error);
       toast.error('Failed to send message');
@@ -100,7 +108,7 @@ export function useRealtimeMessages({ conversationId, receiverId }: UseRealtimeM
         .eq('receiver_id', user.id);
 
       if (error) throw error;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error marking messages as read:', error);
     }
   }, [user]);

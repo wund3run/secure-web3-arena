@@ -1,4 +1,3 @@
-
 import { ValidationIssue, StakeholderType, ValidationType } from "@/utils/validation/types";
 import { handleAccessibilityError } from "@/utils/error-handling/accessibilityErrorHandler";
 
@@ -81,7 +80,7 @@ export const reportAccessibilityIssues = (issues: ValidationIssue[]): void => {
       handleAccessibilityError(
         'aria',
         issue.description,
-        undefined,
+        document.body,
         'high',
         issue.suggestion
       );

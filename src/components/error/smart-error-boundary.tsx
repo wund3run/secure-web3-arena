@@ -1,4 +1,3 @@
-
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { AlertTriangle, RefreshCw, Home, Bug } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -51,17 +50,13 @@ export class SmartErrorBoundary extends Component<Props, State> {
     if (this.props.onError) {
       this.props.onError(error, errorInfo);
     }
-    
-    // Show user-friendly notification
-    toast.error("Something went wrong", {
-      description: "We've been notified and are working on a fix."
-    });
   }
 
   handleRetry = () => {
     const newRetryCount = this.state.retryCount + 1;
     
     if (newRetryCount > 3) {
+      // Show user-friendly notification
       toast.error("Multiple retry attempts failed", {
         description: "Please refresh the page or contact support."
       });
@@ -135,7 +130,7 @@ export class SmartErrorBoundary extends Component<Props, State> {
             </Button>
           </div>
 
-          {process.env.NODE_ENV === 'development' && (
+          {import.meta.env.MODE === 'development' && (
             <details className="mt-6 max-w-2xl text-left">
               <summary className="cursor-pointer text-sm font-medium mb-2">
                 Developer Details

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { RouteValidator } from '@/utils/routes/routeValidator';
 import { Button } from '@/components/ui/button';
@@ -20,7 +19,7 @@ export function SystemHealthMonitor() {
 
   useEffect(() => {
     // Only show in development or when explicitly enabled
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.MODE === 'development') {
       generateHealthReport();
     }
   }, []);
@@ -30,7 +29,7 @@ export function SystemHealthMonitor() {
     setHealthReport(report);
   };
 
-  if (process.env.NODE_ENV !== 'development' || !healthReport) {
+  if (import.meta.env.MODE !== 'development' || !healthReport) {
     return null;
   }
 

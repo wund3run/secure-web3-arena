@@ -1,12 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
 import { EnhancedSkeleton } from '@/components/ui/enhanced-skeleton';
 import { Progress } from '@/components/ui/progress';
 
 interface LoadingStage {
   name: string;
-  component: React.ComponentType<any>;
-  props?: any;
+  component: React.ComponentType<unknown>;
+  props?: Record<string, unknown>;
   loadTime?: number;
 }
 

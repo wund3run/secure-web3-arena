@@ -114,7 +114,7 @@ export const RealtimeChatSystem = () => {
 
   useEffect(() => {
     setMessages(mockMessages);
-  }, []);
+  }, [mockMessages]);
 
   useEffect(() => {
     scrollToBottom();

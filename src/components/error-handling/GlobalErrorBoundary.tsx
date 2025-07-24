@@ -1,4 +1,3 @@
-
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -42,22 +41,11 @@ class GlobalErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    this.setState({ errorInfo });
+    console.error("Global Error Boundary caught an error:", error, errorInfo);
     
-    // Log error to console for debugging
-    console.error('Global Error Boundary caught an error:', {
-      error: error.message,
-      stack: error.stack,
-      componentStack: errorInfo.componentStack,
-      errorId: this.state.errorId,
-      timestamp: new Date().toISOString(),
-      url: window.location.href,
-      userAgent: navigator.userAgent
-    });
-
-    // In production, send to error tracking service
+    // Log to external service in production
     if (process.env.NODE_ENV === 'production') {
-      this.reportError(error, errorInfo);
+      this.logErrorToService(error, errorInfo);
     }
   }
 

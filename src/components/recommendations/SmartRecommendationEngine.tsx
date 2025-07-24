@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,6 +19,18 @@ import {
   ArrowRight
 } from 'lucide-react';
 
+interface AuditorMetadata {
+  rating: number;
+  experience: string;
+  price: string;
+}
+
+interface ProjectMetadata {
+  budget: string;
+  deadline: string;
+  complexity: string;
+}
+
 interface Recommendation {
   id: string;
   type: 'auditor' | 'project' | 'skill' | 'course' | 'tool';
@@ -28,7 +39,7 @@ interface Recommendation {
   confidence: number;
   relevanceScore: number;
   category: string;
-  metadata: any;
+  metadata: AuditorMetadata | ProjectMetadata | Record<string, unknown>;
   actionText: string;
   priority: 'high' | 'medium' | 'low';
 }
@@ -41,6 +52,25 @@ interface PersonalizedInsight {
   actionable: boolean;
   category: 'performance' | 'opportunity' | 'learning' | 'optimization';
 }
+
+// Type guards
+const isAuditorMetadata = (metadata: unknown, type: string): metadata is AuditorMetadata => {
+  return type === 'auditor' && 
+         typeof metadata === 'object' && 
+         metadata !== null && 
+         'rating' in metadata && 
+         'experience' in metadata && 
+         'price' in metadata;
+};
+
+const isProjectMetadata = (metadata: unknown, type: string): metadata is ProjectMetadata => {
+  return type === 'project' && 
+         typeof metadata === 'object' && 
+         metadata !== null && 
+         'budget' in metadata && 
+         'deadline' in metadata && 
+         'complexity' in metadata;
+};
 
 export function SmartRecommendationEngine() {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([
@@ -242,7 +272,7 @@ export function SmartRecommendationEngine() {
                         </div>
                         
                         {/* Type-specific metadata */}
-                        {rec.type === 'auditor' && (
+                        {isAuditorMetadata(rec.metadata, rec.type) && (
                           <div className="mt-3 p-3 bg-gray-50 rounded-lg">
                             <div className="grid grid-cols-3 gap-4 text-sm">
                               <div>
@@ -264,7 +294,7 @@ export function SmartRecommendationEngine() {
                           </div>
                         )}
                         
-                        {rec.type === 'project' && (
+                        {isProjectMetadata(rec.metadata, rec.type) && (
                           <div className="mt-3 p-3 bg-gray-50 rounded-lg">
                             <div className="grid grid-cols-3 gap-4 text-sm">
                               <div>

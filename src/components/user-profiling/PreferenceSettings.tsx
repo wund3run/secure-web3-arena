@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useUserProfiling } from '@/hooks/useUserProfiling';
 import { Card, CardContent } from '@/components/ui/card';
@@ -14,9 +13,17 @@ export function PreferenceSettings() {
   const userSegment = getUserSegment();
 
   const handleNotificationChange = (key: string, value: boolean) => {
+    const currentSettings = preferences?.notificationSettings || {
+      auditUpdates: false,
+      newMessages: false,
+      paymentAlerts: false,
+      securityAlerts: true,
+      marketingEmails: false,
+    };
+    
     updatePreferences({
       notificationSettings: {
-        ...preferences?.notificationSettings,
+        ...currentSettings,
         [key]: value,
       },
     });

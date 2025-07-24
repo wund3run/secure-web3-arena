@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -11,7 +10,7 @@ export interface SecurityAlert {
   contractAddress?: string;
   network: string;
   timestamp: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 export interface MonitoringConfig {
@@ -44,7 +43,7 @@ export class SecurityMonitoringService {
       
       toast.success('Forta monitoring enabled for contract');
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error setting up Forta monitoring:', error);
       toast.error('Failed to enable Forta monitoring');
       return false;
@@ -59,7 +58,7 @@ export class SecurityMonitoringService {
 
       if (error) throw error;
       return data.alerts || [];
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error fetching Forta alerts:', error);
       return [];
     }
@@ -80,7 +79,7 @@ export class SecurityMonitoringService {
       
       toast.success('OpenZeppelin Defender configured');
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error setting up Defender:', error);
       toast.error('Failed to configure Defender');
       return false;
@@ -88,7 +87,7 @@ export class SecurityMonitoringService {
   }
 
   // Automated Security Scanning with Mythril/Slither
-  static async runSecurityScan(contractCode: string, scanType: 'mythril' | 'slither' = 'mythril'): Promise<any> {
+  static async runSecurityScan(contractCode: string, scanType: 'mythril' | 'slither' = 'mythril'): Promise<unknown> {
     try {
       const { data, error } = await supabase.functions.invoke('run-security-scan', {
         body: {
@@ -102,7 +101,7 @@ export class SecurityMonitoringService {
       
       toast.success(`${scanType} security scan completed`);
       return data.results;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error running security scan:', error);
       toast.error('Security scan failed');
       return null;
@@ -123,7 +122,7 @@ export class SecurityMonitoringService {
       });
 
       if (error) throw error;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error logging security event:', error);
     }
   }
@@ -158,7 +157,7 @@ export class SecurityMonitoringService {
         network: event.network,
         timestamp: event.created_at,
         metadata: (event.metadata && typeof event.metadata === 'object' && !Array.isArray(event.metadata)) 
-          ? event.metadata as Record<string, any>
+          ? event.metadata as Record<string, unknown>
           : {}
       }));
 
@@ -168,7 +167,7 @@ export class SecurityMonitoringService {
         recentAlerts,
         monitoredContracts: 0 // Would be calculated from monitoring_services table
       };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error fetching security dashboard data:', error);
       return {
         totalAlerts: 0,

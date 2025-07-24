@@ -1,4 +1,3 @@
-
 import { AuditFormData, AuditFormErrors } from "@/types/audit-request.types";
 import { validateFormStep } from "@/services/audit-form-validation";
 import { showFeedback } from "@/components/ui/interactive-feedback";
@@ -63,11 +62,8 @@ export const useAuditFormNavigation = (
     setValidationError(null);
     
     // If coming back from AI matching, return to step 3
-    if (true) { // This will be replaced by showAIMatching in the main hook
-      setShowAIMatching(false);
-    } else {
-      setFormStep(formStep - 1);
-    }
+    setShowAIMatching(false);
+    setFormStep(formStep - 1);
   };
 
   const completeAIMatching = () => {

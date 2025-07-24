@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -21,11 +20,11 @@ export interface TenderlySimulation {
   id: string;
   contractAddress: string;
   functionName: string;
-  parameters: any[];
+  parameters: unknown[];
   gasUsed: number;
   success: boolean;
-  result: any;
-  traces: any[];
+  result: unknown;
+  traces: unknown[];
 }
 
 export interface CeramicProfile {
@@ -83,7 +82,7 @@ export class EnterpriseService {
       
       toast.success('Compliance check completed');
       return report;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error performing compliance check:', error);
       toast.error('Failed to perform compliance check');
       return null;
@@ -102,7 +101,7 @@ export class EnterpriseService {
       });
 
       if (error) throw error;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error storing compliance report:', error);
     }
   }
@@ -111,7 +110,7 @@ export class EnterpriseService {
   static async simulateTransaction(
     contractAddress: string,
     functionName: string,
-    parameters: any[],
+    parameters: unknown[],
     network: string = 'ethereum'
   ): Promise<TenderlySimulation | null> {
     try {
@@ -140,14 +139,14 @@ export class EnterpriseService {
 
       toast.success('Transaction simulation completed');
       return simulation;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error simulating transaction:', error);
       toast.error('Failed to simulate transaction');
       return null;
     }
   }
 
-  static async analyzeContractBehavior(contractAddress: string, network: string): Promise<any> {
+  static async analyzeContractBehavior(contractAddress: string, network: string): Promise<unknown> {
     try {
       const { data, error } = await supabase.functions.invoke('tenderly-analyze', {
         body: {
@@ -159,14 +158,14 @@ export class EnterpriseService {
 
       if (error) throw error;
       return data.analysis;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error analyzing contract behavior:', error);
       return null;
     }
   }
 
   // Ceramic Network Integration for Decentralized Identity
-  static async createCeramicProfile(profileData: any): Promise<CeramicProfile | null> {
+  static async createCeramicProfile(profileData: unknown): Promise<CeramicProfile | null> {
     try {
       // Mock Ceramic profile creation
       const profile: CeramicProfile = {
@@ -185,7 +184,7 @@ export class EnterpriseService {
       
       toast.success('Decentralized identity created');
       return profile;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error creating Ceramic profile:', error);
       toast.error('Failed to create decentralized identity');
       return null;
@@ -204,7 +203,7 @@ export class EnterpriseService {
       });
 
       if (error) throw error;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error storing Ceramic profile:', error);
     }
   }
@@ -216,7 +215,7 @@ export class EnterpriseService {
       
       toast.success('Credential verified successfully');
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error verifying credential:', error);
       toast.error('Failed to verify credential');
       return false;
@@ -299,7 +298,7 @@ spec:
         verifiedIdentities: 89,
         deploymentHealth: 'healthy'
       };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error fetching enterprise metrics:', error);
       return {
         complianceScore: 0,

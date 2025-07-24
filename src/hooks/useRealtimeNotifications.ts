@@ -1,8 +1,7 @@
-
 import { useEffect } from 'react';
 import { useAuth } from '@/contexts/auth';
 import { useNotifications } from '@/contexts/NotificationContext';
-import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 export function useRealtimeNotifications() {
   const { user } = useAuth();

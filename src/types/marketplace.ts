@@ -26,8 +26,8 @@ export interface FilterState {
 }
 
 export interface EnhancedFiltersProps {
-  onFilterChange: (filters: Record<string, any>) => void;
-  initialFilters?: Record<string, any>;
+  onFilterChange: (filters: Record<string, unknown>) => void;
+  initialFilters?: Record<string, unknown>;
 }
 
 export interface FilterSectionProps {

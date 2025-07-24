@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,22 +27,22 @@ const PricingCalculator = () => {
   const [includeConsulting, setIncludeConsulting] = useState(false);
   const [enterprise, setEnterprise] = useState(false);
 
-  const basePrice = 500;
-  const contractMultiplier = contractCount[0] * 100;
-  const codeMultiplier = Math.floor(linesOfCode[0] / 100) * 25;
+  const basePrice = 700;
+  const contractMultiplier = contractCount[0] * 200;
+  const codeMultiplier = Math.floor(linesOfCode[0] / 100) * 50;
   
   const urgencyMultipliers = {
     standard: 1,
     priority: 1.5,
-    urgent: 2,
+    urgent: 3,
   };
 
   const urgencyMultiplier = urgencyMultipliers[urgency as keyof typeof urgencyMultipliers];
   
   const addOns = {
-    review: includeReview ? 200 : 0,
-    testing: includeTesting ? 300 : 0,
-    consulting: includeConsulting ? 500 : 0,
+    review: includeReview ? 500 : 0,
+    testing: includeTesting ? 500 : 0,
+    consulting: includeConsulting ? 870 : 0,
   };
 
   const subtotal = (basePrice + contractMultiplier + codeMultiplier + Object.values(addOns).reduce((a, b) => a + b, 0)) * urgencyMultiplier;
@@ -57,7 +56,7 @@ const PricingCalculator = () => {
       id: 'review',
       title: 'Code Review',
       description: 'Comprehensive manual code review by security experts',
-      price: 200,
+      price: 500,
       included: includeReview,
       setIncluded: setIncludeReview,
     },
@@ -65,7 +64,7 @@ const PricingCalculator = () => {
       id: 'testing',
       title: 'Penetration Testing',
       description: 'Automated and manual penetration testing',
-      price: 300,
+      price: 5000,
       included: includeTesting,
       setIncluded: setIncludeTesting,
     },
@@ -73,7 +72,7 @@ const PricingCalculator = () => {
       id: 'consulting',
       title: 'Security Consulting',
       description: 'One-on-one consultation and remediation guidance',
-      price: 500,
+      price: 870,
       included: includeConsulting,
       setIncluded: setIncludeConsulting,
     },

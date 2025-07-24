@@ -1,4 +1,3 @@
-
 import { useCallback } from 'react';
 import { Notification } from '@/types/notification.types';
 
@@ -9,33 +8,35 @@ export function useNotificationPersistence() {
   const saveNotifications = useCallback((notifications: Notification[]) => {
     try {
       const toStore = notifications.slice(0, MAX_STORED_NOTIFICATIONS);
-      localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(toStore));
+      localStorage.setItem(key, JSON.stringify(toStore));
     } catch (error) {
-      console.warn('Failed to save notifications to localStorage:', error);
+      console.warn('Failed to persist notifications:', error);
     }
   }, []);
 
   const loadNotifications = useCallback((): Notification[] => {
     try {
-      const stored = localStorage.getItem(NOTIFICATIONS_KEY);
+      const key = getStorageKey();
+      const stored = localStorage.getItem(key);
       if (!stored) return [];
       
       const parsed = JSON.parse(stored);
-      return Array.isArray(parsed) ? parsed.map(notification => ({
+      return parsed.map((notification: any) => ({
         ...notification,
-        timestamp: new Date(notification.timestamp),
-      })) : [];
+        timestamp: new Date(notification.timestamp)
+      }));
     } catch (error) {
-      console.warn('Failed to load notifications from localStorage:', error);
+      console.warn('Failed to load notifications:', error);
       return [];
     }
   }, []);
 
   const clearStoredNotifications = useCallback(() => {
     try {
-      localStorage.removeItem(NOTIFICATIONS_KEY);
+      const key = getStorageKey();
+      localStorage.removeItem(key);
     } catch (error) {
-      console.warn('Failed to clear notifications from localStorage:', error);
+      console.warn('Failed to clear notifications:', error);
     }
   }, []);
 

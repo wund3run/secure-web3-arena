@@ -1,10 +1,9 @@
-
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 interface StructuredDataProps {
   type: 'Organization' | 'Service' | 'Article' | 'WebPage' | 'FAQPage';
-  data: any;
+  data: Record<string, unknown>;
 }
 
 export function StructuredData({ type, data }: StructuredDataProps) {
@@ -12,7 +11,7 @@ export function StructuredData({ type, data }: StructuredDataProps) {
     "@context": "https://schema.org",
     "@type": type,
     ...data
-  };
+  } as Record<string, unknown>;
 
   // Add common organization data for all types
   if (type !== 'Organization') {

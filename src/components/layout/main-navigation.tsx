@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth';
@@ -82,7 +81,7 @@ export function MainNavigation() {
           <NavigationMenuContent>
             <div className="grid gap-3 p-6 w-[400px] lg:w-[500px] lg:grid-cols-2">
               <NavigationMenuLink asChild>
-                <Link to="/audits" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                <Link to="/audit-details" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                   <div className="text-sm font-medium leading-none">Audit Reports</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                     Browse completed security audits
@@ -90,7 +89,7 @@ export function MainNavigation() {
                 </Link>
               </NavigationMenuLink>
               <NavigationMenuLink asChild>
-                <Link to="/security-insights" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                <Link to="/tools/security-insights" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                   <div className="text-sm font-medium leading-none">Security Insights</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                     Latest vulnerability trends and analysis

@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
@@ -6,6 +5,21 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+// Add retry mechanism for critical operations
+const maxRetries = 3;
+const withRetry = async (operation) => {
+  let retryCount = 0;
+  while (retryCount < maxRetries) {
+    try {
+      return await operation();
+    } catch (error) {
+      retryCount++;
+      if (retryCount === maxRetries) throw error;
+      await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+    }
+  }
 };
 
 serve(async (req) => {
@@ -37,7 +51,7 @@ serve(async (req) => {
       throw new Error("Unauthorized");
     }
 
-    const { amount, currency, description, audit_request_id, escrow_contract_id } = await req.json();
+    const { amount, currency, description, audit_request_id, escrow_contract_id }: { amount: number; currency?: string; description?: string; audit_request_id?: string; escrow_contract_id?: string } = await req.json();
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
 
@@ -90,10 +104,14 @@ serve(async (req) => {
         status: 200,
       }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
+    let message = "Unknown error";
+    if (typeof error === "object" && error && "message" in error) {
+      message = (error as { message: string }).message;
+    }
     console.error("Error creating payment intent:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: message }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
@@ -101,3 +119,46 @@ serve(async (req) => {
     );
   }
 });
+
+const projectOwnerOnboardingSteps = [
+  {
+    title: 'Account Setup',
+    fields: ['email', 'password', 'confirmPassword']
+  },
+  {
+    title: 'Project Information',
+    fields: ['fullName', 'projectName', 'projectType']
+  },
+  {
+    title: 'Security Needs',
+    fields: ['securityNeeds', 'timeline', 'budget']
+  }
+];
+
+const auditorOnboardingSteps = [
+  {
+    title: 'Account Setup',
+    fields: ['email', 'password', 'confirmPassword']
+  },
+  {
+    title: 'Professional Information',
+    fields: ['fullName', 'company', 'yearsExperience']
+  },
+  {
+    title: 'Specializations',
+    fields: ['specializations', 'blockchains', 'certifications']
+  },
+  {
+    title: 'Verification',
+    fields: ['portfolio', 'linkedin', 'github']
+  }
+];
+
+// Enhanced progress tracking
+interface ProgressMetrics {
+  currentStage: string;
+  completedSteps: number;
+  totalSteps: number;
+  estimatedTimeRemaining: number;
+  lastActivity: Date;
+}

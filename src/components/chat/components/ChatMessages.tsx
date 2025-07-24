@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -9,7 +8,7 @@ interface ChatMessagesProps {
   messages: ChatMessage[];
   currentUserId?: string;
   isTyping: string[];
-  messagesEndRef: React.RefObject<HTMLDivElement>;
+  messagesEndRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export function ChatMessages({ messages, currentUserId, isTyping, messagesEndRef }: ChatMessagesProps) {

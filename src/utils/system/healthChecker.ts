@@ -6,7 +6,7 @@ export interface HealthCheckResult {
   status: 'healthy' | 'warning' | 'error';
   message: string;
   responseTime?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export class HealthChecker {
@@ -78,7 +78,23 @@ export class HealthChecker {
     
     try {
       if ('memory' in performance) {
-        const memory = (performance as any).memory;
+        const memory = (performance as unknown as { 
+          memory?: { 
+            usedJSHeapSize: number;
+            totalJSHeapSize: number;
+            jsHeapSizeLimit: number;
+          } 
+        }).memory;
+        
+        if (!memory) {
+          return {
+            component: 'memory_usage',
+            status: 'warning',
+            message: 'Memory API not available',
+            responseTime: performance.now() - startTime
+          };
+        }
+        
         const usedMB = memory.usedJSHeapSize / 1024 / 1024;
         const totalMB = memory.totalJSHeapSize / 1024 / 1024;
         const limitMB = memory.jsHeapSizeLimit / 1024 / 1024;

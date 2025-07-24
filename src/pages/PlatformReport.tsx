@@ -1,2 +1,3 @@
+import PlatformReportPhase4 from './PlatformReportPhase4';
 
-export { PlatformReport as default } from './missing-pages';
+export { PlatformReportPhase4 as default };

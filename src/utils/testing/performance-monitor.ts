@@ -6,7 +6,7 @@ export interface PerformanceData {
   name: string;
   value: number;
   category: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface PerformanceMetric {
@@ -14,7 +14,7 @@ export interface PerformanceMetric {
   value: number;
   category: string;
   timestamp: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   rating?: 'good' | 'needs-improvement' | 'poor';
 }
 
@@ -120,9 +120,9 @@ export class PerformanceMonitor {
     return sum / relevantMetrics.length;
   }
 
-  generatePerformanceReport(): Record<string, any> {
+  generatePerformanceReport(): Record<string, unknown> {
     const categories = [...new Set(this.metrics.map(m => m.category))];
-    const report: Record<string, any> = {};
+    const report: Record<string, unknown> = {};
 
     categories.forEach(category => {
       const categoryMetrics = this.getMetricsByCategory(category);

@@ -210,7 +210,7 @@ export const useEnhancedAIMatching = () => {
       toast.success(`AI analysis complete! Found ${mlResults.length} potential matches with advanced scoring.`);
       
       return mlResults;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Enhanced AI matching failed:', error);
       toast.error('Enhanced matching analysis failed');
       return [];

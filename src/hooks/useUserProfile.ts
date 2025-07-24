@@ -24,14 +24,18 @@ export interface UserProfile {
 }
 
 // Helper function to safely extract social links from JSON
-const extractSocialLinks = (socialLinks: any) => {
+// Helper function to convert null to undefined
+const nullToUndefined = <T>(value: T | null): T | undefined => value === null ? undefined : value;
+
+const extractSocialLinks = (socialLinks: unknown) => {
   if (!socialLinks || typeof socialLinks !== 'object') {
     return { github: undefined, linkedin: undefined };
   }
   
+  const links = socialLinks as Record<string, unknown>;
   return {
-    github: socialLinks.github || undefined,
-    linkedin: socialLinks.linkedin || undefined,
+    github: (typeof links.github === 'string' ? links.github : undefined),
+    linkedin: (typeof links.linkedin === 'string' ? links.linkedin : undefined),
   };
 };
 
@@ -122,8 +126,9 @@ export const useUserProfile = (userId?: string) => {
           setProfile(null);
         }
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      setError(errorMessage);
       console.error('Failed to fetch profile:', err);
     } finally {
       setLoading(false);
@@ -224,7 +229,7 @@ export const useUserProfile = (userId?: string) => {
       
       toast.success('Profile updated successfully');
       return profile;
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error('Failed to update profile');
       throw err;
     }
@@ -324,7 +329,7 @@ export const useUserProfile = (userId?: string) => {
       
       toast.success('Profile created successfully');
       return profile;
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error('Failed to create profile');
       throw err;
     }

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/auth';
@@ -7,7 +6,7 @@ export interface AuditReport {
   id: string;
   audit_request_id: string;
   title: string;
-  content?: any;
+  content?: unknown;
   report_type: 'preliminary' | 'interim' | 'final';
   status: 'draft' | 'review' | 'approved' | 'published';
   file_url?: string;
@@ -51,7 +50,7 @@ export const useAuditReports = (auditId: string) => {
         })) as AuditReport[];
         
         setReports(validReports);
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('Error fetching reports:', error);
       } finally {
         setIsLoading(false);
@@ -87,7 +86,7 @@ export const useAuditReports = (auditId: string) => {
       // This would integrate with a report generation service
       console.log(`Generating ${reportType} report for audit ${auditId}`);
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error generating report:', error);
       return false;
     }
@@ -102,16 +101,16 @@ export const useAuditReports = (auditId: string) => {
         .insert({
           audit_request_id: auditId,
           title: report.title || 'Untitled Report',
-          content: report.content || {},
+          content: report.content as any || {},
           report_type: report.report_type || 'preliminary',
           status: report.status || 'draft',
           generated_by: user.id,
-          file_url: report.file_url,
+          file_url: report.file_url || null,
         });
 
       if (error) throw error;
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error creating report:', error);
       return false;
     }
@@ -119,14 +118,32 @@ export const useAuditReports = (auditId: string) => {
 
   const updateReport = async (reportId: string, updates: Partial<AuditReport>) => {
     try {
+      // Create a properly typed update object for Supabase
+      const updateData: Record<string, any> = {};
+      
+      // Only include fields that are allowed to be updated
+      if (updates.title !== undefined) updateData.title = updates.title;
+      if (updates.content !== undefined) updateData.content = updates.content;
+      if (updates.report_type !== undefined) updateData.report_type = updates.report_type;
+      if (updates.status !== undefined) updateData.status = updates.status;
+      if (updates.file_url !== undefined) updateData.file_url = updates.file_url;
+      if (updates.reviewed_by !== undefined) updateData.reviewed_by = updates.reviewed_by;
+      if (updates.approved_by !== undefined) updateData.approved_by = updates.approved_by;
+      if (updates.published_at !== undefined) updateData.published_at = updates.published_at;
+      if (updates.template_used !== undefined) updateData.template_used = updates.template_used;
+      if (updates.version !== undefined) updateData.version = updates.version;
+      
+      // Always update the updated_at timestamp
+      updateData.updated_at = new Date().toISOString();
+
       const { error } = await supabase
         .from('audit_reports')
-        .update(updates)
+        .update(updateData)
         .eq('id', reportId);
 
       if (error) throw error;
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error updating report:', error);
       return false;
     }
@@ -144,7 +161,7 @@ export const useAuditReports = (auditId: string) => {
 
       if (error) throw error;
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error publishing report:', error);
       return false;
     }

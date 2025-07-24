@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -314,7 +313,7 @@ export function AdvancedPredictiveAnalytics() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
                   <YAxis />
-                  <Tooltip formatter={(value: any) => [`$${value?.toLocaleString()}`, '']} />
+                  <Tooltip formatter={(value: number | string | unknown) => [`$${value?.toLocaleString?.()}`, '']} />
                   <Area 
                     type="monotone" 
                     dataKey="actual" 

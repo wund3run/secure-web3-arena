@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { performanceOptimizer } from '@/utils/performance-optimizer';
 import { analyticsTracker } from '@/utils/analytics-tracker';
@@ -7,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Activity, Zap, Clock, TrendingUp } from 'lucide-react';
 
 export function OptimizedPerformanceMonitor() {
-  const [metrics, setMetrics] = useState<Record<string, any>>({});
+  const [metrics, setMetrics] = useState<Record<string, unknown>>({});
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -24,7 +23,7 @@ export function OptimizedPerformanceMonitor() {
     }, 5000);
 
     // Check for development mode to show monitor
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.MODE === 'development') {
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.altKey && e.key === 'p') {
           setIsVisible(prev => !prev);
@@ -37,17 +36,17 @@ export function OptimizedPerformanceMonitor() {
       return () => {
         clearInterval(interval);
         document.removeEventListener('keydown', handleKeyDown);
-        performanceOptimizer.cleanup();
+        performanceOptimizer.destroy();
       };
     }
 
     return () => {
       clearInterval(interval);
-      performanceOptimizer.cleanup();
+      performanceOptimizer.destroy();
     };
   }, []);
 
-  if (!isVisible || process.env.NODE_ENV !== 'development') {
+  if (!isVisible || import.meta.env.MODE !== 'development') {
     return null;
   }
 
@@ -77,21 +76,32 @@ export function OptimizedPerformanceMonitor() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          {Object.entries(metrics).map(([key, metric]) => (
-            <div key={key} className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                {key.includes('load') && <Clock className="h-3 w-3" />}
-                {key.includes('byte') && <Zap className="h-3 w-3" />}
-                {key.includes('dom') && <TrendingUp className="h-3 w-3" />}
-                <span className="text-xs font-medium">
-                  {key.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                </span>
+          {Object.entries(metrics).map(([key, metric]) => {
+            // Type guard for metric data
+            const isValidMetric = (m: unknown): m is { latest: number; average: number; count: number } => {
+              return typeof m === 'object' && m !== null && 'latest' in m && typeof (m as any).latest === 'number';
+            };
+
+            if (!isValidMetric(metric)) {
+              return null;
+            }
+
+            return (
+              <div key={key} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {key.includes('load') && <Clock className="h-3 w-3" />}
+                  {key.includes('byte') && <Zap className="h-3 w-3" />}
+                  {key.includes('dom') && <TrendingUp className="h-3 w-3" />}
+                  <span className="text-xs font-medium">
+                    {key.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  </span>
+                </div>
+                <Badge variant={getPerformanceStatus(key, metric.latest)} className="text-xs">
+                  {Math.round(metric.latest)}ms
+                </Badge>
               </div>
-              <Badge variant={getPerformanceStatus(key, metric.latest)} className="text-xs">
-                {Math.round(metric.latest)}ms
-              </Badge>
-            </div>
-          ))}
+            );
+          })}
           <div className="text-xs text-muted-foreground border-t pt-2">
             Press Alt+P to toggle • Analytics: {analyticsTracker.getAnalyticsSummary().total_events} events
           </div>

@@ -17,11 +17,11 @@ interface MarketplaceContentProps {
   isLoading: boolean;
   filteredServices: ServiceCardProps[];
   showAIRecommendations: boolean;
-  activeFilters: Record<string, any>;
+  activeFilters: Record<string, unknown>;
   handleServiceSelect: (id: string) => void;
   isServiceInComparison: (id: string) => boolean;
   toggleCompareService: (service: ServiceCardProps) => void;
-  handleApplyFilters: (filters: Record<string, any>) => void;
+  handleApplyFilters: (filters: Record<string, unknown>) => void;
 }
 
 export function MarketplaceContent({

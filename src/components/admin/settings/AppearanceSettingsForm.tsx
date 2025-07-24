@@ -1,6 +1,5 @@
-
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
 import { 
   Card, 
@@ -38,7 +37,7 @@ const AppearanceSettingsForm = () => {
     },
   });
 
-  const onSubmit = (values: AppearanceFormValues) => {
+  const onSubmit: SubmitHandler<AppearanceFormValues> = (values: AppearanceFormValues) => {
     console.log("Appearance settings:", values);
     toast.success("Appearance settings updated successfully");
   };

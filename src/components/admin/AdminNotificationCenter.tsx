@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useNotifications } from '@/contexts/NotificationContext';
+import { useNotifications } from '@/contexts/useNotifications';
 import { useAuth } from '@/contexts/auth';
 import { Badge } from '@/components/ui/badge';
 import { Bell, Send, Users, AlertTriangle } from 'lucide-react';
@@ -108,7 +108,7 @@ export const AdminNotificationCenter = () => {
           <div className="flex items-center gap-4">
             <div>
               <label className="text-sm font-medium">Type</label>
-              <Select value={announcementType} onValueChange={(value) => setAnnouncementType(value as any)}>
+              <Select value={announcementType} onValueChange={(value: 'info' | 'success' | 'warning' | 'error') => setAnnouncementType(value)}>
                 <SelectTrigger className="w-32">
                   <SelectValue />
                 </SelectTrigger>

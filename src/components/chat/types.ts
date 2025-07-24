@@ -6,7 +6,7 @@ export interface ChatMessage {
   sender_name: string;
   timestamp: Date;
   type: 'text' | 'file' | 'system';
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ChatParticipant {

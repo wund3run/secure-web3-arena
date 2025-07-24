@@ -1,4 +1,3 @@
-
 import { toast } from "sonner";
 import { PostgrestError } from "@supabase/supabase-js";
 
@@ -7,79 +6,101 @@ export enum ErrorCategory {
   Authentication = 'authentication',
   Validation = 'validation',
   Database = 'database',
+  RateLimit = 'rate-limit',
   Unknown = 'unknown'
 }
 
+interface ErrorHandlerOptions {
+  customMessage?: string;
+  retryable?: boolean;
+  context?: string;
+  silent?: boolean;
+}
+
 /**
- * Enhanced API error handler with detailed error categorization
+ * Enhanced API error handler with detailed error categorization and retry support
  */
 export const handleApiError = (
   error: Error | PostgrestError | unknown,
-  customMessage?: string
-): void => {
-  console.error("API Error:", error);
+  options: ErrorHandlerOptions = {}
+): { category: ErrorCategory; retryable: boolean } => {
+  const { customMessage, retryable = true, context = 'API', silent = false } = options;
   
-  // Default error message
-  let displayMessage = "An unexpected error occurred. Please try again.";
+  // Log error with context
+  console.error(`${context} Error:`, error);
+  
+  // Default values
+  let displayMessage = customMessage || "An unexpected error occurred. Please try again.";
   let category = ErrorCategory.Unknown;
+  let shouldRetry = retryable;
   let actionable = false;
   
-  // Handle Supabase PostgrestError
-  if (typeof error === "object" && error !== null && "message" in error) {
-    const errorMsg = (error as { message: string }).message;
+  // Handle different error types
+  if (error instanceof Error || (typeof error === "object" && error !== null && "message" in error)) {
+    const errorMsg = (error as { message: string }).message.toLowerCase();
     
-    // Check for common error patterns with more descriptive messages
-    if (errorMsg.includes("violates foreign key constraint")) {
-      displayMessage = "This operation references invalid or deleted data.";
-      category = ErrorCategory.Database;
-    } else if (errorMsg.includes("violates unique constraint")) {
-      displayMessage = "This record already exists.";
-      category = ErrorCategory.Validation;
-      actionable = true;
-    } else if (errorMsg.includes("violates not-null constraint")) {
-      displayMessage = "Missing required information.";
-      category = ErrorCategory.Validation;
-      actionable = true;
-    } else if (errorMsg.includes("permission denied")) {
-      displayMessage = "You don't have permission to perform this action.";
-      category = ErrorCategory.Authentication;
-    } else if (errorMsg.includes("JWT expired")) {
-      displayMessage = "Your session has expired. Please sign in again.";
-      category = ErrorCategory.Authentication;
-      actionable = true;
-    } else if (errorMsg.includes("network") || errorMsg.includes("fetch")) {
-      displayMessage = "Network connection issue. Please check your internet connection.";
+    // Network errors
+    if (errorMsg.includes('network') || errorMsg.includes('fetch') || errorMsg.includes('timeout')) {
       category = ErrorCategory.Network;
+      displayMessage = "Network connection issue. Please check your internet connection.";
+      shouldRetry = true;
       actionable = true;
-    } else {
-      // Use the actual error message if available
-      displayMessage = errorMsg;
+    }
+    // Authentication errors
+    else if (errorMsg.includes('unauthorized') || errorMsg.includes('unauthenticated') || 
+             errorMsg.includes('permission') || errorMsg.includes('jwt')) {
+      category = ErrorCategory.Authentication;
+      displayMessage = "Authentication required. Please sign in again.";
+      shouldRetry = false;
+      actionable = true;
+    }
+    // Database errors
+    else if (errorMsg.includes('foreign key constraint')) {
+      category = ErrorCategory.Database;
+      displayMessage = "This operation references invalid or deleted data.";
+      shouldRetry = false;
+    }
+    else if (errorMsg.includes('unique constraint')) {
+      category = ErrorCategory.Validation;
+      displayMessage = "This record already exists.";
+      shouldRetry = false;
+      actionable = true;
+    }
+    else if (errorMsg.includes('not-null constraint')) {
+      category = ErrorCategory.Validation;
+      displayMessage = "Missing required information.";
+      shouldRetry = false;
+      actionable = true;
+    }
+    // Rate limiting
+    else if (errorMsg.includes('rate limit') || errorMsg.includes('too many requests')) {
+      category = ErrorCategory.RateLimit;
+      displayMessage = "Too many requests. Please try again later.";
+      shouldRetry = true;
+      actionable = false;
     }
   }
   
-  // Use custom message if provided
-  if (customMessage) {
-    displayMessage = customMessage;
+  // Show toast notification unless silent mode is enabled
+  if (!silent) {
+    toast.error("Error", {
+      description: displayMessage,
+      id: `api-error-${Date.now()}-${category}`,
+      action: actionable ? {
+        label: category === ErrorCategory.Authentication ? "Sign In" : 
+               category === ErrorCategory.Network ? "Retry" : "Dismiss",
+        onClick: () => {
+          if (category === ErrorCategory.Authentication) {
+            window.location.href = "/auth";
+          } else if (category === ErrorCategory.Network) {
+            window.location.reload();
+          }
+        }
+      } : undefined
+    });
   }
   
-  // Show toast notification with appropriate action based on category
-  toast.error("Error", {
-    description: displayMessage,
-    id: `api-error-${Date.now()}-${category}`,
-    action: actionable ? {
-      label: category === ErrorCategory.Authentication ? "Sign In" : 
-             category === ErrorCategory.Network ? "Retry" : "Dismiss",
-      onClick: () => {
-        if (category === ErrorCategory.Authentication) {
-          window.location.href = "/auth";
-        } else if (category === ErrorCategory.Network) {
-          window.location.reload();
-        }
-      }
-    } : undefined
-  });
-  
-  return;
+  return { category, retryable: shouldRetry };
 };
 
 /**
@@ -87,24 +108,30 @@ export const handleApiError = (
  */
 export async function withErrorHandling<T>(
   fn: () => Promise<T>,
-  customMessage?: string,
-  retries = 1
+  options: ErrorHandlerOptions & { maxRetries?: number } = {}
 ): Promise<T | null> {
-  try {
-    return await fn();
-  } catch (error) {
-    handleApiError(error, customMessage);
-    
-    // Implement retry for certain errors
-    if (retries > 0 && 
-       (error instanceof Error && 
-        (error.message.includes("network") || error.message.includes("fetch")))) {
-      console.log(`Retrying operation (${retries} attempts left)...`);
-      // Wait a bit before retrying
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      return withErrorHandling(fn, customMessage, retries - 1);
+  const { maxRetries = 3, ...handlerOptions } = options;
+  let retries = 0;
+  
+  while (retries <= maxRetries) {
+    try {
+      return await fn();
+    } catch (error) {
+      const { category, retryable } = handleApiError(error, {
+        ...handlerOptions,
+        silent: retries < maxRetries // Only show error on final retry
+      });
+      
+      if (!retryable || retries >= maxRetries) {
+        return null;
+      }
+      
+      // Exponential backoff
+      const delay = Math.min(1000 * Math.pow(2, retries), 10000);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      retries++;
     }
-    
-    return null;
   }
+  
+  return null;
 }

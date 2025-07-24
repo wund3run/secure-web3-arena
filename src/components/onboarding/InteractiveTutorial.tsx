@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -141,12 +140,12 @@ export function InteractiveTutorial({ userType, onComplete }: InteractiveTutoria
     ));
     
     // Track tutorial progress
-    if ((window as any).trackConversion) {
-      (window as any).trackConversion({
+    const trackConversion = (window as any)?.trackConversion;
+    if (trackConversion && typeof trackConversion === 'function') {
+      trackConversion({
         action: 'tutorial_step_completed',
         category: 'onboarding',
-        label: `${userType}_step_${stepIndex}`,
-        metadata: { stepId: steps[stepIndex]?.id }
+        step: currentStep + 1,
       });
     }
 
@@ -154,12 +153,10 @@ export function InteractiveTutorial({ userType, onComplete }: InteractiveTutoria
       setCurrentStep(stepIndex + 1);
     } else {
       // All steps completed
-      if ((window as any).trackConversion) {
-        (window as any).trackConversion({
+      if (trackConversion && typeof trackConversion === 'function') {
+        trackConversion({
           action: 'tutorial_completed',
           category: 'onboarding',
-          label: userType,
-          value: 1
         });
       }
       setTimeout(onComplete, 1000);

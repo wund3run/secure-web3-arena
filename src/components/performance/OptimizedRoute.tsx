@@ -1,4 +1,3 @@
-
 import React, { Suspense, useEffect, useState } from 'react';
 import { EnhancedErrorBoundary } from '@/components/error-handling/EnhancedErrorBoundary';
 import { EnhancedSkeleton } from '@/components/ui/enhanced-skeleton';
@@ -65,8 +64,12 @@ export function OptimizedRoute({
     };
 
     if ('requestIdleCallback' in window) {
-      const idleCallback = (window as any).requestIdleCallback(preloadOnIdle, { timeout: 2000 });
-      return () => (window as any).cancelIdleCallback(idleCallback);
+      const idleCallback = (window as unknown as { requestIdleCallback?: typeof window.requestIdleCallback }).requestIdleCallback?.(preloadOnIdle, { timeout: 2000 });
+      return () => {
+        if (idleCallback !== undefined) {
+          (window as unknown as { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback?.(idleCallback);
+        }
+      };
     } else {
       const timeout = setTimeout(preloadOnIdle, 1000);
       return () => clearTimeout(timeout);

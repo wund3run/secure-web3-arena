@@ -1,5 +1,5 @@
 
-import { InfoIcon, TableOfContents } from "lucide-react";
+import { InfoIcon, Table2 } from "lucide-react";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
@@ -51,7 +51,7 @@ export function AuditStatsTable() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <TableOfContents className="h-8 w-8 text-primary" />
+            <Table2 className="h-8 w-8 text-primary" />
             <h2 className="text-3xl font-bold text-foreground">Platform Security Stats</h2>
           </div>
           <p className="text-muted-foreground">

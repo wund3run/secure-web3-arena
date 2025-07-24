@@ -1,11 +1,15 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Zap } from 'lucide-react';
 
+interface DemoResult {
+  feature_importance?: Record<string, number>;
+  [key: string]: unknown;
+}
+
 interface FeatureImportanceAnalysisProps {
-  demoResults: any[];
+  demoResults: DemoResult[];
 }
 
 export const FeatureImportanceAnalysis: React.FC<FeatureImportanceAnalysisProps> = ({
@@ -24,6 +28,8 @@ export const FeatureImportanceAnalysis: React.FC<FeatureImportanceAnalysisProps>
     );
   }
 
+  const featureImportance = demoResults[0].feature_importance!;
+
   return (
     <Card>
       <CardHeader>
@@ -34,7 +40,7 @@ export const FeatureImportanceAnalysis: React.FC<FeatureImportanceAnalysisProps>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {Object.entries(demoResults[0].feature_importance)
+          {Object.entries(featureImportance)
             .sort(([,a], [,b]) => (b as number) - (a as number))
             .slice(0, 8)
             .map(([feature, importance]) => (

@@ -8,8 +8,6 @@ export interface RecentActivity {
   description: string;
   timestamp: string;
   metadata?: any;
-  user_name?: string;
-  avatar_url?: string;
 }
 
 export async function fetchRecentActivity(userId: string): Promise<RecentActivity[]> {

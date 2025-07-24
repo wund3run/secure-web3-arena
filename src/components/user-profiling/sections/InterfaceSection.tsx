@@ -7,7 +7,7 @@ import { Layout } from 'lucide-react';
 import { PreferenceSectionProps } from '../types';
 
 export function InterfaceSection({ preferences, updatePreferences }: PreferenceSectionProps) {
-  const handlePreferenceChange = (key: string, value: any) => {
+  const handlePreferenceChange = (key: string, value: unknown) => {
     updatePreferences({
       [key]: value,
     });

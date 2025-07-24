@@ -3,7 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { performanceMonitor } from '@/utils/testing/performance-monitor';
 
 export function usePerformanceMonitoring() {
-  const markPerformance = useCallback((name: string, metadata?: Record<string, any>) => {
+  const markPerformance = useCallback((name: string, metadata?: Record<string, unknown>) => {
     const mark = performance.mark(name);
     
     if (metadata) {
@@ -29,7 +29,7 @@ export function usePerformanceMonitoring() {
         }
       });
       return measure;
-    } catch (error) {
+    } catch (error: unknown) {
       console.warn('Performance measurement failed:', error);
       return null;
     }

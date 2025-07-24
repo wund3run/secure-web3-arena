@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -155,24 +154,24 @@ export function MetricsOverview({ userId }: MetricsOverviewProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {metricCards.map((metric, index) => (
-        <Card key={index} className="hover:shadow-brand transition-shadow duration-300">
+        <Card key={index} className="bg-card rounded-[1.15rem] shadow-[0_8px_40px_0_rgba(50,60,130,0.23)] p-8 transition-shadow duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-black uppercase tracking-tight text-accent-primary" style={{ fontFamily: "'Space Grotesk', Arial, sans-serif", letterSpacing: '0.08em' }}>
               {metric.title}
             </CardTitle>
-            <div className={`p-2 rounded-full ${metric.bgColor}`}>
-              <metric.icon className={`h-4 w-4 ${metric.color}`} />
+            <div className={`p-2 rounded-full bg-accent-secondary/10`}>
+              <metric.icon className={`h-5 w-5 text-accent-secondary`} />
             </div>
           </CardHeader>
           <CardContent>
-            <div className={`text-2xl font-bold ${metric.color} mb-1`}>
+            <div className={`text-2xl font-black text-primary mb-1`}>
               {metric.value}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-secondary" style={{ fontFamily: "'Space Grotesk', Arial, sans-serif" }}>
               {metric.subtitle}
             </p>
             {index === 0 && metrics?.monthlyGrowth && (
-              <Badge variant="secondary" className="mt-2 text-xs">
+              <Badge variant="secondary" className="mt-2 text-xs font-medium rounded-full px-3 py-1">
                 <TrendingUp className="h-3 w-3 mr-1" />
                 +{metrics.monthlyGrowth}% this month
               </Badge>

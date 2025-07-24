@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,6 +18,10 @@ import {
 } from 'lucide-react';
 import { useAIMatching, MatchingScore } from '@/hooks/useAIMatching';
 import { toast } from 'sonner';
+import { AuditService } from '@/services/auditService';
+import { useAuth } from '@/contexts/auth';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 
 interface IntelligentMatchingDashboardProps {
   auditRequestId: string;
@@ -30,7 +33,11 @@ export const IntelligentMatchingDashboard: React.FC<IntelligentMatchingDashboard
   onSelectAuditor,
 }) => {
   const { loading, matchingResults, calculateMatchingScore, getMatchingResults } = useAIMatching();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [selectedAuditor, setSelectedAuditor] = useState<string | null>(null);
+  const [loadingSelection, setLoadingSelection] = useState(false);
+  const [chatRoomId, setChatRoomId] = useState<string | null>(null);
 
   useEffect(() => {
     // Try to get existing results first, then calculate if none exist
@@ -41,10 +48,34 @@ export const IntelligentMatchingDashboard: React.FC<IntelligentMatchingDashboard
     });
   }, [auditRequestId, getMatchingResults, calculateMatchingScore]);
 
-  const handleSelectAuditor = (auditorId: string) => {
+  const handleSelectAuditor = async (auditorId: string) => {
+    setLoadingSelection(true);
+    try {
     setSelectedAuditor(auditorId);
     onSelectAuditor?.(auditorId);
-    toast.success('Auditor selected for your project');
+      // Assign auditor to audit request
+      const assigned = await AuditService.assignAuditor(auditRequestId, auditorId);
+      if (!assigned) throw new Error('Failed to assign auditor');
+      // Create or get chat room
+      const chatRoomId = await AuditService.getOrCreateAuditChatRoom(auditRequestId, user?.id, auditorId);
+      if (!chatRoomId) throw new Error('Failed to create chat room');
+      setChatRoomId(chatRoomId);
+      toast.success('Auditor selected and chat room created!');
+      // Notify auditor
+      await supabase.from('notifications').insert({
+        user_id: auditorId,
+        title: 'You have been selected for an audit',
+        message: `A project owner has selected you for audit request ${auditRequestId}. Join the chat to get started.`,
+        type: 'info',
+        metadata: { audit_request_id: auditRequestId, chat_room_id: chatRoomId }
+      });
+      // Optionally, auto-navigate:
+      // navigate(`/chat/${chatRoomId}`);
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to select auditor and create chat room');
+    } finally {
+      setLoadingSelection(false);
+    }
   };
 
   const handleRecalculate = () => {
@@ -220,7 +251,7 @@ export const IntelligentMatchingDashboard: React.FC<IntelligentMatchingDashboard
             size="sm"
             className="flex-1"
             onClick={() => handleSelectAuditor(score.auditor_id)}
-            disabled={selectedAuditor === score.auditor_id}
+            disabled={selectedAuditor === score.auditor_id || loadingSelection}
           >
             {selectedAuditor === score.auditor_id ? (
               <>
@@ -294,6 +325,10 @@ export const IntelligentMatchingDashboard: React.FC<IntelligentMatchingDashboard
             </p>
           </CardContent>
         </Card>
+      )}
+
+      {chatRoomId && (
+        <Button onClick={() => navigate(`/chat/${chatRoomId}`)} className="mt-4">Go to Chat</Button>
       )}
     </div>
   );

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { MarketplaceHeader } from "@/components/home/marketplace/marketplace-header";
 import { CategoryTabs } from "@/components/home/marketplace/category-tabs";
@@ -43,17 +42,18 @@ function MarketplaceContent() {
     setActiveCategory(tab);
   };
 
-  const handleFilterChange = (filters: any) => {
+  const handleFilterChange = (filters: Record<string, unknown>) => {
     handleApplyFilters(filters);
   };
 
-  // Create a wrapper function to handle string serviceId input
+  // Create a wrapper function to handle AI recommendation selection
   const handleAIRecommendationSelect = (serviceId: string) => {
     console.log("Recommendation selected by ID:", serviceId);
     // Find the service by ID in the filtered services if needed
-    const service = filteredServices.find(s => s.id === serviceId);
+    const service = filteredServices.find((s: ServiceCardProps) => s.id === serviceId);
     if (service) {
       console.log("Found service:", service);
+      // Could navigate to service details or add to comparison
     }
   };
 
@@ -67,7 +67,17 @@ function MarketplaceContent() {
         {showAIRecommendations && (
           <div className="lg:col-span-3 mb-2">
             <AIRecommendations 
-              services={filteredServices}
+              services={filteredServices.map(service => ({
+                id: service.id,
+                name: service.title,
+                provider: service.provider.name,
+                description: service.description,
+                price: `${service.pricing.amount} ${service.pricing.currency}`,
+                rating: service.rating,
+                completionTime: `${service.deliveryTime || 7} days`,
+                category: service.category,
+                tags: service.tags
+              }))}
               projectSize={activeFilters.projectSize || "medium"}
               blockchains={activeFilters.blockchains || []}
               onRecommendationSelect={handleAIRecommendationSelect}
@@ -157,6 +167,6 @@ export function MarketplaceSection() {
 // Update the Window interface declaration to match the one in Marketplace.tsx
 declare global {
   interface Window {
-    SERVICES?: any[];
+    SERVICES?: unknown[];
   }
 }

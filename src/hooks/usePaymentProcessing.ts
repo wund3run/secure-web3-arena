@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -39,9 +38,10 @@ export const usePaymentProcessing = () => {
       if (error) throw error;
 
       return data as PaymentResult;
-    } catch (err: any) {
-      const errorMessage = err.message || 'Failed to create payment intent';
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create payment intent';
       setError(errorMessage);
+      console.error('Payment processing error:', err);
       toast.error('Payment setup failed', { description: errorMessage });
       throw err;
     } finally {
@@ -61,9 +61,10 @@ export const usePaymentProcessing = () => {
 
       toast.success('Payment processed successfully');
       return data;
-    } catch (err: any) {
-      const errorMessage = err.message || 'Payment confirmation failed';
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Payment confirmation failed';
       setError(errorMessage);
+      console.error('Payment processing error:', err);
       toast.error('Payment failed', { description: errorMessage });
       throw err;
     } finally {
@@ -93,9 +94,10 @@ export const usePaymentProcessing = () => {
 
       toast.success('Escrow contract created successfully');
       return data;
-    } catch (err: any) {
-      const errorMessage = err.message || 'Failed to create escrow contract';
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create escrow contract';
       setError(errorMessage);
+      console.error('Payment processing error:', err);
       toast.error('Escrow creation failed', { description: errorMessage });
       throw err;
     } finally {
@@ -115,9 +117,10 @@ export const usePaymentProcessing = () => {
 
       toast.success('Milestone payment released');
       return data;
-    } catch (err: any) {
-      const errorMessage = err.message || 'Failed to release milestone payment';
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to release milestone payment';
       setError(errorMessage);
+      console.error('Payment processing error:', err);
       toast.error('Payment release failed', { description: errorMessage });
       throw err;
     } finally {

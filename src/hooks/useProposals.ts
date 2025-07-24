@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -31,8 +30,10 @@ export const useProposals = (auditRequestId?: string) => {
       const mockProposals: Proposal[] = [];
       setProposals(mockProposals);
       
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch proposals';
+      setError(errorMessage);
+      console.error('Error fetching proposals:', err);
       toast.error('Failed to fetch proposals');
     } finally {
       setLoading(false);
@@ -63,7 +64,7 @@ export const useProposals = (auditRequestId?: string) => {
       setProposals(prev => [newProposal, ...prev]);
       toast.success('Proposal submitted successfully');
       return newProposal;
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error('Failed to submit proposal');
       throw err;
     }
@@ -77,7 +78,7 @@ export const useProposals = (auditRequestId?: string) => {
         )
       );
       toast.success('Proposal updated successfully');
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error('Failed to update proposal');
       throw err;
     }

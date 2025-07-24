@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/contexts/auth';
@@ -8,6 +7,7 @@ import { Footer } from './footer';
 import { EnhancedBreadcrumbTrail } from './navigation/enhanced-breadcrumb-trail';
 import { OnboardingFlow } from '@/components/onboarding/OnboardingFlow';
 import { QuickActionsFAB } from '@/components/ui/quick-actions-fab';
+import { AppContainer } from './AppContainer';
 
 interface EnhancedAuthAwareLayoutProps {
   title: string;
@@ -43,7 +43,9 @@ export function EnhancedAuthAwareLayout({
         {showBreadcrumbs && <EnhancedBreadcrumbTrail />}
         
         <main className={`flex-grow ${className}`}>
-          {children}
+          <AppContainer>
+            {children}
+          </AppContainer>
         </main>
         
         {showFooter && <Footer />}

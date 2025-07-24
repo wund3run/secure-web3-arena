@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { ConsolidatedNavbar } from './ConsolidatedNavbar';
+import { UnifiedNavigation } from './UnifiedNavigation';
 import { EnhancedBreadcrumbs } from './enhanced-breadcrumbs';
 import { Toaster } from 'sonner';
 
@@ -34,8 +33,8 @@ export function StandardizedLayout({
         <meta name="theme-color" content="#9c88ff" />
       </Helmet>
 
-      {/* Use consolidated navbar instead of multiple variants */}
-      <ConsolidatedNavbar />
+      {/* Use unified navigation system */}
+      <UnifiedNavigation />
       
       {showBreadcrumbs && <EnhancedBreadcrumbs />}
       

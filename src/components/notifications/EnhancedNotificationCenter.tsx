@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,7 +19,7 @@ import {
   Info,
   MailOpen
 } from 'lucide-react';
-import { useNotifications } from '@/contexts/NotificationContext';
+import { useNotifications } from '@/contexts/useNotifications';
 import { formatDistanceToNow } from 'date-fns';
 
 export const EnhancedNotificationCenter = () => {

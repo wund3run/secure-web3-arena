@@ -5,7 +5,7 @@ import { FunnelStage } from "./types";
 
 interface FunnelChartProps {
   data: FunnelStage[];
-  renderTooltip: (props: any) => React.ReactNode;
+  renderTooltip: (props: unknown) => React.ReactNode;
 }
 
 export function FunnelChart({ data, renderTooltip }: FunnelChartProps) {

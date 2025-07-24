@@ -1,10 +1,20 @@
-
 import { ServiceCardProps } from "@/data/marketplace-data";
+
+// Define the filter type
+interface ServiceFilters {
+  priceRange?: [number, number];
+  providerLevels?: string[];
+  serviceTypes?: string[];
+  blockchains?: string[];
+  features?: string[];
+  minReputation?: number;
+  searchTerm?: string;
+}
 
 /**
  * Filter services based on category and additional filters
  */
-export const filterServices = (services: ServiceCardProps[], category: string, filters: any) => {
+export const filterServices = (services: ServiceCardProps[], category: string, filters?: ServiceFilters | Record<string, any>) => {
   let filtered = [...services];
   
   // Filter by category
@@ -17,41 +27,43 @@ export const filterServices = (services: ServiceCardProps[], category: string, f
   
   // Apply additional filters if they exist
   if (filters) {
+    const typedFilters = filters as any; // Use any to handle dynamic properties
+    
     // Filter by price range
-    if (filters.priceRange && (filters.priceRange[0] > 0 || filters.priceRange[1] < 10)) {
+    if (typedFilters.priceRange && (typedFilters.priceRange[0] > 0 || typedFilters.priceRange[1] < 10)) {
       filtered = filtered.filter(
-        service => service.pricing.amount >= filters.priceRange[0] && 
-                  service.pricing.amount <= filters.priceRange[1]
+        service => service.pricing.amount >= typedFilters.priceRange[0] && 
+                  service.pricing.amount <= typedFilters.priceRange[1]
       );
     }
     
-    if (filters.providerLevels && filters.providerLevels.length > 0) {
+    if (typedFilters.providerLevels && typedFilters.providerLevels.length > 0) {
       filtered = filtered.filter(
-        service => filters.providerLevels.includes(service.provider.level)
+        service => typedFilters.providerLevels.includes(service.provider.level)
       );
     }
     
-    if (filters.serviceTypes && filters.serviceTypes.length > 0) {
+    if (typedFilters.serviceTypes && typedFilters.serviceTypes.length > 0) {
       filtered = filtered.filter(service => 
         service.tags.some(tag => 
-          filters.serviceTypes.includes(tag)
+          typedFilters.serviceTypes.includes(tag)
         )
       );
     }
     
-    if (filters.blockchains && filters.blockchains.length > 0) {
+    if (typedFilters.blockchains && typedFilters.blockchains.length > 0) {
       filtered = filtered.filter(service => 
         service.tags.some(tag => 
-          filters.blockchains.some((blockchain: string) => 
+          typedFilters.blockchains.some((blockchain: string) => 
             tag.toLowerCase().includes(blockchain.toLowerCase())
           )
         )
       );
     }
     
-    if (filters.features && filters.features.length > 0) {
+    if (typedFilters.features && typedFilters.features.length > 0) {
       filtered = filtered.filter(service => 
-        filters.features.every((feature: string) => 
+        typedFilters.features.every((feature: string) => 
           service.tags.some(tag => 
             tag.toLowerCase().includes(feature.toLowerCase())
           )
@@ -59,14 +71,14 @@ export const filterServices = (services: ServiceCardProps[], category: string, f
       );
     }
     
-    if (filters.minReputation) {
+    if (typedFilters.minReputation) {
       filtered = filtered.filter(
-        service => service.provider.reputation >= filters.minReputation
+        service => service.provider.reputation >= typedFilters.minReputation
       );
     }
     
-    if (filters.searchTerm) {
-      const searchLower = filters.searchTerm.toLowerCase();
+    if (typedFilters.searchTerm) {
+      const searchLower = typedFilters.searchTerm.toLowerCase();
       filtered = filtered.filter(
         service => 
           service.title.toLowerCase().includes(searchLower) || 

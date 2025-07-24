@@ -1,14 +1,15 @@
-
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/auth';
 
-interface UserPreferences {
+export interface UserPreferences {
   theme: 'light' | 'dark' | 'auto';
   notifications: boolean;
   language: string;
   timezone: string;
   dashboardLayout: 'compact' | 'detailed' | 'cards';
   autoSave: boolean;
+  preferredCommunication?: 'email' | 'discord' | 'telegram' | 'in-app';
+  urgencyPreference?: 'flexible' | 'standard' | 'urgent';
   notificationSettings?: {
     auditUpdates: boolean;
     newMessages: boolean;
@@ -19,7 +20,7 @@ interface UserPreferences {
   experienceLevel?: 'beginner' | 'intermediate' | 'expert';
 }
 
-interface BehaviorProfile {
+export interface BehaviorProfile {
   visitCount: number;
   totalTimeSpent: number;
   averageSessionDuration: number;
@@ -40,7 +41,7 @@ interface JourneyProfile {
   progressScore: number;
 }
 
-type UserSegment = 'new_user' | 'regular_user' | 'power_user' | 'at_risk' | 'champion';
+export type UserSegment = 'new_user' | 'regular_user' | 'power_user' | 'at_risk' | 'champion';
 
 export const useUserProfiling = () => {
   const { user } = useAuth();
@@ -67,7 +68,7 @@ export const useUserProfiling = () => {
     if (savedPreferences) {
       try {
         setPreferences(JSON.parse(savedPreferences));
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('Failed to parse user preferences:', error);
       }
     }
@@ -81,7 +82,7 @@ export const useUserProfiling = () => {
           ...parsed,
           lastActiveDate: new Date(parsed.lastActiveDate)
         });
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('Failed to parse behavior profile:', error);
         initializeBehaviorProfile();
       }
@@ -200,7 +201,7 @@ export const useUserProfiling = () => {
     });
   };
 
-  const trackBehavior = (action: string, metadata?: any) => {
+  const trackBehavior = (action: string, metadata?: unknown) => {
     if (!user || !behaviorProfile) return;
 
     setBehaviorProfile(prev => {

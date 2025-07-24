@@ -1,4 +1,3 @@
-
 export class MaintenanceManager {
   private static cleanupInterval: number | null = null;
   private static isMaintenanceRunning = false;
@@ -130,9 +129,9 @@ export class MaintenanceManager {
   }
 
   private static async optimizeMemory(): Promise<void> {
-    if ('gc' in window && typeof (window as any).gc === 'function') {
+    if ('gc' in window && typeof (window as { gc?: () => void }).gc === 'function') {
       try {
-        (window as any).gc();
+        (window as { gc?: () => void }).gc?.();
         console.log('🧹 Memory garbage collection triggered');
       } catch (error) {
         // GC not available, that's okay

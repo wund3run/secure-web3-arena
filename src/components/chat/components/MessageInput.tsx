@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,7 @@ interface MessageInputProps {
   onSendMessage: () => void;
   onKeyPress: (e: React.KeyboardEvent) => void;
   isConnected: boolean;
-  inputRef: React.RefObject<HTMLInputElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 export function MessageInput({ 

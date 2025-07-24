@@ -1,10 +1,9 @@
-
 import { useEffect, useCallback, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
 interface AnalyticsEvent {
   type: 'page_view' | 'click' | 'scroll' | 'time_on_page' | 'user_interaction';
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   timestamp: number;
 }
 
@@ -64,7 +63,7 @@ export function useAnalytics() {
             path: location.pathname,
             performance: metrics
           });
-        } catch (error) {
+        } catch (error: unknown) {
           console.warn('Performance tracking failed:', error);
         }
       };
@@ -79,7 +78,7 @@ export function useAnalytics() {
     }
   }, [location]);
 
-  const trackEvent = useCallback((type: AnalyticsEvent['type'], data: Record<string, any>) => {
+  const trackEvent = useCallback((type: AnalyticsEvent['type'], data: Record<string, unknown>) => {
     const event: AnalyticsEvent = {
       type,
       data,
@@ -89,7 +88,7 @@ export function useAnalytics() {
     events.current.push(event);
 
     // Log to console in development
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.MODE === 'development') {
       console.log('📊 Analytics Event:', event);
     }
 
@@ -97,7 +96,7 @@ export function useAnalytics() {
     // Example: sendToAnalyticsService(event);
   }, []);
 
-  const trackClick = useCallback((element: string, data?: Record<string, any>) => {
+  const trackClick = useCallback((element: string, data?: Record<string, unknown>) => {
     trackEvent('click', {
       element,
       path: location.pathname,
@@ -105,7 +104,7 @@ export function useAnalytics() {
     });
   }, [location.pathname, trackEvent]);
 
-  const trackInteraction = useCallback((interaction: string, data?: Record<string, any>) => {
+  const trackInteraction = useCallback((interaction: string, data?: Record<string, unknown>) => {
     trackEvent('user_interaction', {
       interaction,
       path: location.pathname,

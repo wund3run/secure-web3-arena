@@ -15,6 +15,7 @@ interface PageViewEvent {
     height: number;
   };
   loadTime?: number;
+  [key: string]: unknown;
 }
 
 interface ConversionEvent {
@@ -22,7 +23,7 @@ interface ConversionEvent {
   category: string;
   label?: string;
   value?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export function UserJourneyTracker() {
@@ -38,7 +39,7 @@ export function UserJourneyTracker() {
     if (!sessionStorage.getItem('analytics_session')) {
       sessionStorage.setItem('analytics_session', sessionId.current);
     }
-  }, []);
+  }, [sessionId]);
 
   useEffect(() => {
     const startTime = Date.now();
@@ -114,7 +115,7 @@ export function UserJourneyTracker() {
       localStorage.setItem('user_conversions', JSON.stringify(conversions));
     };
 
-    const trackEngagement = (element: string, action: string, metadata?: any) => {
+    const trackEngagement = (element: string, action: string, metadata?: Record<string, unknown>) => {
       trackConversion({
         action,
         category: 'engagement',
@@ -124,14 +125,20 @@ export function UserJourneyTracker() {
     };
 
     // Make functions globally available
-    (window as any).trackConversion = trackConversion;
-    (window as any).trackEngagement = trackEngagement;
+    (window as unknown as { 
+      trackConversion?: (event: ConversionEvent) => void;
+      trackEngagement?: (element: string, action: string, metadata?: Record<string, unknown>) => void;
+    }).trackConversion = trackConversion;
+    (window as unknown as { 
+      trackConversion?: (event: ConversionEvent) => void;
+      trackEngagement?: (element: string, action: string, metadata?: Record<string, unknown>) => void;
+    }).trackEngagement = trackEngagement;
 
     return () => {
-      delete (window as any).trackConversion;
-      delete (window as any).trackEngagement;
+      delete (window as unknown as { trackConversion?: (event: ConversionEvent) => void }).trackConversion;
+      delete (window as unknown as { trackEngagement?: (element: string, action: string, metadata?: Record<string, unknown>) => void }).trackEngagement;
     };
-  }, [user, location]);
+  }, [user, location, auditLogger]);
 
   return null; // This is a tracking component, no UI
 }

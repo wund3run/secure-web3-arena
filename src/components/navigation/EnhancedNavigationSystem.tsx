@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
@@ -201,7 +200,7 @@ export function EnhancedNavigationSystem() {
           </Button>
           
           <Button variant="outline" size="sm" className="w-full justify-start" asChild>
-            <Link to="/security-audits">
+            <Link to="/services/security-audits">
               <Shield className="h-3 w-3 mr-2" />
               Security Center
             </Link>

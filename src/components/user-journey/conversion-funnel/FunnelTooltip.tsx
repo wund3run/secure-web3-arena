@@ -1,7 +1,21 @@
-
 import React from "react";
 
-export function renderTooltip(props: any) {
+// Define proper interfaces for tooltip props
+interface TooltipPayload {
+  payload: {
+    name: string;
+    value: number;
+    dropoff: number;
+    action: string;
+  };
+}
+
+interface TooltipProps {
+  active?: boolean;
+  payload?: TooltipPayload[];
+}
+
+export function renderTooltip(props: TooltipProps) {
   const { active, payload } = props;
   if (active && payload && payload.length > 0) {
     const data = payload[0].payload;

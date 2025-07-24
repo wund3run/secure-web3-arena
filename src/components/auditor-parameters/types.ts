@@ -19,9 +19,9 @@ export const formSchema = z.object({
   rust: z.number().min(0).max(10),
   vyper: z.number().min(0).max(10),
   securityTools: z.array(z.string()),
-  staticAnalysis: z.boolean().default(false),
-  formalVerification: z.boolean().default(false),
-  fuzzTesting: z.boolean().default(false),
+  staticAnalysis: z.boolean(),
+  formalVerification: z.boolean(),
+  fuzzTesting: z.boolean(),
   
   // Past Experience
   completedAudits: z.number().min(0),

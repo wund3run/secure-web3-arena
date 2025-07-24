@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -24,16 +23,13 @@ export default function Index() {
         type="website"
         structuredData={structuredData}
       />
-      
       <Navbar />
-      
       <main className="flex-grow">
         <HeroSection />
         <WhyHawklySection />
         <HowItWorksSection />
         <FeaturesGlanceSection />
         <TestimonialsSection />
-        
         {/* Enhanced Final CTA Section */}
         <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
           <div className="max-w-4xl mx-auto text-center px-4">
@@ -56,12 +52,11 @@ export default function Index() {
               </Button>
             </div>
             <div className="mt-8 text-sm text-blue-100">
-              <p>✓ 500+ Verified Experts • ✓ $350M+ Protected • ✓ 48hr Average Turnaround</p>
+              <p> 500+ Verified Experts  $350M+ Protected  48hr Average Turnaround</p>
             </div>
           </div>
         </section>
       </main>
-      
       <Footer />
     </div>
   );

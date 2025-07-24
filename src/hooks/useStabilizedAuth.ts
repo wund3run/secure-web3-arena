@@ -14,7 +14,7 @@ export const useStabilizedAuth = () => {
     setError(null);
     try {
       await contextSignIn(email, password);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || 'Failed to sign in.');
       // Re-throw the error so the component can also catch it if needed
       throw err;
@@ -28,7 +28,7 @@ export const useStabilizedAuth = () => {
     setError(null);
     try {
       await contextSignUp(email, password, fullName, userType);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || 'Failed to sign up.');
       throw err;
     } finally {

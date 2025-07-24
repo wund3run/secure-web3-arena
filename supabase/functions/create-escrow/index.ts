@@ -1,6 +1,5 @@
-
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { serve } from "std/http/server.ts";
+import { createClient } from "@supabase/supabase-js";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,9 +12,11 @@ serve(async (req) => {
   }
 
   try {
+    const supabaseUrl = process.env.SUPABASE_URL ?? "";
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
     const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      supabaseUrl,
+      supabaseServiceRoleKey,
       { auth: { persistSession: false } }
     );
 
@@ -31,7 +32,7 @@ serve(async (req) => {
       throw new Error("Unauthorized");
     }
 
-    const { client_id, auditor_id, total_amount, milestones } = await req.json();
+    const { client_id, auditor_id, total_amount, milestones }: { client_id: string; auditor_id: string; total_amount: number; milestones: { title: string; description: string; amount: number }[] } = await req.json();
 
     // Create escrow contract
     const { data: escrowContract, error: escrowError } = await supabaseClient
@@ -52,7 +53,7 @@ serve(async (req) => {
     }
 
     // Create milestones
-    const milestoneInserts = milestones.map((milestone: any) => ({
+    const milestoneInserts = milestones.map((milestone) => ({
       escrow_contract_id: escrowContract.id,
       title: milestone.title,
       description: milestone.description,
@@ -80,10 +81,14 @@ serve(async (req) => {
         status: 200,
       }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
+    let message = "Unknown error";
+    if (typeof error === "object" && error && "message" in error) {
+      message = (error as { message: string }).message;
+    }
     console.error("Error creating escrow contract:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: message }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,

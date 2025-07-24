@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -73,15 +72,15 @@ export function ValuePropositionSection() {
     <section className="section-padding bg-gradient-to-b from-neutral-50 to-primary-50/30">
       <div className="modern-container">
         {/* Benefits Grid */}
-        <div className="section-header">
+        <div className="section-header mb-10 text-center">
           <Badge variant="secondary" className="mb-4 bg-primary-100 text-primary-700 border-primary-200">
             <TrendingUp className="h-3 w-3 mr-1" />
             Why Choose Hawkly
           </Badge>
-          <h2 className="section-title text-neutral-900">
+          <h2 className="section-title text-4xl font-black bg-gradient-to-r from-accent-primary to-accent-secondary bg-clip-text text-transparent uppercase tracking-tight" style={{ fontFamily: "'Space Grotesk', Arial, sans-serif", letterSpacing: '0.08em' }}>
             The Smart Way to Secure Web3
           </h2>
-          <p className="section-subtitle text-neutral-600">
+          <p className="section-subtitle text-lg text-secondary max-w-2xl mx-auto mt-2" style={{ fontFamily: "'Space Grotesk', Arial, sans-serif" }}>
             Traditional audit firms are slow and expensive. We've built a better way using AI, blockchain technology, and the world's top security experts.
           </p>
 

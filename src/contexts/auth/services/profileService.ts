@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import type { UserProfile } from '../types';
@@ -20,6 +19,8 @@ export const profileService = {
       if (profile) {
         const typedProfile: UserProfile = {
           ...profile,
+          full_name: profile.full_name || '',
+          user_type: (profile.user_type as UserProfile['user_type']) || 'general',
           verification_status: (profile.verification_status as UserProfile['verification_status']) || 'unverified',
           social_links: (profile.social_links as Record<string, string>) || {},
           skills: profile.skills || [],
@@ -82,7 +83,7 @@ export const profileService = {
         social_links: (updatedProfile.social_links as Record<string, string>) || {},
         skills: updatedProfile.skills || [],
         specializations: updatedProfile.specializations || []
-      };
+      } as unknown as UserProfile;
       toast.success('Profile updated successfully');
       return typedProfile;
     }

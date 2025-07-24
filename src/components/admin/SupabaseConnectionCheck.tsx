@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -96,7 +95,7 @@ export function SupabaseConnectionCheck() {
     }, 30000);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [isRetrying]);
   
   const getStatusDisplay = () => {
     if (connectionStatus === 'checking') {

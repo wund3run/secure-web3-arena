@@ -1,7 +1,8 @@
+import { UserPreferences } from '@/hooks/useUserProfiling';
 
 export interface PreferenceSectionProps {
-  preferences: any;
-  updatePreferences: (updates: any) => void;
+  preferences: UserPreferences;
+  updatePreferences: (updates: Partial<UserPreferences>) => void;
 }
 
 export interface NotificationSettingsProps extends PreferenceSectionProps {

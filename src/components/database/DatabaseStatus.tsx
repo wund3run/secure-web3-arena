@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -6,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { Database, RefreshCw, CheckCircle, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
+import { withErrorHandling } from '@/utils/apiErrorHandler';
 
 interface TableStatus {
   name: string;
@@ -59,12 +59,12 @@ export function DatabaseStatus() {
             status: count === 0 ? 'empty' : 'active'
           });
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         statuses.push({
           name: tableName,
           rowCount: 0,
           status: 'error',
-          error: err.message
+          error: err instanceof Error ? err.message : String(err)
         });
       }
     }
@@ -83,7 +83,7 @@ export function DatabaseStatus() {
 
   useEffect(() => {
     checkTableStatus();
-  }, []);
+  }, [checkTableStatus]);
 
   const getStatusBadge = (status: TableStatus['status']) => {
     switch (status) {

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { toast } from "sonner";
 import { BookOpen, PlusCircle } from "lucide-react";
@@ -6,11 +5,28 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SecurityRiskScorecard } from '@/components/security-visualizations/SecurityRiskScorecard';
 import { VulnerabilityHeatmap } from '@/components/security-visualizations/VulnerabilityHeatmap';
-import { EmbeddedLearningCard } from '@/components/educational/EmbeddedLearningCard';
+import { EmbeddedLearningCard, LearningResource } from '@/components/educational/EmbeddedLearningCard';
 import { CustomizableDashboard } from '@/components/dashboard/CustomizableDashboard';
 
+interface AuditMessage {
+  sender: {
+    name: string;
+  };
+  content: string;
+  timestamp: string;
+}
+
+interface AuditData {
+  name: string;
+  securityScore: number;
+  riskCategories: any[];
+  learningResources: LearningResource[];
+  vulnerabilities: any[];
+  messages: AuditMessage[];
+}
+
 interface OverviewTabProps {
-  auditData: any;
+  auditData: AuditData;
 }
 
 export const OverviewTab: React.FC<OverviewTabProps> = ({ auditData }) => {
@@ -66,7 +82,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ auditData }) => {
             content: (
               <div className="p-4">
                 <ul className="space-y-3">
-                  {auditData.messages.map((msg: any, idx: number) => (
+                  {auditData.messages.map((msg, idx) => (
                     <li key={idx} className="border-b pb-2 last:border-0">
                       <div className="flex items-start gap-3">
                         <span className="text-sm font-medium">{msg.sender.name}</span>
@@ -139,7 +155,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ auditData }) => {
                   <h3 className="font-medium">Recommended Reading</h3>
                 </div>
                 <ul className="space-y-3">
-                  {auditData.learningResources.map((resource: any, idx: number) => (
+                  {auditData.learningResources.map((resource, idx) => (
                     <li key={idx} className="border-b pb-2 last:border-0">
                       <p className="text-sm font-medium">{resource.title}</p>
                       <div className="flex items-center justify-between mt-1">

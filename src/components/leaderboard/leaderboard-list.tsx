@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -12,13 +11,13 @@ import { Link } from "react-router-dom";
 
 interface AuditorProfile {
   id: string;
-  full_name: string;
-  display_name?: string;
-  avatar_url?: string;
-  skills?: string[];
-  projects_completed: number;
-  specializations?: string[];
-  years_of_experience?: number;
+  full_name: string | null;
+  display_name?: string | null;
+  avatar_url?: string | null;
+  skills?: string[] | null;
+  projects_completed: number | null;
+  specializations?: string[] | null;
+  years_of_experience?: number | null;
 }
 
 export function LeaderboardList() {
@@ -44,8 +43,8 @@ export function LeaderboardList() {
         }
         
         setAuditors(data || []);
-      } catch (error: any) {
-        console.error("Error fetching auditors:", error.message);
+      } catch (error: unknown) {
+        console.error("Error fetching auditors:", error instanceof Error ? error.message : String(error));
         setError("Failed to load leaderboard data");
       } finally {
         setLoading(false);
@@ -154,7 +153,7 @@ export function LeaderboardList() {
                     <Avatar className="h-12 w-12 border-2 border-background">
                       <AvatarImage src={auditor.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${auditor.full_name}`} />
                       <AvatarFallback>
-                        {auditor.full_name.split(' ').map(name => name[0]).join('')}
+                        {auditor.full_name?.split(' ').map(name => name[0]).join('') || ''}
                       </AvatarFallback>
                     </Avatar>
                     {index < 3 && (

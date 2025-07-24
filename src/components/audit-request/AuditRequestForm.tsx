@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuditForm } from "@/hooks/useAuditForm";
 import { ProjectDetailsStep } from './steps/ProjectDetailsStep';
 import { TechnicalInfoStep } from './steps/TechnicalInfoStep';
@@ -10,11 +9,13 @@ import AIMatchingJourney from './AIMatchingJourney';
 import ErrorBoundary from "@/components/ui/error-boundary";
 import LoadingState from "@/components/ui/loading-state";
 import { AlertTriangle } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useAuth } from '@/contexts/auth';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { UserPlus } from 'lucide-react';
+import { Badge } from "@/components/ui/badge";
+import { toast } from 'sonner';
 
 interface PrefilledData {
   serviceType?: string;
@@ -49,6 +50,101 @@ const AuditRequestForm = ({ onSubmitSuccess, prefilledData }: AuditRequestFormPr
     prevStep,
     completeAIMatching
   } = useAuditForm(onSubmitSuccess, prefilledData);
+
+  interface AISuggestions {
+    recommendedAuditors: Array<{ id: string; [key: string]: any }>;
+    estimatedDuration: string | null;
+    suggestedBudget: number | null;
+    securityPriorities: string[];
+    riskAssessment: {
+      level: 'default' | 'destructive';
+      title: string;
+      description: string;
+    } | null;
+  }
+
+  const [aiSuggestions, setAiSuggestions] = useState<AISuggestions>({
+    recommendedAuditors: [],
+    estimatedDuration: null,
+    suggestedBudget: null,
+    securityPriorities: [],
+    riskAssessment: null
+  });
+
+  const generateAISuggestions = async (projectData: typeof formData) => {
+    try {
+      // Simulate AI analysis (replace with actual AI service call)
+      // Placeholder for actual AI analysis
+      const suggestions = {
+        recommendedAuditors: [],
+        estimatedDuration: '2-3 weeks',
+        suggestedBudget: 5000,
+        securityPriorities: ['Smart Contract Security', 'Access Control'],
+        riskAssessment: {
+          level: 'default' as const,
+          title: 'Medium Risk Assessment',
+          description: 'This project has moderate security risks that should be addressed.'
+        }
+      };
+      setAiSuggestions(suggestions);
+      
+      // Update form with AI recommendations
+      // Note: Form updates would be handled by the actual form hooks
+      console.log('AI suggestions generated:', suggestions);
+    } catch (error) {
+      console.error('AI analysis failed:', error);
+      toast.error('Failed to generate AI suggestions. Using default values.');
+    }
+  };
+
+  // Add AI suggestions panel
+  const renderAISuggestionsPanel = () => (
+    <Card className="mt-4">
+      <CardHeader>
+        <CardTitle>AI-Powered Insights</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {aiSuggestions.recommendedAuditors.length > 0 && (
+            <div>
+              <h4 className="font-medium mb-2">Recommended Auditors</h4>
+              <div className="grid grid-cols-2 gap-4">
+                {aiSuggestions.recommendedAuditors.map(auditor => (
+                  <div key={auditor.id} className="p-4 border rounded-lg">
+                    <p className="font-medium">Recommended Auditor #{auditor.id}</p>
+                    <p className="text-sm text-muted-foreground">Profile details would be shown here</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {aiSuggestions.riskAssessment && (
+            <div>
+              <h4 className="font-medium mb-2">Risk Assessment</h4>
+              <Alert variant={aiSuggestions.riskAssessment.level}>
+                <AlertTitle>{aiSuggestions.riskAssessment.title}</AlertTitle>
+                <AlertDescription>{aiSuggestions.riskAssessment.description}</AlertDescription>
+              </Alert>
+            </div>
+          )}
+          
+          {aiSuggestions.securityPriorities.length > 0 && (
+            <div>
+              <h4 className="font-medium mb-2">Recommended Security Focus Areas</h4>
+              <div className="flex flex-wrap gap-2">
+                {aiSuggestions.securityPriorities.map(priority => (
+                  <Badge key={priority} variant="secondary">
+                    {priority}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
 
   // Show auth loading state
   if (authLoading) {
@@ -159,6 +255,9 @@ const AuditRequestForm = ({ onSubmitSuccess, prefilledData }: AuditRequestFormPr
                         isSubmitting={isSubmitting}
                       />
                     )}
+
+                    {/* AI Suggestions Panel */}
+                    {showAIMatching && renderAISuggestionsPanel()}
                   </>
                 )}
               </ErrorBoundary>

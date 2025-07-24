@@ -3,13 +3,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 export interface SignInResult {
-  user: any;
-  session: any;
+  user: unknown;
+  session: unknown;
 }
 
 export interface SignUpResult {
-  user: any;
-  session: any;
+  user: unknown;
+  session: unknown;
 }
 
 export const authService = {

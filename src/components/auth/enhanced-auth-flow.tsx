@@ -1,11 +1,59 @@
 
 import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { SignInForm } from './forms/SignInForm';
-import { SignUpForm } from './forms/SignUpForm';
-import { LogIn, UserPlus, Shield } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Eye, EyeOff, Shield, Users, CheckCircle, Loader2, LogIn, UserPlus } from 'lucide-react';
+import { useStabilizedAuth } from '@/hooks/useStabilizedAuth';
+import { toast } from 'sonner';
+import type { Control, FieldValues } from 'react-hook-form';
+import { SignInForm } from '@/components/auth/forms/SignInForm';
+import { SignUpForm } from '@/components/auth/forms/SignUpForm';
 
+// ============================================================================
+// 1. VALIDATION SCHEMAS: Zod schemas for type-safe form validation
+// ============================================================================
+const SignInSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(1, 'Password is required')
+});
+
+const SignUpSchema = z.object({
+  fullName: z.string().min(2, 'Full name must be at least 2 characters'),
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[0-9]/, 'Password must contain at least one number')
+    .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character'),
+  confirmPassword: z.string(),
+  userType: z.enum(['project_owner', 'auditor'], {
+    required_error: 'Please select an account type'
+  }),
+  acceptTerms: z.boolean().refine(val => val === true, {
+    message: 'You must accept the terms and conditions'
+  })
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"]
+});
+
+type SignInFormData = z.infer<typeof SignInSchema>;
+type SignUpFormData = z.infer<typeof SignUpSchema>;
+
+// ============================================================================
+// 2. FORM FIELD COMPONENTS: Reusable form components with proper typing
+// ============================================================================
+
+// ============================================================================
+// 3. MAIN COMPONENT: Enhanced with better state management
+// ============================================================================
 export function EnhancedAuthFlow() {
   const [activeTab, setActiveTab] = useState('signin');
   const [formData, setFormData] = useState({

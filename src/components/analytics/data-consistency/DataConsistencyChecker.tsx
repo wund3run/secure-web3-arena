@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -99,8 +98,9 @@ export function DataConsistencyChecker() {
     setLastScanTime(new Date());
 
     // Track data consistency check
-    if ((window as any).trackConversion) {
-      (window as any).trackConversion({
+    const globalWindow = window as any;
+    if (globalWindow.trackConversion && typeof globalWindow.trackConversion === 'function') {
+      globalWindow.trackConversion({
         action: 'data_consistency_check',
         category: 'analytics',
         label: 'full_scan'

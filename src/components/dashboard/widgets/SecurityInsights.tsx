@@ -1,16 +1,27 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Shield, AlertTriangle, CheckCircle, TrendingUp } from 'lucide-react';
 
+interface AuditRequest {
+  id: string;
+  status: string;
+  security_score?: number;
+  [key: string]: unknown;
+}
+
 interface SecurityInsightsProps {
   securityScore: number;
-  auditRequests: any[];
+  auditRequests: unknown[];
 }
 
 export const SecurityInsights = ({ securityScore, auditRequests }: SecurityInsightsProps) => {
+  // Type guard for audit request
+  const isAuditRequest = (req: unknown): req is AuditRequest => {
+    return typeof req === 'object' && req !== null && 'id' in req;
+  };
+
   const getScoreColor = (score: number) => {
     if (score >= 90) return 'text-green-600';
     if (score >= 70) return 'text-yellow-600';
@@ -23,9 +34,12 @@ export const SecurityInsights = ({ securityScore, auditRequests }: SecurityInsig
     return AlertTriangle;
   };
 
-  const criticalIssues = auditRequests.reduce((count, req) => {
+  const validRequests = auditRequests.filter(isAuditRequest);
+  
+  const criticalIssues = validRequests.reduce((count, req) => {
     // This would come from audit findings in a real implementation
-    return count + (req.security_score < 70 ? 1 : 0);
+    const secScore = typeof req.security_score === 'number' ? req.security_score : 100;
+    return count + (secScore < 70 ? 1 : 0);
   }, 0);
 
   const ScoreIcon = getScoreIcon(securityScore);
@@ -53,7 +67,7 @@ export const SecurityInsights = ({ securityScore, auditRequests }: SecurityInsig
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-sm">Total Projects</span>
-            <Badge variant="outline">{auditRequests.length}</Badge>
+            <Badge variant="outline">{validRequests.length}</Badge>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm">Critical Issues</span>
@@ -64,7 +78,7 @@ export const SecurityInsights = ({ securityScore, auditRequests }: SecurityInsig
           <div className="flex items-center justify-between">
             <span className="text-sm">Completed Audits</span>
             <Badge variant="secondary">
-              {auditRequests.filter(req => req.status === 'completed').length}
+              {validRequests.filter(req => req.status === 'completed').length}
             </Badge>
           </div>
         </div>

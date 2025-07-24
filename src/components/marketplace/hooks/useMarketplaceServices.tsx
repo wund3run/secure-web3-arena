@@ -26,7 +26,7 @@ export function useMarketplaceServices() {
     loading, 
     BLOCKCHAIN_ECOSYSTEMS, 
     SAMPLE_REVIEWS, 
-    filterServices: (category: string, filters: any) => filterServicesByCategory(services, category, filters),
+    filterServices: (category: string, filters: unknown) => filterServicesByCategory(services, category, filters),
     getServiceById: (serviceId: string) => findServiceById(services, serviceId)
   };
 }

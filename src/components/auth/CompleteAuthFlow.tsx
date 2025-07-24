@@ -1,11 +1,11 @@
-
 import React from 'react';
 import { EnhancedAuthFlow } from './enhanced-auth-flow';
+import { AppContainer } from '@/components/layout/AppContainer';
 
 export function CompleteAuthFlow() {
   return (
-    <div className="w-full max-w-md mx-auto">
+    <AppContainer maxWidth="max-w-md" padding="py-8 px-6" glass elevation>
       <EnhancedAuthFlow />
-    </div>
+    </AppContainer>
   );
 }

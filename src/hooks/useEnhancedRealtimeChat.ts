@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -42,6 +41,14 @@ export const useEnhancedRealtimeChat = (conversationId: string, userId: string) 
   const [typingUsers, setTypingUsers] = useState<string[]>([]);
 
   const baseMessaging = useRealtimeMessaging(userId, conversationId);
+
+  if (!crypto.randomUUID) {
+    (crypto as any).randomUUID = function () {
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c: string) =>
+        (Math.random() * 16 | 0).toString(16)
+      );
+    };
+  }
 
   useEffect(() => {
     if (!conversationId || !userId) return;
@@ -223,6 +230,9 @@ export const useEnhancedRealtimeChat = (conversationId: string, userId: string) 
     markMessagesAsRead,
     uploadFile,
     // Expose base messaging functions for backward compatibility
-    ...baseMessaging,
+    sendMessage: baseMessaging.sendMessage,
+    markAsRead: baseMessaging.markAsRead,
+    setTyping: baseMessaging.setTyping,
+    unreadCount: baseMessaging.unreadCount
   };
 };

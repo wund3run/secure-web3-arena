@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/auth';
@@ -19,7 +18,7 @@ export interface AuditMilestone {
   approval_required?: boolean;
   approved_by?: string;
   approved_at?: string;
-  deliverables?: any;
+  deliverables?: unknown;
   time_estimate_hours?: number;
   actual_time_hours?: number;
 }
@@ -51,7 +50,7 @@ export const useAuditMilestones = (auditId: string) => {
         })) as AuditMilestone[];
         
         setMilestones(validMilestones);
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('Error fetching milestones:', error);
       } finally {
         setIsLoading(false);
@@ -95,7 +94,7 @@ export const useAuditMilestones = (auditId: string) => {
 
       if (error) throw error;
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error updating milestone:', error);
       return false;
     }
@@ -130,7 +129,7 @@ export const useAuditMilestones = (auditId: string) => {
 
       if (error) throw error;
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error creating milestone:', error);
       return false;
     }
@@ -138,14 +137,36 @@ export const useAuditMilestones = (auditId: string) => {
 
   const updateMilestone = async (milestoneId: string, updates: Partial<AuditMilestone>) => {
     try {
+      // Create a properly typed update object for Supabase
+      const updateData: Record<string, any> = {};
+      
+      // Only include fields that are allowed to be updated
+      if (updates.title !== undefined) updateData.title = updates.title;
+      if (updates.description !== undefined) updateData.description = updates.description;
+      if (updates.status !== undefined) updateData.status = updates.status;
+      if (updates.due_date !== undefined) updateData.due_date = updates.due_date;
+      if (updates.completion_date !== undefined) updateData.completion_date = updates.completion_date;
+      if (updates.completed_at !== undefined) updateData.completed_at = updates.completed_at;
+      if (updates.completed_by !== undefined) updateData.completed_by = updates.completed_by;
+      if (updates.approval_required !== undefined) updateData.approval_required = updates.approval_required;
+      if (updates.approved_by !== undefined) updateData.approved_by = updates.approved_by;
+      if (updates.approved_at !== undefined) updateData.approved_at = updates.approved_at;
+      if (updates.deliverables !== undefined) updateData.deliverables = updates.deliverables;
+      if (updates.time_estimate_hours !== undefined) updateData.time_estimate_hours = updates.time_estimate_hours;
+      if (updates.actual_time_hours !== undefined) updateData.actual_time_hours = updates.actual_time_hours;
+      if (updates.order_index !== undefined) updateData.order_index = updates.order_index;
+      
+      // Always update the updated_at timestamp
+      updateData.updated_at = new Date().toISOString();
+
       const { error } = await supabase
         .from('audit_milestones')
-        .update(updates)
+        .update(updateData)
         .eq('id', milestoneId);
 
       if (error) throw error;
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error updating milestone:', error);
       return false;
     }

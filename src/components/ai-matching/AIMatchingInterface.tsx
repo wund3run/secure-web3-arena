@@ -10,6 +10,18 @@ import { Brain, Search, Filter, Star } from 'lucide-react';
 import { useAdvancedMatching } from '@/hooks/useAdvancedMatching';
 import { toast } from 'sonner';
 
+interface AuditorProfile {
+  name: string;
+  experience_years: number;
+  expertise: string[];
+  rating: number;
+}
+
+interface MatchingResult {
+  auditor_profile: AuditorProfile;
+  ml_confidence_score: number;
+}
+
 export const AIMatchingInterface: React.FC = () => {
   const [projectType, setProjectType] = useState('');
   const [budget, setBudget] = useState([1000, 10000]);
@@ -50,7 +62,7 @@ export const AIMatchingInterface: React.FC = () => {
     }
 
     const report = generateMatchingReport(mlResults);
-    toast.success(`Report generated: ${report.summary.recommendation}`);
+    toast.success(`Report generated: ${(report as any)?.summary?.recommendation || 'Generated successfully'}`);
   };
 
   return (
@@ -119,32 +131,35 @@ export const AIMatchingInterface: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {mlResults.map((result, index) => (
-                <div key={index} className="border rounded-lg p-4">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-semibold">{result.auditor_profile.name}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {result.auditor_profile.experience_years} years experience
-                      </p>
-                      <div className="flex gap-1 mt-2">
-                        {result.auditor_profile.expertise.map((skill: string, idx: number) => (
-                          <Badge key={idx} variant="secondary">{skill}</Badge>
-                        ))}
+              {mlResults.map((result, index) => {
+                const typedResult = result as MatchingResult;
+                return (
+                  <div key={index} className="border rounded-lg p-4">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="font-semibold">{typedResult.auditor_profile?.name || 'Unknown Auditor'}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {typedResult.auditor_profile?.experience_years || 0} years experience
+                        </p>
+                        <div className="flex gap-1 mt-2">
+                          {(typedResult.auditor_profile?.expertise || []).map((skill: string, idx: number) => (
+                            <Badge key={idx} variant="secondary">{skill}</Badge>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        <span className="font-semibold">{result.auditor_profile.rating}</span>
+                      <div className="text-right">
+                        <div className="flex items-center gap-1">
+                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <span className="font-semibold">{typedResult.auditor_profile?.rating || 0}</span>
+                        </div>
+                        <Badge variant="outline" className="mt-1">
+                          {Math.round((typedResult.ml_confidence_score || 0) * 100)}% Match
+                        </Badge>
                       </div>
-                      <Badge variant="outline" className="mt-1">
-                        {Math.round(result.ml_confidence_score * 100)}% Match
-                      </Badge>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </CardContent>
         </Card>

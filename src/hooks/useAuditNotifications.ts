@@ -1,8 +1,7 @@
-
 import { useEffect } from 'react';
 import { useAuth } from '@/contexts/auth';
 import { useNotifications } from '@/contexts/NotificationContext';
-import { supabase } from '@/integrations/supabase/client';
+import { EmailService } from '@/services/emailService';
 
 export function useAuditNotifications() {
   const { user } = useAuth();

@@ -44,7 +44,7 @@ export interface UserBehaviorProfile {
   pagesVisited: string[];
   mostVisitedPages: string[];
   completedActions: string[];
-  preferences: Record<string, any>;
+  preferences: Record<string, unknown>;
   engagementScore: number;
   conversionEvents: string[];
   createdAt: string;

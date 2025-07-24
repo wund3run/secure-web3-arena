@@ -4,7 +4,7 @@ export interface PlatformEvent {
   type: string;
   source: string;
   target?: string;
-  data: any;
+  data: unknown;
   timestamp: Date;
 }
 
@@ -18,7 +18,7 @@ export interface PlatformService {
 class PlatformOrchestrationService {
   private static instance: PlatformOrchestrationService;
   private services: Map<string, PlatformService> = new Map();
-  private eventListeners: Map<string, Function[]> = new Map();
+  private eventListeners: Map<string, ((event: PlatformEvent) => void)[]> = new Map();
   private eventHistory: PlatformEvent[] = [];
 
   static getInstance(): PlatformOrchestrationService {
@@ -81,7 +81,7 @@ class PlatformOrchestrationService {
     console.log(`Event published: ${event.type} from ${event.source}`);
   }
 
-  subscribeToEvent(eventType: string, listener: Function): () => void {
+  subscribeToEvent(eventType: string, listener: (...args: unknown[]) => unknown): () => void {
     if (!this.eventListeners.has(eventType)) {
       this.eventListeners.set(eventType, []);
     }
@@ -101,7 +101,7 @@ class PlatformOrchestrationService {
   }
 
   // Cross-Service Communication
-  requestServiceAction(serviceName: string, action: string, data?: any): Promise<any> {
+  requestServiceAction(serviceName: string, action: string, data?: unknown): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const service = this.services.get(serviceName);
       
@@ -126,11 +126,12 @@ class PlatformOrchestrationService {
         reject(new Error(`Service ${serviceName} did not respond to ${action}`));
       }, 5000);
 
-      const unsubscribe = this.subscribeToEvent('service_action_response', (event: PlatformEvent) => {
-        if (event.data.requestId === requestId) {
+      const unsubscribe = this.subscribeToEvent('service_action_response', (event: unknown) => {
+        const platformEvent = event as PlatformEvent;
+        if (platformEvent.data && (platformEvent.data as any).requestId === requestId) {
           clearTimeout(timeout);
           unsubscribe();
-          resolve(event.data.result);
+          resolve((platformEvent.data as any).result);
         }
       });
     });
@@ -281,4 +282,47 @@ platformOrchestrator.registerService({
   status: 'online',
   lastHeartbeat: new Date(),
   dependencies: ['data-processor', 'cache-manager']
+});
+
+// Register additional critical backend services for production readiness
+platformOrchestrator.registerService({
+  name: 'blockchain-service',
+  status: 'online',
+  lastHeartbeat: new Date(),
+  dependencies: ['database']
+});
+
+platformOrchestrator.registerService({
+  name: 'payment-service',
+  status: 'online',
+  lastHeartbeat: new Date(),
+  dependencies: ['database', 'blockchain-service']
+});
+
+platformOrchestrator.registerService({
+  name: 'email-service',
+  status: 'online',
+  lastHeartbeat: new Date(),
+  dependencies: []
+});
+
+platformOrchestrator.registerService({
+  name: 'monitoring-service',
+  status: 'online',
+  lastHeartbeat: new Date(),
+  dependencies: []
+});
+
+platformOrchestrator.registerService({
+  name: 'analytics-service',
+  status: 'online',
+  lastHeartbeat: new Date(),
+  dependencies: []
+});
+
+platformOrchestrator.registerService({
+  name: 'enterprise-service',
+  status: 'online',
+  lastHeartbeat: new Date(),
+  dependencies: []
 });

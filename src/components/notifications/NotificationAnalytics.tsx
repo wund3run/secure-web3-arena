@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useNotifications } from '@/contexts/NotificationContext';
+import { useNotifications } from '@/contexts/useNotifications';
 import { Badge } from '@/components/ui/badge';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Bell, CheckCircle, AlertTriangle, XCircle, Info } from 'lucide-react';

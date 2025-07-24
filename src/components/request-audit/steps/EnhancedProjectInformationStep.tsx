@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,9 +8,18 @@ import { Badge } from '@/components/ui/badge';
 import { AlertCircle, FileText, Globe } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
+interface ProjectFormData {
+  projectName?: string;
+  projectDescription?: string;
+  repositoryUrl?: string;
+  projectType?: string;
+  blockchain?: string;
+  customBlockchain?: string;
+}
+
 interface ProjectInformationStepProps {
-  formData: any;
-  handleInputChange: (field: string, value: any) => void;
+  formData: ProjectFormData;
+  handleInputChange: (field: string, value: unknown) => void;
   errors?: Record<string, string>;
 }
 

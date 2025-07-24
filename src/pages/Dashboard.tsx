@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { EnhancedDashboardRouter } from '@/components/dashboard/EnhancedDashboardRouter';
@@ -6,7 +5,7 @@ import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { EnhancedRouteGuard } from '@/components/routing/EnhancedRouteGuard';
 import { EnhancedBreadcrumbs } from '@/components/navigation/EnhancedBreadcrumbs';
-import { ResponsiveLayout } from '@/components/layout/ResponsiveLayout';
+import { AppContainer } from '@/components/layout/AppContainer';
 import { ConnectionTest } from '@/components/debug/ConnectionTest';
 import { useAuth } from '@/contexts/auth';
 import { Button } from '@/components/ui/button';
@@ -27,7 +26,7 @@ const Dashboard = () => {
       <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
         <main className="flex-grow">
-          <ResponsiveLayout maxWidth="2xl" padding="md">
+          <AppContainer maxWidth="max-w-2xl" padding="px-4 py-8">
             <div className="flex justify-between items-center mb-4">
               <EnhancedBreadcrumbs />
               {user && (
@@ -55,7 +54,7 @@ const Dashboard = () => {
             >
               <EnhancedDashboardRouter />
             </EnhancedRouteGuard>
-          </ResponsiveLayout>
+          </AppContainer>
         </main>
         <Footer />
       </div>

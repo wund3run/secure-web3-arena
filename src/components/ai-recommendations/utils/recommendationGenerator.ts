@@ -1,7 +1,7 @@
 
 import { SmartRecommendation } from "../types";
 
-export const generateSmartRecommendations = (userType: string, behaviorData?: any): SmartRecommendation[] => {
+export const generateSmartRecommendations = (userType: string, behaviorData?: unknown): SmartRecommendation[] => {
   const baseRecommendations: Record<string, SmartRecommendation[]> = {
     project_owner: [
       {

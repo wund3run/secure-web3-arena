@@ -1,4 +1,3 @@
-
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,11 +44,6 @@ export class ProductionErrorBoundary extends Component<Props, State> {
     if (this.props.onError) {
       this.props.onError(error, errorInfo);
     }
-
-    // Show user-friendly toast
-    toast.error("Something went wrong", {
-      description: "We've logged the issue and will fix it soon."
-    });
 
     // In production, send to error monitoring service
     // Example: Sentry.captureException(error, { contexts: { react: errorInfo } });
@@ -143,7 +137,7 @@ export class ProductionErrorBoundary extends Component<Props, State> {
                 </Button>
               </div>
 
-              {process.env.NODE_ENV === 'development' && this.state.error && (
+              {import.meta.env.MODE === 'development' && this.state.error && (
                 <details className="mt-4">
                   <summary className="cursor-pointer text-sm font-medium mb-2">
                     Developer Details

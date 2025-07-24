@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { X, ExternalLink, CheckCheck, Bell } from 'lucide-react';
-import { useNotifications } from '@/contexts/NotificationContext';
+import { useNotifications } from '@/contexts/useNotifications';
 import { cn } from '@/lib/utils';
 
 export const NotificationList = () => {

@@ -1,4 +1,3 @@
-
 /**
  * Bundle usage analysis utilities
  */
@@ -13,7 +12,7 @@ export class UsageAnalyzer {
    * Implement tree shaking for unused code
    */
   analyzeUsage(): void {
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.MODE === 'development') {
       console.log('Bundle usage analysis initialized');
 
       // Log usage statistics every 30 seconds in development

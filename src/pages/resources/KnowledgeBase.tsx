@@ -1,2 +1,1 @@
-
-export { KnowledgeBase as default } from '../PlaceholderPage';
+export { default } from './KnowledgeBasePage';

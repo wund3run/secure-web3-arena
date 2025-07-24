@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import type { AuditRequest } from '@/types/audit-request.types';
@@ -104,6 +103,44 @@ export class AuditService {
       console.error('Failed to assign auditor:', error);
       toast.error('Failed to assign auditor');
       return false;
+    }
+  }
+
+  // Create or get chat room for audit request and auditor
+  static async getOrCreateAuditChatRoom(auditRequestId: string, clientId: string, auditorId: string): Promise<string | null> {
+    try {
+      // Check if chat room already exists
+      const { data: existingRooms, error: findError } = await supabase
+        .from('chat_rooms')
+        .select('*')
+        .eq('type', 'audit')
+        .eq('audit_request_id', auditRequestId)
+        .contains('participants', [clientId, auditorId]);
+
+      if (findError) throw findError;
+      if (existingRooms && existingRooms.length > 0) {
+        return existingRooms[0].id;
+      }
+
+      // Create new chat room
+      const { data, error } = await supabase
+        .from('chat_rooms')
+        .insert({
+          name: `Audit Chat: ${auditRequestId}`,
+          type: 'audit',
+          participants: [clientId, auditorId],
+          audit_request_id: auditRequestId,
+          metadata: { audit_request_id: auditRequestId, client_id: clientId, auditor_id: auditorId }
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data.id;
+    } catch (error) {
+      console.error('Failed to create or get audit chat room:', error);
+      toast.error('Failed to create chat room');
+      return null;
     }
   }
 }

@@ -76,7 +76,7 @@ export function PlatformAuditSystem() {
     // Check if all navigation links work
     const navigationLinks = document.querySelectorAll('nav a, .navigation a');
     let workingLinks = 0;
-    let totalLinks = navigationLinks.length;
+    const totalLinks = navigationLinks.length;
 
     navigationLinks.forEach((link) => {
       const href = link.getAttribute('href');
@@ -300,7 +300,7 @@ export function PlatformAuditSystem() {
 
   useEffect(() => {
     runComprehensiveAudit();
-  }, []);
+  }, [runComprehensiveAudit]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {

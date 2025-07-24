@@ -68,8 +68,9 @@ export const useEnhancedAuth = () => {
       if (error) throw error;
 
       return { user: data.user, session: data.session };
-    } catch (error: any) {
-      toast.error('Sign in failed', { description: error.message });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Sign in failed';
+      toast.error('Sign in failed', { description: errorMessage });
       throw error;
     } finally {
       setAuthState(prev => ({ ...prev, loading: false }));
@@ -106,8 +107,9 @@ export const useEnhancedAuth = () => {
       }
 
       return { user: data.user, session: data.session };
-    } catch (error: any) {
-      toast.error('Sign up failed', { description: error.message });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Sign up failed';
+      toast.error('Sign up failed', { description: errorMessage });
       throw error;
     } finally {
       setAuthState(prev => ({ ...prev, loading: false }));
@@ -128,8 +130,9 @@ export const useEnhancedAuth = () => {
       if (error) throw error;
 
       return data;
-    } catch (error: any) {
-      toast.error(`${provider} sign in failed`, { description: error.message });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : `${provider} sign in failed`;
+      toast.error(`${provider} sign in failed`, { description: errorMessage });
       throw error;
     } finally {
       setAuthState(prev => ({ ...prev, loading: false }));
@@ -150,8 +153,9 @@ export const useEnhancedAuth = () => {
         requires2FA: false,
         verificationPending: false,
       });
-    } catch (error: any) {
-      toast.error('Sign out failed', { description: error.message });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Sign out failed';
+      toast.error('Sign out failed', { description: errorMessage });
       throw error;
     }
   };
@@ -165,8 +169,9 @@ export const useEnhancedAuth = () => {
       if (error) throw error;
       
       toast.success('Check your email for the password reset link');
-    } catch (error: any) {
-      toast.error('Password reset failed', { description: error.message });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Password reset failed';
+      toast.error('Password reset failed', { description: errorMessage });
       throw error;
     }
   };
@@ -180,8 +185,9 @@ export const useEnhancedAuth = () => {
       if (error) throw error;
       
       toast.success('Password updated successfully');
-    } catch (error: any) {
-      toast.error('Password update failed', { description: error.message });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Password update failed';
+      toast.error('Password update failed', { description: errorMessage });
       throw error;
     }
   };

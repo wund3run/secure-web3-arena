@@ -1,4 +1,3 @@
-
 import { useEscrow } from "@/contexts/EscrowContext";
 import { BlockchainConnector } from "../BlockchainConnector";
 import { QuickActions } from "./QuickActions";
@@ -24,10 +23,11 @@ export function EscrowSidebar({
   return (
     <div>
       <BlockchainConnector 
-        onConnect={onWalletConnect}
-        connected={!!walletAddress}
-        address={walletAddress}
-        chainId={chainId}
+        onConnectionChange={(connected, address, chainId) => {
+          if (connected && address) {
+            onWalletConnect(address);
+          }
+        }}
       />
       
       <QuickActions 

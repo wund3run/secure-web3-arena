@@ -122,8 +122,9 @@ export function ABTestProvider({ children }: { children: React.ReactNode }) {
     const variant = getVariant(testId);
     
     // Track A/B test conversion
-    if ((window as any).trackConversion) {
-      (window as any).trackConversion({
+    const trackConversionFn = (window as any)?.trackConversion;
+    if (trackConversionFn && typeof trackConversionFn === 'function') {
+      trackConversionFn({
         action: 'ab_test_conversion',
         category: 'experimentation',
         label: `${testId}_${variant}_${conversionType}`,

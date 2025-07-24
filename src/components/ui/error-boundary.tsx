@@ -1,8 +1,8 @@
-
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from './button';
 import { Alert, AlertDescription } from './alert';
+import { MonitoringService } from '@/services/monitoringService';
 
 interface Props {
   children: ReactNode;
@@ -34,6 +34,17 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    // Report error to monitoring service in production
+    if (import.meta.env.MODE === 'production') {
+      MonitoringService.reportError({
+        message: error.message,
+        stack: error.stack,
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+        timestamp: new Date().toISOString(),
+        additional: { errorInfo }
+      });
+    }
     console.error("Error caught by ErrorBoundary:", error, errorInfo);
     this.setState({
       error,
@@ -47,6 +58,7 @@ class ErrorBoundary extends Component<Props, State> {
       error: null,
       errorInfo: ''
     });
+    window.location.reload();
   }
 
   render(): ReactNode {
@@ -87,6 +99,7 @@ class ErrorBoundary extends Component<Props, State> {
           >
             <RefreshCw className="mr-2 h-4 w-4" /> Try Again
           </Button>
+          <a href="/support" className="block text-center text-sm text-blue-600 mt-2 underline">Contact Support</a>
         </div>
       );
     }

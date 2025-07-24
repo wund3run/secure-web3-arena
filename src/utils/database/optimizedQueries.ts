@@ -234,7 +234,7 @@ export class OptimizedQueries {
   static async monitoredQuery<T>(
     queryName: string,
     queryFn: () => Promise<T>,
-    context?: any
+    context?: unknown
   ): Promise<T> {
     const startTime = performance.now();
     const correlationId = Logger.generateCorrelationId();

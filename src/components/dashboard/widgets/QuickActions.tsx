@@ -1,11 +1,23 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+
 import { Plus, Users, Settings, BookOpen, Shield, BarChart3 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 export const QuickActions = () => {
+  const navigate = useNavigate();
+
+  const handleMissingRoute = (routeName: string, fallbackRoute?: string) => {
+    toast.info(`${routeName} feature coming soon!`, {
+      description: fallbackRoute ? `Redirecting to ${fallbackRoute}` : "We're working on this feature."
+    });
+    if (fallbackRoute) {
+      navigate(fallbackRoute);
+    }
+  };
+
   const actions = [
     {
       title: 'Request New Audit',
@@ -13,7 +25,8 @@ export const QuickActions = () => {
       icon: Plus,
       href: '/request-audit',
       variant: 'default' as const,
-      priority: 'high'
+      priority: 'high',
+      onClick: () => navigate('/request-audit')
     },
     {
       title: 'Browse Auditors',
@@ -21,7 +34,8 @@ export const QuickActions = () => {
       icon: Users,
       href: '/marketplace',
       variant: 'outline' as const,
-      priority: 'medium'
+      priority: 'medium',
+      onClick: () => navigate('/marketplace')
     },
     {
       title: 'View Analytics',
@@ -29,7 +43,8 @@ export const QuickActions = () => {
       icon: BarChart3,
       href: '/analytics',
       variant: 'outline' as const,
-      priority: 'medium'
+      priority: 'medium',
+      onClick: () => navigate('/analytics')
     },
     {
       title: 'Security Resources',
@@ -37,15 +52,17 @@ export const QuickActions = () => {
       icon: BookOpen,
       href: '/resources',
       variant: 'outline' as const,
-      priority: 'low'
+      priority: 'low',
+      onClick: () => navigate('/resources')
     },
     {
       title: 'Security Settings',
       description: 'Manage your security preferences',
       icon: Settings,
-      href: '/settings/security',
+      href: '/user/settings',
       variant: 'outline' as const,
-      priority: 'low'
+      priority: 'low',
+      onClick: () => navigate('/user/settings')
     }
   ];
 
@@ -64,22 +81,20 @@ export const QuickActions = () => {
             <Button
               key={index}
               variant={action.variant}
-              asChild
               className="w-full justify-start h-auto p-4"
+              onClick={action.onClick}
             >
-              <Link to={action.href}>
-                <div className="flex items-center gap-3 w-full">
-                  <div className={`p-2 rounded-lg ${
-                    action.priority === 'high' ? 'bg-primary/20' : 'bg-muted'
-                  }`}>
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <div className="text-left flex-1">
-                    <div className="font-medium">{action.title}</div>
-                    <div className="text-xs text-muted-foreground">{action.description}</div>
-                  </div>
+              <div className="flex items-center gap-3 w-full">
+                <div className={`p-2 rounded-lg ${
+                  action.priority === 'high' ? 'bg-primary/20' : 'bg-muted'
+                }`}>
+                  <Icon className="h-4 w-4" />
                 </div>
-              </Link>
+                <div className="text-left flex-1">
+                  <div className="font-medium">{action.title}</div>
+                  <div className="text-xs text-muted-foreground">{action.description}</div>
+                </div>
+              </div>
             </Button>
           );
         })}

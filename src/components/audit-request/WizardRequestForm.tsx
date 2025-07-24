@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormProgress } from './FormProgress';
 import { ProjectDetailsStep } from './steps/ProjectDetailsStep';
@@ -10,6 +9,8 @@ import AIMatchingJourney from './AIMatchingJourney';
 import { AuditRequestService } from '@/services/auditRequestService';
 import { toast } from 'sonner';
 import type { AuditFormData } from '@/types/audit-request.types';
+import RequestSuccessMessage from './RequestSuccessMessage';
+import { useAuth } from '@/contexts/auth';
 
 const initialFormData: AuditFormData = {
   projectName: '',
@@ -37,12 +38,16 @@ const initialFormData: AuditFormData = {
 
 const WizardRequestForm: React.FC = () => {
   const navigate = useNavigate();
-  const [formStep, setFormStep] = useState(1);
+  const [formStep, setFormStep] = useState(0);
   const [formData, setFormData] = useState<AuditFormData>(initialFormData);
   const [projectType, setProjectType] = useState('');
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [showAIMatching, setShowAIMatching] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const { user, userProfile } = useAuth();
+  const userName = userProfile?.full_name || userProfile?.display_name || user?.email?.split('@')[0] || '';
+  const isFirstProject = !localStorage.getItem('hasSubmittedAuditRequest');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -161,7 +166,8 @@ const WizardRequestForm: React.FC = () => {
       
       if (auditId) {
         toast.success('Audit request submitted successfully!');
-        navigate(`/audit/${auditId}`);
+        setShowSuccess(true);
+        localStorage.setItem('hasSubmittedAuditRequest', 'true');
       } else {
         throw new Error('Failed to create audit request');
       }
@@ -180,22 +186,79 @@ const WizardRequestForm: React.FC = () => {
     navigate('/audits');
   };
 
-  if (showAIMatching) {
+  // Save draft to localStorage
+  const saveDraft = () => {
+    localStorage.setItem('auditRequestDraft', JSON.stringify({ formData, formStep }));
+    toast.success('Draft saved!');
+  };
+
+  // Resume draft if available
+  useEffect(() => {
+    const saved = localStorage.getItem('auditRequestDraft');
+    if (saved) {
+      const { formData: savedData, formStep: savedStep } = JSON.parse(saved);
+      if (savedData && typeof savedStep === 'number') {
+        setFormData(savedData);
+        setFormStep(savedStep);
+        toast.info('Resumed from saved draft.');
+      }
+    }
+  }, []);
+
+  if (showSuccess) {
+    return <RequestSuccessMessage />;
+  }
+
+  // Intro step (step 0)
+  if (formStep === 0) {
     return (
-      <div className="container max-w-4xl mx-auto py-8">
-        <AIMatchingJourney 
-          formData={formData} 
-          onProceed={handleProceedFromAI}
-        />
+      <div className="w-full max-w-full sm:max-w-2xl mx-auto px-2 sm:px-4 lg:px-8 py-8 flex flex-col items-center justify-center" role="main">
+        <div className="bg-card border border-border/40 rounded-xl p-4 sm:p-8 shadow-md w-full text-center animate-fade-in">
+          <h2 className="text-3xl font-bold mb-4">Welcome{userName ? `, ${userName}` : ''}!</h2>
+          {isFirstProject && (
+            <p className="mb-4 text-primary font-medium">
+              It looks like this is your first audit request. Here's what to expect…
+            </p>
+          )}
+          <p className="mb-6 text-lg text-muted-foreground">
+            Let's get your project secured. This process takes just a few steps:
+            <br />
+            <span className="font-medium">Project Details → Technical Info → Requirements → Review & Submit → Confirmation</span>
+          </p>
+          <p className="mb-8 text-base text-muted-foreground">
+            Please have your project information and repository link ready. You can save your progress at any time.
+          </p>
+          <button
+            className="btn btn-primary px-8 py-3 rounded-lg text-lg font-semibold w-full sm:w-auto"
+            onClick={() => setFormStep(1)}
+            autoFocus
+            aria-label="Start the audit request process"
+          >
+            Get Started
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container max-w-4xl mx-auto py-8">
-      <FormProgress formStep={formStep} showAIMatching={showAIMatching} />
+    <div className="w-full max-w-full sm:max-w-4xl mx-auto px-2 sm:px-4 lg:px-8 py-8">
+      <FormProgress formStep={formStep === 0 ? 1 : formStep} showAIMatching={showAIMatching} />
       
       <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Show Save Draft button on steps 1-4 */}
+        {formStep > 0 && formStep <= 4 && (
+          <div className="flex flex-col sm:flex-row justify-end mb-2 gap-2">
+            <button
+              type="button"
+              className="btn btn-secondary px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
+              onClick={saveDraft}
+              aria-label="Save your progress as a draft"
+            >
+              Save Draft
+            </button>
+          </div>
+        )}
         {formStep === 1 && (
           <ProjectDetailsStep
             formData={formData}

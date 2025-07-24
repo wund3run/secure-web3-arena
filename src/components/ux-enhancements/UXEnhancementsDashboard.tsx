@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -145,7 +144,7 @@ export function UXEnhancementsDashboard() {
 
               {accessibility.lastValidation && (
                 <div className="text-sm text-muted-foreground">
-                  Last validation: {formatDate(accessibility.lastValidation, i18n.currentLocale)}
+                  Last validation: {formatDate(accessibility.lastValidation, String(i18n.currentLocale))}
                 </div>
               )}
 
@@ -280,9 +279,9 @@ export function UXEnhancementsDashboard() {
                       <SelectValue placeholder="Select language" />
                     </SelectTrigger>
                     <SelectContent>
-                      {i18n.availableLocales.map((locale) => (
-                        <SelectItem key={locale.code} value={locale.code}>
-                          {locale.name}
+                      {i18n.availableLocales.map((locale: any, index: number) => (
+                        <SelectItem key={locale.code || index} value={locale.code || ''}>
+                          {locale.name || 'Unknown'}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -309,9 +308,9 @@ export function UXEnhancementsDashboard() {
                         <SelectValue placeholder="Select target language" />
                       </SelectTrigger>
                       <SelectContent>
-                        {i18n.availableLocales.map((locale) => (
-                          <SelectItem key={locale.code} value={locale.code}>
-                            {locale.name}
+                        {i18n.availableLocales.map((locale: any, index: number) => (
+                          <SelectItem key={locale.code || index} value={locale.code || ''}>
+                            {locale.name || 'Unknown'}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -334,15 +333,15 @@ export function UXEnhancementsDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                   <div>
                     <span className="font-medium">Date:</span>
-                    <p>{formatDate(new Date(), i18n.currentLocale)}</p>
+                    <p>{formatDate(new Date(), String(i18n.currentLocale))}</p>
                   </div>
                   <div>
                     <span className="font-medium">Number:</span>
-                    <p>{formatNumber(1234.56, i18n.currentLocale)}</p>
+                    <p>{formatNumber(1234.56, String(i18n.currentLocale))}</p>
                   </div>
                   <div>
                     <span className="font-medium">Currency:</span>
-                    <p>{formatCurrency(99.99, i18n.currentLocale, 'USD')}</p>
+                    <p>{formatCurrency(99.99, String(i18n.currentLocale))}</p>
                   </div>
                 </div>
               </div>

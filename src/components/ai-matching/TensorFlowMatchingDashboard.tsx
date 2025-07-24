@@ -7,11 +7,18 @@ import { Badge } from '@/components/ui/badge';
 import { Brain, Cpu, Activity, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 
+interface Prediction {
+  auditor: string;
+  confidence: number;
+  expertise_match: number;
+  [key: string]: unknown;
+}
+
 export const TensorFlowMatchingDashboard: React.FC = () => {
   const [isModelLoaded, setIsModelLoaded] = useState(false);
   const [isTraining, setIsTraining] = useState(false);
   const [modelAccuracy, setModelAccuracy] = useState(0.912);
-  const [predictions, setPredictions] = useState<any[]>([]);
+  const [predictions, setPredictions] = useState<Prediction[]>([]);
 
   useEffect(() => {
     // Simulate model loading
@@ -47,7 +54,7 @@ export const TensorFlowMatchingDashboard: React.FC = () => {
     toast.info('Running predictions...');
     
     // Simulate prediction results
-    const mockPredictions = [
+    const mockPredictions: Prediction[] = [
       { auditor: 'CryptoShield Security', confidence: 0.94, expertise_match: 0.89 },
       { auditor: 'BlockSafe Auditors', confidence: 0.87, expertise_match: 0.82 },
       { auditor: 'DeFi Security Labs', confidence: 0.81, expertise_match: 0.76 }

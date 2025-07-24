@@ -1,32 +1,9 @@
-
 import '@testing-library/jest-dom';
+import { vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
-import { afterEach, vi } from 'vitest';
+import { afterEach, beforeAll } from 'vitest';
 
-// Cleanup after each test case
-afterEach(() => {
-  cleanup();
-});
-
-// Mock IntersectionObserver
-global.IntersectionObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  disconnect: vi.fn(),
-  unobserve: vi.fn(),
-  root: null,
-  rootMargin: '',
-  thresholds: [],
-  takeRecords: vi.fn().mockReturnValue([])
-}));
-
-// Mock ResizeObserver
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  disconnect: vi.fn(),
-  unobserve: vi.fn(),
-}));
-
-// Mock matchMedia
+// Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn().mockImplementation(query => ({
@@ -41,9 +18,47 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-// Mock requestIdleCallback
-global.requestIdleCallback = vi.fn().mockImplementation((cb) => {
-  const id = setTimeout(cb, 1);
-  return id;
+// Mock IntersectionObserver
+class IntersectionObserver {
+  observe = vi.fn();
+  disconnect = vi.fn();
+  unobserve = vi.fn();
+}
+
+Object.defineProperty(window, 'IntersectionObserver', {
+  writable: true,
+  configurable: true,
+  value: IntersectionObserver,
 });
-global.cancelIdleCallback = vi.fn();
+
+// Mock ResizeObserver
+class ResizeObserver {
+  observe = vi.fn();
+  disconnect = vi.fn();
+  unobserve = vi.fn();
+}
+
+Object.defineProperty(window, 'ResizeObserver', {
+  writable: true,
+  configurable: true,
+  value: ResizeObserver,
+});
+
+// Clean up after each test
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
+// Set up global test environment
+beforeAll(() => {
+  // Mock console.error to fail tests on prop type warnings
+  const originalError = console.error;
+  console.error = (...args: any[]) => {
+    const message = args.join(' ');
+    if (message.includes('Warning: Failed prop type')) {
+      throw new Error(message);
+    }
+    originalError.apply(console, args);
+  };
+});

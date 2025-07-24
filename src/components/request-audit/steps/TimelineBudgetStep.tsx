@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,9 +10,16 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
+interface TimelineBudgetFormData {
+  deadline?: Date;
+  budget?: string;
+  urgency?: string;
+  contactEmail?: string;
+}
+
 interface TimelineBudgetStepProps {
-  formData: any;
-  handleInputChange: (field: string, value: any) => void;
+  formData: TimelineBudgetFormData;
+  handleInputChange: (field: string, value: unknown) => void;
 }
 
 export const TimelineBudgetStep = ({ formData, handleInputChange }: TimelineBudgetStepProps) => {
@@ -40,7 +46,7 @@ export const TimelineBudgetStep = ({ formData, handleInputChange }: TimelineBudg
               <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
-                  selected={formData.deadline}
+                  selected={formData.deadline || undefined}
                   onSelect={(date) => handleInputChange('deadline', date)}
                   initialFocus
                 />
@@ -50,7 +56,7 @@ export const TimelineBudgetStep = ({ formData, handleInputChange }: TimelineBudg
 
           <div>
             <Label>Budget Range</Label>
-            <Select value={formData.budget} onValueChange={(value) => handleInputChange('budget', value)}>
+            <Select value={formData.budget || ''} onValueChange={(value) => handleInputChange('budget', value)}>
               <SelectTrigger>
                 <SelectValue placeholder="Select budget range" />
               </SelectTrigger>
@@ -67,7 +73,7 @@ export const TimelineBudgetStep = ({ formData, handleInputChange }: TimelineBudg
           <div>
             <Label>Urgency Level</Label>
             <RadioGroup 
-              value={formData.urgency} 
+              value={formData.urgency || ''} 
               onValueChange={(value) => handleInputChange('urgency', value)}
             >
               <div className="flex items-center space-x-2">
@@ -91,7 +97,7 @@ export const TimelineBudgetStep = ({ formData, handleInputChange }: TimelineBudg
               id="contactEmail"
               type="email"
               placeholder="your-email@example.com"
-              value={formData.contactEmail}
+              value={formData.contactEmail || ''}
               onChange={(e) => handleInputChange('contactEmail', e.target.value)}
               required
             />

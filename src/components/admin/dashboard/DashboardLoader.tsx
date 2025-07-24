@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import LoadingTrivia from "@/components/ui/loading-trivia";
 import { toast } from "sonner";
 import { Loader2, AlertCircle } from "lucide-react";
-import { handleError } from "@/utils/error-handling";
+import { handleError } from "@/utils/error-handling/index";
 
 export function DashboardLoader() {
   const [loadAttempts, setLoadAttempts] = useState(0);

@@ -1,4 +1,3 @@
-
 export class PerformanceOptimizer {
   private static instance: PerformanceOptimizer;
   private imageCache = new Map<string, string>();
@@ -65,7 +64,7 @@ export class PerformanceOptimizer {
     // Monitor memory usage
     if ('memory' in performance) {
       setInterval(() => {
-        const memory = (performance as any).memory;
+        const memory = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory;
         const memoryUsage = memory.usedJSHeapSize / memory.totalJSHeapSize;
         
         if (memoryUsage > 0.8) {
@@ -84,7 +83,7 @@ export class PerformanceOptimizer {
 
     // Request garbage collection if available
     if ('gc' in window) {
-      (window as any).gc();
+      (window as unknown as { gc?: () => void }).gc?.();
     }
   }
 

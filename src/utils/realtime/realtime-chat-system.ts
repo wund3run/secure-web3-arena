@@ -1,4 +1,3 @@
-
 export interface ChatMessage {
   id: string;
   roomId: string;
@@ -12,7 +11,7 @@ export interface ChatMessage {
   editedAt?: Date;
   replyTo?: string;
   reactions: ChatReaction[];
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ChatReaction {
@@ -29,12 +28,12 @@ export interface ChatRoom {
   lastMessage?: ChatMessage;
   unreadCount: number;
   archived: boolean;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ChatEvent {
   type: 'message' | 'typing' | 'reaction' | 'join' | 'leave' | 'edit' | 'delete';
-  data: any;
+  data: unknown;
   timestamp: Date;
   userId: string;
 }
@@ -47,7 +46,7 @@ export class RealtimeChatSystem {
   private reconnectAttempts: number = 0;
   private maxReconnectAttempts: number = 5;
   private reconnectDelay: number = 1000;
-  private eventListeners: Map<string, Function[]> = new Map();
+  private eventListeners: Map<string, ((...args: unknown[]) => unknown)[]> = new Map();
   private messageQueue: ChatMessage[] = [];
   private typingUsers: Set<string> = new Set();
   private connectionState: 'disconnected' | 'connecting' | 'connected' | 'error' = 'disconnected';
@@ -129,7 +128,7 @@ export class RealtimeChatSystem {
     }
   }
 
-  sendMessage(content: string, type: 'text' | 'file' | 'image' = 'text', metadata?: Record<string, any>): ChatMessage {
+  sendMessage(content: string, type: 'text' | 'file' | 'image' = 'text', metadata?: Record<string, unknown>): ChatMessage {
     const message: ChatMessage = {
       id: this.generateMessageId(),
       roomId: this.currentRoomId,
@@ -336,7 +335,7 @@ export class RealtimeChatSystem {
   }
 
   private buildWebSocketUrl(authToken: string): string {
-    const baseUrl = process.env.NODE_ENV === 'production' 
+    const baseUrl = import.meta.env.MODE === 'production'
       ? 'wss://api.hawkly.com/ws/chat'
       : 'ws://localhost:8080/ws/chat';
     
@@ -348,14 +347,14 @@ export class RealtimeChatSystem {
   }
 
   // Event system
-  on(event: string, callback: Function) {
+  on(event: string, callback: (...args: unknown[]) => unknown) {
     if (!this.eventListeners.has(event)) {
       this.eventListeners.set(event, []);
     }
     this.eventListeners.get(event)!.push(callback);
   }
 
-  off(event: string, callback: Function) {
+  off(event: string, callback: (...args: unknown[]) => unknown) {
     const listeners = this.eventListeners.get(event);
     if (listeners) {
       const index = listeners.indexOf(callback);
@@ -365,7 +364,7 @@ export class RealtimeChatSystem {
     }
   }
 
-  private emit(event: string, data?: any) {
+  private emit(event: string, data?: unknown) {
     const listeners = this.eventListeners.get(event);
     if (listeners) {
       listeners.forEach(callback => callback(data));

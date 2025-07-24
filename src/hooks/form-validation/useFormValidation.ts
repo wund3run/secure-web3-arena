@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 import { isValidEmail, isValidUrl, meetsMinLength, isNotEmpty } from '@/utils/formValidation';
 import { EnhancedToastSystem } from '@/components/ui/enhanced-toast-system';
@@ -10,7 +9,7 @@ export interface ValidationRule {
   pattern?: RegExp;
   email?: boolean;
   url?: boolean;
-  custom?: (value: any) => string | null;
+  custom?: (value: unknown) => string | null;
 }
 
 export interface ValidationSchema {
@@ -21,7 +20,7 @@ export interface ValidationErrors {
   [key: string]: string;
 }
 
-export function useFormValidation<T extends Record<string, any>>(
+export function useFormValidation<T extends Record<string, unknown>>(
   initialData: T,
   schema: ValidationSchema
 ) {
@@ -30,7 +29,7 @@ export function useFormValidation<T extends Record<string, any>>(
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const validateField = useCallback((name: string, value: any): string | null => {
+  const validateField = useCallback((name: string, value: unknown): string | null => {
     const rule = schema[name];
     if (!rule) return null;
 
@@ -45,27 +44,27 @@ export function useFormValidation<T extends Record<string, any>>(
     }
 
     // Min length validation
-    if (rule.minLength && !meetsMinLength(value, rule.minLength)) {
+    if (rule.minLength && !meetsMinLength(String(value), rule.minLength)) {
       return `${name} must be at least ${rule.minLength} characters`;
     }
 
     // Max length validation
-    if (rule.maxLength && value.length > rule.maxLength) {
+    if (rule.maxLength && String(value).length > rule.maxLength) {
       return `${name} must be no more than ${rule.maxLength} characters`;
     }
 
     // Email validation
-    if (rule.email && !isValidEmail(value)) {
+    if (rule.email && !isValidEmail(String(value))) {
       return `Please enter a valid email address`;
     }
 
     // URL validation
-    if (rule.url && !isValidUrl(value)) {
+    if (rule.url && !isValidUrl(String(value))) {
       return `Please enter a valid URL`;
     }
 
     // Pattern validation
-    if (rule.pattern && !rule.pattern.test(value)) {
+    if (rule.pattern && !rule.pattern.test(String(value))) {
       return `${name} format is invalid`;
     }
 
@@ -98,7 +97,7 @@ export function useFormValidation<T extends Record<string, any>>(
     return isValid;
   }, [data, schema, validateField]);
 
-  const setValue = useCallback((name: string, value: any) => {
+  const setValue = useCallback((name: string, value: unknown) => {
     setData(prev => ({ ...prev, [name]: value }));
     
     // Clear error for this field
@@ -134,7 +133,7 @@ export function useFormValidation<T extends Record<string, any>>(
 
       await onSubmit(data);
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Form submission error:', error);
       EnhancedToastSystem.error(
         "Submission Failed",

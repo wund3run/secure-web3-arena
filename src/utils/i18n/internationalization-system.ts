@@ -215,7 +215,7 @@ export class InternationalizationSystem {
     if (!translations) return '';
 
     const keys = key.split('.');
-    let value: any = translations;
+    let value: unknown = translations;
 
     for (const k of keys) {
       value = value?.[k];

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { FunnelChart } from "./FunnelChart";
 import { OptimizationStrategies } from "./OptimizationStrategies";
@@ -11,11 +10,16 @@ interface FunnelTabContentProps {
 }
 
 export function FunnelTabContent({ userType, funnelData }: FunnelTabContentProps) {
+  // Create a wrapper to handle the type mismatch
+  const tooltipWrapper = (props: unknown) => {
+    return renderTooltip(props as any);
+  };
+
   return (
     <div className="pt-4">
       <FunnelChart 
         data={funnelData[userType]} 
-        renderTooltip={renderTooltip} 
+        renderTooltip={tooltipWrapper} 
       />
       <OptimizationStrategies 
         userType={userType} 

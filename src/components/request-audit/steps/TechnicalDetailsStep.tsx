@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,9 +5,17 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
+interface TechnicalFormData {
+  contractCount?: string;
+  linesOfCode?: string;
+  auditScope?: string[];
+  previousAudits?: string;
+  specificConcerns?: string;
+}
+
 interface TechnicalDetailsStepProps {
-  formData: any;
-  handleInputChange: (field: string, value: any) => void;
+  formData: TechnicalFormData;
+  handleInputChange: (field: string, value: unknown) => void;
   handleScopeChange: (scope: string, checked: boolean) => void;
 }
 
@@ -25,7 +32,7 @@ export const TechnicalDetailsStep = ({ formData, handleInputChange, handleScopeC
                 id="contractCount"
                 type="number"
                 placeholder="e.g., 5"
-                value={formData.contractCount}
+                value={formData.contractCount || ''}
                 onChange={(e) => handleInputChange('contractCount', e.target.value)}
               />
             </div>
@@ -36,7 +43,7 @@ export const TechnicalDetailsStep = ({ formData, handleInputChange, handleScopeC
                 id="linesOfCode"
                 type="number"
                 placeholder="e.g., 1500"
-                value={formData.linesOfCode}
+                value={formData.linesOfCode || ''}
                 onChange={(e) => handleInputChange('linesOfCode', e.target.value)}
               />
             </div>
@@ -58,7 +65,7 @@ export const TechnicalDetailsStep = ({ formData, handleInputChange, handleScopeC
                 <div key={scope} className="flex items-center space-x-2">
                   <Checkbox
                     id={scope}
-                    checked={formData.auditScope.includes(scope)}
+                    checked={formData.auditScope?.includes(scope) || false}
                     onCheckedChange={(checked) => handleScopeChange(scope, checked as boolean)}
                   />
                   <Label htmlFor={scope} className="text-sm">{scope}</Label>
@@ -70,7 +77,7 @@ export const TechnicalDetailsStep = ({ formData, handleInputChange, handleScopeC
           <div>
             <Label htmlFor="previousAudits">Previous Audits</Label>
             <RadioGroup 
-              value={formData.previousAudits} 
+              value={formData.previousAudits || ''} 
               onValueChange={(value) => handleInputChange('previousAudits', value)}
             >
               <div className="flex items-center space-x-2">
@@ -94,7 +101,7 @@ export const TechnicalDetailsStep = ({ formData, handleInputChange, handleScopeC
               id="specificConcerns"
               placeholder="Any specific vulnerabilities or areas you're concerned about..."
               rows={3}
-              value={formData.specificConcerns}
+              value={formData.specificConcerns || ''}
               onChange={(e) => handleInputChange('specificConcerns', e.target.value)}
             />
           </div>

@@ -1,6 +1,11 @@
-
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { AdaptiveInterfaceProps, DashboardLayoutConfig } from '../types';
+
+interface PersonalizedMetrics {
+  primary: string;
+  secondary: string[];
+  advanced: string[];
+}
 
 export const useAdaptiveDashboard = ({
   userSegment,
@@ -9,7 +14,7 @@ export const useAdaptiveDashboard = ({
   behaviorProfile
 }: AdaptiveInterfaceProps) => {
   
-  const getDashboardLayout = (): string => {
+  const getDashboardLayout = useCallback((): string => {
     // Prioritize user preferences
     if (preferences.dashboardLayout) {
       return preferences.dashboardLayout;
@@ -25,9 +30,9 @@ export const useAdaptiveDashboard = ({
       default:
         return 'cards';
     }
-  };
+  }, [preferences.dashboardLayout, userSegment]);
 
-  const getWidgetPriority = (): string[] => {
+  const getWidgetPriority = useCallback((): string[] => {
     const baseWidgets = ['overview', 'recent-activity', 'quick-actions'];
     
     if (!behaviorProfile) return baseWidgets;
@@ -48,10 +53,10 @@ export const useAdaptiveDashboard = ({
     }
 
     return prioritized;
-  };
+  }, [behaviorProfile, userSegment]);
 
-  const getPersonalizedMetrics = () => {
-    const metrics = {
+  const getPersonalizedMetrics = useCallback((): PersonalizedMetrics => {
+    const metrics: PersonalizedMetrics = {
       primary: 'overview',
       secondary: ['activity', 'performance'],
       advanced: []
@@ -72,10 +77,10 @@ export const useAdaptiveDashboard = ({
     }
 
     return metrics;
-  };
+  }, [userType, userSegment]);
 
-  const getRecommendedActions = () => {
-    const actions = [];
+  const getRecommendedActions = useCallback((): string[] => {
+    const actions: string[] = [];
 
     switch (userSegment) {
       case 'new_user':
@@ -96,12 +101,12 @@ export const useAdaptiveDashboard = ({
     }
 
     return actions;
-  };
+  }, [userSegment]);
 
   return useMemo(() => ({
     getDashboardLayout,
     getWidgetPriority,
     getPersonalizedMetrics,
     getRecommendedActions
-  }), [userSegment, userType, preferences, behaviorProfile]);
+  }), [getDashboardLayout, getWidgetPriority, getPersonalizedMetrics, getRecommendedActions]);
 };

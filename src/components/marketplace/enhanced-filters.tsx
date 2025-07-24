@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
 import { AuditTypesFilter } from "./filters/audit-types-filter";
@@ -39,8 +38,8 @@ export function EnhancedFilters({ onFilterChange }: EnhancedFiltersProps) {
     });
   };
 
-  // Apply all filters
-  const handleApplyFilters = () => {
+  // Apply all filters - memoized to prevent unnecessary re-renders
+  const handleApplyFilters = useCallback(() => {
     const filters = {
       priceRange,
       auditTypes: selectedAuditTypes,
@@ -52,7 +51,7 @@ export function EnhancedFilters({ onFilterChange }: EnhancedFiltersProps) {
     };
     
     onFilterChange(filters);
-  };
+  }, [priceRange, selectedAuditTypes, selectedBlockchains, deliveryTime, minReputation, showAIRecommendations, projectSize, onFilterChange]);
 
   // Reset all filters
   const resetFilters = () => {
@@ -73,7 +72,7 @@ export function EnhancedFilters({ onFilterChange }: EnhancedFiltersProps) {
     if (showAIRecommendations) {
       handleApplyFilters();
     }
-  }, [showAIRecommendations, projectSize]);
+  }, [showAIRecommendations, projectSize, handleApplyFilters]);
 
   return (
     <div className="bg-card p-6 rounded-xl space-y-5 border border-border/50 sticky top-4">

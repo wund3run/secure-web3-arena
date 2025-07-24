@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Search, HelpCircle } from 'lucide-react';
+import { AppContainer } from '@/components/layout/AppContainer';
 
 const FAQPage = () => {
   return (
@@ -11,7 +11,7 @@ const FAQPage = () => {
       title="FAQ | Hawkly"
       description="Frequently asked questions about Hawkly's Web3 security services"
     >
-      <div className="container mx-auto px-4 py-8">
+      <AppContainer maxWidth="max-w-4xl" padding="px-4 py-8" elevation>
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-hawkly-gradient mb-4">
             Frequently Asked Questions
@@ -134,7 +134,7 @@ const FAQPage = () => {
             </button>
           </CardContent>
         </Card>
-      </div>
+      </AppContainer>
     </StandardLayout>
   );
 };

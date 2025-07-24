@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 
 export interface PerformanceMetrics {
@@ -27,7 +26,7 @@ export function usePerformanceMetrics(enabled: boolean = true): PerformanceMetri
 
     const updateMetrics = () => {
       const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-      const memory = (performance as any).memory;
+      const memory = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory;
 
       setMetrics({
         fps: 60, // Simplified FPS calculation

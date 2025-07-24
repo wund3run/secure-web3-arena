@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -92,7 +91,11 @@ export const AICodeAnalysisWidget = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium mb-2 block">Language</label>
-              <Select value={language} onValueChange={(value: any) => setLanguage(value)}>
+              <Select value={language} onValueChange={(value: unknown) => {
+                if (typeof value === 'string' && ['solidity', 'vyper', 'rust', 'javascript'].includes(value)) {
+                  setLanguage(value as 'solidity' | 'vyper' | 'rust' | 'javascript');
+                }
+              }}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -107,7 +110,11 @@ export const AICodeAnalysisWidget = () => {
 
             <div>
               <label className="text-sm font-medium mb-2 block">Analysis Type</label>
-              <Select value={analysisType} onValueChange={(value: any) => setAnalysisType(value)}>
+              <Select value={analysisType} onValueChange={(value: unknown) => {
+                if (typeof value === 'string' && ['security', 'gas', 'compliance', 'full'].includes(value)) {
+                  setAnalysisType(value as 'security' | 'gas' | 'compliance' | 'full');
+                }
+              }}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>

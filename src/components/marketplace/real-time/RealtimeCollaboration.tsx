@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -50,7 +49,13 @@ export const RealtimeCollaboration: React.FC<RealtimeCollaborationProps> = ({
         table: 'chat_messages',
         filter: `conversation_id=eq.${projectId}`
       }, (payload) => {
-        const newMessage = payload.new as any;
+        const newMessage = payload.new as {
+          id: string;
+          content: string;
+          sender_id: string;
+          created_at: string;
+          message_type?: string;
+        };
         setMessages(prev => [...prev, {
           id: newMessage.id,
           content: newMessage.content,
@@ -74,7 +79,7 @@ export const RealtimeCollaboration: React.FC<RealtimeCollaborationProps> = ({
         // Transform presence state to participants
         const activeParticipants: Participant[] = Object.values(state)
           .flat()
-          .map((presence: any) => ({
+          .map((presence: unknown) => ({
             id: presence.id || currentUserId,
             name: presence.name || 'Current User',
             role: presence.role || 'client',

@@ -1,4 +1,3 @@
-
 import { useMemo } from 'react';
 import { AdaptiveInterfaceProps, PersonalizedMessage, AdaptiveLayoutConfig } from '../types';
 
@@ -50,7 +49,10 @@ export function useAdaptiveContent({
     welcome?: PersonalizedMessage;
     helpTip?: string;
   } => {
-    const messages: any = {};
+    const messages: { 
+      welcome?: PersonalizedMessage;
+      helpTip?: string;
+    } = {};
     
     if (userSegment === 'new_user') {
       messages.welcome = {
@@ -74,7 +76,7 @@ export function useAdaptiveContent({
     }
     
     return messages;
-  }, [userSegment, userType, behaviorProfile]);
+  }, [userSegment]);
 
   return {
     getLayoutVariant,

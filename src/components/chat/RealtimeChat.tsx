@@ -1,7 +1,6 @@
-
 import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { useAuth } from '@/contexts/auth/AuthContext';
+import { useAuth } from '@/contexts/auth';
 import { RealtimeChatProps, ChatMessage } from './types';
 import { ChatHeader } from './components/ChatHeader';
 import { MinimizedChat } from './components/MinimizedChat';

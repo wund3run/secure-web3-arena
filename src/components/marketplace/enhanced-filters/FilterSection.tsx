@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,7 +19,7 @@ export function FilterSection({ title, children, isCollapsed, onToggle }: Filter
           onClick={onToggle}
           className="w-full justify-between p-0 h-auto font-semibold"
         >
-          <CardTitle className="text-sm font-medium">{title}</CardTitle>
+          <CardTitle className="text-base font-bold tracking-tight uppercase text-accent-primary" style={{ fontFamily: "'Space Grotesk', Arial, sans-serif", letterSpacing: '0.08em' }}>{title}</CardTitle>
           {isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
         </Button>
       </CardHeader>

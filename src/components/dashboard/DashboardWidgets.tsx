@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertCircle, Book, CheckSquare, Shield, Award, FileSpreadsheet, ChartPie, LineChart, Users, Settings } from "lucide-react";
+import { AlertCircle, Book, CheckSquare, Shield, Award, FileSpreadsheet, PieChart, LineChart, Users, Settings } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { NotificationDashboardWidget } from './NotificationDashboardWidget';
 import { AuditorStats } from './widgets/AuditorStats';
@@ -111,7 +111,7 @@ function AuditorAnalytics() {
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2 mb-4">
-            <ChartPie className="h-5 w-5 text-primary" />
+            <PieChart className="h-5 w-5 text-primary" />
             <h3 className="text-lg font-medium">Audit Efficiency Trends</h3>
           </div>
           <p>Track your audit completion times, issue discovery rates, and overall efficiency compared to platform averages.</p>
@@ -248,7 +248,7 @@ function ProjectOwnerAnalytics() {
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2 mb-4">
-            <ChartPie className="h-5 w-5 text-primary" />
+            <PieChart className="h-5 w-5 text-primary" />
             <h3 className="text-lg font-medium">Issue Tracking</h3>
           </div>
           <p>Monitor discovered vulnerabilities across your codebase over time, with severity distributions and remediation status.</p>

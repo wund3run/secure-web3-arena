@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Bell, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,7 +8,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useNotifications } from '@/contexts/NotificationContext';
+import { useNotifications } from '@/contexts/useNotifications';
 import { NotificationList } from './NotificationList';
 import { NotificationPreferences } from './NotificationPreferences';
 import { NotificationSound } from './NotificationSound';

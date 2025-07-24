@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,168 +7,186 @@ import { useEscrow } from "@/contexts/EscrowContext";
 import { supabase } from "@/integrations/supabase/client";
 
 interface BlockchainConnectorProps {
-  onConnect: (address: string) => void;
-  connected?: boolean;
-  address?: string;
-  chainId?: string;
+  onConnectionChange?: (connected: boolean, account?: string, chainId?: string) => void;
 }
 
-export function BlockchainConnector({ onConnect, connected = false, address, chainId }: BlockchainConnectorProps) {
+const CHAIN_NAMES: Record<string, string> = {
+  "0x1": "Ethereum Mainnet",
+  "0x89": "Polygon",
+  "0x38": "BSC",
+  "0xa86a": "Avalanche",
+  "0xa4b1": "Arbitrum One",
+  "0x2105": "Base",
+};
+
+export function BlockchainConnector({ onConnectionChange }: BlockchainConnectorProps) {
+  const [isConnected, setIsConnected] = useState(false);
+  const [account, setAccount] = useState<string>('');
+  const [chainId, setChainId] = useState<string>('');
   const [isConnecting, setIsConnecting] = useState(false);
-  const [networkName, setNetworkName] = useState("Unknown Network");
-  const { profile } = useEscrow();
-  
-  const networks: Record<string, string> = {
-    "0x1": "Ethereum Mainnet",
-    "0x5": "Goerli Testnet",
-    "0x89": "Polygon Mainnet",
-    "0x13881": "Mumbai Testnet",
-    "0xa86a": "Avalanche Mainnet",
-    "0xa869": "Avalanche Fuji Testnet"
-  };
-  
-  useEffect(() => {
-    if (chainId) {
-      setNetworkName(networks[chainId] || `Chain ID: ${chainId}`);
-    }
-  }, [chainId]);
-  
-  const connectToWallet = async () => {
+
+  const connectWallet = async () => {
     setIsConnecting(true);
     try {
-      if (!window.ethereum) {
+      const provider = getEthereumProvider();
+      if (!provider) {
         toast.error("No Ethereum wallet detected", {
           description: "Please install MetaMask or another Ethereum wallet"
         });
         return;
       }
-      
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+
+      const accounts = await requestAccounts();
+      const currentChainId = await getChainId();
       
       if (accounts.length > 0) {
-        onConnect(accounts[0]);
+        setAccount(accounts[0]);
+        setChainId(currentChainId);
+        setIsConnected(true);
+        onConnectionChange?.(true, accounts[0], currentChainId);
         
-        // Update wallet address in profile if different
-        if (profile && accounts[0].toLowerCase() !== profile.wallet_address?.toLowerCase()) {
-          try {
-            const { error } = await supabase
-              .from('profiles')
-              .update({ wallet_address: accounts[0] })
-              .eq('id', profile.id);
-              
-            if (error) throw error;
-          } catch (error) {
-            console.error('Error updating wallet address:', error);
-          }
-        }
-        
-        toast.success("Wallet connected successfully", { 
-          description: `Connected to ${accounts[0].substring(0, 6)}...${accounts[0].substring(38)}`
+        toast.success("Wallet connected successfully", {
+          description: `Connected to ${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}`
         });
       }
-    } catch (error) {
-      console.error('Error connecting wallet:', error);
+    } catch (error: unknown) {
+      console.error('Failed to connect wallet:', error);
       toast.error("Failed to connect wallet", {
-        description: error instanceof Error ? error.message : "Please try again"
+        description: (error instanceof Error ? error.message : String(error)) || "Please try again"
       });
     } finally {
       setIsConnecting(false);
     }
   };
-  
-  // Listen for account changes
-  useEffect(() => {
-    if (!window.ethereum) return;
-    
-    const handleAccountsChanged = (accounts: string[]) => {
+
+  const disconnectWallet = () => {
+    setIsConnected(false);
+    setAccount('');
+    setChainId('');
+    onConnectionChange?.(false);
+    toast.info("Wallet disconnected");
+  };
+
+  const handleAccountsChanged = (...args: unknown[]) => {
+    const accounts = args[0];
+    if (Array.isArray(accounts) && accounts.every(acc => typeof acc === 'string')) {
       if (accounts.length === 0) {
-        // User disconnected
-        onConnect("");
-        toast.info("Wallet disconnected");
-      } else if (accounts[0] !== address) {
-        // Account changed
-        onConnect(accounts[0]);
-        toast.info("Wallet account changed", {
-          description: `Connected to ${accounts[0].substring(0, 6)}...${accounts[0].substring(38)}`
-        });
+        disconnectWallet();
+      } else {
+        setAccount(accounts[0]);
+        onConnectionChange?.(true, accounts[0], chainId);
       }
-    };
-    
-    const handleChainChanged = () => {
-      window.location.reload();
-    };
-    
-    window.ethereum.on('accountsChanged', handleAccountsChanged);
-    window.ethereum.on('chainChanged', handleChainChanged);
-    
+    }
+  };
+
+  const handleChainChanged = (...args: unknown[]) => {
+    const newChainId = args[0];
+    if (typeof newChainId === 'string') {
+      setChainId(newChainId);
+      onConnectionChange?.(isConnected, account, newChainId);
+    }
+  };
+
+  useEffect(() => {
+    const provider = getEthereumProvider();
+    if (!provider) return;
+
+    // Set up event listeners
+    provider.on('accountsChanged', handleAccountsChanged);
+    provider.on('chainChanged', handleChainChanged);
+
     return () => {
-      if (window.ethereum) {
-        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
-        window.ethereum.removeListener('chainChanged', handleChainChanged);
-      }
+      window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+      window.ethereum.removeListener('chainChanged', handleChainChanged);
     };
-  }, [address, onConnect]);
-  
+  }, [isConnected, account, chainId]);
+
+  const formatAddress = (address: string) => {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+
+  const getChainName = (chainId: string) => {
+    return CHAIN_NAMES[chainId] || `Chain ${chainId}`;
+  };
+
+  const provider = getEthereumProvider();
+  const hasWallet = !!provider;
+
   return (
-    <Card>
-      <CardContent className="p-4">
-        {!connected ? (
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Wallet className="h-5 w-5" />
+          Blockchain Connection
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {!hasWallet && (
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              No Ethereum wallet detected. Please install MetaMask or another Web3 wallet.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {hasWallet && !isConnected && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Wallet className="h-5 w-5" />
-                <span className="font-medium">Connect Wallet</span>
-              </div>
-              <Button 
-                size="sm" 
-                onClick={connectToWallet} 
-                disabled={isConnecting}
-              >
-                {isConnecting ? "Connecting..." : "Connect"}
-              </Button>
-            </div>
             <p className="text-sm text-muted-foreground">
               Connect your Ethereum wallet to create and interact with smart contracts
             </p>
+            <Button 
+              onClick={connectWallet} 
+              disabled={isConnecting}
+              className="w-full"
+            >
+              {isConnecting ? 'Connecting...' : 'Connect Wallet'}
+            </Button>
           </div>
-        ) : (
+        )}
+
+        {isConnected && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-primary">
-                <Check className="h-5 w-5" />
-                <span className="font-medium">Wallet Connected</span>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4 text-green-500" />
+              <span className="text-sm font-medium">Connected</span>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Account:</span>
+                <Badge variant="outline" className="font-mono">
+                  {formatAddress(account)}
+                </Badge>
               </div>
-              <Button variant="outline" size="sm" asChild>
-                <a 
-                  href={`https://etherscan.io/address/${address}`} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1"
-                >
-                  <span>View</span>
-                  <ExternalLink className="h-3 w-3" />
-                </a>
+              
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Network:</span>
+                <Badge variant="secondary">
+                  {getChainName(chainId)}
+                </Badge>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={disconnectWallet}
+                className="flex-1"
+              >
+                Disconnect
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => window.open(`https://etherscan.io/address/${account}`, '_blank')}
+                className="flex-1"
+              >
+                <ExternalLink className="h-3 w-3 mr-1" />
+                View
               </Button>
             </div>
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Address:</span>
-                <code className="bg-muted px-1 rounded text-xs">
-                  {address?.substring(0, 6)}...{address?.substring(38)}
-                </code>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Network:</span>
-                <span className="text-xs font-medium">{networkName}</span>
-              </div>
-            </div>
-            {networkName.includes("Mainnet") && (
-              <div className="flex items-center gap-2 text-amber-600 bg-amber-50 p-2 rounded text-xs">
-                <AlertCircle className="h-4 w-4" />
-                <span>You're connected to a main network. Consider using a testnet for development.</span>
-              </div>
-            )}
           </div>
         )}
       </CardContent>

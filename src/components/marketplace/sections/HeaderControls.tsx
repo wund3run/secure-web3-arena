@@ -9,7 +9,7 @@ interface HeaderControlsProps {
   showFilters: boolean;
   setShowFilters: (show: boolean) => void;
   servicesCount: number;
-  servicesForComparison: any[];
+  servicesForComparison: unknown[];
   handleOpenComparison: () => void;
 }
 

@@ -1,10 +1,19 @@
-
 import React from 'react';
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 
+interface ReviewFormData {
+  projectName?: string;
+  blockchain?: string;
+  projectType?: string;
+  auditScope?: string[];
+  budget?: string;
+  deadline?: Date;
+  urgency?: string;
+}
+
 interface ReviewSubmitStepProps {
-  formData: any;
+  formData: ReviewFormData;
 }
 
 export const ReviewSubmitStep = ({ formData }: ReviewSubmitStepProps) => {
@@ -15,32 +24,32 @@ export const ReviewSubmitStep = ({ formData }: ReviewSubmitStepProps) => {
         <div className="space-y-4">
           <div className="bg-gray-50 p-4 rounded-lg space-y-3">
             <div>
-              <span className="font-medium">Project:</span> {formData.projectName}
+              <span className="font-medium">Project:</span> {formData.projectName || 'Not specified'}
             </div>
             <div>
-              <span className="font-medium">Blockchain:</span> {formData.blockchain}
+              <span className="font-medium">Blockchain:</span> {formData.blockchain || 'Not specified'}
             </div>
             <div>
-              <span className="font-medium">Type:</span> {formData.projectType}
+              <span className="font-medium">Type:</span> {formData.projectType || 'Not specified'}
             </div>
             <div>
               <span className="font-medium">Scope:</span>
               <div className="flex flex-wrap gap-1 mt-1">
-                {formData.auditScope.map((scope: string) => (
+                {formData.auditScope?.map((scope: string) => (
                   <Badge key={scope} variant="secondary" className="text-xs">
                     {scope}
                   </Badge>
-                ))}
+                )) || <span className="text-muted-foreground">Not specified</span>}
               </div>
             </div>
             <div>
-              <span className="font-medium">Budget:</span> {formData.budget}
+              <span className="font-medium">Budget:</span> {formData.budget || 'Not specified'}
             </div>
             <div>
               <span className="font-medium">Deadline:</span> {formData.deadline ? format(formData.deadline, "PPP") : "Not specified"}
             </div>
             <div>
-              <span className="font-medium">Urgency:</span> {formData.urgency}
+              <span className="font-medium">Urgency:</span> {formData.urgency || 'Not specified'}
             </div>
           </div>
 

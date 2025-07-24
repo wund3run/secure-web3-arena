@@ -1,6 +1,6 @@
-
 import React from 'react';
 import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAccessibility } from '@/hooks/useAccessibility';
 
 type AccessibilityPreferences = {
   highContrast: boolean;
@@ -95,14 +95,6 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   );
 }
 
-export function useAccessibility() {
-  const context = React.useContext(AccessibilityContext);
-  if (context === undefined) {
-    throw new Error('useAccessibility must be used within an AccessibilityProvider');
-  }
-  return context;
-}
-
 // Component to announce dynamic content changes to screen readers
 function AccessibilityAnnouncer() {
   const [announcement, setAnnouncement] = React.useState('');
@@ -120,7 +112,7 @@ function AccessibilityAnnouncer() {
     };
     
     return () => {
-      // @ts-ignore - Remove global method on unmount
+      // Remove global method on unmount
       window.announceToScreenReader = undefined;
     };
   }, []);
@@ -182,6 +174,7 @@ export function AccessibilityControls() {
             onClick={toggleHighContrast}
             aria-checked={preferences.highContrast}
             role="switch"
+            aria-label="Toggle high contrast mode"
           >
             <span 
               className={`block w-4 h-4 rounded-full bg-white absolute top-0.5 transition-transform ${

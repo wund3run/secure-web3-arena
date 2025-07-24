@@ -1,4 +1,3 @@
-
 interface CacheEntry<T> {
   data: T;
   timestamp: number;
@@ -12,7 +11,7 @@ interface CacheOptions {
 }
 
 class CacheManager {
-  private cache = new Map<string, CacheEntry<any>>();
+  private cache = new Map<string, CacheEntry<unknown>>();
   private readonly DEFAULT_TTL = 300; // 5 minutes
 
   set<T>(key: string, data: T, options: CacheOptions = {}): void {
@@ -38,7 +37,7 @@ class CacheManager {
       return null;
     }
     
-    return entry.data;
+    return entry.data as T;
   }
 
   invalidate(key: string): void {

@@ -1,9 +1,36 @@
-
 export const navigationLinks = [
   {
     title: "Services",
     href: "/marketplace",
     children: [
+      {
+        title: "Intelligent Audit Workspace",
+        href: "/auditor/intelligent-workspace",
+        description: "AI-powered collaborative audit environment",
+        requiresAuth: true,
+        featured: true
+      },
+      {
+        title: "Advanced Project Management",
+        href: "/project-management",
+        description: "Milestone tracking, resource allocation, and time management",
+        requiresAuth: true,
+        featured: true
+      },
+      {
+        title: "Enhanced AI Features",
+        href: "/ai-enhanced",
+        description: "Advanced AI-powered analysis tools and machine learning models",
+        requiresAuth: true,
+        featured: true
+      },
+      {
+        title: "Professional Growth Tools",
+        href: "/professional-growth",
+        description: "Certification tracking, career development, and mentorship",
+        requiresAuth: true,
+        featured: true
+      },
       {
         title: "Browse Services",
         href: "/marketplace",
@@ -11,22 +38,22 @@ export const navigationLinks = [
       },
       {
         title: "Security Audits",
-        href: "/security-audits",
+        href: "/services/security-audits",
         description: "Comprehensive smart contract audits"
       },
       {
         title: "Code Reviews",
-        href: "/code-reviews",
+        href: "/services/code-reviews",
         description: "Expert code analysis and review"
       },
       {
         title: "Penetration Testing",
-        href: "/penetration-testing",
+        href: "/services/penetration-testing",
         description: "Advanced security testing"
       },
       {
         title: "Security Consulting",
-        href: "/consulting",
+        href: "/services/consulting",
         description: "Strategic security guidance"
       },
       {
@@ -41,13 +68,20 @@ export const navigationLinks = [
     href: "/resources",
     children: [
       {
+        title: "Smart Learning Platform",
+        href: "/learning",
+        description: "Personalized learning paths and knowledge sharing",
+        requiresAuth: true,
+        featured: true
+      },
+      {
         title: "Security Guides",
         href: "/resources",
         description: "Best practices and tutorials"
       },
       {
         title: "Vulnerability Database",
-        href: "/vulnerabilities",
+        href: "/resources/vulnerability-database",
         description: "Known security issues and fixes"
       },
       {
@@ -84,12 +118,12 @@ export const navigationLinks = [
       },
       {
         title: "AI Tools",
-        href: "/ai-tools",
+        href: "/tools/ai-tools",
         description: "AI-powered security tools"
       },
       {
         title: "Careers",
-        href: "/careers",
+        href: "/business/careers",
         description: "Join the Hawkly team"
       }
     ]
@@ -98,6 +132,36 @@ export const navigationLinks = [
     title: "Dashboard",
     href: "/dashboard",
     requiresAuth: true
+  },
+  {
+    title: "Intelligent Workspace",
+    href: "/auditor/intelligent-workspace",
+    requiresAuth: true,
+    featured: true
+  },
+  {
+    title: "Project Management",
+    href: "/project-management",
+    requiresAuth: true,
+    featured: true
+  },
+  {
+    title: "AI Enhanced",
+    href: "/ai-enhanced",
+    requiresAuth: true,
+    featured: true
+  },
+  {
+    title: "Professional Growth",
+    href: "/professional-growth",
+    requiresAuth: true,
+    featured: true
+  },
+  {
+    title: "Learning Platform",
+    href: "/learning",
+    requiresAuth: true,
+    featured: true
   },
   {
     title: "My Audits",

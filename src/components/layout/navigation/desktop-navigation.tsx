@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/auth";
@@ -83,7 +82,7 @@ export function DesktopNavigation({
               
               {activeDropdown === item.title && (
                 <div 
-                  ref={(el) => (dropdownRefs.current[item.title] = el)}
+                  ref={(el) => { dropdownRefs.current[item.title] = el; }}
                   className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-[10000] animate-in fade-in-0 zoom-in-95 duration-200"
                   role="menu"
                   style={{ 

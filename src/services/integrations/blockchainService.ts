@@ -1,4 +1,3 @@
-
 import { toast } from 'sonner';
 
 export interface BlockchainConnectionConfig {
@@ -95,7 +94,7 @@ export class BlockchainService {
           customStandards: ['ERC-2612']
         }
       };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error analyzing contract:', error);
       toast.error('Failed to analyze contract');
       return null;
@@ -112,13 +111,13 @@ export class BlockchainService {
         status: 'healthy' as const,
         lastUpdated: new Date().toISOString()
       }));
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error fetching network status:', error);
       return [];
     }
   }
 
-  async monitorTransaction(txHash: string, network: string): Promise<any> {
+  async monitorTransaction(txHash: string, network: string): Promise<unknown> {
     try {
       console.log(`Monitoring transaction ${txHash} on ${network}`);
       
@@ -130,7 +129,7 @@ export class BlockchainService {
         gasUsed: Math.floor(Math.random() * 100000) + 21000,
         confirmations: Math.floor(Math.random() * 10) + 1
       };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error monitoring transaction:', error);
       return null;
     }

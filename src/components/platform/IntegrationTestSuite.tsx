@@ -72,7 +72,7 @@ export function IntegrationTestSuite() {
 
       try {
         switch (test.id) {
-          case 'db-connection':
+          case 'db-connection': {
             const { error: connError } = await supabase
               .from('profiles')
               .select('count(*)', { count: 'exact', head: true });
@@ -84,8 +84,9 @@ export function IntegrationTestSuite() {
               duration: Date.now() - startTime
             });
             break;
+          }
 
-          case 'db-tables':
+          case 'db-tables': {
             const tables: TableName[] = ['profiles', 'extended_profiles', 'services', 'audit_requests', 'escrow_contracts'];
             let accessibleTables = 0;
             
@@ -107,9 +108,9 @@ export function IntegrationTestSuite() {
               duration: Date.now() - startTime
             });
             break;
+          }
 
-          case 'db-rls':
-            // Test RLS by attempting to access data
+          case 'db-rls': {
             const { data: userData, error: rlsError } = await supabase
               .from('profiles')
               .select('*')
@@ -122,8 +123,9 @@ export function IntegrationTestSuite() {
               duration: Date.now() - startTime
             });
             break;
+          }
 
-          case 'db-performance':
+          case 'db-performance': {
             const perfStart = Date.now();
             await supabase
               .from('services')
@@ -139,12 +141,13 @@ export function IntegrationTestSuite() {
               duration: Date.now() - startTime
             });
             break;
+          }
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         updateTest(test.id, {
           status: 'failed',
           message: 'Test failed',
-          details: error.message,
+          details: error instanceof Error ? error.message : 'Unknown error',
           duration: Date.now() - startTime
         });
       }
@@ -164,7 +167,7 @@ export function IntegrationTestSuite() {
 
       try {
         switch (test.id) {
-          case 'auth-session':
+          case 'auth-session': {
             const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
             
             updateTest(test.id, {
@@ -174,9 +177,9 @@ export function IntegrationTestSuite() {
               duration: Date.now() - startTime
             });
             break;
+          }
 
-          case 'auth-security':
-            // Test auth security settings
+          case 'auth-security': {
             updateTest(test.id, {
               status: 'passed',
               message: 'Authentication security configured',
@@ -184,8 +187,9 @@ export function IntegrationTestSuite() {
               duration: Date.now() - startTime
             });
             break;
+          }
 
-          case 'auth-profiles':
+          case 'auth-profiles': {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
               const { data: profile, error: profileError } = await supabase
@@ -208,12 +212,13 @@ export function IntegrationTestSuite() {
               });
             }
             break;
+          }
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         updateTest(test.id, {
           status: 'failed',
           message: 'Test failed',
-          details: error.message,
+          details: error instanceof Error ? error.message : 'Unknown error',
           duration: Date.now() - startTime
         });
       }
@@ -232,7 +237,7 @@ export function IntegrationTestSuite() {
 
       try {
         switch (test.id) {
-          case 'realtime-connection':
+          case 'realtime-connection': {
             const isConnected = supabase.realtime.isConnected();
             
             updateTest(test.id, {
@@ -242,9 +247,9 @@ export function IntegrationTestSuite() {
               duration: Date.now() - startTime
             });
             break;
+          }
 
-          case 'realtime-subscriptions':
-            // Test channel subscription
+          case 'realtime-subscriptions': {
             const testChannel = supabase.channel('health-check-test');
             
             const subscriptionPromise = new Promise((resolve, reject) => {
@@ -269,25 +274,25 @@ export function IntegrationTestSuite() {
               
               updateTest(test.id, {
                 status: 'passed',
-                message: 'Channel subscriptions working',
-                details: 'Real-time subscriptions functional',
+                message: 'Channel subscription successful',
                 duration: Date.now() - startTime
               });
-            } catch (subError: any) {
+            } catch (error: unknown) {
               updateTest(test.id, {
                 status: 'warning',
-                message: 'Subscription test incomplete',
-                details: subError.message,
+                message: 'Channel subscription failed',
+                details: error instanceof Error ? error.message : 'Unknown error',
                 duration: Date.now() - startTime
               });
             }
             break;
+          }
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         updateTest(test.id, {
           status: 'failed',
           message: 'Test failed',
-          details: error.message,
+          details: error instanceof Error ? error.message : 'Unknown error',
           duration: Date.now() - startTime
         });
       }
@@ -311,11 +316,11 @@ export function IntegrationTestSuite() {
           details: 'Function deployment system ready',
           duration: Date.now() - startTime
         });
-      } catch (error: any) {
+      } catch (error: unknown) {
         updateTest(test.id, {
           status: 'failed',
           message: 'Test failed',
-          details: error.message,
+          details: error instanceof Error ? error.message : 'Unknown error',
           duration: Date.now() - startTime
         });
       }
@@ -388,8 +393,8 @@ export function IntegrationTestSuite() {
         toast.error(`Tests completed with ${failed} failures, ${passed} passed, ${warnings} warnings`);
       }
       
-    } catch (error: any) {
-      toast.error("Test suite failed", { description: error.message });
+    } catch (error: unknown) {
+      toast.error("Test suite failed", { description: error instanceof Error ? error.message : 'Unknown error' });
     } finally {
       setIsRunning(false);
     }

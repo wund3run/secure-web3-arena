@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -64,7 +63,7 @@ export function AuthButtons({ isAuthenticated, onSignOut }: AuthButtonsProps) {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-10 w-10 p-0 hover:bg-muted/50">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={userProfile?.avatar_url} alt={user?.email || "User Avatar"} />
+                <AvatarImage src={userProfile?.avatar_url ?? undefined} alt={user?.email || "User Avatar"} />
                 <AvatarFallback className="bg-primary/10 text-primary font-medium">
                   {user?.email?.[0]?.toUpperCase() || "U"}
                 </AvatarFallback>

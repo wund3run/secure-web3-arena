@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -112,6 +111,20 @@ export function QuickActions() {
               </p>
             </div>
           </div>
+        </div>
+
+        <div className="flex flex-wrap gap-4">
+          {actions.map((action, idx) => (
+            <Button
+              key={idx}
+              variant={action.variant || 'accent'}
+              className="flex items-center gap-2 px-6 py-3 rounded-full font-black uppercase tracking-tight text-sm bg-gradient-to-r from-accent-primary to-accent-secondary shadow-[0_2px_20px_0_rgba(168,121,239,0.19)] hover:shadow-lg transition-all"
+              onClick={action.onClick}
+            >
+              {action.icon && <action.icon className="h-5 w-5 text-accent-secondary" />}
+              {action.title}
+            </Button>
+          ))}
         </div>
       </CardContent>
     </Card>

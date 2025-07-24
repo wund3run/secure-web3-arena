@@ -22,7 +22,7 @@ interface CheckItem {
   title: string;
   description: string;
   status: 'complete' | 'pending' | 'error';
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<{ className?: string }>;
   details?: string;
 }
 

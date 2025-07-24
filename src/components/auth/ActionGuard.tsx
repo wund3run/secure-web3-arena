@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/auth';
 import { canPerformAction } from '@/utils/auth/roleBasedRouting';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShieldX, Home } from 'lucide-react';
+import { Shield, Home } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface ActionGuardProps {
@@ -36,7 +36,7 @@ export const ActionGuard: React.FC<ActionGuardProps> = ({
     return (
       <Card className="max-w-md mx-auto">
         <CardHeader className="text-center">
-          <ShieldX className="mx-auto h-12 w-12 text-destructive mb-4" />
+          <Shield className="mx-auto h-12 w-12 text-destructive mb-4" />
           <CardTitle>Access Restricted</CardTitle>
           <CardDescription>
             You don't have permission to perform this action.

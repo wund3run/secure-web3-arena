@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext } from "react";
 import { ServiceCardProps } from "@/components/marketplace/card/ServiceCardProps";
 import { toast } from "sonner";
@@ -11,6 +10,8 @@ interface ComparisonContextType {
 }
 
 const ComparisonContext = createContext<ComparisonContextType | undefined>(undefined);
+
+export { ComparisonContext };
 
 export function ComparisonProvider({ 
   children, 
@@ -60,10 +61,11 @@ export function ComparisonProvider({
   );
 }
 
-export function useComparison() {
+export const useComparison = () => {
   const context = useContext(ComparisonContext);
   if (!context) {
-    throw new Error("useComparison must be used within a ComparisonProvider");
+    throw new Error('useComparison must be used within a ComparisonProvider');
   }
   return context;
-}
+};
+

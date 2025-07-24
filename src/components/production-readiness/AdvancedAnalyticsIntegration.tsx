@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -30,7 +29,10 @@ import {
   Clock,
   Target,
   CheckCircle,
-  Settings
+  Settings,
+  BarChart3,
+  PieChart as PieChartIcon,
+  type LucideIcon
 } from 'lucide-react';
 
 interface AnalyticsProvider {
@@ -50,7 +52,7 @@ interface AnalyticsMetric {
   value: number;
   change: number;
   period: string;
-  icon: React.ComponentType<any>;
+  icon: LucideIcon;
   color: string;
 }
 
@@ -191,7 +193,7 @@ export const AdvancedAnalyticsIntegration = () => {
   useEffect(() => {
     setProviders(analyticsProviders);
     setMetrics(sampleMetrics);
-  }, []);
+  }, [analyticsProviders, sampleMetrics]);
 
   const toggleProvider = async (providerId: string) => {
     setIsConfiguring(true);
@@ -229,7 +231,7 @@ export const AdvancedAnalyticsIntegration = () => {
     return providers.filter(provider => provider.enabled);
   };
 
-  const categories = [
+  const categories: Array<{ id: string; name: string; icon: LucideIcon }> = [
     { id: 'web', name: 'Web Analytics', icon: TrendingUp },
     { id: 'user', name: 'User Analytics', icon: Users },
     { id: 'business', name: 'Business Intelligence', icon: DollarSign },

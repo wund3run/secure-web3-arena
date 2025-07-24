@@ -127,7 +127,7 @@ export function PersonalizedRecommendations({ userType }: PersonalizedRecommenda
 
   const recommendations = getRecommendations();
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityColor = (priority: string): string => {
     const colors = {
       high: "destructive",
       medium: "secondary",
@@ -136,7 +136,7 @@ export function PersonalizedRecommendations({ userType }: PersonalizedRecommenda
     return colors[priority as keyof typeof colors] || "outline";
   };
 
-  const getTypeIcon = (type: string) => {
+  const getTypeIcon = (type: string): React.ReactNode => {
     const icons = {
       action: <TrendingUp className="h-4 w-4" />,
       learning: <Lightbulb className="h-4 w-4" />,
@@ -170,7 +170,7 @@ export function PersonalizedRecommendations({ userType }: PersonalizedRecommenda
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <h4 className="font-medium">{recommendation.title}</h4>
-                  <Badge variant={getPriorityColor(recommendation.priority) as any}>
+                  <Badge variant={getPriorityColor(recommendation.priority) as "default" | "secondary" | "destructive" | "outline"}>
                     {recommendation.priority}
                   </Badge>
                   <div className="flex items-center gap-1">

@@ -29,6 +29,7 @@ interface FormData {
   contactEmail: string;
   contactName: string;
   previousAudits: boolean;
+  [key: string]: unknown;
 }
 
 interface EnhancedAuditFormProps {
@@ -62,7 +63,7 @@ export function EnhancedAuditForm({ onSubmitSuccess }: EnhancedAuditFormProps) {
   const totalSteps = 4;
   const progress = (currentStep / totalSteps) * 100;
 
-  const handleFieldChange = useCallback((fieldName: string, value: any) => {
+  const handleFieldChange = useCallback((fieldName: string, value: unknown) => {
     setFormData(prev => ({ ...prev, [fieldName]: value }));
     
     // Real-time validation for touched fields

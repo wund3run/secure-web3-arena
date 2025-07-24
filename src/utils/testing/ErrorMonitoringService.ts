@@ -239,7 +239,7 @@ export class ErrorMonitoringService {
     };
   }
 
-  private groupBy(array: any[], key: string): Record<string, number> {
+  private groupBy(array: unknown[], key: string): Record<string, number> {
     return array.reduce((acc, item) => {
       const value = item[key];
       acc[value] = (acc[value] || 0) + 1;

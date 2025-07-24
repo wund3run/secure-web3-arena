@@ -5,8 +5,15 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { BarChart3, TrendingUp } from 'lucide-react';
 
+interface ModelMetrics {
+  precision: number;
+  recall: number;
+  f1Score: number;
+  accuracy: number;
+}
+
 interface PerformanceMetricsProps {
-  modelMetrics: any;
+  modelMetrics: ModelMetrics | null;
   isInitializing: boolean;
 }
 

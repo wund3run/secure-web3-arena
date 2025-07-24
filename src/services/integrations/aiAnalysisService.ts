@@ -1,6 +1,6 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { withErrorHandling } from '@/utils/apiErrorHandler';
 
 export interface CodeAnalysisRequest {
   code: string;
@@ -48,53 +48,46 @@ export interface AIAnalysisResult {
 
 export class AIAnalysisService {
   static async analyzeCode(request: CodeAnalysisRequest): Promise<AIAnalysisResult | null> {
-    try {
+    return withErrorHandling(async () => {
       console.log('Starting AI code analysis...', request.analysisType);
-      
-      // Call Supabase Edge Function for AI analysis
       const { data, error } = await supabase.functions.invoke('ai-code-analysis', {
         body: request
       });
-
       if (error) throw error;
-
       toast.success('Code analysis completed successfully');
       return data as AIAnalysisResult;
-    } catch (error) {
-      console.error('Error in AI code analysis:', error);
-      toast.error('Failed to analyze code with AI');
-      return null;
-    }
+    }, {
+      customMessage: 'Failed to analyze code with AI',
+      context: 'AIAnalysisService',
+      retryable: true
+    });
   }
 
-  static async generateAuditReport(auditId: string, findings: any[]): Promise<string | null> {
-    try {
+  static async generateAuditReport(auditId: string, findings: unknown[]): Promise<string | null> {
+    return withErrorHandling(async () => {
       const { data, error } = await supabase.functions.invoke('generate-audit-report', {
         body: { auditId, findings }
       });
-
       if (error) throw error;
-
       return data.reportContent;
-    } catch (error) {
-      console.error('Error generating audit report:', error);
-      toast.error('Failed to generate audit report');
-      return null;
-    }
+    }, {
+      customMessage: 'Failed to generate audit report',
+      context: 'AIAnalysisService',
+      retryable: true
+    });
   }
 
-  static async detectAnomalies(contractData: any): Promise<any[]> {
-    try {
+  static async detectAnomalies(contractData: unknown): Promise<unknown[]> {
+    return withErrorHandling(async () => {
       const { data, error } = await supabase.functions.invoke('detect-anomalies', {
         body: { contractData }
       });
-
       if (error) throw error;
-
       return data.anomalies || [];
-    } catch (error) {
-      console.error('Error detecting anomalies:', error);
-      return [];
-    }
+    }, {
+      customMessage: 'Failed to detect anomalies',
+      context: 'AIAnalysisService',
+      retryable: true
+    });
   }
 }

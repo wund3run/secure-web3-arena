@@ -172,7 +172,7 @@ export const useAuditForm = (onSubmitSuccess: () => void, prefilledData?: Prefil
       } else {
         throw new Error('Failed to create audit request');
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error submitting audit request:', error);
       toast.error('Failed to submit audit request. Please try again.');
       setShowAIMatching(false);

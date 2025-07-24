@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,13 +15,21 @@ interface EnhancedAIRecommendationsProps {
   onRecommendationSelect: (serviceId: string) => void;
 }
 
+interface MLAnalysis {
+  confidence_score?: number;
+  success_prediction?: number;
+  risk_assessment?: string;
+  recommendation_strength?: string;
+  matching_factors?: string[];
+}
+
 export function EnhancedAIRecommendations({
   services,
   projectSize,
   blockchains,
   onRecommendationSelect,
 }: EnhancedAIRecommendationsProps) {
-  const [mlAnalysis, setMlAnalysis] = useState<any>(null);
+  const [mlAnalysis, setMlAnalysis] = useState<MLAnalysis | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { runAdvancedMatching } = useAdvancedMatching();
 
@@ -152,13 +159,13 @@ export function EnhancedAIRecommendations({
             <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
               <div>
                 <div className="text-lg font-bold text-purple-600">
-                  {Math.round(mlAnalysis.confidence_score * 100)}%
+                  {Math.round((mlAnalysis.confidence_score || 0) * 100)}%
                 </div>
                 <div className="text-xs text-muted-foreground">ML Confidence</div>
               </div>
               <div>
                 <div className="text-lg font-bold text-blue-600">
-                  {Math.round(mlAnalysis.success_prediction * 100)}%
+                  {Math.round((mlAnalysis.success_prediction || 0) * 100)}%
                 </div>
                 <div className="text-xs text-muted-foreground">Success Rate</div>
               </div>
@@ -216,7 +223,7 @@ export function EnhancedAIRecommendations({
                 <strong>ML Matching Factors:</strong>
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
-                {mlAnalysis.matching_factors.map((factor: string, idx: number) => (
+                {mlAnalysis.matching_factors?.map((factor: string, idx: number) => (
                   <span key={idx} className="flex items-center">
                     <TrendingUp className="h-2 w-2 mr-1 text-green-500" />
                     {factor}

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -173,9 +172,17 @@ export const ExternalSecurityAudit = () => {
     setAuditItems(items);
   };
 
+  const calculateOverallScore = () => {
+    const completedItems = auditItems.filter(item => item.status !== 'pending' && item.status !== 'in_progress');
+    if (completedItems.length === 0) return 0;
+    
+    const passedItems = completedItems.filter(item => item.status === 'passed');
+    return Math.round((passedItems.length / completedItems.length) * 100);
+  };
+
   useEffect(() => {
     initializeAuditItems();
-  }, []);
+  }, [calculateOverallScore]);
 
   const runSecurityAudit = async (itemId?: string) => {
     setIsRunningAudit(true);
@@ -238,14 +245,6 @@ export const ExternalSecurityAudit = () => {
     };
     
     return evidenceExamples[item.id as keyof typeof evidenceExamples] || '❌ Security vulnerability detected. Manual review required.';
-  };
-
-  const calculateOverallScore = () => {
-    const completedItems = auditItems.filter(item => item.status !== 'pending' && item.status !== 'in_progress');
-    if (completedItems.length === 0) return 0;
-    
-    const passedItems = completedItems.filter(item => item.status === 'passed');
-    return Math.round((passedItems.length / completedItems.length) * 100);
   };
 
   const getSeverityColor = (severity: string) => {

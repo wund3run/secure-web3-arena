@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
@@ -27,8 +26,8 @@ export function AuditPerformanceWidget() {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="onTime" name="On Time" stackId="a" fill="#10b981" />
-              <Bar dataKey="delayed" name="Delayed" stackId="a" fill="#f43f5e" />
+              <Bar dataKey="onTime" name="On Time" stackId="a" fill="#2de08e" />
+              <Bar dataKey="delayed" name="Delayed" stackId="a" fill="#fc3574" />
             </BarChart>
           </ResponsiveContainer>
         </div>

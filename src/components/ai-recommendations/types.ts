@@ -15,5 +15,5 @@ export interface SmartRecommendation {
 
 export interface IntelligentRecommendationEngineProps {
   userType: "project_owner" | "auditor" | "admin";
-  userBehaviorData?: any;
+  userBehaviorData?: unknown;
 }

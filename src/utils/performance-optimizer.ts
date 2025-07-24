@@ -27,7 +27,8 @@ class PerformanceOptimizer {
       try {
         this.observer = new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
-            const metricValue = (entry as any).value || entry.duration || 0;
+            const entryWithValue = entry as PerformanceEntry & { value?: number };
+            const metricValue = typeof entryWithValue.value === 'number' ? entryWithValue.value : entry.duration || 0;
             this.recordMetric(entry.name, metricValue);
           }
         });
@@ -87,84 +88,93 @@ class PerformanceOptimizer {
     const threshold = thresholds[name as keyof typeof thresholds];
     if (threshold && value > threshold) {
       // Only show in development and throttle notifications
-      if (process.env.NODE_ENV === 'development') {
-        const lastWarning = localStorage.getItem(`perf-warning-${name}`);
+      if (import.meta.env.MODE === 'development') {
+        const lastWarningKey = `performance-warning-${name}`;
+        const lastWarning = localStorage.getItem(lastWarningKey);
         const now = Date.now();
         
+        // Throttle warnings to once per minute
         if (!lastWarning || now - parseInt(lastWarning) > 60000) {
-          localStorage.setItem(`perf-warning-${name}`, now.toString());
-          console.warn(`Performance Notice: ${name.replace(/-/g, ' ')} took ${Math.round(value)}ms`);
+          localStorage.setItem(lastWarningKey, now.toString());
+          toast.warning('Performance Warning', {
+            description: `${name} is ${Math.round(value)}ms (threshold: ${threshold}ms)`,
+            duration: 5000
+          });
         }
       }
     }
   }
 
   getMetrics() {
-    const result: Record<string, { avg: number; min: number; max: number; latest: number }> = {};
+    const result: Record<string, { average: number; latest: number; count: number }> = {};
     
-    this.metrics.forEach((values, name) => {
+    for (const [name, values] of this.metrics.entries()) {
       if (values.length > 0) {
+        const average = values.reduce((sum: number, val: number) => sum + val, 0) / values.length;
+        const latest = values[values.length - 1];
         result[name] = {
-          avg: values.reduce((sum, val) => sum + val, 0) / values.length,
-          min: Math.min(...values),
-          max: Math.max(...values),
-          latest: values[values.length - 1]
+          average: Math.round(average),
+          latest: Math.round(latest),
+          count: values.length
         };
       }
-    });
+    }
     
     return result;
   }
 
-  // Optimize images with lazy loading
-  optimizeImages() {
-    if (typeof window === 'undefined') return;
-
-    const images = document.querySelectorAll('img[data-src]');
-    if (images.length === 0) return;
-
-    const imageObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const img = entry.target as HTMLImageElement;
-          img.src = img.dataset.src || '';
-          img.removeAttribute('data-src');
-          imageObserver.unobserve(img);
-        }
-      });
-    }, {
-      rootMargin: '50px 0px',
-      threshold: 0.01
-    });
-
-    images.forEach(img => imageObserver.observe(img));
-  }
-
-  // Preload critical resources
   preloadCriticalResources(resources: string[]) {
     if (typeof window === 'undefined') return;
-
+    
     resources.forEach(resource => {
       const link = document.createElement('link');
       link.rel = 'preload';
       link.href = resource;
       
-      if (resource.endsWith('.css')) {
+      // Determine the appropriate 'as' attribute based on file extension
+      if (resource.endsWith('.svg') || resource.endsWith('.png') || resource.endsWith('.jpg') || resource.endsWith('.webp')) {
+        link.as = 'image';
+      } else if (resource.endsWith('.css')) {
         link.as = 'style';
       } else if (resource.endsWith('.js')) {
         link.as = 'script';
-      } else if (resource.match(/\.(jpg|jpeg|png|webp)$/)) {
-        link.as = 'image';
       }
       
       document.head.appendChild(link);
     });
   }
 
-  cleanup() {
+  optimizeImages() {
+    if (typeof window === 'undefined') return;
+    
+    // Set up intersection observer for lazy loading images
+    if ('IntersectionObserver' in window) {
+      const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target as HTMLImageElement;
+            if (img.dataset.src) {
+              img.src = img.dataset.src;
+              img.classList.remove('blur-sm');
+              imageObserver.unobserve(img);
+            }
+          }
+        });
+      });
+
+      // Observe all images with data-src attribute
+      document.querySelectorAll('img[data-src]').forEach(img => {
+        imageObserver.observe(img);
+      });
+    }
+  }
+
+  destroy() {
     if (this.observer) {
       this.observer.disconnect();
+      this.observer = null;
     }
+    this.metrics.clear();
   }
 }
 

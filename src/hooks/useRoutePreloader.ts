@@ -1,10 +1,9 @@
-
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 interface PreloadRoute {
   path: string;
-  component: () => Promise<any>;
+  component: () => Promise<unknown>;
 }
 
 const routePreloadMap: Record<string, PreloadRoute[]> = {

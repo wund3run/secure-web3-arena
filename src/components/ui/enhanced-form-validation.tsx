@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { AlertCircle, CheckCircle, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { EnhancedValidation, ValidationResult } from '@/utils/security/enhancedValidation';
@@ -82,9 +81,23 @@ export function SecureFormFieldWrapper({
       )}
       
       {/* Display validation errors */}
-      {validation && !validation.isValid && validation.errors.map((err, index) => (
-        <ValidationMessage key={index} type="error" message={err} />
-      ))}
+      {validation && !validation.isValid && (
+        <>
+          {validation.errors.map((err: unknown, index: number) => {
+            const errorMessage = err instanceof Error ? err.message : 
+                               typeof err === 'string' ? err :
+                               typeof err === 'object' && err !== null && 'message' in err ? String((err as any).message) :
+                               'Validation error';
+            return (
+              <ValidationMessage 
+                key={index} 
+                type="error" 
+                message={errorMessage} 
+              />
+            );
+          })}
+        </>
+      )}
       
       {/* Display custom error */}
       {error && <ValidationMessage type="error" message={error} />}
@@ -98,9 +111,17 @@ export function SecureFormFieldWrapper({
   );
 }
 
+interface ValidationOptions {
+  minLength?: number;
+  maxLength?: number;
+  pattern?: RegExp;
+  required?: boolean;
+  [key: string]: any;
+}
+
 interface SecureInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   validationType?: 'email' | 'url' | 'text' | 'number';
-  validationOptions?: any;
+  validationOptions?: ValidationOptions;
   onValidationChange?: (result: ValidationResult) => void;
 }
 
@@ -140,14 +161,13 @@ export function SecureInput({
     
     // Call original onChange with sanitized value
     if (onChange) {
-      const sanitizedEvent = {
-        ...e,
-        target: {
-          ...e.target,
-          value: validationResult.sanitizedValue || inputValue
-        }
-      };
-      onChange(sanitizedEvent);
+      // Modify the original event with sanitized value
+      if (validationResult.sanitizedValue !== undefined && 
+          validationResult.sanitizedValue !== null && 
+          typeof validationResult.sanitizedValue === 'string') {
+        (e.target as HTMLInputElement).value = validationResult.sanitizedValue;
+      }
+      onChange(e);
     }
   };
   

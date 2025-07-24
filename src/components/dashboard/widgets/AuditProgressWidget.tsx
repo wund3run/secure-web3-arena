@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -34,31 +33,17 @@ export function AuditProgressWidget() {
   ];
 
   return (
-    <Card className="h-full">
-      <CardContent className="pt-6">
-        <div className="space-y-5">
+    <Card className="bg-card rounded-[1.15rem] shadow-[0_8px_40px_0_rgba(50,60,130,0.23)] p-6">
+      <CardContent>
+        <h3 className="font-black uppercase tracking-tight text-accent-primary mb-3" style={{ fontFamily: "'Space Grotesk', Arial, sans-serif", letterSpacing: '0.08em' }}>
+          Audit Progress
+        </h3>
+        <div className="space-y-2">
           {audits.map((audit) => (
-            <div key={audit.id} className="space-y-2">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h4 className="font-medium">{audit.name}</h4>
-                  <p className="text-sm text-muted-foreground">Auditor: {audit.auditor}</p>
-                </div>
-                <Badge variant={audit.status === 'complete' ? 'default' : 'outline'}>
-                  {audit.status === 'complete' ? 'Completed' : 'In Progress'}
-                </Badge>
-              </div>
-              <div className="space-y-1">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Completion: {audit.progress}%</span>
-                  {audit.status !== 'complete' && (
-                    <span className="text-sm text-muted-foreground">
-                      Expected: {new Date(audit.completion).toLocaleDateString()}
-                    </span>
-                  )}
-                </div>
-                <Progress value={audit.progress} className="h-2" />
-              </div>
+            <div key={audit.id} className="flex items-center gap-3">
+              <span className="font-medium text-primary" style={{ fontFamily: "'Space Grotesk', Arial, sans-serif" }}>{audit.name}</span>
+              <Progress value={audit.progress} className="flex-1" />
+              <span className="text-xs text-accent-primary font-bold uppercase tracking-wide" style={{ fontFamily: "'Space Grotesk', Arial, sans-serif" }}>{audit.progress}%</span>
             </div>
           ))}
         </div>

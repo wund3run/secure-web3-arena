@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Home, Shield, FileText, Users } from "lucide-react";
@@ -28,13 +27,13 @@ const navigationItems: NavigationItem[] = [
   },
   {
     title: "Audits",
-    href: "/audits",
+    href: "/audit-details",
     icon: FileText,
     description: "View audit reports"
   },
   {
     title: "Community",
-    href: "/community",
+    href: "/community/forum",
     icon: Users,
     description: "Join the community"
   }

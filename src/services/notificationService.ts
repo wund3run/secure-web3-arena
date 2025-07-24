@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 export interface NotificationData {
   title: string;
   message: string;
-  type: 'audit_assigned' | 'proposal_received' | 'payment_released' | 'audit_completed' | 'message_received';
+  type: 'audit_assigned' | 'proposal_received' | 'payment_released' | 'audit_completed' | 'message_received' | 'dispute_created' | 'dispute_status_changed';
   priority: 'low' | 'medium' | 'high';
   actionUrl?: string;
   metadata?: Record<string, any>;
@@ -108,6 +108,36 @@ export class NotificationService {
       priority: 'high',
       actionUrl: '/dashboard',
       metadata: { projectName }
+    });
+  }
+
+  static async sendDisputeCreatedNotification(
+    userId: string,
+    projectName: string,
+    disputeType: string
+  ) {
+    return this.sendNotification(userId, {
+      title: 'Dispute Raised',
+      message: `A new ${disputeType} dispute has been raised for project ${projectName}.`,
+      type: 'dispute_created',
+      priority: 'high',
+      actionUrl: '/dashboard',
+      metadata: { projectName, disputeType }
+    });
+  }
+
+  static async sendDisputeStatusChangedNotification(
+    userId: string,
+    projectName: string,
+    status: string
+  ) {
+    return this.sendNotification(userId, {
+      title: 'Dispute Status Updated',
+      message: `The status of a dispute for project ${projectName} has changed to ${status}.`,
+      type: 'dispute_status_changed',
+      priority: 'high',
+      actionUrl: '/dashboard',
+      metadata: { projectName, status }
     });
   }
 

@@ -11,7 +11,7 @@ import {
   ArrowRight,
   Building,
   Layers,
-  Handshake,
+  Users,
   Rocket
 } from 'lucide-react';
 
@@ -64,7 +64,7 @@ const INTEGRATION_FEATURES = [
   {
     title: "White-Label Solutions",
     description: "Security firms can offer Hawkly under their own brand",
-    icon: Handshake
+    icon: Users
   },
   {
     title: "API-First Architecture",
@@ -79,7 +79,7 @@ export function StrategicPartnershipsSection() {
       <div className="container px-4 md:px-6">
         <div className="text-center mb-12">
           <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 text-primary mb-6">
-            <Handshake className="h-4 w-4 mr-2" />
+            <Users className="h-4 w-4 mr-2" />
             <span className="text-sm font-medium">Strategic Distribution Partnerships</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">

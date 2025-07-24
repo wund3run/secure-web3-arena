@@ -1,17 +1,17 @@
-
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth';
 import { OptimizedQueries } from '@/utils/database/optimizedQueries';
 import { Logger, AuditLogger } from '@/utils/logging/logger';
 import { DataSyncManager } from '@/utils/dataSync/syncManager';
+import { supabase } from '@/integrations/supabase/client';
 
 export const useOptimizedAuditDetails = (auditId?: string) => {
   const { user } = useAuth();
   const params = useParams();
   const id = auditId || params.id;
   
-  const [auditData, setAuditData] = useState<any>(null);
+  const [auditData, setAuditData] = useState<unknown>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,12 +42,27 @@ export const useOptimizedAuditDetails = (auditId?: string) => {
           throw new Error('Audit not found');
         }
 
+        const statusData = data.audit.status as { status?: string } || {};
+        const isStatusCompleted = statusData.status === 'completed';
+
+        // Get current phase if audit is in progress
+        const phaseResult = isStatusCompleted ? null : await supabase
+          .from('audit_requests')
+          .select('current_phase')
+          .eq('id', id)
+          .single();
+
+        const phaseData = phaseResult?.data as { current_phase?: string } || {};
+        const currentPhase = phaseData.current_phase;
+
         setAuditData({
           ...data.audit,
           findings: data.findings,
           deliverables: data.deliverables,
           status_updates: data.statusUpdates,
-          findings_count: data.findingsCount
+          findings_count: data.findingsCount,
+          status: statusData.status || data.audit.status,
+          current_phase: currentPhase || data.audit.current_phase
         });
 
         Logger.info('Audit details loaded successfully', {
@@ -92,7 +107,7 @@ export const useOptimizedAuditDetails = (auditId?: string) => {
     if (!id || !user) return false;
 
     const correlationId = Logger.generateCorrelationId();
-    const oldStatus = auditData?.status;
+    const oldStatus = (auditData as any)?.status;
 
     try {
       Logger.info('Updating audit status', {
@@ -107,16 +122,19 @@ export const useOptimizedAuditDetails = (auditId?: string) => {
       DataSyncManager.queueLocalChange('audit_requests', 'update', {
         id,
         status: newStatus,
-        current_phase: phase || auditData?.current_phase,
+        current_phase: phase || (auditData as any)?.current_phase,
         updated_at: new Date().toISOString()
       });
 
       // Update local state optimistically
-      setAuditData((prev: any) => ({
-        ...prev,
-        status: newStatus,
-        current_phase: phase || prev?.current_phase
-      }));
+      setAuditData((prev: any) => {
+        const prevData = prev || {};
+        return {
+          ...prevData,
+          status: newStatus,
+          current_phase: phase || prevData.current_phase
+        };
+      });
 
       // Invalidate cache
       OptimizedQueries.invalidateAuditCache(id);
@@ -124,7 +142,7 @@ export const useOptimizedAuditDetails = (auditId?: string) => {
       AuditLogger.statusChanged(id, oldStatus, newStatus, user.id);
       return true;
 
-    } catch (error) {
+    } catch (error: unknown) {
       Logger.error('Failed to update audit status', {
         correlationId,
         auditId: id,

@@ -1,2 +1,1 @@
-
-export { SecurityInsights as default } from '../PlaceholderPage';
+export { default } from './SecurityInsightsPage';

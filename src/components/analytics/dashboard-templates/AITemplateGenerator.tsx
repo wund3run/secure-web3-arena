@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -73,8 +72,9 @@ export function AITemplateGenerator() {
     setIsGenerating(false);
     
     // Track template generation
-    if ((window as any).trackConversion) {
-      (window as any).trackConversion({
+    const globalWindow = window as any;
+    if (globalWindow.trackConversion && typeof globalWindow.trackConversion === 'function') {
+      globalWindow.trackConversion({
         action: 'ai_template_generated',
         category: 'analytics',
         label: 'custom_dashboard'

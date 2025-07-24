@@ -327,7 +327,7 @@ export const ProductionReadinessAssessment = () => {
 
   useEffect(() => {
     initializeAssessments();
-  }, []);
+  }, [calculateOverallScore]);
 
   useEffect(() => {
     setOverallScore(calculateOverallScore());

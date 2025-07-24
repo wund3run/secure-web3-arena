@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -42,16 +41,10 @@ export const SmartMatchingEngine: React.FC<SmartMatchingEngineProps> = ({
   const [analysisProgress, setAnalysisProgress] = useState(0);
 
   const calculateMatchScore = (service: ServiceCardProps): MatchScore => {
-    // Expertise matching based on tags and category
+    // Calculate individual scores
     const expertiseMatch = calculateExpertiseMatch(service);
-    
-    // Budget compatibility
     const budgetCompatibility = calculateBudgetCompatibility(service);
-    
-    // Availability assessment
     const availabilityMatch = calculateAvailabilityMatch(service);
-    
-    // Reputation score based on rating and completed jobs
     const reputationScore = calculateReputationScore(service);
     
     // Overall weighted score
@@ -62,12 +55,18 @@ export const SmartMatchingEngine: React.FC<SmartMatchingEngineProps> = ({
       reputationScore * 0.20
     );
 
-    const reasoning = generateReasoning(service, {
-      expertiseMatch,
-      budgetCompatibility,
-      availabilityMatch,
-      reputationScore
-    });
+    // Create complete score object for reasoning generation
+    const scoreObject: MatchScore = {
+      serviceId: service.id,
+      overallScore: Math.round(overallScore),
+      expertiseMatch: Math.round(expertiseMatch),
+      budgetCompatibility: Math.round(budgetCompatibility),
+      availabilityMatch: Math.round(availabilityMatch),
+      reputationScore: Math.round(reputationScore),
+      reasoning: [] // Will be filled by generateReasoning
+    };
+
+    const reasoning = generateReasoning(service, scoreObject);
 
     return {
       serviceId: service.id,
@@ -133,7 +132,7 @@ export const SmartMatchingEngine: React.FC<SmartMatchingEngineProps> = ({
     return ratingScore + experienceScore;
   };
 
-  const generateReasoning = (service: ServiceCardProps, scores: any): string[] => {
+  const generateReasoning = (service: ServiceCardProps, scores: MatchScore): string[] => {
     const reasoning = [];
     
     if (scores.expertiseMatch > 80) {

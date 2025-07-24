@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -68,7 +67,10 @@ export function MobileCardHeader({
   return (
     <div className={cn('flex items-start justify-between gap-3 mb-4', className)}>
       <div className="min-w-0 flex-1">
-        <h3 className="font-semibold text-foreground truncate text-base sm:text-lg">
+        <h3
+          className="font-bold text-accent-primary truncate text-base sm:text-lg tracking-tight uppercase"
+          style={{ fontFamily: "'Space Grotesk', Arial, sans-serif", letterSpacing: '0.08em' }}
+        >
           {title}
         </h3>
         {subtitle && (

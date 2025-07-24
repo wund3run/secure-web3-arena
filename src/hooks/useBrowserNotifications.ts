@@ -24,7 +24,7 @@ export function useBrowserNotifications() {
       setCanSendNotifications(result === 'granted');
       return result === 'granted';
     } catch (error) {
-      console.error('Failed to request notification permission:', error);
+      console.warn('Failed to request notification permission:', error);
       return false;
     }
   }, []);
@@ -58,7 +58,7 @@ export function useBrowserNotifications() {
 
       return notification;
     } catch (error) {
-      console.error('Failed to send browser notification:', error);
+      console.warn('Failed to show browser notification:', error);
       return null;
     }
   }, [canSendNotifications]);

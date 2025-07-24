@@ -1,248 +1,201 @@
-
-import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
+import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { 
-  CheckCircle, 
-  Clock, 
-  AlertCircle, 
-  FileText, 
-  MessageSquare, 
-  Download,
-  Eye,
-  User,
-  Calendar,
-  DollarSign
-} from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import { CheckCircle, Clock, AlertCircle, MessageCircle, User } from 'lucide-react';
+import { format } from 'date-fns';
 
-interface AuditRequest {
+export interface StatusUpdate {
   id: string;
-  projectName: string;
-  status: 'pending' | 'matched' | 'in_progress' | 'review' | 'completed' | 'cancelled';
-  progress: number;
-  auditor?: {
-    id: string;
-    name: string;
-    avatar?: string;
-    rating: number;
+  status_type: string;
+  title: string;
+  message: string;
+  created_at: string;
+  user_id?: string;
+  metadata?: any;
+  profiles?: {
+    full_name?: string;
+    avatar_url?: string;
+    role?: string;
   };
-  timeline: {
-    phase: string;
-    status: 'completed' | 'current' | 'upcoming';
-    date?: Date;
-    description: string;
-  }[];
-  createdAt: Date;
-  deadline?: Date;
-  budget: number;
-  blockchain: string;
-  lastUpdate: Date;
 }
 
 interface RequestStatusTrackerProps {
-  request: AuditRequest;
-  onViewDetails: () => void;
-  onContactAuditor?: () => void;
-  onDownloadReport?: () => void;
+  statusUpdates: StatusUpdate[];
 }
 
-export function RequestStatusTracker({ 
-  request, 
-  onViewDetails, 
-  onContactAuditor,
-  onDownloadReport 
-}: RequestStatusTrackerProps) {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'bg-green-500';
-      case 'in_progress':
-        return 'bg-blue-500';
-      case 'review':
-        return 'bg-yellow-500';
-      case 'matched':
-        return 'bg-purple-500';
-      case 'pending':
-        return 'bg-gray-500';
-      case 'cancelled':
-        return 'bg-red-500';
-      default:
-        return 'bg-gray-500';
-    }
-  };
+const statusStyles: Record<string, string> = {
+  approved: 'border-green-500',
+  completed: 'border-green-500',
+  rejected: 'border-red-500',
+  needs_info: 'border-yellow-500',
+  in_progress: 'border-blue-500',
+  progress: 'border-blue-500',
+  pending: 'border-gray-400',
+  default: 'border-gray-300',
+};
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return <CheckCircle className="h-4 w-4" />;
-      case 'in_progress':
-      case 'review':
-        return <Clock className="h-4 w-4" />;
-      case 'cancelled':
-        return <AlertCircle className="h-4 w-4" />;
-      default:
-        return <Clock className="h-4 w-4" />;
-    }
-  };
+const iconBgStyles: Record<string, string> = {
+  approved: 'bg-green-100',
+  completed: 'bg-green-100',
+  rejected: 'bg-red-100',
+  needs_info: 'bg-yellow-100',
+  in_progress: 'bg-blue-100',
+  progress: 'bg-blue-100',
+  pending: 'bg-gray-200',
+  default: 'bg-gray-200',
+};
 
-  const canContactAuditor = request.auditor && ['matched', 'in_progress', 'review'].includes(request.status);
-  const canDownloadReport = request.status === 'completed';
+const getStatusIcon = (statusType: string, isSystem: boolean) => {
+  if (isSystem) {
+    return <User className="h-4 w-4 text-gray-400" aria-label="System" />;
+  }
+  switch (statusType) {
+    case 'approved':
+    case 'completed':
+      return <CheckCircle className="h-4 w-4 text-green-600" aria-label="Approved" />;
+    case 'rejected':
+      return <AlertCircle className="h-4 w-4 text-red-600" aria-label="Rejected" />;
+    case 'needs_info':
+      return <MessageCircle className="h-4 w-4 text-yellow-600" aria-label="Needs Info" />;
+    case 'in_progress':
+    case 'progress':
+      return <Clock className="h-4 w-4 text-blue-600" aria-label="In Progress" />;
+    case 'pending':
+      return <Clock className="h-4 w-4 text-gray-400" aria-label="Pending" />;
+    default:
+      return <Clock className="h-4 w-4 text-gray-400" aria-label="Status" />;
+  }
+};
+
+const importantBg: Record<string, string> = {
+  rejected: 'bg-red-50',
+  needs_info: 'bg-yellow-50',
+};
+
+export const RequestStatusTracker: React.FC<RequestStatusTrackerProps> = ({ statusUpdates }) => {
+  // Filtering state
+  const [statusFilter, setStatusFilter] = useState('');
+  const [reviewerFilter, setReviewerFilter] = useState('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [showAll, setShowAll] = useState(false);
+
+  // Unique status types and reviewers for dropdowns
+  const statusTypes = Array.from(new Set(statusUpdates.map(u => u.status_type)));
+  const reviewers = Array.from(new Set(statusUpdates.map(u => u.profiles?.full_name || u.metadata?.reviewer_name).filter(Boolean)));
+
+  // Filtering logic
+  let filtered = statusUpdates;
+  if (statusFilter) filtered = filtered.filter(u => u.status_type === statusFilter);
+  if (reviewerFilter) filtered = filtered.filter(u => (u.profiles?.full_name || u.metadata?.reviewer_name) === reviewerFilter);
+  if (dateFrom) filtered = filtered.filter(u => new Date(u.created_at) >= new Date(dateFrom));
+  if (dateTo) filtered = filtered.filter(u => new Date(u.created_at) <= new Date(dateTo));
+
+  // Collapsible logic
+  const COLLAPSE_LIMIT = 3;
+  const collapsed = !showAll && filtered.length > COLLAPSE_LIMIT ? filtered.slice(0, COLLAPSE_LIMIT) : filtered;
+
+  if (!statusUpdates || statusUpdates.length === 0) {
+    return (
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Status Timeline</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center text-muted-foreground py-8">
+            No status updates yet. Your project is awaiting review.
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full">
       <CardHeader>
-        <div className="flex justify-between items-start">
-          <div>
-            <CardTitle className="text-lg">{request.projectName}</CardTitle>
-            <CardDescription>
-              Submitted {formatDistanceToNow(request.createdAt, { addSuffix: true })}
-            </CardDescription>
-          </div>
-          <Badge 
-            variant="outline" 
-            className={`${getStatusColor(request.status)} text-white border-none`}
-          >
-            <div className="flex items-center gap-1">
-              {getStatusIcon(request.status)}
-              {request.status.replace('_', ' ').toUpperCase()}
-            </div>
-          </Badge>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="mt-4">
-          <div className="flex justify-between text-sm text-muted-foreground mb-2">
-            <span>Progress</span>
-            <span>{request.progress}% Complete</span>
-          </div>
-          <Progress value={request.progress} className="h-2" />
-        </div>
+        <CardTitle>Status Timeline</CardTitle>
       </CardHeader>
-
-      <CardContent className="space-y-6">
-        {/* Project Info */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-          <div className="flex items-center gap-2">
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-            <span>${request.budget.toLocaleString()}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-            <span>{request.deadline ? request.deadline.toLocaleDateString() : 'No deadline'}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Badge variant="outline">{request.blockchain}</Badge>
-          </div>
-          <div className="text-muted-foreground">
-            ID: {request.id.slice(0, 8)}...
-          </div>
-        </div>
-
-        <Separator />
-
-        {/* Auditor Info (if assigned) */}
-        {request.auditor && (
-          <>
-            <div>
-              <h4 className="font-medium mb-3">Assigned Auditor</h4>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
-                    {request.auditor.name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="font-medium">{request.auditor.name}</p>
-                    <div className="flex items-center gap-1">
-                      <span className="text-sm text-muted-foreground">Rating:</span>
-                      <span className="text-sm font-medium">{request.auditor.rating}/5</span>
-                      <span className="text-yellow-500">★</span>
-                    </div>
-                  </div>
-                </div>
-                {canContactAuditor && onContactAuditor && (
-                  <Button variant="outline" size="sm" onClick={onContactAuditor}>
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    Contact
-                  </Button>
-                )}
-              </div>
-            </div>
-            <Separator />
-          </>
-        )}
-
-        {/* Timeline */}
-        <div>
-          <h4 className="font-medium mb-4">Audit Timeline</h4>
-          <div className="space-y-3">
-            {request.timeline.map((phase, index) => (
-              <div key={index} className="flex items-start gap-3">
-                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mt-0.5 ${
-                  phase.status === 'completed' 
-                    ? 'bg-green-500 border-green-500 text-white' 
-                    : phase.status === 'current'
-                    ? 'bg-blue-500 border-blue-500 text-white'
-                    : 'border-gray-300 bg-white'
-                }`}>
-                  {phase.status === 'completed' ? (
-                    <CheckCircle className="h-3 w-3" />
-                  ) : phase.status === 'current' ? (
-                    <Clock className="h-3 w-3" />
-                  ) : (
-                    <div className="w-2 h-2 rounded-full bg-gray-300" />
-                  )}
-                </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className={`font-medium ${
-                        phase.status === 'current' ? 'text-blue-600' : ''
-                      }`}>
-                        {phase.phase}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {phase.description}
-                      </p>
-                    </div>
-                    {phase.date && (
-                      <span className="text-xs text-muted-foreground">
-                        {phase.date.toLocaleDateString()}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
+      <CardContent>
+        {/* Filter UI */}
+        <div className="flex flex-wrap gap-2 mb-4 items-center">
+          <select className="border rounded px-2 py-1 text-sm" value={statusFilter} onChange={e => setStatusFilter(e.target.value)} aria-label="Filter by status">
+            <option value="">All Statuses</option>
+            {statusTypes.map(type => (
+              <option key={type} value={type}>{type.replace('_', ' ')}</option>
             ))}
-          </div>
+          </select>
+          <select className="border rounded px-2 py-1 text-sm" value={reviewerFilter} onChange={e => setReviewerFilter(e.target.value)} aria-label="Filter by reviewer">
+            <option value="">All Reviewers</option>
+            {reviewers.map(name => (
+              <option key={name} value={name}>{name}</option>
+            ))}
+          </select>
+          <input type="date" className="border rounded px-2 py-1 text-sm" value={dateFrom} onChange={e => setDateFrom(e.target.value)} aria-label="From date" />
+          <input type="date" className="border rounded px-2 py-1 text-sm" value={dateTo} onChange={e => setDateTo(e.target.value)} aria-label="To date" />
         </div>
-
-        <Separator />
-
-        {/* Actions */}
-        <div className="flex justify-between items-center">
-          <div className="text-sm text-muted-foreground">
-            Last updated: {formatDistanceToNow(request.lastUpdate, { addSuffix: true })}
-          </div>
-          
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={onViewDetails}>
-              <Eye className="h-4 w-4 mr-2" />
-              View Details
-            </Button>
-            
-            {canDownloadReport && onDownloadReport && (
-              <Button variant="outline" size="sm" onClick={onDownloadReport}>
-                <Download className="h-4 w-4 mr-2" />
-                Download Report
-              </Button>
-            )}
-          </div>
-        </div>
+        <ol className="relative border-l border-gray-200 dark:border-gray-700">
+          {collapsed.map((update, idx) => {
+            const borderColor = statusStyles[update.status_type] || statusStyles.default;
+            const iconBg = iconBgStyles[update.status_type] || iconBgStyles.default;
+            const isSystem = update.metadata?.source === 'system';
+            const bgImportant = importantBg[update.status_type] || '';
+            return (
+              <li
+                key={update.id}
+                className={`mb-10 ml-6 pl-2 ${borderColor} ${bgImportant}`}
+                style={{ borderLeftWidth: 4 }}
+              >
+                <span
+                  className={`flex absolute -left-3 justify-center items-center w-6 h-6 rounded-full ring-8 ring-white dark:ring-gray-900 ${iconBg} border border-gray-300`}
+                >
+                  {getStatusIcon(update.status_type, isSystem)}
+                </span>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                  <h3 className="font-semibold text-gray-900 dark:text-white text-base mb-1">
+                    {update.title || update.status_type}
+                  </h3>
+                  <time className="block text-xs text-gray-500 dark:text-gray-400" dateTime={update.created_at}>
+                    {format(new Date(update.created_at), 'PPP p')}
+                  </time>
+                </div>
+                {update.message && (
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{update.message}</p>
+                )}
+                {(update.profiles?.full_name || update.metadata?.reviewer_name) && (
+                  <div className="flex items-center gap-2 mt-1">
+                    {update.profiles?.avatar_url && (
+                      <img
+                        src={update.profiles.avatar_url}
+                        alt={update.profiles.full_name || 'Reviewer'}
+                        className="w-5 h-5 rounded-full border"
+                      />
+                    )}
+                    <span className="text-xs text-gray-500">
+                      By {update.profiles?.full_name || update.metadata?.reviewer_name}
+                      {update.profiles?.role && (
+                        <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-gray-100 border text-gray-600">
+                          {update.profiles.role}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                )}
+                {idx < collapsed.length - 1 && <Separator className="my-4" />}
+              </li>
+            );
+          })}
+        </ol>
+        {/* Collapsible control */}
+        {filtered.length > COLLAPSE_LIMIT && (
+          <button
+            className="mt-4 text-blue-600 text-sm underline"
+            onClick={() => setShowAll(v => !v)}
+            aria-expanded={showAll}
+          >
+            {showAll ? 'Show Less' : `Show All (${filtered.length})`}
+          </button>
+        )}
       </CardContent>
     </Card>
   );
-}
+};

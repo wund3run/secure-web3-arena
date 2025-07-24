@@ -1,4 +1,3 @@
-
 import { AuditFormData, AuditFormErrors, FormStepValidators } from "@/types/audit-request.types";
 import { isValidEmail, isNotEmpty, meetsMinLength, isValidUrl } from "@/utils/formValidation";
 
@@ -10,11 +9,11 @@ export const validateFormStep = (
     1: validateProjectDetails,
     2: validateTechnicalInfo,
     3: validateRequirements,
-    4: () => ({ isValid: true, errors: {} }) // Review step doesn't need validation
+    4: () => ({ isValid: true, errors: {} as Record<string, never> }) // Review step doesn't need validation
   };
 
   // Use the appropriate validator for the current step or return valid if no validator exists
-  const validator = validators[step] || (() => ({ isValid: true, errors: {} }));
+  const validator = validators[step] || (() => ({ isValid: true, errors: {} as Record<string, never> }));
   return validator(formData);
 };
 

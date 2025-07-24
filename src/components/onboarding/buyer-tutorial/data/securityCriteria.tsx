@@ -1,6 +1,5 @@
-
 import React from "react";
-import { AlertTriangle, Award, BadgeCheck, Check, CircleHelp, Clock, FileCheck, Search, Settings, Shield, Star, Users, Wallet } from "lucide-react";
+import { AlertTriangle, Award, BadgeCheck, Check, Clock, FileCheck, Search, Settings, Shield, Star, Users, Wallet } from "lucide-react";
 
 export const securityCriteria = [
   {

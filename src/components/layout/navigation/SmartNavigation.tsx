@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '@/contexts/auth';
 import { navigationLinks } from './navigation-links';
@@ -20,7 +19,7 @@ export function SmartNavigation() {
   }
 
   // Use appropriate navigation links based on auth status
-  const links = user ? navigationLinks : publicNavigationLinks;
+  const links = user ? navigationLinks : publicNavigationLinks as any;
 
   return <NavigationMenuDemo navigationLinks={links} />;
 }

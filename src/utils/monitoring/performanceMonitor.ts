@@ -2,7 +2,7 @@ export interface PerformanceMetric {
   name: string;
   value: number;
   timestamp: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export class PerformanceMonitor {
@@ -84,7 +84,7 @@ export class PerformanceMonitor {
   private monitorMemoryUsage(): void {
     if ('memory' in performance) {
       setInterval(() => {
-        const memory = (performance as any).memory;
+        const memory = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory;
         this.recordMetric('memory_usage', memory.usedJSHeapSize, {
           total: memory.totalJSHeapSize,
           limit: memory.jsHeapSizeLimit
@@ -95,7 +95,7 @@ export class PerformanceMonitor {
 
   private monitorNetworkConditions(): void {
     if ('connection' in navigator) {
-      const connection = (navigator as any).connection;
+      const connection = (navigator as unknown as { connection?: unknown }).connection;
       this.recordMetric('network_speed', connection.downlink || 0, {
         effectiveType: connection.effectiveType,
         rtt: connection.rtt
@@ -103,7 +103,7 @@ export class PerformanceMonitor {
     }
   }
 
-  recordMetric(name: string, value: number, metadata?: Record<string, any>): void {
+  recordMetric(name: string, value: number, metadata?: Record<string, unknown>): void {
     const metric: PerformanceMetric = {
       name,
       value,

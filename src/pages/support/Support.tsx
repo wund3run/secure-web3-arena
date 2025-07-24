@@ -1,2 +1,1 @@
-
-export { Support as default } from '../PlaceholderPage';
+export { default } from './SupportPage';

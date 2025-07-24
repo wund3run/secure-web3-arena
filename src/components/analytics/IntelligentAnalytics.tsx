@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useUserProfiling } from '@/hooks/useUserProfiling';
@@ -50,7 +49,7 @@ export function IntelligentAnalytics() {
     }));
   }, [location.pathname]);
 
-  if (process.env.NODE_ENV !== 'development') {
+  if (import.meta.env.MODE !== 'development') {
     return null; // Only show in development
   }
 

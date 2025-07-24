@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { StandardizedLayout } from '@/components/layout/StandardizedLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -44,7 +43,7 @@ const EnhancedRequestAudit = () => {
     { value: 'critical', label: 'Critical - < 1 week', color: 'bg-red-100 text-red-800' }
   ];
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: unknown) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 

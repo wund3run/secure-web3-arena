@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,7 +18,8 @@ import {
   Activity,
   Database,
   MessageSquare,
-  Rocket
+  Rocket,
+  LucideIcon
 } from 'lucide-react';
 
 interface ChecklistItem {
@@ -28,7 +28,7 @@ interface ChecklistItem {
   description: string;
   status: 'completed' | 'in_progress' | 'pending' | 'blocked';
   priority: 'critical' | 'high' | 'medium';
-  icon: React.ComponentType<any>;
+  icon: LucideIcon;
   dueDate?: string;
   assignedTo?: string;
   notes?: string;

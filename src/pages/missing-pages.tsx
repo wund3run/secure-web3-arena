@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -32,7 +31,8 @@ import {
   Globe,
   Truck,
   RefreshCw,
-  AlertTriangle
+  AlertTriangle,
+  LucideIcon
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -415,7 +415,7 @@ function PlaceholderPage({
 }: { 
   title: string; 
   description: string; 
-  icon?: any;
+  icon?: LucideIcon;
   comingSoon?: boolean;
   features?: string[];
 }) {

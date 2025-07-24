@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,8 +40,31 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
+// Type definitions
+interface Application {
+  id: string;
+  name: string;
+  email: string;
+  type: "auditor" | "service";
+  status: "pending" | "approved" | "rejected";
+  expertise: string[];
+  submittedDate: string;
+}
+
+interface DetailedApplication extends Application {
+  walletAddress: string;
+  blockchains: string[];
+  experience: string;
+  completedProjects: number;
+  notableClients: string;
+  certifications: string;
+  tools: string[];
+  website: string;
+  github: string;
+}
+
 // Mock application data
-const mockApplications = [
+const mockApplications: Application[] = [
   {
     id: "1",
     name: "Alex Rivera",
@@ -100,7 +122,7 @@ const mockApplications = [
 ];
 
 // Mock detailed application data (would come from API/database)
-const mockDetailedApplication = {
+const mockDetailedApplication: DetailedApplication = {
   id: "1",
   name: "Alex Rivera",
   email: "alex@securityfirm.com",
@@ -120,8 +142,8 @@ const mockDetailedApplication = {
 };
 
 export function ProviderApplications() {
-  const [applications, setApplications] = useState(mockApplications);
-  const [selectedApplication, setSelectedApplication] = useState(null);
+  const [applications, setApplications] = useState<Application[]>(mockApplications);
+  const [selectedApplication, setSelectedApplication] = useState<DetailedApplication | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   
   const getApplicationBadge = (type: string) => {

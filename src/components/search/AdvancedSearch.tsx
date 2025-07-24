@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -265,7 +264,7 @@ export function AdvancedSearch() {
                 <div className="flex items-center gap-2">
                   <select
                     value={filters.sortBy}
-                    onChange={(e) => setFilters({ ...filters, sortBy: e.target.value as any })}
+                    onChange={(e) => setFilters({ ...filters, sortBy: e.target.value as 'relevance' | 'price' | 'rating' | 'date' })}
                     className="text-sm border rounded px-2 py-1"
                   >
                     <option value="relevance">Relevance</option>

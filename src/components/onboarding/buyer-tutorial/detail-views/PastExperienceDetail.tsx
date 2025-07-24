@@ -1,6 +1,5 @@
-
 import React from "react";
-import { CircleHelp } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 
 export function PastExperienceDetail() {
   return (
@@ -12,15 +11,15 @@ export function PastExperienceDetail() {
           <div className="text-sm font-medium">Ask these questions:</div>
           <ul className="mt-1 space-y-1 text-sm">
             <li className="flex items-start">
-              <CircleHelp className="h-4 w-4 text-primary mr-2 mt-0.5" />
+              <HelpCircle className="h-4 w-4 text-primary mr-2 mt-0.5" />
               <span>"Have you audited similar projects to mine?"</span>
             </li>
             <li className="flex items-start">
-              <CircleHelp className="h-4 w-4 text-primary mr-2 mt-0.5" />
+              <HelpCircle className="h-4 w-4 text-primary mr-2 mt-0.5" />
               <span>"What vulnerabilities have you found in similar projects?"</span>
             </li>
             <li className="flex items-start">
-              <CircleHelp className="h-4 w-4 text-primary mr-2 mt-0.5" />
+              <HelpCircle className="h-4 w-4 text-primary mr-2 mt-0.5" />
               <span>"Can you share redacted reports from previous audits?"</span>
             </li>
           </ul>

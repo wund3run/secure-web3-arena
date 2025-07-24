@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Navbar } from '@/components/layout/navbar';
@@ -33,7 +32,7 @@ export default function EnhancedMarketplacePage() {
     requirements: ['DeFi', 'Security', 'Gas Optimization']
   };
 
-  const handleFiltersChange = (filters: any) => {
+  const handleFiltersChange = (filters: unknown) => {
     // Transform services data to match ServiceCardProps interface
     const transformedServices = services.map(service => {
       // Create a mock provider since it doesn't exist in MarketplaceService
@@ -105,7 +104,7 @@ export default function EnhancedMarketplacePage() {
     });
   };
 
-  const handleAIMatches = (matches: { service: ServiceCardProps; score: any }[]) => {
+  const handleAIMatches = (matches: { service: ServiceCardProps; score: number | string | unknown }[]) => {
     setFilteredServices(matches.map(m => m.service));
   };
 

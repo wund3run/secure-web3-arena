@@ -1,8 +1,7 @@
-
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { CircleX } from "lucide-react";
+import { Circle } from "lucide-react";
 import { MarketplaceService } from "../hooks/types/marketplace-types";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -46,29 +45,31 @@ export function MobileComparisonTable({ services, onRemoveService }: MobileCompa
 
   // Get a specific field value from a service (same as in ComparisonTable)
   const getFieldValue = (service: MarketplaceService, fieldId: string) => {
+    const serviceData = service as any; // Type assertion for accessing dynamic properties
+    
     switch (fieldId) {
       case "name":
-        return service.title;
+        return serviceData.title || "N/A";
       case "category":
-        return service.category;
+        return serviceData.category || "N/A";
       case "description":
-        return service.description;
+        return serviceData.description || "N/A";
       case "tags":
-        return service.tags;
+        return serviceData.tags || [];
       case "price":
-        return service.pricing ? `${service.pricing.amount} ${service.pricing.currency}` : "N/A";
+        return serviceData.pricing ? `${serviceData.pricing.amount} ${serviceData.pricing.currency}` : "N/A";
       case "deliveryTime":
-        return service.responseTime ? `${service.responseTime}` : "N/A";
+        return serviceData.responseTime || "N/A";
       case "securityScore":
-        return `${service.securityScore || "N/A"}`;
+        return `${serviceData.securityScore || "N/A"}`;
       case "responseTime":
-        return service.responseTime || "N/A";
+        return serviceData.responseTime || "N/A";
       case "providerName":
-        return service.provider?.name || "N/A";
+        return serviceData.provider?.name || "N/A";
       case "completedJobs":
-        return `${service.completedJobs || 0}`;
+        return `${serviceData.completedJobs || 0}`;
       case "rating":
-        return `${service.rating || 0}/5`;
+        return `${serviceData.rating || 0}/5`;
       default:
         return "N/A";
     }
@@ -86,22 +87,22 @@ export function MobileComparisonTable({ services, onRemoveService }: MobileCompa
               className="absolute -right-2 -top-2 h-6 w-6 bg-background border border-border rounded-full z-10"
               onClick={() => onRemoveService(service.id)}
             >
-              <CircleX className="h-6 w-6 text-muted-foreground" />
-              <span className="sr-only">Remove {service.title} from comparison</span>
+              <Circle className="h-6 w-6 text-muted-foreground" />
+              <span className="sr-only">Remove {(service as any).title} from comparison</span>
             </Button>
             
             <div className="border border-border rounded-md overflow-hidden">
               <div className="relative h-32 bg-muted">
                 <AspectRatio ratio={16/9}>
                   <img 
-                    src={service.imageUrl || `https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1600&auto=format&fit=crop`}
-                    alt={service.title}
+                    src={(service as any).imageUrl || `https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1600&auto=format&fit=crop`}
+                    alt={(service as any).title}
                     className="object-cover w-full h-full"
                   />
                 </AspectRatio>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 <div className="absolute bottom-2 left-2 text-white">
-                  <p className="font-medium text-lg line-clamp-1">{service.title}</p>
+                  <p className="font-medium text-lg line-clamp-1">{(service as any).title}</p>
                 </div>
               </div>
             </div>
@@ -133,12 +134,12 @@ export function MobileComparisonTable({ services, onRemoveService }: MobileCompa
                             <TableRow key={`${service.id}-${field.id}`}>
                               <TableCell className="p-2">
                                 <div className="font-medium text-muted-foreground text-sm">
-                                  {service.title}
+                                  {(service as any).title}
                                 </div>
                                 
                                 {field.id === 'tags' && Array.isArray(value) ? (
                                   <div className="flex flex-wrap gap-1 mt-1">
-                                    {value.map((tag: string) => (
+                                    {(value as string[]).map((tag: string) => (
                                       <Badge variant="outline" key={tag} className="text-xs">{tag}</Badge>
                                     ))}
                                   </div>

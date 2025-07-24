@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 export interface AnalyticsEvent {
   event: string;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   userId?: string;
   timestamp?: string;
 }
@@ -37,7 +37,7 @@ export class AdvancedAnalyticsService {
     console.log('Advanced Analytics Service initialized');
   }
 
-  static track(event: string, properties: Record<string, any> = {}): void {
+  static track(event: string, properties: Record<string, unknown> = {}): void {
     if (!this.initialized) return;
 
     const eventData: AnalyticsEvent = {
@@ -74,19 +74,19 @@ export class AdvancedAnalyticsService {
       if (error) {
         console.error('Error storing analytics event:', error);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error storing analytics event:', error);
     }
   }
 
   private static sendToMixpanel(event: AnalyticsEvent): void {
     // Mock Mixpanel integration
-    if (typeof window !== 'undefined' && (window as any).mixpanel) {
-      (window as any).mixpanel.track(event.event, event.properties);
+    if (typeof window !== 'undefined' && (window as Window & { mixpanel: { track: (event: string, properties: Record<string, unknown>) => void } }).mixpanel) {
+      (window as Window & { mixpanel: { track: (event: string, properties: Record<string, unknown>) => void } }).mixpanel.track(event.event, event.properties);
     }
   }
 
-  static trackAuditRequest(auditData: any): void {
+  static trackAuditRequest(auditData: unknown): void {
     this.track('audit_request_created', {
       blockchain: auditData.blockchain,
       budget_range: auditData.budget,
@@ -96,7 +96,7 @@ export class AdvancedAnalyticsService {
     });
   }
 
-  static trackAuditorMatch(matchData: any): void {
+  static trackAuditorMatch(matchData: unknown): void {
     this.track('auditor_matched', {
       match_score: matchData.compatibility_score,
       auditor_experience: matchData.auditor_profile?.years_experience,
@@ -104,7 +104,7 @@ export class AdvancedAnalyticsService {
     });
   }
 
-  static trackPayment(paymentData: any): void {
+  static trackPayment(paymentData: unknown): void {
     this.track('payment_processed', {
       amount: paymentData.amount,
       currency: paymentData.currency,
@@ -126,13 +126,13 @@ export class AdvancedAnalyticsService {
       // Process funnel data
       const funnelData = this.processFunnelData(data || [], funnelSteps);
       return funnelData;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error getting conversion funnel:', error);
       return [];
     }
   }
 
-  private static processFunnelData(events: any[], steps: string[]): ConversionFunnel[] {
+  private static processFunnelData(events: unknown[], steps: string[]): ConversionFunnel[] {
     const userSessions = new Map();
     
     // Group events by user
@@ -146,11 +146,11 @@ export class AdvancedAnalyticsService {
     // Calculate funnel metrics
     return steps.map((step, index) => {
       const usersAtStep = Array.from(userSessions.values())
-        .filter(userEvents => userEvents.some((e: any) => e.event_name === step)).length;
+        .filter(userEvents => userEvents.some((e: unknown) => e.event_name === step)).length;
       
       const previousStepUsers = index > 0 
         ? Array.from(userSessions.values())
-            .filter(userEvents => userEvents.some((e: any) => e.event_name === steps[index - 1])).length
+            .filter(userEvents => userEvents.some((e: unknown) => e.event_name === steps[index - 1])).length
         : usersAtStep;
       
       const conversionRate = previousStepUsers > 0 ? (usersAtStep / previousStepUsers) * 100 : 0;

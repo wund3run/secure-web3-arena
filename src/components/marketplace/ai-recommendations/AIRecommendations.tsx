@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,6 +14,7 @@ interface Service {
   completionTime: string;
   category: string;
   tags: string[];
+  aiScore?: number;
 }
 
 interface AIRecommendationsProps {
@@ -46,7 +46,7 @@ export function AIRecommendations({
     
     // AI-powered recommendation logic
     let filteredServices = [...services];
-    let reasonParts: string[] = [];
+    const reasonParts: string[] = [];
 
     // Filter by project size relevance
     if (projectSize === 'small') {
@@ -90,8 +90,9 @@ export function AIRecommendations({
     setLoading(false);
 
     // Track AI recommendations generation
-    if ((window as any).trackConversion) {
-      (window as any).trackConversion({
+    const globalWindow = window as any;
+    if (globalWindow.trackConversion && typeof globalWindow.trackConversion === 'function') {
+      globalWindow.trackConversion({
         action: 'ai_recommendations_generated',
         category: 'marketplace',
         label: 'service_recommendations',
@@ -132,14 +133,15 @@ export function AIRecommendations({
 
   const handleRecommendationClick = (service: Service) => {
     // Track recommendation click
-    if ((window as any).trackConversion) {
-      (window as any).trackConversion({
+    const globalWindow = window as any;
+    if (globalWindow.trackConversion && typeof globalWindow.trackConversion === 'function') {
+      globalWindow.trackConversion({
         action: 'ai_recommendation_clicked',
         category: 'marketplace',
         label: service.name,
         metadata: {
           serviceId: service.id,
-          aiScore: (service as any).aiScore,
+          aiScore: service.aiScore,
           position: recommendations.findIndex(r => r.id === service.id) + 1
         }
       });
@@ -235,7 +237,7 @@ export function AIRecommendations({
         
         <div className="text-center pt-2">
           <p className="text-xs text-muted-foreground">
-            AI confidence: {Math.round(recommendations[0] ? (recommendations[0] as any).aiScore : 0)}% match
+            AI confidence: {Math.round(recommendations[0] ? recommendations[0].aiScore || 0 : 0)}% match
           </p>
         </div>
       </CardContent>

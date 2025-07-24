@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Wifi, WifiOff } from 'lucide-react';
@@ -9,7 +8,7 @@ interface PWAStatusIndicatorProps {
 }
 
 export function PWAStatusIndicator({ state }: PWAStatusIndicatorProps) {
-  if (process.env.NODE_ENV !== 'development') {
+  if (import.meta.env.MODE !== 'development') {
     return null;
   }
 

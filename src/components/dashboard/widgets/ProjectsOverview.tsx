@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,12 +6,38 @@ import { Progress } from '@/components/ui/progress';
 import { Link } from 'react-router-dom';
 import { ExternalLink, Calendar, DollarSign } from 'lucide-react';
 
+interface AuditRequest {
+  id: string | number;
+  project_name: string;
+  project_description: string;
+  status: string;
+  created_at: string;
+  budget?: number;
+  blockchain: string;
+  completion_percentage?: number;
+  deadline?: string;
+  [key: string]: unknown;
+}
+
 interface ProjectsOverviewProps {
-  auditRequests: any[];
+  auditRequests: unknown[];
   onRefresh: () => void;
 }
 
 export const ProjectsOverview = ({ auditRequests, onRefresh }: ProjectsOverviewProps) => {
+  // Type guard function
+  const isValidAuditRequest = (request: unknown): request is AuditRequest => {
+    return (
+      typeof request === 'object' && 
+      request !== null && 
+      'id' in request &&
+      'project_name' in request &&
+      'status' in request
+    );
+  };
+
+  const validRequests = auditRequests.filter(isValidAuditRequest);
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed': return 'default';
@@ -39,7 +64,7 @@ export const ProjectsOverview = ({ auditRequests, onRefresh }: ProjectsOverviewP
     }).format(amount);
   };
 
-  if (auditRequests.length === 0) {
+  if (validRequests.length === 0) {
     return (
       <Card>
         <CardHeader>
@@ -71,47 +96,47 @@ export const ProjectsOverview = ({ auditRequests, onRefresh }: ProjectsOverviewP
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">
-        {auditRequests.slice(0, 5).map((request) => (
-          <div key={request.id} className="p-4 border rounded-lg hover:shadow-md transition-shadow">
+        {validRequests.slice(0, 5).map((request) => (
+          <div key={String(request.id)} className="p-4 border rounded-lg hover:shadow-md transition-shadow">
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1">
-                <h4 className="font-semibold">{request.project_name}</h4>
+                <h4 className="font-semibold">{String(request.project_name)}</h4>
                 <p className="text-sm text-muted-foreground line-clamp-2">
-                  {request.project_description}
+                  {String(request.project_description || '')}
                 </p>
               </div>
-              <Badge variant={getStatusColor(request.status)}>
-                {request.status.replace('_', ' ')}
+              <Badge variant={getStatusColor(String(request.status))}>
+                {String(request.status).replace('_', ' ')}
               </Badge>
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3 text-sm">
               <div className="flex items-center gap-1">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span>{formatDate(request.created_at)}</span>
+                <span>{formatDate(String(request.created_at))}</span>
               </div>
               <div className="flex items-center gap-1">
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
-                <span>{formatCurrency(request.budget || 0)}</span>
+                <span>{formatCurrency(Number(request.budget) || 0)}</span>
               </div>
               <div className="text-muted-foreground">
-                {request.blockchain}
+                {String(request.blockchain || '')}
               </div>
               <div className="text-muted-foreground">
-                {request.completion_percentage || 0}% complete
+                {Number(request.completion_percentage) || 0}% complete
               </div>
             </div>
 
-            {request.status === 'in_progress' && (
-              <Progress value={request.completion_percentage || 0} className="mb-3" />
+            {String(request.status) === 'in_progress' && (
+              <Progress value={Number(request.completion_percentage) || 0} className="mb-3" />
             )}
 
             <div className="flex items-center justify-between">
               <div className="text-xs text-muted-foreground">
-                {request.deadline && `Deadline: ${formatDate(request.deadline)}`}
+                {request.deadline && `Deadline: ${formatDate(String(request.deadline))}`}
               </div>
               <Button variant="outline" size="sm" asChild>
-                <Link to={`/audit/${request.id}`}>
+                <Link to={`/audit/${String(request.id)}`}>
                   View Details
                 </Link>
               </Button>

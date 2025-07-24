@@ -33,7 +33,7 @@ export class InputSanitizer {
   }
 
   // Sanitize JSON input
-  static sanitizeJSON(input: any): any {
+  static sanitizeJSON(input: unknown): unknown {
     if (typeof input === 'string') {
       return this.sanitizeText(input);
     }
@@ -43,7 +43,7 @@ export class InputSanitizer {
     }
     
     if (typeof input === 'object' && input !== null) {
-      const sanitized: any = {};
+      const sanitized: unknown = {};
       for (const [key, value] of Object.entries(input)) {
         sanitized[this.sanitizeText(key)] = this.sanitizeJSON(value);
       }

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,9 +6,7 @@ import { UserTypeSelection } from './steps/UserTypeSelection';
 import { ProfileSetup } from './steps/ProfileSetup';
 import { SkillsAssessment } from './steps/SkillsAssessment';
 import { VerificationStep } from './steps/VerificationStep';
-import { WelcomeStep } from './steps/WelcomeStep';
-import { useAuth } from '@/contexts/auth';
-import { supabase } from '@/integrations/supabase/client';
+import { CompletionStep } from './steps/CompletionStep';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
@@ -55,16 +52,15 @@ export const OnboardingWizard: React.FC = () => {
     languages: []
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user, updateProfile } = useAuth();
+  const navigate = useNavigate();
 
-  const steps = [
-    { title: 'Welcome', component: 'welcome' },
-    { title: 'User Type', component: 'userType' },
-    { title: 'Profile Setup', component: 'profile' },
-    ...(userType === 'auditor' ? [{ title: 'Skills Assessment', component: 'skills' }] : []),
-    { title: 'Verification', component: 'verification' }
-  ];
+  const totalSteps = 5;
+  const progress = (currentStep / totalSteps) * 100;
 
-  const progress = ((currentStep + 1) / steps.length) * 100;
+  const updateData = (stepData: Partial<OnboardingData>) => {
+    setData(prev => ({ ...prev, ...stepData }));
+  };
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
@@ -83,33 +79,18 @@ export const OnboardingWizard: React.FC = () => {
     
     setIsSubmitting(true);
     try {
-      // Update user profile
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({
-          full_name: profileData.fullName,
-          display_name: profileData.displayName,
-          bio: profileData.bio,
-          website: profileData.website,
-          user_type: userType,
-          onboarding_completed: true
-        })
-        .eq('id', user.id);
-
-      if (profileError) throw profileError;
-
-      // If auditor, create auditor profile
-      if (userType === 'auditor') {
-        const { error: auditorError } = await supabase
-          .from('auditor_profiles')
-          .insert({
-            user_id: user.id,
-            expertise_areas: skillsData.expertise,
-            experience_level: skillsData.experience,
-            certifications: skillsData.certifications,
-            programming_languages: skillsData.languages,
-            verification_status: 'pending'
-          });
+      // Update user profile with onboarding data (without user_type since it's in separate table)
+      await updateProfile({
+        full_name: data.profileData.fullName,
+        display_name: data.profileData.displayName,
+        bio: data.profileData.bio,
+        website: data.profileData.website,
+        social_links: data.profileData.socialLinks,
+        skills: data.skillsData.skills,
+        specializations: data.skillsData.specializations,
+        years_of_experience: data.skillsData.experience,
+        verification_status: 'pending'
+      });
 
         if (auditorError) throw auditorError;
       }

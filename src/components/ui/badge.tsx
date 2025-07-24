@@ -1,28 +1,29 @@
-
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  [
+    "inline-flex items-center",
+    "rounded-full border-none",
+    "bg-[var(--elevation1)] text-accent-primary",
+    "px-[1em] py-[0.22em] font-medium text-[0.95em]",
+    "transition-hover",
+    "font-[Space Grotesk,sans-serif]",
+    "tracking-normal",
+    "select-none",
+  ].join(" "),
   {
     variants: {
       variant: {
-        default:
-          "border-transparent gradient-primary text-white hover:opacity-80",
-        secondary:
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        destructive:
-          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline:
-          "text-foreground border-primary/30 hover:bg-primary/5",
-        success:
-          "border-transparent bg-green-100 text-green-800 hover:bg-green-200/80",
-        warning:
-          "border-transparent bg-amber-100 text-amber-800 hover:bg-amber-200/80",
-        brand:
-          "gradient-primary text-white border-0 hawk-shadow",
+        default: "bg-[var(--elevation1)] text-accent-primary",
+        accent: "bg-accent-primary text-white",
+        secondary: "bg-surface text-accent-secondary",
+        outline: "bg-transparent border border-accent-primary text-accent-primary",
+        success: "bg-success text-white",
+        warning: "bg-warning text-inverse",
+        error: "bg-error text-white",
       },
     },
     defaultVariants: {
@@ -41,4 +42,4 @@ function Badge({ className, variant, ...props }: BadgeProps) {
   )
 }
 
-export { Badge, badgeVariants }
+export { Badge }

@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -124,11 +123,7 @@ export function ServiceMarketplace() {
   const [sortBy, setSortBy] = useState('featured');
   const [showFilters, setShowFilters] = useState(false);
 
-  useEffect(() => {
-    applyFilters();
-  }, [searchQuery, filters, sortBy, selectedTab, providers]);
-
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = [...providers];
 
     // Search filter
@@ -226,7 +221,11 @@ export function ServiceMarketplace() {
     }
 
     setFilteredProviders(filtered);
-  };
+  }, [providers, searchQuery, filters, sortBy, selectedTab]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
 
   const clearFilters = () => {
     setFilters({

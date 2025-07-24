@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Construction, ArrowLeft, Home } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ProductionErrorBoundary } from '@/components/error/production-error-boundary';
+import { AppContainer } from './AppContainer';
 
 interface PlaceholderPageProps {
   title: string;
@@ -16,7 +16,7 @@ interface PlaceholderPageProps {
 export function PlaceholderPage({ title, description, comingSoon = true }: PlaceholderPageProps) {
   return (
     <ProductionErrorBoundary>
-      <div className="container mx-auto py-12 max-w-4xl">
+      <AppContainer maxWidth="max-w-4xl" padding="py-12" elevation>
         <div className="text-center space-y-8">
           <div className="flex justify-center">
             <Construction className="h-16 w-16 text-muted-foreground" />
@@ -89,7 +89,7 @@ export function PlaceholderPage({ title, description, comingSoon = true }: Place
             </div>
           </div>
         </div>
-      </div>
+      </AppContainer>
     </ProductionErrorBoundary>
   );
 }

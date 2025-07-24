@@ -187,7 +187,7 @@ export function EnhancedDashboard() {
             {userType === 'auditor' ? 'Auditor Dashboard' : 'Project Dashboard'}
           </h1>
           <p className="text-muted-foreground">
-            Welcome back, {userProfile?.full_name || user.email}
+            Welcome back, {userProfile?.full_name || user?.email || 'User'}
           </p>
         </div>
         <Badge variant="outline" className="text-sm">

@@ -1,5 +1,10 @@
-
 import { User } from "@supabase/supabase-js";
+
+// Define the expected shape of user profile
+interface UserProfileWithType {
+  user_type?: string;
+  [key: string]: unknown;
+}
 
 /**
  * Check if a user has a specific role
@@ -11,7 +16,7 @@ import { User } from "@supabase/supabase-js";
 export const hasRole = (
   user: User | null,
   role: "auditor" | "project_owner",
-  userProfile?: any
+  userProfile?: UserProfileWithType
 ): boolean => {
   if (!user) return false;
 
@@ -32,7 +37,7 @@ export const hasRole = (
  */
 export const getUserRole = (
   user: User | null,
-  userProfile?: any
+  userProfile?: UserProfileWithType
 ): "auditor" | "project_owner" => {
   if (!user) return "project_owner"; // Default role
 
@@ -59,7 +64,7 @@ export const roleBasedContent = <T>(
     project_owner?: T;
     default: T;
   },
-  userProfile?: any
+  userProfile?: UserProfileWithType
 ): T => {
   if (!user) return contentMap.default;
   

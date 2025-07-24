@@ -7,7 +7,7 @@ export interface UserProfile {
   id: string;
   user_type?: string;
   role?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 // Route access control mapping

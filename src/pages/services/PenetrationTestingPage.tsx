@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { StandardLayout } from '@/components/layout/StandardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Shield, Zap, Target, AlertTriangle, Users, CheckCircle } from 'lucide-react';
+import { Footer } from '@/components/layout/footer';
 
 const PenetrationTestingPage = () => {
   return (
@@ -223,6 +223,7 @@ const PenetrationTestingPage = () => {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </StandardLayout>
   );
 };

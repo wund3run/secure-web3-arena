@@ -48,7 +48,7 @@ interface OptimizationRule {
   category: 'caching' | 'compression' | 'optimization' | 'security';
   enabled: boolean;
   impact: 'high' | 'medium' | 'low';
-  settings: Record<string, any>;
+  settings: Record<string, unknown>;
 }
 
 export const CDNOptimization = () => {
@@ -238,7 +238,7 @@ export const CDNOptimization = () => {
     setProviders(cdnProviders);
     setRegions(cdnRegions);
     setOptimizationRules(optimizations);
-  }, []);
+  }, [cdnProviders, cdnRegions, optimizations]);
 
   const enableProvider = async (providerId: string) => {
     setIsConfiguring(true);

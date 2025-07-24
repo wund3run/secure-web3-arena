@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -46,8 +45,8 @@ export const WebAuthnSetup: React.FC<WebAuthnSetupProps> = ({ onComplete }) => {
       if (registeredKeys.length === 0) {
         onComplete();
       }
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to register security key');
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Failed to register security key');
     } finally {
       setIsRegistering(false);
     }
@@ -68,8 +67,8 @@ export const WebAuthnSetup: React.FC<WebAuthnSetupProps> = ({ onComplete }) => {
       setRegisteredKeys(prev => [...prev, biometricKey]);
       toast.success('Biometric authentication enabled');
       onComplete();
-    } catch (error: any) {
-      toast.error('Failed to enable biometric authentication');
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Failed to enable biometric authentication');
     } finally {
       setIsRegistering(false);
     }

@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +14,7 @@ interface Step {
   description: string;
   action: string;
   actionLink?: string;
+  tooltips?: { target: string; content: string }[];
 }
 
 export function FirstTimeUserExperience({ onClose }: { onClose: () => void }) {
@@ -56,21 +56,51 @@ export function FirstTimeUserExperience({ onClose }: { onClose: () => void }) {
         icon: <Shield className="h-10 w-10 text-primary" />,
         title: "Welcome, Security Expert",
         description: "Your dedicated auditor dashboard helps you manage security reviews and client relationships.",
-        action: "Continue"
+        action: "Continue",
+        tooltips: [
+          {
+            target: "#auditor-dashboard",
+            content: "Monitor your active audits and client communications"
+          },
+          {
+            target: "#performance-metrics",
+            content: "Track your performance and earnings"
+          }
+        ]
       },
       {
         icon: <FileCheck className="h-10 w-10 text-secondary" />,
         title: "Complete Your Profile",
         description: "Showcase your expertise and experience to attract more audit requests.",
         action: "Update Profile",
-        actionLink: "/dashboard/auditor"
+        actionLink: "/dashboard/auditor",
+        tooltips: [
+          {
+            target: "#profile-completion",
+            content: "Add your certifications and past experience"
+          },
+          {
+            target: "#specialization",
+            content: "Specify your areas of expertise and preferred blockchain networks"
+          }
+        ]
       },
       {
         icon: <Users className="h-10 w-10 text-web3-orange" />,
         title: "Accept Your First Audit",
         description: "Browse open audit requests and start building your reputation on the platform.",
         action: "View Requests",
-        actionLink: "/dashboard/auditor/requests"
+        actionLink: "/dashboard/auditor/requests",
+        tooltips: [
+          {
+            target: "#available-audits",
+            content: "Browse and filter audit requests that match your expertise"
+          },
+          {
+            target: "#proposal-system",
+            content: "Submit competitive proposals to win projects"
+          }
+        ]
       }
     ];
     
@@ -79,21 +109,51 @@ export function FirstTimeUserExperience({ onClose }: { onClose: () => void }) {
         icon: <Shield className="h-10 w-10 text-primary" />,
         title: "Welcome, Project Owner",
         description: "Let's secure your Web3 project with top security experts.",
-        action: "Continue"
+        action: "Continue",
+        tooltips: [
+          {
+            target: "#dashboard-overview",
+            content: "Your personalized dashboard shows all your project security metrics at a glance"
+          },
+          {
+            target: "#quick-actions",
+            content: "Access common actions like requesting audits or viewing reports"
+          }
+        ]
       },
       {
         icon: <FileCheck className="h-10 w-10 text-secondary" />,
         title: "Request Your First Audit",
         description: "Submit your project details to get matched with the perfect security experts.",
         action: "Request Audit",
-        actionLink: "/request-audit"
+        actionLink: "/request-audit",
+        tooltips: [
+          {
+            target: "#audit-form",
+            content: "Fill in your project details and requirements"
+          },
+          {
+            target: "#ai-matching",
+            content: "Our AI will match you with the most suitable auditors"
+          }
+        ]
       },
       {
         icon: <Users className="h-10 w-10 text-web3-orange" />,
         title: "Explore Security Resources",
         description: "Access guides and best practices to better prepare your project for security review.",
         action: "View Resources",
-        actionLink: "/resources"
+        actionLink: "/resources",
+        tooltips: [
+          {
+            target: "#resource-center",
+            content: "Browse our comprehensive security guides and best practices"
+          },
+          {
+            target: "#learning-path",
+            content: "Follow our recommended learning path for project owners"
+          }
+        ]
       }
     ];
     

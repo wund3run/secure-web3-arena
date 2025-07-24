@@ -2,7 +2,7 @@
 import { supabase } from '@/integrations/supabase/client';
 
 export class QueryOptimizer {
-  private static queryCache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+  private static queryCache = new Map<string, { data: unknown; timestamp: number; ttl: number }>();
 
   // Cache query results with TTL
   static async cachedQuery<T>(

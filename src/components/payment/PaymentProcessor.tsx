@@ -11,7 +11,7 @@ import { usePaymentProcessing } from '@/hooks/usePaymentProcessing';
 interface PaymentProcessorProps {
   auditRequestId?: string;
   defaultAmount?: number;
-  onPaymentSuccess?: (result: any) => void;
+  onPaymentSuccess?: (result: unknown) => void;
 }
 
 export const PaymentProcessor: React.FC<PaymentProcessorProps> = ({

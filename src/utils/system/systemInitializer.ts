@@ -126,7 +126,7 @@ export class SystemInitializer {
   static async getSystemStatus(): Promise<{
     initialized: boolean;
     uptime: number;
-    health: any;
+    health: unknown;
   }> {
     const health = this.initialized 
       ? await HealthChecker.performComprehensiveCheck()

@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -72,9 +71,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       toast.success('File uploaded successfully');
       
       setTimeout(() => setUploadProgress(0), 1000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Upload error:', error);
-      setError(error.message || 'Failed to upload file');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to upload file';
+      setError(errorMessage);
       toast.error('File upload failed');
       setTimeout(() => setUploadProgress(0), 1000);
     } finally {

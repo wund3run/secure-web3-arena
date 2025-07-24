@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -52,7 +51,10 @@ export function EnhancedProfileDisplay({ isOwnProfile = false, onEdit }: Enhance
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20">
-                <AvatarImage src={userProfile.avatar_url || ''} />
+                <AvatarImage 
+                  src={userProfile.avatar_url ?? undefined} 
+                  alt={userProfile.display_name || userProfile.full_name || 'User'} 
+                />
                 <AvatarFallback className="text-lg">
                   {getInitials(userProfile.display_name || userProfile.full_name || 'U')}
                 </AvatarFallback>
@@ -91,7 +93,6 @@ export function EnhancedProfileDisplay({ isOwnProfile = false, onEdit }: Enhance
           {userProfile.bio && (
             <p className="text-muted-foreground mb-4">{userProfile.bio}</p>
           )}
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {userProfile.website && (
               <div className="flex items-center gap-2">
@@ -107,7 +108,6 @@ export function EnhancedProfileDisplay({ isOwnProfile = false, onEdit }: Enhance
                 </a>
               </div>
             )}
-            
             {userProfile.wallet_address && (
               <div className="flex items-center gap-2">
                 <Wallet className="h-4 w-4 text-muted-foreground" />
@@ -119,8 +119,27 @@ export function EnhancedProfileDisplay({ isOwnProfile = false, onEdit }: Enhance
           </div>
         </CardContent>
       </Card>
-
-      {/* Skills & Specializations */}
+      {/* Specializations */}
+      {userProfile.specializations && userProfile.specializations.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Star className="h-5 w-5" />
+              Specializations
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {userProfile.specializations.map((spec: string, index: number) => (
+                <Badge key={index} variant="secondary">
+                  {spec}
+                </Badge>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+      {/* Skills & Social Links */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
@@ -129,8 +148,8 @@ export function EnhancedProfileDisplay({ isOwnProfile = false, onEdit }: Enhance
           <CardContent>
             {userProfile.skills && userProfile.skills.length > 0 ? (
               <div className="flex flex-wrap gap-2">
-                {userProfile.skills.map((skill) => (
-                  <Badge key={skill} variant="secondary">
+                {userProfile.skills.map((skill: string, index: number) => (
+                  <Badge key={index} variant="outline">
                     {skill}
                   </Badge>
                 ))}
@@ -140,27 +159,35 @@ export function EnhancedProfileDisplay({ isOwnProfile = false, onEdit }: Enhance
             )}
           </CardContent>
         </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Specializations</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {userProfile.specializations && userProfile.specializations.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {userProfile.specializations.map((spec) => (
-                  <Badge key={spec} variant="outline">
-                    {spec}
-                  </Badge>
-                ))}
-              </div>
-            ) : (
-              <p className="text-muted-foreground">No specializations listed</p>
-            )}
-          </CardContent>
-        </Card>
+        {/* Social Links */}
+        {userProfile.social_links && Object.keys(userProfile.social_links).length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Globe className="h-5 w-5" />
+                Social Links
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {Object.entries(userProfile.social_links).map(([platform, url]) => {
+                const urlString = typeof url === 'string' ? url : String(url);
+                return (
+                  <a
+                    key={platform}
+                    href={urlString}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-sm text-primary hover:underline"
+                  >
+                    <Globe className="h-4 w-4" />
+                    {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                  </a>
+                );
+              })}
+            </CardContent>
+          </Card>
+        )}
       </div>
-
       {/* Statistics */}
       <Card>
         <CardHeader>

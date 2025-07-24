@@ -1,8 +1,7 @@
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const openAIApiKey = Deno.env.get('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');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -100,7 +99,7 @@ serve(async (req) => {
     console.log('AI Analysis completed');
 
     // Parse the JSON response from OpenAI
-    let analysisResult;
+    let analysisResult: unknown;
     try {
       analysisResult = JSON.parse(analysisContent);
     } catch (parseError) {
@@ -138,10 +137,14 @@ serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (error) {
+  } catch (error: unknown) {
+    let message = "Unknown error";
+    if (typeof error === "object" && error && "message" in error) {
+      message = (error as { message: string }).message;
+    }
     console.error('Error in AI code analysis:', error);
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: message,
       securityScore: 0,
       vulnerabilities: [],
       gasOptimizations: [],

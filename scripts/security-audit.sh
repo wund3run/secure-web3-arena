@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 echo "🔍 Starting Security Audit for Escrow Smart Contracts..."
@@ -13,6 +12,7 @@ echo "📋 Running Solidity security checks..."
 if command -v slither &> /dev/null; then
     echo "Running Slither analysis..."
     slither src/utils/blockchain/contracts/solidity/ --json logs/slither-report.json || echo "Slither analysis completed with warnings"
+    slither --version
 else
     echo "⚠️  Slither not installed. Install with: pip install slither-analyzer"
 fi
@@ -22,7 +22,7 @@ if command -v solhint &> /dev/null; then
     echo "Running Solhint analysis..."
     solhint 'src/utils/blockchain/contracts/solidity/**/*.sol' > logs/solhint-report.txt || echo "Solhint analysis completed with warnings"
 else
-    echo "⚠️  Solhint not installed. Install with: npm install -g solhint"
+    echo "⚠️  Solhint not installed. Install with: sudo npm install -g solhint"
 fi
 
 # Check if mythril is installed
@@ -30,7 +30,7 @@ if command -v myth &> /dev/null; then
     echo "Running Mythril analysis..."
     myth analyze src/utils/blockchain/contracts/solidity/EscrowContract.sol --json > logs/mythril-report.json || echo "Mythril analysis completed with warnings"
 else
-    echo "⚠️  Mythril not installed. Install with: pip install mythril"
+    echo "⚠️  Mythril not installed. Install with: pipx install mythril"
 fi
 
 # Rust/Solana Security Checks
@@ -41,6 +41,7 @@ if command -v cargo-audit &> /dev/null; then
     echo "Running Cargo Audit..."
     cd src/utils/blockchain/contracts/rust/escrow_program
     cargo audit --json > ../../../../../logs/cargo-audit-report.json || echo "Cargo audit completed with warnings"
+    cargo audit --version
     cd - > /dev/null
 else
     echo "⚠️  Cargo Audit not installed. Install with: cargo install cargo-audit"
@@ -61,6 +62,8 @@ echo "  - logs/npm-audit-report.json"
 echo ""
 echo "🔧 To install missing tools:"
 echo "  - Slither: pip install slither-analyzer"
-echo "  - Solhint: npm install -g solhint"
-echo "  - Mythril: pip install mythril"
+echo "  - Solhint: sudo npm install -g solhint"
+echo "  - Mythril: pipx install mythril"
 echo "  - Cargo Audit: cargo install cargo-audit"
+
+source $HOME/.cargo/env

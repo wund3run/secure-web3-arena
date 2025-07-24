@@ -1,10 +1,9 @@
-
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, Home, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { logErrorToAnalytics } from "@/utils/error-handling";
 import { toast } from "sonner";
+import { MonitoringService } from '@/services/monitoringService';
 
 interface Props {
   children: ReactNode;
@@ -38,29 +37,37 @@ export class EnhancedErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    this.setState({
-      errorInfo
-    });
-    
-    // Log error to analytics
-    logErrorToAnalytics(error, 'EnhancedErrorBoundary');
-    
-    // Show toast notification
+    // Report error to monitoring service in production
+    if (import.meta.env.MODE === 'production') {
+      MonitoringService.reportError({
+        message: error.message,
+        stack: error.stack,
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+        timestamp: new Date().toISOString(),
+        additional: { errorInfo }
+      });
+    }
+    this.setState({ errorInfo });
     toast.error("An error occurred", {
-      description: "We've logged the issue and will fix it soon."
+      description: "We've logged the issue and will fix it soon.",
+      action: {
+        label: "Contact Support",
+        onClick: () => window.open('/support', '_blank')
+      }
     });
   }
-  
+
   handleReset = (): void => {
     this.setState({
       hasError: false,
       error: null,
       errorInfo: null
     });
-    
     if (this.props.onReset) {
       this.props.onReset();
     }
+    window.location.reload();
   };
 
   render(): ReactNode {
@@ -68,18 +75,15 @@ export class EnhancedErrorBoundary extends Component<Props, State> {
       if (this.props.fallback) {
         return this.props.fallback;
       }
-      
       return (
         <div className="min-h-[400px] flex flex-col items-center justify-center p-6 text-center">
           <div className="rounded-full bg-amber-100 p-3 mb-4">
             <AlertTriangle className="h-8 w-8 text-amber-600" />
           </div>
-          
           <h2 className="text-xl font-semibold mb-2">Something went wrong</h2>
           <p className="text-muted-foreground mb-6 max-w-md">
             We've encountered an unexpected error. Our team has been notified and is working to fix the issue.
           </p>
-          
           <div className="flex flex-col sm:flex-row gap-2">
             <Button 
               variant="outline" 
@@ -89,7 +93,6 @@ export class EnhancedErrorBoundary extends Component<Props, State> {
               <RefreshCw className="mr-2 h-4 w-4" />
               Try again
             </Button>
-            
             {this.props.routeFallback && (
               <Button asChild>
                 <Link to="/" className="flex items-center">
@@ -98,9 +101,9 @@ export class EnhancedErrorBoundary extends Component<Props, State> {
                 </Link>
               </Button>
             )}
+            <a href="/support" className="block text-center text-sm text-blue-600 mt-2 underline">Contact Support</a>
           </div>
-          
-          {process.env.NODE_ENV !== 'production' && this.state.error && (
+          {import.meta.env.MODE !== 'production' && this.state.error && (
             <div className="mt-8 p-4 bg-muted rounded-md text-left overflow-auto max-w-full">
               <p className="font-medium mb-2">Error Details (Development Only):</p>
               <p className="text-sm mb-2 text-red-500">{this.state.error.toString()}</p>
@@ -114,7 +117,6 @@ export class EnhancedErrorBoundary extends Component<Props, State> {
         </div>
       );
     }
-
     return this.props.children;
   }
 }

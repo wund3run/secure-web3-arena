@@ -23,7 +23,7 @@ import {
 interface EnhancedMarketplaceHeaderProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  onFilterChange: (filters: any) => void;
+  onFilterChange: (filters: unknown) => void;
   viewMode: 'grid' | 'list';
   onViewModeChange: (mode: 'grid' | 'list') => void;
   resultsCount?: number;

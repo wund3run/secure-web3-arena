@@ -1,28 +1,37 @@
 
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { ProductionLayout } from '@/components/layout/ProductionLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Target, AlertTriangle, CheckCircle, ArrowRight } from 'lucide-react';
+import { Shield, Target, AlertTriangle, CheckCircle, ArrowRight, Brain, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function PenetrationTesting() {
   return (
-    <ProductionLayout>
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-6xl mx-auto">
-          {/* Hero Section */}
-          <div className="text-center mb-12">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Target className="h-8 w-8 text-primary" />
-              <h1 className="text-4xl font-bold">Penetration Testing</h1>
+    <>
+      <Helmet>
+        <title>Advanced Penetration Testing - Hawkly</title>
+        <meta name="description" content="AI-enhanced penetration testing for Web3 applications. Advanced security testing to identify vulnerabilities before attackers do. Comprehensive testing for smart contracts and DApps." />
+        <meta name="keywords" content="penetration testing, Web3 security testing, smart contract pentesting, blockchain security, ethical hacking" />
+      </Helmet>
+      
+      <ProductionLayout>
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-6xl mx-auto">
+            {/* Hero Section */}
+            <div className="text-center mb-12">
+              <Badge variant="outline" className="mb-4">AI-Enhanced Testing • June 2025</Badge>
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Target className="h-8 w-8 text-primary" />
+                <h1 className="text-4xl font-bold">Advanced Penetration Testing</h1>
+              </div>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                AI-enhanced security testing to identify vulnerabilities before attackers do. 
+                Comprehensive penetration testing for Web3 applications, smart contracts, and DeFi protocols.
+              </p>
             </div>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Advanced security testing to identify vulnerabilities before attackers do. 
-              Comprehensive penetration testing for Web3 applications and smart contracts.
-            </p>
-          </div>
 
           {/* Testing Types */}
           <div className="grid md:grid-cols-3 gap-6 mb-12">
@@ -126,54 +135,61 @@ export default function PenetrationTesting() {
 
           {/* Pricing */}
           <div className="mb-12">
-            <h2 className="text-2xl font-bold text-center mb-8">Testing Packages</h2>
+            <h2 className="text-2xl font-bold text-center mb-8">Testing Packages - June 2025</h2>
             <div className="grid md:grid-cols-3 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Basic Penetration Test</CardTitle>
-                  <div className="text-3xl font-bold">$5,000</div>
-                  <Badge variant="secondary">Small Applications</Badge>
+                  <CardTitle>AI-Assisted Pentest</CardTitle>
+                  <div className="text-3xl font-bold">$6,500</div>
+                  <Badge variant="secondary">Small-Medium Apps</Badge>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
-                    <li>• 40-hour testing engagement</li>
-                    <li>• Basic vulnerability assessment</li>
+                    <li>• 50-hour AI-enhanced testing</li>
+                    <li>• Automated vulnerability discovery</li>
+                    <li>• Smart contract focus</li>
                     <li>• Standard reporting</li>
+                    <li>• 10-day turnaround</li>
+                  </ul>
+                </CardContent>
+              </Card>
+
+              <Card className="border-primary relative">
+                <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary">
+                  Most Popular
+                </Badge>
+                <CardHeader>
+                  <CardTitle>Comprehensive AI Test</CardTitle>
+                  <div className="text-3xl font-bold">$15,000</div>
+                  <Badge>Medium-Large Apps</Badge>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 text-sm">
+                    <li>• 100-hour AI + Expert testing</li>
+                    <li>• Advanced exploitation scenarios</li>
+                    <li>• Cross-chain analysis</li>
+                    <li>• MEV attack simulation</li>
+                    <li>• Detailed remediation guide</li>
                     <li>• 2-week turnaround</li>
                   </ul>
                 </CardContent>
               </Card>
 
-              <Card className="border-primary">
-                <CardHeader>
-                  <CardTitle>Comprehensive Test</CardTitle>
-                  <div className="text-3xl font-bold">$12,000</div>
-                  <Badge>Medium Applications</Badge>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm">
-                    <li>• 80-hour testing engagement</li>
-                    <li>• Advanced exploitation</li>
-                    <li>• Detailed reporting</li>
-                    <li>• Remediation support</li>
-                    <li>• 3-week turnaround</li>
-                  </ul>
-                </CardContent>
-              </Card>
-
               <Card>
                 <CardHeader>
-                  <CardTitle>Enterprise Test</CardTitle>
-                  <div className="text-3xl font-bold">$25,000+</div>
-                  <Badge variant="secondary">Large Applications</Badge>
+                  <CardTitle>Enterprise Security Suite</CardTitle>
+                  <div className="text-3xl font-bold">$35,000+</div>
+                  <Badge variant="secondary">Enterprise</Badge>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
-                    <li>• 160+ hour engagement</li>
-                    <li>• Multi-vector testing</li>
-                    <li>• Executive briefing</li>
-                    <li>• Ongoing consultation</li>
-                    <li>• 4-week turnaround</li>
+                    <li>• 200+ hour comprehensive testing</li>
+                    <li>• Multi-protocol analysis</li>
+                    <li>• Red team exercises</li>
+                    <li>• Executive briefings</li>
+                    <li>• 24/7 incident response</li>
+                    <li>• Ongoing security monitoring</li>
+                    <li>• 3-4 week engagement</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -200,5 +216,6 @@ export default function PenetrationTesting() {
         </div>
       </div>
     </ProductionLayout>
+    </>
   );
 }

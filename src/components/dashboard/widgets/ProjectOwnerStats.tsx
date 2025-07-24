@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
@@ -34,8 +33,8 @@ export function ProjectOwnerStats() {
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="audits" name="Audits Completed" fill="#3b82f6" />
-                <Bar dataKey="vulnerabilities" name="Vulnerabilities" fill="#f43f5e" />
+                <Bar dataKey="audits" name="Audits Completed" fill="#a879ef" />
+                <Bar dataKey="vulnerabilities" name="Vulnerabilities" fill="#fc3574" />
               </BarChart>
             </ResponsiveContainer>
           </div>

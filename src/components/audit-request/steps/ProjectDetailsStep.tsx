@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Code, Globe, Github } from 'lucide-react';
 import type { AuditFormData, AuditFormErrors } from '@/types/audit-request.types';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { Info } from 'lucide-react';
 
 interface ProjectDetailsStepProps {
   formData: AuditFormData;
@@ -69,7 +70,17 @@ export const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="projectName">Project Name *</Label>
+              <Label htmlFor="projectName" className="flex items-center gap-1">
+                Project Name *
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span tabIndex={0}><Info className="h-4 w-4 text-muted-foreground cursor-pointer" /></span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    The official name of your project as it should appear in audit reports and listings.
+                  </TooltipContent>
+                </Tooltip>
+              </Label>
               <Input
                 id="projectName"
                 name="projectName"
@@ -84,7 +95,17 @@ export const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="projectDescription">Project Description *</Label>
+              <Label htmlFor="projectDescription" className="flex items-center gap-1">
+                Project Description *
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span tabIndex={0}><Info className="h-4 w-4 text-muted-foreground cursor-pointer" /></span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    Briefly describe your project, its purpose, key features, and what makes it unique. This helps auditors understand your needs.
+                  </TooltipContent>
+                </Tooltip>
+              </Label>
               <Textarea
                 id="projectDescription"
                 name="projectDescription"
@@ -100,9 +121,17 @@ export const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="repositoryUrl" className="flex items-center gap-2">
+              <Label htmlFor="repositoryUrl" className="flex items-center gap-1">
                 <Github className="h-4 w-4" />
                 Repository URL
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span tabIndex={0}><Info className="h-4 w-4 text-muted-foreground cursor-pointer" /></span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    Provide a link to your code repository (GitHub, GitLab, etc.). Private repos are supported—access instructions will be provided after matching.
+                  </TooltipContent>
+                </Tooltip>
               </Label>
               <Input
                 id="repositoryUrl"
@@ -121,13 +150,23 @@ export const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
         {/* Project Type Selection */}
         <Card>
           <CardHeader>
-            <CardTitle>Project Type</CardTitle>
+            <CardTitle className="flex items-center gap-1">
+              Project Type
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span tabIndex={0}><Info className="h-4 w-4 text-muted-foreground cursor-pointer" /></span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  Select the category that best describes your project. This helps us match you with auditors who have relevant expertise.
+                </TooltipContent>
+              </Tooltip>
+            </CardTitle>
             <CardDescription>
               Select the category that best describes your project
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
               {projectTypes.map((type) => (
                 <div
                   key={type.value}
@@ -153,21 +192,29 @@ export const ProjectDetailsStep: React.FC<ProjectDetailsStepProps> = ({
         {/* Blockchain Ecosystem */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-1">
               <Globe className="h-5 w-5" />
               Blockchain Ecosystem *
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span tabIndex={0}><Info className="h-4 w-4 text-muted-foreground cursor-pointer" /></span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  Which blockchain network is your project built on? Choose the primary network for your deployment.
+                </TooltipContent>
+              </Tooltip>
             </CardTitle>
             <CardDescription>
               Which blockchain network is your project built on?
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {blockchainEcosystems.map((ecosystem) => (
                 <Badge
                   key={ecosystem}
                   variant={formData.blockchain === ecosystem ? "default" : "outline"}
-                  className="cursor-pointer p-3 justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
+                  className="cursor-pointer p-3 justify-center hover:bg-primary hover:text-primary-foreground transition-colors w-full text-center"
                   onClick={() => handleEcosystemClick(ecosystem)}
                 >
                   {ecosystem}

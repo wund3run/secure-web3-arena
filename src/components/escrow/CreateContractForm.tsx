@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useEscrow } from "@/contexts/EscrowContext";
 import { Button } from "@/components/ui/button";
@@ -51,8 +50,8 @@ const formSchema = z.object({
   total_amount: z.coerce.number().positive({
     message: "Total amount must be positive.",
   }),
-  currency: z.string().default("ETH"),
-  requires_multisig: z.boolean().default(false),
+  currency: z.string().min(1, "Currency is required"),
+  requires_multisig: z.boolean(),
   milestones: z.array(
     z.object({
       title: z.string().min(1, {
@@ -69,6 +68,8 @@ const formSchema = z.object({
   }),
 });
 
+type FormData = z.infer<typeof formSchema>;
+
 type MilestoneFormData = {
   title: string;
   description?: string;
@@ -81,7 +82,7 @@ export function CreateContractForm({ onSuccess }: CreateContractFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Initialize the form
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
@@ -130,7 +131,7 @@ export function CreateContractForm({ onSuccess }: CreateContractFormProps) {
   };
   
   // Handle form submission
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: FormData) => {
     setIsSubmitting(true);
     
     try {

@@ -1,15 +1,7 @@
-
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { useContext, useState, ReactNode } from "react";
 import { toast } from "sonner";
-
-interface ErrorContextType {
-  error: Error | null;
-  setError: (error: Error | null) => void;
-  handleError: (error: unknown, context?: string) => void;
-  clearError: () => void;
-}
-
-const ErrorContext = createContext<ErrorContextType | undefined>(undefined);
+import { ErrorContext, ErrorContextType } from './ErrorContext';
+import { withErrorHandling } from '../../utils/apiErrorHandler';
 
 interface ErrorProviderProps {
   children: ReactNode;
@@ -35,11 +27,6 @@ export function ErrorProvider({ children }: ErrorProviderProps) {
     }
     
     setError(errorInstance);
-    
-    // Show toast notification
-    toast.error("Error", {
-      description: errorMessage.substring(0, 100) // Truncate long messages
-    });
   };
 
   const clearError = () => {

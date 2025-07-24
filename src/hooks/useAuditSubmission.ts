@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/auth';
@@ -39,7 +38,7 @@ export function useAuditSubmission() {
 
       const { data, error } = await supabase
         .from('audit_requests')
-        .insert(auditRequestData)
+        .insert(auditRequestData as any)
         .select()
         .single();
 
@@ -50,10 +49,11 @@ export function useAuditSubmission() {
 
       toast.success('Audit request submitted successfully!');
       return data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to submit audit request:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Please try again later';
       toast.error('Failed to submit audit request', {
-        description: error.message || 'Please try again later'
+        description: errorMessage
       });
       throw error;
     } finally {

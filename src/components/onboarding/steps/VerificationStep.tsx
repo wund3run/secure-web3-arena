@@ -1,6 +1,5 @@
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,10 +18,24 @@ export const VerificationStep: React.FC<VerificationStepProps> = ({
   onComplete,
   isSubmitting
 }) => {
-  const [documents, setDocuments] = useState<File[]>([]);
-  const [githubProfile, setGithubProfile] = useState('');
-  const [linkedinProfile, setLinkedinProfile] = useState('');
-  const [portfolioUrl, setPortfolioUrl] = useState('');
+  const updateField = (field: keyof VerificationData, value: any) => {
+    onChange({ ...data, [field]: value });
+  };
+
+  const addPortfolioLink = () => {
+    updateField('portfolioLinks', [...data.portfolioLinks, '']);
+  };
+
+  const updatePortfolioLink = (index: number, value: string) => {
+    const links = [...data.portfolioLinks];
+    links[index] = value;
+    updateField('portfolioLinks', links);
+  };
+
+  const removePortfolioLink = (index: number) => {
+    const links = data.portfolioLinks.filter((_, i) => i !== index);
+    updateField('portfolioLinks', links);
+  };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);

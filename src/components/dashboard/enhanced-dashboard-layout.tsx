@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '@/contexts/auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,10 +27,17 @@ interface DashboardStats {
   responseTime?: string;
 }
 
+interface ActivityItem {
+  title: string;
+  description: string;
+  timestamp: string;
+  [key: string]: unknown;
+}
+
 interface EnhancedDashboardLayoutProps {
   userType: 'project_owner' | 'auditor' | 'admin';
   stats: DashboardStats;
-  recentActivity: any[];
+  recentActivity: unknown[];
   children?: React.ReactNode;
 }
 
@@ -41,20 +47,27 @@ export function EnhancedDashboardLayout({
   recentActivity,
   children 
 }: EnhancedDashboardLayoutProps) {
-  const { userProfile } = useAuth();
+
+  // Type guard function for activity items
+  const isValidActivityItem = (activity: unknown): activity is ActivityItem => {
+    return (
+      typeof activity === 'object' && 
+      activity !== null && 
+      'title' in activity &&
+      'description' in activity &&
+      'timestamp' in activity
+    );
+  };
+
+  const validActivities = recentActivity.filter(isValidActivityItem);
 
   const getWelcomeMessage = () => {
-    const name = userProfile?.display_name || userProfile?.full_name || 'there';
-    switch (userType) {
-      case 'auditor':
-        return `Welcome back, ${name}! Ready to secure some smart contracts?`;
-      case 'project_owner':
-        return `Hello ${name}! Let's keep your Web3 projects secure.`;
-      case 'admin':
-        return `Admin Dashboard - ${name}`;
-      default:
-        return `Welcome, ${name}!`;
-    }
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+    
+    return userType === 'auditor' 
+      ? `${greeting}, Security Expert` 
+      : `${greeting}, Project Owner`;
   };
 
   const getQuickActions = () => {
@@ -229,7 +242,7 @@ export function EnhancedDashboardLayout({
       {children}
 
       {/* Recent Activity */}
-      {recentActivity.length > 0 && (
+      {validActivities.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
@@ -239,15 +252,15 @@ export function EnhancedDashboardLayout({
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {recentActivity.slice(0, 5).map((activity, index) => (
+              {validActivities.slice(0, 5).map((activity, index) => (
                 <div key={index} className="flex items-center gap-3 p-3 border rounded-lg">
                   <div className="h-2 w-2 bg-blue-500 rounded-full" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium">{activity.title}</p>
-                    <p className="text-xs text-muted-foreground">{activity.description}</p>
+                    <p className="text-sm font-medium">{String(activity.title)}</p>
+                    <p className="text-xs text-muted-foreground">{String(activity.description)}</p>
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    {activity.timestamp}
+                    {String(activity.timestamp)}
                   </div>
                 </div>
               ))}

@@ -1,5 +1,21 @@
-
 import { useState, useEffect } from 'react';
+
+interface Service {
+  id: string;
+  name: string;
+  provider: string;
+  description: string;
+  price: string;
+  rating: number;
+  completionTime: string;
+  category: string;
+  tags: string[];
+}
+
+interface Filters {
+  aiRecommendations?: boolean;
+  [key: string]: unknown;
+}
 
 export function useMarketplaceState() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -8,8 +24,8 @@ export function useMarketplaceState() {
   const [isLoading, setIsLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showEnhancedOnboarding, setShowEnhancedOnboarding] = useState(false);
-  const [selectedService, setSelectedService] = useState<any>(null);
-  const [activeFilters, setActiveFilters] = useState<any>({});
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [activeFilters, setActiveFilters] = useState<Filters>({});
   const [showAIRecommendations, setShowAIRecommendations] = useState(false);
 
   // Check if user has completed onboarding
@@ -31,7 +47,7 @@ export function useMarketplaceState() {
   }, []);
 
   // Apply filters function
-  const handleApplyFilters = (filters: any) => {
+  const handleApplyFilters = (filters: Filters) => {
     setActiveFilters(filters);
     setShowAIRecommendations(filters.aiRecommendations || false);
     

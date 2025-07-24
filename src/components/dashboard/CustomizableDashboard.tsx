@@ -37,7 +37,7 @@ export interface CustomizableDashboardProps {
   title?: string;
   description?: string;
   widgets: DashboardWidget[];
-  onLayoutChange?: (layout: any) => void;
+  onLayoutChange?: (layout: unknown) => void;
   onAddWidget?: () => void;
   className?: string;
 }

@@ -52,7 +52,7 @@ const EnhancedAuth = () => {
 
       toast.success('Welcome back! You have been successfully signed in.');
       navigate('/dashboard');
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error(error.message || 'Failed to sign in. Please check your credentials.');
     } finally {
       setIsLoading(false);
@@ -92,7 +92,7 @@ const EnhancedAuth = () => {
 
       toast.success('Account created successfully! Please check your email to verify your account.');
       setActiveTab('signin');
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error(error.message || 'Failed to create account. Please try again.');
     } finally {
       setIsLoading(false);
@@ -109,7 +109,7 @@ const EnhancedAuth = () => {
       });
 
       if (error) throw error;
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error('Failed to sign in with Google');
     }
   };

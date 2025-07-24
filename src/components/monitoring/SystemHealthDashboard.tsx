@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -59,7 +58,10 @@ export function SystemHealthDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  const getHealthStatus = () => {
+  const getHealthStatus = (): { 
+    status: string; 
+    color: "success" | "warning" | "default" | "secondary" | "destructive" | "outline" | "brand" 
+  } => {
     if (systemMetrics.errorRate > 10) return { status: 'critical', color: 'destructive' };
     if (systemMetrics.errorRate > 5) return { status: 'warning', color: 'secondary' };
     return { status: 'healthy', color: 'default' };
@@ -90,7 +92,7 @@ export function SystemHealthDashboard() {
               </>
             )}
           </Badge>
-          <Badge variant={healthStatus.color as any}>
+          <Badge variant={healthStatus.color}>
             {healthStatus.status === 'healthy' && <CheckCircle className="h-3 w-3 mr-1" />}
             {healthStatus.status === 'warning' && <AlertTriangle className="h-3 w-3 mr-1" />}
             {healthStatus.status === 'critical' && <AlertTriangle className="h-3 w-3 mr-1" />}

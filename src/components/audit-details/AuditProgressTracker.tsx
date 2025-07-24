@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -10,6 +9,15 @@ import { TimeTracker } from '@/components/audit-progress/TimeTracker';
 import { ReportGenerator } from '@/components/audit-progress/ReportGenerator';
 import type { EnhancedAuditData } from '@/hooks/useAuditDetails';
 import { useAuth } from '@/contexts/auth';
+
+interface Deliverable {
+  id: string | number;
+  title: string;
+  description?: string;
+  due_date?: string;
+  status: string;
+  [key: string]: unknown;
+}
 
 interface AuditProgressTrackerProps {
   auditData: EnhancedAuditData;
@@ -34,8 +42,9 @@ export const AuditProgressTracker: React.FC<AuditProgressTrackerProps> = ({ audi
     return 'pending';
   };
 
-  const completedDeliverables = auditData.deliverables.filter(d => d.status === 'completed').length;
-  const totalDeliverables = auditData.deliverables.length;
+  const deliverables = (auditData.deliverables || []) as unknown as Deliverable[];
+  const completedDeliverables = deliverables.filter(d => d.status === 'completed').length;
+  const totalDeliverables = deliverables.length;
   const deliverableProgress = totalDeliverables > 0 ? (completedDeliverables / totalDeliverables) * 100 : 0;
 
   return (
@@ -150,7 +159,7 @@ export const AuditProgressTracker: React.FC<AuditProgressTrackerProps> = ({ audi
       </Tabs>
 
       {/* Legacy Deliverables Progress */}
-      {auditData.deliverables.length > 0 && (
+      {deliverables.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>Legacy Deliverables</CardTitle>
@@ -163,25 +172,25 @@ export const AuditProgressTracker: React.FC<AuditProgressTrackerProps> = ({ audi
               </div>
               <Progress value={deliverableProgress} className="w-full mb-4" />
               
-              {auditData.deliverables.map((deliverable) => (
-                <div key={deliverable.id} className="flex items-center justify-between p-3 border rounded-lg">
+              {deliverables.map((deliverable) => (
+                <div key={String(deliverable.id)} className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="flex-1">
-                    <div className="font-medium">{deliverable.title}</div>
+                    <div className="font-medium">{String(deliverable.title || 'Untitled')}</div>
                     {deliverable.description && (
-                      <div className="text-sm text-muted-foreground">{deliverable.description}</div>
+                      <div className="text-sm text-muted-foreground">{String(deliverable.description)}</div>
                     )}
                     {deliverable.due_date && (
                       <div className="text-xs text-muted-foreground mt-1">
-                        Due: {new Date(deliverable.due_date).toLocaleDateString()}
+                        Due: {new Date(String(deliverable.due_date)).toLocaleDateString()}
                       </div>
                     )}
                   </div>
                   <Badge variant={
-                    deliverable.status === 'completed' ? 'default' :
-                    deliverable.status === 'in_progress' ? 'secondary' :
-                    deliverable.status === 'delivered' ? 'outline' : 'outline'
+                    String(deliverable.status) === 'completed' ? 'default' :
+                    String(deliverable.status) === 'in_progress' ? 'secondary' :
+                    String(deliverable.status) === 'delivered' ? 'outline' : 'outline'
                   }>
-                    {deliverable.status.replace('_', ' ')}
+                    {String(deliverable.status || 'pending').replace('_', ' ')}
                   </Badge>
                 </div>
               ))}

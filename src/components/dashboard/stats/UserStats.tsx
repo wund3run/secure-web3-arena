@@ -2,7 +2,7 @@
 import React from 'react';
 import { useAuth } from '@/contexts/auth';
 import { Card, CardContent } from "@/components/ui/card";
-import { CircleCheck, Clock, FileText, Shield } from "lucide-react";
+import { CheckCircle, Clock, FileText, Shield } from "lucide-react";
 
 interface UserStatsProps {
   userType: string;
@@ -16,8 +16,8 @@ export function UserStats({ userType }: UserStatsProps) {
   const auditorStats = [
     { 
       label: "Completed Audits", 
-      value: userProfile?.projects_completed || 0, 
-      icon: <CircleCheck className="h-4 w-4 text-green-500" /> 
+      value: (userProfile as any)?.projects_completed || 0, 
+      icon: <CheckCircle className="h-4 w-4 text-green-500" /> 
     },
     { 
       label: "Active Audits", 

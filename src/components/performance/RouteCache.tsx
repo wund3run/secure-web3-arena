@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -9,7 +8,7 @@ interface RouteCacheProps {
 // Simple route caching for better performance
 const routeCache = new Map<string, {
   timestamp: number;
-  data: any;
+  data: Record<string, unknown>;
 }>();
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes

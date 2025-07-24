@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/auth';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,24 +11,37 @@ import { UpcomingDeadlines } from '../widgets/UpcomingDeadlines';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, TrendingUp, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { EnhancedProgressBar } from '@/components/ui/enhanced-progress-bar';
+import { useNavigate } from 'react-router-dom';
+
+interface AuditRequest {
+  id: string;
+  status: string | null;
+  budget?: number | null;
+  security_score?: number | null;
+  deadline?: string | null;
+  [key: string]: unknown;
+}
 
 interface DashboardData {
-  auditRequests: any[];
+  auditRequests: AuditRequest[];
   completedAudits: number;
   totalSpent: number;
   securityScore: number;
-  recentActivity: any[];
-  upcomingDeadlines: any[];
+  recentActivity: unknown[];
+  upcomingDeadlines: AuditRequest[];
 }
 
 export const EnhancedProjectOwnerDashboard = () => {
   const { user, userProfile } = useAuth();
+  const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [showActionModal, setShowActionModal] = useState(false);
 
   const fetchDashboardData = async () => {
     if (!user) return;
@@ -92,6 +104,14 @@ export const EnhancedProjectOwnerDashboard = () => {
     fetchDashboardData();
   }, [user]);
 
+  const handleAnalyticsClick = () => {
+    navigate('/analytics');
+  };
+
+  const handleNewAuditClick = () => {
+    navigate('/request-audit');
+  };
+
   if (loading) {
     return <LoadingDashboardContent />;
   }
@@ -113,25 +133,52 @@ export const EnhancedProjectOwnerDashboard = () => {
   }
 
   return (
-    <div className="container py-8 space-y-6">
+    <div data-testid="dashboard-main" className="container py-8 space-y-6">
       <EnhancedWelcomeMessage />
       
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Project Dashboard</h1>
-          <p className="text-muted-foreground">
-            Welcome back, {userProfile?.full_name || user?.email}
+          <h1 className="text-3xl font-bold text-brand-gradient">
+            Welcome back, {userProfile?.full_name || user?.email || 'User'}
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Manage your security audits and track project progress
           </p>
+          <div className="mt-4 max-w-md">
+            <EnhancedProgressBar
+              value={dashboardData?.completedAudits || 0}
+              max={10}
+              label="Platform Journey"
+              variant="success"
+              milestones={[
+                { value: 1, label: 'First Audit', completed: (dashboardData?.completedAudits || 0) >= 1 },
+                { value: 5, label: 'Regular User', completed: (dashboardData?.completedAudits || 0) >= 5 },
+                { value: 10, label: 'Power User', completed: (dashboardData?.completedAudits || 0) >= 10 }
+              ]}
+            />
+          </div>
         </div>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={fetchDashboardData}
-          disabled={refreshing}
-        >
-          <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-          Refresh
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="gap-2" 
+            data-testid="dashboard-analytics-button"
+            onClick={handleAnalyticsClick}
+          >
+            <TrendingUp className="h-4 w-4" />
+            Analytics
+          </Button>
+          <Button 
+            size="sm" 
+            className="gap-2" 
+            data-testid="dashboard-action-button"
+            onClick={handleNewAuditClick}
+          >
+            <Plus className="h-4 w-4" />
+            New Audit Request
+          </Button>
+        </div>
       </div>
 
       <DashboardStats 
@@ -165,6 +212,12 @@ export const EnhancedProjectOwnerDashboard = () => {
           />
         </div>
       </div>
+
+      {showActionModal && (
+        <div data-testid="action-modal">
+          {/* Modal content */}
+        </div>
+      )}
     </div>
   );
 };

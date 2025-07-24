@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { PreLaunchDashboard } from '@/components/launch/PreLaunchDashboard';
+import { AppContainer } from '@/components/layout/AppContainer';
 
 export default function Launch() {
   return (
@@ -11,9 +11,9 @@ export default function Launch() {
         <meta name="description" content="Track progress towards production launch" />
       </Helmet>
       
-      <div className="container mx-auto py-8 px-4 max-w-6xl">
+      <AppContainer maxWidth="max-w-6xl" padding="py-8 px-4" elevation>
         <PreLaunchDashboard />
-      </div>
+      </AppContainer>
     </div>
   );
 }

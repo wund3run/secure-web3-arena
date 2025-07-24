@@ -50,7 +50,7 @@ export function useSupabaseHealth() {
         console.log("Health check passed", { responseTime });
       }
       
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Health check failed:", error);
       setMetrics({
         connectionStatus: 'disconnected',

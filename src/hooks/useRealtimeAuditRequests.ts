@@ -37,7 +37,7 @@ export function useRealtimeAuditRequests() {
 
         if (error) throw error;
         setAuditRequests(data || []);
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('Error fetching audit requests:', error);
         toast.error('Failed to load audit requests');
       } finally {
@@ -108,7 +108,7 @@ export function useRealtimeAuditRequests() {
       if (error) throw error;
       
       toast.success(`Request status updated to: ${newStatus}`);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error updating request status:', error);
       toast.error('Failed to update request status');
     }

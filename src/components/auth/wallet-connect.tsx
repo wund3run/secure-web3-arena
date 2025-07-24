@@ -31,7 +31,7 @@ export function WalletConnect({ onConnect, onClose }: WalletConnectProps) {
       switch(walletName) {
         case 'MetaMask':
           if (window.ethereum?.isMetaMask) {
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' }) as string[];
             address = accounts[0];
           } else {
             throw new Error("MetaMask not installed");
@@ -59,7 +59,7 @@ export function WalletConnect({ onConnect, onClose }: WalletConnectProps) {
           
         case 'Coinbase Wallet':
           if (window.ethereum?.isCoinbaseWallet) {
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' }) as string[];
             address = accounts[0];
           } else {
             throw new Error("Coinbase Wallet not installed");
@@ -75,18 +75,19 @@ export function WalletConnect({ onConnect, onClose }: WalletConnectProps) {
         duration: 5000,
       });
       onConnect(walletName, address);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.message || "Failed to connect wallet");
+      const errorMessage = err instanceof Error ? err.message : "Failed to connect wallet";
+      setError(errorMessage);
       toast.error("Connection failed", {
-        description: err.message || "Could not connect to wallet",
+        description: errorMessage,
         duration: 5000,
       });
       
       // Announce error to screen readers
       const announcer = document.createElement('div');
       announcer.setAttribute('aria-live', 'assertive');
-      announcer.textContent = `Error: ${err.message || "Could not connect to wallet"}`;
+      announcer.textContent = `Error: ${errorMessage}`;
       document.body.appendChild(announcer);
       
       // Clean up

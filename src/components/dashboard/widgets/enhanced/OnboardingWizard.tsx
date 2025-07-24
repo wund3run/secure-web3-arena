@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,7 +10,8 @@ import {
   Rocket,
   FileText,
   Users,
-  Settings
+  Settings,
+  LucideIcon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,7 +19,7 @@ interface OnboardingStep {
   id: string;
   title: string;
   description: string;
-  icon: React.ComponentType<any>;
+  icon: LucideIcon;
   action: string;
   route?: string;
   completed?: boolean;

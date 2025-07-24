@@ -1,4 +1,3 @@
-
 import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +6,7 @@ import { handleApiError } from "@/utils/apiErrorHandler";
 import { showFeedback } from "@/components/ui/interactive-feedback";
 
 export const useAuditFormSubmission = (
-  user: any,
+  user: { id: string } | null,
   formData: AuditFormData,
   validateStep: (step: number) => boolean,
   formStep: number,
@@ -26,7 +25,7 @@ export const useAuditFormSubmission = (
       return;
     }
     
-    if (!user) {
+    if (!user || !user.id) {
       toast.error("Authentication required", {
         description: "You need to sign in to submit an audit request.",
       });
@@ -113,10 +112,10 @@ export const useAuditFormSubmission = (
         onSubmitSuccess();
       }, 1000);
       
-    } catch (error) {
+    } catch (error: unknown) {
       // Clear loading feedback and show error
       dismissLoading();
-      handleApiError(error, "Error submitting audit request");
+      handleApiError(error, { customMessage: "Error submitting audit request" });
       
       showFeedback('error', {
         message: "Submission failed",

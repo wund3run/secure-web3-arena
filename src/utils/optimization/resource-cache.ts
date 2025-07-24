@@ -3,7 +3,7 @@
  * Resource caching with intelligent cache-key strategies
  */
 export class ResourceCache {
-  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+  private cache = new Map<string, { data: unknown; timestamp: number; ttl: number }>();
   private readonly DEFAULT_TTL = 300000; // 5 minutes
 
   /**
@@ -48,7 +48,7 @@ export class ResourceCache {
   /**
    * Set cache entry
    */
-  set(key: string, data: any, ttl: number = this.DEFAULT_TTL): void {
+  set(key: string, data: unknown, ttl: number = this.DEFAULT_TTL): void {
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
@@ -59,7 +59,7 @@ export class ResourceCache {
   /**
    * Get cache entry
    */
-  get(key: string): any | null {
+  get(key: string): unknown | null {
     const entry = this.cache.get(key);
     if (!entry) return null;
 

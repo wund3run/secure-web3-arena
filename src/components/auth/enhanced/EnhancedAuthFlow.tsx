@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -25,6 +24,27 @@ interface OnboardingStep {
   title: string;
   description: string;
   fields: string[];
+}
+
+interface FormData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  fullName: string;
+  company: string;
+  yearsExperience: string;
+  projectName: string;
+  projectType: string;
+  specializations: string[];
+  blockchains: string[];
+  certifications: string;
+  portfolio: string;
+  linkedin: string;
+  github: string;
+  securityNeeds: string[];
+  timeline: string;
+  budget: string;
+  [key: string]: unknown;
 }
 
 const auditorOnboardingSteps: OnboardingStep[] = [
@@ -82,7 +102,7 @@ export function EnhancedAuthFlow({ onSignIn, onSignUp, isLoading, error }: Enhan
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
     confirmPassword: '',
@@ -104,14 +124,14 @@ export function EnhancedAuthFlow({ onSignIn, onSignUp, isLoading, error }: Enhan
 
   const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
 
-  const validateField = (field: string, value: any): string | null => {
+  const validateField = (field: string, value: unknown): string | null => {
     switch (field) {
       case 'email':
-        if (!value) return 'Email is required';
+        if (!value || typeof value !== 'string') return 'Email is required';
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Invalid email format';
         return null;
       case 'password':
-        if (!value) return 'Password is required';
+        if (!value || typeof value !== 'string') return 'Password is required';
         if (value.length < 8) return 'Password must be at least 8 characters';
         if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
           return 'Password must contain uppercase, lowercase, and number';
@@ -122,20 +142,22 @@ export function EnhancedAuthFlow({ onSignIn, onSignUp, isLoading, error }: Enhan
         if (value !== formData.password) return 'Passwords do not match';
         return null;
       case 'fullName':
-        if (!value) return 'Full name is required';
+        if (!value || typeof value !== 'string') return 'Full name is required';
         if (value.length < 2) return 'Name must be at least 2 characters';
         return null;
       case 'yearsExperience':
-        if (!value) return 'Experience is required';
-        const years = parseInt(value);
-        if (isNaN(years) || years < 0 || years > 50) return 'Invalid years of experience';
-        return null;
+        {
+          if (!value || typeof value !== 'string') return 'Experience is required';
+          const years = parseInt(value);
+          if (isNaN(years) || years < 0 || years > 50) return 'Invalid years of experience';
+          return null;
+        }
       default:
         return null;
     }
   };
 
-  const handleFieldChange = (field: string, value: any) => {
+  const handleFieldChange = (field: string, value: unknown) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Clear error when user starts typing
@@ -204,12 +226,27 @@ export function EnhancedAuthFlow({ onSignIn, onSignUp, isLoading, error }: Enhan
   };
 
   const handleSignUpSubmit = async () => {
-    try {
-      await onSignUp(formData.email, formData.password, formData.fullName, userType);
-      toast.success('Account created successfully!');
-    } catch (error) {
-      console.error('Sign up failed:', error);
-    }
+    const maxRetries = 3;
+    let retryCount = 0;
+
+    const attemptSignUp = async () => {
+      try {
+        await onSignUp(formData.email, formData.password, formData.fullName, userType);
+        toast.success('Account created successfully!');
+      } catch (error) {
+        console.error('Sign up failed:', error);
+        if (retryCount < maxRetries) {
+          retryCount++;
+          toast.error(`Sign up failed, retrying (attempt ${retryCount}/${maxRetries})...`);
+          await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+          return attemptSignUp();
+        }
+        toast.error('Sign up failed after multiple attempts. Please try again later.');
+        throw error;
+      }
+    };
+
+    await attemptSignUp();
   };
 
   const renderSignInForm = () => (

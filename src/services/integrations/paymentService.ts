@@ -73,7 +73,7 @@ export class EnhancedPaymentService {
 
       toast.success('Payment intent created successfully');
       return data as PaymentIntent;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error creating marketplace payment:', error);
       toast.error('Failed to create payment');
       return null;
@@ -103,7 +103,7 @@ export class EnhancedPaymentService {
 
       toast.success('Escrow contract created successfully');
       return data as EscrowContract;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error creating escrow contract:', error);
       toast.error('Failed to create escrow contract');
       return null;
@@ -126,7 +126,7 @@ export class EnhancedPaymentService {
 
       toast.success('Milestone payment released successfully');
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error releasing milestone payment:', error);
       toast.error('Failed to release milestone payment');
       return false;
@@ -146,14 +146,14 @@ export class EnhancedPaymentService {
 
       toast.success('Refund processed successfully');
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error processing refund:', error);
       toast.error('Failed to process refund');
       return false;
     }
   }
 
-  static async getPaymentHistory(userId: string): Promise<any[]> {
+  static async getPaymentHistory(userId: string): Promise<unknown[]> {
     try {
       const { data, error } = await supabase
         .from('payment_transactions')
@@ -163,7 +163,7 @@ export class EnhancedPaymentService {
 
       if (error) throw error;
       return data || [];
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error fetching payment history:', error);
       return [];
     }
@@ -179,7 +179,7 @@ export class EnhancedPaymentService {
       
       toast.success('Crypto payments enabled successfully');
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error enabling crypto payments:', error);
       toast.error('Failed to enable crypto payments');
       return false;

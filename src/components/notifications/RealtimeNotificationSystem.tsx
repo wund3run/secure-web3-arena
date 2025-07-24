@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Bell, X, Check, AlertCircle, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,9 +18,10 @@ interface RealtimeNotification {
   title: string;
   message: string;
   type: 'info' | 'success' | 'warning' | 'error';
-  created_at: string;
-  is_read: boolean;
-  action_url?: string;
+  created_at: string | null;
+  is_read: boolean | null;
+  action_url?: string | null;
+  user_id?: string | null;
 }
 
 export const RealtimeNotificationSystem: React.FC = () => {
@@ -31,28 +31,36 @@ export const RealtimeNotificationSystem: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.id) return;
 
     // Fetch initial notifications
     const fetchNotifications = async () => {
+      if (!user.id) return;
+      
       const { data } = await supabase
         .from('notifications')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', user.id!)
         .order('created_at', { ascending: false })
         .limit(20);
 
       if (data) {
         // Type cast and filter the data to ensure type safety
-        const typedNotifications = data
-          .filter(n => ['info', 'success', 'warning', 'error'].includes(n.type))
+        const typedNotifications: RealtimeNotification[] = data
+          .filter(n => n.type && ['info', 'success', 'warning', 'error'].includes(n.type))
           .map(n => ({
-            ...n,
-            type: n.type as 'info' | 'success' | 'warning' | 'error'
+            id: n.id,
+            title: n.title,
+            message: n.message,
+            type: n.type as 'info' | 'success' | 'warning' | 'error',
+            created_at: n.created_at,
+            is_read: n.is_read,
+            action_url: n.action_url,
+            user_id: n.user_id
           }));
         
         setNotifications(typedNotifications);
-        setUnreadCount(typedNotifications.filter(n => !n.is_read).length);
+        setUnreadCount(typedNotifications.filter(n => n.is_read !== true).length);
       }
     };
 
@@ -67,15 +75,21 @@ export const RealtimeNotificationSystem: React.FC = () => {
           event: 'INSERT',
           schema: 'public',
           table: 'notifications',
-          filter: `user_id=eq.${user.id}`
+          filter: `user_id=eq.${user.id!}`
         },
         (payload) => {
-          const newNotification = payload.new as any;
+          const newNotificationData = payload.new as any;
           // Ensure type safety for real-time updates
-          if (['info', 'success', 'warning', 'error'].includes(newNotification.type)) {
+          if (newNotificationData && ['info', 'success', 'warning', 'error'].includes(newNotificationData.type)) {
             const typedNotification: RealtimeNotification = {
-              ...newNotification,
-              type: newNotification.type as 'info' | 'success' | 'warning' | 'error'
+              id: newNotificationData.id,
+              title: newNotificationData.title,
+              message: newNotificationData.message,
+              type: newNotificationData.type as 'info' | 'success' | 'warning' | 'error',
+              created_at: newNotificationData.created_at,
+              is_read: newNotificationData.is_read,
+              action_url: newNotificationData.action_url,
+              user_id: newNotificationData.user_id
             };
             setNotifications(prev => [typedNotification, ...prev.slice(0, 19)]);
             setUnreadCount(prev => prev + 1);
@@ -90,6 +104,8 @@ export const RealtimeNotificationSystem: React.FC = () => {
   }, [user]);
 
   const markAsRead = async (notificationId: string) => {
+    if (!user?.id) return;
+    
     await supabase
       .from('notifications')
       .update({ is_read: true })
@@ -102,10 +118,12 @@ export const RealtimeNotificationSystem: React.FC = () => {
   };
 
   const markAllAsRead = async () => {
+    if (!user?.id) return;
+    
     await supabase
       .from('notifications')
       .update({ is_read: true })
-      .eq('user_id', user?.id);
+      .eq('user_id', user.id);
 
     setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
     setUnreadCount(0);
@@ -177,7 +195,10 @@ export const RealtimeNotificationSystem: React.FC = () => {
                           {notification.message}
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
+                          {notification.created_at 
+                            ? formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })
+                            : 'Unknown time'
+                          }
                         </p>
                       </div>
                       {!notification.is_read && (

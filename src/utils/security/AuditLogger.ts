@@ -1,4 +1,6 @@
-
+/**
+ * Represents an audit log entry with security event details
+ */
 export interface AuditLogEntry {
   id: string;
   timestamp: Date;
@@ -6,7 +8,7 @@ export interface AuditLogEntry {
   sessionId: string;
   action: string;
   description: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   severity: 'low' | 'medium' | 'high' | 'critical';
   ipAddress?: string;
   userAgent: string;
@@ -15,6 +17,10 @@ export interface AuditLogEntry {
 // Export AuditEvent as an alias for backward compatibility
 export type AuditEvent = AuditLogEntry;
 
+/**
+ * Comprehensive audit logging system for security events and user actions
+ * Provides logging, filtering, export, and reporting capabilities
+ */
 class AuditLogger {
   private logs: AuditLogEntry[] = [];
   private sessionId: string;
@@ -23,10 +29,18 @@ class AuditLogger {
     this.sessionId = this.generateSessionId();
   }
 
+  /**
+   * Logs a security event or user action with detailed metadata
+   * @param action - The action being performed
+   * @param description - Human-readable description of the event
+   * @param metadata - Additional contextual data
+   * @param severity - Security severity level
+   * @param userId - Optional user identifier
+   */
   async log(
     action: string,
     description: string,
-    metadata: Record<string, any> = {},
+    metadata: Record<string, unknown> = {},
     severity: 'low' | 'medium' | 'high' | 'critical' = 'low',
     userId?: string
   ): Promise<void> {
@@ -51,6 +65,10 @@ class AuditLogger {
     }
   }
 
+  /**
+   * Persists audit log entry to local storage with size management
+   * @param entry - The audit log entry to persist
+   */
   private persistLog(entry: AuditLogEntry): void {
     const existingLogs = JSON.parse(localStorage.getItem('hawkly_audit_logs') || '[]');
     existingLogs.push(entry);
@@ -63,6 +81,11 @@ class AuditLogger {
     localStorage.setItem('hawkly_audit_logs', JSON.stringify(existingLogs));
   }
 
+  /**
+   * Retrieves filtered audit logs based on specified criteria
+   * @param filters - Optional filters for severity, action, user, or date range
+   * @returns Array of filtered audit log entries sorted by timestamp
+   */
   getLogs(filters?: {
     severity?: string[];
     action?: string;
@@ -95,11 +118,20 @@ class AuditLogger {
     return filteredLogs.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
-  // Alias for backward compatibility
-  getEvents(filters?: any): AuditLogEntry[] {
+  /**
+   * Alias for getLogs for backward compatibility
+   * @param filters - Optional filters for log retrieval
+   * @returns Array of filtered audit log entries
+   */
+  getEvents(filters?: unknown): AuditLogEntry[] {
     return this.getLogs(filters);
   }
 
+  /**
+   * Exports audit logs in specified format
+   * @param format - Export format: 'json' or 'csv'
+   * @returns Formatted string representation of audit logs
+   */
   exportAuditLog(format: 'json' | 'csv'): string {
     const logs = this.getLogs();
     
@@ -120,6 +152,10 @@ class AuditLogger {
     }
   }
 
+  /**
+   * Generates a comprehensive security report with statistics
+   * @returns Object containing summary statistics and breakdowns
+   */
   generateSecurityReport(): {
     summary: {
       totalEvents: number;
@@ -145,22 +181,39 @@ class AuditLogger {
     };
   }
 
-  private groupBy(array: any[], key: string): Record<string, number> {
-    return array.reduce((acc, item) => {
-      const value = item[key];
-      acc[value] = (acc[value] || 0) + 1;
+  /**
+   * Groups array items by a specified key and counts occurrences
+   * @param array - Array to group
+   * @param key - Property key to group by
+   * @returns Object with grouped counts
+   */
+  private groupBy(array: unknown[], key: string): Record<string, number> {
+    return array.reduce((acc: Record<string, number>, item) => {
+      const value = (item as Record<string, unknown>)[key];
+      acc[String(value)] = (acc[String(value)] || 0) + 1;
       return acc;
     }, {});
   }
 
+  /**
+   * Generates a unique session identifier
+   * @returns Unique session ID string
+   */
   private generateSessionId(): string {
     return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
+  /**
+   * Generates a unique audit log entry identifier
+   * @returns Unique audit log ID string
+   */
   private generateId(): string {
     return `audit_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
+  /**
+   * Clears all audit logs from memory and local storage
+   */
   clearLogs(): void {
     this.logs = [];
     localStorage.removeItem('hawkly_audit_logs');

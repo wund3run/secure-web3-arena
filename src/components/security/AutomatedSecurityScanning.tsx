@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -140,7 +139,7 @@ export function AutomatedSecurityScanning() {
     const newScan: SecurityScan = {
       id: Date.now().toString(),
       name: `Manual ${scanType} Scan`,
-      type: scanType as any,
+      type: scanType as 'vulnerability' | 'compliance' | 'configuration' | 'dependency',
       status: 'running',
       progress: 0,
       startTime: new Date().toISOString(),

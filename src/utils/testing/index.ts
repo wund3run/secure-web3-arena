@@ -1,4 +1,3 @@
-
 // Export all testing utilities
 export { ErrorMonitoringService, errorMonitoring } from './ErrorMonitoringService';
 export { AutomatedTestRunner, testRunner } from './AutomatedTestRunner';
@@ -38,7 +37,7 @@ export const setupDevelopmentTesting = () => {
   
   // Add to window for debugging
   if (typeof window !== 'undefined') {
-    (window as any).testingFramework = framework;
+    (window as unknown as { testingFramework?: unknown }).testingFramework = framework;
   }
   
   return framework;

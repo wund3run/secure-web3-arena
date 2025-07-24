@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { useAuth } from '@/contexts/auth';
-import { ProjectOwnerDashboard } from './enhanced/ProjectOwnerDashboard';
+import { EnhancedProjectOwnerDashboard } from './enhanced/EnhancedProjectOwnerDashboard';
 import { EnhancedAuditorDashboard } from './enhanced/EnhancedAuditorDashboard';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { LoadingDashboard } from './LoadingDashboard';
@@ -22,14 +21,12 @@ export const DashboardRouter = () => {
 
   switch (userType) {
     case 'project_owner':
-      // Redirect to dedicated project dashboard
-      window.location.href = '/project-dashboard';
       return <ProjectOwnerDashboard />;
     case 'auditor':
       return <EnhancedAuditorDashboard />;
     case 'admin':
       return <AdminDashboard />;
     default:
-      return <ProjectOwnerDashboard />;
+      return <EnhancedProjectOwnerDashboard />;
   }
 };

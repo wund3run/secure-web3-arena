@@ -12,7 +12,7 @@ export function useWalletDetection() {
       // Check for MetaMask
       try {
         const provider = await detectEthereumProvider({ silent: true });
-        setIsMetaMaskDetected(!!provider && window.ethereum?.isMetaMask);
+        setIsMetaMaskDetected(!!provider && !!(window.ethereum as any)?.isMetaMask);
       } catch (e) {
         console.log("MetaMask not detected");
       }

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { PlatformValidatorWidget } from '@/utils/validation';
+// Platform validator widget not yet implemented
 import RouteCheckerPanel from '@/utils/validation/route-checker';
 import { Button } from '@/components/ui/button';
 import { Check, Gauge, LayoutGrid, List, Ruler, X } from 'lucide-react';
@@ -81,7 +81,15 @@ export function PreLaunchTools() {
       )}
 
       {/* Active tool components */}
-      {activeTool === 'validator' && <PlatformValidatorWidget onClose={() => setActiveTool(null)} />}
+      {activeTool === 'validator' && (
+        <div className="fixed top-20 left-4 z-50 bg-card p-4 rounded-lg border shadow-lg">
+          <h4 className="font-medium mb-2">Platform Validator</h4>
+          <p className="text-sm">Platform validator widget not yet implemented.</p>
+          <Button size="sm" variant="outline" onClick={() => setActiveTool(null)} className="mt-2">
+            Close
+          </Button>
+        </div>
+      )}
       {activeTool === 'routes' && <RouteCheckerPanel />}
       {activeTool === 'responsive' && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-card p-3 rounded-lg border shadow-lg">

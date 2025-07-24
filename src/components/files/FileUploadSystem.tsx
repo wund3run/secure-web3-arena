@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { FileUpload } from '@/components/ui/FileUpload';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,6 +29,16 @@ interface UploadedFile {
   size: number;
   uploadedAt: Date;
   category: string;
+}
+
+if (!crypto.randomUUID) {
+  crypto.randomUUID = function () {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    }) as `${string}-${string}-${string}-${string}-${string}`;
+  };
 }
 
 export function FileUploadSystem() {

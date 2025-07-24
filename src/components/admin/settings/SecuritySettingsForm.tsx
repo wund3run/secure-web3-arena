@@ -1,6 +1,5 @@
-
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
 import { 
   Card, 
@@ -36,7 +35,7 @@ const SecuritySettingsForm = () => {
     },
   });
 
-  const onSubmit = (values: SecurityFormValues) => {
+  const onSubmit: SubmitHandler<SecurityFormValues> = (values: SecurityFormValues) => {
     console.log("Security settings:", values);
     toast.success("Security settings updated successfully");
   };

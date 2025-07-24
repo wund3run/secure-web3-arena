@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle, X, FileCheck, LinkIcon, Github, Globe, Shield, ArrowRight, CircleCheck, AlertCircle, Twitter, Code, Award, Building, User, CheckCircle2 } from "lucide-react";
+import { CheckCircle, X, FileCheck, LinkIcon, Github, Globe, Shield, ArrowRight, AlertCircle, Twitter, Code, Award, Building, User, CheckCircle2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -54,7 +53,7 @@ const VerificationStep = ({ title, description, icon, status, children }: Verifi
   const statusIcons = {
     "pending": <Shield className="h-5 w-5 text-muted-foreground" />,
     "in-progress": <Shield className="h-5 w-5 text-primary animate-pulse" />,
-    "completed": <CircleCheck className="h-5 w-5 text-green-500" />,
+    "completed": <CheckCircle className="h-5 w-5 text-green-500" />,
     "failed": <AlertCircle className="h-5 w-5 text-red-500" />,
   };
 

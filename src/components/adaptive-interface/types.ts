@@ -1,20 +1,10 @@
+import type { UserSegment, UserPreferences, BehaviorProfile } from '@/hooks/useUserProfiling';
 
 export interface AdaptiveInterfaceProps {
-  userSegment: 'new_user' | 'regular_user' | 'power_user' | 'at_risk' | 'champion';
-  userType: string;
-  preferences: {
-    theme: string;
-    dashboardLayout: string;
-    notifications: boolean;
-    [key: string]: any;
-  };
-  behaviorProfile: {
-    visitCount: number;
-    preferredPages: string[];
-    featureUsage: Record<string, number>;
-    engagementScore: number;
-    [key: string]: any;
-  } | null;
+  userSegment: UserSegment;
+  userType: 'admin' | 'auditor' | 'project_owner' | 'general';
+  preferences: UserPreferences;
+  behaviorProfile: BehaviorProfile;
   isAuthenticated?: boolean;
 }
 

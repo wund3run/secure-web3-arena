@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -17,44 +16,6 @@ interface ActivityItemProps {
 }
 
 export function ActivityItem({ activity }: ActivityItemProps) {
-  const getActivityIcon = (type: string) => {
-    switch (type) {
-      case 'message':
-        return <MessageSquare className="h-4 w-4 text-blue-500" />;
-      case 'audit_update':
-        return <FileText className="h-4 w-4 text-green-500" />;
-      case 'payment':
-        return <DollarSign className="h-4 w-4 text-yellow-500" />;
-      case 'milestone':
-        return <CheckCircle className="h-4 w-4 text-purple-500" />;
-      case 'proposal':
-        return <Users className="h-4 w-4 text-orange-500" />;
-      default:
-        return <FileText className="h-4 w-4 text-gray-500" />;
-    }
-  };
-
-  const getActivityColor = (type: string) => {
-    switch (type) {
-      case 'message':
-        return 'bg-blue-50 border-blue-200';
-      case 'audit_update':
-        return 'bg-green-50 border-green-200';
-      case 'payment':
-        return 'bg-yellow-50 border-yellow-200';
-      case 'milestone':
-        return 'bg-purple-50 border-purple-200';
-      case 'proposal':
-        return 'bg-orange-50 border-orange-200';
-      default:
-        return 'bg-gray-50 border-gray-200';
-    }
-  };
-
-  const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
-  };
-
   return (
     <div className={`p-3 rounded-lg border ${getActivityColor(activity.type)} transition-colors hover:shadow-sm`}>
       <div className="flex items-start gap-3">
@@ -96,6 +57,16 @@ export function ActivityItem({ activity }: ActivityItemProps) {
             </div>
           </div>
         </div>
+        
+        <p className="text-sm text-muted-foreground truncate">
+          {activity.description}
+        </p>
+        
+        {activity.metadata?.status && (
+          <Badge variant="outline" className="mt-1">
+            {activity.metadata.status.replace('_', ' ')}
+          </Badge>
+        )}
       </div>
     </div>
   );

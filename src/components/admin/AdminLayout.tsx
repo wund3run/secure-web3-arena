@@ -1,5 +1,4 @@
-
-import { ReactNode, useState, useEffect } from "react";
+import React, { ReactNode, useState, useEffect, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +23,7 @@ import { toast } from "sonner";
 import { BetaWarning } from "@/components/ui/beta-warning";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { PlatformStatusMonitor } from "./PlatformStatusMonitor";
+import { AppContainer } from '../layout/AppContainer';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -38,32 +38,34 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
   const navigate = useNavigate();
   const currentPath = location.pathname;
 
-  // Check time since login
-  useEffect(() => {
-    const loginTime = localStorage.getItem("adminLoginTime");
-    
-    if (!loginTime) {
-      localStorage.setItem("adminLoginTime", Date.now().toString());
-    } else {
-      const sessionDuration = Date.now() - parseInt(loginTime);
-      const sessionHours = sessionDuration / (1000 * 60 * 60);
-      
-      if (sessionHours > 24) {
-        toast.warning("Session expired", {
-          description: "Your admin session has expired. Please login again."
-        });
-        handleLogout();
-      }
-    }
-  }, []);
-
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     localStorage.removeItem("adminAuthenticated");
     localStorage.removeItem("adminUser");
     localStorage.removeItem("adminLoginTime");
     toast.success("Logged out successfully");
     navigate("/admin/login");
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    const loginTime = localStorage.getItem("adminLoginTime");
+    const isAuthenticated = localStorage.getItem("adminAuthenticated");
+    
+    if (!isAuthenticated) {
+      navigate("/admin/login");
+      return;
+    }
+    
+    if (loginTime) {
+      const loginTimestamp = parseInt(loginTime);
+      const currentTime = Date.now();
+      const hoursSinceLogin = (currentTime - loginTimestamp) / (1000 * 60 * 60);
+      
+      if (hoursSinceLogin > 8) {
+        toast.error("Session expired. Please log in again.");
+        handleLogout();
+      }
+    }
+  }, [handleLogout, navigate]);
 
   const confirmLogout = () => {
     if (confirm("Are you sure you want to log out?")) {
@@ -244,44 +246,46 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
       </div>
 
       {/* Main content */}
-      <div className={`flex-1 ${collapsed ? "ml-16" : "ml-64"} transition-all duration-300 ease-in-out`}>
-        <header className="h-14 border-b flex items-center px-6 bg-background sticky top-0 z-20">
-          <div className="flex items-center justify-between w-full">
-            <h1 className="text-xl font-semibold">{title}</h1>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">
-                Admin: {localStorage.getItem("adminUser")}
-              </span>
-              <Button 
-                variant="destructive" 
-                size="sm"
-                onClick={confirmLogout}
-                className="h-8"
-              >
-                <LogOut className="h-3.5 w-3.5 mr-1" /> Logout
-              </Button>
+      <main className={`flex-1 ml-16 ${collapsed ? '' : 'ml-64'} transition-all duration-300`}>
+        <AppContainer>
+          <header className="h-14 border-b flex items-center px-6 bg-background sticky top-0 z-20">
+            <div className="flex items-center justify-between w-full">
+              <h1 className="text-xl font-semibold">{title}</h1>
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-muted-foreground">
+                  Admin: {localStorage.getItem("adminUser")}
+                </span>
+                <Button 
+                  variant="destructive" 
+                  size="sm"
+                  onClick={confirmLogout}
+                  className="h-8"
+                >
+                  <LogOut className="h-3.5 w-3.5 mr-1" /> Logout
+                </Button>
+              </div>
             </div>
-          </div>
-        </header>
-        <main className="p-6">
-          {showBetaNotice && (
-            <BetaWarning
-              variant="subtle"
-              size="sm"
-              dismissable={true}
-              onDismiss={() => setShowBetaNotice(false)}
-              className="mb-6"
-              title="Admin Panel (Beta)"
-            >
-              <p className="text-sm">
-                The admin panel is currently in beta. All connections to app features are active.
-                Use the navigation sidebar to access different sections of both admin and app features.
-              </p>
-            </BetaWarning>
-          )}
-          {children}
-        </main>
-      </div>
+          </header>
+          <main className="p-6">
+            {showBetaNotice && (
+              <BetaWarning
+                variant="subtle"
+                size="sm"
+                dismissable={true}
+                onDismiss={() => setShowBetaNotice(false)}
+                className="mb-6"
+                title="Admin Panel (Beta)"
+              >
+                <p className="text-sm">
+                  The admin panel is currently in beta. All connections to app features are active.
+                  Use the navigation sidebar to access different sections of both admin and app features.
+                </p>
+              </BetaWarning>
+            )}
+            {children}
+          </main>
+        </AppContainer>
+      </main>
     </div>
   );
 };

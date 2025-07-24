@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -53,7 +52,7 @@ export function NotificationTester() {
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSendNotification()}
           />
-          <Select value={type} onValueChange={(value: any) => setType(value)}>
+          <Select value={type} onValueChange={(value: 'info' | 'success' | 'warning' | 'error') => setType(value)}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>

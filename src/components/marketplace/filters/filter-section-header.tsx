@@ -1,4 +1,3 @@
-
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 export interface FilterSectionProps {
@@ -17,7 +16,7 @@ export function FilterSectionHeader({ title, section, isCollapsed, toggleSection
 
   return (
     <div 
-      className="flex justify-between items-center cursor-pointer group py-2"
+      className="flex justify-between items-center cursor-pointer group py-2 select-none"
       onClick={handleToggle}
       role="button"
       aria-expanded={isCollapsed ? false : true}
@@ -28,12 +27,15 @@ export function FilterSectionHeader({ title, section, isCollapsed, toggleSection
           handleToggle();
         }
       }}
+      style={{ fontFamily: "'Space Grotesk', Arial, sans-serif", transition: 'all 0.23s cubic-bezier(0.23, 1, 0.32, 1)' }}
     >
-      <h3 className="font-medium text-base group-hover:text-primary transition-colors">{title}</h3>
+      <h3 className={
+        `font-bold text-base tracking-tight uppercase transition-colors duration-200 ${isCollapsed === false ? 'text-accent-primary' : 'text-primary'} group-hover:text-accent-primary`
+      } style={{ letterSpacing: '0.08em' }}>{title}</h3>
       {isCollapsed !== undefined ? (
         isCollapsed ? 
-          <ChevronDown className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" aria-hidden="true" /> : 
-          <ChevronUp className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" aria-hidden="true" />
+          <ChevronDown className="h-4 w-4 text-muted-foreground group-hover:text-accent-primary transition-colors" aria-hidden="true" /> : 
+          <ChevronUp className="h-4 w-4 text-accent-primary transition-colors" aria-hidden="true" />
       ) : null}
     </div>
   );

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -36,7 +35,7 @@ export function SystemStatusMonitor() {
       // Check memory usage if available
       let memoryUsage = 0;
       if ('memory' in performance) {
-        const memory = (performance as any).memory;
+        const memory = (performance as Performance & { memory: { usedJSHeapSize: number; totalJSHeapSize: number } }).memory;
         memoryUsage = memory.usedJSHeapSize / memory.totalJSHeapSize;
       }
 

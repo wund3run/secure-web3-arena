@@ -1,4 +1,3 @@
-
 import React, { Component, ReactNode } from 'react';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -80,7 +79,7 @@ export class ErrorBoundary extends Component<Props, State> {
               </div>
             </div>
 
-            {process.env.NODE_ENV === 'development' && this.state.error?.stack && (
+            {import.meta.env.MODE === 'development' && this.state.error?.stack && (
               <details className="mt-4 p-2 bg-muted rounded text-xs">
                 <summary className="cursor-pointer mb-2">Error Details</summary>
                 <pre className="whitespace-pre-wrap break-all">

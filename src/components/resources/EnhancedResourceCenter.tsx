@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -187,8 +186,9 @@ export function EnhancedResourceCenter({ userType }: EnhancedResourceCenterProps
 
   const handleResourceClick = (resource: Resource) => {
     // Track resource access
-    if ((window as any).trackConversion) {
-      (window as any).trackConversion({
+    const trackConversion = (window as any)?.trackConversion;
+    if (trackConversion && typeof trackConversion === 'function') {
+      trackConversion({
         action: 'resource_accessed',
         category: 'learning',
         label: resource.title,

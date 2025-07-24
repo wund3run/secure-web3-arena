@@ -1,5 +1,4 @@
-
-import { useNotifications } from '@/contexts/NotificationContext';
+import { useNotifications } from '@/contexts/useNotifications';
 import { useAuth } from '@/contexts/auth';
 
 export const useNotificationHelpers = () => {

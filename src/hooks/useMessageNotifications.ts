@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/auth';
@@ -10,8 +9,8 @@ export interface MessageNotification {
   message_id: string;
   notification_type: 'message' | 'file_shared' | 'milestone_update' | 'audit_update';
   is_read: boolean;
-  sent_at: string;
-  read_at?: string;
+  sent_at: string | null;
+  read_at: string | null;
   delivery_status: 'pending' | 'sent' | 'delivered' | 'failed';
   created_at: string;
   chat_message?: {
@@ -65,7 +64,7 @@ export const useMessageNotifications = () => {
       
       setNotifications(typedNotifications);
       setUnreadCount(typedNotifications.filter(n => !n.is_read).length);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to fetch notifications:', err);
     } finally {
       setLoading(false);
@@ -92,7 +91,7 @@ export const useMessageNotifications = () => {
         prev.map(n => n.id === notificationId ? { ...n, is_read: true } : n)
       );
       setUnreadCount(prev => Math.max(0, prev - 1));
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to mark notification as read:', err);
     }
   }, [user]);
@@ -115,7 +114,7 @@ export const useMessageNotifications = () => {
       
       setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
       setUnreadCount(0);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to mark all notifications as read:', err);
     }
   }, [user]);

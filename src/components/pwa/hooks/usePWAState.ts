@@ -1,7 +1,9 @@
-
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { PWAState } from '../types';
+
+// Import the BeforeInstallPromptEvent type from types file
+type BeforeInstallPromptEvent = PWAState['deferredPrompt'] extends (infer T | null) ? T : never;
 
 export function usePWAState(showInstallPrompt: boolean) {
   const [state, setState] = useState<PWAState>({

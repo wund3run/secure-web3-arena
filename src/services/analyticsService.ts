@@ -3,7 +3,7 @@ import { Environment } from '@/utils/environment';
 
 export interface AnalyticsEvent {
   event: string;
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
   userId?: string;
 }
 
@@ -18,7 +18,7 @@ export class AnalyticsService {
     console.log('Analytics service initialized');
   }
   
-  static track(event: string, properties?: Record<string, any>): void {
+  static track(event: string, properties?: Record<string, unknown>): void {
     if (!Environment.analyticsEnabled) return;
     
     const eventData = {
@@ -43,7 +43,7 @@ export class AnalyticsService {
     this.track('page_view', { page });
   }
   
-  static trackAuditRequest(auditData: any): void {
+  static trackAuditRequest(auditData: unknown): void {
     this.track('audit_request_created', {
       blockchain: auditData.blockchain,
       budget: auditData.budget,
@@ -51,7 +51,7 @@ export class AnalyticsService {
     });
   }
   
-  static trackUserAction(action: string, context?: Record<string, any>): void {
+  static trackUserAction(action: string, context?: Record<string, unknown>): void {
     this.track('user_action', { action, ...context });
   }
 }

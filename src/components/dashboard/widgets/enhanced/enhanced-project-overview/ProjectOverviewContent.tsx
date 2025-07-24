@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { StatusIndicator } from '@/components/ui/status-indicator';
 import { Badge } from '@/components/ui/badge';
@@ -9,7 +8,7 @@ import { Link } from 'react-router-dom';
 interface Project {
   id: string;
   project_name: string;
-  status: string;
+  status: string | null;
   created_at: string;
   audit_findings?: Array<{
     id: string;
@@ -46,7 +45,10 @@ export function ProjectOverviewContent({ projects }: ProjectOverviewContentProps
     );
   }
 
-  const getStatusIndicator = (status: string) => {
+  const getStatusIndicator = (status: string | null) => {
+    if (status === null) {
+      return <StatusIndicator status="pending" message="No status" size="sm" />;
+    }
     switch (status.toLowerCase()) {
       case 'completed':
         return <StatusIndicator status="success" message="Completed" size="sm" />;

@@ -1,6 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import type { AuditFormData } from '@/types/audit-request.types';
+import { withErrorHandling } from '@/utils/apiErrorHandler';
 
 export interface CreateAuditRequestData {
   project_name: string;
@@ -20,7 +21,7 @@ export interface CreateAuditRequestData {
 
 export class AuditRequestService {
   static async createAuditRequest(formData: AuditFormData): Promise<string | null> {
-    try {
+    return withErrorHandling(async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
@@ -40,11 +41,7 @@ export class AuditRequestService {
             full_name: user.user_metadata?.full_name || 'Unknown User',
             avatar_url: user.user_metadata?.avatar_url || null
           });
-
-        if (profileError) {
-          console.error('Error creating user profile:', profileError);
-          throw new Error('Failed to create user profile');
-        }
+        if (profileError) throw new Error('Failed to create user profile');
       }
 
       // Parse and validate form data
@@ -69,8 +66,6 @@ export class AuditRequestService {
         communication_preference: formData.preferredCommunication || 'email',
       };
 
-      console.log('Submitting audit request with data:', auditData);
-
       const { data, error } = await supabase
         .from('audit_requests')
         .insert({
@@ -88,12 +83,7 @@ export class AuditRequestService {
         .select()
         .single();
 
-      if (error) {
-        console.error('Database error creating audit request:', error);
-        throw error;
-      }
-
-      console.log('Audit request created successfully:', data);
+      if (error) throw error;
 
       // Create initial notification
       await supabase.from('notifications').insert({
@@ -115,22 +105,11 @@ export class AuditRequestService {
 
       toast.success('Audit request created successfully!');
       return data.id;
-    } catch (error: any) {
-      console.error('Error creating audit request:', error);
-      
-      // Provide more specific error messages
-      let errorMessage = 'Failed to create audit request';
-      if (error.message.includes('violates foreign key constraint')) {
-        errorMessage = 'User profile validation failed. Please ensure your account is properly set up.';
-      } else if (error.message.includes('violates not-null constraint')) {
-        errorMessage = 'Missing required information. Please check all required fields.';
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-      
-      toast.error(errorMessage);
-      return null;
-    }
+    }, {
+      customMessage: 'Failed to create audit request',
+      context: 'AuditRequestService',
+      retryable: true
+    });
   }
 
   static parseBudgetRange(budget: string): number {
@@ -142,8 +121,8 @@ export class AuditRequestService {
     return 5000; // Default fallback
   }
 
-  static async getUserAuditRequests(): Promise<any[]> {
-    try {
+  static async getUserAuditRequests(): Promise<unknown[]> {
+    return withErrorHandling(async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
@@ -162,32 +141,29 @@ export class AuditRequestService {
 
       if (error) throw error;
       return data || [];
-    } catch (error: any) {
-      console.error('Error fetching audit requests:', error);
-      toast.error('Failed to load audit requests');
-      return [];
-    }
+    }, {
+      customMessage: 'Failed to load audit requests',
+      context: 'AuditRequestService',
+      retryable: true
+    }) as Promise<unknown[]>;
   }
 
   static async updateAuditStatus(auditId: string, status: string, phase?: string): Promise<boolean> {
-    try {
+    return withErrorHandling(async () => {
       const updateData: any = { status };
       if (phase) updateData.current_phase = phase;
-
       const { error } = await supabase
         .from('audit_requests')
         .update(updateData)
         .eq('id', auditId);
-
       if (error) throw error;
-
       toast.success('Audit status updated successfully');
       return true;
-    } catch (error: any) {
-      console.error('Error updating audit status:', error);
-      toast.error('Failed to update audit status');
-      return false;
-    }
+    }, {
+      customMessage: 'Failed to update audit status',
+      context: 'AuditRequestService',
+      retryable: true
+    });
   }
 
   static async addFinding(
@@ -198,49 +174,24 @@ export class AuditRequestService {
       title: string;
       description: string;
       location?: string;
-      code_snippet?: string;
       recommendation?: string;
     }
   ): Promise<boolean> {
-    try {
+    return withErrorHandling(async () => {
       const { error } = await supabase
         .from('audit_findings')
         .insert({
           audit_request_id: auditId,
-          ...finding,
-          status: 'open'
+          ...finding
         });
-
       if (error) throw error;
-
-      // Create notification for the finding
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from('notifications').insert({
-          user_id: user.id,
-          title: `New ${finding.severity} Finding`,
-          message: finding.title,
-          type: finding.severity === 'critical' || finding.severity === 'high' ? 'error' : 'warning'
-        });
-
-        // Create status update
-        await supabase.from('audit_status_updates').insert({
-          audit_request_id: auditId,
-          status_type: 'finding',
-          title: `${finding.severity} Finding Identified`,
-          message: finding.title,
-          user_id: user.id,
-          metadata: { severity: finding.severity, category: finding.category }
-        });
-      }
-
-      toast.success('Security finding added successfully');
+      toast.success('Finding added successfully');
       return true;
-    } catch (error: any) {
-      console.error('Error adding finding:', error);
-      toast.error('Failed to add finding');
-      return false;
-    }
+    }, {
+      customMessage: 'Failed to add finding',
+      context: 'AuditRequestService',
+      retryable: true
+    });
   }
 
   static async createDeliverable(
@@ -251,44 +202,36 @@ export class AuditRequestService {
       due_date?: string;
     }
   ): Promise<boolean> {
-    try {
+    return withErrorHandling(async () => {
       const { error } = await supabase
         .from('audit_deliverables')
         .insert({
           audit_request_id: auditId,
-          ...deliverable,
-          status: 'pending'
+          ...deliverable
         });
-
       if (error) throw error;
-
-      // Create notification for the deliverable
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from('notifications').insert({
-          user_id: user.id,
-          title: 'New Deliverable Created',
-          message: deliverable.title,
-          type: 'info'
-        });
-
-        // Create status update
-        await supabase.from('audit_status_updates').insert({
-          audit_request_id: auditId,
-          status_type: 'deliverable',
-          title: 'New Deliverable Added',
-          message: deliverable.title,
-          user_id: user.id,
-          metadata: { deliverable_type: 'audit_report' }
-        });
-      }
-
       toast.success('Deliverable created successfully');
       return true;
-    } catch (error: any) {
-      console.error('Error creating deliverable:', error);
-      toast.error('Failed to create deliverable');
-      return false;
-    }
+    }, {
+      customMessage: 'Failed to create deliverable',
+      context: 'AuditRequestService',
+      retryable: true
+    });
+  }
+
+  static async getAuditStatusUpdates(auditRequestId: string) {
+    return withErrorHandling(async () => {
+      const { data, error } = await supabase
+        .from('audit_status_updates')
+        .select('*, profiles:user_id(full_name, avatar_url, role)')
+        .eq('audit_request_id', auditRequestId)
+        .order('created_at', { ascending: true });
+      if (error) throw error;
+      return data || [];
+    }, {
+      customMessage: 'Failed to load audit status updates',
+      context: 'AuditRequestService',
+      retryable: true
+    });
   }
 }

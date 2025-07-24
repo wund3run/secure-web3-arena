@@ -38,7 +38,7 @@ class AccessibilityErrorHandler {
     }
 
     // Log to console in development
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.MODE === 'development') {
       const logLevel = severity === 'high' ? 'error' : 'warn';
       console[logLevel](`Accessibility ${severity}: ${message}`, {
         type,
@@ -55,7 +55,7 @@ class AccessibilityErrorHandler {
 
   private addVisualIndicator(element: HTMLElement, type: string): void {
     // Only add indicators in development mode
-    if (process.env.NODE_ENV !== 'development') return;
+    if (import.meta.env.MODE !== 'development') return;
 
     element.style.outline = '2px dashed red';
     element.title = `Accessibility Issue: ${type}`;

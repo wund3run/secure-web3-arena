@@ -1,4 +1,3 @@
-
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, Home } from "lucide-react";
@@ -107,7 +106,7 @@ export class RouterErrorBoundary extends Component<Props, State> {
             </Button>
           </div>
           
-          {process.env.NODE_ENV === 'development' && this.state.error && (
+          {import.meta.env.MODE === 'development' && this.state.error && (
             <div className="mt-8 p-4 bg-muted rounded-md text-left overflow-auto max-w-full">
               <p className="font-medium mb-2 text-sm">Error Details (Development):</p>
               <p className="text-xs mb-2 text-red-500">{this.state.error.toString()}</p>

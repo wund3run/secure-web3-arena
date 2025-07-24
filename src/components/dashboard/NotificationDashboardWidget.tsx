@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { useNotifications } from '@/contexts/NotificationContext';
+import { useNotifications } from '@/contexts/useNotifications';
 import { useBrowserNotifications } from '@/hooks/useBrowserNotifications';
 import { useRealtimeSync } from '@/hooks/useRealtimeSync';
 import { Bell, Settings, Wifi, WifiOff } from 'lucide-react';
