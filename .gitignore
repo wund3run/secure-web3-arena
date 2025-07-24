@@ -31,3 +31,6 @@ node_modules/
 .env
 .vscode
 # OS specific
+
+# Embedded git repositories
+mergen/
