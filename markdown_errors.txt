@@ -1,0 +1,6 @@
+PLATFORM_UI_DEPLOYMENT_RESOLVED.md:5:81 MD013/line-length Line length [Expected: 80; Actual: 193]
+PLATFORM_UI_DEPLOYMENT_RESOLVED.md:11:81 MD013/line-length Line length [Expected: 80; Actual: 123]
+PLATFORM_UI_DEPLOYMENT_RESOLVED.md:12:81 MD013/line-length Line length [Expected: 80; Actual: 117]
+PLATFORM_UI_DEPLOYMENT_RESOLVED.md:13:81 MD013/line-length Line length [Expected: 80; Actual: 148]
+PLATFORM_UI_DEPLOYMENT_RESOLVED.md:35:81 MD013/line-length Line length [Expected: 80; Actual: 96]
+PLATFORM_UI_DEPLOYMENT_RESOLVED.md:89:81 MD013/line-length Line length [Expected: 80; Actual: 94]

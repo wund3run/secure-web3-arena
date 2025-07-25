@@ -41,24 +41,22 @@ function App() {
     <ComprehensiveErrorBoundary>
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <NotificationProvider>
-              <AccessibilityProvider>
-                <ThemeProvider storageKey="vite-ui-theme">
-                  <TooltipProvider>
-                    <BrowserRouter>
-                      <AuthNavigationHandler />
-                      <EscrowProvider>
-                        <StabilizedRouter />
-                        <SystemHealthMonitor />
-                      </EscrowProvider>
-                    </BrowserRouter>
-                    <Toaster />
-                  </TooltipProvider>
-                </ThemeProvider>
-              </AccessibilityProvider>
-            </NotificationProvider>
-          </AuthProvider>
+          <NotificationProvider>
+            <AccessibilityProvider>
+              <ThemeProvider storageKey="vite-ui-theme">
+                <TooltipProvider>
+                  <BrowserRouter>
+                    <AuthNavigationHandler />
+                    <EscrowProvider>
+                      <StabilizedRouter />
+                      <SystemHealthMonitor />
+                    </EscrowProvider>
+                  </BrowserRouter>
+                  <Toaster />
+                </TooltipProvider>
+              </ThemeProvider>
+            </AccessibilityProvider>
+          </NotificationProvider>
         </QueryClientProvider>
       </HelmetProvider>
     </ComprehensiveErrorBoundary>

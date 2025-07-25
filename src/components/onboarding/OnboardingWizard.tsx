@@ -1,201 +1,254 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { UserTypeSelection } from './steps/UserTypeSelection';
-import { ProfileSetup } from './steps/ProfileSetup';
-import { SkillsAssessment } from './steps/SkillsAssessment';
-import { VerificationStep } from './steps/VerificationStep';
-import { CompletionStep } from './steps/CompletionStep';
-import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { useSupabaseClient } from '@/lib/supabase';
+import { useToast } from '@/lib/toast';
+import { Button } from '@/components/ui/button';
+import { 
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent
+} from '@/components/ui/card';
+import PersonalInfoForm from './PersonalInfoForm';
+import AccountTypeForm from './AccountTypeForm';
+import SkillsForm from './SkillsForm';
+import ProjectDetailsForm from './ProjectDetailsForm';
+import FormStepIndicator from './FormStepIndicator';
 
-export type UserType = 'auditor' | 'project_owner' | null;
+// Form step components
+// Onboarding steps data
 
-export interface ProfileData {
-  fullName: string;
-  displayName: string;
-  bio: string;
-  website: string;
-  socialLinks: Record<string, string>;
-}
+// Onboarding steps data
+const steps = [
+  { title: 'Personal Info', description: 'Basic information about you' },
+  { title: 'Account Type', description: 'Choose your role on the platform' },
+  { title: 'Auditor Details', description: 'Your security expertise', auditorOnly: true },
+  { title: 'Project Details', description: 'About your project', projectOwnerOnly: true },
+  { title: 'Review', description: 'Confirm your details' }
+];
 
-export interface SkillsData {
-  expertise: string[];
-  experience: string;
-  certifications: string[];
-  languages: string[];
-}
-
-export interface OnboardingData {
-  userType: UserType;
-  profileData: ProfileData;
-  skillsData: SkillsData;
-}
-
-export const OnboardingWizard: React.FC = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [userType, setUserType] = useState<UserType>(null);
-  const [profileData, setProfileData] = useState<ProfileData>({
-    fullName: '',
-    displayName: '',
-    bio: '',
-    website: '',
-    socialLinks: {}
-  });
-  const [skillsData, setSkillsData] = useState<SkillsData>({
-    expertise: [],
-    experience: '',
-    certifications: [],
-    languages: []
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user, updateProfile } = useAuth();
-  const navigate = useNavigate();
-
-  const totalSteps = 5;
-  const progress = (currentStep / totalSteps) * 100;
-
-  const updateData = (stepData: Partial<OnboardingData>) => {
-    setData(prev => ({ ...prev, ...stepData }));
+export type OnboardingData = {
+  personalInfo: {
+    name: string;
+    email: string;
+    country: string;
+    timezone: string;
+    language: string;
   };
+  accountType: {
+    userType: 'auditor' | 'project-owner';
+  };
+  skillsData?: {
+    specializations: string[];
+    experience: string;
+    github: string;
+    portfolio?: string;
+  };
+  projectData?: {
+    projectName: string;
+    description: string;
+    projectType: string;
+    teamSize: string;
+    development: string;
+  };
+};
+
+export default function OnboardingWizard() {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [onboardingData, setOnboardingData] = useState<OnboardingData>({
+    personalInfo: {
+      name: '',
+      email: '',
+      country: '',
+      timezone: '',
+      language: '',
+    },
+    accountType: {
+      userType: 'auditor',
+    },
+  });
+
+  const navigate = useNavigate();
+  const supabase = useSupabaseClient();
+  const { toast } = useToast();
 
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    }
+    setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
   };
 
-  const handlePrev = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
+  const handleBack = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
-  const handleComplete = async () => {
-    if (!user) return;
-    
-    setIsSubmitting(true);
+  const updateData = (stepData: Partial<OnboardingData>) => {
+    setOnboardingData((prev) => ({
+      ...prev,
+      ...stepData,
+    }));
+    handleNext();
+  };
+
+  const handleSubmit = async () => {
     try {
-      // Update user profile with onboarding data (without user_type since it's in separate table)
-      await updateProfile({
-        full_name: data.profileData.fullName,
-        display_name: data.profileData.displayName,
-        bio: data.profileData.bio,
-        website: data.profileData.website,
-        social_links: data.profileData.socialLinks,
-        skills: data.skillsData.skills,
-        specializations: data.skillsData.specializations,
-        years_of_experience: data.skillsData.experience,
-        verification_status: 'pending'
-      });
+      setIsSubmitting(true);
+      const data = onboardingData;
+      const userType = data.accountType.userType;
 
+      // Get current user
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !userData.user) throw new Error('User not authenticated');
+      
+      const userId = userData.user.id;
+      
+      // Update user profile in main profiles table
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          full_name: data.personalInfo.name,
+          country: data.personalInfo.country,
+          timezone: data.personalInfo.timezone,
+          preferred_language: data.personalInfo.language,
+          user_type: userType,
+          onboarding_completed: true
+        })
+        .eq('id', userId);
+      
+      if (profileError) throw profileError;
+
+      // Create project owner profile if applicable
+      if (userType === 'project-owner' && data.projectData) {
+        const { error: projectError } = await supabase
+          .from('projects')
+          .insert({
+            owner_id: userId,
+            name: data.projectData.projectName,
+            description: data.projectData.description,
+            project_type: data.projectData.projectType,
+            team_size: data.projectData.teamSize,
+            development_stage: data.projectData.development
+          });
+        
+        if (projectError) throw projectError;
+      }
+      
+      // Create auditor profile if applicable
+      if (userType === 'auditor' && data.skillsData) {
+        const { error: auditorError } = await supabase
+          .from('auditor_profiles')
+          .insert({
+            user_id: userId,
+            github_handle: data.skillsData.github,
+            portfolio_url: data.skillsData.portfolio,
+            specializations: data.skillsData.specializations,
+            years_of_experience: data.skillsData.experience,
+            verification_status: 'pending'
+        });
+        
         if (auditorError) throw auditorError;
       }
 
-      toast.success('Welcome to Hawkly!', {
-        description: 'Your profile has been set up successfully.'
+      toast({
+        title: 'Welcome to Hawkly!',
+        description: 'Your profile has been set up successfully.',
+        variant: 'default',
       });
 
       // Navigate to appropriate dashboard
       navigate(userType === 'auditor' ? '/auditor/dashboard' : '/project-dashboard');
     } catch (error) {
       console.error('Onboarding completion error:', error);
-      toast.error('Failed to complete onboarding', {
-        description: 'Please try again or contact support.'
+      toast({
+        title: 'Failed to complete onboarding',
+        description: 'Please try again or contact support.',
+        variant: 'destructive',
       });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const renderCurrentStep = () => {
-    const currentStepType = steps[currentStep]?.component;
-    
-    switch (currentStepType) {
-      case 'welcome':
-        return <WelcomeStep onNext={handleNext} />;
-      
-      case 'userType':
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 0:
+        return <PersonalInfoForm onNext={updateData} data={onboardingData.personalInfo} />;
+      case 1:
+        return <AccountTypeForm onNext={updateData} data={onboardingData.accountType} />;
+      case 2:
+        if (onboardingData.accountType.userType === 'auditor') {
+          return <SkillsForm onNext={updateData} />;
+        } else {
+          return <ProjectDetailsForm onNext={updateData} />;
+        }
+      case 3:
         return (
-          <UserTypeSelection
-            selected={userType}
-            onSelect={setUserType}
-            onNext={handleNext}
-          />
+          <div className="space-y-6">
+            <h3 className="text-xl font-semibold">Review Your Information</h3>
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-medium">Personal Information</h4>
+                <p>Name: {onboardingData.personalInfo.name}</p>
+                <p>Email: {onboardingData.personalInfo.email}</p>
+                <p>Country: {onboardingData.personalInfo.country}</p>
+              </div>
+              
+              <div>
+                <h4 className="font-medium">Account Type</h4>
+                <p>{onboardingData.accountType.userType === 'auditor' ? 'Auditor' : 'Project Owner'}</p>
+              </div>
+              
+              {onboardingData.accountType.userType === 'auditor' && onboardingData.skillsData && (
+                <div>
+                  <h4 className="font-medium">Skills & Experience</h4>
+                  <p>Experience: {onboardingData.skillsData.experience}</p>
+                  <p>Specializations: {onboardingData.skillsData.specializations.join(', ')}</p>
+                </div>
+              )}
+              
+              {onboardingData.accountType.userType === 'project-owner' && onboardingData.projectData && (
+                <div>
+                  <h4 className="font-medium">Project Details</h4>
+                  <p>Project: {onboardingData.projectData.projectName}</p>
+                  <p>Type: {onboardingData.projectData.projectType}</p>
+                </div>
+              )}
+            </div>
+            
+            <Button onClick={handleSubmit} disabled={isSubmitting}>
+              {isSubmitting ? 'Submitting...' : 'Complete Onboarding'}
+            </Button>
+          </div>
         );
-      
-      case 'profile':
-        return (
-          <ProfileSetup
-            data={profileData}
-            userType={userType}
-            onChange={setProfileData}
-            onNext={handleNext}
-            onPrev={handlePrev}
-          />
-        );
-      
-      case 'skills':
-        return (
-          <SkillsAssessment
-            skillsData={skillsData}
-            onSkillsChange={setSkillsData}
-            onNext={handleNext}
-            onPrev={handlePrev}
-          />
-        );
-      
-      case 'verification':
-        return (
-          <VerificationStep
-            userType={userType}
-            onComplete={handleComplete}
-            isSubmitting={isSubmitting}
-          />
-        );
-      
       default:
         return null;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl">
+    <div className="w-full max-w-3xl mx-auto py-8">
+      <Card className="border-hawkly-primary/20 shadow-lg shadow-hawkly-accent/5">
         <CardHeader>
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <CardTitle>Welcome to Hawkly</CardTitle>
-              <CardDescription>
-                Step {currentStep + 1} of {steps.length}: {steps[currentStep]?.title}
-              </CardDescription>
-            </div>
-            <div className="text-sm text-muted-foreground">
-              {Math.round(progress)}%
-            </div>
-          </div>
-          <Progress value={progress} className="w-full" />
+          <CardTitle className="text-2xl text-center">
+            Welcome to Hawkly Platform
+          </CardTitle>
+          <FormStepIndicator
+            steps={steps}
+            currentStep={currentStep}
+            userType={onboardingData.accountType.userType}
+          />
         </CardHeader>
         <CardContent>
-          {renderCurrentStep()}
+          {renderStepContent()}
           
-          <div className="flex justify-between mt-6">
-            <Button
-              variant="outline"
-              onClick={handlePrev}
-              disabled={currentStep === 0}
-            >
-              Previous
-            </Button>
-            
-            {currentStep === steps.length - 1 ? (
-              <Button onClick={handleComplete} disabled={isSubmitting}>
-                {isSubmitting ? 'Completing...' : 'Complete Setup'}
+          <div className="flex justify-between mt-8">
+            {currentStep > 0 && (
+              <Button variant="outline" onClick={handleBack}>
+                Back
               </Button>
-            ) : (
+            )}
+            
+            {currentStep < 3 && (
               <Button onClick={handleNext}>
                 Next
               </Button>
@@ -205,4 +258,4 @@ export const OnboardingWizard: React.FC = () => {
       </Card>
     </div>
   );
-};
+}
