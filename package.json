@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "test:unit": "vitest run",
-    "build-with-ts-errors": "tsc --noEmit || vite build"
+    "build-with-ts-errors": "tsc --noEmit || vite build",
+    "find-empty-files": "./scripts/find-empty-files.sh",
+    "analyze-empty-files": "node scripts/find-empty-files.js"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.32.0",

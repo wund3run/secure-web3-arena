@@ -1,0 +1,822 @@
+{
+  "summary": {
+    "totalFiles": 1875,
+    "scannedFiles": 1875,
+    "emptyFiles": 66,
+    "emptyFilePercentage": "3.52"
+  },
+  "emptyFiles": [
+    {
+      "path": "AUDIT_REPORT_UI_IMPLEMENTATION.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/AUDIT_REPORT_UI_IMPLEMENTATION.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "BACKEND_CONNECTION_STATUS_REPORT.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/BACKEND_CONNECTION_STATUS_REPORT.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "CODE_REVIEWS_IMPLEMENTATION_REPORT.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/CODE_REVIEWS_IMPLEMENTATION_REPORT.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "CODE_REVIEWS_UI_IMPLEMENTATION_PLAN.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/CODE_REVIEWS_UI_IMPLEMENTATION_PLAN.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "COMPLETE_PLATFORM_MAPPING_ANALYSIS.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/COMPLETE_PLATFORM_MAPPING_ANALYSIS.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "COMPLETE_USER_FLOW_TESTING_REPORT.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/COMPLETE_USER_FLOW_TESTING_REPORT.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "CRITICAL_FIXES_IMPLEMENTATION_PLAN.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/CRITICAL_FIXES_IMPLEMENTATION_PLAN.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "DASHBOARD_UI_IMPLEMENTATION_GUIDE.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/DASHBOARD_UI_IMPLEMENTATION_GUIDE.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "DASHBOARD_UI_IMPLEMENTATION_PLAN.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/DASHBOARD_UI_IMPLEMENTATION_PLAN.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "DASHBOARD_UI_IMPLEMENTATION_REPORT.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/DASHBOARD_UI_IMPLEMENTATION_REPORT.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "DASHBOARD_UI_IMPLEMENTATION_SUMMARY.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/DASHBOARD_UI_IMPLEMENTATION_SUMMARY.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "DEVELOPER_UPDATE_JULY27_2025.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/DEVELOPER_UPDATE_JULY27_2025.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "DISCONNECTED_PAGES_ANALYSIS.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/DISCONNECTED_PAGES_ANALYSIS.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "ENHANCED_PLATFORM_CONNECTIVITY_IMPLEMENTATION.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/ENHANCED_PLATFORM_CONNECTIVITY_IMPLEMENTATION.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "GIT_PUSH_DEPLOYMENT_SUCCESS.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/GIT_PUSH_DEPLOYMENT_SUCCESS.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "HAWKLY_UI_OVERHAUL_EXECUTIVE_SUMMARY.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/HAWKLY_UI_OVERHAUL_EXECUTIVE_SUMMARY.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "HAWKLY_UI_OVERHAUL_IMPLEMENTATION_COMPLETE.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/HAWKLY_UI_OVERHAUL_IMPLEMENTATION_COMPLETE.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "HAWKLY_UI_OVERHAUL_IMPLEMENTATION_PLAN.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/HAWKLY_UI_OVERHAUL_IMPLEMENTATION_PLAN.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "HAWKLY_UI_OVERHAUL_IMPLEMENTATION_TRACKING.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/HAWKLY_UI_OVERHAUL_IMPLEMENTATION_TRACKING.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "HAWKLY_UI_OVERHAUL_PLAN.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/HAWKLY_UI_OVERHAUL_PLAN.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "HAWKLY_UI_OVERHAUL_QUICKSTART_GUIDE.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/HAWKLY_UI_OVERHAUL_QUICKSTART_GUIDE.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "HAWKLY_UI_OVERHAUL_TESTING_PLAN.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/HAWKLY_UI_OVERHAUL_TESTING_PLAN.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_REPORT.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_REPORT.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_REPORT_JULY_2025.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_REPORT_JULY_2025.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_1.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_1.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_2.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_2.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_3.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_3.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_4.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_4.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_5.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_5.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_6.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_6.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_7.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_7.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_8.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_8.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_9.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_9.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_9_FINAL.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_9_FINAL.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_9_REPLACEMENT.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_9_REPLACEMENT.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_9_UPDATE2.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_9_UPDATE2.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_JULY_27.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_JULY_27.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_JULY_27_UPDATED.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_JULY_27_UPDATED.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_JULY_29.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_JULY_29.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_JULY_30.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_JULY_30.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "IMPLEMENTATION_STATUS_UPDATE_JULY_31.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_JULY_31.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "INDEX_PAGE_REPLACEMENT_COMPLETE.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/INDEX_PAGE_REPLACEMENT_COMPLETE.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "INTEGRATION_TESTING_COMPLETE.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/INTEGRATION_TESTING_COMPLETE.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "MARKETPLACE_UI_IMPLEMENTATION_REPORT.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/MARKETPLACE_UI_IMPLEMENTATION_REPORT.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "PENETRATION_TESTING_IMPLEMENTATION_REPORT.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/PENETRATION_TESTING_IMPLEMENTATION_REPORT.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "PENETRATION_TESTING_UI_IMPLEMENTATION_PLAN.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/PENETRATION_TESTING_UI_IMPLEMENTATION_PLAN.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "PLATFORM_UI_DEPLOYMENT_RESOLVED.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/PLATFORM_UI_DEPLOYMENT_RESOLVED.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "PROFILE_SETTINGS_IMPLEMENTATION_REPORT.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/PROFILE_SETTINGS_IMPLEMENTATION_REPORT.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "PROJECT_DETAILS_UI_IMPLEMENTATION_PLAN.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/PROJECT_DETAILS_UI_IMPLEMENTATION_PLAN.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "PROJECT_DETAILS_UI_IMPLEMENTATION_REPORT.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/PROJECT_DETAILS_UI_IMPLEMENTATION_REPORT.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "RBAC_IMPLEMENTATION_REPORT.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/RBAC_IMPLEMENTATION_REPORT.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "RBAC_STATUS_REPORT.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/RBAC_STATUS_REPORT.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "SETTINGS_UI_IMPLEMENTATION_REPORT.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/SETTINGS_UI_IMPLEMENTATION_REPORT.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "SMART_CONTRACT_AUDIT_UI_IMPLEMENTATION_REPORT.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/SMART_CONTRACT_AUDIT_UI_IMPLEMENTATION_REPORT.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "UI_OVERHAUL_PRODUCTION_LAUNCH_CHECKLIST.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/UI_OVERHAUL_PRODUCTION_LAUNCH_CHECKLIST.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "UI_OVERHAUL_PRODUCTION_LAUNCH_PLAN.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/UI_OVERHAUL_PRODUCTION_LAUNCH_PLAN.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/HAWKLY_UI_COMPONENTS.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/docs/HAWKLY_UI_COMPONENTS.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/UI_OVERHAUL_RELEASE_NOTE_JULY29.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/docs/UI_OVERHAUL_RELEASE_NOTE_JULY29.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "platformstructure.md",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/platformstructure.md",
+      "category": "Documentation",
+      "extension": ".md"
+    },
+    {
+      "path": "src/contexts/NotificationContext.ts",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/src/contexts/NotificationContext.ts",
+      "category": "JavaScript/TypeScript",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/pages/CodeReviews.tsx.new",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/src/pages/CodeReviews.tsx.new",
+      "category": "Other",
+      "extension": ".new"
+    },
+    {
+      "path": "src/pages/PenetrationTesting.tsx.new",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/src/pages/PenetrationTesting.tsx.new",
+      "category": "Other",
+      "extension": ".new"
+    },
+    {
+      "path": "src/pages/ProjectDashboard.new.tsx",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/src/pages/ProjectDashboard.new.tsx",
+      "category": "JavaScript/TypeScript",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/pages/ProjectDetails.tsx.new",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/src/pages/ProjectDetails.tsx.new",
+      "category": "Other",
+      "extension": ".new"
+    },
+    {
+      "path": "src/pages/Settings.tsx.new",
+      "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/src/pages/Settings.tsx.new",
+      "category": "Other",
+      "extension": ".new"
+    }
+  ],
+  "categorized": {
+    "Documentation": [
+      {
+        "path": "AUDIT_REPORT_UI_IMPLEMENTATION.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/AUDIT_REPORT_UI_IMPLEMENTATION.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "BACKEND_CONNECTION_STATUS_REPORT.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/BACKEND_CONNECTION_STATUS_REPORT.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "CODE_REVIEWS_IMPLEMENTATION_REPORT.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/CODE_REVIEWS_IMPLEMENTATION_REPORT.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "CODE_REVIEWS_UI_IMPLEMENTATION_PLAN.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/CODE_REVIEWS_UI_IMPLEMENTATION_PLAN.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "COMPLETE_PLATFORM_MAPPING_ANALYSIS.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/COMPLETE_PLATFORM_MAPPING_ANALYSIS.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "COMPLETE_USER_FLOW_TESTING_REPORT.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/COMPLETE_USER_FLOW_TESTING_REPORT.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "CRITICAL_FIXES_IMPLEMENTATION_PLAN.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/CRITICAL_FIXES_IMPLEMENTATION_PLAN.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "DASHBOARD_UI_IMPLEMENTATION_GUIDE.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/DASHBOARD_UI_IMPLEMENTATION_GUIDE.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "DASHBOARD_UI_IMPLEMENTATION_PLAN.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/DASHBOARD_UI_IMPLEMENTATION_PLAN.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "DASHBOARD_UI_IMPLEMENTATION_REPORT.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/DASHBOARD_UI_IMPLEMENTATION_REPORT.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "DASHBOARD_UI_IMPLEMENTATION_SUMMARY.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/DASHBOARD_UI_IMPLEMENTATION_SUMMARY.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "DEVELOPER_UPDATE_JULY27_2025.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/DEVELOPER_UPDATE_JULY27_2025.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "DISCONNECTED_PAGES_ANALYSIS.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/DISCONNECTED_PAGES_ANALYSIS.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "ENHANCED_PLATFORM_CONNECTIVITY_IMPLEMENTATION.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/ENHANCED_PLATFORM_CONNECTIVITY_IMPLEMENTATION.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "GIT_PUSH_DEPLOYMENT_SUCCESS.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/GIT_PUSH_DEPLOYMENT_SUCCESS.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "HAWKLY_UI_OVERHAUL_EXECUTIVE_SUMMARY.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/HAWKLY_UI_OVERHAUL_EXECUTIVE_SUMMARY.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "HAWKLY_UI_OVERHAUL_IMPLEMENTATION_COMPLETE.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/HAWKLY_UI_OVERHAUL_IMPLEMENTATION_COMPLETE.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "HAWKLY_UI_OVERHAUL_IMPLEMENTATION_PLAN.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/HAWKLY_UI_OVERHAUL_IMPLEMENTATION_PLAN.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "HAWKLY_UI_OVERHAUL_IMPLEMENTATION_TRACKING.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/HAWKLY_UI_OVERHAUL_IMPLEMENTATION_TRACKING.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "HAWKLY_UI_OVERHAUL_PLAN.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/HAWKLY_UI_OVERHAUL_PLAN.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "HAWKLY_UI_OVERHAUL_QUICKSTART_GUIDE.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/HAWKLY_UI_OVERHAUL_QUICKSTART_GUIDE.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "HAWKLY_UI_OVERHAUL_TESTING_PLAN.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/HAWKLY_UI_OVERHAUL_TESTING_PLAN.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_REPORT.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_REPORT.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_REPORT_JULY_2025.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_REPORT_JULY_2025.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_1.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_1.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_2.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_2.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_3.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_3.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_4.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_4.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_5.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_5.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_6.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_6.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_7.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_7.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_8.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_8.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_9.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_9.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_9_FINAL.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_9_FINAL.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_9_REPLACEMENT.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_9_REPLACEMENT.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_AUGUST_9_UPDATE2.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_AUGUST_9_UPDATE2.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_JULY_27.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_JULY_27.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_JULY_27_UPDATED.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_JULY_27_UPDATED.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_JULY_29.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_JULY_29.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_JULY_30.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_JULY_30.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "IMPLEMENTATION_STATUS_UPDATE_JULY_31.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/IMPLEMENTATION_STATUS_UPDATE_JULY_31.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "INDEX_PAGE_REPLACEMENT_COMPLETE.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/INDEX_PAGE_REPLACEMENT_COMPLETE.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "INTEGRATION_TESTING_COMPLETE.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/INTEGRATION_TESTING_COMPLETE.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "MARKETPLACE_UI_IMPLEMENTATION_REPORT.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/MARKETPLACE_UI_IMPLEMENTATION_REPORT.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "PENETRATION_TESTING_IMPLEMENTATION_REPORT.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/PENETRATION_TESTING_IMPLEMENTATION_REPORT.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "PENETRATION_TESTING_UI_IMPLEMENTATION_PLAN.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/PENETRATION_TESTING_UI_IMPLEMENTATION_PLAN.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "PLATFORM_UI_DEPLOYMENT_RESOLVED.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/PLATFORM_UI_DEPLOYMENT_RESOLVED.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "PROFILE_SETTINGS_IMPLEMENTATION_REPORT.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/PROFILE_SETTINGS_IMPLEMENTATION_REPORT.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "PROJECT_DETAILS_UI_IMPLEMENTATION_PLAN.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/PROJECT_DETAILS_UI_IMPLEMENTATION_PLAN.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "PROJECT_DETAILS_UI_IMPLEMENTATION_REPORT.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/PROJECT_DETAILS_UI_IMPLEMENTATION_REPORT.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "RBAC_IMPLEMENTATION_REPORT.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/RBAC_IMPLEMENTATION_REPORT.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "RBAC_STATUS_REPORT.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/RBAC_STATUS_REPORT.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "SETTINGS_UI_IMPLEMENTATION_REPORT.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/SETTINGS_UI_IMPLEMENTATION_REPORT.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "SMART_CONTRACT_AUDIT_UI_IMPLEMENTATION_REPORT.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/SMART_CONTRACT_AUDIT_UI_IMPLEMENTATION_REPORT.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "UI_OVERHAUL_PRODUCTION_LAUNCH_CHECKLIST.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/UI_OVERHAUL_PRODUCTION_LAUNCH_CHECKLIST.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "UI_OVERHAUL_PRODUCTION_LAUNCH_PLAN.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/UI_OVERHAUL_PRODUCTION_LAUNCH_PLAN.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "docs/HAWKLY_UI_COMPONENTS.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/docs/HAWKLY_UI_COMPONENTS.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "docs/UI_OVERHAUL_RELEASE_NOTE_JULY29.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/docs/UI_OVERHAUL_RELEASE_NOTE_JULY29.md",
+        "category": "Documentation",
+        "extension": ".md"
+      },
+      {
+        "path": "platformstructure.md",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/platformstructure.md",
+        "category": "Documentation",
+        "extension": ".md"
+      }
+    ],
+    "JavaScript/TypeScript": [
+      {
+        "path": "src/contexts/NotificationContext.ts",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/src/contexts/NotificationContext.ts",
+        "category": "JavaScript/TypeScript",
+        "extension": ".ts"
+      },
+      {
+        "path": "src/pages/ProjectDashboard.new.tsx",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/src/pages/ProjectDashboard.new.tsx",
+        "category": "JavaScript/TypeScript",
+        "extension": ".tsx"
+      }
+    ],
+    "Other": [
+      {
+        "path": "src/pages/CodeReviews.tsx.new",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/src/pages/CodeReviews.tsx.new",
+        "category": "Other",
+        "extension": ".new"
+      },
+      {
+        "path": "src/pages/PenetrationTesting.tsx.new",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/src/pages/PenetrationTesting.tsx.new",
+        "category": "Other",
+        "extension": ".new"
+      },
+      {
+        "path": "src/pages/ProjectDetails.tsx.new",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/src/pages/ProjectDetails.tsx.new",
+        "category": "Other",
+        "extension": ".new"
+      },
+      {
+        "path": "src/pages/Settings.tsx.new",
+        "absolutePath": "/home/runner/work/secure-web3-arena/secure-web3-arena/src/pages/Settings.tsx.new",
+        "category": "Other",
+        "extension": ".new"
+      }
+    ]
+  },
+  "recommendations": [
+    {
+      "category": "Documentation",
+      "issue": "Found 60 empty documentation files",
+      "suggestion": "Consider adding content to these files or removing them if no longer needed"
+    },
+    {
+      "category": "Code Files",
+      "issue": "Found 2 empty code files",
+      "suggestion": "These files may be placeholders or incomplete implementations that need attention"
+    }
+  ]
+}
