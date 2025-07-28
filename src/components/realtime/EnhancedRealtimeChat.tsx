@@ -20,9 +20,10 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Tables } from '@/integrations/supabase/types';
+import { supabase } from '@/integrations/supabase/client';
 import { EngagementOfferService } from '@/services/engagementOfferService';
 import { useToast } from '@/hooks/use-toast';
-import { Collapse } from '@/components/ui/collapse';
+// import { Collapse } from '@/components/ui/collapse';
 
 type AuditMessage = Tables<'audit_messages'>;
 
@@ -46,13 +47,27 @@ export function EnhancedRealtimeChat({
   const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const typingTimeoutRef = useRef<NodeJS.Timeout>();
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
   const [offerModalOpen, setOfferModalOpen] = useState(false);
   const [offerScope, setOfferScope] = useState('');
   const [offerPrice, setOfferPrice] = useState('');
   const [offerTimeline, setOfferTimeline] = useState('');
   const [submittingOffer, setSubmittingOffer] = useState(false);
+  type EngagementOffer = {
+    id: string;
+    scope?: string;
+    price?: string;
+    timeline?: string;
+    status: string;
+    created_at: string;
+    client_id?: string;
+    terms?: {
+      scope?: string;
+      price?: string;
+      timeline?: string;
+    };
+  };
   const [latestOffer, setLatestOffer] = useState<EngagementOffer | null>(null);
   const [offerHistory, setOfferHistory] = useState<EngagementOffer[]>([]);
   const [showHistory, setShowHistory] = useState(false);
@@ -174,7 +189,7 @@ export function EnhancedRealtimeChat({
       });
       toast({ title: `Offer ${status.charAt(0).toUpperCase() + status.slice(1)}`, description: `Offer ${status}.` });
     } catch (err) {
-      toast({ title: 'Error', description: `Failed to ${status} offer`, variant: 'destructive' });
+      toast({ title: 'Error', description: `Failed to ${status} offer`, variant: 'error' });
     }
   };
 
@@ -220,7 +235,7 @@ export function EnhancedRealtimeChat({
         setOfferScope(''); setOfferPrice(''); setOfferTimeline('');
       }
     } catch (err) {
-      toast({ title: 'Error', description: 'Failed to send offer', variant: 'destructive' });
+      toast({ title: 'Error', description: 'Failed to send offer', variant: 'error' });
     } finally {
       setSubmittingOffer(false);
     }
@@ -252,7 +267,7 @@ export function EnhancedRealtimeChat({
       setOfferTimeline('');
       toast({ title: 'Counter-Offer Sent', description: 'Your counter-offer has been sent.' });
     } catch (err) {
-      toast({ title: 'Error', description: 'Failed to send counter-offer', variant: 'destructive' });
+      toast({ title: 'Error', description: 'Failed to send counter-offer', variant: 'error' });
     } finally {
       setSubmittingOffer(false);
     }
@@ -456,7 +471,7 @@ export function EnhancedRealtimeChat({
             {offerError && <div className="text-red-600 text-sm mb-2">{offerError}</div>}
             <div className="flex justify-end gap-2">
               <Button variant="ghost" onClick={() => setOfferModalOpen(false)} disabled={submittingOffer}>Cancel</Button>
-              <Button onClick={handleSendOffer} loading={submittingOffer} disabled={submittingOffer}>Send Offer</Button>
+              <Button onClick={handleSendOffer} disabled={submittingOffer}>Send Offer</Button>
             </div>
           </div>
         </div>

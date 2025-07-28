@@ -2,7 +2,7 @@
 export * from './auth';
 
 // Notification exports
-export { NotificationContext } from './NotificationContext';
+export { NotificationContext } from './NotificationContext.tsx';
 export { NotificationProvider } from './NotificationContext.tsx';
 
 // Accessibility exports

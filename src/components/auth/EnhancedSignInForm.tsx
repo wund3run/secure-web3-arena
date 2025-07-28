@@ -24,18 +24,17 @@ export const EnhancedSignInForm = () => {
     setIsLoading(true);
     
     try {
-      await signInWithEmail(email, password);
+      await signIn(email, password);
     } catch (err: any) {
       setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // Social sign in is handled by SocialAuthButtons component
   const handleSocialSignIn = async (provider: 'google' | 'github') => {
-    try {
-      await signInWithProvider(provider);
-    } catch (err: any) {
-      setError(err.message);
-    }
+    // This function is not used - social auth is handled by SocialAuthButtons
   };
 
   return (
@@ -92,7 +91,7 @@ export const EnhancedSignInForm = () => {
           </div>
 
           {error && (
-            <Alert variant="destructive">
+            <Alert variant="error">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}

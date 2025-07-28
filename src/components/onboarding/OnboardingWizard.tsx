@@ -39,17 +39,17 @@ export type OnboardingData = {
     userType: 'auditor' | 'project-owner';
   };
   skillsData?: {
-    specializations: string[];
-    experience: string;
-    github: string;
+    specializations?: string[];
+    experience?: string;
+    github?: string;
     portfolio?: string;
   };
   projectData?: {
-    projectName: string;
-    description: string;
-    projectType: string;
-    teamSize: string;
-    development: string;
+    projectName?: string;
+    description?: string;
+    projectType?: string;
+    teamSize?: string;
+    development?: string;
   };
 };
 
@@ -162,7 +162,7 @@ export default function OnboardingWizard() {
       toast({
         title: 'Failed to complete onboarding',
         description: 'Please try again or contact support.',
-        variant: 'destructive',
+        variant: 'error',
       });
     } finally {
       setIsSubmitting(false);
@@ -172,14 +172,30 @@ export default function OnboardingWizard() {
   const renderStepContent = () => {
     switch (currentStep) {
       case 0:
-        return <PersonalInfoForm onNext={updateData} data={onboardingData.personalInfo} />;
+        return <PersonalInfoForm 
+          onNext={(data: { personalInfo: { name: string; email: string; country: string; timezone: string; language: string; } }) => {
+            updateData({ personalInfo: data.personalInfo });
+          }} 
+          data={onboardingData.personalInfo} 
+        />;
       case 1:
-        return <AccountTypeForm onNext={updateData} data={onboardingData.accountType} />;
+        return <AccountTypeForm 
+          onNext={(data) => updateData(data)} 
+          data={onboardingData.accountType} 
+        />;
       case 2:
         if (onboardingData.accountType.userType === 'auditor') {
-          return <SkillsForm onNext={updateData} />;
+          return <SkillsForm 
+            onNext={(data: { skillsData: { specializations?: string[]; github?: string; experience?: string; portfolio?: string; } }) => {
+              updateData({ skillsData: data.skillsData });
+            }} 
+          />;
         } else {
-          return <ProjectDetailsForm onNext={updateData} />;
+          return <ProjectDetailsForm 
+            onNext={(data: { projectData: { description?: string; development?: string; projectName?: string; projectType?: string; teamSize?: string; } }) => {
+              updateData({ projectData: data.projectData });
+            }} 
+          />;
         }
       case 3:
         return (

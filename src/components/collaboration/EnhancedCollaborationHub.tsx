@@ -101,13 +101,13 @@ export function EnhancedCollaborationHub({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const typingTimeoutRef = useRef<NodeJS.Timeout>();
+  const typingTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   
   // Real-time hooks
   const { 
     messages, 
     sendMessage, 
-    isLoading: messagesLoading,
+    loading: messagesLoading,
     isConnected,
     typingUsers,
     sendTypingIndicator 

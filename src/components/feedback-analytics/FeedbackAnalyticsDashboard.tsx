@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import FeedbackExportControls from './FeedbackExportControls';
 import { getFeedbackAnalytics } from '../../services/feedbackAnalyticsService';
 import StatusBadge from '../ui/StatusBadge';
-import { useNotification } from '../../contexts/NotificationContext';
+import { useNotification } from '@/contexts/NotificationContext.tsx';
 import ExportButton from '../ui/ExportButton';
 
 interface FeedbackEntry {

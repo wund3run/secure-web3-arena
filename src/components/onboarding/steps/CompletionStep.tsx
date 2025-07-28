@@ -19,7 +19,7 @@ export const CompletionStep: React.FC<CompletionStepProps> = ({
   onPrev,
   isSubmitting
 }) => {
-  const isAuditor = data.userType === 'auditor';
+  const isAuditor = data.accountType.userType === 'auditor';
 
   return (
     <div className="space-y-6">
@@ -44,64 +44,74 @@ export const CompletionStep: React.FC<CompletionStepProps> = ({
         <CardContent className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <h4 className="font-medium">Full Name</h4>
-              <p className="text-muted-foreground">{data.profileData.fullName || 'Not provided'}</p>
+              <h4 className="font-medium">Name</h4>
+              <p className="text-muted-foreground">{data.personalInfo.name || 'Not provided'}</p>
             </div>
             <div>
-              <h4 className="font-medium">Display Name</h4>
-              <p className="text-muted-foreground">{data.profileData.displayName || 'Not provided'}</p>
+              <h4 className="font-medium">Email</h4>
+              <p className="text-muted-foreground">{data.personalInfo.email || 'Not provided'}</p>
+            </div>
+            <div>
+              <h4 className="font-medium">Country</h4>
+              <p className="text-muted-foreground">{data.personalInfo.country || 'Not provided'}</p>
+            </div>
+            <div>
+              <h4 className="font-medium">Language</h4>
+              <p className="text-muted-foreground">{data.personalInfo.language || 'Not provided'}</p>
             </div>
           </div>
 
-          {data.profileData.bio && (
-            <div>
-              <h4 className="font-medium">Bio</h4>
-              <p className="text-muted-foreground">{data.profileData.bio}</p>
-            </div>
-          )}
-
-          {isAuditor && (
+          {isAuditor && data.skillsData && (
             <>
-              <div>
-                <h4 className="font-medium">Experience</h4>
-                <p className="text-muted-foreground">
-                  {data.skillsData.experience}
-                </p>
-              </div>
-
-              {data.skillsData.expertise.length > 0 && (
+              {data.skillsData.experience && (
                 <div>
-                  <h4 className="font-medium">Expertise Areas</h4>
+                  <h4 className="font-medium">Experience</h4>
+                  <p className="text-muted-foreground">
+                    {data.skillsData.experience}
+                  </p>
+                </div>
+              )}
+
+              {data.skillsData.specializations && data.skillsData.specializations.length > 0 && (
+                <div>
+                  <h4 className="font-medium">Specializations</h4>
                   <div className="flex flex-wrap gap-1 mt-1">
-                    {data.skillsData.expertise.slice(0, 5).map(skill => (
+                    {data.skillsData.specializations.slice(0, 5).map(skill => (
                       <Badge key={skill} variant="outline" className="text-xs">
                         {skill}
                       </Badge>
                     ))}
-                    {data.skillsData.expertise.length > 5 && (
+                    {data.skillsData.specializations.length > 5 && (
                       <Badge variant="outline" className="text-xs">
-                        +{data.skillsData.expertise.length - 5} more
+                        +{data.skillsData.specializations.length - 5} more
                       </Badge>
                     )}
                   </div>
                 </div>
               )}
 
-              {data.skillsData.languages.length > 0 && (
+              {data.skillsData.github && (
                 <div>
-                  <h4 className="font-medium">Programming Languages</h4>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {data.skillsData.languages.slice(0, 3).map(language => (
-                      <Badge key={language} variant="outline" className="text-xs">
-                        {language}
-                      </Badge>
-                    ))}
-                    {data.skillsData.languages.length > 3 && (
-                      <Badge variant="outline" className="text-xs">
-                        +{data.skillsData.languages.length - 3} more
-                      </Badge>
-                    )}
-                  </div>
+                  <h4 className="font-medium">GitHub</h4>
+                  <p className="text-muted-foreground">{data.skillsData.github}</p>
+                </div>
+              )}
+            </>
+          )}
+
+          {!isAuditor && data.projectData && (
+            <>
+              {data.projectData.projectName && (
+                <div>
+                  <h4 className="font-medium">Project Name</h4>
+                  <p className="text-muted-foreground">{data.projectData.projectName}</p>
+                </div>
+              )}
+              
+              {data.projectData.description && (
+                <div>
+                  <h4 className="font-medium">Project Description</h4>
+                  <p className="text-muted-foreground">{data.projectData.description}</p>
                 </div>
               )}
             </>

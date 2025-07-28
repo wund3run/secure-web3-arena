@@ -200,7 +200,7 @@ export const PreLaunchDashboard = () => {
       case 'in_progress':
         return <Badge className="bg-blue-500">In Progress</Badge>;
       case 'blocked':
-        return <Badge variant="destructive">Blocked</Badge>;
+        return <Badge variant="error">Blocked</Badge>;
       default:
         return <Badge variant="outline">Pending</Badge>;
     }
@@ -209,7 +209,7 @@ export const PreLaunchDashboard = () => {
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
       case 'critical':
-        return <Badge variant="destructive">Critical</Badge>;
+        return <Badge variant="error">Critical</Badge>;
       case 'high':
         return <Badge className="bg-orange-500">High</Badge>;
       default:

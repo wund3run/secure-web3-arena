@@ -1,11 +1,19 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Upload, FileText, ExternalLink, Shield } from 'lucide-react';
-import { UserType } from '../OnboardingWizard';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
+type UserType = 'auditor' | 'project-owner' | 'project_owner';
+
+interface VerificationData {
+  portfolioLinks: string[];
+}
+
+type FileDocument = File;
 
 interface VerificationStepProps {
   userType: UserType;
@@ -18,6 +26,18 @@ export const VerificationStep: React.FC<VerificationStepProps> = ({
   onComplete,
   isSubmitting
 }) => {
+  const [data, setData] = useState<VerificationData>({
+    portfolioLinks: ['']
+  });
+  const [documents, setDocuments] = useState<FileDocument[]>([]);
+  const [githubProfile, setGithubProfile] = useState('');
+  const [linkedinProfile, setLinkedinProfile] = useState('');
+  const [portfolioUrl, setPortfolioUrl] = useState('');
+  
+  const onChange = (newData: VerificationData) => {
+    setData(newData);
+  };
+  
   const updateField = (field: keyof VerificationData, value: any) => {
     onChange({ ...data, [field]: value });
   };

@@ -35,7 +35,7 @@ const Leaderboard = () => {
       {
         rank: 1,
         name: 'Sarah Chen',
-        avatar: '/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png',
+        avatar: '/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png',
         points: 15847,
         change: 'up',
         changeAmount: 125,
@@ -47,7 +47,7 @@ const Leaderboard = () => {
       {
         rank: 2,
         name: 'Marcus Rodriguez',
-        avatar: '/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png',
+        avatar: '/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png',
         points: 14293,
         change: 'up',
         changeAmount: 89,
@@ -71,7 +71,7 @@ const Leaderboard = () => {
       {
         rank: 4,
         name: 'Emma Thompson',
-        avatar: '/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png',
+        avatar: '/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png',
         points: 11487,
         change: 'up',
         changeAmount: 156,

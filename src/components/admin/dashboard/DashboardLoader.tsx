@@ -63,7 +63,7 @@ export function DashboardLoader() {
   return (
     <div className="flex flex-col items-center justify-center h-64">
       <img 
-        src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+        src="/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
         alt="Hawkly Logo"
         className="h-12 w-12 object-contain bg-transparent animate-pulse mb-4"
         style={{ backgroundColor: 'transparent' }}

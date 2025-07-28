@@ -17,7 +17,7 @@ export function NotificationTestingDashboard() {
             <Bell className="h-5 w-5" />
             Notification Dashboard
           </div>
-          <Badge variant={isConnected ? "default" : "destructive"}>
+          <Badge variant={isConnected ? "default" : "error"}>
             {isConnected ? (
               <>
                 <Wifi className="h-3 w-3 mr-1" />

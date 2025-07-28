@@ -1,5 +1,36 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+// Real-time presence and messaging (stub for backend integration)
+const usePresence = (teamMembers: TeamMember[]) => {
+  const [presence, setPresence] = useState<{ [id: string]: string }>(() => {
+    const initial: { [id: string]: string } = {};
+    teamMembers.forEach(m => { initial[m.id] = m.status; });
+    return initial;
+  });
+  // Simulate presence updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPresence(prev => {
+        const updated = { ...prev };
+        Object.keys(updated).forEach(id => {
+          // Randomly toggle status for demo
+          updated[id] = Math.random() > 0.8 ? 'busy' : updated[id];
+        });
+        return updated;
+      });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+  return presence;
+};
+
+const useMessaging = () => {
+  const [messages, setMessages] = useState<{ author: string; content: string; timestamp: string }[]>([]);
+  const sendMessage = (author: string, content: string) => {
+    setMessages(prev => [...prev, { author, content, timestamp: new Date().toLocaleTimeString() }]);
+  };
+  return { messages, sendMessage };
+};
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -67,6 +98,8 @@ export const CollaborationHub: React.FC = () => {
       expertise: ['Testing', 'Documentation']
     }
   ];
+  const presence = usePresence(teamMembers);
+  const { messages, sendMessage } = useMessaging();
 
   const comments: AuditComment[] = [
     {
@@ -152,7 +185,7 @@ export const CollaborationHub: React.FC = () => {
                           <AvatarImage src={member.avatar} />
                           <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                         </Avatar>
-                        <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${getStatusColor(member.status)}`} />
+                        <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${getStatusColor(presence[member.id] || member.status)}`} />
                       </div>
                       <div>
                         <p className="font-medium">{member.name}</p>
@@ -166,7 +199,7 @@ export const CollaborationHub: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={() => sendMessage(member.name, 'Hello!') }>
                       <MessageSquare className="h-4 w-4 mr-2" />
                       Chat
                     </Button>
@@ -257,6 +290,33 @@ export const CollaborationHub: React.FC = () => {
                   <Video className="h-4 w-4 mr-2" />
                   Start New Session
                 </Button>
+              </div>
+              <div className="mt-6">
+                <h4 className="text-lg font-semibold mb-2">Team Chat (Demo)</h4>
+                <ScrollArea className="h-40 mb-2">
+                  <div className="space-y-2">
+                    {messages.map((msg, idx) => (
+                      <div key={idx} className="flex gap-2 items-center">
+                        <Avatar className="h-6 w-6"><AvatarFallback>{msg.author[0]}</AvatarFallback></Avatar>
+                        <span className="font-medium text-xs">{msg.author}</span>
+                        <span className="text-xs text-muted-foreground">{msg.timestamp}</span>
+                        <span className="text-sm">{msg.content}</span>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+                <div className="flex gap-2">
+                  <Input placeholder="Type a message..." onKeyDown={e => {
+                    if (e.key === 'Enter' && e.currentTarget.value) {
+                      sendMessage('You', e.currentTarget.value);
+                      e.currentTarget.value = '';
+                    }
+                  }} />
+                  <Button size="sm" onClick={() => {}}>
+                    <Send className="h-4 w-4 mr-2" />
+                    Send
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

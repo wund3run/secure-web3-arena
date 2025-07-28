@@ -278,14 +278,25 @@ export default function PersonalizedQuickActions({
     if (!user) return;
     
     try {
-      const { data, error } = await supabase
+      // Define a type for analytics data to avoid deep type instantiation
+      interface AnalyticsData {
+        event_data: {
+          action_id: string;
+          [key: string]: any;
+        };
+        [key: string]: any;
+      }
+      
+      // Use any to break the deep type instantiation, then manually type the result
+      const analyticsResult = await (supabase as any)
         .from('personalization_analytics')
         .select('event_data')
         .eq('user_id', user.id)
         .eq('event_type', 'quick_action_completed');
-
-      if (error) throw error;
-
+      
+      if (analyticsResult.error) throw analyticsResult.error;
+      
+      const data = analyticsResult.data as AnalyticsData[] | null;
       const completed = data?.map(item => item.event_data?.action_id).filter(Boolean) || [];
       setCompletedActions(completed);
     } catch (error) {
@@ -303,7 +314,7 @@ export default function PersonalizedQuickActions({
       
       // Mark as completed and award XP
       if (user) {
-        await GamificationService.awardXP(user.id, action.xpReward as XPAction, {
+        await GamificationService.awardXP(user.id, XPAction.PROFILE_UPDATED, {
           description: `Completed: ${action.title}`,
           category: action.category
         });
@@ -321,7 +332,7 @@ export default function PersonalizedQuickActions({
       toast({
         title: "Error",
         description: "Failed to complete action. Please try again.",
-        variant: "destructive"
+        variant: "error"
       });
     } finally {
       setIsLoading(false);

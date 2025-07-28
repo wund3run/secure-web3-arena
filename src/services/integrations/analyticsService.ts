@@ -66,7 +66,7 @@ export class AdvancedAnalyticsService {
       
       const { error } = await supabase.from('analytics_events').insert({
         event_name: event.event,
-        properties: event.properties,
+        properties: event.properties as any, // Cast to Json
         user_id: user?.id || null,
         timestamp: event.timestamp || new Date().toISOString()
       });
@@ -81,35 +81,52 @@ export class AdvancedAnalyticsService {
 
   private static sendToMixpanel(event: AnalyticsEvent): void {
     // Mock Mixpanel integration
-    if (typeof window !== 'undefined' && (window as Window & { mixpanel: { track: (event: string, properties: Record<string, unknown>) => void } }).mixpanel) {
-      (window as Window & { mixpanel: { track: (event: string, properties: Record<string, unknown>) => void } }).mixpanel.track(event.event, event.properties);
+    if (typeof window !== 'undefined' && typeof (window as any).mixpanel !== 'undefined' && typeof (window as any).mixpanel.track === 'function') {
+      (window as any).mixpanel.track(event.event, event.properties);
     }
   }
 
   static trackAuditRequest(auditData: unknown): void {
+    const req = auditData as {
+      blockchain?: string;
+      budget?: number;
+      urgency_level?: string;
+      contract_count?: number;
+      lines_of_code?: number;
+    };
     this.track('audit_request_created', {
-      blockchain: auditData.blockchain,
-      budget_range: auditData.budget,
-      urgency: auditData.urgency_level,
-      contract_count: auditData.contract_count,
-      lines_of_code: auditData.lines_of_code
+      blockchain: req.blockchain,
+      budget_range: req.budget,
+      urgency: req.urgency_level,
+      contract_count: req.contract_count,
+      lines_of_code: req.lines_of_code
     });
   }
 
   static trackAuditorMatch(matchData: unknown): void {
+    const match = matchData as {
+      compatibility_score?: number;
+      auditor_profile?: { years_experience?: number };
+    };
     this.track('auditor_matched', {
-      match_score: matchData.compatibility_score,
-      auditor_experience: matchData.auditor_profile?.years_experience,
+      match_score: match.compatibility_score,
+      auditor_experience: match.auditor_profile?.years_experience,
       match_method: 'ai_powered'
     });
   }
 
   static trackPayment(paymentData: unknown): void {
+    const payment = paymentData as {
+      amount?: number;
+      currency?: string;
+      payment_method?: string;
+      audit_id?: string;
+    };
     this.track('payment_processed', {
-      amount: paymentData.amount,
-      currency: paymentData.currency,
-      payment_method: paymentData.payment_method,
-      audit_id: paymentData.audit_id
+      amount: payment.amount,
+      currency: payment.currency,
+      payment_method: payment.payment_method,
+      audit_id: payment.audit_id
     });
   }
 
@@ -133,26 +150,26 @@ export class AdvancedAnalyticsService {
   }
 
   private static processFunnelData(events: unknown[], steps: string[]): ConversionFunnel[] {
-    const userSessions = new Map();
-    
+    type EventRow = { event_name?: string; user_id?: string; timestamp?: string };
+    const userSessions = new Map<string, EventRow[]>();
     // Group events by user
-    events.forEach(event => {
-      if (!userSessions.has(event.user_id)) {
-        userSessions.set(event.user_id, []);
+    (events as EventRow[]).forEach(event => {
+      if (!userSessions.has(event.user_id!)) {
+        userSessions.set(event.user_id!, []);
       }
-      userSessions.get(event.user_id).push(event);
+      userSessions.get(event.user_id!)!.push(event);
     });
 
     // Calculate funnel metrics
     return steps.map((step, index) => {
       const usersAtStep = Array.from(userSessions.values())
-        .filter(userEvents => userEvents.some((e: unknown) => e.event_name === step)).length;
-      
-      const previousStepUsers = index > 0 
+        .filter(userEvents => userEvents.some((e: EventRow) => e.event_name === step)).length;
+
+      const previousStepUsers = index > 0
         ? Array.from(userSessions.values())
-            .filter(userEvents => userEvents.some((e: unknown) => e.event_name === steps[index - 1])).length
+            .filter(userEvents => userEvents.some((e: EventRow) => e.event_name === steps[index - 1])).length
         : usersAtStep;
-      
+
       const conversionRate = previousStepUsers > 0 ? (usersAtStep / previousStepUsers) * 100 : 0;
       const dropOff = previousStepUsers - usersAtStep;
 

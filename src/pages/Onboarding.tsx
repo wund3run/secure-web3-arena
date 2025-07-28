@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
+import OnboardingWizard from '@/components/onboarding/OnboardingWizard';
 import { useAuth } from '@/contexts/auth';
 import { Navigate } from 'react-router-dom';
 import LoadingState from '@/components/ui/loading-state';

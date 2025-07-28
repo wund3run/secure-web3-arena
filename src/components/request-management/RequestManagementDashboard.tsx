@@ -353,10 +353,20 @@ export function RequestManagementDashboard() {
           filteredRequests.map((request) => (
             <RequestStatusTracker
               key={request.id}
-              request={request}
-              onViewDetails={() => handleViewDetails(request.id)}
-              onContactAuditor={request.auditor ? () => handleContactAuditor(request.id) : undefined}
-              onDownloadReport={request.status === 'completed' ? () => handleDownloadReport(request.id) : undefined}
+              statusUpdates={request.timeline.map((t, idx) => ({
+                id: `${request.id}-timeline-${idx}`,
+                status_type: t.status,
+                title: t.phase,
+                message: t.description,
+                created_at: t.date ? t.date.toISOString() : new Date().toISOString(),
+                user_id: request.auditor?.id,
+                profiles: request.auditor ? {
+                  full_name: request.auditor.name,
+                  avatar_url: request.auditor.avatar,
+                  role: 'Auditor'
+                } : undefined,
+                metadata: {}
+              }))}
             />
           ))
         )}

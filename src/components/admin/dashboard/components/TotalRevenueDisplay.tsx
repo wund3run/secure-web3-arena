@@ -17,7 +17,7 @@ export function TotalRevenueDisplay({ total, change, period }: TotalRevenueDispl
           <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
           <div className="flex items-center gap-1">
             <h3 className="text-3xl font-bold">{formatCurrency(total)}</h3>
-            <Badge variant={change >= 0 ? "success" : "destructive"} className="text-xs">
+            <Badge variant={change >= 0 ? "success" : "error"} className="text-xs">
               {change >= 0 ? (
                 <TrendingUp className="h-3 w-3 mr-1" />
               ) : (

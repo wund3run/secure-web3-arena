@@ -62,6 +62,25 @@ type AuditorProfile = Tables<'auditor_profiles'>;
 type AuditProgress = Tables<'audit_progress'>;
 type AuditFinding = Tables<'audit_findings'>;
 
+// Define a type for auditor reviews to fix the rating property error
+interface AuditorReview {
+  audit_request_id: string;
+  auditor_id: string;
+  client_id: string;
+  communication_rating: number;
+  created_at: string;
+  id: string;
+  rating: number;
+  review_text: string;
+  technical_quality_rating: number;
+  timeliness_rating: number;
+  would_recommend: boolean;
+  comment?: string;
+  like_most?: string;
+  improve?: string;
+  screenshot_url?: string;
+}
+
 interface AuditProject {
   id: string;
   name: string;
@@ -124,7 +143,7 @@ export function EnhancedAuditorDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [auditorProfile, setAuditorProfile] = useState<AuditorProfile | null>(null);
   const [isNewUser, setIsNewUser] = useState(false);
-  const [feedbackList, setFeedbackList] = useState<any[]>([]);
+  const [feedbackList, setFeedbackList] = useState<AuditorReview[]>([]);
   const [feedbackLoading, setFeedbackLoading] = useState(true);
   const [averageRating, setAverageRating] = useState<number | null>(null);
 
@@ -178,28 +197,49 @@ export function EnhancedAuditorDashboard() {
         return;
       }
 
-      // Fetch real audit data for existing auditors
-      const [auditRequestsResponse, progressResponse, findingsResponse] = await Promise.all([
-        supabase
-          .from('audit_requests')
-          .select('*')
-          .eq('assigned_auditor_id', user.id)
-          .order('created_at', { ascending: false }),
-        supabase
-          .from('audit_progress')
-          .select('*')
-          .eq('auditor_id', user.id)
-          .order('updated_at', { ascending: false }),
-        supabase
-          .from('audit_findings')
-          .select('*')
-          .eq('auditor_id', user.id)
-          .order('created_at', { ascending: false })
-      ]);
+      // Fetch real audit data for existing auditors - fixed by using separate requests
+      const auditRequestsResponse = await supabase
+        .from('audit_requests')
+        .select('*')
+        .eq('assigned_auditor_id', user.id)
+        .order('created_at', { ascending: false });
+      
+      const progressResponse = await supabase
+        .from('audit_progress')
+        .select('*')
+        .eq('auditor_id', user.id)
+        .order('updated_at', { ascending: false });
+        
+      // Define a type for findings to avoid deep type instantiation
+      interface AuditFinding {
+        id: string;
+        auditor_id: string;
+        audit_id: string;
+        audit_request_id: string;
+        category: string;
+        code_snippet: string;
+        created_at: string;
+        description: string;
+        location: string;
+        recommendation: string;
+        severity: string;
+        status: string;
+        title: string;
+        updated_at: string;
+        [key: string]: any;
+      }
+      
+      // Use any to break the deep type instantiation, then manually type the result
+      const findingsQueryResult = await (supabase as any)
+        .from('audit_findings')
+        .select('*')
+        .eq('auditor_id', user.id)
+        .order('created_at', { ascending: false });
+        
+      const findings = findingsQueryResult.data as AuditFinding[] | null;
 
       const { data: auditRequests } = auditRequestsResponse;
       const { data: auditProgressData } = progressResponse;
-      const { data: findings } = findingsResponse;
 
       // Transform real data into dashboard format
       const transformedProjects: AuditProject[] = (auditRequests || []).map(request => ({
@@ -256,7 +296,7 @@ export function EnhancedAuditorDashboard() {
       toast({
         title: "Error loading dashboard",
         description: "Please refresh the page to try again",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsLoading(false);
@@ -268,9 +308,9 @@ export function EnhancedAuditorDashboard() {
       if (!user) return;
       setFeedbackLoading(true);
       const { data, error } = await supabase
-        .from('audit_feedback')
+        .from('auditor_reviews')
         .select('*')
-        .in('audit_request_id', projects.filter(p => p.status === 'completed').map(p => p.id));
+        .eq('auditor_id', user.id);
       if (!error && data) {
         setFeedbackList(data);
         if (data.length > 0) {

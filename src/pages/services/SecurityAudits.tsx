@@ -130,7 +130,7 @@ export default function SecurityAudits() {
                 )}
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl">{pkg.name}</CardTitle>
-                  <div className="text-3xl font-bold text-primary">{pkg.price}</div>
+                  {/* No price property in auditPackages */}
                   <p className="text-muted-foreground">{pkg.duration}</p>
                 </CardHeader>
                 <CardContent className="space-y-4">

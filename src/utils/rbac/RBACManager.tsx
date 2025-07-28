@@ -111,9 +111,15 @@ export function RBACProvider({ children }: { children: React.ReactNode }) {
 
       if (error) throw error;
 
-      const rolesWithPermissions = (data || []).map((role: unknown) => ({
-        ...role,
-        permissions: ROLE_PERMISSIONS[role.role as Role] || []
+      const rolesWithPermissions: UserRole[] = (data || []).map((role: any) => ({
+        id: role.id,
+        user_id: role.user_id,
+        role: role.role,
+        permissions: role.role ? ROLE_PERMISSIONS[role.role as Role] || [] : [],
+        is_active: role.is_active,
+        granted_by: role.granted_by,
+        granted_at: role.granted_at,
+        expires_at: role.expires_at,
       }));
 
       setUserRoles(rolesWithPermissions);

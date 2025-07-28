@@ -117,7 +117,7 @@ export function PlatformHealthWidget({
                 <p className="text-sm font-medium text-muted-foreground">Transactions</p>
                 <div className="flex items-center gap-1">
                   <h4 className="text-2xl font-bold">{healthData.transactions.total}</h4>
-                  <Badge variant={healthData.transactions.change >= 0 ? "success" : "destructive"} className="text-xs">
+                  <Badge variant={healthData.transactions.change >= 0 ? "success" : "error"} className="text-xs">
                     {healthData.transactions.change >= 0 ? (
                       <TrendingUp className="h-3 w-3 mr-1" />
                     ) : (
@@ -245,7 +245,7 @@ export function PlatformHealthWidget({
                 <p className="text-sm font-medium text-muted-foreground">User Growth</p>
                 <div className="flex items-center gap-1">
                   <h4 className="text-2xl font-bold">{healthData.users.total}</h4>
-                  <Badge variant={healthData.users.change >= 0 ? "success" : "destructive"} className="text-xs">
+                  <Badge variant={healthData.users.change >= 0 ? "success" : "error"} className="text-xs">
                     {healthData.users.change >= 0 ? (
                       <TrendingUp className="h-3 w-3 mr-1" />
                     ) : (

@@ -41,7 +41,7 @@ export function EnhancedNavbar() {
         <Link to="/" className="flex-shrink-0 flex items-center gap-2">
           <img
             className="h-12 w-12 object-contain bg-transparent rounded-full shadow-glow"
-            src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png"
+            src="/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png"
             alt="Hawkly Logo"
             style={{ backgroundColor: 'transparent' }}
           />

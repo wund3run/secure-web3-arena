@@ -5,7 +5,19 @@ import { AdaptiveDashboardLayout } from '../adaptive/AdaptiveDashboardLayout';
 import { SmartBreadcrumbs } from '@/components/navigation/SmartBreadcrumbs';
 import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, TrendingUp, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ErrorBoundary } from '@/components/error/ErrorBoundary';
+import { DashboardErrorFallback } from '@/components/dashboard/error/DashboardErrorFallback';
+import { EnhancedSkeleton } from '@/components/ui/EnhancedSkeleton';
+import { ResponsiveGrid } from '@/components/layout/ResponsiveGrid';
+import { OnboardingWizard } from '@/components/dashboard/widgets/enhanced/OnboardingWizard';
+import { QuickActions } from '@/components/dashboard/widgets/enhanced/QuickActions';
+import { EnhancedProgressBar } from '@/components/ui/EnhancedProgressBar';
+import { MetricsOverview } from '@/components/dashboard/widgets/MetricsOverview';
+import { EnhancedProjectsOverview } from '@/components/dashboard/widgets/EnhancedProjectsOverview';
+import { EnhancedRecentActivity } from '@/components/dashboard/widgets/EnhancedRecentActivity';
+import { CodeSplittingWrapper } from '@/components/utils/CodeSplittingWrapper';
 
 export function ImprovedProjectOwnerDashboard() {
   const { user, userProfile } = useAuth();

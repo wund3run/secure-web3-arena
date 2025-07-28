@@ -108,7 +108,7 @@ export function SecureForm({
   return (
     <form onSubmit={handleSubmit} className={`space-y-4 ${className}`}>
       {rateLimitExceeded && (
-        <Alert variant="destructive">
+        <Alert variant="error">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
             Too many attempts. Please wait a moment before trying again.
@@ -117,7 +117,7 @@ export function SecureForm({
       )}
 
       {error && (
-        <Alert variant="destructive">
+        <Alert variant="error">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>

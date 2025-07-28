@@ -175,7 +175,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       )}
 
       {error && (
-        <Alert variant="destructive" className="mt-4">
+        <Alert variant="error" className="mt-4">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>

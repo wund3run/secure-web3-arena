@@ -196,7 +196,7 @@ export const AdvancedPlatformMonitoring = () => {
 
       {/* Critical Alerts */}
       {criticalAlerts.length > 0 && (
-        <Alert variant="destructive">
+        <Alert variant="error">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
             <strong>{criticalAlerts.length} critical issues</strong> require immediate attention

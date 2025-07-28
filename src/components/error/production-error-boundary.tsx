@@ -77,7 +77,7 @@ export class ProductionErrorBoundary extends Component<Props, State> {
             <AlertTriangle className="h-8 w-8 text-red-600" />
           </div>
           <h2 className="text-xl font-semibold mb-2">Something went wrong</h2>
-          <Alert variant="destructive" className="max-w-md mb-6">
+          <Alert variant="error" className="max-w-md mb-6">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
               We encountered an unexpected error. Our team has been notified.

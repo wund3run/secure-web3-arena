@@ -102,7 +102,7 @@ export const UXAuditReportView: React.FC = () => {
           <CardDescription>Failed to generate report</CardDescription>
         </CardHeader>
         <CardContent>
-          <Alert variant="destructive">
+          <Alert variant="error">
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Error</AlertTitle>
             <AlertDescription>
@@ -129,7 +129,7 @@ export const UXAuditReportView: React.FC = () => {
               Total: {report.totalIssues}
             </Badge>
             {report.criticalIssues > 0 && (
-              <Badge variant="destructive" className="h-7">
+              <Badge variant="error" className="h-7">
                 Critical: {report.criticalIssues}
               </Badge>
             )}
@@ -209,7 +209,7 @@ export const UXAuditReportView: React.FC = () => {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>High Priority:</span>
-                      <Badge variant={report.highPriorityIssues > 0 ? "destructive" : "outline"}>
+                      <Badge variant={report.highPriorityIssues > 0 ? "error" : "outline"}>
                         {report.highPriorityIssues}
                       </Badge>
                     </div>

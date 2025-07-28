@@ -57,7 +57,7 @@ export const NotificationCenter = () => {
           <Bell className="h-6 w-6" />
           <h1 className="text-2xl font-bold">Notification Center</h1>
           {unreadNotifications.length > 0 && (
-            <Badge variant="destructive">{unreadNotifications.length} unread</Badge>
+            <Badge variant="error">{unreadNotifications.length} unread</Badge>
           )}
         </div>
         <div className="flex gap-2">

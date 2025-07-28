@@ -143,7 +143,7 @@ export function NewAuditorOnboarding() {
       toast({
         title: "Error loading onboarding status",
         description: "Please refresh the page to try again",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsLoading(false);

@@ -204,7 +204,7 @@ export function UnifiedNavigation() {
           aria-label="Hawkly Home"
         >
           <img 
-            src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+            src="/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
             alt="Hawkly Logo"
             className="h-10 w-10 object-contain"
           />
@@ -383,7 +383,7 @@ export function UnifiedNavigation() {
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     <img 
-                      src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+                      src="/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
                       alt="Hawkly Logo"
                       className="h-8 w-8 object-contain"
                     />

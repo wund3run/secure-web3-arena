@@ -30,7 +30,7 @@ import {
 import { useAuth } from "@/contexts/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { GamificationService } from "@/services/gamificationService";
+import { GamificationService, XPAction } from "@/services/gamificationService";
 import { useNavigate } from 'react-router-dom';
 
 interface AuditorProfile {
@@ -341,14 +341,26 @@ export default function PersonalizedQuickActionsRefined({
     
     try {
       setError(null);
-      const { data, error: loadError } = await supabase
+      
+      // Define a type for analytics data to avoid deep type instantiation
+      interface AnalyticsData {
+        event_data: {
+          action_id: string;
+          [key: string]: any;
+        };
+        [key: string]: any;
+      }
+      
+      // Use any to break the deep type instantiation, then manually type the result
+      const analyticsResult = await (supabase as any)
         .from('personalization_analytics')
         .select('event_data')
         .eq('user_id', user.id)
         .eq('event_type', 'quick_action_completed');
-
-      if (loadError) throw loadError;
-
+        
+      if (analyticsResult.error) throw analyticsResult.error;
+      
+      const data = analyticsResult.data as AnalyticsData[] | null;
       const completed = data?.map(item => item.event_data?.action_id).filter(Boolean) || [];
       setCompletedActions(completed);
     } catch (error) {
@@ -374,13 +386,14 @@ export default function PersonalizedQuickActionsRefined({
       
       // Mark as completed and award XP
       if (user) {
-        await GamificationService.awardXP(user.id, 'quick_action_completed', {
+        await GamificationService.awardXP(user.id, XPAction.PROFILE_UPDATED, {
           description: `Completed: ${action.title}`,
           category: action.category
         });
         
         // Log the completion
-        await supabase
+        // Use any to break the deep type instantiation
+        await (supabase as any)
           .from('personalization_analytics')
           .insert({
             user_id: user.id,
@@ -406,7 +419,7 @@ export default function PersonalizedQuickActionsRefined({
       toast({
         title: "Error",
         description: "Failed to start action. Please try again.",
-        variant: "destructive"
+        variant: "error"
       });
     } finally {
       setIsLoading(false);
@@ -493,7 +506,7 @@ export default function PersonalizedQuickActionsRefined({
     <div className="space-y-6" role="region" aria-label="Personalized quick actions">
       {/* Error Alert */}
       {error && (
-        <Alert variant="destructive">
+        <Alert variant="error">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription className="flex items-center justify-between">
             <span>{error}</span>

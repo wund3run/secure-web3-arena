@@ -87,7 +87,7 @@ export function EnhancedQuickNavigation() {
             <span className="hidden sm:inline">{item.label}</span>
             {item.badge && (
               <Badge 
-                variant="destructive" 
+                variant="error" 
                 className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
               >
                 {item.badge}
@@ -102,7 +102,7 @@ export function EnhancedQuickNavigation() {
           <Button variant="ghost" size="sm" className="relative">
             <Bell className="h-4 w-4" />
             <Badge 
-              variant="destructive" 
+              variant="error" 
               className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 text-xs"
             >
               2

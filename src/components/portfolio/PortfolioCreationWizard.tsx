@@ -187,7 +187,7 @@ export default function PortfolioCreationWizard() {
       toast({
         title: "Authentication required",
         description: "Please log in to save your portfolio",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -198,7 +198,7 @@ export default function PortfolioCreationWizard() {
       const portfolioData = {
         user_id: user.id,
         event_name: 'portfolio_data',
-        properties: data,
+        properties: JSON.stringify(data),
         timestamp: new Date().toISOString(),
         created_at: new Date().toISOString()
       };
@@ -221,7 +221,7 @@ export default function PortfolioCreationWizard() {
       toast({
         title: "Error saving portfolio",
         description: "Please try again or contact support",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsSaving(false);
@@ -233,7 +233,7 @@ export default function PortfolioCreationWizard() {
       toast({
         title: "Missing information",
         description: "Please fill in project title and description",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }

@@ -168,12 +168,13 @@ export class EnterpriseService {
   static async createCeramicProfile(profileData: unknown): Promise<CeramicProfile | null> {
     try {
       // Mock Ceramic profile creation
+      const pd = profileData as { name?: string; description?: string; image?: string };
       const profile: CeramicProfile = {
         did: `did:3:${Math.random().toString(36).substr(2, 9)}`,
         profile: {
-          name: profileData.name,
-          description: profileData.description,
-          image: profileData.image,
+          name: pd.name,
+          description: pd.description,
+          image: pd.image,
           verified: false,
           credentials: []
         }

@@ -33,7 +33,7 @@ export const SignInForm = ({
     <div className="space-y-6">
       <form onSubmit={onSubmit} className="space-y-4">
         {error && (
-          <Alert variant="destructive">
+          <Alert variant="error">
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}

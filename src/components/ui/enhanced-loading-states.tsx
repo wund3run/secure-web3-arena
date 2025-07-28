@@ -119,7 +119,7 @@ export function EnhancedLoadingState({
     return (
       <div className={containerClasses}>
         <img 
-          src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+          src="/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
           alt="Hawkly Logo"
           className={cn("object-contain bg-transparent animate-pulse mb-4", logoSizes[size])}
           style={{ backgroundColor: 'transparent' }}
@@ -144,7 +144,7 @@ export function EnhancedLoadingState({
     return (
       <div className={containerClasses}>
         <img 
-          src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+          src="/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
           alt="Hawkly Logo"
           className={cn("object-contain bg-transparent animate-pulse", logoSizes[size])}
           style={{ backgroundColor: 'transparent' }}
@@ -160,7 +160,7 @@ export function EnhancedLoadingState({
   return (
     <div className={containerClasses}>
       <img 
-        src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+        src="/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
         alt="Hawkly Logo"
         className={cn("object-contain bg-transparent animate-pulse", logoSizes[size])}
         style={{ backgroundColor: 'transparent' }}

@@ -34,9 +34,32 @@ import { Link } from 'react-router-dom';
 interface AuditorProfile {
   id: string;
   user_id: string;
-  years_experience: number;
-  specializations: string[];
-  availability_hours: number;
+  years_experience?: number;
+  blockchain_expertise?: string[];
+  specialization_tags?: string[];
+  availability_status?: string;
+  average_completion_time_days?: number;
+  audit_types?: string[];
+  business_name?: string;
+  certifications?: any;
+  created_at?: string;
+  current_audit_count?: number;
+  github_username?: string;
+  hourly_rate_max?: number;
+  hourly_rate_min?: number;
+  languages_spoken?: string[];
+  linkedin_url?: string;
+  max_concurrent_audits?: number;
+  max_project_size?: number;
+  min_project_size?: number;
+  portfolio_url?: string;
+  preferred_project_types?: string[];
+  repeat_client_rate?: number;
+  response_time_hours?: number;
+  success_rate?: number;
+  timezone?: string;
+  total_audits_completed?: number;
+  updated_at?: string;
   motivation_type?: 'achievement' | 'social' | 'mastery' | 'purpose';
   learning_style?: 'visual' | 'auditory' | 'kinesthetic' | 'reading';
   experience_level?: 'beginner' | 'intermediate' | 'expert';
@@ -149,11 +172,11 @@ export function PersonalizedWelcomeEnhanced() {
 
     // Calculate onboarding progress
     let progress = 0;
-    if (profile.years_experience > 0) progress += 20;
-    if (profile.specializations?.length > 0) progress += 20;
+    if (profile.years_experience && profile.years_experience > 0) progress += 20;
+    if (profile.specialization_tags?.length > 0) progress += 20;
     if (hasPersonalization) progress += 30;
-    if (profile.availability_hours > 0) progress += 15;
-    if (profile.preferred_industries?.length > 0) progress += 15;
+    if (profile.availability_status !== null) progress += 15;
+    if (profile.preferred_project_types?.length > 0) progress += 15;
 
     setPersonalizedContent({
       welcomeMessage: welcomeMessages[experienceLevel] || welcomeMessages.beginner,
@@ -198,7 +221,10 @@ export function PersonalizedWelcomeEnhanced() {
     }
     
     // Award XP for completion
-    gamificationService.awardXP(user?.id || '', 'profile_action' as XPAction, 50);
+    GamificationService.awardXP(user?.id || '', XPAction.PROFILE_UPDATED, {
+      description: 'Completed personalized welcome setup',
+      category: 'profile'
+    });
   };
 
   if (isLoading) {

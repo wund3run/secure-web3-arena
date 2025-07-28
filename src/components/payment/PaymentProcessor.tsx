@@ -86,7 +86,7 @@ export const PaymentProcessor: React.FC<PaymentProcessorProps> = ({
           </div>
 
           {error && (
-            <Alert variant="destructive">
+            <Alert variant="error">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}

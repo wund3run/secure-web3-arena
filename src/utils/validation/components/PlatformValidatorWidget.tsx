@@ -66,7 +66,7 @@ export function PlatformValidatorWidget({
 
         <div className="flex items-center gap-2">
           <Badge
-            variant={highCount > 0 ? "destructive" : "outline"}
+            variant={highCount > 0 ? "error" : "outline"}
             className="flex items-center gap-1"
           >
             <XCircle className="h-3 w-3" />
@@ -187,7 +187,7 @@ function getSeverityBadge(severity: ValidationSeverity) {
   switch (severity) {
     case "high":
       return (
-        <Badge variant="destructive" className="flex items-center gap-1">
+        <Badge variant="error" className="flex items-center gap-1">
           <XCircle className="h-3 w-3" />
           High
         </Badge>

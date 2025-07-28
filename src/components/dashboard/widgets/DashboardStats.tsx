@@ -31,7 +31,7 @@ export const DashboardStats = React.memo(({ data }: DashboardStatsProps) => {
   const getScoreBadge = useMemo(() => (score: number) => {
     if (score >= 90) return { text: 'Excellent', variant: 'default' as const };
     if (score >= 70) return { text: 'Good', variant: 'secondary' as const };
-    return { text: 'Needs Attention', variant: 'destructive' as const };
+    return { text: 'Needs Attention', variant: 'error' as const };
   }, []);
 
   const stats = useMemo(() => [
@@ -85,7 +85,10 @@ export const DashboardStats = React.memo(({ data }: DashboardStatsProps) => {
               <div className="flex items-center justify-between mt-2">
                 <p className="text-xs text-secondary" style={{ fontFamily: "'Space Grotesk', Arial, sans-serif" }}>{stat.description}</p>
                 {stat.badge && (
-                  <Badge variant={stat.badge.variant === 'destructive' ? 'error' : stat.badge.variant} className="text-xs font-medium rounded-full px-3 py-1">
+                  <Badge 
+                    variant={stat.badge.variant as "default" | "accent" | "secondary" | "outline" | "success" | "warning" | "error"} 
+                    className="text-xs font-medium rounded-full px-3 py-1"
+                  >
                     {stat.badge.text}
                   </Badge>
                 )}

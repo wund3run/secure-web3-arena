@@ -71,6 +71,7 @@ import Web3Security from '@/pages/Web3Security';
 // User Authentication & Profile
 import Profile from '@/pages/Profile';
 import ProfilePage from '@/pages/ProfilePage';
+import ProfileSettings from '@/pages/ProfileSettings';
 import ResetPassword from '@/pages/ResetPassword';
 import TwoFactorAuth from '@/pages/TwoFactorAuth';
 import TwoFactorSetup from '@/pages/TwoFactorSetup';
@@ -156,6 +157,8 @@ import AuditDetails from '@/pages/AuditDetails';
 // Project Owner Journey Pages
 import SubmitProject from '@/pages/SubmitProject';
 import ProjectDashboard from '@/pages/ProjectDashboard';
+import MyAuditsDashboard from '@/pages/MyAuditsDashboard';
+import ApprovalCenter from '@/pages/ApprovalCenter';
 
 // Service Provider Pages
 import ServiceProviderOnboarding from '@/pages/onboarding/ServiceProviderOnboarding';
@@ -180,12 +183,14 @@ export default function AppRoutes() {
         <Route path="/project/:id" element={<RequireAuth><ProjectDetails /></RequireAuth>} />
         <Route path="/request-audit" element={<RequireAuth><RequestAudit /></RequireAuth>} />
         <Route path="/ai-tools" element={<RequireAuth><AIToolsPage /></RequireAuth>} />
+        <Route path="/my-audits" element={<RequireAuth><MyAuditsDashboard /></RequireAuth>} />
+        <Route path="/approval-center" element={<RequireAuth><ApprovalCenter /></RequireAuth>} />
       
       {/* Enhanced Audit Results */}
       <Route path="/audit-results/:id" element={<EnhancedAuditResults />} />
       
-      {/* Legacy Index route for backward compatibility */}
-      <Route path="/legacy" element={<Index />} />
+      {/* Legacy Index route now uses EnhancedLandingPage for full UI overhaul compliance */}
+      <Route path="/legacy" element={<EnhancedLandingPage />} />
       
       {/* Service Pages */}
       <Route path="/security-audits" element={<SecurityAudits />} />
@@ -269,6 +274,7 @@ export default function AppRoutes() {
       {/* Profile & Authentication Routes */}
       <Route path="/profile" element={<Profile />} />
       <Route path="/profile/edit" element={<ProfilePage />} />
+      <Route path="/profile/settings" element={<RequireAuth><ProfileSettings /></RequireAuth>} />
       <Route path="/profile/reset-password" element={<ResetPassword />} />
       <Route path="/profile/2fa" element={<TwoFactorAuth />} />
       <Route path="/profile/2fa/setup" element={<TwoFactorSetup />} />

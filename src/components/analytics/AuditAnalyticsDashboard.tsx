@@ -87,16 +87,49 @@ export function AuditAnalyticsDashboard() {
     
     setLoading(true);
     try {
-      // Get audit requests data
-      const { data: auditRequests } = await supabase
+      // Get audit requests data - use type assertion to avoid infinite type instantiation
+      interface AuditRequest {
+        id: string;
+        auditor_id: string;
+        client_id: string;
+        project_name: string;
+        status: string;
+        created_at: string;
+        updated_at: string;
+        [key: string]: any;
+      }
+      
+      const auditRequestsResult = await (supabase as any)
         .from('audit_requests')
         .select('*')
         .eq('auditor_id', user.id);
+        
+      const auditRequests = auditRequestsResult.data as AuditRequest[] | null;
 
-      // Get findings data
-      const { data: findings } = await supabase
+      // Get findings data - use type assertion to avoid infinite type instantiation
+      interface AuditFinding {
+        id: string;
+        auditor_id: string;
+        audit_id: string;
+        audit_request_id: string;
+        severity: string;
+        category: string;
+        title: string;
+        description: string;
+        recommendation: string;
+        code_snippet: string;
+        location: string;
+        created_at: string;
+        updated_at: string;
+        status: string;
+        [key: string]: any;
+      }
+      
+      const findingsResult = await (supabase as any)
         .from('audit_findings')
         .select('*');
+        
+      const findings = findingsResult.data as AuditFinding[] | null;
 
       // Get progress data
       const { data: progress } = await supabase

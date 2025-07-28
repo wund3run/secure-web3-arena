@@ -9,14 +9,27 @@ import {
   Settings, 
   Search,
   Clock,
-  AlertTriangle
+  AlertTriangle,
+  LucideIcon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export function QuickActions() {
   const navigate = useNavigate();
 
-  const actions = [
+  interface QuickAction {
+    title: string;
+    description: string;
+    icon: LucideIcon;
+    color: string;
+    textColor: string;
+    onClick: () => void;
+    priority: string;
+    badge?: string;
+    variant?: string;
+  }
+
+  const actions: QuickAction[] = [
     {
       title: 'Request New Audit',
       description: 'Start a new security audit for your project',
@@ -24,7 +37,8 @@ export function QuickActions() {
       color: 'bg-primary',
       textColor: 'text-primary-foreground',
       onClick: () => navigate('/audit/new'),
-      priority: 'high'
+      priority: 'high',
+      variant: 'accent'
     },
     {
       title: 'Find Auditors',
@@ -91,7 +105,7 @@ export function QuickActions() {
                 )}
 
                 {action.badge && (
-                  <Badge variant="destructive" className="absolute -top-2 -right-2 text-xs">
+                  <Badge variant="error" className="absolute -top-2 -right-2 text-xs">
                     {action.badge}
                   </Badge>
                 )}
@@ -117,7 +131,7 @@ export function QuickActions() {
           {actions.map((action, idx) => (
             <Button
               key={idx}
-              variant={action.variant || 'accent'}
+              variant={(action.variant as any) || 'default'}
               className="flex items-center gap-2 px-6 py-3 rounded-full font-black uppercase tracking-tight text-sm bg-gradient-to-r from-accent-primary to-accent-secondary shadow-[0_2px_20px_0_rgba(168,121,239,0.19)] hover:shadow-lg transition-all"
               onClick={action.onClick}
             >

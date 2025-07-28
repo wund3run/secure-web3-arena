@@ -1,10 +1,38 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { AlertCircle, Check, ExternalLink, Wallet } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { AlertCircle, Check, ExternalLink, Wallet, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useEscrow } from "@/contexts/EscrowContext";
 import { supabase } from "@/integrations/supabase/client";
+
+// Ethereum provider type
+interface EthereumProvider {
+  request: (args: { method: string; params?: any[] }) => Promise<any>;
+  on: (event: string, callback: (params: any) => void) => void;
+  removeListener: (event: string, callback: (params: any) => void) => void;
+}
+
+// Helper functions for Ethereum operations
+const getEthereumProvider = (): EthereumProvider | null => {
+  if (typeof window === 'undefined') return null;
+  return (window as any).ethereum || null;
+};
+
+const requestAccounts = async (): Promise<string[]> => {
+  const provider = getEthereumProvider();
+  if (!provider) throw new Error("No Ethereum provider found");
+  const accounts = await provider.request({ method: 'eth_requestAccounts' });
+  return accounts;
+};
+
+const getChainId = async (): Promise<string> => {
+  const provider = getEthereumProvider();
+  if (!provider) throw new Error("No Ethereum provider found");
+  return await provider.request({ method: 'eth_chainId' });
+};
 
 interface BlockchainConnectorProps {
   onConnectionChange?: (connected: boolean, account?: string, chainId?: string) => void;

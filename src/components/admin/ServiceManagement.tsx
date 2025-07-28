@@ -256,7 +256,7 @@ export function ServiceManagement() {
             <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
               Cancel
             </Button>
-            <Button variant="destructive" onClick={handleDeleteService}>
+            <Button variant="error" onClick={handleDeleteService}>
               Delete Service
             </Button>
           </DialogFooter>

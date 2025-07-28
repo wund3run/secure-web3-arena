@@ -74,7 +74,7 @@ const AdminLogin = () => {
         
         {error && (
           <div className="px-6 py-0">
-            <Alert variant="destructive" className="mb-4">
+            <Alert variant="error" className="mb-4">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>{error}</AlertDescription>
             </Alert>

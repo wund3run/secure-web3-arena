@@ -8,7 +8,7 @@ export const createServiceStructuredData = (serviceName: string, description: st
     "@type": "Organization",
     "name": "Hawkly",
     "url": "https://hawkly.app",
-    "logo": "https://hawkly.app/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png"
+    "logo": "https://hawkly.app/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png"
   },
   "serviceType": "Web3 Security Service",
   "areaServed": "Worldwide",
@@ -28,7 +28,7 @@ export const createOrganizationStructuredData = () => ({
   "alternateName": "Hawkly Security Platform",
   "description": "Leading Web3 security marketplace connecting projects with verified security experts",
   "url": "https://hawkly.app",
-  "logo": "https://hawkly.app/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png",
+  "logo": "https://hawkly.app/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png",
   "foundingDate": "2023",
   "contactPoint": {
     "@type": "ContactPoint",

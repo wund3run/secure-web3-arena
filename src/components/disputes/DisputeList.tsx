@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import StatusBadge from '../ui/StatusBadge';
-import { useNotification } from '../../contexts/NotificationContext';
+import { toast } from 'sonner';
 import ExportButton from '../ui/ExportButton';
 
 export type DisputeStatus = 'open' | 'resolved' | 'rejected' | 'in review';
@@ -28,7 +28,7 @@ const DisputeList: React.FC<DisputeListProps> = ({ projectId, onViewDispute }) =
   const [disputes, setDisputes] = useState<Dispute[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const { notify } = useNotification();
+  // Notification handling through toast
 
   useEffect(() => {
     if (!projectId) return;
@@ -46,7 +46,7 @@ const DisputeList: React.FC<DisputeListProps> = ({ projectId, onViewDispute }) =
 
   const handleStatusChange = (disputeId, newStatus) => {
     // ...status change logic...
-    notify({ type: 'success', message: `Dispute ${disputeId} marked as ${newStatus}` });
+    toast.success(`Dispute ${disputeId} marked as ${newStatus}`);
   };
 
   return (

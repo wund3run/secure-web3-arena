@@ -11,63 +11,63 @@ const DEFAULT_ECOSYSTEMS: BlockchainEcosystem[] = [
   {
     id: "ethereum",
     name: "Ethereum",
-    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
+    logoUrl: "/hawkly-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     projectCount: 1245,
     color: "#627EEA"
   },
   {
     id: "solana",
     name: "Solana",
-    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
+    logoUrl: "/hawkly-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     projectCount: 789,
     color: "#9945FF"
   },
   {
     id: "polygon",
     name: "Polygon",
-    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
+    logoUrl: "/hawkly-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     projectCount: 652,
     color: "#8247E5"
   },
   {
     id: "avalanche",
     name: "Avalanche",
-    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
+    logoUrl: "/hawkly-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     projectCount: 367,
     color: "#E84142"
   },
   {
     id: "bnbchain",
     name: "BNB Chain",
-    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
+    logoUrl: "/hawkly-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     projectCount: 654,
     color: "#F3BA2F"
   },
   {
     id: "arbitrum",
     name: "Arbitrum",
-    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
+    logoUrl: "/hawkly-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     projectCount: 321,
     color: "#28A0F0"
   },
   {
     id: "optimism",
     name: "Optimism",
-    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
+    logoUrl: "/hawkly-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     projectCount: 287,
     color: "#FF0420"
   },
   {
     id: "aptos",
     name: "Aptos",
-    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
+    logoUrl: "/hawkly-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     projectCount: 154,
     color: "#277DA1"
   },
   {
     id: "sui",
     name: "Sui",
-    logoUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
+    logoUrl: "/hawkly-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png",
     projectCount: 126,
     color: "#6FBCF0"
   }

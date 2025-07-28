@@ -5,9 +5,10 @@ interface RaiseDisputeModalProps {
   raisedById: string;
   againstId: string;
   onClose?: () => void;
+  onDisputeRaised?: () => void;
 }
 
-const RaiseDisputeModal: React.FC<RaiseDisputeModalProps> = ({ projectId, raisedById, againstId, onClose }) => {
+const RaiseDisputeModal: React.FC<RaiseDisputeModalProps> = ({ projectId, raisedById, againstId, onClose, onDisputeRaised }) => {
   const [reason, setReason] = useState('');
   const [evidence, setEvidence] = useState<File | null>(null);
   const [error, setError] = useState('');

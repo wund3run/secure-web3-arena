@@ -69,18 +69,28 @@ function MarketplaceContent() {
             <AIRecommendations 
               services={filteredServices.map(service => ({
                 id: service.id,
-                name: service.title,
-                provider: service.provider.name,
+                title: service.title,
                 description: service.description,
-                price: `${service.pricing.amount} ${service.pricing.currency}`,
+                provider: {
+                  name: service.provider.name,
+                  reputation: service.provider.reputation,
+                  level: service.provider.level,
+                  isVerified: service.provider.isVerified,
+                  avatarUrl: service.provider.avatarUrl
+                },
+                pricing: {
+                  amount: service.pricing.amount,
+                  currency: service.pricing.currency,
+                  model: service.pricing.model
+                },
                 rating: service.rating,
-                completionTime: `${service.deliveryTime || 7} days`,
+                completedJobs: service.completedJobs || 0,
                 category: service.category,
                 tags: service.tags
               }))}
               projectSize={activeFilters.projectSize || "medium"}
               blockchains={activeFilters.blockchains || []}
-              onRecommendationSelect={handleAIRecommendationSelect}
+              onRecommendationSelect={(serviceId) => console.log('Service selected:', serviceId)}
             />
           </div>
         )}

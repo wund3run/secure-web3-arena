@@ -25,6 +25,14 @@ interface Participant {
   status: 'online' | 'offline' | 'away';
 }
 
+interface PresenceData {
+  id?: string;
+  name?: string;
+  role?: 'client' | 'auditor' | 'admin';
+  status?: 'online' | 'offline' | 'away';
+  avatar_url?: string;
+}
+
 interface RealtimeCollaborationProps {
   projectId: string;
   currentUserId: string;
@@ -79,13 +87,16 @@ export const RealtimeCollaboration: React.FC<RealtimeCollaborationProps> = ({
         // Transform presence state to participants
         const activeParticipants: Participant[] = Object.values(state)
           .flat()
-          .map((presence: unknown) => ({
-            id: presence.id || currentUserId,
-            name: presence.name || 'Current User',
-            role: presence.role || 'client',
-            status: presence.status || 'online',
-            avatar_url: presence.avatar_url
-          }));
+          .map((presence: unknown) => {
+            const p = presence as PresenceData;
+            return {
+              id: p.id || currentUserId,
+              name: p.name || 'Current User',
+              role: p.role || 'client',
+              status: p.status || 'online',
+              avatar_url: p.avatar_url
+            };
+          });
         setParticipants(activeParticipants);
       })
       .on('presence', { event: 'join' }, ({ newPresences }) => {

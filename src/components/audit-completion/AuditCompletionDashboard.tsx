@@ -95,18 +95,27 @@ export function AuditCompletionDashboard() {
         toast({
           title: "Error",
           description: "Failed to load audit project",
-          variant: "destructive",
+          variant: "error",
         });
         return;
       }
 
       if (auditData) {
-        // Fetch client profile
-        const { data: clientProfile } = await supabase
+        // Fetch client profile - use type assertion to avoid infinite type instantiation
+        interface ExtendedProfile {
+          user_id: string;
+          full_name: string;
+          avatar_url: string;
+          [key: string]: any;
+        }
+        
+        const clientProfileResult = await (supabase as any)
           .from('extended_profiles')
           .select('full_name, avatar_url')
           .eq('user_id', auditData.client_id)
           .single();
+          
+        const clientProfile = clientProfileResult.data as ExtendedProfile | null;
 
         setSelectedProject({
           ...auditData,
@@ -169,7 +178,7 @@ export function AuditCompletionDashboard() {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -196,7 +205,7 @@ export function AuditCompletionDashboard() {
         toast({
           title: "Error",
           description: "Failed to add finding",
-          variant: "destructive",
+          variant: "error",
         });
         return;
       }
@@ -236,7 +245,7 @@ export function AuditCompletionDashboard() {
         toast({
           title: "Error",
           description: "Failed to update deliverable status",
-          variant: "destructive",
+          variant: "error",
         });
         return;
       }
@@ -285,7 +294,7 @@ export function AuditCompletionDashboard() {
         toast({
           title: "Error",
           description: "Failed to attach files to deliverable",
-          variant: "destructive",
+          variant: "error",
         });
         return;
       }
@@ -302,7 +311,7 @@ export function AuditCompletionDashboard() {
       toast({
         title: "Error",
         description: "Failed to upload files",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setUploadingFiles(false);
@@ -330,7 +339,7 @@ export function AuditCompletionDashboard() {
         toast({
           title: "Error",
           description: "Failed to create deliverable",
-          variant: "destructive",
+          variant: "error",
         });
         return;
       }
@@ -359,7 +368,7 @@ export function AuditCompletionDashboard() {
       toast({
         title: "Error",
         description: "Please resolve all critical and high severity findings before completing",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -370,7 +379,7 @@ export function AuditCompletionDashboard() {
       toast({
         title: "Error",
         description: "Please complete all deliverables before finishing the audit",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -390,7 +399,7 @@ export function AuditCompletionDashboard() {
         toast({
           title: "Error",
           description: "Failed to complete audit",
-          variant: "destructive",
+          variant: "error",
         });
         return;
       }
@@ -409,7 +418,7 @@ export function AuditCompletionDashboard() {
       toast({
         title: "Error",
         description: "Failed to complete audit",
-        variant: "destructive",
+        variant: "error",
       });
     }
   };

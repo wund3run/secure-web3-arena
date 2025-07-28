@@ -204,7 +204,7 @@ const GamificationDashboard: React.FC<GamificationDashboardProps> = ({ className
       toast({
         title: "Error loading gamification data",
         description: "Please try refreshing the page",
-        variant: "destructive"
+        variant: "error"
       });
     } finally {
       setLoading(false);
@@ -279,7 +279,7 @@ const GamificationDashboard: React.FC<GamificationDashboardProps> = ({ className
       toast({
         title: "Error awarding XP",
         description: "Please try again",
-        variant: "destructive"
+        variant: "error"
       });
     }
   };

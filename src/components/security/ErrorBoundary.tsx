@@ -55,7 +55,7 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="min-h-screen flex items-center justify-center p-4">
           <div className="max-w-md w-full space-y-4">
-            <Alert variant="destructive">
+            <Alert variant="error">
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
                 Something went wrong. The application encountered an unexpected error.

@@ -266,7 +266,7 @@ const Web3Security = () => {
           <div className="max-w-7xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
-                <Badge variant="destructive" className="mb-4">
+                <Badge variant="error" className="mb-4">
                   <AlertTriangle className="h-3 w-3 mr-1" />
                   Emerging Threats 2025
                 </Badge>
@@ -308,7 +308,7 @@ const Web3Security = () => {
                         <div className="font-medium text-sm">Critical: New DeFi Exploit</div>
                         <div className="text-xs text-muted-foreground">Flash loan vulnerability discovered</div>
                       </div>
-                      <Badge variant="destructive">High</Badge>
+                      <Badge variant="error">High</Badge>
                     </div>
                     <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
                       <div>

@@ -166,7 +166,7 @@ export function AdvancedNotificationSystem() {
         </div>
         <div className="flex items-center gap-2">
           {unreadCount > 0 && (
-            <Badge variant="destructive" className="animate-pulse">
+            <Badge variant="error" className="animate-pulse">
               {unreadCount} unread
             </Badge>
           )}
@@ -185,7 +185,7 @@ export function AdvancedNotificationSystem() {
           <TabsTrigger value="notifications">
             Notifications
             {unreadCount > 0 && (
-              <Badge variant="destructive" className="ml-2 h-5 w-5 rounded-full p-0 text-xs">
+              <Badge variant="error" className="ml-2 h-5 w-5 rounded-full p-0 text-xs">
                 {unreadCount}
               </Badge>
             )}

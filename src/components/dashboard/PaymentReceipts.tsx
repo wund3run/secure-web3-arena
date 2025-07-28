@@ -1,8 +1,32 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@supabase/supabase-js';
 
-const PaymentReceipts = ({ userId }) => {
-  const [receipts, setReceipts] = useState([]);
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+);
+
+interface PaymentReceipt {
+  id: string;
+  amount: number;
+  date: string;
+  payer_id: string;
+  payee_id: string;
+  status: string;
+  type: string;
+  audit_request_id?: string;
+  receipt_url?: string;
+  details?: {
+    projectName?: string;
+  };
+}
+
+interface PaymentReceiptsProps {
+  userId: string;
+}
+
+const PaymentReceipts = ({ userId }: PaymentReceiptsProps) => {
+  const [receipts, setReceipts] = useState<PaymentReceipt[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

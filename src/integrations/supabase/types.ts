@@ -9,69 +9,149 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      admin_actions: {
+      feedback_analytics: {
         Row: {
-          action_type: string
-          admin_id: string
-          created_at: string | null
-          details: Json | null
-          id: string
-          target_id: string
-          target_type: string
+          auditor_id: string;
+          average_rating: number;
+          rating_count: number;
+          most_common_feedback: string;
+          data: { feedbacks: string[] };
+          updated_at: string;
+          created_at?: string;
+        };
+        Insert: {
+          auditor_id: string;
+          average_rating: number;
+          rating_count: number;
+          most_common_feedback: string;
+          data: { feedbacks: string[] };
+          updated_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          auditor_id?: string;
+          average_rating?: number;
+          rating_count?: number;
+          most_common_feedback?: string;
+          data?: { feedbacks: string[] };
+          updated_at?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      },
+      disputes: {
+        Row: {
+          id: string;
+          project_id: string;
+          raised_by: string;
+          against: string;
+          status: 'opened' | 'in_review' | 'resolved' | 'closed';
+          resolution_notes?: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          project_id: string;
+          raised_by: string;
+          against: string;
+          status: 'opened' | 'in_review' | 'resolved' | 'closed';
+          resolution_notes?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          project_id?: string;
+          raised_by?: string;
+          against?: string;
+          status?: 'opened' | 'in_review' | 'resolved' | 'closed';
+          resolution_notes?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      },
+      engagement_offers: {
+        Row: {
+          id: string;
+          audit_request_id: string;
+          auditor_id: string;
+          client_id: string;
+          status: string;
+          terms: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          audit_request_id: string;
+          auditor_id: string;
+          client_id: string;
+          status: string;
+          terms: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          audit_request_id?: string;
+          auditor_id?: string;
+          client_id?: string;
+          status?: string;
+          terms?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      },
+      chat_rooms: {
+        Row: {
+          id: string;
+          name: string;
+          type: string;
+          audit_request_id: string;
+          participants: string[];
+          metadata: any;
+          communication_style: string | null;
+          complexity_preference: string | null;
+          created_at: string | null;
+          preferred_auditor_experience: string | null;
+          timeline_flexibility: number | null;
+          updated_at: string | null;
+          user_id: string | null;
         }
         Insert: {
-          action_type: string
-          admin_id: string
-          created_at?: string | null
-          details?: Json | null
-          id?: string
-          target_id: string
-          target_type: string
+          id?: string;
+          name: string;
+          type: string;
+          audit_request_id: string;
+          participants: string[];
+          metadata?: any;
+          budget_flexibility?: number | null;
+          communication_style?: string | null;
+          complexity_preference?: string | null;
+          created_at?: string | null;
+          preferred_auditor_experience?: string | null;
+          timeline_flexibility?: number | null;
+          updated_at?: string | null;
+          user_id?: string | null;
         }
         Update: {
-          action_type?: string
-          admin_id?: string
-          created_at?: string | null
-          details?: Json | null
-          id?: string
-          target_id?: string
-          target_type?: string
-        }
-        Relationships: []
-      }
-      ai_matching_preferences: {
-        Row: {
-          budget_flexibility: number | null
-          communication_style: string | null
-          complexity_preference: string | null
-          created_at: string | null
-          id: string
-          preferred_auditor_experience: string | null
-          timeline_flexibility: number | null
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          budget_flexibility?: number | null
-          communication_style?: string | null
-          complexity_preference?: string | null
-          created_at?: string | null
-          id?: string
-          preferred_auditor_experience?: string | null
-          timeline_flexibility?: number | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          budget_flexibility?: number | null
-          communication_style?: string | null
-          complexity_preference?: string | null
-          created_at?: string | null
-          id?: string
-          preferred_auditor_experience?: string | null
-          timeline_flexibility?: number | null
-          updated_at?: string | null
-          user_id?: string | null
+          id?: string;
+          name?: string;
+          type?: string;
+          audit_request_id?: string;
+          participants?: string[];
+          metadata?: any;
+          budget_flexibility?: number | null;
+          communication_style?: string | null;
+          complexity_preference?: string | null;
+          created_at?: string | null;
+          preferred_auditor_experience?: string | null;
+          timeline_flexibility?: number | null;
+          updated_at?: string | null;
+          user_id?: string | null;
         }
         Relationships: []
       }
@@ -1282,77 +1362,6 @@ export type Database = {
           },
         ]
       }
-      disputes: {
-        Row: {
-          arbitrator_id: string | null
-          created_at: string
-          escrow_contract_id: string
-          evidence: string | null
-          id: string
-          milestone_id: string | null
-          raised_by: string
-          reason: string
-          resolution: string | null
-          status: Database["public"]["Enums"]["dispute_status"]
-          updated_at: string
-        }
-        Insert: {
-          arbitrator_id?: string | null
-          created_at?: string
-          escrow_contract_id: string
-          evidence?: string | null
-          id?: string
-          milestone_id?: string | null
-          raised_by: string
-          reason: string
-          resolution?: string | null
-          status?: Database["public"]["Enums"]["dispute_status"]
-          updated_at?: string
-        }
-        Update: {
-          arbitrator_id?: string | null
-          created_at?: string
-          escrow_contract_id?: string
-          evidence?: string | null
-          id?: string
-          milestone_id?: string | null
-          raised_by?: string
-          reason?: string
-          resolution?: string | null
-          status?: Database["public"]["Enums"]["dispute_status"]
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "disputes_arbitrator_id_fkey"
-            columns: ["arbitrator_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "disputes_escrow_contract_id_fkey"
-            columns: ["escrow_contract_id"]
-            isOneToOne: false
-            referencedRelation: "escrow_contracts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "disputes_milestone_id_fkey"
-            columns: ["milestone_id"]
-            isOneToOne: false
-            referencedRelation: "milestones"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "disputes_raised_by_fkey"
-            columns: ["raised_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       escrow_contracts: {
         Row: {
           auditor_id: string
@@ -1985,6 +1994,48 @@ export type Database = {
           wallet_address?: string | null
         }
         Relationships: []
+      }
+      receipts: {
+        Row: {
+          id: string;
+          payment_event_id: string;
+          audit_request_id: string | null;
+          payer_id: string | null;
+          payee_id: string | null;
+          amount: number;
+          date: string;
+          type: string | null;
+          receipt_url: string | null;
+          details: any;
+          created_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          payment_event_id: string;
+          audit_request_id?: string | null;
+          payer_id?: string | null;
+          payee_id?: string | null;
+          amount: number;
+          date: string;
+          type?: string | null;
+          receipt_url?: string | null;
+          details?: any;
+          created_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          payment_event_id?: string;
+          audit_request_id?: string | null;
+          payer_id?: string | null;
+          payee_id?: string | null;
+          amount?: number;
+          date?: string;
+          type?: string | null;
+          receipt_url?: string | null;
+          details?: any;
+          created_at?: string | null;
+        };
+        Relationships: [];
       }
       reviews: {
         Row: {

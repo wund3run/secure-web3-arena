@@ -110,7 +110,7 @@ export function RouteValidator() {
               {validRoutes} Valid
             </Badge>
             {invalidRoutes > 0 && (
-              <Badge variant="destructive">
+              <Badge variant="error">
                 {invalidRoutes} Invalid
               </Badge>
             )}

@@ -44,15 +44,19 @@ export default function EnhancedMarketplacePage() {
         avatarUrl: undefined
       };
 
+      let amount = 5000;
+      if (typeof service.price_range === 'object' && service.price_range !== null && 'min' in service.price_range) {
+        const minVal = service.price_range.min;
+        amount = typeof minVal === 'number' ? minVal : 5000;
+      }
+
       return {
         id: service.id,
         title: service.title,
         description: service.description,
         provider: mockProvider,
         pricing: {
-          amount: typeof service.price_range === 'object' && service.price_range !== null && 'min' in service.price_range 
-            ? service.price_range.min 
-            : 5000,
+          amount,
           currency: 'USD'
         },
         rating: service.average_rating || 0,
@@ -66,29 +70,30 @@ export default function EnhancedMarketplacePage() {
 
     // Apply filters
     let filtered = transformedServices;
-    
-    if (filters.keywords) {
+    const f = filters as {
+      keywords?: string;
+      serviceTypes?: string[];
+      priceRange?: [number, number];
+    };
+    if (f.keywords) {
       filtered = filtered.filter(service =>
-        service.title.toLowerCase().includes(filters.keywords.toLowerCase()) ||
-        service.description.toLowerCase().includes(filters.keywords.toLowerCase())
+        service.title.toLowerCase().includes(f.keywords!.toLowerCase()) ||
+        service.description.toLowerCase().includes(f.keywords!.toLowerCase())
       );
     }
-
-    if (filters.serviceTypes.length > 0) {
+    if (f.serviceTypes && f.serviceTypes.length > 0) {
       filtered = filtered.filter(service =>
-        filters.serviceTypes.some((type: string) => 
+        f.serviceTypes!.some((type: string) => 
           service.category.toLowerCase().includes(type.toLowerCase())
         )
       );
     }
-
-    if (filters.priceRange[0] > 0 || filters.priceRange[1] < 50000) {
+    if (f.priceRange && (f.priceRange[0] > 0 || f.priceRange[1] < 50000)) {
       filtered = filtered.filter(service =>
-        service.pricing.amount >= filters.priceRange[0] &&
-        service.pricing.amount <= filters.priceRange[1]
+        service.pricing.amount >= f.priceRange![0] &&
+        service.pricing.amount <= f.priceRange![1]
       );
     }
-
     setFilteredServices(filtered);
   };
 

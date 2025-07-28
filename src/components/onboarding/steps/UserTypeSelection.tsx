@@ -3,7 +3,8 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Shield, Building, CheckCircle } from 'lucide-react';
-import type { UserType } from '../OnboardingWizard';
+
+type UserType = 'auditor' | 'project-owner' | 'project_owner';
 
 interface UserTypeSelectionProps {
   selected: UserType | null;

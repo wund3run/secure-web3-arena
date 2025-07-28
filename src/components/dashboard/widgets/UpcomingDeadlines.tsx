@@ -36,9 +36,9 @@ export const UpcomingDeadlines = ({ deadlines }: UpcomingDeadlinesProps) => {
     const weekFromNow = addDays(now, 7);
 
     if (isBefore(deadlineDate, now)) {
-      return { text: 'Overdue', variant: 'destructive' as const };
+      return { text: 'Overdue', variant: 'error' as const };
     } else if (isBefore(deadlineDate, threeDaysFromNow)) {
-      return { text: 'Urgent', variant: 'destructive' as const };
+      return { text: 'Urgent', variant: 'error' as const };
     } else if (isBefore(deadlineDate, weekFromNow)) {
       return { text: 'Soon', variant: 'secondary' as const };
     }

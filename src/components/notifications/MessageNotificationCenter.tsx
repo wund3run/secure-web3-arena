@@ -139,7 +139,7 @@ export function MessageNotificationCenter() {
             <Bell className="h-5 w-5" />
             Notifications
             {unreadCount > 0 && (
-              <Badge variant="destructive" className="text-xs">
+              <Badge variant="error" className="text-xs">
                 {unreadCount}
               </Badge>
             )}

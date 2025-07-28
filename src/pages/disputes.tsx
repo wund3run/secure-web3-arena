@@ -25,7 +25,7 @@ const DisputesPage: React.FC = () => {
       <div className="container mx-auto py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-accent-cyan">Disputes</h1>
-          <Button onClick={() => setShowModal(true)} variant="accent">Raise Dispute</Button>
+          <Button onClick={() => setShowModal(true)} variant="default">Raise Dispute</Button>
         </div>
         <DisputeList key={refreshKey} projectId={selectedProjectId} onViewDispute={() => {}} />
         {showModal && (

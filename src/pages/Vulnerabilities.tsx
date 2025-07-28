@@ -53,8 +53,8 @@ export default function Vulnerabilities() {
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case "Critical": return "destructive";
-      case "High": return "destructive";
+      case "Critical": return "error";
+      case "High": return "error";
       case "Medium": return "secondary";
       case "Low": return "outline";
       default: return "outline";

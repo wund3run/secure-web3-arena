@@ -11,6 +11,42 @@ import {
 import { formatDistanceToNow } from 'date-fns';
 import { RecentActivity } from './RecentActivityService';
 
+// Define activity color mapping
+const getActivityColor = (type: string): string => {
+  const colors: Record<string, string> = {
+    audit: 'bg-blue-50 border-blue-200',
+    project: 'bg-purple-50 border-purple-200',
+    security: 'bg-green-50 border-green-200',
+    payment: 'bg-amber-50 border-amber-200',
+    system: 'bg-gray-50 border-gray-200',
+    message: 'bg-indigo-50 border-indigo-200'
+  };
+  return colors[type] || colors.system;
+};
+
+// Get initials from name
+const getInitials = (name: string): string => {
+  if (!name) return '??';
+  return name
+    .split(' ')
+    .map(part => part[0])
+    .join('')
+    .toUpperCase()
+    .substring(0, 2);
+};
+
+// Get icon based on activity type
+const getActivityIcon = (type: string): React.ReactNode => {
+  switch (type) {
+    case 'message': return <MessageSquare className="h-4 w-4" />;
+    case 'audit': return <FileText className="h-4 w-4" />;
+    case 'payment': return <DollarSign className="h-4 w-4" />;
+    case 'security': return <CheckCircle className="h-4 w-4" />;
+    case 'project': return <Users className="h-4 w-4" />;
+    default: return <FileText className="h-4 w-4" />;
+  }
+};
+
 interface ActivityItemProps {
   activity: RecentActivity;
 }

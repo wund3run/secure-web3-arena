@@ -80,7 +80,7 @@ export const SecurityDashboard: React.FC = () => {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Badge variant={securityInitialized ? "default" : "destructive"}>
+            <Badge variant={securityInitialized ? "default" : "error"}>
               {securityInitialized ? "Security Active" : "Security Inactive"}
             </Badge>
             <Button variant="outline" onClick={loadAuditEvents}>

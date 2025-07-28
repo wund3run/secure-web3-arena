@@ -109,7 +109,7 @@ export default function Careers() {
                       <div>
                         <CardTitle className="flex items-center gap-2">
                           {position.title}
-                          {position.urgent && <Badge variant="destructive">Urgent</Badge>}
+                          {position.urgent && <Badge variant="error">Urgent</Badge>}
                         </CardTitle>
                         <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                           <span className="flex items-center gap-1">

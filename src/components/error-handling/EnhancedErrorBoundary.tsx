@@ -2,7 +2,7 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { EnhancedCard, EnhancedCardContent, EnhancedCardHeader, EnhancedCardTitle } from '@/components/ui/enhanced-card';
-import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-react';
+import { AlertTriangle, RefreshCw, Home, Bug, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface Props {
@@ -16,6 +16,7 @@ interface State {
   hasError: boolean;
   error: Error | null;
   errorInfo: ErrorInfo | null;
+  retryCount: number;
 }
 
 export class EnhancedErrorBoundary extends Component<Props, State> {
@@ -24,36 +25,58 @@ export class EnhancedErrorBoundary extends Component<Props, State> {
     this.state = {
       hasError: false,
       error: null,
-      errorInfo: null
+      errorInfo: null,
+      retryCount: 0
     };
   }
 
-  static getDerivedStateFromError(error: Error): State {
+  static getDerivedStateFromError(error: Error): Partial<State> {
     return {
       hasError: true,
-      error,
-      errorInfo: null
+      error
     };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     this.setState({
-      errorInfo
+      errorInfo,
+      retryCount: this.state.retryCount + 1
     });
     
     console.error('Enhanced Error Boundary caught an error:', error, errorInfo);
   }
   
-  handleReset = (): void => {
+  handleRetry = (): void => {
     this.setState({
       hasError: false,
       error: null,
       errorInfo: null
     });
+  };
+  
+  handleReset = (): void => {
+    this.setState({
+      hasError: false,
+      error: null,
+      errorInfo: null,
+      retryCount: 0
+    });
     
     if (this.props.onReset) {
       this.props.onReset();
     }
+  };
+  
+  handleReportError = (): void => {
+    // Implement error reporting logic
+    const errorData = {
+      error: this.state.error?.toString(),
+      stack: this.state.error?.stack,
+      componentStack: this.state.errorInfo?.componentStack
+    };
+    
+    console.log('Reporting error:', errorData);
+    // Here you would send the error to your reporting service
   };
 
   render(): ReactNode {

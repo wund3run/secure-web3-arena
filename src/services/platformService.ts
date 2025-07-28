@@ -6,7 +6,7 @@ export class PlatformService {
   // Dashboard statistics
   static async getDashboardStats(userId: string, userType: string) {
     try {
-      const stats: unknown = {};
+      const stats: Record<string, any> = {};
 
       if (userType === 'project_owner') {
         // Get client-specific stats
@@ -16,17 +16,17 @@ export class PlatformService {
           .eq('client_id', userId);
 
         // Mock payment data since payments table doesn't exist in types yet
-        const mockPayments = [
+        const mockPayments: Array<{ amount: number; status: string }> = [
           { amount: 1500, status: 'completed' },
           { amount: 2500, status: 'completed' }
         ];
 
-        stats.totalRequests = auditRequests?.length || 0;
-        stats.activeRequests = auditRequests?.filter(r => r.status === 'pending' || r.status === 'in_progress').length || 0;
+        stats.totalRequests = (auditRequests as any[])?.length || 0;
+        stats.activeRequests = (auditRequests as any[])?.filter(r => r.status === 'pending' || r.status === 'in_progress').length || 0;
         stats.totalSpent = mockPayments.reduce((sum, p) => sum + Number(p.amount), 0) || 0;
       } else if (userType === 'auditor') {
         // Mock proposal data since proposals table doesn't exist in types yet
-        const mockProposals = [
+        const mockProposals: Array<{ id: string; status: string }> = [
           { id: '1', status: 'pending' },
           { id: '2', status: 'accepted' }
         ];
@@ -37,14 +37,14 @@ export class PlatformService {
           .eq('status', 'completed');
 
         // Mock earnings data
-        const mockEarnings = [
+        const mockEarnings: Array<{ amount: number; status: string }> = [
           { amount: 3000, status: 'completed' },
           { amount: 4500, status: 'completed' }
         ];
 
         stats.totalProposals = mockProposals.length || 0;
         stats.activeProposals = mockProposals.filter(p => p.status === 'pending').length || 0;
-        stats.completedAudits = completedAudits?.length || 0;
+        stats.completedAudits = (completedAudits as any[])?.length || 0;
         stats.totalEarnings = mockEarnings.reduce((sum, p) => sum + Number(p.amount), 0) || 0;
       }
 
@@ -62,7 +62,7 @@ export class PlatformService {
     blockchain?: string;
   }) {
     try {
-      const results: unknown = {
+      const results: Record<string, any> = {
         services: [],
         auditors: [],
         requests: []
@@ -75,7 +75,7 @@ export class PlatformService {
           .or(`title.ilike.%${query}%,description.ilike.%${query}%`)
           .limit(10);
         
-        results.services = services || [];
+        results.services = (services as any[]) || [];
       }
 
       if (!filters?.type || filters.type === 'auditors') {
@@ -85,7 +85,7 @@ export class PlatformService {
           .or(`full_name.ilike.%${query}%`)
           .limit(10);
         
-        results.auditors = auditors || [];
+        results.auditors = (auditors as any[]) || [];
       }
 
       if (!filters?.type || filters.type === 'requests') {
@@ -96,7 +96,7 @@ export class PlatformService {
           .eq('status', 'pending')
           .limit(10);
         
-        results.requests = requests || [];
+        results.requests = (requests as any[]) || [];
       }
 
       return results;

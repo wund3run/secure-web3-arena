@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 export const MessageNotificationHandler = () => {
   const { user } = useAuth();
-  const { addNotification } = useNotifications();
+  const { notify } = useNotifications();
 
   useEffect(() => {
     if (!user) return;
@@ -23,7 +23,7 @@ export const MessageNotificationHandler = () => {
         (payload) => {
           // Only show notification if message is not from current user
           if (payload.new.sender_id !== user.id) {
-            addNotification({
+            notify({
               title: 'New Message',
               message: 'You have received a new message in your audit',
               type: 'info',
@@ -48,7 +48,7 @@ export const MessageNotificationHandler = () => {
       supabase.removeChannel(messageChannel);
       supabase.removeChannel(typingChannel);
     };
-  }, [user, addNotification]);
+  }, [user, notify]);
 
   return null; // This is a handler component with no UI
 };

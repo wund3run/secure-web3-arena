@@ -1,11 +1,13 @@
+import { supabase } from '@/integrations/supabase/client';
 import { useEffect } from 'react';
 import { useAuth } from '@/contexts/auth';
-import { useNotifications } from '@/contexts/NotificationContext';
+import { useContext } from 'react';
+// import { useNotification } from '@/contexts/NotificationContext';
 import { EmailService } from '@/services/emailService';
 
 export function useAuditNotifications() {
   const { user } = useAuth();
-  const { addNotification } = useNotifications();
+  const { notify } = useNotification();
 
   useEffect(() => {
     if (!user) return;
@@ -26,7 +28,7 @@ export function useAuditNotifications() {
           const newRecord = payload.new;
           
           if (oldRecord.status !== newRecord.status) {
-            addNotification({
+            notify({
               title: 'Audit Status Updated',
               message: `Your audit request status changed to ${newRecord.status}`,
               type: 'info',
@@ -60,7 +62,7 @@ export function useAuditNotifications() {
             .single();
 
           if (auditRequest?.client_id === user.id) {
-            addNotification({
+            notify({
               title: 'New Audit Proposal',
               message: 'You have received a new audit proposal',
               type: 'info',
@@ -96,7 +98,7 @@ export function useAuditNotifications() {
               .single();
 
             if (auditRequest?.client_id === user.id) {
-              addNotification({
+              notify({
                 title: 'Milestone Completed',
                 message: `Milestone "${newMilestone.title}" has been completed`,
                 type: 'success',
@@ -115,5 +117,5 @@ export function useAuditNotifications() {
       supabase.removeChannel(proposalChannel);
       supabase.removeChannel(milestoneChannel);
     };
-  }, [user, addNotification]);
+  }, [user, notify]);
 }

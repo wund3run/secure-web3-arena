@@ -26,6 +26,7 @@ import { Tables } from "@/integrations/supabase/types";
 import { RequestStatusTracker, StatusUpdate } from '@/components/request-management/RequestStatusTracker';
 import { AuditRequestService } from '@/services/auditRequestService';
 import { EngagementOfferService } from '@/services/engagementOfferService';
+import type { EngagementOffer } from '@/services/engagementOfferService';
 import { Input } from '@/components/ui/input';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 
@@ -115,7 +116,7 @@ export default function AuditDetailsPage() {
         toast({
           title: "Error",
           description: "Failed to load project details",
-          variant: "destructive",
+          variant: "error",
         });
         navigate('/auditor/opportunities');
         return;
@@ -173,7 +174,16 @@ export default function AuditDetailsPage() {
     if (!id) return;
     try {
       const updates = await AuditRequestService.getAuditStatusUpdates(id);
-      setStatusUpdates(updates);
+      // Map profiles property to expected shape
+      const mappedUpdates = updates.map((u: any) => ({
+        ...u,
+        profiles: u.profiles && typeof u.profiles === 'object' ? {
+          full_name: u.profiles.full_name,
+          avatar_url: u.profiles.avatar_url,
+          role: u.profiles.role
+        } : undefined
+      }));
+      setStatusUpdates(mappedUpdates);
     } catch (err) {
       setStatusUpdates([]);
     }
@@ -192,7 +202,7 @@ export default function AuditDetailsPage() {
       toast({
         title: "Error",
         description: "Please complete your auditor profile first",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -217,7 +227,7 @@ export default function AuditDetailsPage() {
         toast({
           title: "Error",
           description: "Failed to submit proposal",
-          variant: "destructive",
+          variant: "error",
         });
         return;
       }
@@ -232,7 +242,7 @@ export default function AuditDetailsPage() {
       toast({
         title: "Error",
         description: "Failed to submit proposal",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setApplying(false);
@@ -253,7 +263,7 @@ export default function AuditDetailsPage() {
       });
       toast({ title: `Offer ${status.charAt(0).toUpperCase() + status.slice(1)}`, description: `Offer ${status}.` });
     } catch (err) {
-      toast({ title: 'Error', description: `Failed to ${status} offer`, variant: 'destructive' });
+      toast({ title: 'Error', description: `Failed to ${status} offer`, variant: 'error' });
     }
   };
 
@@ -300,7 +310,7 @@ export default function AuditDetailsPage() {
         setOfferScope(''); setOfferPrice(''); setOfferTimeline('');
       }
     } catch (err) {
-      toast({ title: 'Error', description: 'Failed to send offer', variant: 'destructive' });
+      toast({ title: 'Error', description: 'Failed to send offer', variant: 'error' });
     } finally {
       setSubmittingOffer(false);
     }
@@ -348,7 +358,7 @@ export default function AuditDetailsPage() {
       setOfferTimeline('');
       toast({ title: 'Counter-Offer Sent', description: 'Your counter-offer has been sent.' });
     } catch (err) {
-      toast({ title: 'Error', description: 'Failed to send counter-offer', variant: 'destructive' });
+      toast({ title: 'Error', description: 'Failed to send counter-offer', variant: 'error' });
     } finally {
       setSubmittingOffer(false);
     }
@@ -697,7 +707,7 @@ export default function AuditDetailsPage() {
             {offerError && <div className="text-red-600 text-sm mb-2">{offerError}</div>}
             <div className="flex justify-end gap-2">
               <Button variant="ghost" onClick={() => setOfferModalOpen(false)} disabled={submittingOffer}>Cancel</Button>
-              <Button onClick={handleSendOffer} loading={submittingOffer} disabled={submittingOffer}>Send Offer</Button>
+              <Button onClick={handleSendOffer} disabled={submittingOffer}>Send Offer</Button>
             </div>
           </div>
         </div>
@@ -715,8 +725,8 @@ export default function AuditDetailsPage() {
             </div>
             {user?.id === project.assigned_auditor_id && latestOffer.status === 'pending' && (
               <div className="flex gap-2">
-                <Button size="sm" variant="success" onClick={() => handleAcceptReject('accepted')}>Accept</Button>
-                <Button size="sm" variant="destructive" onClick={() => handleAcceptReject('rejected')}>Reject</Button>
+                <Button size="sm" variant="default" onClick={() => handleAcceptReject('accepted')}>Accept</Button>
+                <Button size="sm" variant="error" onClick={() => handleAcceptReject('rejected')}>Reject</Button>
               </div>
             )}
           </div>

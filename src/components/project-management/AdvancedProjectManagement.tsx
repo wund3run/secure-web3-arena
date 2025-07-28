@@ -964,7 +964,7 @@ export function AdvancedProjectManagement() {
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-semibold">Time Tracking</h3>
               {activeTimeEntry ? (
-                <Button onClick={stopTimeTracking} variant="destructive">
+                <Button onClick={stopTimeTracking} variant="error">
                   <Square className="h-4 w-4 mr-2" />
                   Stop Tracking
                 </Button>

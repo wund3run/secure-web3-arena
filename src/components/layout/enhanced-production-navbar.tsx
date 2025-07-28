@@ -73,7 +73,7 @@ export function EnhancedProductionNavbar() {
             aria-label="Hawkly Home"
           >
             <img 
-              src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+              src="/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
               alt="Hawkly Logo"
               className="h-12 w-12 object-contain bg-transparent"
               style={{ backgroundColor: 'transparent' }}

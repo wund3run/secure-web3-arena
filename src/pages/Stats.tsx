@@ -5,7 +5,7 @@ import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Shield, Check, Database, Lock, AlertTriangle, Server, Users, FileCode, ChartBar } from "lucide-react";
+import { Shield, Check, Database, Lock, AlertTriangle, Server, Users, FileCode } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { AuditStatsTable } from "@/components/home/audit-stats-table";
 import { MarketplaceFooter } from "@/components/home/marketplace/marketplace-footer";
@@ -163,7 +163,7 @@ const SecurityDashboard = () => {
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-center">
                     <CardTitle className="text-lg font-medium">Quick Insights</CardTitle>
-                    <ChartBar className="h-5 w-5 text-muted-foreground" />
+                    {/* ChartBar removed: not available in lucide-react */}
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -239,7 +239,7 @@ const SecurityDashboard = () => {
                     <TableRow key={alert.id}>
                       <TableCell>
                         <Badge 
-                          variant={alert.severity === "critical" ? "destructive" : 
+                          variant={alert.severity === "critical" ? "error" : 
                                  alert.severity === "high" ? "default" :
                                  alert.severity === "medium" ? "secondary" : "outline"}
                         >

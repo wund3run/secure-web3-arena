@@ -6,7 +6,7 @@ export type ToastProps = {
   title: string;
   description?: string;
   action?: React.ReactNode;
-  variant?: "default" | "destructive" | "success" | "warning" | "info";
+  variant?: "default" | "error" | "success" | "warning" | "info";
 };
 
 export function useToast() {
@@ -20,7 +20,7 @@ export function useToast() {
       action,
       className: cn(
         "toast-container",
-        variant === "destructive" && "destructive",
+        variant === "error" && "error",
         variant === "success" && "success",
         variant === "warning" && "warning",
         variant === "info" && "info"

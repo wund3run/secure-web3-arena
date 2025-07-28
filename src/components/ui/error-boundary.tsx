@@ -80,7 +80,7 @@ class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="p-4 rounded-lg border border-muted">
-          <Alert variant="destructive" className="mb-4">
+          <Alert variant="error" className="mb-4">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
               Something went wrong

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getDispute } from '../../services/disputeService';
+import { DisputeService } from '../../services/disputeService';
 import { DisputeStatus } from './DisputeList';
 
 const statusColors: Record<DisputeStatus, string> = {
@@ -28,7 +28,7 @@ const DisputeDetail: React.FC<DisputeDetailProps> = ({ disputeId, onBack }) => {
   useEffect(() => {
     setLoading(true);
     setError('');
-    getDispute(disputeId)
+    DisputeService.getDispute(disputeId)
       .then(setDispute)
       .catch((err) => setError(err.message || 'Failed to load dispute'))
       .finally(() => setLoading(false));

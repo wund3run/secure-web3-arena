@@ -154,7 +154,7 @@ export function BugReportSummary() {
 
       {/* Recent Critical Issues */}
       {criticalBugs.length > 0 && (
-        <Alert variant="destructive">
+        <Alert variant="error">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
             <strong>Attention Required:</strong> {criticalBugs.length} critical bug{criticalBugs.length !== 1 ? 's' : ''} detected. 

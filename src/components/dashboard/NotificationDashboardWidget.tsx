@@ -24,7 +24,7 @@ export const NotificationDashboardWidget = () => {
             Notifications
           </div>
           <div className="flex items-center gap-2">
-            <Badge variant={isConnected ? "default" : "destructive"} className="text-xs">
+            <Badge variant={isConnected ? "default" : "error"} className="text-xs">
               {isConnected ? (
                 <>
                   <Wifi className="h-3 w-3 mr-1" />
@@ -38,7 +38,7 @@ export const NotificationDashboardWidget = () => {
               )}
             </Badge>
             {unreadCount > 0 && (
-              <Badge variant="destructive" className="text-xs">
+              <Badge variant="error" className="text-xs">
                 {unreadCount}
               </Badge>
             )}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getReceipt, generateReceiptPDF, emailReceipt } from '../../services/receiptService';
 import ExportButton from '../ui/ExportButton';
-import { useNotification } from '../../contexts/NotificationContext';
+import { useNotification } from '../../contexts/NotificationContext.tsx';
 import StatusBadge from '../ui/StatusBadge';
 
 type ReceiptStatus = 'paid' | 'pending' | 'refunded' | 'failed';

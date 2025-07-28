@@ -25,7 +25,7 @@ export function TrustBadge({ type, size = "md" }: TrustBadgeProps) {
     icon: React.ElementType; 
     label: string; 
     tooltip: string;
-    variant: "default" | "secondary" | "destructive" | "outline";
+    variant: "default" | "secondary" | "error" | "outline";
     className?: string;
   }> = {
     "verified": {

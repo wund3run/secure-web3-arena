@@ -13,7 +13,6 @@ import {
   Shield,
   ShieldCheck,
   ShieldAlert,
-  ShieldX,
   Eye,
   EyeOff,
   Zap,

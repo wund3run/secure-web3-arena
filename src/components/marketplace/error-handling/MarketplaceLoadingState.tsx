@@ -22,7 +22,7 @@ export const MarketplaceLoadingState: React.FC<MarketplaceLoadingStateProps> = m
         {/* Logo and branding header */}
         <div className="flex items-center justify-center mb-8">
           <img 
-            src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+            src="/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
             alt="Hawkly Logo"
             className="h-12 w-12 object-contain bg-transparent animate-pulse"
             style={{ backgroundColor: 'transparent' }}
@@ -55,7 +55,7 @@ export const MarketplaceLoadingState: React.FC<MarketplaceLoadingStateProps> = m
         {/* Logo and branding header */}
         <div className="flex items-center justify-center mb-8">
           <img 
-            src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+            src="/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
             alt="Hawkly Logo"
             className="h-12 w-12 object-contain bg-transparent animate-pulse"
             style={{ backgroundColor: 'transparent' }}
@@ -94,7 +94,7 @@ export const MarketplaceLoadingState: React.FC<MarketplaceLoadingStateProps> = m
       {/* Logo and branding header */}
       <div className="flex items-center justify-center mb-8">
         <img 
-          src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+          src="/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
           alt="Hawkly Logo"
           className="h-12 w-12 object-contain bg-transparent animate-pulse"
           style={{ backgroundColor: 'transparent' }}

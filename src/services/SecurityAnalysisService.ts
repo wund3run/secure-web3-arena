@@ -382,12 +382,19 @@ export class SecurityAnalysisService {
   }
 
   private calculateRiskScore(summary: unknown): number {
+    const s = summary as {
+      critical: number;
+      high: number;
+      medium: number;
+      low: number;
+      info: number;
+    };
     return (
-      summary.critical * 10 +
-      summary.high * 7 +
-      summary.medium * 4 +
-      summary.low * 1 +
-      summary.info * 0.5
+      s.critical * 10 +
+      s.high * 7 +
+      s.medium * 4 +
+      s.low * 1 +
+      s.info * 0.5
     );
   }
 

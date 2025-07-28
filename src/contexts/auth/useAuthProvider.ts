@@ -1,6 +1,6 @@
 
-import { useState, useEffect } from 'react';
-import { User, Session } from '@supabase/supabase-js';
+import { useState, useEffect, useCallback } from 'react';
+// ...existing code...
 import { supabase } from '@/integrations/supabase/client';
 import { User, Session } from '@supabase/supabase-js';
 import { toast } from 'sonner';
@@ -83,6 +83,8 @@ export function useAuthProvider() {
       toast.error('Sign out failed');
     }
   }, []);
+
+  const clearError = useCallback(() => setError(null), []);
 
   return {
     user,

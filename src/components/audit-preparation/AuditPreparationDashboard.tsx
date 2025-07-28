@@ -83,18 +83,28 @@ export function AuditPreparationDashboard() {
         toast({
           title: "Error",
           description: "Failed to load assigned project",
-          variant: "destructive",
+          variant: "error",
         });
         return;
       }
 
       if (auditData) {
         // Fetch client profile separately
-        const { data: clientProfile } = await supabase
+        // Define a type for client profile to avoid deep type instantiation
+        interface ClientProfile {
+          full_name: string | null;
+          avatar_url: string | null;
+          [key: string]: any;
+        }
+        
+        // Use any to break the deep type instantiation, then manually type the result
+        const clientProfileResult = await (supabase as any)
           .from('extended_profiles')
           .select('full_name, avatar_url')
           .eq('user_id', auditData.client_id)
           .single();
+          
+        const clientProfile = clientProfileResult.data as ClientProfile | null;
 
         setSelectedProject({
           ...auditData,
@@ -259,7 +269,7 @@ export function AuditPreparationDashboard() {
         toast({
           title: "Error",
           description: "Failed to update progress",
-          variant: "destructive",
+          variant: "error",
         });
         return;
       }
@@ -290,7 +300,7 @@ export function AuditPreparationDashboard() {
         toast({
           title: "Error",
           description: "Failed to save notes",
-          variant: "destructive",
+          variant: "error",
         });
         return;
       }
@@ -323,7 +333,7 @@ export function AuditPreparationDashboard() {
         toast({
           title: "Error",
           description: "Failed to send message",
-          variant: "destructive",
+          variant: "error",
         });
         return;
       }
@@ -355,7 +365,7 @@ export function AuditPreparationDashboard() {
       toast({
         title: "Info",
         description: "Repository URL not available",
-        variant: "destructive",
+        variant: "error",
       });
     }
   };
@@ -370,7 +380,7 @@ export function AuditPreparationDashboard() {
       toast({
         title: "Error",
         description: "Please complete all required preparation steps before starting the audit",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -398,7 +408,7 @@ export function AuditPreparationDashboard() {
         toast({
           title: "Error",
           description: "Failed to start audit",
-          variant: "destructive",
+          variant: "error",
         });
         return;
       }
@@ -555,7 +565,7 @@ export function AuditPreparationDashboard() {
                           {step.title}
                         </h4>
                         {step.required && (
-                          <Badge variant="destructive" className="text-xs px-2">
+                          <Badge variant="error" className="text-xs px-2">
                             Required
                           </Badge>
                         )}

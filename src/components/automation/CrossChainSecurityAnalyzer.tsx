@@ -499,7 +499,7 @@ export function CrossChainSecurityAnalyzer() {
                       <h5 className="text-sm font-medium mb-2">Known Vulnerabilities</h5>
                       <div className="flex flex-wrap gap-1">
                         {chain.knownVulnerabilities.map((vuln, index) => (
-                          <Badge key={index} variant="destructive" className="text-xs">
+                          <Badge key={index} variant="error" className="text-xs">
                             {vuln}
                           </Badge>
                         ))}

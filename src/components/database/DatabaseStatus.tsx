@@ -92,7 +92,7 @@ export function DatabaseStatus() {
       case 'empty':
         return <Badge variant="secondary">Empty</Badge>;
       case 'error':
-        return <Badge variant="destructive">Error</Badge>;
+        return <Badge variant="error">Error</Badge>;
     }
   };
 

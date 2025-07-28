@@ -3,10 +3,13 @@ import { supabase } from '@/integrations/supabase/client';
 
 export interface RecentActivity {
   id: string;
-  type: 'message' | 'audit_update' | 'payment' | 'milestone' | 'proposal';
+  type: 'message' | 'audit_update' | 'payment' | 'milestone' | 'proposal' | 'audit' | 'project' | 'security' | 'system';
   title: string;
   description: string;
   timestamp: string;
+  user_name?: string;
+  avatar_url?: string;
+  user_id?: string;
   metadata?: any;
 }
 

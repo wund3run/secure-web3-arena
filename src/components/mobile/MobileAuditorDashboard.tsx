@@ -290,7 +290,7 @@ export function MobileAuditorDashboard() {
                   </p>
                 </div>
                 {activity.priority === 'high' && (
-                  <Badge variant="destructive" className="text-xs">
+                  <Badge variant="error" className="text-xs">
                     High
                   </Badge>
                 )}

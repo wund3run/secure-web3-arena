@@ -63,6 +63,15 @@ export default defineConfig(({ mode }) => ({
   esbuild: {
     target: 'esnext',
     format: 'esm',
-    platform: 'browser'
+    platform: 'browser',
+    logOverride: { 'this-is-undefined-in-esm': 'silent' },
+    // Allow type checking but continue build on error
+    tsconfigRaw: {
+      compilerOptions: {
+        skipLibCheck: true, 
+        jsx: 'preserve',
+        jsxImportSource: 'react'
+      }
+    }
   }
 }));

@@ -105,7 +105,7 @@ export function SecurityHardeningProvider({
           toast({
             title: "Session Timeout Warning",
             description: "Your session will expire in 5 minutes. Please save your work.",
-            variant: "destructive"
+            variant: "error"
           });
         }
       }, 25 * 60 * 1000); // 25 minutes
@@ -243,7 +243,7 @@ export function SecurityHardeningProvider({
         toast({
           title: "Security Alert",
           description: "Multiple security violations detected. Please refresh and try again.",
-          variant: "destructive"
+          variant: "error"
         });
       }
     }
@@ -333,7 +333,7 @@ export function SecurityHardeningProvider({
     toast({
       title: "Security Threat Reported",
       description: "The security team has been notified of this incident.",
-      variant: "destructive"
+      variant: "error"
     });
   };
 

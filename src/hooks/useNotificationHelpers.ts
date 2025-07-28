@@ -1,14 +1,15 @@
-import { useNotifications } from '@/contexts/useNotifications';
+import { useContext } from 'react';
+// import { useNotification } from '../contexts/NotificationContext';
 import { useAuth } from '@/contexts/auth';
 
 export const useNotificationHelpers = () => {
-  const { addNotification } = useNotifications();
+  const { notify } = useNotification();
   const { user } = useAuth();
 
   const notifyAuditStatusChange = (auditId: string, status: string) => {
     if (!user) return;
     
-    addNotification({
+    notify({
       title: 'Audit Status Updated',
       message: `Your audit status has changed to: ${status}`,
       type: 'info',
@@ -21,7 +22,7 @@ export const useNotificationHelpers = () => {
   const notifyNewMessage = (auditId: string, senderName?: string) => {
     if (!user) return;
     
-    addNotification({
+    notify({
       title: 'New Message',
       message: senderName ? `${senderName} sent you a message` : 'You have a new message',
       type: 'info',
@@ -34,7 +35,7 @@ export const useNotificationHelpers = () => {
   const notifyPaymentUpdate = (message: string, type: 'success' | 'warning' | 'error' = 'success') => {
     if (!user) return;
     
-    addNotification({
+    notify({
       title: 'Payment Update',
       message,
       type,
@@ -45,7 +46,7 @@ export const useNotificationHelpers = () => {
   const notifySystemUpdate = (title: string, message: string) => {
     if (!user) return;
     
-    addNotification({
+    notify({
       title,
       message,
       type: 'info',

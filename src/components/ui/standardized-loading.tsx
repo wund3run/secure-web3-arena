@@ -48,7 +48,7 @@ export function StandardizedLoading({
     return (
       <div className={cn("flex items-center justify-center", containerClasses[size], className)}>
         <img 
-          src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+          src="/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
           alt="Hawkly Logo"
           className={cn("object-contain bg-transparent animate-pulse", logoSizes[size])}
           style={{ backgroundColor: 'transparent' }}
@@ -61,7 +61,7 @@ export function StandardizedLoading({
   return (
     <div className={cn("flex flex-col items-center justify-center", containerClasses[size], className)}>
       <img 
-        src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+        src="/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
         alt="Hawkly Logo"
         className={cn("object-contain bg-transparent animate-pulse", logoSizes[size])}
         style={{ backgroundColor: 'transparent' }}

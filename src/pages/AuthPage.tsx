@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRBAC } from '../contexts/RBACContext';
+import { HawklyCard, SecurityBadge, LiveMetric } from '@/components/ui/hawkly-components';
+import { Shield, User, Lock } from 'lucide-react';
 
 // Define form state type
 interface FormState {
@@ -88,44 +90,56 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-900 p-4">
-      <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-xl overflow-hidden">
-        <div className="p-6">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-[#131822] to-[#1a1f2e] p-4">
+      <HawklyCard variant="glass" className="w-full max-w-md backdrop-blur-md border border-[#23283e] overflow-hidden">
+        <div className="p-8">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-white">Welcome to Hawkly</h2>
+            <div className="flex justify-center mb-4">
+              <Shield className="h-12 w-12 text-[#a879ef]" />
+            </div>
+            <h2 className="text-3xl font-bold text-white bg-clip-text text-transparent bg-gradient-to-r from-[#a879ef] to-[#32d9fa]">
+              Welcome to Hawkly
+            </h2>
             <p className="text-gray-400 mt-2">Sign in to access the secure platform</p>
           </div>
 
           {/* Demo user selector - only for development */}
-          <div className="mb-6 p-4 bg-gray-700/50 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-300 mb-2">Demo Users:</h3>
-            <div className="flex flex-wrap gap-2">
-              <button 
-                onClick={() => selectUser('admin@hawkly.io')}
-                className="px-3 py-1 text-xs rounded-full bg-purple-600 hover:bg-purple-500 text-white transition"
-              >
-                Admin
-              </button>
-              <button
-                onClick={() => selectUser('auditor@hawkly.io')}
-                className="px-3 py-1 text-xs rounded-full bg-blue-600 hover:bg-blue-500 text-white transition"
-              >
-                Auditor
-              </button>
-              <button
-                onClick={() => selectUser('project@hawkly.io')}
-                className="px-3 py-1 text-xs rounded-full bg-green-600 hover:bg-green-500 text-white transition"
-              >
-                Project Owner
-              </button>
+          <HawklyCard variant="default" className="mb-6">
+            <div className="p-4">
+              <h3 className="text-sm font-medium text-gray-300 mb-2 flex items-center">
+                <User className="h-4 w-4 mr-2 text-[#32d9fa]" />
+                Demo Users:
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                <button 
+                  onClick={() => selectUser('admin@hawkly.io')}
+                  className="px-3 py-1 text-xs rounded-full bg-[#a879ef] hover:bg-[#9665d8] text-white transition-all duration-300 hover:scale-105"
+                >
+                  Admin
+                </button>
+                <button
+                  onClick={() => selectUser('auditor@hawkly.io')}
+                  className="px-3 py-1 text-xs rounded-full bg-[#32d9fa] hover:bg-[#28b7d2] text-white transition-all duration-300 hover:scale-105"
+                >
+                  Auditor
+                </button>
+                <button
+                  onClick={() => selectUser('project@hawkly.io')}
+                  className="px-3 py-1 text-xs rounded-full bg-[#4ade80] hover:bg-[#3dba69] text-white transition-all duration-300 hover:scale-105"
+                >
+                  Project Owner
+                </button>
+              </div>
+              <p className="text-xs text-gray-400 mt-2">Password: "password" for all demo users</p>
             </div>
-            <p className="text-xs text-gray-400 mt-2">Password: "password" for all demo users</p>
-          </div>
+          </HawklyCard>
 
           {error && (
-            <div className="mb-6 p-3 bg-red-500/20 border border-red-500 rounded-lg">
-              <p className="text-red-400 text-sm">{error}</p>
-            </div>
+            <HawklyCard variant="highlighted" className="mb-6">
+              <div className="p-3 flex items-center">
+                <p className="text-red-400 text-sm">{error}</p>
+              </div>
+            </HawklyCard>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -196,7 +210,7 @@ export default function AuthPage() {
                 type="submit"
                 disabled={isLoading}
                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
-                          ${isLoading ? 'bg-purple-700 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500'}`}
+                          ${isLoading ? 'bg-[#9665d8] cursor-not-allowed' : 'bg-gradient-to-r from-[#a879ef] to-[#32d9fa] hover:opacity-90 transition-all duration-300 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#a879ef]'}`}
               >
                 {isLoading ? 'Signing in...' : 'Sign in'}
               </button>
@@ -204,15 +218,19 @@ export default function AuthPage() {
           </form>
         </div>
         
-        <div className="px-6 py-4 bg-gray-700/30 text-center">
+        <div className="px-6 py-4 bg-gray-700/10 text-center">
           <p className="text-sm text-gray-400">
             Don't have an account?{' '}
-            <a href="#" className="font-medium text-purple-400 hover:text-purple-300">
+            <a href="#" className="font-medium text-[#32d9fa] hover:text-[#28b7d2] transition-colors">
               Request access
             </a>
           </p>
         </div>
-      </div>
+      </HawklyCard>
+      
+      <SecurityBadge 
+        level="advanced" verified={true} animated={true} size="md" className="mt-4" 
+      />
     </div>
   );
 }

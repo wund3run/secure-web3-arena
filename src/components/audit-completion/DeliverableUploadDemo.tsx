@@ -45,7 +45,7 @@ export function DeliverableUploadDemo() {
       toast({
         title: "Upload failed",
         description: "Failed to upload files. Please try again.",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsUploading(false);

@@ -88,7 +88,7 @@ export function SimplifiedNavbar() {
             aria-label="Home page"
           >
             <img 
-              src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+              src="/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
               alt="Hawkly Logo"
               className="h-12 w-12 object-contain bg-transparent"
               style={{ backgroundColor: 'transparent' }}

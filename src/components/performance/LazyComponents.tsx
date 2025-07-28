@@ -31,7 +31,7 @@ export function LazyComponentWrapper({
   fallback = (
     <div className="flex flex-col items-center justify-center p-8 space-y-4">
       <img 
-        src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+        src="/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
         alt="Hawkly Logo"
         className="h-16 w-16 object-contain bg-transparent animate-pulse"
         style={{ backgroundColor: 'transparent' }}

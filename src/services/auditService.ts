@@ -109,15 +109,29 @@ export class AuditService {
   // Create or get chat room for audit request and auditor
   static async getOrCreateAuditChatRoom(auditRequestId: string, clientId: string, auditorId: string): Promise<string | null> {
     try {
+      // Define a type for chat rooms to avoid deep type instantiation
+      interface ChatRoom {
+        id: string;
+        name: string;
+        type: string;
+        audit_request_id: string;
+        participants: string[];
+        created_at: string;
+        [key: string]: any;
+      }
+      
       // Check if chat room already exists
-      const { data: existingRooms, error: findError } = await supabase
+      // Use any to break the deep type instantiation, then manually type the result
+      const chatRoomsResult = await (supabase as any)
         .from('chat_rooms')
         .select('*')
         .eq('type', 'audit')
         .eq('audit_request_id', auditRequestId)
         .contains('participants', [clientId, auditorId]);
 
-      if (findError) throw findError;
+      if (chatRoomsResult.error) throw chatRoomsResult.error;
+      
+      const existingRooms = chatRoomsResult.data as ChatRoom[] | null;
       if (existingRooms && existingRooms.length > 0) {
         return existingRooms[0].id;
       }

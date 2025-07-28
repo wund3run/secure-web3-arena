@@ -69,7 +69,7 @@ export const LaunchReadinessSummary = () => {
       case 'warning':
         return <Badge className="bg-yellow-500">Attention Needed</Badge>;
       case 'critical':
-        return <Badge variant="destructive">Critical Issues</Badge>;
+        return <Badge variant="error">Critical Issues</Badge>;
       default:
         return <Badge variant="outline">Pending</Badge>;
     }

@@ -363,7 +363,7 @@ export function AuditorWorkspaceV2() {
                         </div>
                         <Button
                           size="sm"
-                          variant={isRunning ? "destructive" : "default"}
+                          variant={isRunning ? "error" : "default"}
                           onClick={() => toggleTimeTracking(phase.id)}
                         >
                           {isRunning ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}

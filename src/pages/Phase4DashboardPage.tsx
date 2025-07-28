@@ -23,6 +23,8 @@ import { PredictiveAnalytics } from "@/components/ai-recommendations/PredictiveA
 
 export default function Phase4DashboardPage() {
   const [activeTab, setActiveTab] = useState('overview');
+  // TODO: Replace with real auditId from context or props
+  const auditId = "demo-audit-id";
 
   const features = [
     {
@@ -268,11 +270,11 @@ export default function Phase4DashboardPage() {
         </TabsContent>
 
         <TabsContent value="ai-analysis">
-          <SmartAuditAnalyzer />
+          <SmartAuditAnalyzer auditId={auditId} />
         </TabsContent>
 
         <TabsContent value="blockchain">
-          <BlockchainIntegration />
+          <BlockchainIntegration auditId={auditId} />
         </TabsContent>
 
         <TabsContent value="enterprise">

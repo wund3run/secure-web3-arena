@@ -149,7 +149,7 @@ export function CategoryPerformanceWidget({
                     </TableCell>
                     <TableCell className="text-right">
                       <Badge 
-                        variant={item.growth >= 0 ? "success" : "destructive"} 
+                        variant={item.growth >= 0 ? "success" : "error"} 
                         className="text-xs"
                       >
                         {item.growth >= 0 ? (

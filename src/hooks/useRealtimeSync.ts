@@ -1,5 +1,17 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+// Add missing types
+interface RealtimeSyncOptions {
+  channel?: string;
+  userId?: string;
+}
+
+interface RealtimeSyncState {
+  isConnected: boolean;
+  lastSync: Date;
+  syncStatus: 'idle' | 'syncing';
+  connectionStatus: 'connected' | 'disconnected' | 'connecting';
+}
 
 interface RealtimeNotification {
   id: string;
@@ -10,13 +22,16 @@ interface RealtimeNotification {
 
 export function useRealtimeSync(options?: RealtimeSyncOptions) {
   const [state, setState] = useState<RealtimeSyncState>({
-    isConnected: true, // Simulate connected state for demo
+    isConnected: true,
     lastSync: new Date(),
     syncStatus: 'idle',
-    connectionStatus: 'connected'
+    connectionStatus: 'connected',
   });
 
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const channel = options?.channel || 'default';
+  const userId = options?.userId;
+
+  const [notifications, setNotifications] = useState<RealtimeNotification[]>([]);
 
   useEffect(() => {
     // Simulate real-time connection monitoring
@@ -31,7 +46,7 @@ export function useRealtimeSync(options?: RealtimeSyncOptions) {
 
       // Simulate occasional notifications
       if (Math.random() > 0.8) {
-        const notification: Notification = {
+        const notification: RealtimeNotification = {
           id: Date.now().toString(),
           type: ['info', 'success', 'warning'][Math.floor(Math.random() * 3)] as any,
           message: `System update from ${options?.channel || 'default'} channel`,
@@ -59,7 +74,7 @@ export function useRealtimeSync(options?: RealtimeSyncOptions) {
   };
 
   const sendNotification = (message: string, type: 'info' | 'success' | 'warning' | 'error' = 'info') => {
-    const notification: Notification = {
+    const notification: RealtimeNotification = {
       id: Date.now().toString(),
       type,
       message,
@@ -81,25 +96,18 @@ export function useRealtimeSync(options?: RealtimeSyncOptions) {
     setNotifications(prev => [newNotification, ...prev.slice(0, 49)]); // Keep max 50 notifications
   };
 
-  const forceSync = () => {
-    setLastSync(new Date());
-    // Trigger a manual sync by refreshing the connection
-    setConnectionStatus('connecting');
-  };
-
-  const sendNotification = (notification: Omit<RealtimeNotification, 'id' | 'timestamp'>) => {
-    addNotification(notification);
-  };
-
   useEffect(() => {
-    setConnectionStatus('connecting');
-    
+    setState(prev => ({ ...prev, connectionStatus: 'connecting' }));
+
     const realtimeChannel = supabase
       .channel(channel)
       .on('presence', { event: 'sync' }, () => {
-        setIsConnected(true);
-        setConnectionStatus('connected');
-        setLastSync(new Date());
+        setState(prev => ({
+          ...prev,
+          isConnected: true,
+          connectionStatus: 'connected',
+          lastSync: new Date(),
+        }));
       })
       .on('presence', { event: 'join' }, ({ key, newPresences }) => {
         addNotification({
@@ -118,10 +126,12 @@ export function useRealtimeSync(options?: RealtimeSyncOptions) {
       })
       .subscribe((status) => {
         if (status === 'SUBSCRIBED') {
-          setIsConnected(true);
-          setConnectionStatus('connected');
-          setLastSync(new Date());
-          
+          setState(prev => ({
+            ...prev,
+            isConnected: true,
+            connectionStatus: 'connected',
+            lastSync: new Date(),
+          }));
           // Track user presence if userId is provided
           if (userId) {
             realtimeChannel.track({
@@ -130,23 +140,29 @@ export function useRealtimeSync(options?: RealtimeSyncOptions) {
             });
           }
         } else if (status === 'CHANNEL_ERROR') {
-          setIsConnected(false);
-          setConnectionStatus('disconnected');
+          setState(prev => ({
+            ...prev,
+            isConnected: false,
+            connectionStatus: 'disconnected',
+          }));
         }
       });
 
     return () => {
       realtimeChannel.unsubscribe();
-      setIsConnected(false);
-      setConnectionStatus('disconnected');
+      setState(prev => ({
+        ...prev,
+        isConnected: false,
+        connectionStatus: 'disconnected',
+      }));
     };
   }, [channel, userId]);
 
   return {
     notifications,
-    isConnected,
-    connectionStatus,
-    lastSync,
+    isConnected: state.isConnected,
+    connectionStatus: state.connectionStatus,
+    lastSync: state.lastSync,
     clearNotifications,
     addNotification,
     forceSync,

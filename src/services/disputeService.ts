@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { Database } from '../types/database';
+import { Database } from '@/integrations/supabase/types';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -24,10 +24,37 @@ export interface UpdateDisputeStatusInput {
 
 export const DisputeService = {
   async createDispute(input: CreateDisputeInput) {
+    // Map input to Supabase Insert type
+    const mappedInput: {
+      project_id: string;
+      raised_by: string;
+      against: string;
+      status: 'opened' | 'in_review' | 'resolved' | 'closed';
+      resolution_notes?: string;
+      created_at: string;
+      updated_at: string;
+    } = {
+      project_id: input.project_id,
+      raised_by: input.raised_by,
+      against: input.against,
+      status: 'opened', // default status for new dispute
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
     const { data, error } = await supabase
       .from('disputes')
-      .insert([input])
+      .insert([mappedInput])
       .select()
+      .single();
+    if (error) throw error;
+    return data;
+  },
+
+  async getDispute(id: string) {
+    const { data, error } = await supabase
+      .from('disputes')
+      .select('*')
+      .eq('id', id)
       .single();
     if (error) throw error;
     return data;
@@ -45,9 +72,21 @@ export const DisputeService = {
 
   async updateDisputeStatus(input: UpdateDisputeStatusInput) {
     const { id, status, resolution_notes } = input;
+    // Map DisputeStatus to Supabase enum
+    let mappedStatus: 'opened' | 'in_review' | 'resolved' | 'closed';
+    switch (status) {
+      case 'open':
+        mappedStatus = 'opened';
+        break;
+      case 'rejected':
+        mappedStatus = 'closed';
+        break;
+      default:
+        mappedStatus = status as 'in_review' | 'resolved' | 'opened' | 'closed';
+    }
     const { data, error } = await supabase
       .from('disputes')
-      .update({ status, resolution_notes, updated_at: new Date().toISOString() })
+      .update({ status: mappedStatus, resolution_notes, updated_at: new Date().toISOString() })
       .eq('id', id)
       .select()
       .single();

@@ -48,7 +48,7 @@ export function IntegratedCommunicationPlatform({
               <Bell className="h-4 w-4" />
               Notifications
               {unreadNotifications > 0 && (
-                <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 text-xs">
+                <Badge variant="error" className="ml-1 h-4 w-4 p-0 text-xs">
                   {unreadNotifications}
                 </Badge>
               )}

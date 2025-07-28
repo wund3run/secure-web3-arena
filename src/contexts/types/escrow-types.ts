@@ -89,17 +89,20 @@ export type DisputeStatus = 'opened' | 'in_review' | 'resolved' | 'closed';
 
 export interface Dispute {
   id: string;
-  escrow_contract_id: string;
+  project_id: string; // Supabase schema field
   raised_by: string;
-  arbitrator_id?: string;
-  milestone_id?: string;
-  reason: string;
-  evidence?: string;
+  against: string;
   status: DisputeStatus;
-  resolution?: string;
+  resolution_notes?: string;
   created_at: string;
   updated_at: string;
-  // Added for joined data
+  // Optional legacy fields for compatibility
+  escrow_contract_id?: string;
+  arbitrator_id?: string;
+  milestone_id?: string;
+  reason?: string;
+  evidence?: string;
+  resolution?: string;
   raiser?: Profile;
   arbitrator?: Profile;
   comments?: DisputeComment[];

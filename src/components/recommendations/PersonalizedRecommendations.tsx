@@ -129,7 +129,7 @@ export function PersonalizedRecommendations({ userType }: PersonalizedRecommenda
 
   const getPriorityColor = (priority: string): string => {
     const colors = {
-      high: "destructive",
+      high: "error",
       medium: "secondary",
       low: "outline"
     };
@@ -170,7 +170,7 @@ export function PersonalizedRecommendations({ userType }: PersonalizedRecommenda
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <h4 className="font-medium">{recommendation.title}</h4>
-                  <Badge variant={getPriorityColor(recommendation.priority) as "default" | "secondary" | "destructive" | "outline"}>
+                  <Badge variant={getPriorityColor(recommendation.priority) as "default" | "secondary" | "error" | "outline"}>
                     {recommendation.priority}
                   </Badge>
                   <div className="flex items-center gap-1">

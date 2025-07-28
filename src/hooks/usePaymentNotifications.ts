@@ -1,10 +1,12 @@
+import { supabase } from '@/integrations/supabase/client';
 import { useEffect } from 'react';
 import { useAuth } from '@/contexts/auth';
-import { useNotifications } from '@/contexts/NotificationContext';
+import { useContext } from 'react';
+// import { useNotification } from '../contexts/NotificationContext';
 
 export function usePaymentNotifications() {
   const { user } = useAuth();
-  const { addNotification } = useNotifications();
+  const { notify } = useNotification();
 
   useEffect(() => {
     if (!user) return;
@@ -22,7 +24,7 @@ export function usePaymentNotifications() {
         },
         (payload) => {
           const transaction = payload.new;
-          addNotification({
+          notify({
             title: 'Payment Processing',
             message: `Payment of $${transaction.amount} is being processed`,
             type: 'info',
@@ -46,7 +48,7 @@ export function usePaymentNotifications() {
           
           if (oldTransaction.status !== newTransaction.status) {
             const isSuccess = newTransaction.status === 'completed';
-            addNotification({
+            notify({
               title: isSuccess ? 'Payment Successful' : 'Payment Update',
               message: `Payment ${newTransaction.status}: $${newTransaction.amount}`,
               type: isSuccess ? 'success' : newTransaction.status === 'failed' ? 'error' : 'info',
@@ -75,7 +77,7 @@ export function usePaymentNotifications() {
           const newContract = payload.new;
           
           if (oldContract.status !== newContract.status) {
-            addNotification({
+            notify({
               title: 'Escrow Status Updated',
               message: `Escrow contract status changed to ${newContract.status}`,
               type: newContract.status === 'completed' ? 'success' : 'info',
@@ -111,7 +113,7 @@ export function usePaymentNotifications() {
 
           if (contract && (contract.client_id === user.id || contract.auditor_id === user.id)) {
             const isClient = contract.client_id === user.id;
-            addNotification({
+            notify({
               title: 'Milestone Payment Released',
               message: isClient 
                 ? `Payment of $${transaction.amount} released to auditor`
@@ -131,5 +133,5 @@ export function usePaymentNotifications() {
       supabase.removeChannel(escrowChannel);
       supabase.removeChannel(milestonePaymentChannel);
     };
-  }, [user, addNotification]);
+  }, [user, notify]);
 }

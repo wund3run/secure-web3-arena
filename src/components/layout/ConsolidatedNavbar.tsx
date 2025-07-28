@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Search } from "lucide-react";
-import { EnhancedMobileMenu } from '@/components/ui/enhanced-mobile-menu';
+import { MobileNavigation } from '@/components/layout/navigation/MobileNavigation';
 import { RealtimeNotificationSystem } from '@/components/notifications/RealtimeNotificationSystem';
 import { RealtimeConnectionStatus } from '@/components/realtime/RealtimeConnectionStatus';
 import { useRoleBasedNavigation } from '@/hooks/useRoleBasedNavigation';
@@ -52,7 +52,7 @@ export function ConsolidatedNavbar() {
             aria-label="Hawkly Home"
           >
             <img 
-              src="/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
+              src="/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png" 
               alt="Hawkly Logo"
               className="h-12 w-12 object-contain"
             />
@@ -152,7 +152,7 @@ export function ConsolidatedNavbar() {
             ) : null}
 
             {/* Mobile menu trigger */}
-            <EnhancedMobileMenu />
+            <MobileNavigation />
           </div>
         </div>
       </div>

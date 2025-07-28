@@ -232,7 +232,7 @@ export const useEnhancedRealtimeChat = (conversationId: string, userId: string) 
     // Expose base messaging functions for backward compatibility
     sendMessage: baseMessaging.sendMessage,
     markAsRead: baseMessaging.markAsRead,
-    setTyping: baseMessaging.setTyping,
+    // setTyping removed: not provided by useRealtimeMessaging
     unreadCount: baseMessaging.unreadCount
   };
 };

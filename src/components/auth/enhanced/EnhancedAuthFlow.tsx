@@ -297,7 +297,7 @@ export function EnhancedAuthFlow({ onSignIn, onSignUp, isLoading, error }: Enhan
       </div>
 
       {error && (
-        <Alert variant="destructive">
+        <Alert variant="error">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>

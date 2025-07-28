@@ -102,7 +102,7 @@ export class SmartErrorBoundary extends Component<Props, State> {
             We encountered an unexpected error. Don't worry - our team has been notified.
           </p>
 
-          <Alert variant="destructive" className="mb-4 max-w-md">
+          <Alert variant="error" className="mb-4 max-w-md">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
               {this.state.error?.message || "An unexpected error occurred"}

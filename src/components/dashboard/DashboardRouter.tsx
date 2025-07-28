@@ -21,7 +21,7 @@ export const DashboardRouter = () => {
 
   switch (userType) {
     case 'project_owner':
-      return <ProjectOwnerDashboard />;
+      return <EnhancedProjectOwnerDashboard />;
     case 'auditor':
       return <EnhancedAuditorDashboard />;
     case 'admin':

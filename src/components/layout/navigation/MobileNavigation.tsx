@@ -27,7 +27,7 @@ export function MobileNavigation() {
             <Link to="/" className="flex items-center space-x-2" onClick={() => setIsOpen(false)}>
               <img
                 className="h-8 w-8 object-contain"
-                src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png"
+                src="/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png"
                 alt="Hawkly Logo"
               />
               <span className="text-lg font-bold">Hawkly</span>

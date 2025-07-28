@@ -19,7 +19,7 @@ export function LoadingSpinner({ size = 'md', className, brand = true }: Loading
   return (
     <div className="flex flex-col items-center space-y-4">
       <img 
-        src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+        src="/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
         alt="Hawkly Logo"
         className={cn(sizeClasses[size], "object-contain bg-transparent animate-pulse", className)}
         style={{ backgroundColor: 'transparent' }}

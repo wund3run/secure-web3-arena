@@ -7,7 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import type { UserType } from '../OnboardingWizard';
+
+type UserType = 'auditor' | 'project-owner' | 'project_owner';
 
 interface SkillsData {
   skills: string[];

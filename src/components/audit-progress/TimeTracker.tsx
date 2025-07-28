@@ -111,7 +111,7 @@ export const TimeTracker: React.FC<TimeTrackerProps> = ({ auditRequestId, isAudi
                       Started: {format(new Date(activeEntry.start_time), 'HH:mm')}
                     </p>
                   </div>
-                  <Button onClick={handleStopTimer} variant="destructive">
+                  <Button onClick={handleStopTimer} variant="error">
                     <Pause className="h-4 w-4 mr-2" />
                     Stop Timer
                   </Button>

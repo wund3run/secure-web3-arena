@@ -60,7 +60,7 @@ export function UserPaths() {
                 </div>
               </div>
               
-              <HawklyButton asChild variant="primary" size="lg" className="w-full">
+              <HawklyButton asChild variant="default" size="lg" className="w-full">
                 <Link to="/request-audit">
                   Request Security Audit
                   <ArrowRight className="ml-2 h-4 w-4" />

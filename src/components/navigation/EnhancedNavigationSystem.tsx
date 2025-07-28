@@ -134,7 +134,7 @@ export function EnhancedNavigationSystem() {
               <Button variant="outline" size="sm" className="flex items-center gap-2">
                 <Bell className="h-3 w-3" />
                 {alerts.length > 0 && (
-                  <Badge variant="destructive" className="text-xs">
+                  <Badge variant="error" className="text-xs">
                     {alerts.length}
                   </Badge>
                 )}

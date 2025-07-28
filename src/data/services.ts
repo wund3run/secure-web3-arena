@@ -2,26 +2,17 @@
 export const FEATURED_SERVICES = [
   {
     id: "smart-contract-audit",
-    title: "Comprehensive Smart Contract Security Audit",
-    description: "Professional security assessment of your smart contracts including automated scanning, manual code review, and detailed vulnerability reporting. Our certified auditors examine your code for common vulnerabilities, business logic flaws, and gas optimization opportunities.",
-    provider: {
-      name: "BlockSafe Security",
-      level: "expert" as const,
-      reputation: 4.9,
-      isVerified: true
-    },
-    pricing: {
-      currency: "USD",
-      amount: 2500,
-      type: "starting" as const
-    },
-    category: "Security Audits",
-    tags: ["Smart Contracts", "Solidity", "Security", "DeFi"],
-    completedJobs: 156,
-    rating: 4.9,
-    responseTime: "2-4 hours",
-    deliveryTime: "5-7 days",
-    imageUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png"
+    title: "Smart Contract Security Audit",
+    description: "Comprehensive security audit for smart contracts using automated tools and manual review.",
+    price: "Starting at $5,000",
+    duration: "5-10 business days",
+    features: [
+      "Automated vulnerability scanning",
+      "Manual code review by certified auditors",
+      "Gas optimization analysis",
+      "Detailed security report with remediation steps"
+    ],
+    imageUrl: "/assets/images/services/smart-contract-audit.png"
   },
   {
     id: "defi-protocol-audit",
@@ -44,7 +35,7 @@ export const FEATURED_SERVICES = [
     rating: 4.8,
     responseTime: "1-2 hours",
     deliveryTime: "3-5 days",
-    imageUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png"
+    imageUrl: "/hawkly-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png"
   },
   {
     id: "nft-marketplace-audit",
@@ -67,7 +58,7 @@ export const FEATURED_SERVICES = [
     rating: 4.7,
     responseTime: "3-6 hours",
     deliveryTime: "7-10 days",
-    imageUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png"
+    imageUrl: "/hawkly-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png"
   },
   {
     id: "cross-chain-bridge-audit",
@@ -90,7 +81,7 @@ export const FEATURED_SERVICES = [
     rating: 4.9,
     responseTime: "1-3 hours",
     deliveryTime: "7-14 days",
-    imageUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png"
+    imageUrl: "/hawkly-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png"
   },
   {
     id: "dao-governance-audit",
@@ -113,7 +104,7 @@ export const FEATURED_SERVICES = [
     rating: 4.6,
     responseTime: "4-8 hours",
     deliveryTime: "10-14 days",
-    imageUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png"
+    imageUrl: "/hawkly-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png"
   },
   {
     id: "zk-proof-audit",
@@ -136,7 +127,7 @@ export const FEATURED_SERVICES = [
     rating: 4.8,
     responseTime: "2-4 hours",
     deliveryTime: "14-21 days",
-    imageUrl: "/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png"
+    imageUrl: "/hawkly-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png"
   }
 ];
 

@@ -33,9 +33,32 @@ import PersonalizedQuickActions from './PersonalizedQuickActions';
 interface AuditorProfile {
   id: string;
   user_id: string;
-  years_experience: number;
-  specializations: string[];
-  availability_hours: number;
+  years_experience?: number;
+  blockchain_expertise?: string[];
+  specialization_tags?: string[];
+  availability_status?: string;
+  average_completion_time_days?: number;
+  audit_types?: string[];
+  business_name?: string;
+  certifications?: any;
+  created_at?: string;
+  current_audit_count?: number;
+  github_username?: string;
+  hourly_rate_max?: number;
+  hourly_rate_min?: number;
+  languages_spoken?: string[];
+  linkedin_url?: string;
+  max_concurrent_audits?: number;
+  max_project_size?: number;
+  min_project_size?: number;
+  portfolio_url?: string;
+  preferred_project_types?: string[];
+  repeat_client_rate?: number;
+  response_time_hours?: number;
+  success_rate?: number;
+  timezone?: string;
+  total_audits_completed?: number;
+  updated_at?: string;
   user_preferences?: {
     goals?: string[];
     experience_level?: 'beginner' | 'intermediate' | 'expert';
@@ -138,7 +161,7 @@ export function PersonalizedWelcome() {
       toast({
         title: "Error loading profile",
         description: "We'll use default recommendations for now",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsLoading(false);
@@ -149,15 +172,26 @@ export function PersonalizedWelcome() {
     if (!user || !profile?.id) return;
 
     try {
-      const { data, error } = await supabase
+      // Define a type for the data to avoid deep type instantiation
+      interface ActionProgressData {
+        action_data: {
+          action: string;
+          [key: string]: any;
+        };
+        [key: string]: any;
+      }
+      
+      // Use any to break the deep type instantiation, then manually type the result
+      const progressResult = await (supabase as any)
         .from('audit_progress')
         .select('action_data')
         .eq('auditor_id', profile.id)
         .eq('action_type', 'quick_action');
-
-      if (error) throw error;
-
-      const actions = data.map(item => item.action_data?.action).filter(Boolean);
+        
+      if (progressResult.error) throw progressResult.error;
+      
+      const data = progressResult.data as ActionProgressData[] | null;
+      const actions = data?.map(item => item.action_data?.action).filter(Boolean) || [];
       setCompletedActions(actions);
     } catch (error) {
       console.error('Error fetching completed actions:', error);
@@ -206,8 +240,8 @@ export function PersonalizedWelcome() {
 
     // Calculate onboarding progress
     const profileFields = [
-      profile.specializations?.length > 0,
-      profile.availability_hours > 0,
+      profile.specialization_tags?.length > 0,
+      profile.availability_status !== null,
       profile.years_experience > 0,
       preferences.goals?.length > 0,
       preferences.industry_focus?.length > 0
@@ -388,21 +422,13 @@ export function PersonalizedWelcome() {
     try {
       // Award XP for the action
       if (profile?.id) {
-        await gamificationService.awardXP(profile.id, 'QUICK_ACTION' as XPAction, {
+        await GamificationService.awardXP(profile.id, XPAction.PROFILE_UPDATED, {
           action: action,
           timestamp: new Date().toISOString()
         });
       }
 
-      // Track the action for analytics
-      await supabase
-        .from('audit_progress')
-        .insert({
-          auditor_id: profile?.id,
-          action_type: 'quick_action',
-          action_data: { action, timestamp: new Date().toISOString() }
-        });
-
+      // Track completion
       setCompletedActions(prev => [...prev, action]);
 
       toast({

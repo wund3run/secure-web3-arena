@@ -17,7 +17,7 @@ export const useEscrowDisputes = (profile: Profile | null) => {
           arbitrator:arbitrator_id(*),
           comments:dispute_comments(*, user:user_id(*))
         `)
-        .eq('escrow_contract_id', contractId)
+        .eq('project_id', contractId)
         .order('created_at', { ascending: false });
         
       if (error) {
@@ -58,7 +58,11 @@ export const useEscrowDisputes = (profile: Profile | null) => {
           raiser,
           arbitrator,
           comments,
-          status: mappedStatus
+          status: mappedStatus,
+          // Map missing fields to undefined for compatibility
+          escrow_contract_id: undefined,
+          reason: undefined,
+          evidence: undefined
         } as Dispute;
       });
       
@@ -92,47 +96,31 @@ export const useEscrowDisputes = (profile: Profile | null) => {
       toast.error('You must be logged in to create a dispute');
       return null;
     }
-    
-    if (!dispute.escrow_contract_id) {
-      toast.error('Contract ID is required');
+    if (!dispute.project_id) {
+      toast.error('Project ID is required');
       return null;
     }
-    
-    if (!dispute.reason) {
-      toast.error('Reason is required for disputes');
-      return null;
-    }
-    
     try {
       // Prepare data for database insertion, mapping our types to database types
       const disputeData = {
+        project_id: dispute.project_id,
         raised_by: dispute.raised_by || profile.id,
-        reason: dispute.reason,
-        escrow_contract_id: dispute.escrow_contract_id,
-        status: 'opened' as const, // Use const assertion to ensure exact type
-        evidence: dispute.evidence || null,
-        arbitrator_id: dispute.arbitrator_id || null,
-        milestone_id: dispute.milestone_id || null
+        against: dispute.against ?? '',
+        status: 'opened' as const,
+        resolution_notes: dispute.resolution_notes ?? '',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       };
-      
       const { data, error } = await supabase
         .from('disputes')
         .insert(disputeData)
         .select()
         .single();
-        
       if (error) throw error;
-      
       // Update contract status to disputed
       if (dispute.escrow_contract_id) {
-        await supabase
-          .from('escrow_contracts')
-          .update({ status: 'disputed' })
-          .eq('id', dispute.escrow_contract_id);
-          
-        await fetchDisputes(dispute.escrow_contract_id);
+        await fetchDisputes(dispute.project_id);
       }
-      
       toast.success('Dispute created successfully');
       return data.id;
     } catch (error) {
@@ -159,15 +147,14 @@ export const useEscrowDisputes = (profile: Profile | null) => {
         
       if (error) throw error;
       
-      // Refresh the disputes for the related contract
+      // Refresh the disputes for the related project
       const { data } = await supabase
         .from('disputes')
-        .select('escrow_contract_id')
+        .select('project_id')
         .eq('id', disputeId)
         .single();
-        
-      if (data?.escrow_contract_id) {
-        await fetchDisputes(data.escrow_contract_id);
+      if (data?.project_id) {
+        await fetchDisputes(data.project_id);
       }
       
       toast.success('Comment added successfully');
@@ -189,18 +176,17 @@ export const useEscrowDisputes = (profile: Profile | null) => {
       const { data, error } = await supabase
         .from('disputes')
         .update({
-          status: 'resolved' as const, // Use const assertion to ensure exact type
-          resolution,
-          arbitrator_id: profile.id
+          status: 'resolved' as const,
+          resolution_notes: resolution,
+          arbitrator_id: profile.id,
+          updated_at: new Date().toISOString()
         })
         .eq('id', disputeId)
-        .select('escrow_contract_id')
+        .select('project_id')
         .single();
-        
       if (error) throw error;
-      
-      if (data?.escrow_contract_id) {
-        await fetchDisputes(data.escrow_contract_id);
+      if (data?.project_id) {
+        await fetchDisputes(data.project_id);
       }
       
       toast.success('Dispute resolved successfully');

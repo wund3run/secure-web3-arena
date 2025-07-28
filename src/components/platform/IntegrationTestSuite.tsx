@@ -439,7 +439,7 @@ export function IntegrationTestSuite() {
       case 'passed':
         return <Badge className="bg-green-500">Passed</Badge>;
       case 'failed':
-        return <Badge variant="destructive">Failed</Badge>;
+        return <Badge variant="error">Failed</Badge>;
       case 'warning':
         return <Badge variant="secondary">Warning</Badge>;
       case 'running':

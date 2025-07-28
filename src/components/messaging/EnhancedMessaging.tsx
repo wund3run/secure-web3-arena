@@ -333,7 +333,7 @@ export const EnhancedMessaging = () => {
                   />
                 </div>
                 <Button
-                  variant={isRecording ? "destructive" : "ghost"}
+                  variant={isRecording ? "error" : "ghost"}
                   size="sm"
                   onClick={toggleRecording}
                 >

@@ -53,7 +53,8 @@ const EnhancedAuth = () => {
       toast.success('Welcome back! You have been successfully signed in.');
       navigate('/dashboard');
     } catch (error: unknown) {
-      toast.error(error.message || 'Failed to sign in. Please check your credentials.');
+      const errorMsg = typeof error === 'object' && error !== null && 'message' in error ? (error as { message?: string }).message : undefined;
+      toast.error(errorMsg || 'Failed to sign in. Please check your credentials.');
     } finally {
       setIsLoading(false);
     }
@@ -93,7 +94,8 @@ const EnhancedAuth = () => {
       toast.success('Account created successfully! Please check your email to verify your account.');
       setActiveTab('signin');
     } catch (error: unknown) {
-      toast.error(error.message || 'Failed to create account. Please try again.');
+      const errorMsg = typeof error === 'object' && error !== null && 'message' in error ? (error as { message?: string }).message : undefined;
+      toast.error(errorMsg || 'Failed to create account. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -124,7 +126,7 @@ const EnhancedAuth = () => {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <img 
-              src="/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png" 
+              src="/hawkly-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png" 
               alt="Hawkly"
               className="h-12 w-12 mx-auto mb-4"
             />

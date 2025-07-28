@@ -37,8 +37,8 @@ serve(async (req) => {
     // Validate origin
     const origin = req.headers.get("origin");
     const allowedOrigins = [
-      "https://lovable.dev",
-      "https://hawkly.lovable.app",
+      "https://hawkly.app",
+      "https://hawkly.app",
       "http://localhost:8080"
     ];
     

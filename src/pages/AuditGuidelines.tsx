@@ -1,4 +1,56 @@
 import React from 'react';
+
+const severityLevels = [
+  {
+    level: 'Critical',
+    color: 'destructive',
+    description: 'Vulnerabilities that can lead to complete loss of funds or control.',
+    examples: [
+      'Reentrancy attacks',
+      'Unprotected admin functions',
+      'Private key leakage'
+    ]
+  },
+  {
+    level: 'High',
+    color: 'error',
+    description: 'Major issues that can result in significant financial or reputational damage.',
+    examples: [
+      'Integer overflows/underflows',
+      'Broken access control',
+      'Logic errors in critical functions'
+    ]
+  },
+  {
+    level: 'Medium',
+    color: 'warning',
+    description: 'Issues that may allow attackers to gain advantage or partial access.',
+    examples: [
+      'Gas griefing',
+      'Unoptimized code',
+      'Potential DoS vectors'
+    ]
+  },
+  {
+    level: 'Low',
+    color: 'outline',
+    description: 'Minor issues that do not pose immediate risk but should be addressed.',
+    examples: [
+      'Unused variables',
+      'Code style inconsistencies',
+      'Missing events'
+    ]
+  },
+  {
+    level: 'Info',
+    color: 'ghost',
+    description: 'Informational findings and recommendations.',
+    examples: [
+      'Best practice suggestions',
+      'Documentation improvements'
+    ]
+  }
+];
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Shield, CheckCircle, AlertTriangle, FileText, Users, Clock } from 'lucide-react';
@@ -58,7 +110,7 @@ const AuditGuidelines = () => {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="flex items-center gap-2">
-                      <Badge variant="destructive">Critical</Badge>
+                      <Badge variant="error">Critical</Badge>
                       <span className="font-medium">Critical Vulnerabilities</span>
                     </div>
                     <span className="text-sm text-muted-foreground">Immediate risk of fund loss</span>

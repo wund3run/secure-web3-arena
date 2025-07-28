@@ -1,7 +1,8 @@
-import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useState } from 'react';
 import { useAuth } from '@/contexts/auth';
 import { toast } from 'sonner';
+import type { Database } from '@/integrations/supabase/types';
 
 interface EscrowContract {
   id: string;
@@ -322,19 +323,21 @@ export function useEscrowPayments() {
     const { data, error } = await supabase.storage
       .from('receipts')
       .upload(`receipt-${paymentEventId}.pdf`, null, { contentType: 'application/pdf' }); // No PDF bytes for now
-    const receiptUrl = data?.Key ? supabase.storage.from('receipts').getPublicUrl(data.Key).publicURL : null;
+    const receiptUrl = data?.path ? supabase.storage.from('receipts').getPublicUrl(data.path).data.publicUrl : null;
     // 3. Insert into payment_receipts
-    await supabase.from('payment_receipts').insert({
-      payment_event_id: paymentEventId,
-      audit_request_id: auditRequestId,
-      payer_id: payerId,
-      payee_id: payeeId,
-      amount,
-      date,
-      type,
-      receipt_url: receiptUrl,
-      details
-    });
+    await supabase
+      .from('receipts')
+      .insert({
+        payment_event_id: paymentEventId,
+        audit_request_id: auditRequestId,
+        payer_id: payerId,
+        payee_id: payeeId,
+        amount,
+        date,
+        type,
+        receipt_url: receiptUrl,
+        details
+      } as Database['public']['Tables']['receipts']['Insert']);
   }
 
   return {

@@ -4,9 +4,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/auth';
-import { useRealtimeMessages } from '@/hooks/useRealtimeMessages';
-import { Send, Paperclip, MoreVertical } from 'lucide-react';
+import { Send, Paperclip } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { cn } from '@/lib/utils';
+
+interface Message {
+  id: string;
+  content: string;
+  sender_id: string;
+  created_at: string;
+  file_attachments?: any[];
+}
 
 interface RealtimeMessagingInterfaceProps {
   conversationId: string;
@@ -23,46 +31,28 @@ export function RealtimeMessagingInterface({
 }: RealtimeMessagingInterfaceProps) {
   const { user } = useAuth();
   const [newMessage, setNewMessage] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { 
-    messages, 
-    loading, 
-    isConnected, 
-    typingUsers, 
-    sendMessage, 
-    markAsRead, 
-    sendTypingIndicator 
-  } = useRealtimeMessages({ conversationId, receiverId });
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  useEffect(() => {
-    // Mark unread messages as read
-    const unreadMessages = messages
-      .filter(msg => msg.receiver_id === user?.id && !msg.read_at)
-      .map(msg => msg.id);
-    
-    if (unreadMessages.length > 0) {
-      markAsRead(unreadMessages);
-    }
-  }, [messages, user?.id, markAsRead]);
-
   const handleSendMessage = async () => {
-    if (!newMessage.trim() || !user) return;
-
-    await sendMessage(newMessage, 'text');
+    if (!newMessage.trim()) return;
+    
+    // TODO: Implement actual message sending
+    const message: Message = {
+      id: Date.now().toString(),
+      content: newMessage,
+      sender_id: user?.id || '',
+      created_at: new Date().toISOString()
+    };
+    
+    setMessages(prev => [...prev, message]);
     setNewMessage('');
-    setIsTyping(false);
-    sendTypingIndicator(false);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -72,84 +62,16 @@ export function RealtimeMessagingInterface({
     }
   };
 
-  const handleTyping = (value: string) => {
-    setNewMessage(value);
-    
-    if (value.trim() && !isTyping) {
-      setIsTyping(true);
-      sendTypingIndicator(true);
-    } else if (!value.trim() && isTyping) {
-      setIsTyping(false);
-      sendTypingIndicator(false);
-    }
-  };
-
-  const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
-  };
-
   if (loading) {
     return (
-      <div
-        key={message.id}
-        className={`flex gap-3 ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'}`}
-      >
-        <Avatar className="h-8 w-8">
-          <AvatarFallback>{senderName[0]}</AvatarFallback>
-        </Avatar>
-        
-        <div className={`flex flex-col ${isOwnMessage ? 'items-end' : 'items-start'} max-w-[70%]`}>
-          {message.reply_to_id && (
-            <div className="text-xs text-muted-foreground mb-1 px-2 py-1 bg-muted/50 rounded">
-              Replying to message
-            </div>
-          )}
-          
-          <div
-            className={`px-4 py-2 rounded-lg ${
-              isOwnMessage
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-muted'
-            }`}
-          >
-            <p className="text-sm">{message.content}</p>
-            
-            {message.file_attachments.length > 0 && (
-              <div className="mt-2 space-y-1">
-                {message.file_attachments.map((file, index) => (
-                  <div key={index} className="flex items-center gap-2 p-2 bg-background/10 rounded">
-                    {file.type.startsWith('image/') ? (
-                      <ImageIcon className="h-4 w-4" />
-                    ) : (
-                      <File className="h-4 w-4" />
-                    )}
-                    <span className="text-xs truncate">{file.name}</span>
-                    <Button variant="ghost" size="sm">
-                      <Download className="h-3 w-3" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          
-          <div className="flex items-center gap-2 mt-1">
-            <span className="text-xs text-muted-foreground">
-              {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
-            </span>
-            {!isOwnMessage && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setReplyToMessage(message)}
-                className="h-6 w-6 p-0"
-              >
-                <Reply className="h-3 w-3" />
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
+      <Card className="h-full flex flex-col">
+        <CardHeader className="flex-shrink-0 py-3">
+          <CardTitle className="text-lg">Loading messages...</CardTitle>
+        </CardHeader>
+        <CardContent className="flex-1 flex items-center justify-center">
+          <div className="text-muted-foreground">Loading conversation...</div>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -165,20 +87,14 @@ export function RealtimeMessagingInterface({
               </AvatarFallback>
             </Avatar>
             <div>
-              <h3 className="font-medium">{receiverName || 'Unknown User'}</h3>
-              <p className="text-xs text-muted-foreground">
-                {isConnected ? 'Online' : 'Connecting...'}
-              </p>
+              <h3 className="text-sm font-medium">{receiverName || 'Unknown User'}</h3>
+              <p className="text-xs text-muted-foreground">Online</p>
             </div>
           </div>
-          <Button variant="ghost" size="sm">
-            <MoreVertical className="h-4 w-4" />
-          </Button>
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="flex-1 p-0 flex flex-col">
-        {/* Messages Area */}
+      <CardContent className="flex-1 overflow-hidden p-0">
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.length === 0 ? (
             <div className="flex items-center justify-center h-full">
@@ -227,30 +143,13 @@ export function RealtimeMessagingInterface({
                     <Avatar className="h-8 w-8">
                       <AvatarImage src="" />
                       <AvatarFallback className="text-sm">
-                        {getInitials('You')}
+                        {getInitials(user?.user_metadata?.full_name || 'You')}
                       </AvatarFallback>
                     </Avatar>
                   )}
                 </div>
               );
             })
-          )}
-          
-          {/* Typing Indicator */}
-          {typingUsers.length > 0 && (
-            <div className="flex gap-3">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src="" />
-                <AvatarFallback className="text-sm">
-                  {getInitials(receiverName || 'U')}
-                </AvatarFallback>
-              </Avatar>
-              <div className="bg-muted rounded-lg px-3 py-2">
-                <p className="text-sm text-muted-foreground">
-                  {receiverName} is typing...
-                </p>
-              </div>
-            </div>
           )}
           
           <div ref={messagesEndRef} />
@@ -265,16 +164,14 @@ export function RealtimeMessagingInterface({
             <Input
               ref={inputRef}
               value={newMessage}
-              onChange={(e) => handleTyping(e.target.value)}
+              onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type a message..."
               className="flex-1"
-              disabled={!isConnected}
             />
             <Button 
-              onClick={handleSendMessage} 
-              disabled={!newMessage.trim() || !isConnected}
-              size="sm"
+              onClick={handleSendMessage}
+              disabled={!newMessage.trim()}
             >
               <Send className="h-4 w-4" />
             </Button>

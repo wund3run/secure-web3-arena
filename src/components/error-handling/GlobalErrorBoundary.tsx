@@ -45,7 +45,7 @@ class GlobalErrorBoundary extends Component<Props, State> {
     
     // Log to external service in production
     if (process.env.NODE_ENV === 'production') {
-      this.logErrorToService(error, errorInfo);
+      this.reportError(error, errorInfo);
     }
   }
 
@@ -88,7 +88,7 @@ class GlobalErrorBoundary extends Component<Props, State> {
               <CardTitle className="text-2xl">Something went wrong</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <Alert variant="destructive">
+              <Alert variant="error">
                 <AlertTriangle className="h-4 w-4" />
                 <AlertDescription>
                   {this.state.error?.message || 'An unexpected error occurred'}

@@ -38,7 +38,7 @@ export function AdminPlatformValidator() {
   return (
     <div className="space-y-4">
       {adminRouteIssues.length > 0 && (
-        <Alert variant="destructive">
+        <Alert variant="error">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Admin navigation issues detected</AlertTitle>
           <AlertDescription>

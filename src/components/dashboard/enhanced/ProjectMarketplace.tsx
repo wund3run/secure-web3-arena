@@ -65,7 +65,7 @@ export function ProjectMarketplace() {
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
       case 'Critical':
-        return <Badge variant="destructive">Critical</Badge>;
+        return <Badge variant="error">Critical</Badge>;
       case 'High':
         return <Badge variant="default" className="bg-orange-100 text-orange-800">High</Badge>;
       case 'Medium':

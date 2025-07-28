@@ -147,7 +147,7 @@ export function AuditorDashboard() {
                     </div>
                     <div className="flex items-center justify-between">
                       <Badge 
-                        variant={audit.complexity === "High" ? "destructive" : audit.complexity === "Medium" ? "secondary" : "default"}
+                        variant={audit.complexity === "High" ? "error" : audit.complexity === "Medium" ? "secondary" : "default"}
                       >
                         {audit.complexity} Complexity
                       </Badge>
@@ -441,7 +441,7 @@ export function AuditorDashboard() {
                       Critical vulnerability in bridge logic prevented $2M exploit
                     </p>
                     <div className="flex items-center justify-between text-xs">
-                      <Badge variant="destructive">Critical</Badge>
+                      <Badge variant="error">Critical</Badge>
                       <span>Dec 2023</span>
                     </div>
                   </div>

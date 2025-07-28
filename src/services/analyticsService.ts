@@ -44,10 +44,11 @@ export class AnalyticsService {
   }
   
   static trackAuditRequest(auditData: unknown): void {
+    const ad = auditData as { blockchain?: string; budget?: number; urgency_level?: string };
     this.track('audit_request_created', {
-      blockchain: auditData.blockchain,
-      budget: auditData.budget,
-      urgency: auditData.urgency_level
+      blockchain: ad.blockchain,
+      budget: ad.budget,
+      urgency: ad.urgency_level
     });
   }
   

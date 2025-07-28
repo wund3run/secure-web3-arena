@@ -6,7 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { User, Globe } from 'lucide-react';
-import type { UserType } from '../OnboardingWizard';
+
+type UserType = 'auditor' | 'project-owner' | 'project_owner';
 
 interface ProfileData {
   fullName: string;

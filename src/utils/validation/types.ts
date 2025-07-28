@@ -1,4 +1,27 @@
+// Types for productionValidation
+export interface AuditRequestData {
+  project_name?: string;
+  project_description?: string;
+  blockchain?: string;
+  client_id?: string;
+  budget?: number;
+  deadline?: string;
+  repository_url?: string;
+  audit_scope?: string;
+  specific_concerns?: string;
+}
 
+export interface AuditorProfileData {
+  user_id?: string;
+  years_experience?: number;
+  hourly_rate_min?: number;
+  hourly_rate_max?: number;
+  portfolio_url?: string;
+  bio?: string;
+  business_name?: string;
+  specialization_tags?: string[];
+  blockchain_expertise?: string[];
+}
 export type ValidationSeverity = 'high' | 'medium' | 'low';
 
 export type ValidationType = 

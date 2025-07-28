@@ -1,11 +1,13 @@
+import { supabase } from '@/integrations/supabase/client';
 import { useEffect } from 'react';
 import { useAuth } from '@/contexts/auth';
-import { useNotifications } from '@/contexts/NotificationContext';
+import { useContext } from 'react';
+// import { useNotification } from '../contexts/NotificationContext';
 import { toast } from 'sonner';
 
 export function useRealtimeNotifications() {
   const { user } = useAuth();
-  const { addNotification } = useNotifications();
+  const { notify } = useNotification();
 
   useEffect(() => {
     if (!user) return;
@@ -23,7 +25,7 @@ export function useRealtimeNotifications() {
         },
         (payload) => {
           const notification = payload.new;
-          addNotification({
+          notify({
             title: 'New Message',
             message: 'You have received a new message',
             type: 'info',
@@ -48,7 +50,7 @@ export function useRealtimeNotifications() {
         (payload) => {
           const update = payload.new;
           if (update.user_id === user.id) {
-            addNotification({
+            notify({
               title: 'Audit Update',
               message: update.message || 'Your audit status has been updated',
               type: 'info',
@@ -74,7 +76,7 @@ export function useRealtimeNotifications() {
         (payload) => {
           const transaction = payload.new;
           if (transaction.client_id === user.id || transaction.auditor_id === user.id) {
-            addNotification({
+            notify({
               title: 'Payment Update',
               message: `Payment ${transaction.status}`,
               type: transaction.status === 'completed' ? 'success' : 'info',
@@ -92,5 +94,5 @@ export function useRealtimeNotifications() {
       supabase.removeChannel(auditChannel);
       supabase.removeChannel(paymentChannel);
     };
-  }, [user, addNotification]);
+  }, [user, notify]);
 }

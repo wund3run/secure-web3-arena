@@ -13,7 +13,7 @@ const AppLoadingState: React.FC<AppLoadingProps> = ({
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="flex flex-col items-center space-y-4">
         <img 
-          src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+          src="/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
           alt="Hawkly Logo"
           className="h-20 w-20 object-contain bg-transparent animate-pulse"
           style={{ backgroundColor: 'transparent' }}

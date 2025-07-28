@@ -19,7 +19,7 @@ export const MarketplaceErrorBoundary: React.FC<MarketplaceErrorBoundaryProps> =
   // Custom fallback UI specifically for marketplace components
   const defaultFallback = (
     <div className="p-6 rounded-lg border border-destructive/20 bg-background/95 shadow-sm">
-      <Alert variant="destructive" className="mb-4">
+      <Alert variant="error" className="mb-4">
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
           We encountered an issue with the marketplace

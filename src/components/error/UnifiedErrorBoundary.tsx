@@ -131,7 +131,7 @@ export class UnifiedErrorBoundary extends Component<Props, State> {
 
     return (
       <div className="p-6 space-y-6 max-w-2xl mx-auto">
-        <Alert variant="destructive">
+        <Alert variant="error">
           <AlertCircle className="h-5 w-5" />
           <AlertDescription className="ml-2">
             {error?.message || 'An unexpected error occurred'}

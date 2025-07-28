@@ -25,20 +25,35 @@ const badgeVariants = cva(
         warning: "bg-warning text-inverse",
         error: "bg-error text-white",
       },
+      size: {
+        sm: "text-xs px-2 py-1",
+        md: "text-sm px-3 py-1.5",
+        lg: "text-base px-4 py-2",
+      },
     },
     defaultVariants: {
       variant: "default",
+      size: "md",
     },
   }
 )
 
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {}
+    Omit<VariantProps<typeof badgeVariants>, 'variant'> {
+  variant?: "default" | "accent" | "secondary" | "outline" | "success" | "warning" | "error" | "destructive" | null | undefined;
+  size?: "sm" | "md" | "lg";
+}
 
-function Badge({ className, variant, ...props }: BadgeProps) {
+function Badge({ className, variant, size, ...props }: BadgeProps) {
+  // Handle legacy "destructive" variant used in older code
+  let safeVariant = variant;
+  if (variant === "destructive") {
+    safeVariant = "error";
+  }
+  
   return (
-    <div className={cn(badgeVariants({ variant }), className)} {...props} />
+    <div className={cn(badgeVariants({ variant: safeVariant as any, size }), className)} {...props} />
   )
 }
 

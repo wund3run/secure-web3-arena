@@ -297,7 +297,7 @@ export function EnhancedContactForm() {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">Emergency Support</span>
-                <Badge variant="destructive">1 hour</Badge>
+                <Badge variant="error">1 hour</Badge>
               </div>
             </div>
           </CardContent>

@@ -7,16 +7,24 @@ import { cn } from "@/lib/utils"; import { buttonVariants } from "./button-varia
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean
+    Omit<VariantProps<typeof buttonVariants>, 'variant'> {
+  asChild?: boolean;
+  variant?: "link" | "default" | "secondary" | "destructive" | "ghost" | "outline" | "error" | null | undefined;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button"
+    const Comp = asChild ? Slot : "button";
+    
+    // Handle legacy "error" variant used in older code
+    let safeVariant = variant;
+    if (variant === "error") {
+      safeVariant = "destructive";
+    }
+    
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant: safeVariant as any, size, className }))}
         ref={ref}
         {...props}
       />

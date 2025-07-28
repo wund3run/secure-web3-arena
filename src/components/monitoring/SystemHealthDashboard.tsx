@@ -60,11 +60,11 @@ export function SystemHealthDashboard() {
 
   const getHealthStatus = (): { 
     status: string; 
-    color: "success" | "warning" | "default" | "secondary" | "destructive" | "outline" | "brand" 
+    color: "success" | "warning" | "default" | "secondary" | "error" | "outline" | "accent"
   } => {
-    if (systemMetrics.errorRate > 10) return { status: 'critical', color: 'destructive' };
-    if (systemMetrics.errorRate > 5) return { status: 'warning', color: 'secondary' };
-    return { status: 'healthy', color: 'default' };
+    if (systemMetrics.errorRate > 10) return { status: 'critical', color: 'error' };
+    if (systemMetrics.errorRate > 5) return { status: 'warning', color: 'warning' };
+    return { status: 'healthy', color: 'success' };
   };
 
   const healthStatus = getHealthStatus();
@@ -79,7 +79,7 @@ export function SystemHealthDashboard() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant={isConnected ? "default" : "destructive"}>
+          <Badge variant={isConnected ? "default" : "error"}>
             {isConnected ? (
               <>
                 <Wifi className="h-3 w-3 mr-1" />

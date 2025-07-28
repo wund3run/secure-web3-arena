@@ -323,7 +323,7 @@ export const ProductionMonitoring: React.FC = () => {
                         {alert.timestamp.toLocaleString()}
                       </p>
                     </div>
-                    <Badge variant={alert.resolved ? "secondary" : "destructive"}>
+                    <Badge variant={alert.resolved ? "secondary" : "error"}>
                       {alert.resolved ? 'Resolved' : 'Active'}
                     </Badge>
                   </div>

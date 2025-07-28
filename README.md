@@ -1,20 +1,34 @@
 ## Project info
 
-**URL**: https://lovable.dev/projects/94c46652-d3b3-4056-adcb-4de9e7720c6c
+# Hawkly - Web3 Security Marketplace
+
+**URL**: https://hawkly.app
+
+**Status**: UI Overhaul in Progress (July-August 2025)
+
+## UI Overhaul
+
+The platform is undergoing a comprehensive UI overhaul to implement modern design patterns and enhanced user experience features. For details, see:
+
+- [UI Overhaul Implementation Plan](./HAWKLY_UI_OVERHAUL_IMPLEMENTATION_PLAN.md)
+- [UI Overhaul Implementation Tracking](./HAWKLY_UI_OVERHAUL_IMPLEMENTATION_TRACKING.md)
+- [UI Overhaul Testing Plan](./HAWKLY_UI_OVERHAUL_TESTING_PLAN.md)
+- [UI Overhaul Quickstart Guide](./HAWKLY_UI_OVERHAUL_QUICKSTART_GUIDE.md)
+- [UI Overhaul Executive Summary](./HAWKLY_UI_OVERHAUL_EXECUTIVE_SUMMARY.md)
 
 ## How can I edit this code?
 
 There are several ways of editing your application.
 
-**Use Lovable**
+**Use Hawkly Development Tools**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/94c46652-d3b3-4056-adcb-4de9e7720c6c) and start prompting.
+Access the development environment through the Hawkly platform for seamless development.
 
-Changes made via Lovable will be committed automatically to this repo.
+Changes made through Hawkly tools will be committed automatically to this repo.
 
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Hawkly development tools.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -60,15 +74,15 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/94c46652-d3b3-4056-adcb-4de9e7720c6c) and click on Share -> Publish.
+Deploy through the Hawkly platform using the deployment tools available in the development environment.
 
-## Can I connect a custom domain to my Lovable project?
+## Can I connect a custom domain to my Hawkly project?
 
 Yes, you can!
 
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Read more in the Hawkly documentation for setting up custom domains.
 
 ## 📋 Implementation Guides & User Journeys
 

@@ -226,7 +226,7 @@ export const ProductionReadinessCheck: React.FC = () => {
           )}
 
           {overallStatus === 'critical-issues' && (
-            <Alert variant="destructive">
+            <Alert variant="error">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
                 Critical issues detected. Please resolve these before launching to production.

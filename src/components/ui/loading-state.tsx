@@ -27,7 +27,7 @@ const LoadingState: React.FC<LoadingStateProps> = ({
   return (
     <div className={containerClasses}>
       <img 
-        src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+        src="/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
         alt="Hawkly Logo"
         className={`${logoSizes[size]} object-contain bg-transparent animate-pulse mb-4`}
         style={{ backgroundColor: 'transparent' }}

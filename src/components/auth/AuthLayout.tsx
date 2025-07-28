@@ -11,7 +11,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
       <AppContainer maxWidth="max-w-md" padding="px-6 py-8" glass elevation>
         <div className="text-center mb-8">
           <img 
-            src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+            src="/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
             alt="Hawkly Logo"
             className="h-16 w-16 mx-auto mb-4 object-contain bg-transparent"
             style={{ backgroundColor: 'transparent' }}

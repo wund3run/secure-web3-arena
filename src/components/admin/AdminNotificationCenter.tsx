@@ -11,7 +11,7 @@ import { Bell, Send, Users, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const AdminNotificationCenter = () => {
-  const { addNotification } = useNotifications();
+  const { notify } = useNotifications();
   const { user } = useAuth();
   const [announcementTitle, setAnnouncementTitle] = useState('');
   const [announcementMessage, setAnnouncementMessage] = useState('');
@@ -26,7 +26,7 @@ export const AdminNotificationCenter = () => {
 
     // In a real app, this would send to all users based on targetAudience
     // For now, we'll just add it to the current user's notifications
-    addNotification({
+    notify({
       title: `[SYSTEM] ${announcementTitle}`,
       message: announcementMessage,
       type: announcementType,

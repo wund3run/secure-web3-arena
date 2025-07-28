@@ -56,7 +56,7 @@ export function AuditWorkspace({ auditId, projectName, participants }: AuditWork
               <MessageSquare className="h-4 w-4" />
               Communication
               {unreadMessages > 0 && (
-                <Badge variant="destructive" className="ml-1 h-5 w-5 p-0 text-xs">
+                <Badge variant="error" className="ml-1 h-5 w-5 p-0 text-xs">
                   {unreadMessages}
                 </Badge>
               )}

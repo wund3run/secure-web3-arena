@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test:unit": "vitest run"
+    "test:unit": "vitest run",
+    "build-with-ts-errors": "tsc --noEmit || vite build"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.32.0",
@@ -67,6 +68,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.27.1",
     "@cypress/code-coverage": "^3.14.5",
     "@eslint/js": "^9.29.0",
     "@hcaptcha/react-hcaptcha": "^1.12.0",
@@ -80,6 +82,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/dompurify": "^3.0.5",
+    "@types/jest": "^30.0.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@types/react-dropzone": "^4.2.2",

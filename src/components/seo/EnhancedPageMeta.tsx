@@ -26,7 +26,7 @@ export function EnhancedPageMeta({
   breadcrumbs = []
 }: EnhancedPageMetaProps) {
   const fullTitle = title.includes('Hawkly') ? title : `${title} | Hawkly - Web3 Security Platform`;
-  const defaultImage = '/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png';
+  const defaultImage = '/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png';
   const imageUrl = image || defaultImage;
   const canonicalUrl = url || (typeof window !== 'undefined' ? window.location.href : '');
 

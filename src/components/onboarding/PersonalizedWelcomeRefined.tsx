@@ -445,7 +445,7 @@ export function PersonalizedWelcomeRefined() {
 
   if (error && !personalizedContent) {
     return (
-      <Alert variant="destructive">
+      <Alert variant="error">
         <AlertTriangle className="h-4 w-4" />
         <AlertDescription className="flex items-center justify-between">
           <span>Failed to load personalized content. Using default experience.</span>

@@ -44,7 +44,7 @@ export const NetworkStatusMonitor = () => {
   if (!showOfflineAlert) return null;
 
   return (
-    <Alert variant="destructive" className="fixed bottom-4 right-4 w-auto max-w-md z-50">
+    <Alert variant="error" className="fixed bottom-4 right-4 w-auto max-w-md z-50">
       <WifiOff className="h-4 w-4" />
       <AlertDescription>
         You are currently offline. Some features may be unavailable.

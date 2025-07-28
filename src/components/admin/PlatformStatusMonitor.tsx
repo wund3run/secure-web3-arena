@@ -117,7 +117,7 @@ export function PlatformStatusMonitor() {
           ) : getOverallStatus() === 'degraded' ? (
             <Badge className="bg-amber-500">Partial Outage</Badge>
           ) : getOverallStatus() === 'outage' ? (
-            <Badge variant="destructive">System Outage</Badge>
+            <Badge variant="error">System Outage</Badge>
           ) : (
             <Badge variant="outline">Checking Status...</Badge>
           )}

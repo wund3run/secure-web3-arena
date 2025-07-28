@@ -49,7 +49,7 @@ export default function LoadingTrivia({
     <div className={containerClasses}>
       <div className="flex flex-col items-center space-y-4 max-w-md">
         <img 
-          src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+          src="/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
           alt="Hawkly Logo"
           className={`${logoSizes[size]} object-contain bg-transparent animate-security-float`}
           style={{ backgroundColor: 'transparent' }}

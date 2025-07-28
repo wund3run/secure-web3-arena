@@ -1,4 +1,5 @@
 import React from 'react';
+import { fn, MockedFunction, Mocked } from 'jest-mock';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { PersonalizedWelcomeRefined } from '@/components/onboarding/PersonalizedWelcomeRefined';
@@ -12,9 +13,9 @@ jest.mock('@/hooks/use-toast');
 jest.mock('@/integrations/supabase/client');
 jest.mock('@/services/gamificationService');
 
-const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
-const mockUseToast = useToast as jest.MockedFunction<typeof useToast>;
-const mockSupabase = supabase as jest.Mocked<typeof supabase>;
+const mockUseAuth = useAuth as any;
+const mockUseToast = useToast as any;
+const mockSupabase = supabase as any;
 
 const mockUser = {
   id: 'test-user-id',
@@ -37,7 +38,7 @@ const mockProfile = {
   created_at: '2024-01-01T00:00:00.000Z'
 };
 
-const mockToast = jest.fn();
+const mockToast = fn() as any;
 
 const renderComponent = () => {
   return render(

@@ -256,7 +256,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
                   Admin: {localStorage.getItem("adminUser")}
                 </span>
                 <Button 
-                  variant="destructive" 
+                  variant="error" 
                   size="sm"
                   onClick={confirmLogout}
                   className="h-8"

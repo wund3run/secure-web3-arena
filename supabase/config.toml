@@ -5,7 +5,7 @@ project_id = "divymuaksqdgjsrlptct"
 [auth]
 disable_signup_captcha = true
 site_url = "http://localhost:8080"
-additional_redirect_urls = ["http://localhost:8080", "http://localhost:8081", "http://localhost:8082", "http://localhost:8083", "http://localhost:5173", "https://94c46652-d3b3-4056-adcb-4de9e7720c6c.lovableproject.com"]
+additional_redirect_urls = ["http://localhost:8080", "http://localhost:8081", "http://localhost:8082", "http://localhost:8083", "http://localhost:5173", "https://hawkly.app"]
 enable_signup_captcha = false
 
 # Storage settings

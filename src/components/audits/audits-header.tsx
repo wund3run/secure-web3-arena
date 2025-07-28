@@ -10,7 +10,7 @@ export function AuditsHeader() {
         <div className="text-center mb-6">
           <div className="flex justify-center mb-4">
             <img 
-              src="/lovable-uploads/457a4f30-ef00-4983-ad81-9841ef293c46.png" 
+              src="/hawkly-uploads/457a4f30-ef00-4983-ad81-9841ef293c46.png" 
               alt="Hawkly Logo"
               className="w-24 h-24 object-contain bg-transparent"
               style={{ backgroundColor: 'transparent' }}

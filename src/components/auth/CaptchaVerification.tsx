@@ -26,7 +26,7 @@ export const CaptchaVerification = ({ onVerify, onExpire, error }: CaptchaVerifi
   return (
     <div className="w-full">
       {error && (
-        <Alert variant="destructive" className="mb-4">
+        <Alert variant="error" className="mb-4">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>

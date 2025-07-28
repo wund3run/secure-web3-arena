@@ -169,7 +169,7 @@ export function ModernComponentShowcase() {
                 <AlertTriangle className="h-3 w-3 mr-1" />
                 Warning
               </Badge>
-              <Badge variant="destructive" className="badge-error">
+              <Badge variant="error" className="badge-error">
                 <XCircle className="h-3 w-3 mr-1" />
                 Error
               </Badge>

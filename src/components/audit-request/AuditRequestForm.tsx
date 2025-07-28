@@ -16,6 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { UserPlus } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { toast } from 'sonner';
+import { HawklyCard } from '@/components/ui/hawkly-components';
 
 interface PrefilledData {
   serviceType?: string;
@@ -99,21 +100,21 @@ const AuditRequestForm = ({ onSubmitSuccess, prefilledData }: AuditRequestFormPr
 
   // Add AI suggestions panel
   const renderAISuggestionsPanel = () => (
-    <Card className="mt-4">
+    <HawklyCard variant="glass" elevation="subtle" glow={true} className="mt-4">
       <CardHeader>
-        <CardTitle>AI-Powered Insights</CardTitle>
+        <CardTitle className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-600">AI-Powered Insights</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           {aiSuggestions.recommendedAuditors.length > 0 && (
             <div>
-              <h4 className="font-medium mb-2">Recommended Auditors</h4>
+              <h4 className="font-medium mb-2 text-purple-300">Recommended Auditors</h4>
               <div className="grid grid-cols-2 gap-4">
                 {aiSuggestions.recommendedAuditors.map(auditor => (
-                  <div key={auditor.id} className="p-4 border rounded-lg">
+                  <HawklyCard key={auditor.id} variant="interactive" elevation="subtle" className="p-4">
                     <p className="font-medium">Recommended Auditor #{auditor.id}</p>
-                    <p className="text-sm text-muted-foreground">Profile details would be shown here</p>
-                  </div>
+                    <p className="text-sm text-gray-300">Profile details would be shown here</p>
+                  </HawklyCard>
                 ))}
               </div>
             </div>
@@ -143,14 +144,16 @@ const AuditRequestForm = ({ onSubmitSuccess, prefilledData }: AuditRequestFormPr
           )}
         </div>
       </CardContent>
-    </Card>
+    </HawklyCard>
   );
 
   // Show auth loading state
   if (authLoading) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <LoadingState message="Loading..." />
+        <HawklyCard variant="glass" elevation="subtle" glow={true} className="p-8">
+          <LoadingState message="Preparing your audit request form..." />
+        </HawklyCard>
       </div>
     );
   }
@@ -159,18 +162,20 @@ const AuditRequestForm = ({ onSubmitSuccess, prefilledData }: AuditRequestFormPr
   if (!user) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Card>
+        <HawklyCard variant="glass" elevation="subtle" glow={true}>
           <CardContent className="p-8 text-center">
-            <UserPlus className="h-12 w-12 text-primary mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-4">Authentication Required</h3>
-            <p className="text-gray-600 mb-6">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-400 to-blue-600 flex items-center justify-center mx-auto mb-4">
+              <UserPlus className="h-8 w-8 text-white" />
+            </div>
+            <h3 className="text-xl font-semibold mb-4 text-white">Authentication Required</h3>
+            <p className="text-gray-300 mb-6">
               You need to be signed in to submit an audit request. Please create an account or sign in to continue.
             </p>
-            <Button asChild>
+            <Button className="bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700" asChild>
               <a href="/auth">Sign In / Sign Up</a>
             </Button>
           </CardContent>
-        </Card>
+        </HawklyCard>
       </div>
     );
   }
@@ -182,9 +187,9 @@ const AuditRequestForm = ({ onSubmitSuccess, prefilledData }: AuditRequestFormPr
         <FormProgress formStep={formStep} showAIMatching={showAIMatching} />
 
         {/* Form */}
-        <div className="bg-card border border-border/40 rounded-xl p-6 md:p-8 shadow-sm">
+        <HawklyCard variant="glass" elevation="subtle" className="p-6 md:p-8">
           {validationError && (
-            <Alert variant="destructive" className="mb-6 animate-fade-in">
+            <Alert variant="error" className="mb-6 animate-fade-in">
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
                 {validationError}
@@ -263,7 +268,7 @@ const AuditRequestForm = ({ onSubmitSuccess, prefilledData }: AuditRequestFormPr
               </ErrorBoundary>
             )}
           </form>
-        </div>
+        </HawklyCard>
       </div>
     </ErrorBoundary>
   );

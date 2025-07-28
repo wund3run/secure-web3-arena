@@ -261,7 +261,7 @@ export default function PersonalizationSetup() {
       toast({
         title: "Error",
         description: "Failed to save your preferences. Please try again.",
-        variant: "destructive"
+        variant: "error"
       });
     } finally {
       setIsSaving(false);

@@ -78,7 +78,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="p-4">
-          <Alert variant="destructive">
+          <Alert variant="error">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
               {this.state.error?.message || 'An unexpected error occurred'}

@@ -361,7 +361,7 @@ export function BlockchainIntegration({ auditId, className }: BlockchainIntegrat
                   </div>
                   <div>
                     <label className="text-sm font-medium text-muted-foreground">Verification Status</label>
-                    <Badge variant={contractInfo.verified ? "default" : "destructive"}>
+                    <Badge variant={contractInfo.verified ? "default" : "error"}>
                       {contractInfo.verified ? 'Verified' : 'Not Verified'}
                     </Badge>
                   </div>
@@ -594,7 +594,7 @@ export function BlockchainIntegration({ auditId, className }: BlockchainIntegrat
                 )}
                 
                 {verificationStatus === 'failed' && (
-                  <Badge variant="destructive" className="gap-2">
+                  <Badge variant="error" className="gap-2">
                     <AlertTriangle className="h-3 w-3" />
                     Verification Failed
                   </Badge>

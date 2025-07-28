@@ -446,7 +446,7 @@ export function ProviderApplications() {
                 Close
               </Button>
               <div className="flex gap-2">
-                <Button variant="destructive" onClick={() => {
+                <Button variant="error" onClick={() => {
                   rejectApplication(selectedApplication.id, selectedApplication.name);
                   setIsDetailsOpen(false);
                 }}>

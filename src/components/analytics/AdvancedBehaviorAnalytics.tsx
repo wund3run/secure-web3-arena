@@ -263,7 +263,7 @@ export const AdvancedBehaviorAnalytics: React.FC = () => {
                             {step.users.toLocaleString()} users
                           </span>
                           {step.dropoff > 0 && (
-                            <Badge variant="destructive">
+                            <Badge variant="error">
                               -{(step.dropoff * 100).toFixed(0)}% dropoff
                             </Badge>
                           )}

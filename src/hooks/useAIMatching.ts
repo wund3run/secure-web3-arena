@@ -13,6 +13,7 @@ export interface MatchingScore {
   reputation_weight: number;
   calculated_at: string;
   match_reasons: string[];
+  metadata?: { match_reasons?: string[] };
   auditor_profile?: {
     full_name: string;
     bio: string;
@@ -209,7 +210,7 @@ export const useAIMatching = () => {
         const extendedProfile = extendedProfiles?.find(p => p.id === item.auditor_id);
         const total_audits_completed = auditorProfile?.total_audits_completed ?? 0;
         const average_rating = 4.5;
-        const match_reasons: string[] = item.metadata && Array.isArray(item.metadata.match_reasons) ? item.metadata.match_reasons : [];
+        const match_reasons: string[] = Array.isArray((item as any).metadata?.match_reasons) ? (item as any).metadata.match_reasons : [];
         return {
           id: item.id,
           auditor_id: item.auditor_id,
@@ -222,8 +223,8 @@ export const useAIMatching = () => {
           calculated_at: item.calculated_at || new Date().toISOString(),
           match_reasons,
           auditor_profile: {
-            full_name: auditorProfile?.full_name || 'Anonymous Auditor',
-            bio: auditorProfile?.bio || '',
+            full_name: extendedProfile?.full_name || 'Anonymous Auditor',
+            bio: extendedProfile?.bio || '',
             years_experience: auditorProfile?.years_experience || 0,
             blockchain_expertise: auditorProfile?.blockchain_expertise || [],
             specialization_tags: auditorProfile?.specialization_tags || [],

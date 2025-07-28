@@ -196,7 +196,7 @@ export default function AuditorReviewSystem({ auditorId, isOwnProfile = false }:
       toast({
         title: "Error loading reviews",
         description: "Could not load auditor reviews",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsLoading(false);

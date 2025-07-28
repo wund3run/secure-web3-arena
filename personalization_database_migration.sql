@@ -226,7 +226,32 @@ CREATE TABLE IF NOT EXISTS notification_preferences (
 CREATE INDEX IF NOT EXISTS idx_notification_preferences_user_id ON notification_preferences(user_id);
 
 -- =====================================================
--- 11. ROW LEVEL SECURITY (RLS) POLICIES
+-- 11. RECEIPT TABLE FOR PAYMENTS
+-- =====================================================
+
+-- Receipt table for Hawkly Web3 Security Platform
+CREATE TABLE IF NOT EXISTS receipts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    payment_event_id VARCHAR(255) NOT NULL,
+    audit_request_id VARCHAR(255),
+    payer_id VARCHAR(255),
+    payee_id VARCHAR(255),
+    amount NUMERIC(20, 8) NOT NULL,
+    date TIMESTAMP NOT NULL,
+    type VARCHAR(50),
+    receipt_url TEXT,
+    details JSONB,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Indexes for faster lookup
+CREATE INDEX IF NOT EXISTS idx_receipts_payment_event_id ON receipts(payment_event_id);
+CREATE INDEX IF NOT EXISTS idx_receipts_audit_request_id ON receipts(audit_request_id);
+CREATE INDEX IF NOT EXISTS idx_receipts_payer_id ON receipts(payer_id);
+CREATE INDEX IF NOT EXISTS idx_receipts_payee_id ON receipts(payee_id);
+
+-- =====================================================
+-- 12. ROW LEVEL SECURITY (RLS) POLICIES
 -- =====================================================
 
 -- Enable RLS on all new tables
@@ -239,6 +264,7 @@ ALTER TABLE personalized_challenges ENABLE ROW LEVEL SECURITY;
 ALTER TABLE peer_matching ENABLE ROW LEVEL SECURITY;
 ALTER TABLE personalized_content ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notification_preferences ENABLE ROW LEVEL SECURITY;
+ALTER TABLE receipts ENABLE ROW LEVEL SECURITY;
 
 -- User can only access their own data
 CREATE POLICY "Users can view own personalization analytics" ON personalization_analytics
@@ -271,8 +297,11 @@ CREATE POLICY "Users can view own personalized content" ON personalized_content
 CREATE POLICY "Users can view own notification preferences" ON notification_preferences
     FOR ALL USING (auth.uid() = user_id);
 
+CREATE POLICY "Users can view own receipts" ON receipts
+    FOR ALL USING (auth.uid() = payer_id OR auth.uid() = payee_id);
+
 -- =====================================================
--- 12. SAMPLE DATA & INITIAL SETUP
+-- 13. SAMPLE DATA & INITIAL SETUP
 -- =====================================================
 
 -- Insert sample learning paths
@@ -302,7 +331,7 @@ SELECT
 WHERE auth.uid() IS NOT NULL;
 
 -- =====================================================
--- 13. HELPER FUNCTIONS
+-- 14. HELPER FUNCTIONS
 -- =====================================================
 
 -- Function to calculate user engagement score
@@ -368,7 +397,7 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- =====================================================
--- 14. TRIGGERS FOR AUTOMATIC UPDATES
+-- 15. TRIGGERS FOR AUTOMATIC UPDATES
 -- =====================================================
 
 -- Trigger to update last_personalization_update when user preferences change
@@ -388,7 +417,7 @@ CREATE TRIGGER trigger_update_personalization_timestamp
     EXECUTE FUNCTION update_personalization_timestamp();
 
 -- =====================================================
--- 15. VIEWS FOR EASY DATA ACCESS
+-- 16. VIEWS FOR EASY DATA ACCESS
 -- =====================================================
 
 -- View for comprehensive user personalization data
@@ -436,5 +465,6 @@ AND table_name IN (
     'personalized_challenges',
     'peer_matching',
     'personalized_content',
-    'notification_preferences'
+    'notification_preferences',
+    'receipts'
 ) ORDER BY table_name;

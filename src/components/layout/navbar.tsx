@@ -32,7 +32,7 @@ export function Navbar() {
           >
             <img
               className="h-8 w-8 object-contain"
-              src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png"
+              src="/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png"
               alt="Hawkly"
             />
             <span className="text-xl font-bold gradient-text">Hawkly</span>

@@ -314,7 +314,7 @@ const AuditorAvatar: React.FC<AuditorAvatarProps> = ({
       toast({
         title: "Error",
         description: "Failed to save avatar customization.",
-        variant: "destructive"
+        variant: "error"
       });
     }
   };

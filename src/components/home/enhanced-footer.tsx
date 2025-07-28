@@ -9,7 +9,7 @@ export function EnhancedFooter() {
         <div className="col-span-1 md:col-span-2 lg:col-span-1">
           <Link to="/" aria-label="Hawkly Home page" className="inline-block mb-4">
             <img 
-              src="/lovable-uploads/d96077a4-3ebd-4779-9a3e-a504ff6822f1.png" 
+              src="/hawkly-uploads/d96077a4-3ebd-4779-9a3e-a504ff6822f1.png" 
               alt="Hawkly Logo"
               className="h-16 w-auto object-contain bg-transparent"
               style={{ backgroundColor: 'transparent' }}

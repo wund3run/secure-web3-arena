@@ -53,8 +53,8 @@ export function MarketplaceContent({
             <div className="mb-8">
               <AIRecommendations 
                 services={filteredServices}
-                projectSize={activeFilters.projectSize || "medium"}
-                blockchains={activeFilters.blockchains || []}
+                projectSize={(activeFilters.projectSize as string) || "medium"}
+                blockchains={(activeFilters.blockchains as string[]) || []}
                 onRecommendationSelect={(serviceId) => handleServiceSelect(serviceId)}
               />
             </div>

@@ -78,7 +78,7 @@ const AuditorProjectBrowser: React.FC = () => {
         toast({
           title: "Error",
           description: "Failed to load available projects",
-          variant: "destructive",
+          variant: "error",
         });
         return;
       }
@@ -117,7 +117,7 @@ const AuditorProjectBrowser: React.FC = () => {
       toast({
         title: "Error",
         description: "Please complete your auditor profile first",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -144,7 +144,7 @@ const AuditorProjectBrowser: React.FC = () => {
         toast({
           title: "Error",
           description: "Failed to submit proposal",
-          variant: "destructive",
+          variant: "error",
         });
         return;
       }
@@ -161,7 +161,7 @@ const AuditorProjectBrowser: React.FC = () => {
       toast({
         title: "Error",
         description: "Failed to submit proposal",
-        variant: "destructive",
+        variant: "error",
       });
     }
   };

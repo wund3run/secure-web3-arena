@@ -171,7 +171,7 @@ export function EnhancedMessagingCenter() {
           <TabsTrigger value="notifications">
             Notifications
             {notifications.filter(n => !n.read).length > 0 && (
-              <Badge variant="destructive" className="ml-2 h-5 w-5 rounded-full p-0 text-xs">
+              <Badge variant="error" className="ml-2 h-5 w-5 rounded-full p-0 text-xs">
                 {notifications.filter(n => !n.read).length}
               </Badge>
             )}
@@ -230,7 +230,7 @@ export function EnhancedMessagingCenter() {
                           </div>
                         </div>
                         {conv.unread > 0 && (
-                          <Badge variant="destructive" className="h-5 w-5 rounded-full p-0 text-xs">
+                          <Badge variant="error" className="h-5 w-5 rounded-full p-0 text-xs">
                             {conv.unread}
                           </Badge>
                         )}

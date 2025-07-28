@@ -32,7 +32,7 @@ export function HawklyLogo({
     <Link to="/" className={`flex items-center ${linkClassName}`}>
       <img
         className={className}
-        src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png"
+        src="/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png"
         alt="Hawkly"
         onError={() => setImageError(true)}
       />

@@ -82,7 +82,7 @@ const StatusPage: React.FC = () => {
       case 'degraded':
         return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Degraded</Badge>;
       case 'outage':
-        return <Badge variant="destructive">Outage</Badge>;
+        return <Badge variant="error">Outage</Badge>;
       default:
         return <Badge variant="outline">Unknown</Badge>;
     }

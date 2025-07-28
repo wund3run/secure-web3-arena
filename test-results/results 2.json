@@ -1,7 +1,7 @@
 {
   "config": {
-    "configFile": "/Users/tarunrama/Documents/cursor repo hawkly/secure-web3-arena/playwright.config.ts",
-    "rootDir": "/Users/tarunrama/Documents/cursor repo hawkly/secure-web3-arena/e2e",
+    "configFile": "/Users/tarunrama/Documents/hawkly/secure-web3-arena/playwright.config.ts",
+    "rootDir": "/Users/tarunrama/Documents/hawkly/secure-web3-arena/e2e",
     "forbidOnly": false,
     "fullyParallel": true,
     "globalSetup": null,
@@ -37,13 +37,13 @@
     "quiet": false,
     "projects": [
       {
-        "outputDir": "/Users/tarunrama/Documents/cursor repo hawkly/secure-web3-arena/test-results",
+        "outputDir": "/Users/tarunrama/Documents/hawkly/secure-web3-arena/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "chromium",
         "name": "chromium",
-        "testDir": "/Users/tarunrama/Documents/cursor repo hawkly/secure-web3-arena/e2e",
+        "testDir": "/Users/tarunrama/Documents/hawkly/secure-web3-arena/e2e",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -51,13 +51,13 @@
         "timeout": 30000
       },
       {
-        "outputDir": "/Users/tarunrama/Documents/cursor repo hawkly/secure-web3-arena/test-results",
+        "outputDir": "/Users/tarunrama/Documents/hawkly/secure-web3-arena/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "firefox",
         "name": "firefox",
-        "testDir": "/Users/tarunrama/Documents/cursor repo hawkly/secure-web3-arena/e2e",
+        "testDir": "/Users/tarunrama/Documents/hawkly/secure-web3-arena/e2e",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -65,13 +65,13 @@
         "timeout": 30000
       },
       {
-        "outputDir": "/Users/tarunrama/Documents/cursor repo hawkly/secure-web3-arena/test-results",
+        "outputDir": "/Users/tarunrama/Documents/hawkly/secure-web3-arena/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "webkit",
         "name": "webkit",
-        "testDir": "/Users/tarunrama/Documents/cursor repo hawkly/secure-web3-arena/e2e",
+        "testDir": "/Users/tarunrama/Documents/hawkly/secure-web3-arena/e2e",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -79,13 +79,13 @@
         "timeout": 30000
       },
       {
-        "outputDir": "/Users/tarunrama/Documents/cursor repo hawkly/secure-web3-arena/test-results",
+        "outputDir": "/Users/tarunrama/Documents/hawkly/secure-web3-arena/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Mobile Chrome",
         "name": "Mobile Chrome",
-        "testDir": "/Users/tarunrama/Documents/cursor repo hawkly/secure-web3-arena/e2e",
+        "testDir": "/Users/tarunrama/Documents/hawkly/secure-web3-arena/e2e",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -93,13 +93,13 @@
         "timeout": 30000
       },
       {
-        "outputDir": "/Users/tarunrama/Documents/cursor repo hawkly/secure-web3-arena/test-results",
+        "outputDir": "/Users/tarunrama/Documents/hawkly/secure-web3-arena/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Mobile Safari",
         "name": "Mobile Safari",
-        "testDir": "/Users/tarunrama/Documents/cursor repo hawkly/secure-web3-arena/e2e",
+        "testDir": "/Users/tarunrama/Documents/hawkly/secure-web3-arena/e2e",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -122,8 +122,8 @@
   "suites": [],
   "errors": [
     {
-      "message": "Error: Cannot find package 'lighthouse' imported from /Users/tarunrama/Documents/cursor repo hawkly/secure-web3-arena/e2e/PageLoad.test.ts",
-      "stack": "Error: Cannot find package 'lighthouse' imported from /Users/tarunrama/Documents/cursor repo hawkly/secure-web3-arena/e2e/PageLoad.test.ts"
+      "message": "Error: Cannot find package 'lighthouse' imported from /Users/tarunrama/Documents/hawkly/secure-web3-arena/e2e/PageLoad.test.ts",
+      "stack": "Error: Cannot find package 'lighthouse' imported from /Users/tarunrama/Documents/hawkly/secure-web3-arena/e2e/PageLoad.test.ts"
     }
   ],
   "stats": {

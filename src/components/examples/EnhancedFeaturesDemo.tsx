@@ -73,7 +73,7 @@ export function EnhancedFeaturesDemo() {
         {/* Feedback System Demo */}
         <ContentSection title="User Feedback System" level={2}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <AnimatedButton onClick={() => handleToastDemo('success')} variant="primary">
+            <AnimatedButton onClick={() => handleToastDemo('success')} variant="default">
               Success Toast
             </AnimatedButton>
             <AnimatedButton onClick={() => handleToastDemo('error')} variant="secondary">
@@ -87,7 +87,7 @@ export function EnhancedFeaturesDemo() {
             </AnimatedButton>
           </div>
           
-          <AnimatedButton onClick={handleConfirmDemo} variant="primary" className="mt-4">
+          <AnimatedButton onClick={handleConfirmDemo} variant="default" className="mt-4">
             Show Confirmation Dialog
           </AnimatedButton>
         </ContentSection>

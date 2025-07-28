@@ -26,7 +26,7 @@ export function FileUpload({
       toast({
         title: "Too many files",
         description: `Maximum ${maxFiles} files allowed`,
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }

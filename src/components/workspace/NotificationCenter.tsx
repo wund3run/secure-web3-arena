@@ -113,7 +113,7 @@ export function NotificationCenter({ auditId, onUnreadCountChange }: Notificatio
               <Bell className="h-5 w-5" />
               Notifications
               {unreadNotifications.length > 0 && (
-                <Badge variant="destructive" className="ml-2">
+                <Badge variant="error" className="ml-2">
                   {unreadNotifications.length}
                 </Badge>
               )}

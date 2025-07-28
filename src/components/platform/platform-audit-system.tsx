@@ -357,7 +357,7 @@ export function PlatformAuditSystem() {
           </div>
           
           {criticalIssues > 0 && (
-            <Alert variant="destructive" className="mt-4">
+            <Alert variant="error" className="mt-4">
               <XCircle className="h-4 w-4" />
               <AlertDescription>
                 <strong>{criticalIssues} critical issues</strong> must be resolved before public launch.
@@ -418,7 +418,7 @@ export function PlatformAuditSystem() {
                       {page.errors.length > 0 && (
                         <div className="mt-2">
                           {page.errors.map((error, idx) => (
-                            <Badge key={idx} variant="destructive" className="mr-1 text-xs">
+                            <Badge key={idx} variant="error" className="mr-1 text-xs">
                               {error}
                             </Badge>
                           ))}
@@ -438,7 +438,7 @@ export function PlatformAuditSystem() {
                       {page.accessible ? (
                         <Badge variant="default">Accessible</Badge>
                       ) : (
-                        <Badge variant="destructive">Not Found</Badge>
+                        <Badge variant="error">Not Found</Badge>
                       )}
                       {page.loadTime > 0 && (
                         <p className="text-xs text-muted-foreground mt-1">

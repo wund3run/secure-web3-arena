@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { AppContainer } from '@/components/layout/AppContainer';
 import { HawklyCard, SecurityBadge, AuditorAvatar, ProgressIndicator } from '@/components/ui/hawkly-components';
+import { FormStepIndicator } from '@/components/ui/form-step-indicator';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -131,6 +132,13 @@ const WelcomeStep = ({ onNext }: { onNext: () => void }) => (
   </div>
 );
 
+// Contextual help component
+const ContextualHelp = ({ step }: { step: string }) => (
+  <div className="mt-4 text-sm text-[#b2bfd4]">
+    Need help with <strong>{step}</strong>? <a href="/docs/onboarding-help" target="_blank" className="underline">See onboarding tips</a> or <a href="/support" target="_blank" className="underline">contact support</a>.
+  </div>
+);
+
 // Project Type Step Component
 const ProjectTypeStep = ({ 
   selectedType, 
@@ -218,6 +226,11 @@ const ProjectTypeStep = ({
       </Button>
     </div>
   </div>
+);
+
+// Example usage in onboarding step rendering:
+// <FormStepIndicator steps={steps} currentStep={currentStep} userType={userType} />
+// <ContextualHelp step={steps[currentStep]?.title} />
 );
 
 // Project Details Step Component

@@ -32,7 +32,7 @@ const TwoFactorAuth = () => {
       } else {
         setError('Invalid verification code. Please try again.');
         toast({
-          variant: "destructive",
+          variant: "error",
           title: "Verification Failed",
           description: "The code you entered is incorrect. Please try again.",
         });
@@ -40,7 +40,7 @@ const TwoFactorAuth = () => {
     } catch (err) {
       setError('An error occurred during verification.');
       toast({
-        variant: "destructive",
+        variant: "error",
         title: "Verification Error",
         description: "There was a problem verifying your code. Please try again.",
       });
@@ -58,7 +58,7 @@ const TwoFactorAuth = () => {
       });
     } catch (err) {
       toast({
-        variant: "destructive",
+        variant: "error",
         title: "Error",
         description: "Failed to resend verification code. Please try again.",
       });
@@ -79,7 +79,7 @@ const TwoFactorAuth = () => {
       await resendOTP(user.email);
     } else {
       toast({
-        variant: "destructive",
+        variant: "error",
         title: "Error",
         description: "Unable to resend code. Please try signing in again.",
       });
@@ -96,7 +96,7 @@ const TwoFactorAuth = () => {
       <div className="w-full max-w-md p-8 space-y-8 bg-white/80 backdrop-blur rounded-xl shadow-lg border border-gray-200">
         <div className="flex flex-col items-center space-y-2">
           <img 
-            src="/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
+            src="/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png" 
             alt="Hawkly Logo"
             className="h-16 w-16 object-contain bg-transparent mb-2"
             style={{ backgroundColor: 'transparent' }}

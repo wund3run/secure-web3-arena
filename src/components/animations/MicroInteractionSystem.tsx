@@ -33,14 +33,14 @@ export const animations = {
 
 // Micro-interaction Components
 interface AnimatedButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost';
+  variant?: 'default' | 'secondary' | 'ghost' | 'outline' | 'accent';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
   children: React.ReactNode;
 }
 
 export function AnimatedButton({ 
-  variant = 'primary', 
+  variant = 'default', 
   size = 'md', 
   loading = false,
   children, 
@@ -57,9 +57,11 @@ export function AnimatedButton({
   );
 
   const variantClasses = {
-    primary: 'bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary/20',
+    default: 'bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary/20',
     secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 focus:ring-secondary/20',
     ghost: 'hover:bg-accent hover:text-accent-foreground focus:ring-accent/20',
+    outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground focus:ring-accent/20',
+    accent: 'bg-accent text-accent-foreground hover:bg-accent/80 focus:ring-accent/20',
   };
 
   const sizeClasses = {

@@ -45,7 +45,7 @@ const Events = () => {
       status: 'upcoming',
       featured: true,
       tags: ['smart-contracts', 'security', 'solidity'],
-      image: '/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png'
+      image: '/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png'
     },
     {
       id: 2,
@@ -63,7 +63,7 @@ const Events = () => {
       status: 'upcoming',
       featured: true,
       tags: ['defi', 'conference', 'security'],
-      image: '/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png'
+      image: '/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png'
     },
     {
       id: 3,
@@ -81,7 +81,7 @@ const Events = () => {
       status: 'upcoming',
       featured: false,
       tags: ['hackathon', 'web3', 'security'],
-      image: '/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png'
+      image: '/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png'
     },
     {
       id: 4,
@@ -99,7 +99,7 @@ const Events = () => {
       status: 'completed',
       featured: false,
       tags: ['audit', 'fundamentals', 'webinar'],
-      image: '/lovable-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png'
+      image: '/hawkly-uploads/ba568bdc-629c-43ca-a343-58b3c786ecba.png'
     }
   ];
 

@@ -16,8 +16,8 @@ export function ProductionOptimizations() {
     
     // Preload critical resources
     const criticalAssets = [
-      '/lovable-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png',
-      '/lovable-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png'
+      '/hawkly-uploads/fd4d9ea7-6cf1-4fe8-9327-9c7822369207.png',
+      '/hawkly-uploads/6286d686-7daf-4eb4-8d7b-51a3de242644.png'
     ];
     
     criticalAssets.forEach(asset => {

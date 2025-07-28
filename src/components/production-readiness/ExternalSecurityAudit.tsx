@@ -317,7 +317,7 @@ export const ExternalSecurityAudit = () => {
           </div>
           
           {failedCriticalItems.length > 0 && (
-            <Alert variant="destructive" className="mt-4">
+            <Alert variant="error" className="mt-4">
               <XCircle className="h-4 w-4" />
               <AlertDescription>
                 <strong>{failedCriticalItems.length} critical security issues</strong> must be resolved immediately.

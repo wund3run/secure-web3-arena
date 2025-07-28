@@ -374,7 +374,7 @@ export default function TestingDashboard() {
           <CardContent>
             <div className="text-2xl font-bold text-red-600">{failedTests}</div>
             {criticalFailures > 0 && (
-              <Badge variant="destructive" className="mt-2">
+              <Badge variant="error" className="mt-2">
                 {criticalFailures} Critical
               </Badge>
             )}
@@ -384,7 +384,7 @@ export default function TestingDashboard() {
 
       {/* Critical Issues Alert */}
       {criticalFailures > 0 && (
-        <Alert variant="destructive">
+        <Alert variant="error">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
             {criticalFailures} critical test{criticalFailures > 1 ? 's' : ''} failed. 
@@ -419,7 +419,7 @@ export default function TestingDashboard() {
                         <CardTitle className="text-base flex items-center gap-2">
                           {test.name}
                           {test.critical && (
-                            <Badge variant="destructive" className="text-xs">
+                            <Badge variant="error" className="text-xs">
                               Critical
                             </Badge>
                           )}
@@ -474,7 +474,7 @@ export default function TestingDashboard() {
                           <CardTitle className="text-base flex items-center gap-2">
                             {test.name}
                             {test.critical && (
-                              <Badge variant="destructive" className="text-xs">
+                              <Badge variant="error" className="text-xs">
                                 Critical
                               </Badge>
                             )}

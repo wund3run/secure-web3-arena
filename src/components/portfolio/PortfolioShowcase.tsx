@@ -154,7 +154,7 @@ export default function PortfolioShowcase() {
       toast({
         title: "Error loading portfolio",
         description: "Could not load the requested portfolio",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsLoading(false);

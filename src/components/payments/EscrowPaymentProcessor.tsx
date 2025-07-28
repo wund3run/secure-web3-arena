@@ -130,7 +130,7 @@ export const EscrowPaymentProcessor: React.FC<EscrowPaymentProcessorProps> = ({
         </Alert>
 
         {error && (
-          <Alert variant="destructive">
+          <Alert variant="error">
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}

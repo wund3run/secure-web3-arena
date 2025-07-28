@@ -153,7 +153,7 @@ export function AdminServiceApproval() {
             <TabsTrigger value="pending" className="relative">
               Pending
               {pendingServices.length > 0 && (
-                <Badge variant="destructive" className="ml-2">{pendingServices.length}</Badge>
+                <Badge variant="error" className="ml-2">{pendingServices.length}</Badge>
               )}
             </TabsTrigger>
             <TabsTrigger value="approved">

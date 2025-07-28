@@ -10,15 +10,11 @@ interface Message {
   sender_id: string;
   receiver_id: string;
   conversation_id?: string;
-  content: string;
-  message_type: string;
-  file_attachments: any[];
-  read_at: string | null;
-  reply_to_id?: string;
-  created_at: string;
-  read_at?: string;
   message_type: 'text' | 'file' | 'image';
   file_attachments?: any[];
+  read_at?: string | null;
+  reply_to_id?: string;
+  created_at: string;
 }
 
 interface UseRealtimeMessagesProps {
@@ -59,7 +55,7 @@ export function useRealtimeMessages({ conversationId, receiverId }: UseRealtimeM
         file_attachments: msg.file_attachments ? JSON.parse(JSON.stringify(msg.file_attachments)) : undefined,
       }));
       
-      setMessages(transformedMessages);
+      setMessages(convertedMessages);
     } catch (error) {
       console.error('Error fetching messages:', error);
       toast.error('Failed to load messages');
@@ -84,7 +80,7 @@ export function useRealtimeMessages({ conversationId, receiverId }: UseRealtimeM
           sender_id: user.id,
           receiver_id: receiverId,
           conversation_id: conversationId,
-          message_type: type,
+          message_type: messageType,
         })
         .select()
         .single();

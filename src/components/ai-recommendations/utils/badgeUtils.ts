@@ -1,8 +1,8 @@
 
-export const getImpactColor = (impact: string): "default" | "destructive" | "secondary" | "outline" | "success" | "warning" => {
+export const getImpactColor = (impact: string): "default" | "error" | "secondary" | "outline" | "success" | "warning" => {
   switch (impact) {
     case "high":
-      return "destructive";
+      return "error";
     case "medium":
       return "secondary";
     case "low":

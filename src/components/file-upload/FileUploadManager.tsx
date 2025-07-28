@@ -157,7 +157,7 @@ export const FileUploadManager: React.FC<FileUploadManagerProps> = ({
       case 'uploading':
         return <Badge variant="secondary">Uploading...</Badge>;
       case 'error':
-        return <Badge variant="destructive">Error</Badge>;
+        return <Badge variant="error">Error</Badge>;
       default:
         return <Badge variant="outline">Pending</Badge>;
     }

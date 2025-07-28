@@ -52,7 +52,7 @@ export const RealtimeConnectionStatus: React.FC = () => {
 
   return (
     <div className="flex items-center gap-2">
-      <Badge variant="destructive" className="flex items-center gap-1">
+      <Badge variant="error" className="flex items-center gap-1">
         <WifiOff className="h-3 w-3" />
         Offline
       </Badge>

@@ -15,7 +15,8 @@ export const useStabilizedAuth = () => {
     try {
       await contextSignIn(email, password);
     } catch (err: unknown) {
-      setError(err.message || 'Failed to sign in.');
+      const errorMsg = typeof err === 'object' && err !== null && 'message' in err ? (err as { message?: string }).message : undefined;
+      setError(errorMsg || 'Failed to sign in.');
       // Re-throw the error so the component can also catch it if needed
       throw err;
     } finally {
@@ -29,7 +30,8 @@ export const useStabilizedAuth = () => {
     try {
       await contextSignUp(email, password, fullName, userType);
     } catch (err: unknown) {
-      setError(err.message || 'Failed to sign up.');
+      const errorMsg = typeof err === 'object' && err !== null && 'message' in err ? (err as { message?: string }).message : undefined;
+      setError(errorMsg || 'Failed to sign up.');
       throw err;
     } finally {
       setLoading(false);

@@ -33,7 +33,7 @@ export function RealtimeNotifications() {
           <div className="flex items-center gap-2">
             <Bell className="h-4 w-4" />
             Live Notifications
-            <Badge variant={isConnected ? "default" : "destructive"} className="text-xs">
+            <Badge variant={isConnected ? "default" : "error"} className="text-xs">
               {isConnected ? "Connected" : "Disconnected"}
             </Badge>
           </div>

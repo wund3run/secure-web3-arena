@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from './useAuth';
+import { useAuth } from '@/contexts/auth';
 import { personalizationService } from '../services/PersonalizationService';
 import {
   AuditorProfile,
@@ -13,7 +13,7 @@ import {
 } from '../types/personalization';
 
 export const usePersonalization = (options: UsePersonalizationOptions = {}) => {
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const {
     enableAnalytics = true,
     enableRealtimeUpdates = false,
@@ -239,14 +239,14 @@ export const usePersonalization = (options: UsePersonalizationOptions = {}) => {
 
   // Set up profile from auth context when available
   useEffect(() => {
-    if (user?.profile) {
+    if (userProfile) {
       setState(prev => ({
         ...prev,
-        profile: user.profile as AuditorProfile,
+        profile: userProfile as unknown as AuditorProfile,
         isLoading: false
       }));
     }
-  }, [user?.profile]);
+  }, [userProfile]);
 
   return {
     // State

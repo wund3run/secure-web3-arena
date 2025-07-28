@@ -313,7 +313,7 @@ export const AdvancedSecurityAudit = () => {
           </div>
           
           {(criticalIssues > 0 || highIssues > 0) && (
-            <Alert variant="destructive" className="mt-4">
+            <Alert variant="error" className="mt-4">
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
                 <strong>{criticalIssues} critical</strong> and <strong>{highIssues} high severity</strong> security issues require immediate attention.
@@ -468,7 +468,7 @@ export const AdvancedSecurityAudit = () => {
                       <p className="font-medium">React DOM XSS Vulnerability</p>
                       <p className="text-sm text-muted-foreground">CVE-2021-44906 in react-dom@17.0.2</p>
                     </div>
-                    <Badge variant="destructive">HIGH</Badge>
+                    <Badge variant="error">HIGH</Badge>
                   </div>
                   
                   <div className="flex items-center justify-between p-3 border rounded-lg">

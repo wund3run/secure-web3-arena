@@ -5,6 +5,7 @@ export interface ValidationResult {
   isValid: boolean;
   errors: string[];
   sanitizedValue?: any;
+  securityLevel?: 'low' | 'medium' | 'high';
 }
 
 export interface ValidationOptions {
@@ -180,7 +181,7 @@ export class EnhancedValidation {
   static validateNumber(input: any, options: ValidationOptions = {}): ValidationResult {
     const errors: string[] = [];
 
-    if (value === null || value === undefined || value === '') {
+    if (input === null || input === undefined || input === '') {
       if (options.required) {
         return {
           isValid: false,
@@ -195,7 +196,7 @@ export class EnhancedValidation {
       };
     }
 
-    const num = Number(value);
+    const num = Number(input);
     
     if (isNaN(num) || !isFinite(num)) {
       errors.push('Must be a valid number');

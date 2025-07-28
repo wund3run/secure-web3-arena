@@ -9,6 +9,7 @@ export interface EngagementOffer {
   terms: any;
   created_at: string;
   updated_at: string;
+  parent_offer_id?: string;
 }
 
 export class EngagementOfferService {
@@ -25,17 +26,22 @@ export class EngagementOfferService {
       .select()
       .single();
     if (error) throw error;
-    return data;
+    if (!data) return null;
+    return {
+      ...data,
+      status: data.status as 'pending' | 'accepted' | 'rejected',
+    };
   }
 
   static async getOffersForAudit(auditRequestId: string): Promise<EngagementOffer[]> {
-    const { data, error } = await supabase
+    // Use any to break the deep type instantiation, then manually type the result
+    const result = await (supabase as any)
       .from('engagement_offers')
       .select('*')
       .eq('audit_request_id', auditRequestId)
       .order('created_at', { ascending: false });
-    if (error) throw error;
-    return data || [];
+    if (result.error) throw result.error;
+    return (result.data as EngagementOffer[]) || [];
   }
 
   static async updateOfferStatus(offerId: string, status: 'pending' | 'accepted' | 'rejected'): Promise<EngagementOffer | null> {
@@ -46,21 +52,27 @@ export class EngagementOfferService {
       .select()
       .single();
     if (error) throw error;
-    return data;
+    if (!data) return null;
+    return {
+      ...data,
+      status: data.status as 'pending' | 'accepted' | 'rejected',
+    };
   }
 
   static async getOfferById(offerId: string): Promise<EngagementOffer | null> {
-    const { data, error } = await supabase
+    // Use any to break the deep type instantiation, then manually type the result
+    const result = await (supabase as any)
       .from('engagement_offers')
       .select('*')
       .eq('id', offerId)
       .single();
-    if (error) throw error;
-    return data;
+    if (result.error) throw result.error;
+    return result.data as EngagementOffer | null;
   }
 
   static async getLatestOfferForAudit(auditRequestId: string, auditorId: string): Promise<EngagementOffer | null> {
-    const { data, error } = await supabase
+    // Use any to break the deep type instantiation, then manually type the result
+    const result = await (supabase as any)
       .from('engagement_offers')
       .select('*')
       .eq('audit_request_id', auditRequestId)
@@ -68,19 +80,24 @@ export class EngagementOfferService {
       .order('created_at', { ascending: false })
       .limit(1)
       .single();
-    if (error) return null;
-    return data;
+    if (result.error) return null;
+    if (!result.data) return null;
+    return {
+      ...result.data,
+      status: result.data.status as 'pending' | 'accepted' | 'rejected',
+    };
   }
 
   static async acceptOrRejectOffer(offerId: string, status: 'accepted' | 'rejected'): Promise<EngagementOffer | null> {
-    const { data, error } = await supabase
+    // Use any to break the deep type instantiation, then manually type the result
+    const result = await (supabase as any)
       .from('engagement_offers')
       .update({ status })
       .eq('id', offerId)
       .select()
       .single();
-    if (error) throw error;
-    return data;
+    if (result.error) throw result.error;
+    return result.data as EngagementOffer | null;
   }
 
   /**
@@ -92,7 +109,8 @@ export class EngagementOfferService {
    * @param parentOfferId (optional)
    */
   static async createCounterOffer(auditRequestId: string, auditorId: string, clientId: string, terms: any, parentOfferId?: string): Promise<EngagementOffer | null> {
-    const { data, error } = await supabase
+    // Use any to break the deep type instantiation, then manually type the result
+    const result = await (supabase as any)
       .from('engagement_offers')
       .insert([
         {
@@ -106,8 +124,8 @@ export class EngagementOfferService {
       ])
       .select()
       .single();
-    if (error) throw error;
-    return data;
+    if (result.error) throw result.error;
+    return result.data as EngagementOffer | null;
   }
 }
 
