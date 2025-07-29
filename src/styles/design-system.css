@@ -1,0 +1,219 @@
+
+/* Design System CSS - Unified Styles */
+
+/* Import the color tokens */
+:root {
+  /* Brand Colors */
+  --brand-primary: 221 83% 53%;
+  --brand-secondary: 142 76% 36%;
+  --brand-accent: 271 76% 53%;
+  --brand-orange: 25 95% 53%;
+  
+  /* Semantic Colors */
+  --semantic-success: 142 76% 36%;
+  --semantic-warning: 45 93% 47%;
+  --semantic-error: 0 84% 60%;
+  --semantic-info: 199 89% 48%;
+  
+  /* Neutral Colors - Dark Theme */
+  --background: 220 26% 14%;
+  --foreground: 220 9% 95%;
+  --card: 220 26% 17%;
+  --card-foreground: 220 9% 95%;
+  --popover: 220 26% 14%;
+  --popover-foreground: 220 9% 95%;
+  --primary: 221 83% 53%;
+  --primary-foreground: 220 9% 95%;
+  --secondary: 220 14% 20%;
+  --secondary-foreground: 220 9% 95%;
+  --muted: 220 14% 20%;
+  --muted-foreground: 220 4% 65%;
+  --accent: 220 14% 24%;
+  --accent-foreground: 220 9% 95%;
+  --destructive: 0 62% 30%;
+  --destructive-foreground: 220 9% 95%;
+  --border: 220 13% 25%;
+  --input: 220 13% 25%;
+  --ring: 221 83% 53%;
+  --radius: 0.5rem;
+  
+  /* Status Colors */
+  --status-online: 142 76% 36%;
+  --status-offline: 220 4% 65%;
+  --status-busy: 45 93% 47%;
+  --status-away: 25 95% 53%;
+}
+
+/* High Contrast Mode */
+.high-contrast {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 10%;
+  --border: 0 0% 50%;
+  --muted: 0 0% 20%;
+  --accent: 0 0% 25%;
+}
+
+/* Focus Management */
+.focus-visible *:focus {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Skip Link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  padding: 8px;
+  border: 2px solid hsl(var(--border));
+  border-radius: 4px;
+  text-decoration: none;
+  z-index: 100;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Screen Reader Only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Utility Classes */
+.gradient-text {
+  background: linear-gradient(135deg, hsl(var(--brand-primary)), hsl(var(--brand-secondary)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-primary {
+  background: linear-gradient(135deg, hsl(var(--brand-primary)), hsl(var(--brand-accent)));
+}
+
+.shadow-brand {
+  box-shadow: 0 4px 20px hsl(var(--brand-primary) / 0.15);
+}
+
+.shadow-brand-lg {
+  box-shadow: 0 8px 32px hsl(var(--brand-primary) / 0.2);
+}
+
+/* Focus Trap Utility */
+.focus-trap {
+  position: relative;
+}
+
+.focus-trap::before,
+.focus-trap::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Consistent Button Styles */
+.btn-primary {
+  background-color: hsl(var(--brand-primary));
+  color: hsl(var(--primary-foreground));
+  border: 1px solid hsl(var(--brand-primary));
+}
+
+.btn-primary:hover {
+  background-color: hsl(var(--brand-primary) / 0.9);
+}
+
+.btn-secondary {
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+.btn-secondary:hover {
+  background-color: hsl(var(--accent));
+}
+
+/* Consistent Form Styles */
+.form-input {
+  background-color: hsl(var(--input));
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+  border-radius: calc(var(--radius) - 2px);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+}
+
+.form-input[aria-invalid="true"] {
+  border-color: hsl(var(--destructive));
+}
+
+/* Consistent Card Styles */
+.card {
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  color: hsl(var(--card-foreground));
+}
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}

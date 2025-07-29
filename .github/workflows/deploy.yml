@@ -1,0 +1,48 @@
+name: Production Deployment
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Type check
+        run: npm run type-check
+        
+      - name: Run tests
+        run: |
+          npm run test
+          npm run test:e2e
+          
+      - name: Build
+        run: npm run build
+        env:
+          VITE_APP_URL: ${{ secrets.VITE_APP_URL }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_AUTH_DOMAIN: ${{ secrets.VITE_AUTH_DOMAIN }}
+          VITE_AUTH_CLIENT_ID: ${{ secrets.VITE_AUTH_CLIENT_ID }}
+          VITE_AUTH_AUDIENCE: ${{ secrets.VITE_AUTH_AUDIENCE }}
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+          VITE_GA_TRACKING_ID: ${{ secrets.VITE_GA_TRACKING_ID }}
+          
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          command: pages publish dist --project-name=secure-web3-arena

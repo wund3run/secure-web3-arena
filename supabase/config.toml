@@ -1,0 +1,18 @@
+
+project_id = "divymuaksqdgjsrlptct"
+
+# Auth settings for development environment
+[auth]
+disable_signup_captcha = true
+site_url = "http://localhost:8080"
+additional_redirect_urls = ["http://localhost:8080", "http://localhost:8081", "http://localhost:8082", "http://localhost:8083", "http://localhost:5173", "https://hawkly.app"]
+enable_signup_captcha = false
+
+# Storage settings
+[storage]
+file_size_limit = "50MiB"
+
+# Functions configuration
+[functions]
+[functions.audit-report]
+verify_jwt = true

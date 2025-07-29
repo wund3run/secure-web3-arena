@@ -1,0 +1,860 @@
+import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { 
+  ShieldAlert, 
+  ShieldCheck, 
+  FileText, 
+  AlertTriangle, 
+  CheckCircle, 
+  XCircle,
+  Code,
+  Terminal,
+  GitBranch,
+  Eye,
+  ExternalLink,
+  Download,
+  ChevronRight,
+  MessageSquare,
+  Clock,
+  Calendar,
+  User,
+  Users,
+  DollarSign,
+  BarChart3,
+  Search
+} from 'lucide-react';
+import { useParams, Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { HawklyCard, SecurityBadge, ProgressIndicator } from '@/components/ui/hawkly-components';
+import { Separator } from '@/components/ui/separator';
+import { toast } from 'sonner';
+
+// Mock data for audit report
+const auditData = {
+  id: '101',
+  title: 'GameFi Token Contract Audit',
+  client: 'PlayToken',
+  clientAvatar: '/avatars/playtoken.png',
+  auditor: 'Alex Chen',
+  auditorAvatar: '/avatars/alex-chen.png',
+  budget: '$4,500',
+  deadline: 'Feb 08, 2024',
+  status: 'In Progress',
+  progress: 75,
+  startDate: 'Jan 15, 2024',
+  description: 'Comprehensive security audit for a GameFi token contract including staking mechanisms, reward distribution, and governance features.',
+  repository: 'https://github.com/playtoken/contracts',
+  technologies: ['Solidity', 'OpenZeppelin', 'Hardhat', 'Chainlink'],
+  scope: [
+    'Smart contract security review',
+    'Gas optimization analysis',
+    'Access control validation',
+    'Economic model assessment',
+    'Integration testing review'
+  ]
+};
+
+const auditPhases = [
+  { id: 'preparation', name: 'Preparation', progress: 100, status: 'completed', date: 'Jan 15-17' },
+  { id: 'review', name: 'Code Review', progress: 85, status: 'active', date: 'Jan 18-26' },
+  { id: 'testing', name: 'Testing', progress: 45, status: 'active', date: 'Jan 27-Feb 3' },
+  { id: 'reporting', name: 'Reporting', progress: 20, status: 'pending', date: 'Feb 4-7' },
+  { id: 'completion', name: 'Completion', progress: 0, status: 'pending', date: 'Feb 8' }
+];
+
+const findings = [
+  {
+    id: 1,
+    severity: 'Critical',
+    title: 'Reentrancy vulnerability in reward claim function',
+    description: 'The claimReward function is susceptible to reentrancy attacks due to external call before state update.',
+    status: 'Open',
+    line: 145,
+    file: 'contracts/Rewards.sol',
+    discoveryDate: 'Jan 20',
+    impact: 'Attacker could drain the reward pool by exploiting this vulnerability.',
+    remediation: 'Implement the checks-effects-interactions pattern and use OpenZeppelin ReentrancyGuard.',
+    codeSnippet: `function claimReward() external {
+  uint256 reward = calculateReward(msg.sender);
+  (bool success, ) = msg.sender.call{value: reward}("");
+  require(success, "Transfer failed");
+  userClaimedRewards[msg.sender] = true; // Update state after external call
+}`
+  },
+  {
+    id: 2,
+    severity: 'High',
+    title: 'Access control weakness in admin functions',
+    description: 'Admin functions lack proper access control mechanisms and can be called by any user.',
+    status: 'Fixed',
+    line: 78,
+    file: 'contracts/Administration.sol',
+    discoveryDate: 'Jan 19',
+    impact: 'Any user could execute privileged operations like changing parameters or withdrawing funds.',
+    remediation: 'Implement Ownable pattern from OpenZeppelin or a custom role-based access system.',
+    codeSnippet: `function updateRewardRate(uint256 newRate) public {
+  // Missing access control here
+  rewardRate = newRate;
+}`
+  },
+  {
+    id: 3,
+    severity: 'Medium',
+    title: 'Gas optimization opportunity in batch operations',
+    description: 'Loop operations can be optimized to reduce gas costs by up to 30%.',
+    status: 'Open',
+    line: 207,
+    file: 'contracts/TokenDistribution.sol',
+    discoveryDate: 'Jan 22',
+    impact: 'Higher than necessary transaction costs for users, potential denial of service in extreme cases.',
+    remediation: 'Implement batch processing with fixed array sizes and gas optimizations.',
+    codeSnippet: `for (uint i = 0; i < users.length; i++) {
+  // Inefficient storage reads in loop
+  userBalances[users[i]] += amounts[i];
+}`
+  },
+  {
+    id: 4,
+    severity: 'Low',
+    title: 'Missing event emission in admin functions',
+    description: 'Administrative functions should emit events for better transparency.',
+    status: 'Open',
+    line: 234,
+    file: 'contracts/GameToken.sol',
+    discoveryDate: 'Jan 23',
+    impact: 'Reduced transparency and difficulty auditing state changes via events.',
+    remediation: 'Add appropriate events for all state changing operations.',
+    codeSnippet: `function setPauseStatus(bool _paused) external onlyOwner {
+  paused = _paused;
+  // Missing event emission
+}`
+  }
+];
+
+const metrics = [
+  { label: 'Files Reviewed', value: 16 },
+  { label: 'Lines of Code', value: '2,480' },
+  { label: 'Total Findings', value: 12 },
+  { label: 'Critical', value: 1 },
+  { label: 'High', value: 3 },
+  { label: 'Medium', value: 5 },
+  { label: 'Low', value: 3 },
+  { label: 'Test Coverage', value: '87%' }
+];
+
+const AuditReport = () => {
+  const { id } = useParams();
+  const [activeTab, setActiveTab] = useState('findings');
+  const [reportFilter, setReportFilter] = useState('');
+  
+  const getSeverityColor = (severity) => {
+    switch (severity.toLowerCase()) {
+      case 'critical': return 'destructive';
+      case 'high': return 'destructive';
+      case 'medium': return 'warning';
+      case 'low': return 'secondary';
+      case 'info': return 'default';
+      default: return 'outline';
+    }
+  };
+  
+  const filteredFindings = findings.filter(finding => 
+    finding.title.toLowerCase().includes(reportFilter.toLowerCase()) ||
+    finding.description.toLowerCase().includes(reportFilter.toLowerCase()) ||
+    finding.severity.toLowerCase().includes(reportFilter.toLowerCase()) ||
+    finding.status.toLowerCase().includes(reportFilter.toLowerCase())
+  );
+
+  const handleDownloadReport = () => {
+    toast.success('Audit report downloaded successfully');
+  };
+
+  return (
+    <>
+      <Helmet>
+        <title>Audit Report | GameFi Token Contract | Hawkly</title>
+        <meta name="description" content="Comprehensive security audit report for GameFi Token Contract" />
+      </Helmet>
+      
+      <div className="min-h-screen bg-[#0a0d16] p-4 md:p-6 text-[#f8f9fb]">
+        <div className="max-w-7xl mx-auto">
+          {/* Header Section */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+            <div>
+              <div className="flex items-center gap-2 text-sm text-[#a0aec0] mb-2">
+                <Link to="/dashboard" className="hover:text-[#a879ef] transition-colors">Dashboard</Link>
+                <ChevronRight className="h-4 w-4" />
+                <Link to="/audits" className="hover:text-[#a879ef] transition-colors">Audits</Link>
+                <ChevronRight className="h-4 w-4" />
+                <span>Report #{id || auditData.id}</span>
+              </div>
+              <h1 className="text-2xl md:text-3xl font-bold">{auditData.title}</h1>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={handleDownloadReport} className="border-[#23283e] hover:border-[#a879ef] bg-[#1e2332]">
+                <Download className="h-4 w-4 mr-2" />
+                Download PDF
+              </Button>
+              <Button variant="default" className="bg-gradient-to-r from-[#a879ef] to-[#32d9fa] hover:from-[#8a60d0] hover:to-[#22c9ea]">
+                <FileText className="h-4 w-4 mr-2" />
+                Export Report
+              </Button>
+            </div>
+          </div>
+          
+          {/* Overview Card */}
+          <HawklyCard variant="glass" elevation="subtle" className="p-5 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="md:col-span-2">
+                <h2 className="text-xl font-semibold mb-3">Project Overview</h2>
+                <p className="text-[#a0aec0] mb-4">{auditData.description}</p>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-[#23283e] p-2 rounded-full">
+                      <Calendar className="h-5 w-5 text-[#a879ef]" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-[#a0aec0]">Audit Period</p>
+                      <p className="font-medium">{auditData.startDate} - {auditData.deadline}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="bg-[#23283e] p-2 rounded-full">
+                      <DollarSign className="h-5 w-5 text-[#32d9fa]" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-[#a0aec0]">Budget</p>
+                      <p className="font-medium">{auditData.budget}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="bg-[#23283e] p-2 rounded-full">
+                      <User className="h-5 w-5 text-[#2de08e]" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-[#a0aec0]">Auditor</p>
+                      <p className="font-medium">{auditData.auditor}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="bg-[#23283e] p-2 rounded-full">
+                      <GitBranch className="h-5 w-5 text-[#f6ad55]" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-[#a0aec0]">Repository</p>
+                      <a 
+                        href={auditData.repository} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="font-medium flex items-center hover:text-[#a879ef] transition-colors"
+                      >
+                        View on GitHub
+                        <ExternalLink className="h-3 w-3 ml-1" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex flex-wrap gap-2 mt-4">
+                  <h3 className="text-sm font-medium text-[#a0aec0] mr-2">Technologies:</h3>
+                  {auditData.technologies.map((tech) => (
+                    <Badge 
+                      key={tech} 
+                      variant="outline"
+                      className="bg-[#23283e]/50 border-[#23283e] text-[#f8f9fb]"
+                    >
+                      {tech}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="flex flex-col justify-center items-center">
+                <div className="mb-4">
+                  <ProgressIndicator 
+                    value={auditData.progress} 
+                    max={100} 
+                    variant="circular" 
+                    glowEffect 
+                    className="mb-2" 
+                  />
+                  <p className="text-center text-sm text-[#a0aec0]">Audit Progress</p>
+                </div>
+                
+                <SecurityBadge 
+                  level={auditData.progress >= 80 ? 'enterprise' : auditData.progress >= 50 ? 'advanced' : 'basic'} 
+                  verified={auditData.progress > 50}
+                  size="lg"
+                />
+                
+                <div className="mt-4 flex justify-center">
+                  <Badge
+                    className={cn(
+                      "px-3 py-1 text-sm",
+                      auditData.status === 'Completed' ? 'bg-[#2de08e]/20 text-[#2de08e]' :
+                      auditData.status === 'In Progress' ? 'bg-[#a879ef]/20 text-[#a879ef]' : 
+                      'bg-[#f6ad55]/20 text-[#f6ad55]'
+                    )}
+                  >
+                    {auditData.status}
+                  </Badge>
+                </div>
+              </div>
+            </div>
+          </HawklyCard>
+          
+          {/* Audit Phases */}
+          <HawklyCard variant="default" className="p-5 mb-6">
+            <h2 className="text-xl font-semibold mb-4">Audit Phases</h2>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {auditPhases.map((phase, index) => (
+                <HawklyCard 
+                  key={phase.id}
+                  variant={phase.status === 'active' ? 'highlighted' : 'default'}
+                  className="p-4"
+                >
+                  <div className="flex flex-col h-full">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="bg-[#23283e] rounded-full h-8 w-8 flex items-center justify-center text-sm font-medium">
+                        {index + 1}
+                      </div>
+                      <Badge
+                        className={cn(
+                          "text-xs",
+                          phase.status === 'completed' ? 'bg-[#2de08e]/20 text-[#2de08e]' :
+                          phase.status === 'active' ? 'bg-[#a879ef]/20 text-[#a879ef]' : 
+                          'bg-[#23283e] text-[#a0aec0]'
+                        )}
+                      >
+                        {phase.status.charAt(0).toUpperCase() + phase.status.slice(1)}
+                      </Badge>
+                    </div>
+                    <h3 className="font-medium mb-1">{phase.name}</h3>
+                    <p className="text-xs text-[#a0aec0] mb-3">{phase.date}</p>
+                    <ProgressIndicator 
+                      value={phase.progress} 
+                      max={100} 
+                      glowEffect={phase.status === 'active'} 
+                      animated={phase.status === 'active'}
+                      label=""
+                    />
+                  </div>
+                </HawklyCard>
+              ))}
+            </div>
+          </HawklyCard>
+          
+          {/* Tabs */}
+          <Tabs 
+            defaultValue="findings" 
+            value={activeTab} 
+            onValueChange={setActiveTab} 
+            className="mb-6"
+          >
+            <TabsList className="bg-[#1e2332] border border-[#23283e] mb-4">
+              <TabsTrigger value="findings" className="data-[state=active]:bg-[#a879ef]/10 data-[state=active]:text-[#a879ef]">
+                <ShieldAlert className="h-4 w-4 mr-2" />
+                Findings
+              </TabsTrigger>
+              <TabsTrigger value="summary" className="data-[state=active]:bg-[#a879ef]/10 data-[state=active]:text-[#a879ef]">
+                <BarChart3 className="h-4 w-4 mr-2" />
+                Summary
+              </TabsTrigger>
+              <TabsTrigger value="code" className="data-[state=active]:bg-[#a879ef]/10 data-[state=active]:text-[#a879ef]">
+                <Code className="h-4 w-4 mr-2" />
+                Code Review
+              </TabsTrigger>
+              <TabsTrigger value="communication" className="data-[state=active]:bg-[#a879ef]/10 data-[state=active]:text-[#a879ef]">
+                <MessageSquare className="h-4 w-4 mr-2" />
+                Communication
+              </TabsTrigger>
+            </TabsList>
+            
+            {/* Findings Tab */}
+            <TabsContent value="findings">
+              <div className="mb-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#a0aec0]" />
+                  <Input 
+                    placeholder="Search findings by title, severity, or status..." 
+                    value={reportFilter}
+                    onChange={(e) => setReportFilter(e.target.value)}
+                    className="pl-9 bg-[#1e2332] border-[#23283e] text-[#f8f9fb] placeholder:text-[#a0aec0]"
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {filteredFindings.map((finding) => (
+                  <HawklyCard
+                    key={finding.id}
+                    variant="default"
+                    className="overflow-hidden"
+                  >
+                    <div className={cn(
+                      "h-1.5",
+                      finding.severity === 'Critical' ? 'bg-[#e53e3e]' :
+                      finding.severity === 'High' ? 'bg-[#dd6b20]' :
+                      finding.severity === 'Medium' ? 'bg-[#d69e2e]' :
+                      'bg-[#718096]'
+                    )} />
+                    <div className="p-5">
+                      <div className="flex justify-between items-start mb-3">
+                        <Badge variant={getSeverityColor(finding.severity)} className="mb-2">
+                          {finding.severity}
+                        </Badge>
+                        <Badge 
+                          variant={finding.status === 'Fixed' ? 'outline' : 'secondary'}
+                          className={finding.status === 'Fixed' ? 'border-[#2de08e] text-[#2de08e]' : ''}
+                        >
+                          {finding.status}
+                        </Badge>
+                      </div>
+                      
+                      <h3 className="text-lg font-semibold mb-2">{finding.title}</h3>
+                      <p className="text-[#a0aec0] mb-3">{finding.description}</p>
+                      
+                      <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-[#a0aec0] mb-4">
+                        <div className="flex items-center gap-1">
+                          <FileText className="h-3.5 w-3.5" />
+                          <span>{finding.file}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Terminal className="h-3.5 w-3.5" />
+                          <span>Line {finding.line}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Calendar className="h-3.5 w-3.5" />
+                          <span>Discovered {finding.discoveryDate}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="mb-4">
+                        <h4 className="text-sm font-medium mb-1">Impact:</h4>
+                        <p className="text-sm text-[#a0aec0]">{finding.impact}</p>
+                      </div>
+                      
+                      <div className="mb-4">
+                        <h4 className="text-sm font-medium mb-1">Remediation:</h4>
+                        <p className="text-sm text-[#a0aec0]">{finding.remediation}</p>
+                      </div>
+                      
+                      <div className="bg-[#131726] rounded-md p-3 overflow-x-auto">
+                        <pre className="text-xs text-[#f8f9fb] font-mono whitespace-pre">{finding.codeSnippet}</pre>
+                      </div>
+                    </div>
+                  </HawklyCard>
+                ))}
+              </div>
+            </TabsContent>
+            
+            {/* Summary Tab */}
+            <TabsContent value="summary">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <HawklyCard variant="default" className="p-5">
+                  <h3 className="text-lg font-semibold mb-4">Audit Metrics</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {metrics.map((metric, index) => (
+                      <div key={index} className="bg-[#1c1f2e] rounded-lg p-4">
+                        <p className="text-[#a0aec0] text-sm mb-1">{metric.label}</p>
+                        <p className="text-xl font-bold">{metric.value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </HawklyCard>
+                
+                <HawklyCard variant="default" className="p-5">
+                  <h3 className="text-lg font-semibold mb-4">Severity Distribution</h3>
+                  <div className="h-[250px] flex items-end gap-4 justify-around pt-4">
+                    <div className="flex flex-col items-center">
+                      <div className="h-[180px] w-12 bg-[#e53e3e]/20 rounded-t-md relative overflow-hidden">
+                        <div className="absolute bottom-0 w-full bg-[#e53e3e] h-[10%]"></div>
+                      </div>
+                      <p className="mt-2 text-sm">Critical</p>
+                      <p className="text-[#a0aec0] text-xs">1</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="h-[180px] w-12 bg-[#dd6b20]/20 rounded-t-md relative overflow-hidden">
+                        <div className="absolute bottom-0 w-full bg-[#dd6b20] h-[30%]"></div>
+                      </div>
+                      <p className="mt-2 text-sm">High</p>
+                      <p className="text-[#a0aec0] text-xs">3</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="h-[180px] w-12 bg-[#d69e2e]/20 rounded-t-md relative overflow-hidden">
+                        <div className="absolute bottom-0 w-full bg-[#d69e2e] h-[50%]"></div>
+                      </div>
+                      <p className="mt-2 text-sm">Medium</p>
+                      <p className="text-[#a0aec0] text-xs">5</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="h-[180px] w-12 bg-[#718096]/20 rounded-t-md relative overflow-hidden">
+                        <div className="absolute bottom-0 w-full bg-[#718096] h-[30%]"></div>
+                      </div>
+                      <p className="mt-2 text-sm">Low</p>
+                      <p className="text-[#a0aec0] text-xs">3</p>
+                    </div>
+                  </div>
+                </HawklyCard>
+                
+                <HawklyCard variant="glass" className="p-5 md:col-span-2">
+                  <h3 className="text-lg font-semibold mb-4">Executive Summary</h3>
+                  <p className="text-[#a0aec0] mb-3">
+                    The security audit of the GameFi Token Contract revealed several security vulnerabilities of varying severity. The most critical issue identified is a reentrancy vulnerability in the reward claim function that could potentially lead to fund drainage if exploited.
+                  </p>
+                  <p className="text-[#a0aec0] mb-3">
+                    Additionally, several high and medium severity issues were found, including access control weaknesses and gas optimization opportunities. These findings highlight areas where the contract implementation could be improved to enhance security and efficiency.
+                  </p>
+                  <p className="text-[#a0aec0] mb-3">
+                    The overall code quality is good, with proper implementation of standard interfaces and adherence to common patterns. However, there are specific areas that require attention before deployment to a production environment.
+                  </p>
+                  <div className="mt-6 p-4 bg-[#1c1f2e] rounded-lg border border-[#23283e]">
+                    <h4 className="font-medium mb-2 flex items-center">
+                      <ShieldCheck className="h-4 w-4 mr-2 text-[#2de08e]" />
+                      Security Rating
+                    </h4>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[#a0aec0]">Security Score:</span>
+                      <div className="flex items-center">
+                        <span className="text-[#f6ad55] font-medium">B+</span>
+                        <span className="text-xs text-[#a0aec0] ml-2">(Good with issues to address)</span>
+                      </div>
+                    </div>
+                  </div>
+                </HawklyCard>
+              </div>
+            </TabsContent>
+            
+            {/* Code Review Tab */}
+            <TabsContent value="code">
+              <HawklyCard variant="default" className="p-5">
+                <h3 className="text-lg font-semibold mb-4">Code Review Summary</h3>
+                <div className="space-y-4">
+                  <div className="bg-[#1c1f2e] rounded-lg p-4">
+                    <h4 className="font-medium mb-2">Architecture Review</h4>
+                    <p className="text-[#a0aec0] text-sm">
+                      The contract architecture follows a modular design with clear separation of concerns. The main components include token management, staking mechanisms, reward distribution, and governance features. The use of OpenZeppelin libraries for standard functionalities is a good practice that enhances security.
+                    </p>
+                  </div>
+                  
+                  <div className="bg-[#1c1f2e] rounded-lg p-4">
+                    <h4 className="font-medium mb-2">Code Quality Assessment</h4>
+                    <div className="grid grid-cols-2 gap-4 mt-3">
+                      <div>
+                        <h5 className="text-sm font-medium mb-1">Strengths:</h5>
+                        <ul className="text-[#a0aec0] text-sm list-disc pl-4 space-y-1">
+                          <li>Consistent coding style</li>
+                          <li>Good documentation and comments</li>
+                          <li>Proper use of access modifiers</li>
+                          <li>Implementation of standard interfaces</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h5 className="text-sm font-medium mb-1">Areas for Improvement:</h5>
+                        <ul className="text-[#a0aec0] text-sm list-disc pl-4 space-y-1">
+                          <li>Inconsistent error handling</li>
+                          <li>Missing input validation in some functions</li>
+                          <li>Inadequate event emissions</li>
+                          <li>Gas optimization opportunities</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-[#1c1f2e] rounded-lg p-4">
+                    <h4 className="font-medium mb-2">Test Coverage Analysis</h4>
+                    <p className="text-[#a0aec0] text-sm mb-3">
+                      The project has an overall test coverage of 87%, which is good but leaves some critical functions untested. Specifically, edge cases in the reward calculation and emergency functions lack adequate testing.
+                    </p>
+                    <div className="h-4 bg-[#23283e] rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-[#a879ef] to-[#32d9fa] w-[87%]"></div>
+                    </div>
+                    <div className="flex justify-between text-xs mt-1">
+                      <span>0%</span>
+                      <span>87%</span>
+                      <span>100%</span>
+                    </div>
+                  </div>
+                </div>
+              </HawklyCard>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <HawklyCard variant="default" className="p-5">
+                  <h3 className="text-lg font-semibold mb-4">Files Reviewed</h3>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center p-3 bg-[#1c1f2e] rounded-md">
+                      <div className="flex items-center">
+                        <FileText className="h-4 w-4 mr-2 text-[#a879ef]" />
+                        <span>contracts/GameToken.sol</span>
+                      </div>
+                      <Badge variant="outline">385 lines</Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-[#1c1f2e] rounded-md">
+                      <div className="flex items-center">
+                        <FileText className="h-4 w-4 mr-2 text-[#a879ef]" />
+                        <span>contracts/Rewards.sol</span>
+                      </div>
+                      <Badge variant="outline">421 lines</Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-[#1c1f2e] rounded-md">
+                      <div className="flex items-center">
+                        <FileText className="h-4 w-4 mr-2 text-[#a879ef]" />
+                        <span>contracts/Staking.sol</span>
+                      </div>
+                      <Badge variant="outline">367 lines</Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-[#1c1f2e] rounded-md">
+                      <div className="flex items-center">
+                        <FileText className="h-4 w-4 mr-2 text-[#a879ef]" />
+                        <span>contracts/Administration.sol</span>
+                      </div>
+                      <Badge variant="outline">245 lines</Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-[#1c1f2e] rounded-md">
+                      <div className="flex items-center">
+                        <FileText className="h-4 w-4 mr-2 text-[#a879ef]" />
+                        <span>contracts/TokenDistribution.sol</span>
+                      </div>
+                      <Badge variant="outline">308 lines</Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-[#1c1f2e] rounded-md">
+                      <div className="flex items-center">
+                        <FileText className="h-4 w-4 mr-2 text-[#a879ef]" />
+                        <span>contracts/Governance.sol</span>
+                      </div>
+                      <Badge variant="outline">246 lines</Badge>
+                    </div>
+                  </div>
+                </HawklyCard>
+                
+                <HawklyCard variant="default" className="p-5">
+                  <h3 className="text-lg font-semibold mb-4">Recommended Security Improvements</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3 p-3 bg-[#1c1f2e] rounded-md">
+                      <div className="mt-0.5">
+                        <CheckCircle className="h-4 w-4 text-[#2de08e]" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium">Implement OpenZeppelin's ReentrancyGuard</h4>
+                        <p className="text-xs text-[#a0aec0]">Apply to all functions that make external calls to prevent reentrancy attacks.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 bg-[#1c1f2e] rounded-md">
+                      <div className="mt-0.5">
+                        <CheckCircle className="h-4 w-4 text-[#2de08e]" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium">Add Access Control to Admin Functions</h4>
+                        <p className="text-xs text-[#a0aec0]">Use OpenZeppelin's AccessControl or Ownable pattern for privileged functions.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 bg-[#1c1f2e] rounded-md">
+                      <div className="mt-0.5">
+                        <CheckCircle className="h-4 w-4 text-[#2de08e]" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium">Add Event Emissions</h4>
+                        <p className="text-xs text-[#a0aec0]">Add events for all state-changing functions to enhance transparency and traceability.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 bg-[#1c1f2e] rounded-md">
+                      <div className="mt-0.5">
+                        <CheckCircle className="h-4 w-4 text-[#2de08e]" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium">Implement Gas Optimizations</h4>
+                        <p className="text-xs text-[#a0aec0]">Restructure loops and optimize storage reads/writes to reduce gas costs.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 bg-[#1c1f2e] rounded-md">
+                      <div className="mt-0.5">
+                        <CheckCircle className="h-4 w-4 text-[#2de08e]" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium">Add Input Validation</h4>
+                        <p className="text-xs text-[#a0aec0]">Implement thorough input validation for all public and external functions.</p>
+                      </div>
+                    </div>
+                  </div>
+                </HawklyCard>
+              </div>
+            </TabsContent>
+            
+            {/* Communication Tab */}
+            <TabsContent value="communication">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="md:col-span-2">
+                  <HawklyCard variant="default" className="p-5">
+                    <h3 className="text-lg font-semibold mb-4">Discussion Thread</h3>
+                    <div className="space-y-4">
+                      <div className="flex gap-4">
+                        <div className="h-10 w-10 rounded-full bg-[#23283e] flex items-center justify-center text-[#a879ef] font-medium">
+                          AC
+                        </div>
+                        <div className="flex-1">
+                          <div className="bg-[#1c1f2e] rounded-lg p-3">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="font-medium">Alex Chen (Auditor)</span>
+                              <span className="text-xs text-[#a0aec0]">Jan 20, 2024 • 10:34 AM</span>
+                            </div>
+                            <p className="text-[#a0aec0] text-sm">
+                              I've identified a critical reentrancy vulnerability in the reward claim function. The external call happens before state update, which could lead to multiple withdrawals in a single transaction. Please check the finding details and let me know if you need any clarification.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-4">
+                        <div className="h-10 w-10 rounded-full bg-[#23283e] flex items-center justify-center text-[#32d9fa] font-medium">
+                          PT
+                        </div>
+                        <div className="flex-1">
+                          <div className="bg-[#1c1f2e] rounded-lg p-3">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="font-medium">PlayToken (Client)</span>
+                              <span className="text-xs text-[#a0aec0]">Jan 21, 2024 • 09:15 AM</span>
+                            </div>
+                            <p className="text-[#a0aec0] text-sm">
+                              Thanks for catching this! We'll implement the checks-effects-interactions pattern and use OpenZeppelin's ReentrancyGuard as suggested. When do you think you'll have the findings for the other contracts ready?
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-4">
+                        <div className="h-10 w-10 rounded-full bg-[#23283e] flex items-center justify-center text-[#a879ef] font-medium">
+                          AC
+                        </div>
+                        <div className="flex-1">
+                          <div className="bg-[#1c1f2e] rounded-lg p-3">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="font-medium">Alex Chen (Auditor)</span>
+                              <span className="text-xs text-[#a0aec0]">Jan 22, 2024 • 14:28 PM</span>
+                            </div>
+                            <p className="text-[#a0aec0] text-sm">
+                              I'll have the complete findings for the remaining contracts by the end of this week. I've already identified some gas optimization opportunities in the TokenDistribution contract that I'll document in detail. Would you like me to provide remediation code snippets for the issues found so far?
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-4">
+                        <div className="h-10 w-10 rounded-full bg-[#23283e] flex items-center justify-center text-[#32d9fa] font-medium">
+                          PT
+                        </div>
+                        <div className="flex-1">
+                          <div className="bg-[#1c1f2e] rounded-lg p-3">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="font-medium">PlayToken (Client)</span>
+                              <span className="text-xs text-[#a0aec0]">Jan 22, 2024 • 16:45 PM</span>
+                            </div>
+                            <p className="text-[#a0aec0] text-sm">
+                              Yes, code snippets would be extremely helpful. We're targeting a release in early February, so any assistance with implementation would be appreciated. We've started working on fixes for the issues already identified.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-6">
+                      <textarea
+                        className="w-full bg-[#1c1f2e] border border-[#23283e] rounded-lg p-3 text-[#f8f9fb] placeholder:text-[#a0aec0]"
+                        placeholder="Type your message here..."
+                        rows={3}
+                      ></textarea>
+                      <div className="mt-2 flex justify-end">
+                        <Button variant="default" className="bg-gradient-to-r from-[#a879ef] to-[#32d9fa] hover:from-[#8a60d0] hover:to-[#22c9ea]">
+                          <MessageSquare className="h-4 w-4 mr-2" />
+                          Send Message
+                        </Button>
+                      </div>
+                    </div>
+                  </HawklyCard>
+                </div>
+                
+                <div>
+                  <HawklyCard variant="default" className="p-5 mb-6">
+                    <h3 className="text-lg font-semibold mb-4">Client Information</h3>
+                    <div className="flex flex-col items-center mb-4">
+                      <div className="h-16 w-16 rounded-full bg-[#23283e] flex items-center justify-center text-[#32d9fa] text-xl font-medium mb-2">
+                        PT
+                      </div>
+                      <h4 className="font-medium">{auditData.client}</h4>
+                      <p className="text-sm text-[#a0aec0]">Blockchain Gaming</p>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4 text-[#a0aec0]" />
+                        <span className="text-sm">5 Team Members</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-4 w-4 text-[#a0aec0]" />
+                        <span className="text-sm">3 Previous Audits</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4 text-[#a0aec0]" />
+                        <span className="text-sm">Client Since Sep 2023</span>
+                      </div>
+                    </div>
+                  </HawklyCard>
+                  
+                  <HawklyCard variant="default" className="p-5">
+                    <h3 className="text-lg font-semibold mb-4">Timeline</h3>
+                    <div className="relative pl-5 space-y-4">
+                      <div className="absolute top-0 bottom-0 left-[9px] w-[1px] bg-[#23283e]"></div>
+                      
+                      <div className="relative">
+                        <div className="absolute top-0 left-[-20px] w-4 h-4 rounded-full border-2 border-[#32d9fa] bg-[#1e2332]"></div>
+                        <p className="text-xs text-[#a0aec0]">Jan 15, 2024</p>
+                        <p className="text-sm">Audit Started</p>
+                      </div>
+                      
+                      <div className="relative">
+                        <div className="absolute top-0 left-[-20px] w-4 h-4 rounded-full border-2 border-[#a879ef] bg-[#1e2332]"></div>
+                        <p className="text-xs text-[#a0aec0]">Jan 20, 2024</p>
+                        <p className="text-sm">Critical Finding Reported</p>
+                      </div>
+                      
+                      <div className="relative">
+                        <div className="absolute top-0 left-[-20px] w-4 h-4 rounded-full border-2 border-[#a0aec0] bg-[#1e2332]"></div>
+                        <p className="text-xs text-[#a0aec0]">Jan 27, 2024</p>
+                        <p className="text-sm">Testing Phase Started</p>
+                      </div>
+                      
+                      <div className="relative">
+                        <div className="absolute top-0 left-[-20px] w-4 h-4 rounded-full border-2 border-[#a0aec0] bg-[#1e2332] border-dashed"></div>
+                        <p className="text-xs text-[#a0aec0]">Feb 4, 2024</p>
+                        <p className="text-sm">Report Preparation (Planned)</p>
+                      </div>
+                      
+                      <div className="relative">
+                        <div className="absolute top-0 left-[-20px] w-4 h-4 rounded-full border-2 border-[#a0aec0] bg-[#1e2332] border-dashed"></div>
+                        <p className="text-xs text-[#a0aec0]">Feb 8, 2024</p>
+                        <p className="text-sm">Audit Completion (Planned)</p>
+                      </div>
+                    </div>
+                  </HawklyCard>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
+    </>
+  );
+};
+
+// Helper function for conditional className merging
+function cn(...classes: string[]) {
+  return classes.filter(Boolean).join(' ');
+}
+
+export default AuditReport;

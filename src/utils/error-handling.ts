@@ -1,0 +1,1 @@
+export interface AppError { message: string; code?: string; status?: number; details?: Record<string, unknown>; timestamp: string; } export function isAppError(error: unknown): error is AppError { return typeof error === "object" && error !== null && "message" in error; }

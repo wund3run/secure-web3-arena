@@ -1,0 +1,7 @@
+Contact: mailto:security@secure-web3-arena.com
+Expires: 2026-07-29T00:00:00.000Z
+Encryption: https://secure-web3-arena.com/pgp-key.txt
+Preferred-Languages: en
+Canonical: https://secure-web3-arena.com/.well-known/security.txt
+Policy: https://secure-web3-arena.com/security-policy
+Hiring: https://secure-web3-arena.com/careers
