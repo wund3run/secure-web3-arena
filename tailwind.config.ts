@@ -19,14 +19,15 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // Design System Colors
-        'bg-primary': 'var(--bg-primary)',
-        'bg-secondary': 'var(--bg-secondary)',
-        'sidebar': 'var(--sidebar)',
-        'surface': 'var(--surface)',
-        'card': 'var(--card)',
+        // New Design System Colors
+        'bg': 'var(--bg)',
+        'text': 'var(--text)',
+        'muted': 'var(--muted)',
+        'accent-start': 'var(--accent-start)',
+        'accent-end': 'var(--accent-end)',
         'border': 'var(--border)',
-        'elevation1': 'var(--elevation1)',
+        'card-bg': 'var(--card-bg)',
+        'hover': 'var(--hover)',
         
         'accent-primary': 'var(--accent-primary)',
         'accent-secondary': 'var(--accent-secondary)',

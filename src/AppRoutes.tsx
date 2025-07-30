@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import AuthCallback from '@/pages/AuthCallback';
 
 // Enhanced UI Components
-import EnhancedLandingPage from '@/components/landing/EnhancedLandingPage';
+import NewLandingPage from '@/components/landing/NewLandingPage';
 import RealTimeDashboard from '@/components/dashboard/RealTimeDashboard';
 import EnhancedAuditorMarketplace from '@/components/marketplace/EnhancedAuditorMarketplace';
 import EnhancedOnboardingFlow from '@/components/onboarding/EnhancedOnboardingFlow';
@@ -157,7 +157,7 @@ export default function AppRoutes() {
     <RBACProvider>
       <Routes>
         {/* Public Routes - No Authentication Required */}
-        <Route path="/" element={<EnhancedLandingPage />} />
+        <Route path="/" element={<NewLandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
@@ -179,7 +179,7 @@ export default function AppRoutes() {
       <Route path="/audit-results/:id" element={<EnhancedAuditResults />} />
       
       {/* Legacy Index route now uses EnhancedLandingPage for full UI overhaul compliance */}
-      <Route path="/legacy" element={<EnhancedLandingPage />} />
+      <Route path="/legacy" element={<NewLandingPage />} />
       
       {/* Service Pages */}
       <Route path="/security-audits" element={<SecurityAudits />} />
