@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Eye, Zap, Users, Github, Twitter, Linkedin, Mail, ExternalLink } from 'lucide-react';
+import { Shield, Eye, Zap, Users, Github, Twitter, Linkedin, Mail, ExternalLink, MessageCircle } from 'lucide-react';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -146,16 +146,19 @@ export function Footer() {
             <div className="flex items-center space-x-4">
               <span className="text-sm text-muted-foreground">Connect with the guardians:</span>
               <div className="flex space-x-3">
-                <a href="https://twitter.com/hawkly" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-brand-blue/10 hover:text-brand-blue transition-all duration-200">
+                <a href="https://x.com/hawkly_world" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-brand-blue/10 hover:text-brand-blue transition-all duration-200">
                   <Twitter className="h-4 w-4" />
                 </a>
-                <a href="https://github.com/hawkly" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-brand-purple/10 hover:text-brand-purple transition-all duration-200">
-                  <Github className="h-4 w-4" />
-                </a>
-                <a href="https://linkedin.com/company/hawkly" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-brand-cyan/10 hover:text-brand-cyan transition-all duration-200">
+                <a href="https://www.linkedin.com/company/hawkly-world/about/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-brand-cyan/10 hover:text-brand-cyan transition-all duration-200">
                   <Linkedin className="h-4 w-4" />
                 </a>
-                <a href="mailto:support@hawkly.com" className="p-2 rounded-full hover:bg-brand-orange/10 hover:text-brand-orange transition-all duration-200">
+                <a href="https://discord.gg/D63cfVxa" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-brand-purple/10 hover:text-brand-purple transition-all duration-200">
+                  <MessageCircle className="h-4 w-4" />
+                </a>
+                <a href="https://github.com/hawkly" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-brand-gray/10 hover:text-brand-gray transition-all duration-200">
+                  <Github className="h-4 w-4" />
+                </a>
+                <a href="mailto:join@hawkly.com" className="p-2 rounded-full hover:bg-brand-orange/10 hover:text-brand-orange transition-all duration-200">
                   <Mail className="h-4 w-4" />
                 </a>
               </div>

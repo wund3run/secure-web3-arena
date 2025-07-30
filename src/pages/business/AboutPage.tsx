@@ -28,7 +28,7 @@ const AboutPage = () => {
     "sameAs": [
       "https://twitter.com/hawkly_security",
       "https://github.com/hawkly",
-      "https://discord.gg/hawkly"
+      "https://discord.gg/D63cfVxa"
     ]
   };
 

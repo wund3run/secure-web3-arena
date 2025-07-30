@@ -45,7 +45,7 @@ export default function Roadmap() {
                 </a>
               </Button>
               <Button variant="outline" asChild>
-                <a href="https://discord.gg/hawkly" target="_blank" rel="noopener noreferrer">
+                <a href="https://discord.gg/D63cfVxa" target="_blank" rel="noopener noreferrer">
                   Join Discord
                 </a>
               </Button>

@@ -34,7 +34,7 @@ export const createOrganizationStructuredData = () => ({
     "@type": "ContactPoint",
     "telephone": "+1-555-HAWKLY",
     "contactType": "customer service",
-    "email": "hello@hawkly.com"
+    "email": "join@hawkly.com"
   },
   "sameAs": [
     "https://twitter.com/hawkly_security",
