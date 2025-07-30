@@ -14,7 +14,16 @@ const AuthCallback = () => {
     // Handle the OAuth redirect and extract any hash parameters
     const handleAuthCallback = async () => {
       try {
-        // First check if we already have a session
+        // Check for error in URL parameters
+        const queryParams = new URLSearchParams(window.location.search);
+        const errorDescription = queryParams.get('error_description');
+        const errorCode = queryParams.get('error');
+        
+        if (errorCode || errorDescription) {
+          throw new Error(errorDescription || 'Authentication was cancelled or failed');
+        }
+
+        // Check for existing session
         const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
         
         if (sessionError) {
@@ -22,16 +31,40 @@ const AuthCallback = () => {
         }
         
         if (sessionData.session) {
+          // Fetch user profile to ensure it exists
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', sessionData.session.user.id)
+            .single();
+
+          if (profileError || !profileData) {
+            // Create profile if it doesn't exist
+            const { error: createProfileError } = await supabase
+              .from('profiles')
+              .upsert({
+                id: sessionData.session.user.id,
+                user_id: sessionData.session.user.id,
+                email: sessionData.session.user.email,
+                full_name: sessionData.session.user.user_metadata?.full_name || '',
+                user_type: sessionData.session.user.user_metadata?.user_type || 'project_owner',
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+              });
+
+            if (createProfileError) {
+              throw new Error('Failed to create user profile');
+            }
+          }
+
           toast.success("Successfully signed in");
-          navigate('/');
+          navigate('/onboarding');
           return;
         }
         
-        // If there's no session, process the URL hash fragment
-        // which might contain the access token
+        // Process hash fragment for access token
         const hashUrl = window.location.hash;
         if (hashUrl && hashUrl.includes('access_token')) {
-          // The Auth API will process this automatically if we call getUser
           const { data: userData, error: userError } = await supabase.auth.getUser();
           
           if (userError) {
@@ -40,21 +73,12 @@ const AuthCallback = () => {
           
           if (userData.user) {
             toast.success("Successfully signed in");
-            navigate('/');
+            navigate('/onboarding');
             return;
           }
         }
         
-        // If we reach here, authentication failed
-        setError("Authentication failed. No valid session or token found.");
-        toast.error("Authentication failed", {
-          description: "No valid session or token found"
-        });
-        
-        // Redirect to auth page after a short delay
-        setTimeout(() => {
-          navigate('/auth');
-        }, 3000);
+        throw new Error("Authentication failed. No valid session or token found.");
         
       } catch (err: unknown) {
         setError((err as Error).message || "Authentication error");

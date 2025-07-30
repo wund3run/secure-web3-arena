@@ -1,12 +1,5 @@
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { Shield, MessageCircle, BarChart3, Users, HelpCircle, Briefcase, Settings, Lock, User, Zap, FileText, Award, Bell, CalendarIcon, BookOpen, Activity, Database, LayoutGrid } from 'lucide-react';
-import Index from '@/pages/Index';
-import Home from '@/pages/Home';
-import Auth from '@/pages/Auth';
 import AuthCallback from '@/pages/AuthCallback';
-import Dashboard from '@/pages/Dashboard';
-import Marketplace from '@/pages/Marketplace';
 
 // Enhanced UI Components
 import EnhancedLandingPage from '@/components/landing/EnhancedLandingPage';
@@ -20,45 +13,39 @@ import Support from '@/pages/Support';
 import Contact from '@/pages/Contact';
 import AIToolsPage from '@/pages/tools/AIToolsPage';
 import NotFound from '@/pages/NotFound';
-import Onboarding from '@/pages/Onboarding';
 import ProfileCompletion from '@/pages/ProfileCompletion';
 
 // Admin Pages
-import AdminDashboard from '@/pages/AdminDashboard';
+import { AdminDashboard } from '@/components/admin/AdminDashboard';
 
 // Role-based Access Control
 import { RBACProvider, RequireAuth, UnauthorizedPage } from '@/contexts/RBACContext';
 import AuthPage from '@/pages/AuthPage';
-import {
-  Achievements,
-  AdminAudits,
-  AdminDisputes,
-  AdminFinance,
-  AdminProviders,
-  AdminReports,
-  AdminSecurity,
-  AdminServices,
-  AdminSettings,
-  AdminUsers,
-  AuditGuidelines,
-  Challenges,
-  Consulting,
-  Events,
-  KnowledgeBase,
-  Leaderboard,
-  PenetrationTesting,
-  Privacy,
-  SecurityGuides,
-  SecurityPolicy,
-  SubmitService,
-  Templates,
-  Terms,
-  Tutorials,
-} from '@/pages/missing-pages';
+import { Achievements } from '@/pages/community/AchievementsPage';
+import AdminAudits from '@/pages/admin/AdminAudits';
+import AdminDisputes from '@/pages/admin/AdminDisputes';
+import AdminFinance from '@/pages/admin/AdminFinance';
+import AdminProviders from '@/pages/admin/AdminProviders';
+import AdminReports from '@/pages/admin/AdminReports';
+import AdminSecurity from '@/pages/admin/AdminSecurity';
+import AdminServices from '@/pages/admin/AdminServices';
+import AdminSettings from '@/pages/admin/AdminSettings';
+import AdminUsers from '@/pages/admin/AdminUsers';
+import { default as AuditGuidelines } from '@/pages/resources/AuditGuidelines';
+import ChallengesPage from '@/pages/community/ChallengesPage';
+import Consulting from '@/pages/services/Consulting';
+import { default as Events } from '@/pages/community/EventsPage';
+import { default as Leaderboard } from '@/pages/community/LeaderboardPage';
+import PenetrationTesting from '@/pages/services/PenetrationTesting';
+import Privacy from '@/pages/legal/Privacy';
+import SecurityGuides from '@/pages/resources/SecurityGuides';
+import SecurityPolicy from '@/pages/security/SecurityPolicy';
+import SubmitService from '@/pages/services/SubmitService';
+import Terms from '@/pages/legal/Terms';
+import Tutorials from '@/pages/resources/Tutorials';
 
 // Admin Analytics
 import { AdminAnalyticsDashboard } from '@/components/admin/AdminAnalyticsDashboard';
-import AdminLogin from '@/pages/admin/AdminLogin';
 
 // AI & Advanced Features
 import AIAnalysisPage from '@/pages/AIAnalysisPage';
@@ -300,7 +287,7 @@ export default function AppRoutes() {
       <Route path="/community/achievements" element={<Achievements />} />
       <Route path="/community/blog" element={<Blog />} />
       <Route path="/community/calendar" element={<Calendar />} />
-      <Route path="/community/challenges" element={<Challenges />} />
+      <Route path="/community/challenges" element={<ChallengesPage />} />
       <Route path="/community/events" element={<Events />} />
       <Route path="/community/gamification" element={<GamificationDemo />} />
       <Route path="/community/leaderboard" element={<Leaderboard />} />

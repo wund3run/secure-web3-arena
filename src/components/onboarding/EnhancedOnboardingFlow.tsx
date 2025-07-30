@@ -231,7 +231,6 @@ const ProjectTypeStep = ({
 // Example usage in onboarding step rendering:
 // <FormStepIndicator steps={steps} currentStep={currentStep} userType={userType} />
 // <ContextualHelp step={steps[currentStep]?.title} />
-);
 
 // Project Details Step Component
 const ProjectDetailsStep = ({ 

@@ -10,21 +10,36 @@ export function useAuthState() {
   const [session, setSession] = useState<Session | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(false);
+
+  // Function to fetch profile with proper loading state
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      setProfileLoading(true);
+      const profile = await profileService.fetchProfile(userId);
+      setUserProfile(profile);
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    } finally {
+      setProfileLoading(false);
+    }
+  };
 
   useEffect(() => {
+    let mounted = true;
+
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.id);
+        
+        if (!mounted) return;
+        
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Fetch user profile when user is authenticated
-          setTimeout(async () => {
-            const profile = await profileService.fetchProfile(session.user.id);
-            setUserProfile(profile);
-          }, 0);
+          await fetchUserProfile(session.user.id);
         } else {
           setUserProfile(null);
         }

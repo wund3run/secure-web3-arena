@@ -29,6 +29,7 @@ export const authService = {
   async signUp(email: string, password: string, fullName: string, userType: 'auditor' | 'project_owner'): Promise<SignUpResult> {
     console.log('Signing up user:', { email, fullName, userType });
     
+    // Create the user account
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -41,6 +42,45 @@ export const authService = {
     });
 
     if (error) throw error;
+    
+    // Create profile record
+    if (data.user) {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: data.user.id,
+          user_id: data.user.id,
+          full_name: fullName,
+          user_type: userType,
+          email: email,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
+
+      if (profileError) {
+        console.error('Profile creation error:', profileError);
+        // Attempt to delete the user if profile creation fails
+        await supabase.auth.admin.deleteUser(data.user.id);
+        throw new Error('Failed to create user profile');
+      }
+
+      // Create user role
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .upsert({
+          user_id: data.user.id,
+          role: userType,
+          is_active: true,
+          created_at: new Date().toISOString(),
+        });
+
+      if (roleError) {
+        console.error('Role assignment error:', roleError);
+        // Clean up if role assignment fails
+        await supabase.auth.admin.deleteUser(data.user.id);
+        throw new Error('Failed to assign user role');
+      }
+    }
     
     console.log('Sign up response:', data);
     

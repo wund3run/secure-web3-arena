@@ -12,6 +12,7 @@ export function getRoleDisplayName(role: UserRole): string {
     admin: 'Administrator',
     auditor: 'Security Auditor',
     projectOwner: 'Project Owner',
+    serviceProvider: 'Service Provider',
     guest: 'Guest User'
   };
   
@@ -26,6 +27,7 @@ export function getRoleColor(role: UserRole): string {
     admin: 'text-red-500',
     auditor: 'text-blue-500',
     projectOwner: 'text-green-500',
+    serviceProvider: 'text-purple-500',
     guest: 'text-gray-500'
   };
   
@@ -40,6 +42,7 @@ export function getRoleBadgeColor(role: UserRole): string {
     admin: 'bg-red-600 text-white',
     auditor: 'bg-blue-600 text-white',
     projectOwner: 'bg-green-600 text-white',
+    serviceProvider: 'bg-purple-600 text-white',
     guest: 'bg-gray-600 text-white'
   };
   
@@ -54,6 +57,7 @@ export function getRoleDescription(role: UserRole): string {
     admin: 'Full access to all platform features and admin functions',
     auditor: 'Security auditor with specialized access to audit tools and marketplace',
     projectOwner: 'Can create and manage projects, request audits, and access project analytics',
+    serviceProvider: 'Service provider with access to provider tools and marketplace',
     guest: 'Limited access to public features'
   };
   
@@ -91,6 +95,12 @@ export function getTypicalRolePermissions(role: UserRole): string[] {
       'project.manage',
       'project.analytics.view',
       'audit.request'
+    ],
+    serviceProvider: [
+      'provider.access',
+      'services.manage',
+      'analytics.basic.view',
+      'marketplace.access'
     ],
     guest: [
       'public.access'
