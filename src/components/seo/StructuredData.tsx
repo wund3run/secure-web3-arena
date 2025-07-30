@@ -46,12 +46,10 @@ export const organizationData = {
     "email": "join@hawkly.com"
   },
   "sameAs": [
-    "https://twitter.com/hawkly_security",
     "https://github.com/hawkly",
     "https://discord.gg/D63cfVxa",
     "https://x.com/hawkly_world",
     "https://www.linkedin.com/company/hawkly-world/about/"
-    "https://linkedin.com/company/hawkly"
   ],
   "foundingDate": "2023",
   "founders": [
